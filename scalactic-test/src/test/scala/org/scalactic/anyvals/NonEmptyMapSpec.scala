@@ -21,6 +21,7 @@ import scala.collection.mutable.ListBuffer
 
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
+import org.scalactic.NormalizingEquality
 
 import org.scalatest.CompatParColls.Converters._
 
@@ -256,9 +257,13 @@ class NonEmptyMapSpec extends UnitSpec {
     val es = NonEmptyMap("one" -> 1, "two" -> 2, "three" -> 3)
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
-    implicit val strEq = StringNormalizations.lowerCased.toEquality
+
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
+    // SKIP-DOTTY-END
   }
   it should "have 3 copyToArray methods" in {
 
@@ -487,9 +492,11 @@ class NonEmptyMapSpec extends UnitSpec {
     NonEmptyMap(-1 -> "-1", -2 -> "-2", 3 -> "-3", 4 -> "4", 5 -> "5").minBy(_._1.abs) shouldBe (-1 -> "-1")
   }
   it should "have a mkString method" in {
-
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     NonEmptyMap("hi" -> "ho").mkString shouldBe "hi -> ho"
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").mkString shouldBe "2 -> 23 -> 31 -> 1"
+    // SKIP-DOTTY-END
 
     NonEmptyMap("hi" -> "ho").mkString("#") shouldBe "hi -> ho"
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").mkString("#") shouldBe "2 -> 2#3 -> 3#1 -> 1"

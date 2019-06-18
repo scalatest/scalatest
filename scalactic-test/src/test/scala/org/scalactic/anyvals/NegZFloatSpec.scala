@@ -59,7 +59,7 @@ trait NegZFloatSpecSupport {
           case Success(bFloat: Float) if bFloat.isNaN => true
           case _ => false
         }
-      case Success(double: Double) if double.isNaN => 
+      case Success(double: Double) if double.isNaN =>
         b match {
           case Success(bDouble: Double) if bDouble.isNaN => true
           case _ => false
@@ -100,7 +100,10 @@ class NegZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         an [AssertionError] should be thrownBy NegZFloat.ensuringValid(0.00001f)
         an [AssertionError] should be thrownBy NegZFloat.ensuringValid(99.9f)
         an [AssertionError] should be thrownBy NegZFloat.ensuringValid(Float.PositiveInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy NegZFloat.ensuringValid(Float.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -319,7 +322,7 @@ class NegZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
 
       // Check the sumOf that takes at least 2 args (the one that does box the var args part)
       // First just pass 2 to it and an empty list, which I wonder if that will do the other one,
-      // but it doesn't matter. 
+      // but it doesn't matter.
       forAll (minSuccessful(1000)) { (negZFloat1: NegZFloat, negZFloat2: NegZFloat) =>
         NegZFloat.sumOf(negZFloat1, negZFloat2, List.empty[NegZFloat]: _*) should === {
           NegZFloat.ensuringValid(negZFloat1.value + negZFloat2.value)
@@ -403,7 +406,10 @@ class NegZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       NegZFloat(-33.0f).ensuringValid(_ => Float.NegativeInfinity) shouldEqual NegZFloat.ensuringValid(Float.NegativeInfinity)
       an [AssertionError] should be thrownBy { NegZFloat.MaxValue.ensuringValid(_ - NegZFloat.MaxValue + 1) }
       an [AssertionError] should be thrownBy { NegZFloat.MaxValue.ensuringValid(_ => Float.PositiveInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { NegZFloat.MaxValue.ensuringValid(_ => Float.NaN) }
+      // SKIP-DOTTY-END
     }
   }
 }

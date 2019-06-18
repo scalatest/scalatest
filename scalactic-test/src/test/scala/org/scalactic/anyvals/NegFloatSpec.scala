@@ -39,7 +39,7 @@ trait NegFloatSpecSupport {
           case Success(bFloat: Float) if bFloat.isNaN => true
           case _ => false
         }
-      case Success(double: Double) if double.isNaN => 
+      case Success(double: Double) if double.isNaN =>
         b match {
           case Success(bDouble: Double) if bDouble.isNaN => true
           case _ => false
@@ -79,7 +79,10 @@ class NegFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         an [AssertionError] should be thrownBy NegFloat.ensuringValid(0.00001F)
         an [AssertionError] should be thrownBy NegFloat.ensuringValid(99.9F)
         an [AssertionError] should be thrownBy NegFloat.ensuringValid(Float.PositiveInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy NegFloat.ensuringValid(Float.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -372,6 +375,9 @@ class NegFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
     NegFloat(-33.0f).ensuringValid(_ => Float.NegativeInfinity) shouldEqual NegFloat.ensuringValid(Float.NegativeInfinity)
     an [AssertionError] should be thrownBy { NegFloat.MaxValue.ensuringValid(_ - NegFloat.MaxValue) }
     an [AssertionError] should be thrownBy { NegFloat.MaxValue.ensuringValid(_ => Float.PositiveInfinity) }
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6710
     an [AssertionError] should be thrownBy { NegFloat.MaxValue.ensuringValid(_ => Float.NaN) }
+    // SKIP-DOTTY-END
   }
 }

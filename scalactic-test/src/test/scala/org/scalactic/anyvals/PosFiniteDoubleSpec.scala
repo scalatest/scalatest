@@ -74,7 +74,10 @@ class PosFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
         an [AssertionError] should be thrownBy PosFiniteDouble.ensuringValid(-99.9)
         an [AssertionError] should be thrownBy PosFiniteDouble.ensuringValid(Double.PositiveInfinity)
         an [AssertionError] should be thrownBy PosFiniteDouble.ensuringValid(Double.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy PosFiniteDouble.ensuringValid(Double.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -290,7 +293,10 @@ class PosFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
       an [AssertionError] should be thrownBy { PosFiniteDouble.MaxValue.ensuringValid(_ - PosFiniteDouble.MaxValue) }
       an [AssertionError] should be thrownBy { PosFiniteDouble.MaxValue.ensuringValid(_ => Double.PositiveInfinity) }
       an [AssertionError] should be thrownBy { PosFiniteDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { PosFiniteDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
     }
   }
 }

@@ -74,7 +74,10 @@ class NegDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         an [AssertionError] should be thrownBy NegDouble.ensuringValid(0.00001)
         an [AssertionError] should be thrownBy NegDouble.ensuringValid(99.9)
         an [AssertionError] should be thrownBy NegDouble.ensuringValid(Double.PositiveInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy NegDouble.ensuringValid(Double.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -380,7 +383,10 @@ class NegDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       NegDouble(-33.0).ensuringValid(_ => Double.NegativeInfinity) shouldEqual NegDouble.ensuringValid(Double.NegativeInfinity)
       an [AssertionError] should be thrownBy { NegDouble.MaxValue.ensuringValid(_ - NegDouble.MaxValue) }
       an [AssertionError] should be thrownBy { NegDouble.MaxValue.ensuringValid(_ => Double.PositiveInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { NegDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
     }
   }
 }

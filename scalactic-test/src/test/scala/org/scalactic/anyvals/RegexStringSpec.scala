@@ -90,7 +90,7 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         RegexString.isValid("?") shouldBe false
         RegexString.isValid("*true") shouldBe false
       }
-    } 
+    }
     describe("should offer a fromOrElse factory method that") {
       it("returns a RegexString if the passed regex is valid") {
         RegexString.fromOrElse("50", RegexString("42")).value shouldBe "50"
@@ -101,7 +101,7 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         RegexString.fromOrElse("+", RegexString("42")).value shouldBe "42"
         RegexString.fromOrElse("(a|b", RegexString("42")).value shouldBe "42"
       }
-    } 
+    }
     it("should offer an ensuringValid method that takes a String => String, throwing AssertionError if the result is invalid") {
       RegexString("33").ensuringValid(s => (s.toInt + 1).toString) shouldEqual RegexString("34")
       an [AssertionError] should be thrownBy { RegexString("33").ensuringValid(_ + "(") }
@@ -238,10 +238,13 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
       }
     }
     it("should offer a getBytes method that is consistent with String") {
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6705
       forAll { (regStr: RegexString) =>
         regStr.getBytes shouldEqual
           regStr.value.getBytes
       }
+      // SKIP-DOTTY-END
       forAll { (regStr: RegexString) =>
         regStr.getBytes(Charset.defaultCharset) shouldEqual
           regStr.value.getBytes(Charset.defaultCharset)
@@ -598,6 +601,8 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
         }
       }
     }
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     it("should offer a toCharArray method that is consistent with String") {
       forAll { (regStr: RegexString) =>
         regStr.toCharArray shouldEqual
@@ -632,6 +637,7 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
           regStr.value.trim
       }
     }
+    // SKIP-DOTTY-END
   }
 }
 

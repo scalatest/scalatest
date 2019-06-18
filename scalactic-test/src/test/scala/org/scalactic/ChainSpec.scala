@@ -291,7 +291,7 @@ class ChainSpec extends UnitSpec {
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
     {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
+      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
       es.contains("one") shouldBe true;
       es.contains("ONE") shouldBe false
     }
@@ -554,7 +554,7 @@ class ChainSpec extends UnitSpec {
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
     {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
+      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
       es.indexOf("one") shouldBe 0;
       es.indexOf("ONE") shouldBe -1
     }
@@ -582,7 +582,7 @@ class ChainSpec extends UnitSpec {
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
     {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
+      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
       es.indexOfSlice(List("one", "two")) shouldBe 0
       es.indexOfSlice(List("ONE", "TWO")) shouldBe -1
     }
@@ -608,7 +608,7 @@ class ChainSpec extends UnitSpec {
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
     {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
+      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
       es.indexOfSlice(Every("one", "two")) shouldBe 0;
       es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1
     }
@@ -634,7 +634,7 @@ class ChainSpec extends UnitSpec {
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
     {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
+      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
       es.indexOfSlice(Chain("one", "two")) shouldBe 0;
       es.indexOfSlice(Chain("ONE", "TWO")) shouldBe -1
     }
@@ -710,7 +710,7 @@ class ChainSpec extends UnitSpec {
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
     {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
+      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
       es.lastIndexOf("one") shouldBe 0
       es.lastIndexOf("ONE") shouldBe -1
     }
@@ -737,7 +737,7 @@ class ChainSpec extends UnitSpec {
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
     {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
+      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
       es.lastIndexOfSlice(List("one", "two")) shouldBe 0
       es.lastIndexOfSlice(List("ONE", "TWO")) shouldBe -1
     }
@@ -755,13 +755,13 @@ class ChainSpec extends UnitSpec {
     Chain(1, 2, 3, 4, 5).lastIndexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe -1
 
     val es = Chain("one", "two", "three", "four", "five")
-    es.lastIndexOfSlice(Every("one", "two")) shouldBe 0;
+    es.lastIndexOfSlice(Every("one", "two")) shouldBe 0
     es.lastIndexOfSlice(Every("two", "three"), 0) shouldBe -1
     es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
     {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
+      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
       es.lastIndexOfSlice(Every("one", "two")) shouldBe 0
       es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1
     }
@@ -785,7 +785,7 @@ class ChainSpec extends UnitSpec {
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
     {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
+      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
       es.lastIndexOfSlice(Chain("one", "two")) shouldBe 0
       es.lastIndexOfSlice(Chain("ONE", "TWO")) shouldBe -1
     }
