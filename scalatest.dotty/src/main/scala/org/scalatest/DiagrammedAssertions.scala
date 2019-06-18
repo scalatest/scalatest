@@ -157,9 +157,6 @@ trait DiagrammedAssertions extends Assertions {
   import scala.tasty._
   import scala.quoted._
 
-  inline def (inline x: String) stripMargin : String =
-    ${ org.scalatest.Expectations.stripMarginImpl(x) }
-
   /**
    * Assert that a boolean condition is true.
    * If the condition is <code>true</code>, this method returns normally.
