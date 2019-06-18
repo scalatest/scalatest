@@ -31,7 +31,7 @@ package org.scalatest.prop
   * @param result the value that will be returned by this function
   * @tparam A the type that is returned by this function
   */
-class PrettyFunction0[A](private val result: A) extends (() => A) {
+private[scalatest] class PrettyFunction0[A](private val result: A) extends (() => A) {
   def apply(): A = result
   override def toString = s"() => $result"
   override def hashCode: Int = result.hashCode
@@ -43,7 +43,7 @@ class PrettyFunction0[A](private val result: A) extends (() => A) {
   }
 }
 
-object PrettyFunction0 {
+private[scalatest] object PrettyFunction0 {
   /**
     * Create a [[PrettyFunction0]].
     *

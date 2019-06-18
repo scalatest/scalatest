@@ -47,7 +47,7 @@ import java.lang.Double.{longBitsToDouble, doubleToLongBits}
   *
   * @param seed
   */
-class Randomizer(val seed: Long) { thisRandomizer =>
+private[scalatest] class Randomizer(val seed: Long) { thisRandomizer =>
 
   private[scalatest] lazy val scrambledSeed: Long =  seed
 
@@ -2197,7 +2197,7 @@ class Randomizer(val seed: Long) { thisRandomizer =>
   }
 }
 
-object Randomizer {
+private[scalatest] object Randomizer {
 
   import java.util.concurrent.atomic.AtomicReference
 

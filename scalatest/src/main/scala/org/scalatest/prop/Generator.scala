@@ -134,7 +134,7 @@ import scala.collection.immutable.SortedMap
   *
   * @tparam T the type that this Generator produces
   */
-trait Generator[T] { thisGeneratorOfT =>
+private[scalatest] trait Generator[T] { thisGeneratorOfT =>
 
   /**
     * Prepare a list of edge-case values ("edges") for testing this type.
@@ -497,7 +497,7 @@ trait Generator[T] { thisGeneratorOfT =>
   * Note that this provides `Generator`s for the common Scalactic types, as well as the common standard
   * library ones.
   */
-object Generator {
+private[scalatest] object Generator {
 
   import scala.language.implicitConversions
 

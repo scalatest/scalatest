@@ -34,7 +34,7 @@ import org.scalatest.Resources
   *
   * @tparam T the type that this [[Generator]] produces
   */
-trait HavingLength[T] extends HavingSize[T] {
+private[scalatest] trait HavingLength[T] extends HavingSize[T] {
   /**
     * Create a version of this [[Generator]] that produces values of exactly the specified
     * length.

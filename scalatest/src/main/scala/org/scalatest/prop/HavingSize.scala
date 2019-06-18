@@ -29,7 +29,7 @@ import org.scalactic.anyvals.PosZInt
   *
   * @tparam T the type that this [[Generator]] produces
   */
-trait HavingSize[T] {
+private[scalatest] trait HavingSize[T] {
   /**
     * Create a version of this [[Generator]] that produces values of exactly the specified
     * size.

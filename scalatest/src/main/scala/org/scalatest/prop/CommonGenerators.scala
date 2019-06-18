@@ -86,7 +86,7 @@ import scala.collection.immutable.SortedMap
   *
   * @group Others
   */
-trait CommonGenerators {
+private[scalatest] trait CommonGenerators {
 
   /////////////////////////////////////////////////
   //
@@ -2456,7 +2456,7 @@ trait CommonGenerators {
   * You should not usually need to import this directly, since it is mixed into
   * [[GeneratorDrivenPropertyChecks]] and [[TableDrivenPropertyChecks]].
   */
-object CommonGenerators extends CommonGenerators {
+private[scalatest] object CommonGenerators extends CommonGenerators {
   private val primeNumbers =
     Vector(
       2,     3,     5,     7,    11,    13,    17,    19,    23,    29,

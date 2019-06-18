@@ -27,7 +27,7 @@ import org.scalactic.anyvals._
   *
   * @tparam T A type to choose a value of.
   */
-trait Chooser[T] {
+private[scalatest] trait Chooser[T] {
   /**
     * Choose a value in the given range.
     *
