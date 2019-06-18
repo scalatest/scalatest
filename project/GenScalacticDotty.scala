@@ -160,7 +160,8 @@ object GenScalacticDotty {
         "PrettifierSpec.scala",  // Test failed with java.lang.IllegalAccessException
         "RequirementsSpec.scala",  // Error during macro expansion
         "TolerantEquivalenceSpec.scala",   // Compilation error to be investigated further.
-        "TripleEqualsSpec.for210"  // Old staff, we shall delete this soon.
+        "TripleEqualsSpec.for210",  // Old staff, we shall delete this soon.
+        "FutureSugarSpec.scala"     // instability, occasional timeout in CI
       )) ++
     //copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
     copyDir("scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
