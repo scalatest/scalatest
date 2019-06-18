@@ -149,7 +149,6 @@ object GenScalacticDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
-        "TolerantEquivalenceSpec.scala",   // Compilation error to be investigated further.
         "TripleEqualsSpec.for210",  // Old staff, we shall delete this soon.
         "FutureSugarSpec.scala"     // instability, occasional timeout in CI
       )) ++
