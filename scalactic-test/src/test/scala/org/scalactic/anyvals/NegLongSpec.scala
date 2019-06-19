@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalatest._
 import OptionValues._
 import org.scalactic.Equality
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.DeprecatedGeneratorDrivenPropertyChecks
 
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
@@ -55,7 +55,7 @@ trait NegLongSpecSupport {
 
 }
 
-class NegLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NegLongSpecSupport {
+class NegLongSpec extends FunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks with NegLongSpecSupport {
 
   describe("A NegLong") {
     describe("should offer a from factory method that") {

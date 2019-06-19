@@ -48,7 +48,7 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
         lstGen.shrink(xss, Randomizer.default)._1.toList should not contain xss
       }
       it("should shrink Lists using strategery") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
         val intCanonicals = intCanonicalsIt.toList
@@ -120,7 +120,7 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a list generator whose canonical method uses the canonical method of the underlying T if min is 0 or 1") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
         val intCanonicals = intCanonicalsIt.toList
@@ -132,7 +132,7 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
     }
     describe("where from is 1") {
       it("should offer a list generator whose canonical method uses the canonical method of the underlying T if min is 0 or 1") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
         val intCanonicals = intCanonicalsIt.toList
@@ -180,7 +180,7 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
         lstGen.shrink(xss, Randomizer.default)._1.toList should not contain xss
       }
       it("should shrink Lists using strategery") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
         val intCanonicals = intCanonicalsIt.toList
@@ -252,7 +252,7 @@ class HavingLengthsBetweenSpec extends FunSpec with Matchers {
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a list generator whose canonical method is empty if from is greater than 1") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
         val intCanonicals = intCanonicalsIt.toList

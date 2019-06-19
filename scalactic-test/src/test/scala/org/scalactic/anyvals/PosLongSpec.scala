@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalatest._
 import OptionValues._
 import org.scalactic.Equality
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.DeprecatedGeneratorDrivenPropertyChecks
 
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
@@ -55,7 +55,7 @@ trait PosLongSpecSupport {
 
 }
 
-class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosLongSpecSupport {
+class PosLongSpec extends FunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks with PosLongSpecSupport {
 
   describe("A PosLong") {
     describe("should offer a from factory method that") {

@@ -16,7 +16,7 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS,NATIVE-END
@@ -67,7 +67,7 @@ trait NegZDoubleSpecSupport {
 
 }
 
-class NegZDoubleSpec extends FunSpec with Matchers with PropertyChecks with NegZDoubleSpecSupport {
+class NegZDoubleSpec extends FunSpec with Matchers with DeprecatedPropertyChecks with NegZDoubleSpecSupport {
 
   describe("A NegZDouble") {
     describe("should offer a from factory method that") {

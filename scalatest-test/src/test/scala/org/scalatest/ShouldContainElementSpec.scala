@@ -18,11 +18,11 @@ package org.scalatest
 import FailureMessages._
 import Matchers._
 import org.scalactic.Prettifier
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.CompatParColls.Converters._
 
-class ShouldContainElementSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldContainElementSpec extends FunSpec with DeprecatedPropertyChecks with ReturnsNormallyThrowsAssertion {
 
   private val prettifier = Prettifier.default
 

@@ -20,7 +20,7 @@ import org.scalatest._
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 import org.scalactic.Equality
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.DeprecatedGeneratorDrivenPropertyChecks
 //import org.scalactic.StrictCheckedEquality
 
 import scala.util.{Failure, Success, Try}
@@ -57,7 +57,7 @@ trait NumericCharSpecSupport {
 }
 
 
-class NumericCharSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NumericCharSpecSupport/* with StrictCheckedEquality*/ {
+class NumericCharSpec extends FunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks with NumericCharSpecSupport/* with StrictCheckedEquality*/ {
   describe("A NumericChar") {
     describe("should offer a from factory method that") {
       it("returns Some[NumericChar] if the passed Char is between '0' and '9'") {

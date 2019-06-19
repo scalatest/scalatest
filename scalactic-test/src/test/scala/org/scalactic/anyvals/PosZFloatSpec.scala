@@ -16,7 +16,7 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 import org.scalactic.TypeCheckedTripleEquals
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
@@ -75,7 +75,7 @@ trait PosZFloatSpecSupport {
 
 }
 
-class PosZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with PosZFloatSpecSupport {
+class PosZFloatSpec extends FunSpec with Matchers with DeprecatedPropertyChecks with TypeCheckedTripleEquals with PosZFloatSpecSupport {
 
   describe("A PosZFloat") {
     describe("should offer a from factory method that") {

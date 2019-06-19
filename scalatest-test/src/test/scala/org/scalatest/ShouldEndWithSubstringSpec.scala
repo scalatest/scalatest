@@ -15,11 +15,11 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 
-class ShouldEndWithSubstringSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldEndWithSubstringSpec extends FunSpec with DeprecatedPropertyChecks with ReturnsNormallyThrowsAssertion {
 
   describe("The endWith substring syntax") {
 

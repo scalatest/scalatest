@@ -18,13 +18,13 @@ package org.scalatest
 import FailureMessages._
 import Matchers._
 import org.scalactic.Prettifier
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 import Integer.MIN_VALUE
 import org.scalatest.enablers.Size
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.CompatParColls.Converters._
 
-class ShouldSizeSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldSizeSpec extends FunSpec with DeprecatedPropertyChecks with ReturnsNormallyThrowsAssertion {
 
   private val prettifier = Prettifier.default
 

@@ -15,12 +15,12 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 import org.scalactic.Prettifier
 
-class ShouldBeAnySpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldBeAnySpec extends FunSpec with DeprecatedPropertyChecks with ReturnsNormallyThrowsAssertion {
 
   // Checking for equality with "be"
   describe("The be token") {

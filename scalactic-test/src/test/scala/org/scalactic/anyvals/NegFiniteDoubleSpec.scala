@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalatest._
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS,NATIVE-END
@@ -49,7 +49,7 @@ trait NegFiniteDoubleSpecSupport {
 
 }
 
-class NegFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NegFiniteDoubleSpecSupport {
+class NegFiniteDoubleSpec extends FunSpec with Matchers with DeprecatedPropertyChecks with TypeCheckedTripleEquals with NegFiniteDoubleSpecSupport {
 
   describe("A NegFiniteDouble") {
     describe("should offer a from factory method that") {

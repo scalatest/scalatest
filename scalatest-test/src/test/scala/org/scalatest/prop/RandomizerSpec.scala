@@ -54,7 +54,7 @@ class RandomizerSpec extends FunSpec with Matchers {
     }
 
     it("should offer a chooseInt method that initially produces Int values between from and to") {
-      import GeneratorDrivenPropertyChecks._
+      import DeprecatedGeneratorDrivenPropertyChecks._
       var rnd = Randomizer.default
       forAll { (i: Int, j: Int) =>
         val (k, nextRandomizer) = rnd.chooseInt(i, j)
@@ -67,7 +67,7 @@ class RandomizerSpec extends FunSpec with Matchers {
       }
     }
     it("should offer a chooseLong method that initially produces Long values between from and to") {
-      import GeneratorDrivenPropertyChecks._
+      import DeprecatedGeneratorDrivenPropertyChecks._
       var rnd = Randomizer.default
       forAll { (i: Long, j: Long) =>
         val (k, nextRandomizer) = rnd.chooseLong(i, j)
@@ -118,7 +118,7 @@ class RandomizerSpec extends FunSpec with Matchers {
       ld.distinct shouldNot have size 1
     }
     it("should offer a shuffle method in its companion object that shuffles a list.") {
-      import GeneratorDrivenPropertyChecks._
+      import DeprecatedGeneratorDrivenPropertyChecks._
       var nextRnd = Randomizer.default
       forAll { (xs: List[Int]) =>
         val (shuffled, nr) = Randomizer.shuffle(xs, nextRnd)

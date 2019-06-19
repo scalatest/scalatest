@@ -17,7 +17,7 @@ package org.scalactic.anyvals
 
 import org.scalactic.Equality
 import org.scalatest._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.DeprecatedGeneratorDrivenPropertyChecks
 import OptionValues._
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
@@ -51,7 +51,7 @@ trait NonZeroIntSpecSupport {
 
 }
 
-class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NonZeroIntSpecSupport {
+class NonZeroIntSpec extends FunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks with NonZeroIntSpecSupport {
 
   describe("A NonZeroInt") {
 

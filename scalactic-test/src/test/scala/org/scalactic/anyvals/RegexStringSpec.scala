@@ -24,7 +24,8 @@ import java.util.Locale
 // SKIP-SCALATESTJS,NATIVE-END
 
 
-class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+/*
+class RegexStringSpec extends FunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks {
 
   import prop._
 
@@ -634,4 +635,5 @@ class RegexStringSpec extends FunSpec with Matchers with GeneratorDrivenProperty
     }
   }
 }
+*/
 

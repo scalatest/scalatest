@@ -20,7 +20,7 @@ import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
 
-class PrettyFunction0Spec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class PrettyFunction0Spec extends FunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks {
   describe("A PrettyFunction0") {
     it("should return the constant passed to its constructor") {
       forAll { (i: Int) =>

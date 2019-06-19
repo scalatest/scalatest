@@ -442,7 +442,7 @@ import org.scalatest.enablers.PropCheckerAsserting
  *
  * @author Bill Venners
  */
-trait GeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with Configuration {
+private[org] trait DeprecatedGeneratorDrivenPropertyChecks extends CommonGenerators with Whenever with Configuration {
 
   /**
    * Performs a property check by applying the specified property check function to arguments
@@ -816,7 +816,7 @@ $gens$,
 
   val generatorDrivenPropertyChecksCompanionObjectVerbatimString = """
 
-object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
+private[org] object DeprecatedGeneratorDrivenPropertyChecks extends DeprecatedGeneratorDrivenPropertyChecks
 """
 
   val generatorSuitePreamble = """

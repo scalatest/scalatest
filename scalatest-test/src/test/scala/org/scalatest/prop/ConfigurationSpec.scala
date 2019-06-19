@@ -18,7 +18,7 @@ package org.scalatest.prop
 import org.scalactic.anyvals._
 import org.scalatest._
 
-class ConfigurationSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class ConfigurationSpec extends FunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks {
 
   describe("Configuration.Parameter") {
     implicit val configGen: Generator[Configuration.Parameter] =

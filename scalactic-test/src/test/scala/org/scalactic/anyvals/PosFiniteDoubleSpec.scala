@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalatest._
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS,NATIVE-END
@@ -49,7 +49,7 @@ trait PosFiniteDoubleSpecSupport {
 
 }
 
-class PosFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with PosFiniteDoubleSpecSupport {
+class PosFiniteDoubleSpec extends FunSpec with Matchers with DeprecatedPropertyChecks with TypeCheckedTripleEquals with PosFiniteDoubleSpecSupport {
 
   describe("A PosFiniteDouble") {
     describe("should offer a from factory method that") {

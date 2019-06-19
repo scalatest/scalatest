@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalatest._
 import OptionValues._
 import org.scalactic.TypeCheckedTripleEquals
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS,NATIVE-END
@@ -54,7 +54,7 @@ trait NegFloatSpecSupport {
   }
 }
 
-class NegFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NegFloatSpecSupport {
+class NegFloatSpec extends FunSpec with Matchers with DeprecatedPropertyChecks with TypeCheckedTripleEquals with NegFloatSpecSupport {
 
   describe("A NegFloat") {
     describe("should offer a from factory method that") {

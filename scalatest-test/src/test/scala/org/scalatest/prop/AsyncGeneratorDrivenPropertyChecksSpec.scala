@@ -20,7 +20,7 @@ import org.scalatest.exceptions.TestFailedException
 
 import scala.concurrent.Future
 
-class AsyncGeneratorDrivenPropertyChecksSpec extends AsyncFunSpec with GeneratorDrivenPropertyChecks {
+class AsyncGeneratorDrivenPropertyChecksSpec extends AsyncFunSpec with DeprecatedGeneratorDrivenPropertyChecks {
 
   describe("GeneratorDrivenPropertyChecks") {
 

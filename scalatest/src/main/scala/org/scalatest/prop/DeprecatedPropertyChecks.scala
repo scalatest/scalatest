@@ -95,7 +95,8 @@ package prop
  *
  * @author Bill Venners
  */
-trait PropertyChecks extends TableDrivenPropertyChecks with GeneratorDrivenPropertyChecks
+// TODO: add deprecation annotation 
+private[org] trait DeprecatedPropertyChecks extends TableDrivenPropertyChecks with DeprecatedGeneratorDrivenPropertyChecks
 
 /**
  * Companion object that facilitates the importing of <code>PropertyChecks</code> members as 
@@ -104,5 +105,5 @@ trait PropertyChecks extends TableDrivenPropertyChecks with GeneratorDrivenPrope
  *
  * @author Bill Venners
  */
-object PropertyChecks extends PropertyChecks
+private[org] object DeprecatedPropertyChecks extends DeprecatedPropertyChecks
 

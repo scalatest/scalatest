@@ -128,7 +128,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       a3 shouldEqual b3
     }
     it("should be usable in a forAll") {
-      import GeneratorDrivenPropertyChecks._
+      import DeprecatedGeneratorDrivenPropertyChecks._
       forAll { (i: Int) => 
         i + i shouldEqual i * 2
       }
@@ -139,7 +139,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
     }
     it("should be used at least minSuccessful times in a forAll") {
-      import GeneratorDrivenPropertyChecks._
+      import DeprecatedGeneratorDrivenPropertyChecks._
       var count = 0
       forAll { (i: Int) => 
         count += 1
@@ -158,7 +158,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
     }
     it("should be used at least maxDiscarded times in a forAll") {
-      import GeneratorDrivenPropertyChecks._
+      import DeprecatedGeneratorDrivenPropertyChecks._
       var count = 0
       a [TestFailedException] should be thrownBy {
         forAll { (i: Int) => 
@@ -327,7 +327,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         canonicals.toList shouldBe List(0, 1, -1, 2, -2, 3, -3).map(_.toByte)
       }
       it("should shrink Bytes by repeatedly halving and negating") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         forAll { (b: Byte) =>
           val generator = implicitly[Generator[Byte]]
           val (shrinkIt, _) = generator.shrink(b, Randomizer.default)
@@ -395,7 +395,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         canonicals.toList shouldBe List(0, 1, -1, 2, -2, 3, -3).map(_.toShort)
       }
       it("should shrink Shorts by repeatedly halving and negating") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         forAll { (n: Short) =>
           val generator = implicitly[Generator[Short]]
           val (shrinkIt, _) = generator.shrink(n, Randomizer.default)
@@ -463,7 +463,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         canonicals.toList shouldBe List(0, 1, -1, 2, -2, 3, -3)
       }
       it("should shrink Ints by repeatedly halving and negating") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         forAll { (i: Int) =>
           val generator = implicitly[Generator[Int]]
           val (shrinkIt, _) = generator.shrink(i, Randomizer.default)
@@ -531,7 +531,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         canonicals.toList shouldBe List(0L, 1L, -1L, 2L, -2L, 3L, -3L)
       }
       it("should shrink Longs by repeatedly halving and negating") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         forAll { (n: Long) =>
           val generator = implicitly[Generator[Long]]
           val (shrinkIt, _) = generator.shrink(n, Randomizer.default)
@@ -601,7 +601,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         canonicals(2) should (be >= '0' and be <= '9')
       }
       it("should shrink Chars by trying selected printable characters") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val expectedChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toList
         val generator = implicitly[Generator[Char]]
         forAll { (c: Char) =>
@@ -669,7 +669,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         canonicals.toList shouldBe List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f)
       }
       it("should shrink Floats by dropping the fraction part then repeatedly 'square-rooting' and negating") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         forAll { (f: Float) =>
           val generator = implicitly[Generator[Float]]
           val (shrinkIt, _) = generator.shrink(f, Randomizer.default)
@@ -748,7 +748,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         canonicals.toList shouldBe List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0)
       }
       it("should shrink Doubles by dropping the fraction part then repeatedly 'square-rooting' and negating") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
   // try with -173126.1489439121
         forAll { (d: Double) =>
           val generator = implicitly[Generator[Double]]
@@ -1961,7 +1961,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         canonicals.toList shouldBe List(NonZeroInt(1), NonZeroInt(-1), NonZeroInt(2), NonZeroInt(-2), NonZeroInt(3), NonZeroInt(-3))
       }
       it("should shrink NonZeroInts by repeatedly halving and negating") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         forAll { (i: NonZeroInt) =>
           val generator = implicitly[Generator[NonZeroInt]]
           val (shrinkIt, _) = generator.shrink(i, Randomizer.default)
@@ -2396,7 +2396,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         s5.length shouldBe 100
       }
       it("should shrink Strings using strategery") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         forAll { (s: String) =>
           val generator = implicitly[Generator[String]]
           val (shrinkIt, _) = generator.shrink(s, Randomizer.default)
@@ -2645,7 +2645,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       * @tparam F the collection type we are testing
       */
     def shrinkByStrategery[F[Int] <: GenTraversable[Int]](factory: ColCompatHelper.Factory[Int, F[Int]])(implicit generator: Generator[F[Int]]): Unit = {  
-      import GeneratorDrivenPropertyChecks._
+      import DeprecatedGeneratorDrivenPropertyChecks._
       val intGenerator = Generator.intGenerator
       val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
       val intCanonicals = intCanonicalsIt.toList
@@ -2744,7 +2744,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a list generator whose canonical method uses the canonical method of the underlying T") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
         val intCanonicals = intCanonicalsIt.toList
@@ -2757,7 +2757,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     describe("for Function0s") {
       it("should offer an implicit provider for constant function0's with a pretty toString") {
         val function0s = Generator.function0Generator[Int]
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         forAll (function0s) { (f: () => Int) =>
           val constantResult = f()
           import org.scalactic.TimesOnInt._
@@ -2786,7 +2786,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       it("should offer an implicit provider for constant function0's that returns the shrinks of the result type") {
         val ints = Generator.intGenerator
         val function0s = Generator.function0Generator[Int]
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         forAll (ints) { (i: Int) =>
           val (intShrinksIt, rnd1) = ints.shrink(i, Randomizer.default)
           val (function0ShrinksIt, _) = function0s.shrink(() => i, rnd1)
@@ -2829,7 +2829,7 @@ class GeneratorSpec extends FunSpec with Matchers {
     }
     describe("for Int => Ints") {
       it("should have toString and simpleName that doesn't include org.scalatest.prop.valueOf") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         forAll { (f: Int => Int) =>
           f.toString should startWith ("(i: Int) => ")
           f.toString should not include "org.scalatest.prop.valueOf"
@@ -2872,7 +2872,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.vectorGenerator[Int]
         implicit val sGen = aGen.havingSize(PosZInt(3))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { v: Vector[Int] =>
           v.size shouldBe 3
@@ -2882,7 +2882,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.vectorGenerator[Int]
         implicit val sGen = aGen.havingLength(PosZInt(3))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { v: Vector[Int] =>
           v.length shouldBe 3
@@ -2892,7 +2892,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.vectorGenerator[Int]
         implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { v: Vector[Int] =>
           v.size should (be >= 3 and be <= 5)
@@ -2912,7 +2912,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.vectorGenerator[Int]
         implicit val sGen = aGen.havingLengthsBetween(PosZInt(3), PosZInt(5))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { v: Vector[Int] =>
           v.length should (be >= 3 and be <= 5)
@@ -2932,7 +2932,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.vectorGenerator[Int]
         implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { v: Vector[Int] =>
           v.size shouldBe 5
@@ -2942,7 +2942,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.vectorGenerator[Int]
         implicit val sGen = aGen.havingLengthsDeterminedBy(s => SizeParam(5, 0, 5))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { v: Vector[Int] =>
           v.length shouldBe 5
@@ -2982,7 +2982,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Vector generator whose canonical method uses the canonical method of the underlying T") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
         val intCanonicals = intCanonicalsIt.toVector
@@ -3029,7 +3029,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.setGenerator[Int]
         implicit val sGen = aGen.havingSize(PosZInt(3))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { s: Set[Int] =>
           s.size shouldBe 3
@@ -3039,7 +3039,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.setGenerator[Int]
         implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { s: Set[Int] =>
           s.size should (be >= 3 and be <= 5)
@@ -3059,7 +3059,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.setGenerator[Int]
         implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { s: Set[Int] =>
           s.size shouldBe 5
@@ -3101,7 +3101,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Set generator whose canonical method uses the canonical method of the underlying T") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
         val intCanonicals = intCanonicalsIt.toList
@@ -3148,7 +3148,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.sortedSetGenerator[Int]
         implicit val sGen = aGen.havingSize(PosZInt(3))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { s: SortedSet[Int] =>
           s.size shouldBe 3
@@ -3158,7 +3158,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.sortedSetGenerator[Int]
         implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { s: SortedSet[Int] =>
           s.size should (be >= 3 and be <= 5)
@@ -3178,7 +3178,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.sortedSetGenerator[Int]
         implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { s: SortedSet[Int] =>
           s.size shouldBe 5
@@ -3188,7 +3188,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       it("should shrink SortedSets using strategery") {
         // Due to what I can only assume is an oversight in the standard library, SortedSet's
         // companion object is not a GenericCompanion, so we can't use the common function here:
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val generator = implicitly[Generator[SortedSet[Int]]]
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
@@ -3258,7 +3258,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Set generator whose canonical method uses the canonical method of the underlying T") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
         val intCanonicals = intCanonicalsIt.toList
@@ -3305,7 +3305,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.mapGenerator[Int, String]
         implicit val sGen = aGen.havingSize(PosZInt(3))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { s: Map[Int, String] =>
           s.size shouldBe 3
@@ -3315,7 +3315,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.mapGenerator[Int, String]
         implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { s: Map[Int, String] =>
           s.size should (be >= 3 and be <= 5)
@@ -3335,7 +3335,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.mapGenerator[Int, String]
         implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { s: Map[Int, String] =>
           s.size shouldBe 5
@@ -3343,7 +3343,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
 
       it("should shrink Maps using strategery") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val generator = implicitly[Generator[Map[PosInt, Int]]]
         val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
         val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
@@ -3418,7 +3418,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Map generator whose canonical method uses the canonical method of the underlying types") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
         val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
         val tupleCanonicals = tupleCanonicalsIt.toList
@@ -3465,7 +3465,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.sortedMapGenerator[Int, String]
         implicit val sGen = aGen.havingSize(PosZInt(3))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { s: SortedMap[Int, String] =>
           s.size shouldBe 3
@@ -3475,7 +3475,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.sortedMapGenerator[Int, String]
         implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { s: SortedMap[Int, String] =>
           s.size should (be >= 3 and be <= 5)
@@ -3495,7 +3495,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val aGen= Generator.sortedMapGenerator[Int, String]
         implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
 
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
 
         forAll { s: SortedMap[Int, String] =>
           s.size shouldBe 5
@@ -3503,7 +3503,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
 
       it("should shrink SortedMaps using strategery") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val generator = implicitly[Generator[SortedMap[PosInt, Int]]]
         val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
         val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
@@ -3578,7 +3578,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a SortedMap generator whose canonical method uses the canonical method of the underlying types") {
-        import GeneratorDrivenPropertyChecks._
+        import DeprecatedGeneratorDrivenPropertyChecks._
         val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
         val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
         val tupleCanonicals = tupleCanonicalsIt.toList

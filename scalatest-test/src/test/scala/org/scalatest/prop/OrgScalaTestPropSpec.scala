@@ -22,7 +22,7 @@ import org.scalatest.exceptions.TestFailedException
 import scala.annotation.tailrec
 import org.scalatest.Resources
 
-class OrgScalaTestPropSpec extends WordSpec with Matchers with GeneratorDrivenPropertyChecks {
+class OrgScalaTestPropSpec extends WordSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks {
 
   ///////////////////////////////
   //

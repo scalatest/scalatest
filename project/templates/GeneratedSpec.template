@@ -1,10 +1,10 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.DeprecatedGeneratorDrivenPropertyChecks
 import scala.util.Try
 
-class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues with GeneratorDrivenPropertyChecks with $typeName$SpecSupport {
+class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues with DeprecatedGeneratorDrivenPropertyChecks with $typeName$SpecSupport {
 
   def areEqualForgivingNaNs(x: AnyVal, y: AnyVal): Assertion = {
     def areEqualDoublesForgivingNaNs(xDouble: Double, yDouble: Double): Assertion = {

@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalatest._
 import OptionValues._
 import org.scalactic.Equality
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.DeprecatedGeneratorDrivenPropertyChecks
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 
@@ -55,7 +55,7 @@ trait NonZeroLongSpecSupport {
 
 }
 
-class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NonZeroLongSpecSupport {
+class NonZeroLongSpec extends FunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks with NonZeroLongSpecSupport {
 
   describe("A NonZeroLong") {
     describe("should offer a from factory method that") {

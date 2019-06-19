@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalatest._
 import OptionValues._
 import org.scalactic.TypeCheckedTripleEquals
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS,NATIVE-END
@@ -63,7 +63,7 @@ trait FiniteFloatSpecSupport {
   }
 }
 
-class FiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with FiniteFloatSpecSupport {
+class FiniteFloatSpec extends FunSpec with Matchers with DeprecatedPropertyChecks with TypeCheckedTripleEquals with FiniteFloatSpecSupport {
 
   describe("A FiniteFloat") {
     describe("should offer a from factory method that") {

@@ -18,13 +18,13 @@ package org.scalatest.enablers
 import org.scalatest._
 import org.scalactic.Equality
 import scala.collection.immutable
-import prop.GeneratorDrivenPropertyChecks
+import prop.DeprecatedGeneratorDrivenPropertyChecks
 import org.scalactic.anyvals.PosZInt
 import exceptions.TestFailedException
 import OptionValues._
 import scala.concurrent.Future
 
-class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with GeneratorDrivenPropertyChecks with LineNumberHelper {
+class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks with LineNumberHelper {
 
   describe("PropCheckerAsserting") {
     it("The exception reported by an async forAll's Future should include the exception thrown by the property function evaluation as its cause") {

@@ -17,7 +17,7 @@ package org.scalactic.anyvals
 
 import org.scalactic.Equality
 import org.scalatest._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.DeprecatedGeneratorDrivenPropertyChecks
 import OptionValues._
 
 import scala.util.{Failure, Success, Try}
@@ -53,7 +53,7 @@ trait NegIntSpecSupport {
 
 }
 
-class NegIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NegIntSpecSupport {
+class NegIntSpec extends FunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks with NegIntSpecSupport {
 
   describe("A NegInt") {
 

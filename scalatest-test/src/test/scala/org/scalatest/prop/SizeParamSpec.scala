@@ -21,7 +21,7 @@ import org.scalactic.anyvals._
 /*
 It looks like sizeRange = maxSize - minSize
 */
-class SizeParamSpec extends WordSpec with Matchers with PropertyChecks {
+class SizeParamSpec extends WordSpec with Matchers with DeprecatedPropertyChecks {
   "A SizeParam" should {
     "have a minimum, range, and size" in {
       val sp = SizeParam(33, 20, 35)

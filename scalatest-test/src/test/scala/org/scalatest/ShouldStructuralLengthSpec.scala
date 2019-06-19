@@ -16,13 +16,13 @@
 
 package org.scalatest
 
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 import Integer.MIN_VALUE
 import Matchers._
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
 
-class ShouldStructuralLengthSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldStructuralLengthSpec extends FunSpec with DeprecatedPropertyChecks with ReturnsNormallyThrowsAssertion {
 
   private val prettifier = Prettifier.default
   

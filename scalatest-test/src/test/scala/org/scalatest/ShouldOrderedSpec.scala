@@ -15,13 +15,13 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 import Integer.{MAX_VALUE, MIN_VALUE}
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 import org.scalactic.anyvals.PosInt
 
-class ShouldOrderedSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldOrderedSpec extends FunSpec with DeprecatedPropertyChecks with ReturnsNormallyThrowsAssertion {
 
   // TODO: Fix these tests. They are wasting a bunch of time with discarded values
   implicit override val generatorDrivenConfig = PropertyCheckConfiguration(maxDiscardedFactor = 500.0)

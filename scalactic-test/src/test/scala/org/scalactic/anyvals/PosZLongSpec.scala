@@ -19,7 +19,7 @@ import org.scalatest._
 import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.DeprecatedGeneratorDrivenPropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS,NATIVE-END
@@ -58,7 +58,7 @@ trait PosZLongSpecSupport {
 
 }
 
-class PosZLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosZLongSpecSupport {
+class PosZLongSpec extends FunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks with PosZLongSpecSupport {
 
   describe("A PosZLong") {
     describe("should offer a from factory method that") {

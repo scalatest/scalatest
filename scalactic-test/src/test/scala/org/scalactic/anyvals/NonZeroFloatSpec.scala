@@ -18,7 +18,7 @@ package org.scalactic.anyvals
 import org.scalatest._
 import OptionValues._
 import org.scalactic.TypeCheckedTripleEquals
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS,NATIVE-END
@@ -55,7 +55,7 @@ trait NonZeroFloatSpecSupport {
   }
 }
 
-class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroFloatSpecSupport {
+class NonZeroFloatSpec extends FunSpec with Matchers with DeprecatedPropertyChecks with TypeCheckedTripleEquals with NonZeroFloatSpecSupport {
 
   // Float on either side should widen correctly.
   def areEqualForgivingNaNs(x: Double, y: Double): Assertion = {

@@ -18,12 +18,12 @@ package org.scalatest.enablers
 import org.scalatest._
 import org.scalactic.Equality
 import scala.collection.immutable
-import prop.GeneratorDrivenPropertyChecks
+import prop.DeprecatedGeneratorDrivenPropertyChecks
 import org.scalactic.anyvals.PosZInt
 import exceptions.TestFailedException
 import OptionValues._
 
-class PropCheckerAssertingSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with LineNumberHelper {
+class PropCheckerAssertingSpec extends FunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks with LineNumberHelper {
 
   describe("PropCheckerAsserting") {
     it("The exception thrown by forAll should include the exception thrown by the property function evaluation as its cause") {

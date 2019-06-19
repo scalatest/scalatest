@@ -16,7 +16,7 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 import org.scalactic.TypeCheckedTripleEquals
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
@@ -75,7 +75,7 @@ trait NegZFiniteFloatSpecSupport {
 
 }
 
-class NegZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NegZFiniteFloatSpecSupport {
+class NegZFiniteFloatSpec extends FunSpec with Matchers with DeprecatedPropertyChecks with TypeCheckedTripleEquals with NegZFiniteFloatSpecSupport {
 
   describe("A NegZFiniteFloat") {
     describe("should offer a from factory method that") {

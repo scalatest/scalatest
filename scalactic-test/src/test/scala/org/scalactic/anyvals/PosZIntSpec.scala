@@ -19,7 +19,7 @@ import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import org.scalatest._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.prop.DeprecatedGeneratorDrivenPropertyChecks
 import scala.collection.mutable.WrappedArray
 import OptionValues._
 
@@ -55,7 +55,7 @@ trait PosZIntSpecSupport {
 
 }
 
-class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosZIntSpecSupport {
+class PosZIntSpec extends FunSpec with Matchers with DeprecatedGeneratorDrivenPropertyChecks with PosZIntSpecSupport {
 
   describe("A PosZInt") {
     describe("should offer a from factory method that") {

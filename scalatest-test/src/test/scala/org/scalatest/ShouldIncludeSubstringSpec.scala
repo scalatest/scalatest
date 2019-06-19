@@ -15,11 +15,11 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 
-class ShouldIncludeSubstringSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldIncludeSubstringSpec extends FunSpec with DeprecatedPropertyChecks with ReturnsNormallyThrowsAssertion {
 
   describe("The include substring syntax") {
 

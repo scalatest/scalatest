@@ -16,9 +16,9 @@
 package org.scalatest.events
 
 import org.scalatest._
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.DeprecatedPropertyChecks
 
-class OrdinalSpec extends FunSpec with Matchers with PropertyChecks {
+class OrdinalSpec extends FunSpec with Matchers with DeprecatedPropertyChecks {
 
   describe("An Ordinal") {
 
