@@ -19,6 +19,25 @@ import scala.quoted._
 import scala.tasty._
 
 object BooleanMacro {
+  private val logicOperators = Set("&&", "||", "&", "|")
+
+  private val supportedBinaryOperations =
+    Set(
+      "==",
+      "!=",
+      "===",
+      "!==",
+      "<",
+      ">",
+      ">=",
+      "<=",
+      "startsWith",
+      "endsWith",
+      "contains",
+      "eq",
+      "ne",
+      "exists") ++ logicOperators
+
   def parse(condition: Expr[Boolean], prettifier: Expr[Prettifier])(implicit refl: Reflection): Expr[Bool] = {
     import refl._
     import util._
@@ -78,7 +97,7 @@ object BooleanMacro {
       case Apply(sel @ Select(lhs, op), rhs :: Nil) =>
         def binaryDefault =
           if (isByNameMethodType(sel.tpe)) defaultCase
-          else
+          else if (supportedBinaryOperations.contains(op))
             let(lhs) { left =>
               let(rhs) { right =>
                 val app = left.select(sel.symbol).appliedTo(right)
@@ -91,6 +110,7 @@ object BooleanMacro {
                 }
               }
             }.seal.cast[Bool]
+          else defaultCase
 
         op match {
           case "||" =>
