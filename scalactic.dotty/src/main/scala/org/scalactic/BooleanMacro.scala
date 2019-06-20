@@ -33,6 +33,33 @@ object BooleanMacro {
       case _ => false
     }
 
+    // use in `exists(_ == e)` or `exists(e == _)`
+    //
+    // Note: Scala2 implementation implicitly assumes `e` is side effect free,
+    //       we do the same. A better approach would be to check `e` is Ident or
+    //       Literal.
+    //
+    // {
+    //   def $anonfun(_$12: Int): Boolean = _$12.==(2)
+    //   closure($anonfun)
+    // }
+    object AnonFunction {
+      def unapply(t: Term): Option[Term] = t match {
+        case Block(
+          ddef @
+            DefDef(_, Nil, (ValDef(name, _, _) :: Nil) :: Nil, _,
+              Some(Apply(Select(lhs, "=="), rhs :: Nil))
+            ) :: Nil,
+          clos
+        ) if (clos.tpe.isFunctionType) => // walkaround: https://github.com/lampepfl/dotty/issues/6720
+          (lhs, rhs) match {
+            case (Ident(refName), _) if refName == name => Some(rhs)
+            case (_, Ident(refName)) if refName == name => Some(lhs)
+            case _ => None
+          }
+        case _ => None
+      }
+    }
 
     condition.unseal.underlyingArgument match {
       case Apply(sel @ Select(Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil) =>
@@ -114,6 +141,21 @@ object BooleanMacro {
 
               case _ =>
                 binaryDefault
+            }
+          case "exists" =>
+            rhs match {
+              case AnonFunction(rhsInner) => // see the assumption for `rhsInner` in `AnonFunction`
+                let(lhs) { left =>
+                  val app = left.select(sel.symbol).appliedTo(rhs)
+                  let(app) { result =>
+                    val l = left.seal
+                    val r = rhsInner.seal
+                    val res = result.seal.cast[Boolean]
+                    val code = '{ Bool.existsMacroBool($l, $r, $res, $prettifier) }
+                    code.unseal
+                  }
+                }.seal.cast[Bool]
+              case _ => defaultCase
             }
           case _ =>
             binaryDefault

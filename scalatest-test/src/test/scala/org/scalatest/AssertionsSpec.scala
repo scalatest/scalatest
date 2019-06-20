@@ -1623,7 +1623,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
-    // SKIP-DOTTY-START
     it("should do nothing when is used to check l1.exists(_ == 3)") {
       assert(l1.exists(_ == 3))
     }
@@ -1650,7 +1649,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.exists(_ == 5)") {
       assert(!l1.exists(_ == 5))
@@ -1659,8 +1657,7 @@ class AssertionsSpec extends AnyFunSpec {
     it("should do nothing when is used to check !l1.exists(5 == _)") {
       assert(!l1.exists(5 == _))
     }
-    // SKIP-DOTTY-START
-    // TODO: better handle exists
+
     it("should throw TestFailedException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
       val e = intercept[TestFailedException] {
         assert(!l1.exists(_ == 3))
@@ -1679,6 +1676,8 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
+    // different printing of anonymous functions
     it("should throw TestFailedException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[TestFailedException] {
         assert(l1.exists(_ > 3))
@@ -1705,6 +1704,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should throw TestFailedException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[TestFailedException] {
@@ -1714,7 +1714,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     def woof(f: => Unit) = "woof"
     def meow(x: Int = 0, y: Int = 3) = "meow"
@@ -4549,8 +4548,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
-    // SKIP-DOTTY-START
-    // missing support for exists
     it("should do nothing when is used to check l1.exists(_ == 3)") {
       assume(l1.exists(_ == 3))
     }
@@ -4603,6 +4600,8 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
+    // different printing of anonymous function
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[TestCanceledException] {
         assume(l1.exists(_ > 3))
@@ -4629,6 +4628,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should throw TestCanceledException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[TestCanceledException] {
@@ -4638,7 +4638,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     def woof(f: => Unit) = "woof"
     def meow(x: Int = 0, y: Int = 3) = "meow"
@@ -6012,8 +6011,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
-    // SKIP-DOTTY-START
-    // missing support for exists
     it("should do nothing when is used to check l1.exists(_ == 3)") {
       assume(l1.exists(_ == 3), ", dude")
     }
@@ -6066,6 +6063,8 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
+    // different printing for anonymous functions
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[TestCanceledException] {
         assume(l1.exists(_ > 3), ", dude")
@@ -6092,6 +6091,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should throw TestCanceledException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[TestCanceledException] {
@@ -6101,7 +6101,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     def woof(f: => Unit) = "woof"
     def meow(x: Int = 0, y: Int = 3) = "meow"
