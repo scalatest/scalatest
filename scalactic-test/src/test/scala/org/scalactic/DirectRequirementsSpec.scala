@@ -878,8 +878,6 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       org.scalactic.Requirements.require(s4.isEmpty)
     }
 
-    // SKIP-DOTTY-START
-    // TODO: missing support for `.isEmpty`, `.length`, `.size`, `.exists`, `.isInstanceOf`
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3.isEmpty") {
       val e = intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(s3.isEmpty)
@@ -979,12 +977,15 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       org.scalactic.Requirements.require(l1.isInstanceOf[List[Int]])
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(s1.isInstanceOf[List[Int]])
       }
       assert(e.getMessage == wasNotInstanceOf(s1, "scala.List"))
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       org.scalactic.Requirements.require(date.isInstanceOf[Date])
@@ -1012,12 +1013,15 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       org.scalactic.Requirements.require(!s1.isInstanceOf[List[Int]])
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(!l1.isInstanceOf[List[Int]])
       }
       assert(e.getMessage == wasInstanceOf(l1, "scala.List"))
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       org.scalactic.Requirements.require(!l1.isInstanceOf[Date])
@@ -1162,6 +1166,8 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       assert(e.getMessage == contained(l1, 3))
     }
 
+    // SKIP-DOTTY-START
+    // different printing of anonymous functions
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(l1.exists(_ > 3))
@@ -1175,6 +1181,7 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       }
       assert(e.getMessage == wasFalse("l3.exists(((x$7: String) => x$7.isEmpty()))"))
     }
+    // SKIP-DOTTY-END
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[IllegalArgumentException] {
@@ -1182,7 +1189,6 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       }
       assert(e.getMessage == wasFalse("ci1.exists(321)"))
     }
-    // SKIP-DOTTY-END
 
     def woof(f: => Unit) = "woof"
     def meow(x: Int = 0, y: Int = 3) = "meow"
@@ -2035,8 +2041,6 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       org.scalactic.Requirements.require(s4.isEmpty, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // TODO: missing support for `.isEmpty`, `.length`, `.size`, `.exists`, `.isInstanceOf`
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3.isEmpty") {
       val e = intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(s3.isEmpty, ", dude")
@@ -2136,12 +2140,15 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       org.scalactic.Requirements.require(l1.isInstanceOf[List[Int]], ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(s1.isInstanceOf[List[Int]], ", dude")
       }
       assert(e.getMessage == wasNotInstanceOf(s1, "scala.List") + ", dude")
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       org.scalactic.Requirements.require(date.isInstanceOf[Date], ", dude")
@@ -2169,12 +2176,15 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       org.scalactic.Requirements.require(!s1.isInstanceOf[List[Int]], ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(!l1.isInstanceOf[List[Int]], ", dude")
       }
       assert(e.getMessage == wasInstanceOf(l1, "scala.List") + ", dude")
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       org.scalactic.Requirements.require(!l1.isInstanceOf[Date], ", dude")
@@ -2319,6 +2329,8 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       assert(e.getMessage == contained(l1, 3) + ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of anonymous functions
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(l1.exists(_ > 3), ", dude")
@@ -3152,8 +3164,6 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       org.scalactic.Requirements.requireState(s4.isEmpty)
     }
 
-    // SKIP-DOTTY-START
-    // TODO: missing support for `.isEmpty`, `.length`, `.size`, `.exists`, `.isInstanceOf`
     it("should throw IllegalStateException with correct message and stack depth when is used to check s3.isEmpty") {
       val e = intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(s3.isEmpty)
@@ -3253,12 +3263,15 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       org.scalactic.Requirements.requireState(l1.isInstanceOf[List[Int]])
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalStateException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(s1.isInstanceOf[List[Int]])
       }
       assert(e.getMessage == wasNotInstanceOf(s1, "scala.List"))
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       org.scalactic.Requirements.requireState(date.isInstanceOf[Date])
@@ -3286,12 +3299,15 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       org.scalactic.Requirements.requireState(!s1.isInstanceOf[List[Int]])
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(!l1.isInstanceOf[List[Int]])
       }
       assert(e.getMessage == wasInstanceOf(l1, "scala.List"))
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       org.scalactic.Requirements.requireState(!l1.isInstanceOf[Date])
@@ -3436,6 +3452,8 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       assert(e.getMessage == contained(l1, 3))
     }
 
+    // SKIP-DOTTY-START
+    // different printing of anonymous functions
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(l1.exists(_ > 3))
@@ -3449,6 +3467,7 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       }
       assert(e.getMessage == wasFalse("l3.exists(((x$19: String) => x$19.isEmpty()))"))
     }
+    // SKIP-DOTTY-END
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[IllegalStateException] {
@@ -3456,7 +3475,6 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       }
       assert(e.getMessage == wasFalse("ci1.exists(321)"))
     }
-    // SKIP-DOTTY-END
 
     def woof(f: => Unit) = "woof"
     def meow(x: Int = 0, y: Int = 3) = "meow"
@@ -4309,8 +4327,6 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       org.scalactic.Requirements.requireState(s4.isEmpty, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // TODO: missing support for `.isEmpty`, `.length`, `.size`, `.exists`, `.isInstanceOf`
     it("should throw IllegalStateException with correct message and stack depth when is used to check s3.isEmpty") {
       val e = intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(s3.isEmpty, ", dude")
@@ -4410,12 +4426,15 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       org.scalactic.Requirements.requireState(l1.isInstanceOf[List[Int]], ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalStateException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(s1.isInstanceOf[List[Int]], ", dude")
       }
       assert(e.getMessage == wasNotInstanceOf(s1, "scala.List") + ", dude")
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       org.scalactic.Requirements.requireState(date.isInstanceOf[Date], ", dude")
@@ -4443,12 +4462,15 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       org.scalactic.Requirements.requireState(!s1.isInstanceOf[List[Int]], ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(!l1.isInstanceOf[List[Int]], ", dude")
       }
       assert(e.getMessage == wasInstanceOf(l1, "scala.List") + ", dude")
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       org.scalactic.Requirements.requireState(!l1.isInstanceOf[Date], ", dude")
@@ -4593,6 +4615,8 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       assert(e.getMessage == contained(l1, 3) + ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of anonymous functions
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(l1.exists(_ > 3), ", dude")
@@ -4606,6 +4630,7 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       }
       assert(e.getMessage == wasFalse("l3.exists(((x$25: String) => x$25.isEmpty()))") + ", dude")
     }
+    // SKIP-DOTTY-END
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[IllegalStateException] {
@@ -4613,7 +4638,6 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
       }
       assert(e.getMessage == wasFalse("ci1.exists(321)") + ", dude")
     }
-    // SKIP-DOTTY-END
 
     def woof(f: => Unit) = "woof"
     def meow(x: Int = 0, y: Int = 3) = "meow"
