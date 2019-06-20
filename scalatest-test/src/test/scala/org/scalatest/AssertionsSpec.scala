@@ -903,7 +903,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    
+
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
       assert({ println("hi"); b == 5} && a == 3)
     }
@@ -958,7 +958,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(s1 startsWith "hi")
       assert(s1.startsWith("hi"))
     }
-    
+
     it("should throw TestFailedException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
       val e1 = intercept[TestFailedException] {
         assert(s2 startsWith "hi")
@@ -1064,7 +1064,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
-    // SKIP-DOTTY-START
     it("should do nothing when is used to check s3 contains \"hi\"") {
       assert(s3 contains "hi")
       assert(s3.contains("hi"))
@@ -1237,7 +1236,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    
+
     it("should do nothing when is used to check ci1 eq ci3") {
       assert(ci1 eq ci3)
       assert(ci1.eq(ci3))
@@ -1427,6 +1426,8 @@ class AssertionsSpec extends AnyFunSpec {
       assert(l1.isInstanceOf[List[Int]])
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw TestFailedException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[TestFailedException] {
         assert(s1.isInstanceOf[List[Int]])
@@ -1435,6 +1436,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       assert(date.isInstanceOf[Date])
@@ -1466,6 +1468,8 @@ class AssertionsSpec extends AnyFunSpec {
       assert(!s1.isInstanceOf[List[Int]])
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw TestFailedException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[TestFailedException] {
         assert(!l1.isInstanceOf[List[Int]])
@@ -1474,6 +1478,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       assert(!l1.isInstanceOf[Date])
@@ -1618,6 +1623,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
     it("should do nothing when is used to check l1.exists(_ == 3)") {
       assert(l1.exists(_ == 3))
     }
@@ -1743,6 +1749,7 @@ class AssertionsSpec extends AnyFunSpec {
     }
 
     // SKIP-DOTTY-START
+    // ambiguous implicits
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
@@ -2364,7 +2371,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    
+
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
       assert({ println("hi"); b == 5} && a == 3, ", dude")
     }
@@ -2525,7 +2532,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
-    // SKIP-DOTTY-START
     it("should do nothing when is used to check s3 contains \"hi\"") {
       assert(s3 contains "hi", ", dude")
       assert(s3.contains("hi"), ", dude")
@@ -2888,6 +2894,8 @@ class AssertionsSpec extends AnyFunSpec {
       assert(l1.isInstanceOf[List[Int]], ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw TestFailedException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[TestFailedException] {
         assert(s1.isInstanceOf[List[Int]], ", dude")
@@ -2896,6 +2904,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       assert(date.isInstanceOf[Date], ", dude")
@@ -2927,6 +2936,8 @@ class AssertionsSpec extends AnyFunSpec {
       assert(!s1.isInstanceOf[List[Int]], ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw TestFailedException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[TestFailedException] {
         assert(!l1.isInstanceOf[List[Int]], ", dude")
@@ -2935,6 +2946,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       assert(!l1.isInstanceOf[Date], ", dude")
@@ -3079,6 +3091,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
     it("should do nothing when is used to check l1.exists(_ == 3)") {
       assert(l1.exists(_ == 3), ", dude")
     }
@@ -3203,6 +3216,7 @@ class AssertionsSpec extends AnyFunSpec {
     }
 
     // SKIP-DOTTY-START
+    // ambiguous implicits
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
@@ -3392,7 +3406,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
-    
+
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
       val e = intercept[TestCanceledException] {
         assume(3 != a)
@@ -3815,7 +3829,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    
+
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
       assume({ println("hi"); b == 5} && a == 3)
     }
@@ -3833,7 +3847,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    
+
     it("should preserve side effects when Apply with single argument is passed in") {
       assume(neverRuns1(sys.error("Sad times 1")))
     }
@@ -3886,7 +3900,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    
+
     it("should do nothing when is used to check ci1 startsWith 1") {
       assume(ci1 startsWith 1)
       assume(ci1.startsWith(1))
@@ -3907,7 +3921,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    
+
     it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
       assume(!s2.startsWith("hi"))
     }
@@ -3920,7 +3934,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    
+
     it("should do nothing when is used to check s2 endsWith \"hi\"") {
       assume(s2 endsWith "hi")
       assume(s2.endsWith("hi"))
@@ -3941,7 +3955,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    
+
     it("should do nothing when is used to check ci2 endsWith 1") {
       assume(ci2 endsWith 1)
       assume(ci2.endsWith(1))
@@ -3962,7 +3976,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    
+
     it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
       assume(!s1.endsWith("hi"))
     }
@@ -3975,14 +3989,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    
+
     it("should do nothing when is used to check s3 contains \"hi\"") {
       assume(s3 contains "hi")
       assume(s3.contains("hi"))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s3 contains \"hello\"") {
       val e1 = intercept[TestCanceledException] {
         assume(s3 contains "hello")
@@ -3998,15 +4010,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check ci2 contains 2") {
       assume(ci2 contains 2)
       assume(ci2.contains(2))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 contains 5") {
       val e1 = intercept[TestCanceledException] {
         assume(ci1 contains 5)
@@ -4022,14 +4031,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !s1.contains(\"hello\")") {
       assume(!s3.contains("hello"))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
       val e1 = intercept[TestCanceledException] {
         assume(!s3.contains("hi"))
@@ -4038,15 +4044,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check l1 contains 2") {
       assume(l1 contains 2)
       assume(l1.contains(2))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1 contains 5") {
       val e1 = intercept[TestCanceledException] {
         assume(l1 contains 5)
@@ -4062,15 +4065,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !(l1 contains 5)") {
       assume(!(l1 contains 5))
       assume(!l1.contains(5))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1 contains 2)") {
       val e1 = intercept[TestCanceledException] {
         assume(!(l1 contains 2))
@@ -4086,15 +4086,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check m1 contains 2") {
       assume(m1 contains 2)
       assume(m1.contains(2))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check m1 contains 5") {
       val e1 = intercept[TestCanceledException] {
         assume(m1 contains 5)
@@ -4110,15 +4107,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !(m1 contains 5)") {
       assume(!(m1 contains 5))
       assume(!m1.contains(5))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !(m1 contains 2)") {
       val e1 = intercept[TestCanceledException] {
         assume(!(m1 contains 2))
@@ -4134,15 +4128,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check ct1 contains 8") {
       assume(ct1 contains 8)
       assume(ct1.contains(8))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check ct1 contains 5") {
       val e1 = intercept[TestCanceledException] {
         assume(ct1 contains 5)
@@ -4158,14 +4149,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !ct1.contains(5)") {
       assume(!ct1.contains(5))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !ct1.contains(8)") {
       val e1 = intercept[TestCanceledException] {
         assume(!ct1.contains(8))
@@ -4174,15 +4162,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check ci1 eq ci3") {
       assume(ci1 eq ci3)
       assume(ci1.eq(ci3))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 eq ci2") {
       val e1 = intercept[TestCanceledException] {
         assume(ci1 eq ci2)
@@ -4198,14 +4183,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !ci1.eq(ci2)") {
       assume(!ci1.eq(ci2))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
       val e = intercept[TestCanceledException] {
         assume(!ci1.eq(ci3))
@@ -4214,15 +4196,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check ci1 ne ci2") {
       assume(ci1 ne ci2)
       assume(ci1.ne(ci2))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 ne ci3") {
       val e1 = intercept[TestCanceledException] {
         assume(ci1 ne ci3)
@@ -4238,14 +4217,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !ci1.ne(ci3)") {
       assume(!ci1.ne(ci3))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
       val e = intercept[TestCanceledException] {
         assume(!ci1.ne(ci2))
@@ -4254,14 +4230,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check s4.isEmpty") {
       assume(s4.isEmpty)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s3.isEmpty") {
       val e = intercept[TestCanceledException] {
         assume(s3.isEmpty)
@@ -4270,14 +4243,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !s3.isEmpty") {
       assume(!s3.isEmpty)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !s4.isEmpty") {
       val e = intercept[TestCanceledException] {
         assume(!s4.isEmpty)
@@ -4286,14 +4256,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check l2.isEmpty") {
       assume(l2.isEmpty)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isEmpty") {
       val e = intercept[TestCanceledException] {
         assume(l1.isEmpty)
@@ -4302,14 +4269,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isEmpty") {
       assume(!l1.isEmpty)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !l2.isEmpty") {
       val e = intercept[TestCanceledException] {
         assume(!l2.isEmpty)
@@ -4318,14 +4282,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check s3.nonEmpty") {
       assume(s3.nonEmpty)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s4.nonEmpty") {
       val e = intercept[TestCanceledException] {
         assume(s4.nonEmpty)
@@ -4334,14 +4295,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !s4.nonEmpty") {
       assume(!s4.nonEmpty)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !s3.nonEmpty") {
       val e = intercept[TestCanceledException] {
         assume(!s3.nonEmpty)
@@ -4350,14 +4308,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check l1.nonEmpty") {
       assume(l1.nonEmpty)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l2.nonEmpty") {
       val e = intercept[TestCanceledException] {
         assume(l2.nonEmpty)
@@ -4366,14 +4321,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l2.nonEmpty") {
       assume(!l2.nonEmpty)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.nonEmpty") {
       val e = intercept[TestCanceledException] {
         assume(!l1.nonEmpty)
@@ -4382,14 +4334,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check s1.isInstanceOf[String]") {
       assume(s1.isInstanceOf[String])
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
       val e = intercept[TestCanceledException] {
         assume(l1.isInstanceOf[String])
@@ -4398,14 +4347,13 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
       assume(l1.isInstanceOf[List[Int]])
     }
 
     // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
+    // different printing of `List[Int]`
     it("should throw TestCanceledException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[TestCanceledException] {
         assume(s1.isInstanceOf[List[Int]])
@@ -4420,8 +4368,6 @@ class AssertionsSpec extends AnyFunSpec {
       assume(date.isInstanceOf[Date])
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
       val e = intercept[TestCanceledException] {
         assume(l1.isInstanceOf[Date])
@@ -4430,14 +4376,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[String]") {
       assume(!l1.isInstanceOf[String])
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
       val e = intercept[TestCanceledException] {
         assume(!s1.isInstanceOf[String])
@@ -4446,14 +4389,13 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
       assume(!s1.isInstanceOf[List[Int]])
     }
 
     // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
+    // different printing of `List[Int]`
     it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[TestCanceledException] {
         assume(!l1.isInstanceOf[List[Int]])
@@ -4468,8 +4410,6 @@ class AssertionsSpec extends AnyFunSpec {
       assume(!l1.isInstanceOf[Date])
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
       val e = intercept[TestCanceledException] {
         assume(!date.isInstanceOf[Date])
@@ -4478,14 +4418,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check s1.length == 9") {
       assume(s1.length == 12)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s1.length == 10") {
       val e = intercept[TestCanceledException] {
         assume(s1.length == 10)
@@ -4494,14 +4431,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check l1.length == 3") {
       assume(l1.length == 3)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.length == 10") {
       val e = intercept[TestCanceledException] {
         assume(l1.length == 10)
@@ -4510,14 +4444,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !(s1.length == 10)") {
       assume(!(s1.length == 10))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !(s1.length == 9)") {
       val e = intercept[TestCanceledException] {
         assume(!(s1.length == 12))
@@ -4526,14 +4457,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !(l1.length == 2)") {
       assume(!(l1.length == 2))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1.length == 9)") {
       val e = intercept[TestCanceledException] {
         assume(!(l1.length == 3))
@@ -4542,14 +4470,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
       assume(floatLengthSize.length == 2.0f)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
       val e = intercept[TestCanceledException] {
         assume(floatLengthSize.length == 1.0f)
@@ -4558,14 +4483,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check s1.size == 9") {
       assume(s1.size == 12)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s1.size == 10") {
       val e = intercept[TestCanceledException] {
         assume(s1.size == 10)
@@ -4574,14 +4496,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check l1.size == 3") {
       assume(l1.size == 3)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.size == 10") {
       val e = intercept[TestCanceledException] {
         assume(l1.size == 10)
@@ -4590,14 +4509,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !(s1.size == 10)") {
       assume(!(s1.size == 10))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !(s1.size == 9)") {
       val e = intercept[TestCanceledException] {
         assume(!(s1.size == 12))
@@ -4606,14 +4522,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !(l1.size == 2)") {
       assume(!(l1.size == 2))
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1.size == 9)") {
       val e = intercept[TestCanceledException] {
         assume(!(l1.size == 3))
@@ -4622,14 +4535,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
       assume(floatLengthSize.size == 2.0f)
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
       val e = intercept[TestCanceledException] {
         assume(floatLengthSize.size == 1.0f)
@@ -4638,10 +4548,9 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/5715
+    // missing support for exists
     it("should do nothing when is used to check l1.exists(_ == 3)") {
       assume(l1.exists(_ == 3))
     }
@@ -4649,10 +4558,7 @@ class AssertionsSpec extends AnyFunSpec {
     it("should do nothing when is used to check l1.exists(3 == _)") {
       assume(l1.exists(3 == _))
     }
-    // SKIP-DOTTY-END
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
       val e = intercept[TestCanceledException] {
         assume(l1.exists(_ == 5))
@@ -4670,10 +4576,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
-    // SKIP-DOTTY-START
-    // https://github.com/lampepfl/dotty/issues/5715
     it("should do nothing when is used to check !l1.exists(_ == 5)") {
       assume(!l1.exists(_ == 5))
     }
@@ -4681,10 +4584,7 @@ class AssertionsSpec extends AnyFunSpec {
     it("should do nothing when is used to check !l1.exists(5 == _)") {
       assume(!l1.exists(5 == _))
     }
-    // SKIP-DOTTY-END
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
       val e = intercept[TestCanceledException] {
         assume(!l1.exists(_ == 3))
@@ -4747,8 +4647,6 @@ class AssertionsSpec extends AnyFunSpec {
       assume(woof { meow(y = 5) } == "woof")
     }
 
-    // SKIP-DOTTY-START
-    // scala.reflect exception -->  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
       val e = intercept[TestCanceledException] {
         assume(woof { meow(y = 5) } == "meow")
@@ -4774,6 +4672,8 @@ class AssertionsSpec extends AnyFunSpec {
         """.stripMargin)
     }
 
+    // SKIP-DOTTY-START
+    // ambiguous implicits
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
@@ -4785,6 +4685,7 @@ class AssertionsSpec extends AnyFunSpec {
           |}
         """.stripMargin)
     }
+    // SKIP-DOTTY-END
 
     it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
       assertCompiles(
@@ -4844,6 +4745,7 @@ class AssertionsSpec extends AnyFunSpec {
           |assume(org.exists(_ == 'b'))
         """.stripMargin)
     }
+    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
       assert(assume(x + 1 == 2) eq Succeeded)
@@ -5390,7 +5292,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    
+
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
       assume({ println("hi"); b == 5} && a == 3, ", dude")
     }
@@ -5408,7 +5310,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
-    
+
     it("should preserve side effects when Apply with single argument is passed in") {
       assume(neverRuns1(sys.error("Sad times 1")), "should not fail!")
     }
@@ -5556,8 +5458,6 @@ class AssertionsSpec extends AnyFunSpec {
       assume(s3.contains("hi"), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s3 contains \"hello\"") {
       val e1 = intercept[TestCanceledException] {
         assume(s3 contains "hello", ", dude")
@@ -5573,15 +5473,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check ci2 contains 2") {
       assume(ci2 contains 2, ", dude")
       assume(ci2.contains(2), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 contains 5") {
       val e1 = intercept[TestCanceledException] {
         assume(ci1 contains 5, ", dude")
@@ -5597,14 +5494,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !s1.contains(\"hello\")") {
       assume(!s3.contains("hello"), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
       val e1 = intercept[TestCanceledException] {
         assume(!s3.contains("hi"), ", dude")
@@ -5613,15 +5507,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check l1 contains 2") {
       assume(l1 contains 2, ", dude")
       assume(l1.contains(2), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1 contains 5") {
       val e1 = intercept[TestCanceledException] {
         assume(l1 contains 5, ", dude")
@@ -5637,15 +5528,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !(l1 contains 5)") {
       assume(!(l1 contains 5), ", dude")
       assume(!l1.contains(5), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1 contains 2)") {
       val e1 = intercept[TestCanceledException] {
         assume(!(l1 contains 2), ", dude")
@@ -5661,15 +5549,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check m1 contains 2") {
       assume(m1 contains 2, ", dude")
       assume(m1.contains(2), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check m1 contains 5") {
       val e1 = intercept[TestCanceledException] {
         assume(m1 contains 5, ", dude")
@@ -5685,15 +5570,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !(m1 contains 5)") {
       assume(!(m1 contains 5), ", dude")
       assume(!m1.contains(5), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !(m1 contains 2)") {
       val e1 = intercept[TestCanceledException] {
         assume(!(m1 contains 2), ", dude")
@@ -5709,15 +5591,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check ct1 contains 8") {
       assume(ct1 contains 8, ", dude")
       assume(ct1.contains(8), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check ct1 contains 5") {
       val e1 = intercept[TestCanceledException] {
         assume(ct1 contains 5, ", dude")
@@ -5733,14 +5612,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !ct1.contains(5)") {
       assume(!ct1.contains(5), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !ct1.contains(8)") {
       val e1 = intercept[TestCanceledException] {
         assume(!ct1.contains(8), ", dude")
@@ -5749,15 +5625,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e1.failedCodeFileName == (Some(fileName)))
       assert(e1.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check ci1 eq ci3") {
       assume(ci1 eq ci3, ", dude")
       assume(ci1.eq(ci3), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 eq ci2") {
       val e1 = intercept[TestCanceledException] {
         assume(ci1 eq ci2, ", dude")
@@ -5773,14 +5646,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !ci1.eq(ci2)") {
       assume(!ci1.eq(ci2), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
       val e = intercept[TestCanceledException] {
         assume(!ci1.eq(ci3), ", dude")
@@ -5789,15 +5659,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check ci1 ne ci2") {
       assume(ci1 ne ci2, ", dude")
       assume(ci1.ne(ci2), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check ci1 ne ci3") {
       val e1 = intercept[TestCanceledException] {
         assume(ci1 ne ci3, ", dude")
@@ -5813,14 +5680,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e2.failedCodeFileName == (Some(fileName)))
       assert(e2.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !ci1.ne(ci3)") {
       assume(!ci1.ne(ci3), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
       val e = intercept[TestCanceledException] {
         assume(!ci1.ne(ci2), ", dude")
@@ -5829,14 +5693,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check s4.isEmpty") {
       assume(s4.isEmpty, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s3.isEmpty") {
       val e = intercept[TestCanceledException] {
         assume(s3.isEmpty, ", dude")
@@ -5845,14 +5706,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !s3.isEmpty") {
       assume(!s3.isEmpty, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !s4.isEmpty") {
       val e = intercept[TestCanceledException] {
         assume(!s4.isEmpty, ", dude")
@@ -5861,14 +5719,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check l2.isEmpty") {
       assume(l2.isEmpty, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isEmpty") {
       val e = intercept[TestCanceledException] {
         assume(l1.isEmpty, ", dude")
@@ -5877,14 +5732,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isEmpty") {
       assume(!l1.isEmpty, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !l2.isEmpty") {
       val e = intercept[TestCanceledException] {
         assume(!l2.isEmpty, ", dude")
@@ -5893,14 +5745,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check s3.nonEmpty") {
       assume(s3.nonEmpty, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s4.nonEmpty") {
       val e = intercept[TestCanceledException] {
         assume(s4.nonEmpty, ", dude")
@@ -5909,14 +5758,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !s4.nonEmpty") {
       assume(!s4.nonEmpty, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !s3.nonEmpty") {
       val e = intercept[TestCanceledException] {
         assume(!s3.nonEmpty, ", dude")
@@ -5925,14 +5771,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check l1.nonEmpty") {
       assume(l1.nonEmpty, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l2.nonEmpty") {
       val e = intercept[TestCanceledException] {
         assume(l2.nonEmpty, ", dude")
@@ -5941,14 +5784,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l2.nonEmpty") {
       assume(!l2.nonEmpty, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.nonEmpty") {
       val e = intercept[TestCanceledException] {
         assume(!l1.nonEmpty, ", dude")
@@ -5957,14 +5797,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check s1.isInstanceOf[String]") {
       assume(s1.isInstanceOf[String], ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
       val e = intercept[TestCanceledException] {
         assume(l1.isInstanceOf[String], ", dude")
@@ -5973,14 +5810,13 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
       assume(l1.isInstanceOf[List[Int]], ", dude")
     }
 
     // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
+    // different printing of `List[Int]`
     it("should throw TestCanceledException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[TestCanceledException] {
         assume(s1.isInstanceOf[List[Int]], ", dude")
@@ -5995,8 +5831,6 @@ class AssertionsSpec extends AnyFunSpec {
       assume(date.isInstanceOf[Date], ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
       val e = intercept[TestCanceledException] {
         assume(l1.isInstanceOf[Date], ", dude")
@@ -6005,14 +5839,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[String]") {
       assume(!l1.isInstanceOf[String], ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
       val e = intercept[TestCanceledException] {
         assume(!s1.isInstanceOf[String], ", dude")
@@ -6021,14 +5852,13 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
       assume(!s1.isInstanceOf[List[Int]], ", dude")
     }
 
     // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
+    // different printing of `List[Int]`
     it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[TestCanceledException] {
         assume(!l1.isInstanceOf[List[Int]], ", dude")
@@ -6039,13 +5869,10 @@ class AssertionsSpec extends AnyFunSpec {
     }
     // SKIP-DOTTY-END
 
-
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       assume(!l1.isInstanceOf[Date], ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
       val e = intercept[TestCanceledException] {
         assume(!date.isInstanceOf[Date], ", dude")
@@ -6054,14 +5881,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check s1.length == 9") {
       assume(s1.length == 12, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s1.length == 10") {
       val e = intercept[TestCanceledException] {
         assume(s1.length == 10, ", dude")
@@ -6070,14 +5894,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check l1.length == 3") {
       assume(l1.length == 3, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.length == 10") {
       val e = intercept[TestCanceledException] {
         assume(l1.length == 10, ", dude")
@@ -6086,14 +5907,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !(s1.length == 10)") {
       assume(!(s1.length == 10), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !(s1.length == 9)") {
       val e = intercept[TestCanceledException] {
         assume(!(s1.length == 12), ", dude")
@@ -6102,14 +5920,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !(l1.length == 2)") {
       assume(!(l1.length == 2), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1.length == 9)") {
       val e = intercept[TestCanceledException] {
         assume(!(l1.length == 3), ", dude")
@@ -6118,14 +5933,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
       assume(floatLengthSize.length == 2.0f, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
       val e = intercept[TestCanceledException] {
         assume(floatLengthSize.length == 1.0f, ", dude")
@@ -6134,14 +5946,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check s1.size == 9") {
       assume(s1.size == 12, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check s1.size == 10") {
       val e = intercept[TestCanceledException] {
         assume(s1.size == 10, ", dude")
@@ -6150,14 +5959,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check l1.size == 3") {
       assume(l1.size == 3, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.size == 10") {
       val e = intercept[TestCanceledException] {
         assume(l1.size == 10, ", dude")
@@ -6166,14 +5972,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !(s1.size == 10)") {
       assume(!(s1.size == 10), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !(s1.size == 9)") {
       val e = intercept[TestCanceledException] {
         assume(!(s1.size == 12), ", dude")
@@ -6182,14 +5985,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !(l1.size == 2)") {
       assume(!(l1.size == 2), ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check !(l1.size == 9)") {
       val e = intercept[TestCanceledException] {
         assume(!(l1.size == 3), ", dude")
@@ -6198,14 +5998,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
       assume(floatLengthSize.size == 2.0f, ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
       val e = intercept[TestCanceledException] {
         assume(floatLengthSize.size == 1.0f, ", dude")
@@ -6214,10 +6011,9 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5715
+    // missing support for exists
     it("should do nothing when is used to check l1.exists(_ == 3)") {
       assume(l1.exists(_ == 3), ", dude")
     }
@@ -6296,10 +6092,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[TestCanceledException] {
         assume(ci1.exists(321), ", dude")
@@ -6317,8 +6110,6 @@ class AssertionsSpec extends AnyFunSpec {
       assume(woof { meow(y = 5) } == "woof", ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5612
     it("should throw TestCanceledException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
       val e = intercept[TestCanceledException] {
         assume(woof { meow(y = 5) } == "meow", ", dude")
@@ -6327,10 +6118,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
-    // SKIP-DOTTY-START
-    // blocked by  https://github.com/lampepfl/dotty/issues/5491
     it("should compile when used with org == xxx that shadow org.scalactic") {
       assertCompiles(
         """
@@ -6347,6 +6135,8 @@ class AssertionsSpec extends AnyFunSpec {
         """.stripMargin)
     }
 
+    // SKIP-DOTTY-START
+    // ambiguous implicits
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
@@ -6358,6 +6148,7 @@ class AssertionsSpec extends AnyFunSpec {
           |}
         """.stripMargin)
     }
+    // SKIP-DOTTY-END
 
     it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
       assertCompiles(
@@ -6417,6 +6208,8 @@ class AssertionsSpec extends AnyFunSpec {
           |assume(org.exists(_ == 'b'), ", dude")
         """.stripMargin)
     }
+
+    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
       assert(assume(x + 1 == 2, "clue") eq Succeeded)
@@ -6424,8 +6217,6 @@ class AssertionsSpec extends AnyFunSpec {
     // SKIP-DOTTY-END
   }
 
-  // SKIP-DOTTY-START
-  // blocked by  https://github.com/lampepfl/dotty/issues/5491
   describe("assertTypeError method ") {
 
     describe("when work with string literal") {
@@ -6443,6 +6234,8 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
 
+      // SKIP-DOTTY-START
+      // no parse error support in Dotty
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           assertTypeError("println(\"test)")
@@ -6453,6 +6246,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when used with 'val i: Int = null'") {
         assertTypeError("val i: Int = null")
@@ -6485,6 +6279,8 @@ class AssertionsSpec extends AnyFunSpec {
         )
       }
 
+      // SKIP-DOTTY-START
+      // different line number
       it("should throw TestFailedException with correct message and stack depth when type check passed") {
         val e = intercept[TestFailedException] {
           assertTypeError(
@@ -6497,7 +6293,10 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
+      // SKIP-DOTTY-END
 
+      // SKIP-DOTTY-START
+      // no parse error support in Dotty
       it("should throw TestFailedException with correct message and stack depth when parse failed ") {
         val e = intercept[TestFailedException] {
           assertTypeError(
@@ -6512,6 +6311,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when used with 'val i: Int = null'") {
         assertTypeError(
@@ -6520,7 +6320,8 @@ class AssertionsSpec extends AnyFunSpec {
             |""".stripMargin
         )
       }
-
+      // SKIP-DOTTY-START
+      // different line number
       it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
 
@@ -6540,11 +6341,13 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
+      // SKIP-DOTTY-END
     }
-
+    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       assert(assertTypeError("val x: String = 1") eq Succeeded)
     }
+    // SKIP-DOTTY-END
   }
 
   describe("assertDoesNotCompile method ") {
@@ -6604,6 +6407,8 @@ class AssertionsSpec extends AnyFunSpec {
         )
       }
 
+      // SKIP-DOTTY-START
+      // different line number
       it("should throw TestFailedException with correct message and stack depth when parse and type check passed") {
         val e = intercept[TestFailedException] {
           assertDoesNotCompile(
@@ -6616,6 +6421,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when parse failed ") {
         assertDoesNotCompile(
@@ -6640,6 +6446,8 @@ class AssertionsSpec extends AnyFunSpec {
         )
       }
 
+      // SKIP-DOTTY-START
+      // different line number
       it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
 
@@ -6658,6 +6466,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 7)))
       }
+      // SKIP-DOTTY-END
     }
   }
 
@@ -6680,6 +6489,8 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
 
+      // SKIP-DOTTY-START
+      // different error message
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           assertCompiles("println(\"test)")
@@ -6690,6 +6501,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
@@ -6713,6 +6525,8 @@ class AssertionsSpec extends AnyFunSpec {
         )
       }
 
+      // SKIP-DOTTY-START
+      // different line number
       it("should throw TestFailedException with correct message and stack depth when type check failed") {
         val e = intercept[TestFailedException] {
           assertCompiles(
@@ -6727,7 +6541,10 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
+      // SKIP-DOTTY-END
 
+      // SKIP-DOTTY-START
+      // different error message
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           assertCompiles(
@@ -6742,6 +6559,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
@@ -6757,11 +6575,12 @@ class AssertionsSpec extends AnyFunSpec {
             |""".stripMargin)
       }
     }
+    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       assert(assertCompiles("val x: Int = 1") eq Succeeded)
     }
+    // SKIP-DOTTY-END
   }
-  // SKIP-DOTTY-END
 
   describe("The assertResult method") {
     it("should be usable when the left expression results in null") {
@@ -6824,10 +6643,12 @@ class AssertionsSpec extends AnyFunSpec {
       }
       assert(e1.message === Some(FailureMessages.expectedButGot(prettifier, a, null)))
     }
+    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
       assert(assertResult(2) { x + 1 } eq Succeeded)
     }
+    // SKIP-DOTTY-END
   }
 
   describe("The assertResult method that 'gets a clue'") {
