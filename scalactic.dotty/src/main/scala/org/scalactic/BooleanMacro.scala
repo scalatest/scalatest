@@ -42,7 +42,7 @@ object BooleanMacro {
     import refl._
     import util._
 
-    def exprStr: String = condition.show(the[Context].withoutColors)
+    def exprStr: String = condition.show
     def defaultCase = '{ Bool.simpleMacroBool($condition, ${exprStr.toExpr}, $prettifier) }
     def isImplicitMethodType(tp: Type): Boolean =
       Type.IsMethodType.unapply(tp).flatMap(tp => if tp.isImplicit then Some(true) else None).nonEmpty
@@ -229,7 +229,7 @@ object BooleanMacro {
       case TypeApply(sel @ Select(lhs, "isInstanceOf"), targs) =>
         let(lhs) { l =>
           val res = l.select(sel.symbol).appliedToTypeTrees(targs).seal.cast[Boolean]
-          val name = targs.head.tpe.show(the[Context].withoutColors).toExpr
+          val name = targs.head.tpe.show.toExpr
           '{ Bool.isInstanceOfMacroBool(${l.seal}, "isInstanceOf", $name, $res, $prettifier) }.unseal
         }.seal.cast[Bool]
 

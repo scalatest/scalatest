@@ -29,7 +29,7 @@ object TypeInfoMacro {
   def genTypeInfo[T](tp: Type[T])(implicit refl: Reflection): Expr[TypeInfo[T]] = {
     import refl._
 
-    val name = tp.show(the[Context].withoutColors).toExpr
+    val name = tp.show.toExpr
     '{ TypeInfo[$tp]($name) }
   }
 }
