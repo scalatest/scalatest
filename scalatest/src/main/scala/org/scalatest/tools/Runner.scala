@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG}
 import ArgsParser._
 import org.scalactic.Requirements._
-import org.scalatest.prop.Randomizer
+// import org.scalatest.prop.Randomizer
 
 /*
 Command line args:
@@ -910,7 +910,8 @@ object Runner {
     val testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", Suite.defaultTestSortingReporterTimeoutInSeconds), Seconds)
 
     seedList match {
-      case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))
+      case Some(seed) => // Randomizer.defaultSeed.getAndSet(Some(seed))
+        println("Note: -S for setting the Randomizer seed is not yet supported.")
       case None => // do nothing
     }
 

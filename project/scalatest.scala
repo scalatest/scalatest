@@ -320,6 +320,7 @@ object ScalatestBuild {
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += {
         Def.task{
+          GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
           GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
@@ -764,7 +765,6 @@ object ScalatestBuild {
      scalatestDocSourcesSetting,
      sourceGenerators in Compile += {
        Def.task{
-         GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
          GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
          GenMatchers.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
          GenFactories.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value) ++
