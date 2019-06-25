@@ -260,7 +260,8 @@ class NonEmptyMapSpec extends UnitSpec {
 
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
-    implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
     // SKIP-DOTTY-END
