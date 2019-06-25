@@ -94,13 +94,13 @@ if [[ $MODE = 'RegularTests5' ]] ; then
 fi
 
 if [[ $MODE = 'ScalacticTests' ]] ; then
-  echo "Doing 'sbt scalactic/test'"
+  echo "Doing 'sbt scalactic-test/test'"
 
-  sbt ++$TRAVIS_SCALA_VERSION scalactic/test
+  sbt ++$TRAVIS_SCALA_VERSION scalactic-test/test
   rc=$?
   echo first try, exitcode $rc
   if [[ $rc != 0 ]] ; then
-    sbt ++$TRAVIS_SCALA_VERSION scalactic/testQuick
+    sbt ++$TRAVIS_SCALA_VERSION scalactic-test/testQuick
     rc=$?
     echo second try, exitcode $rc
   fi
