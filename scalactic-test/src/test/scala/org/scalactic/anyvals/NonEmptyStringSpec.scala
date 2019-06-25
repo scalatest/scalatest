@@ -446,11 +446,10 @@ class NonEmptyStringSpec extends UnitSpec {
     es.indexOf('A') shouldBe -1
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
-    {
-      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
-      es.indexOf('a') shouldBe 0
-      es.indexOf('A') shouldBe -1
-    }
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.indexOf('a') shouldBe 0
+    es.indexOf('A') shouldBe -1
     // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take a GenSeq" in {
@@ -474,11 +473,10 @@ class NonEmptyStringSpec extends UnitSpec {
     es.indexOfSlice(List('A', 'B')) shouldBe s.indexOfSlice(List('A', 'B'))
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
-    {
-      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
-      es.indexOfSlice(List('a', 'b')) shouldBe 0
-      es.indexOfSlice(List('A', 'B')) shouldBe -1
-    }
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.indexOfSlice(List('a', 'b')) shouldBe 0
+    es.indexOfSlice(List('A', 'B')) shouldBe -1
     // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take an Every" in {
@@ -498,11 +496,10 @@ class NonEmptyStringSpec extends UnitSpec {
     es.indexOfSlice(Every('A', 'B')) shouldBe -1
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
-    {
-      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
-      es.indexOfSlice(Every('a', 'b')) shouldBe 0
-      es.indexOfSlice(Every('A', 'B')) shouldBe -1
-    }
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.indexOfSlice(Every('a', 'b')) shouldBe 0
+    es.indexOfSlice(Every('A', 'B')) shouldBe -1
     // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take a NonEmptyString" in {
@@ -522,11 +519,10 @@ class NonEmptyStringSpec extends UnitSpec {
     es.indexOfSlice(NonEmptyString("AB")) shouldBe -1
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
-    {
-      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
-      es.indexOfSlice(NonEmptyString("ab")) shouldBe 0
-      es.indexOfSlice(NonEmptyString("AB")) shouldBe -1
-    }
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.indexOfSlice(NonEmptyString("ab")) shouldBe 0
+    es.indexOfSlice(NonEmptyString("AB")) shouldBe -1
     // SKIP-DOTTY-END
   }
   it should "have 2 indexWhere methods" in {
@@ -597,11 +593,10 @@ class NonEmptyStringSpec extends UnitSpec {
     es.lastIndexOf('A') shouldBe -1
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
-    {
-      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
-      es.lastIndexOf('a') shouldBe 0
-      es.lastIndexOf('A') shouldBe -1
-    }
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOf('a') shouldBe 0
+    es.lastIndexOf('A') shouldBe -1
     // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take a GenSeq" in {
@@ -624,11 +619,10 @@ class NonEmptyStringSpec extends UnitSpec {
     es.lastIndexOfSlice(List('A', 'B')) shouldBe -1
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
-    {
-      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
-      es.lastIndexOfSlice(List('a', 'b')) shouldBe 0
-      es.lastIndexOfSlice(List('A', 'B')) shouldBe -1
-    }
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOfSlice(List('a', 'b')) shouldBe 0
+    es.lastIndexOfSlice(List('A', 'B')) shouldBe -1
     // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take an Every" in {
@@ -648,11 +642,10 @@ class NonEmptyStringSpec extends UnitSpec {
     es.lastIndexOfSlice(Every('A', 'B')) shouldBe -1
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
-    {
-      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
-      es.lastIndexOfSlice(Every('a', 'b')) shouldBe 0
-      es.lastIndexOfSlice(Every('A', 'B')) shouldBe -1
-    }
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOfSlice(Every('a', 'b')) shouldBe 0
+    es.lastIndexOfSlice(Every('A', 'B')) shouldBe -1
     // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take a NonEmptyString" in {
@@ -672,11 +665,10 @@ class NonEmptyStringSpec extends UnitSpec {
     es.lastIndexOfSlice(NonEmptyString("AB")) shouldBe -1
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
-    {
-      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
-      es.lastIndexOfSlice(NonEmptyString("ab")) shouldBe 0
-      es.lastIndexOfSlice(NonEmptyString("AB")) shouldBe -1
-    }
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOfSlice(NonEmptyString("ab")) shouldBe 0
+    es.lastIndexOfSlice(NonEmptyString("AB")) shouldBe -1
     // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexWhere methods" in {

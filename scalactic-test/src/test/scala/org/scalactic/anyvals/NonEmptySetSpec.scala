@@ -217,11 +217,10 @@ class NonEmptySetSpec extends UnitSpec {
     es.contains("ONE") shouldBe false
     // SKIP-DOTTY-START
     // https://github.com/lampepfl/dotty/issues/6114
-    {
-      implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
-      es.contains("one") shouldBe true
-      es.contains("ONE") shouldBe false
-    }
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.contains("one") shouldBe true
+    es.contains("ONE") shouldBe false
     // SKIP-DOTTY-END
   }
   it should "have 3 copyToArray methods" in {
