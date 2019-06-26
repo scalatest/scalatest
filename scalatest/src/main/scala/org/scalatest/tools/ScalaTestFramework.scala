@@ -33,7 +33,7 @@ import org.scalatest.events.SuiteStarting
 import org.scalatest.events.TopOfClass
 import org.scalatest.time.{Seconds, Span}
 import org.scalatools.testing.{Framework => SbtFramework, _}
-import org.scalatest.prop.Randomizer
+// import org.scalatest.prop.Randomizer
 
 /**
  * Class that makes ScalaTest tests visible to SBT (prior to version 0.13).
@@ -217,7 +217,8 @@ class ScalaTestFramework extends SbtFramework {
           runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
           parseLongArgument(seedArgs, "-S") match {
-            case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))
+            case Some(seed) => // Randomizer.defaultSeed.getAndSet(Some(seed))
+              println("Note: -S for setting the Randomizer seed is not yet supported.")
             case None => // do nothing
           }
           

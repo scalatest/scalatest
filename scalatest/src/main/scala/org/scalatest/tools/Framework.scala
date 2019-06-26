@@ -36,7 +36,7 @@ import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
 import Suite.mergeMap
-import org.scalatest.prop.Randomizer
+// import org.scalatest.prop.Randomizer
 
 
 /**
@@ -1004,7 +1004,8 @@ import java.net.{ServerSocket, InetAddress}
     runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
     parseLongArgument(seedArgs, "-S") match {
-      case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))
+      case Some(seed) => // Randomizer.defaultSeed.getAndSet(Some(seed))
+        println("Note: -S for setting the Randomizer seed is not yet supported.")
       case None => // do nothing
     }
 
