@@ -80,7 +80,7 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
         PosZDouble.from(-0.00001) shouldBe None
         PosZDouble.from(-99.9) shouldBe None
       }
-    } 
+    }
     describe("should offer an ensuringValid factory method that") {
       it("returns PosZDouble if the passed Double is greater than or equal to 0") {
         PosZDouble.ensuringValid(0.0).value shouldBe 0.0
@@ -92,7 +92,10 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
         an [AssertionError] should be thrownBy PosZDouble.ensuringValid(-0.00001)
         an [AssertionError] should be thrownBy PosZDouble.ensuringValid(-99.9)
         an [AssertionError] should be thrownBy PosZDouble.ensuringValid(Double.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy PosZDouble.ensuringValid(Double.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -150,7 +153,7 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
         PosZDouble.isValid(-0.00001) shouldBe false
         PosZDouble.isValid(-99.9) shouldBe false
       }
-    } 
+    }
     describe("should offer a fromOrElse factory method that") {
       it("returns a PosZDouble if the passed Double is greater than or equal to 0") {
         PosZDouble.fromOrElse(50.23, PosZDouble(42.0)).value shouldBe 50.23
@@ -161,7 +164,7 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
         PosZDouble.fromOrElse(-0.00001, PosZDouble(42.0)).value shouldBe 42.0
         PosZDouble.fromOrElse(-99.9, PosZDouble(42.0)).value shouldBe 42.0
       }
-    } 
+    }
     it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
       PosZDouble.MaxValue shouldEqual PosZDouble.from(Double.MaxValue).get
       PosZDouble.MinValue shouldEqual PosZDouble(0.0)
@@ -329,7 +332,7 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
 
       // Check the sumOf that takes at least 2 args (the one that does box the var args part)
       // First just pass 2 to it and an empty list, which I wonder if that will do the other one,
-      // but it doesn't matter. 
+      // but it doesn't matter.
       forAll (minSuccessful(1000)) { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
         PosZDouble.sumOf(posZDouble1, posZDouble2, List.empty[PosZDouble]: _*) should === {
           PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value)
@@ -416,7 +419,10 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
       PosZDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) shouldEqual PosZDouble.ensuringValid(Double.PositiveInfinity)
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ - PosZDouble.MaxValue - 1) }
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
     }
   }
 }

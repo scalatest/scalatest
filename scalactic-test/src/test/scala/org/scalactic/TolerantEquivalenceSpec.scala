@@ -39,7 +39,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be true if the number is within the given interval for Double") {
 
       // Double +- Double
-      implicit val eq = tolerantEquivalence[Double](tolerance = 0.2)
+      implicit val eq: Equivalence[Double] = tolerantEquivalence[Double](tolerance = 0.2)
       assert(sevenDotOh === 7.1)
       assert(sevenDotOh === 6.9)
       assert(sevenDotOh === 7.0)
@@ -55,7 +55,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be true if the number is within the given interval for Float") {
 
       // Float +- Float
-      implicit val eq = tolerantEquivalence[Float](tolerance = 0.2f)
+      implicit val eq: Equivalence[Float] = tolerantEquivalence[Float](tolerance = 0.2f)
       assert(sevenDotOhFloat === 7.1f)
       assert(sevenDotOhFloat === 6.9f)
       assert(sevenDotOhFloat === 7.0f)
@@ -71,7 +71,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be true if the number is within the given interval for Long") {
 
       // Long +- Long
-      implicit val eq = tolerantEquivalence[Long](tolerance = 2L)
+      implicit val eq: Equivalence[Long] = tolerantEquivalence[Long](tolerance = 2L)
       assert(sevenLong === 9L)
       assert(sevenLong === 8L)
       assert(sevenLong === 7L)
@@ -87,7 +87,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be true if the number is within the given interval for Int") {
 
       // Int +- Int
-      implicit val eq = tolerantEquivalence[Int](tolerance = 2)
+      implicit val eq: Equivalence[Int] = tolerantEquivalence[Int](tolerance = 2)
       assert(sevenInt === 9)
       assert(sevenInt === 8)
       assert(sevenInt === 7)
@@ -103,7 +103,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be true if the number is within the given interval for Short") {
 
       // Short +- Short
-      implicit val eq = tolerantEquivalence[Short](tolerance = 2.toShort)
+      implicit val eq: Equivalence[Short] = tolerantEquivalence[Short](tolerance = 2.toShort)
       assert(sevenShort === 9.toShort)
       assert(sevenShort === 8.toShort)
       assert(sevenShort === 7.toShort)
@@ -119,7 +119,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be true if the number is within the given interval for Byte") {
 
       // Byte +- Byte
-      implicit val eq = tolerantEquivalence[Byte](tolerance = 2.toByte)
+      implicit val eq: Equivalence[Byte] = tolerantEquivalence[Byte](tolerance = 2.toByte)
       assert(sevenByte === 9.toByte)
       assert(sevenByte === 8.toByte)
       assert(sevenByte === 7.toByte)
@@ -135,7 +135,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Double") {
 
       // Double +- Double
-      implicit val eq = tolerantEquivalence[Double](tolerance = 0.2)
+      implicit val eq: Equivalence[Double] = tolerantEquivalence[Double](tolerance = 0.2)
       assert(7.1 === sevenDotOh)
       assert(6.9 === sevenDotOh)
       assert(7.0 === sevenDotOh)
@@ -151,7 +151,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Float") {
 
       // Float +- Float
-      implicit val eq = tolerantEquivalence[Float](tolerance = 0.2f)
+      implicit val eq: Equivalence[Float] = tolerantEquivalence[Float](tolerance = 0.2f)
       assert(7.1f === sevenDotOhFloat)
       assert(6.9f === sevenDotOhFloat)
       assert(7.0f === sevenDotOhFloat)
@@ -167,7 +167,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Long") {
 
       // Long +- Long
-      implicit val eq = tolerantEquivalence[Long](tolerance = 2L)
+      implicit val eq: Equivalence[Long] = tolerantEquivalence[Long](tolerance = 2L)
       assert(9L === sevenLong)
       assert(8L === sevenLong)
       assert(7L === sevenLong)
@@ -183,7 +183,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Int") {
 
       // Int +- Int
-      implicit val eq = tolerantEquivalence[Int](tolerance = 2)
+      implicit val eq: Equivalence[Int] = tolerantEquivalence[Int](tolerance = 2)
       assert(9 === sevenInt)
       assert(8 === sevenInt)
       assert(7 === sevenInt)
@@ -198,7 +198,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
 
     it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Short") {
       // Short +- Short
-      implicit val eq = tolerantEquivalence[Short](tolerance = 2.toShort)
+      implicit val eq: Equivalence[Short] = tolerantEquivalence[Short](tolerance = 2.toShort)
       assert(9.toShort === sevenShort)
       assert(8.toShort === sevenShort)
       assert(7.toShort === sevenShort)
@@ -214,7 +214,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be true if the number is within the given interval when the interval is placed on the left hand side for Byte") {
 
       // Byte +- Byte
-      implicit val eq = tolerantEquivalence[Byte](tolerance = 2.toByte)
+      implicit val eq: Equivalence[Byte] = tolerantEquivalence[Byte](tolerance = 2.toByte)
       assert(9.toByte === sevenByte)
       assert(8.toByte === sevenByte)
       assert(7.toByte === sevenByte)
@@ -230,7 +230,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be false if the number is outside the given interval for Double") {
 
       // Double +- Double
-      implicit val eq = tolerantEquivalence[Double](tolerance = 0.2)
+      implicit val eq: Equivalence[Double] = tolerantEquivalence[Double](tolerance = 0.2)
       assert(!(sevenDotOh === 7.5))
       assert(!(sevenDotOh === 6.5))
       assert(!(minusSevenDotOh === -7.5))
@@ -240,7 +240,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be false if the number is outside the given interval for Float") {
 
       // Float +- Float
-      implicit val eq = tolerantEquivalence[Float](tolerance = 0.2f)
+      implicit val eq: Equivalence[Float] = tolerantEquivalence[Float](tolerance = 0.2f)
       assert(!(sevenDotOhFloat === 7.5f))
       assert(!(sevenDotOhFloat === 6.5f))
       assert(!(minusSevenDotOhFloat === -7.5f))
@@ -250,7 +250,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be false if the number is outside the given interval for Long") {
 
       // Long +- Long
-      implicit val eq = tolerantEquivalence[Long](tolerance = 2L)
+      implicit val eq: Equivalence[Long] = tolerantEquivalence[Long](tolerance = 2L)
       assert(!(sevenLong === 4L))
       assert(!(sevenLong === 10L))
       assert(!(minusSevenLong === -4L))
@@ -260,7 +260,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be false if the number is outside the given interval for Int") {
 
       // Int +- Int
-      implicit val eq = tolerantEquivalence[Int](tolerance = 2)
+      implicit val eq: Equivalence[Int] = tolerantEquivalence[Int](tolerance = 2)
       assert(!(sevenInt === 4))
       assert(!(sevenInt === 10))
       assert(!(minusSevenInt === -4))
@@ -270,7 +270,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be false if the number is outside the given interval for Short") {
 
       // Short +- Short
-      implicit val eq = tolerantEquivalence[Short](tolerance = 2.toShort)
+      implicit val eq: Equivalence[Short] = tolerantEquivalence[Short](tolerance = 2.toShort)
       assert(!(sevenShort === 4.toShort))
       assert(!(sevenShort === 10.toShort))
       assert(!(minusSevenShort === (-4).toShort))
@@ -280,7 +280,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be false if the number is outside the given interval for Byte") {
 
       // Byte +- Byte
-      implicit val eq = tolerantEquivalence[Byte](tolerance = 2.toByte)
+      implicit val eq: Equivalence[Byte] = tolerantEquivalence[Byte](tolerance = 2.toByte)
       assert(!(sevenByte === 4.toByte))
       assert(!(sevenByte === 10.toByte))
       assert(!(minusSevenByte === (-4).toByte))
@@ -290,7 +290,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Double") {
 
       // Double +- Double
-      implicit val eq = tolerantEquivalence[Double](tolerance = 0.2)
+      implicit val eq: Equivalence[Double] = tolerantEquivalence[Double](tolerance = 0.2)
       assert(!(7.5 === sevenDotOh))
       assert(!(6.5 === sevenDotOh))
       assert(!(-7.5 === minusSevenDotOh))
@@ -300,7 +300,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Float") {
 
       // Float +- Float
-      implicit val eq = tolerantEquivalence[Float](tolerance = 0.2f)
+      implicit val eq: Equivalence[Float] = tolerantEquivalence[Float](tolerance = 0.2f)
       assert(!(7.5f === sevenDotOhFloat))
       assert(!(6.5f === sevenDotOhFloat))
       assert(!(-7.5f === minusSevenDotOhFloat))
@@ -310,7 +310,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Long") {
 
       // Long +- Long
-      implicit val eq = tolerantEquivalence[Long](tolerance = 2L)
+      implicit val eq: Equivalence[Long] = tolerantEquivalence[Long](tolerance = 2L)
       assert(!(4L === sevenLong))
       assert(!(10L === sevenLong))
       assert(!(-4L === minusSevenLong))
@@ -320,7 +320,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Int") {
 
       // Int +- Int
-      implicit val eq = tolerantEquivalence[Int](tolerance = 2)
+      implicit val eq: Equivalence[Int] = tolerantEquivalence[Int](tolerance = 2)
       assert(!(4 === sevenInt))
       assert(!(10 === sevenInt))
       assert(!(-4 === minusSevenInt))
@@ -330,7 +330,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Short") {
 
       // Short +- Short
-      implicit val eq = tolerantEquivalence[Short](tolerance = 2.toShort)
+      implicit val eq: Equivalence[Short] = tolerantEquivalence[Short](tolerance = 2.toShort)
       assert(!(4.toShort === sevenShort))
       assert(!(10.toShort === sevenShort))
       assert(!((-4).toShort === minusSevenShort))
@@ -340,7 +340,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be false if the number is outside the given interval, when the interval is on the left hand side for Byte") {
 
       // Byte +- Byte
-      implicit val eq = tolerantEquivalence[Byte](tolerance = 2.toByte)
+      implicit val eq: Equivalence[Byte] = tolerantEquivalence[Byte](tolerance = 2.toByte)
       assert(!(4.toByte === sevenByte))
       assert(!(10.toByte === sevenByte))
       assert(!((-4).toByte === minusSevenByte))
@@ -353,7 +353,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be true if the number is outside the given interval for Double") {
 
       // Double +- Double
-      implicit val eq = tolerantEquivalence[Double](tolerance = 0.2)
+      implicit val eq: Equivalence[Double] = tolerantEquivalence[Double](tolerance = 0.2)
       assert(sevenDotOh !== 7.5)
       assert(sevenDotOh !== 6.5)
       assert(minusSevenDotOh !== -7.5)
@@ -363,7 +363,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be true if the number is outside the given interval for Float") {
 
       // Float +- Float
-      implicit val eq = tolerantEquivalence[Float](tolerance = 0.2f)
+      implicit val eq: Equivalence[Float] = tolerantEquivalence[Float](tolerance = 0.2f)
       assert(sevenDotOhFloat !== 7.5f)
       assert(sevenDotOhFloat !== 6.5f)
       assert(minusSevenDotOhFloat !== -7.5f)
@@ -373,7 +373,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be true if the number is outside the given interval for Long") {
 
       // Long +- Long
-      implicit val eq = tolerantEquivalence[Long](tolerance = 2L)
+      implicit val eq: Equivalence[Long] = tolerantEquivalence[Long](tolerance = 2L)
       assert(sevenLong !== 4L)
       assert(sevenLong !== 10L)
       assert(minusSevenLong !== -4L)
@@ -383,7 +383,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be true if the number is outside the given interval for Int") {
 
       // Int +- Int
-      implicit val eq = tolerantEquivalence[Int](tolerance = 2)
+      implicit val eq: Equivalence[Int] = tolerantEquivalence[Int](tolerance = 2)
       assert(sevenInt !== 4)
       assert(sevenInt !== 10)
       assert(minusSevenInt !== -4)
@@ -393,7 +393,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be true if the number is outside the given interval for Short") {
 
       // Short +- Short
-      implicit val eq = tolerantEquivalence[Short](tolerance = 2.toShort)
+      implicit val eq: Equivalence[Short] = tolerantEquivalence[Short](tolerance = 2.toShort)
       assert(sevenShort !== 4.toShort)
       assert(sevenShort !== 10.toShort)
       assert(minusSevenShort !== (-4).toShort)
@@ -403,7 +403,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be true if the number is outside the given interval for Byte") {
 
       // Byte +- Byte
-      implicit val eq = tolerantEquivalence[Byte](tolerance = 2.toByte)
+      implicit val eq: Equivalence[Byte] = tolerantEquivalence[Byte](tolerance = 2.toByte)
       assert(sevenByte !== 4.toByte)
       assert(sevenByte !== 10.toByte)
       assert(minusSevenByte !== (-4).toByte)
@@ -413,7 +413,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Double") {
 
       // Double +- Double
-      implicit val eq = tolerantEquivalence[Double](tolerance = 0.2)
+      implicit val eq: Equivalence[Double] = tolerantEquivalence[Double](tolerance = 0.2)
       assert(7.5 !== sevenDotOh)
       assert(6.5 !== sevenDotOh)
       assert(-7.5 !== minusSevenDotOh)
@@ -423,7 +423,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Float") {
 
       // Float +- Float
-      implicit val eq = tolerantEquivalence[Float](tolerance = 0.2f)
+      implicit val eq: Equivalence[Float] = tolerantEquivalence[Float](tolerance = 0.2f)
       assert(7.5f !== sevenDotOhFloat)
       assert(6.5f !== sevenDotOhFloat)
       assert(-7.5f !== minusSevenDotOhFloat)
@@ -433,7 +433,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Long") {
 
       // Long +- Long
-      implicit val eq = tolerantEquivalence[Long](tolerance = 2L)
+      implicit val eq: Equivalence[Long] = tolerantEquivalence[Long](tolerance = 2L)
       assert(4L !== sevenLong)
       assert(10L !== sevenLong)
       assert(-4L !== minusSevenLong)
@@ -443,7 +443,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Int") {
 
       // Int +- Int
-      implicit val eq = tolerantEquivalence[Int](tolerance = 2)
+      implicit val eq: Equivalence[Int] = tolerantEquivalence[Int](tolerance = 2)
       assert(4 !== sevenInt)
       assert(10 !== sevenInt)
       assert(-4 !== minusSevenInt)
@@ -453,7 +453,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Short") {
 
       // Short +- Short
-      implicit val eq = tolerantEquivalence[Short](tolerance = 2.toShort)
+      implicit val eq: Equivalence[Short] = tolerantEquivalence[Short](tolerance = 2.toShort)
       assert(4.toShort !== sevenShort)
       assert(10.toShort !== sevenShort)
       assert((-4).toShort !== minusSevenShort)
@@ -463,7 +463,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be true if the number is outside the given interval when the interval is placed on the left hand side for Byte") {
 
       // Byte +- Byte
-      implicit val eq = tolerantEquivalence[Byte](tolerance = 2.toByte)
+      implicit val eq: Equivalence[Byte] = tolerantEquivalence[Byte](tolerance = 2.toByte)
       assert(4.toByte !== sevenByte)
       assert(10.toByte !== sevenByte)
       assert((-4).toByte !== minusSevenByte)
@@ -473,7 +473,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be false if the number is within the given interval for Double") {
 
       // Double +- Double
-      implicit val eq = tolerantEquivalence[Double](tolerance = 0.2)
+      implicit val eq: Equivalence[Double] = tolerantEquivalence[Double](tolerance = 0.2)
       assert(!(sevenDotOh !== 7.1))
       assert(!(sevenDotOh !== 6.9))
       assert(!(sevenDotOh !== 7.0))
@@ -489,7 +489,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be false if the number is within the given interval for Float") {
 
       // Float +- Float
-      implicit val eq = tolerantEquivalence[Float](tolerance = 0.2f)
+      implicit val eq: Equivalence[Float] = tolerantEquivalence[Float](tolerance = 0.2f)
       assert(!(sevenDotOhFloat !== 7.1f))
       assert(!(sevenDotOhFloat !== 6.9f))
       assert(!(sevenDotOhFloat !== 7.0f))
@@ -505,7 +505,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be false if the number is within the given interval for Long") {
 
       // Long +- Long
-      implicit val eq = tolerantEquivalence[Long](tolerance = 2L)
+      implicit val eq: Equivalence[Long] = tolerantEquivalence[Long](tolerance = 2L)
       assert(!(sevenLong !== 9L))
       assert(!(sevenLong !== 8L))
       assert(!(sevenLong !== 7L))
@@ -521,7 +521,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be false if the number is within the given interval for Int") {
 
       // Int +- Int
-      implicit val eq = tolerantEquivalence[Int](tolerance = 2)
+      implicit val eq: Equivalence[Int] = tolerantEquivalence[Int](tolerance = 2)
       assert(!(sevenInt !== 9))
       assert(!(sevenInt !== 8))
       assert(!(sevenInt !== 7))
@@ -537,7 +537,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be false if the number is within the given interval for Short") {
 
       // Short +- Short
-      implicit val eq = tolerantEquivalence[Short](tolerance = 2.toShort)
+      implicit val eq: Equivalence[Short] = tolerantEquivalence[Short](tolerance = 2.toShort)
       assert(!(sevenShort !== 9.toShort))
       assert(!(sevenShort !== 8.toShort))
       assert(!(sevenShort !== 7.toShort))
@@ -553,7 +553,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should be false if the number is within the given interval for Byte") {
 
       // Byte +- Byte
-      implicit val eq = tolerantEquivalence[Byte](tolerance = 2.toByte)
+      implicit val eq: Equivalence[Byte] = tolerantEquivalence[Byte](tolerance = 2.toByte)
       assert(!(sevenByte !== 9.toByte))
       assert(!(sevenByte !== 8.toByte))
       assert(!(sevenByte !== 7.toByte))
@@ -569,7 +569,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Double") {
 
       // Double +- Double
-      implicit val eq = tolerantEquivalence[Double](tolerance = 0.2)
+      implicit val eq: Equivalence[Double] = tolerantEquivalence[Double](tolerance = 0.2)
       assert(!(7.1 !== sevenDotOh))
       assert(!(6.9 !== sevenDotOh))
       assert(!(7.0 !== sevenDotOh))
@@ -585,7 +585,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Float") {
 
       // Float +- Float
-      implicit val eq = tolerantEquivalence[Float](tolerance = 0.2f)
+      implicit val eq: Equivalence[Float] = tolerantEquivalence[Float](tolerance = 0.2f)
       assert(!(7.1f !== sevenDotOhFloat))
       assert(!(6.9f !== sevenDotOhFloat))
       assert(!(7.0f !== sevenDotOhFloat))
@@ -601,7 +601,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Long") {
 
       // Long +- Long
-      implicit val eq = tolerantEquivalence[Long](tolerance = 2L)
+      implicit val eq: Equivalence[Long] = tolerantEquivalence[Long](tolerance = 2L)
       assert(!(9L !== sevenLong))
       assert(!(8L !== sevenLong))
       assert(!(7L !== sevenLong))
@@ -617,7 +617,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Int") {
 
       // Int +- Int
-      implicit val eq = tolerantEquivalence[Int](tolerance = 2)
+      implicit val eq: Equivalence[Int] = tolerantEquivalence[Int](tolerance = 2)
       assert(!(9 !== sevenInt))
       assert(!(8 !== sevenInt))
       assert(!(7 !== sevenInt))
@@ -633,7 +633,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Short") {
 
       // Short +- Short
-      implicit val eq = tolerantEquivalence[Short](tolerance = 2.toShort)
+      implicit val eq: Equivalence[Short] = tolerantEquivalence[Short](tolerance = 2.toShort)
       assert(!(9.toShort !== sevenShort))
       assert(!(8.toShort !== sevenShort))
       assert(!(7.toShort !== sevenShort))
@@ -649,7 +649,7 @@ class TolerantEquivalenceSpec extends FunSpec with TypeCheckedTripleEquals with 
     it("should, for symmetry, be false if the number is within the given interval, when the interval is placed on the left hand side for Byte") {
 
       // Byte +- Byte
-      implicit val eq = tolerantEquivalence[Byte](tolerance = 2.toByte)
+      implicit val eq: Equivalence[Byte] = tolerantEquivalence[Byte](tolerance = 2.toByte)
       assert(!(9.toByte !== sevenByte))
       assert(!(8.toByte !== sevenByte))
       assert(!(7.toByte !== sevenByte))

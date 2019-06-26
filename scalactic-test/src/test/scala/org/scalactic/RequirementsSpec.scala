@@ -61,10 +61,16 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     FailureMessages.wasLessThanOrEqualTo(prettifier, left, right)
 
   def commaAnd(left: String, right: String): String =
+  // SKIP-DOTTY-START
     FailureMessages.commaAnd(prettifier, UnquotedString(left), UnquotedString(right))
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY FailureMessages.commaAnd(prettifier, left, right)
 
   def commaBut(left: String, right: String): String =
+  // SKIP-DOTTY-START
     FailureMessages.commaBut(prettifier, UnquotedString(left), UnquotedString(right))
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY FailureMessages.commaBut(prettifier, left, right)
 
   def wasFalse(left: String): String =
     left + " was false"
@@ -215,18 +221,18 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == didNotEqual(a, b))
     }
 
-    it("should throw IllegalArgumentException when is used to check a == null") {
+    it("should throw IllegalArgumentException when is used to check a == -1") {
       val e = intercept[IllegalArgumentException] {
-        require(a == null)
+        require(a == -1)
       }
-      assert(e.getMessage == didNotEqual(a, null))
+      assert(e.getMessage == didNotEqual(a, -1))
     }
 
-    it("should throw IllegalArgumentException when is used to check null == a") {
+    it("should throw IllegalArgumentException when is used to check -1 == a") {
       val e = intercept[IllegalArgumentException] {
-        require(null == a)
+        require(-1 == a)
       }
-      assert(e.getMessage == didNotEqual(null, a))
+      assert(e.getMessage == didNotEqual(-1, a))
     }
 
     it("should do nothing when is used to check a === 3") {
@@ -527,6 +533,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+        assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
       else
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
     }
@@ -541,6 +549,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+        assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
       else
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
     }
@@ -967,12 +977,15 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       require(l1.isInstanceOf[List[Int]])
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalArgumentException] {
         require(s1.isInstanceOf[List[Int]])
       }
       assert(e.getMessage == wasNotInstanceOf(s1, "scala.List"))
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       require(date.isInstanceOf[Date])
@@ -1000,12 +1013,15 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       require(!s1.isInstanceOf[List[Int]])
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalArgumentException] {
         require(!l1.isInstanceOf[List[Int]])
       }
       assert(e.getMessage == wasInstanceOf(l1, "scala.List"))
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       require(!l1.isInstanceOf[Date])
@@ -1150,6 +1166,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == contained(l1, 3))
     }
 
+    // SKIP-DOTTY-START
+    // different printing of anonymous functions
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[IllegalArgumentException] {
         require(l1.exists(_ > 3))
@@ -1163,6 +1181,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       }
       assert(e.getMessage == wasFalse("l3.exists(((x$7: String) => x$7.isEmpty()))"))
     }
+    // SKIP-DOTTY-END
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[IllegalArgumentException] {
@@ -1201,6 +1220,9 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         """.stripMargin)
     }
 
+    // SKIP-DOTTY-START
+    // ambiguous implicit:
+    //   both method convertToCheckingEqualizer in trait TypeCheckedTripleEquals and method convertToEqualizer in trait TripleEquals provide an extension method `===` on String(org)
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
@@ -1212,6 +1234,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
           |}
         """.stripMargin)
     }
+    // SKIP-DOTTY-END
 
     it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
       assertCompiles(
@@ -1350,18 +1373,18 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == didNotEqual(a, b) + ", dude")
     }
 
-    it("should throw IllegalArgumentException when is used to check a == null") {
+    it("should throw IllegalArgumentException when is used to check a == -1") {
       val e = intercept[IllegalArgumentException] {
-        require(a == null, ". dude")
+        require(a == -1, ". dude")
       }
-      assert(e.getMessage == didNotEqual(a, null) + ". dude")
+      assert(e.getMessage == didNotEqual(a, -1) + ". dude")
     }
 
-    it("should throw IllegalArgumentException when is used to check null == a") {
+    it("should throw IllegalArgumentException when is used to check -1 == a") {
       val e = intercept[IllegalArgumentException] {
-        require(null == a, "; dude")
+        require(-1 == a, "; dude")
       }
-      assert(e.getMessage == didNotEqual(null, a) + "; dude")
+      assert(e.getMessage == didNotEqual(-1, a) + "; dude")
     }
 
     it("should throw IllegalArgumentException when is used to check 3 != a") {
@@ -1673,6 +1696,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+        assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
       else
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
     }
@@ -1687,6 +1712,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+        assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
       else
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
     }
@@ -2113,12 +2140,15 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       require(l1.isInstanceOf[List[Int]], ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalArgumentException] {
         require(s1.isInstanceOf[List[Int]], ", dude")
       }
       assert(e.getMessage == wasNotInstanceOf(s1, "scala.List") + ", dude")
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       require(date.isInstanceOf[Date], ", dude")
@@ -2146,12 +2176,15 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       require(!s1.isInstanceOf[List[Int]], ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalArgumentException] {
         require(!l1.isInstanceOf[List[Int]], ", dude")
       }
       assert(e.getMessage == wasInstanceOf(l1, "scala.List") + ", dude")
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       require(!l1.isInstanceOf[Date], ", dude")
@@ -2296,6 +2329,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == contained(l1, 3) + ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of anonymous functions
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[IllegalArgumentException] {
         require(l1.exists(_ > 3), ", dude")
@@ -2309,6 +2344,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       }
       assert(e.getMessage == wasFalse("l3.exists(((x$13: String) => x$13.isEmpty()))") + ", dude")
     }
+    // SKIP-DOTTY-END
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[IllegalArgumentException] {
@@ -2347,6 +2383,9 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         """.stripMargin)
     }
 
+    // SKIP-DOTTY-START
+    // ambiguous implicit:
+    //   both method convertToCheckingEqualizer in trait TypeCheckedTripleEquals and method convertToEqualizer in trait TripleEquals provide an extension method `===` on String(org)
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
@@ -2358,6 +2397,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
           |}
         """.stripMargin)
     }
+    // SKIP-DOTTY-END
 
     it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
       assertCompiles(
@@ -2467,18 +2507,18 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == didNotEqual(a, b))
     }
 
-    it("should throw IllegalStateException when is used to check a == null") {
+    it("should throw IllegalStateException when is used to check a == -1") {
       val e = intercept[IllegalStateException] {
-        requireState(a == null)
+        requireState(a == -1)
       }
-      assert(e.getMessage == didNotEqual(a, null))
+      assert(e.getMessage == didNotEqual(a, -1))
     }
 
-    it("should throw IllegalStateException when is used to check null == a") {
+    it("should throw IllegalStateException when is used to check -1 == a") {
       val e = intercept[IllegalStateException] {
-        requireState(null == a)
+        requireState(-1 == a)
       }
-      assert(e.getMessage == didNotEqual(null, a))
+      assert(e.getMessage == didNotEqual(-1, a))
     }
 
     it("should do nothing when is used to check a === 3") {
@@ -2779,6 +2819,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+        assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
       else
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
     }
@@ -2793,6 +2835,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+        assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
       else
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
     }
@@ -3219,12 +3263,15 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       requireState(l1.isInstanceOf[List[Int]])
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalStateException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalStateException] {
         requireState(s1.isInstanceOf[List[Int]])
       }
       assert(e.getMessage == wasNotInstanceOf(s1, "scala.List"))
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       requireState(date.isInstanceOf[Date])
@@ -3252,12 +3299,15 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       requireState(!s1.isInstanceOf[List[Int]])
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalStateException] {
         requireState(!l1.isInstanceOf[List[Int]])
       }
       assert(e.getMessage == wasInstanceOf(l1, "scala.List"))
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       requireState(!l1.isInstanceOf[Date])
@@ -3402,6 +3452,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == contained(l1, 3))
     }
 
+    // SKIP-DOTTY-START
+    // different printing of anonymous functions
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[IllegalStateException] {
         requireState(l1.exists(_ > 3))
@@ -3415,6 +3467,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       }
       assert(e.getMessage == wasFalse("l3.exists(((x$19: String) => x$19.isEmpty()))"))
     }
+    // SKIP-DOTTY-END
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[IllegalStateException] {
@@ -3453,6 +3506,9 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         """.stripMargin)
     }
 
+    // SKIP-DOTTY-START
+    // ambiguous implicit:
+    //   both method convertToCheckingEqualizer in trait TypeCheckedTripleEquals and method convertToEqualizer in trait TripleEquals provide an extension method `===` on String(org)
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
@@ -3464,6 +3520,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
           |}
         """.stripMargin)
     }
+    // SKIP-DOTTY-END
 
     it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
       assertCompiles(
@@ -3602,18 +3659,18 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == didNotEqual(a, b) + ", dude")
     }
 
-    it("should throw IllegalStateException when is used to check a == null") {
+    it("should throw IllegalStateException when is used to check a == -1") {
       val e = intercept[IllegalStateException] {
-        requireState(a == null, ". dude")
+        requireState(a == -1, ". dude")
       }
-      assert(e.getMessage == didNotEqual(a, null) + ". dude")
+      assert(e.getMessage == didNotEqual(a, -1) + ". dude")
     }
 
-    it("should throw IllegalStateException when is used to check null == a") {
+    it("should throw IllegalStateException when is used to check -1 == a") {
       val e = intercept[IllegalStateException] {
-        requireState(null == a, "; dude")
+        requireState(-1 == a, "; dude")
       }
-      assert(e.getMessage == didNotEqual(null, a) + "; dude")
+      assert(e.getMessage == didNotEqual(-1, a) + "; dude")
     }
 
     it("should throw IllegalStateException when is used to check 3 != a") {
@@ -3925,6 +3982,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+        assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
       else
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
     }
@@ -3939,6 +3998,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+        assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
       else
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
     }
@@ -4365,12 +4426,15 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       requireState(l1.isInstanceOf[List[Int]], ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalStateException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalStateException] {
         requireState(s1.isInstanceOf[List[Int]], ", dude")
       }
       assert(e.getMessage == wasNotInstanceOf(s1, "scala.List") + ", dude")
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       requireState(date.isInstanceOf[Date], ", dude")
@@ -4398,12 +4462,15 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       requireState(!s1.isInstanceOf[List[Int]], ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of `List[Int]`
     it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[IllegalStateException] {
         requireState(!l1.isInstanceOf[List[Int]], ", dude")
       }
       assert(e.getMessage == wasInstanceOf(l1, "scala.List") + ", dude")
     }
+    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       requireState(!l1.isInstanceOf[Date], ", dude")
@@ -4548,6 +4615,8 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == contained(l1, 3) + ", dude")
     }
 
+    // SKIP-DOTTY-START
+    // different printing of anonymous functions
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[IllegalStateException] {
         requireState(l1.exists(_ > 3), ", dude")
@@ -4561,6 +4630,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       }
       assert(e.getMessage == wasFalse("l3.exists(((x$25: String) => x$25.isEmpty()))") + ", dude")
     }
+    // SKIP-DOTTY-END
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[IllegalStateException] {
@@ -4599,6 +4669,9 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         """.stripMargin)
     }
 
+    // SKIP-DOTTY-START
+    // ambiguous implicit:
+    //   both method convertToCheckingEqualizer in trait TypeCheckedTripleEquals and method convertToEqualizer in trait TripleEquals provide an extension method `===` on String(org)
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
@@ -4610,6 +4683,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
           |}
         """.stripMargin)
     }
+    // SKIP-DOTTY-END
 
     it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
       assertCompiles(

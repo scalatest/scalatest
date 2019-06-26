@@ -21,7 +21,7 @@ import scala.tasty._
 
 import CompileTimeAssertions._
 
-private[anyvals] object NumericStringMacro {
+object NumericStringMacro {
 
   def isValid(s: String): Boolean = s.forall(c => c >= '0' && c <= '9')
 

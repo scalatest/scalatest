@@ -129,8 +129,8 @@ class EverySpec extends UnitSpec {
     }
   }
   it should "have an apply method" in {
-    Every(1, 2, 3)(0) shouldEqual 1 
-    Every(1, 2, 3)(1) shouldEqual 2 
+    Every(1, 2, 3)(0) shouldEqual 1
+    Every(1, 2, 3)(1) shouldEqual 2
     One("hi")(0) shouldEqual "hi"
     Many(7, 8, 9)(2) shouldEqual 9
     val vectorOutOfBoundsException = intercept[IndexOutOfBoundsException] {
@@ -223,7 +223,7 @@ class EverySpec extends UnitSpec {
   // Could have an implicit conversion from Every[Char] to CharSequence like
   // there is for Seq in Predef.
   /*
-  scala> Vector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i / 2 }  
+  scala> Vector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i / 2 }
   res1: scala.collection.immutable.Vector[Int] = Vector()
   */
   it should "have an collectFirst method" in {
@@ -325,7 +325,7 @@ class EverySpec extends UnitSpec {
   }
 
   /*
-  it should not have an drop method 
+  it should not have an drop method
     scala> Vector(1, 2, 3).drop(3)
     res1: scala.collection.immutable.Vector[Int] = Vector()
 
@@ -655,9 +655,11 @@ class EverySpec extends UnitSpec {
     Every(-1, -2, 3, 4, 5).minBy(_.abs) shouldBe -1
   }
   it should "have a mkString method" in {
-
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     One("hi").mkString shouldBe "hi"
     Many(1, 2, 3).mkString shouldBe "123"
+    // SKIP-DOTTY-END
 
     One("hi").mkString("#") shouldBe "hi"
     Many(1, 2, 3).mkString("#") shouldBe "1#2#3"
@@ -1013,7 +1015,7 @@ class EverySpec extends UnitSpec {
     scala> Vector(1, 2, 3).take(-1)
     res12: scala.collection.immutable.Vector[Int] = Vector()
 
-  it should not have a takeRight method 
+  it should not have a takeRight method
     scala> Vector(1).takeRight(1)
     res13: scala.collection.immutable.Vector[Int] = Vector(1)
     scala> Vector(1).takeRight(0)
