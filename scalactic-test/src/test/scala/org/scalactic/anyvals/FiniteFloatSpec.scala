@@ -91,7 +91,10 @@ class FiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with Typ
       it("throws AssertionError if the passed Float is infinite") {
         an [AssertionError] should be thrownBy FiniteFloat.ensuringValid(Float.PositiveInfinity)
         an [AssertionError] should be thrownBy FiniteFloat.ensuringValid(Float.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy FiniteFloat.ensuringValid(Float.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {

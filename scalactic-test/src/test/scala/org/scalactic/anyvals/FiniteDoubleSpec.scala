@@ -139,7 +139,10 @@ class FiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with Ty
         FiniteDouble.goodOrElse(0.0)(i => i) shouldBe Good(FiniteDouble(0.0))
         FiniteDouble.goodOrElse(-1.1)(i => i) shouldBe Good(FiniteDouble(-1.1))
         FiniteDouble.goodOrElse(-99.0)(i => i) shouldBe Good(FiniteDouble(-99.0))
+        // SKIP-DOTTY-START
+        // not constant literal
         FiniteDouble.goodOrElse(Double.MinPositiveValue)(i => i) shouldBe Good(FiniteDouble(Double.MinPositiveValue))
+        // SKIP-DOTTY-END
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT greater than 0, wrapped in a Bad") {
         FiniteDouble.goodOrElse(Double.NegativeInfinity)(i => s"$i did not taste good") shouldBe Bad("-Infinity did not taste good")
@@ -154,7 +157,10 @@ class FiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with Ty
         FiniteDouble.rightOrElse(0.0)(i => i) shouldBe Right(FiniteDouble(0.0))
         FiniteDouble.rightOrElse(-1.1)(i => i) shouldBe Right(FiniteDouble(-1.1))
         FiniteDouble.rightOrElse(-99.9)(i => i) shouldBe Right(FiniteDouble(-99.9))
+        // SKIP-DOTTY-START
+        // not constant literal
         FiniteDouble.rightOrElse(Double.MinPositiveValue)(i => i) shouldBe Right(FiniteDouble(Double.MinPositiveValue))
+        // SKIP-DOTTY-END
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is infinite, wrapped in a Left") {
         FiniteDouble.rightOrElse(Double.NegativeInfinity)(i => s"$i did not taste good") shouldBe Left("-Infinity did not taste good")

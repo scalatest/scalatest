@@ -208,9 +208,9 @@ trait CompileTimeAssertions {
       case Literal(intConst) =>
         val literalValue = intConst.value.toString.toInt
         if (!isValid(literalValue))
-          throw new scala.tasty.reflect.ExprCastError(notValidMsg)
+          error(notValidMsg, value.unseal.pos)
       case _ =>
-        throw new scala.tasty.reflect.ExprCastError(notLiteralMsg)
+        error(notLiteralMsg, value.unseal.pos)
     }
   }
 
@@ -243,9 +243,9 @@ trait CompileTimeAssertions {
       case Literal(longConst) =>
         val literalValue = longConst.value.toString.toLong
         if (!isValid(literalValue))
-          throw new scala.tasty.reflect.ExprCastError(notValidMsg)
+          error(notValidMsg, value.unseal.pos)
       case _ =>
-        throw new scala.tasty.reflect.ExprCastError(notLiteralMsg)
+        error(notLiteralMsg, value.unseal.pos)
     }
   }
 
@@ -278,9 +278,9 @@ trait CompileTimeAssertions {
       case Literal(floatConst) =>
         val literalValue = floatConst.value.toString.toFloat
         if (!isValid(literalValue))
-          throw new scala.tasty.reflect.ExprCastError(notValidMsg)
+          error(notValidMsg, value.unseal.pos)
       case _ =>
-        throw new scala.tasty.reflect.ExprCastError(notLiteralMsg)
+        error(notLiteralMsg, value.unseal.pos)
     }
   }
 
@@ -313,9 +313,9 @@ trait CompileTimeAssertions {
       case Literal(doubleConst) =>
         val literalValue = doubleConst.value.toString.toDouble
         if (!isValid(literalValue))
-          throw new scala.tasty.reflect.ExprCastError(notValidMsg)
+          error(notValidMsg, value.unseal.pos)
       case _ =>
-        throw new scala.tasty.reflect.ExprCastError(notLiteralMsg)
+        error(notLiteralMsg, value.unseal.pos)
     }
   }
 
@@ -348,9 +348,9 @@ trait CompileTimeAssertions {
       case Literal(stringConst) =>
         val literalValue = stringConst.value.toString
         if (!isValid(literalValue))
-          throw new scala.tasty.reflect.ExprCastError(notValidMsg)
+          error(notValidMsg, value.unseal.pos)
       case _ =>
-        throw new scala.tasty.reflect.ExprCastError(notLiteralMsg)
+        error(notLiteralMsg, value.unseal.pos)
     }
   }
 
@@ -383,9 +383,9 @@ trait CompileTimeAssertions {
       case Literal(charConst) =>
         val literalValue = charConst.value.toString.head
         if (!isValid(literalValue))
-          throw new scala.tasty.reflect.ExprCastError(notValidMsg)
+          error(notValidMsg, value.unseal.pos)
       case _ =>
-        throw new scala.tasty.reflect.ExprCastError(notLiteralMsg)
+        error(notLiteralMsg, value.unseal.pos)
     }
   }
 }

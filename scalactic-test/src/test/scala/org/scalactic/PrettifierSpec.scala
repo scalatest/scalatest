@@ -55,8 +55,10 @@ class PrettifierSpec extends FunSpec with Matchers {
       myLittlePretty(()) should be ("<(), the Unit value>")
       myLittlePretty(List("1", "2", "3")) should be ("List(\"1\", \"2\", \"3\")")
     }
+    // SKIP-DOTTY-START
+    // no runtime reflection in Dotty
     it("should by default offer an apply method that takes two args that returns a PrettyPair whose left and right are prettified by the one-arg apply and hint is None.") {
-    
+
       case class Yell(secret: String)
       val myLittlePretty =
         new Prettifier {
@@ -69,6 +71,7 @@ class PrettifierSpec extends FunSpec with Matchers {
       val left = Yell("I like fruit loops")
       myLittlePretty(left, Yell("I like raisin bran")) shouldBe PrettyPair("I LIKE FRUIT LOOPS!!!", "I LIKE RAISIN BRAN!!!", Some(Differ.simpleClassName(left) + "(secret: \"I like [fruit loops]\" -> \"I like [raisin bran]\")"))
     }
+    // SKIP-DOTTY-END
   }
 
   describe("the basic Prettifier") {

@@ -29,7 +29,7 @@ private[scalatest] trait DocSpecLike extends Suite with Informing with Notifying
 
   private final val engine = new Engine(Resources.concurrentFunSuiteMod, "FunSuite")
   import engine._
-  
+
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
@@ -73,7 +73,7 @@ private[scalatest] trait DocSpecLike extends Suite with Informing with Notifying
     for (snippet <- doc) {
       snippet match {
         case SuiteSnippet(suite) =>
-          // Need to of course compose these, but also need the darned 
+          // Need to of course compose these, but also need the darned
           // status to make a checkmark. And want the stuff to come out
           // in a nice order in the text output. Hmm. I think this is the
           // sorting thing? Yes, this one started first, so it gets sorted
@@ -82,7 +82,7 @@ private[scalatest] trait DocSpecLike extends Suite with Informing with Notifying
           // Like mocha did in the output, and in the HTML.
           suite.run(None, args)
         case MarkupSnippet(text) =>
-          reportMarkupProvided(thisSuite, reporter, tracker, None, trimMarkup(stripMargin(text)), 0, None, true)
+          reportMarkupProvided(thisSuite, reporter, tracker, None, trimMarkup(DocSpec.stripMargin(text)), 0, None, true)
       }
     }
     SucceededStatus

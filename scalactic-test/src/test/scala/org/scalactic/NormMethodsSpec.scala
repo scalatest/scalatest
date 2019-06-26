@@ -21,9 +21,9 @@ class NormMethodsSpec extends FunSpec with StringNormalizations with NormMethods
 
   describe("trait NormMethods") {
     it("should provide a .norm method for any type T for which an implicit Normalization[T] is available") {
- 
+
       { // Try with lowerCased
-        implicit val strNorm = lowerCased
+        implicit val strNorm: Normalization[String] = lowerCased
         assert("Hello".norm === "hello")
         assert("hello".norm === "hello")
         assert("".norm === "")
@@ -31,7 +31,7 @@ class NormMethodsSpec extends FunSpec with StringNormalizations with NormMethods
       }
 
       { // Try with trimmed
-        implicit val strNorm = trimmed
+        implicit val strNorm: Normalization[String] = trimmed
         assert("hello".norm === "hello")
         assert(" hello".norm === "hello")
         assert("hello ".norm === "hello")
@@ -43,7 +43,7 @@ class NormMethodsSpec extends FunSpec with StringNormalizations with NormMethods
       }
 
       { // Try with upperCased
-        implicit val strNorm = upperCased
+        implicit val strNorm: Normalization[String] = upperCased
         assert("Hello".norm === "HELLO")
         assert("hello".norm === "HELLO")
         assert("".norm === "")
@@ -51,7 +51,7 @@ class NormMethodsSpec extends FunSpec with StringNormalizations with NormMethods
       }
 
       { // Try with a type other than String
-        implicit val intNorm = 
+        implicit val intNorm: Normalization[Int] =
           new Normalization[Int] {
             def normalized(i: Int) = i.abs
           }
