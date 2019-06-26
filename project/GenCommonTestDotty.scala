@@ -53,16 +53,14 @@ object GenCommonTestDotty {
     }
   }
 
-  def copyDir(sourceDirName: String, packageDirName: String, files: List[String], targetDir: File): Seq[File] = {
+  def copyDir(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
     val sourceDir = new File(sourceDirName)
-    files.map { sourceFileName =>
-      val sourceFile = new File(sourceDir, sourceFileName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && f.getName.endsWith(".scala")).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
-      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified) {
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
         copyFile(sourceFile, destFile)
-      }
 
       destFile
     }
@@ -84,9 +82,11 @@ object GenCommonTestDotty {
 
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir,
-      List(
-      )
-    ) /*++
+      List.empty
+    ) ++
+    copyDir("common-test/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDir("common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty)
+    /*++
       copyDir("common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
         List("ExampleLikeSpecs.scala"), targetDir)*/
   }

@@ -38,8 +38,7 @@ object GenGen {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
-package prop
+package org.scalatest.prop
 
 import org.scalactic.anyvals.PosZInt
 
@@ -821,7 +820,7 @@ object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
 
   val generatorSuitePreamble = """
 
-import org.scalatest.Matchers
+import org.scalatest._
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 """
 
@@ -3788,6 +3787,22 @@ $okayAssertions$
     genGeneratorDrivenSuite(dir, false, false, generatorSuiteFutureAssertTemplate, "assert", true) ++
     genGeneratorDrivenSuite(dir, true, true, generatorSuiteFutureAssertTemplate, "assert", true) ++
     genGeneratorDrivenSuite(dir, false, true, generatorSuiteFutureAssertTemplate, "assert", true) /*++
+    genGeneratorDrivenSuite(dir, true, false, generatorSuiteExpectTemplate, "expect", false) ++
+    genGeneratorDrivenSuite(dir, false, false, generatorSuiteExpectTemplate, "expect", false) ++
+    genGeneratorDrivenSuite(dir, true, true, generatorSuiteExpectTemplate, "expect", false) ++
+    genGeneratorDrivenSuite(dir, false, true, generatorSuiteExpectTemplate, "expect", false)*/
+
+  }
+
+  def genTestForJS(dir: File, version: String, scalaVersion: String): Seq[File] = {
+    genGeneratorDrivenSuite(dir, true, false, generatorSuiteAssertTemplate, "assert", false) ++
+    genGeneratorDrivenSuite(dir, false, false, generatorSuiteAssertTemplate, "assert", false) ++
+    genGeneratorDrivenSuite(dir, true, true, generatorSuiteAssertTemplate, "assert", false) ++
+    genGeneratorDrivenSuite(dir, false, true, generatorSuiteAssertTemplate, "assert", false) /*++
+    genGeneratorDrivenSuite(dir, true, false, generatorSuiteFutureAssertTemplate, "assert", true) ++
+    genGeneratorDrivenSuite(dir, false, false, generatorSuiteFutureAssertTemplate, "assert", true) ++
+    genGeneratorDrivenSuite(dir, true, true, generatorSuiteFutureAssertTemplate, "assert", true) ++
+    genGeneratorDrivenSuite(dir, false, true, generatorSuiteFutureAssertTemplate, "assert", true) ++
     genGeneratorDrivenSuite(dir, true, false, generatorSuiteExpectTemplate, "expect", false) ++
     genGeneratorDrivenSuite(dir, false, false, generatorSuiteExpectTemplate, "expect", false) ++
     genGeneratorDrivenSuite(dir, true, true, generatorSuiteExpectTemplate, "expect", false) ++

@@ -170,8 +170,7 @@ val copyrightTemplate = """/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
-package prop
+package org.scalatest.prop
 """
 
 val importsForTableForNTemplate = """
@@ -179,7 +178,7 @@ import scala.collection.mutable.Builder
 import scala.collection.mutable.ListBuffer
 import org.scalactic.ColCompatHelper.IndexedSeqLike
 import scala.collection.generic.CanBuildFrom
-import exceptions.StackDepth
+import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 import org.scalatest.enablers.TableAsserting
@@ -508,7 +507,7 @@ object Tables extends Tables
 """
 
 val propertyCheckPreamble = """
-import exceptions.StackDepth
+import org.scalatest.exceptions.StackDepth
 import scala.annotation.tailrec
 import org.scalatest.enablers.TableAsserting
 import org.scalactic._

@@ -338,6 +338,7 @@ object ScalatestBuild {
       sourceGenerators in Compile += {
         Def.task{
           GenCommonTestJS.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
           GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
@@ -354,6 +355,7 @@ object ScalatestBuild {
         sourceGenerators in Compile += {
           Def.task{
             GenCommonTestNative.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+            GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
             GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
           }.taskValue
         },
@@ -372,6 +374,7 @@ object ScalatestBuild {
       sourceGenerators in Compile += {
         Def.task{
           GenCommonTestDotty.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
           GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
@@ -885,7 +888,6 @@ object ScalatestBuild {
       Compile / sourceGenerators += {
         Def.task{
           GenScalaTestJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
-          GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
           GenTable.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenFactories.genMainJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
@@ -976,7 +978,6 @@ object ScalatestBuild {
       },
       sourceGenerators in Compile += {
         Def.task{
-          GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
           GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenMatchers.genMainForDotty((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenFactoriesDotty.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value) ++
@@ -1093,7 +1094,7 @@ object ScalatestBuild {
       },
       sourceGenerators in Test +=
         Def.task {
-          GenGen.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+          GenGen.genTestForJS((sourceManaged in Test).value, version.value, scalaVersion.value)
         },
       sourceGenerators in Test +=
         Def.task {
@@ -1140,7 +1141,6 @@ object ScalatestBuild {
       //unmanagedResourceDirectories in Compile <+= sourceManaged( _ / "resources" ),
       sourceGenerators in Compile += {
         Def.task{
-          GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
           GenTable.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           GenFactories.genMainJS((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
