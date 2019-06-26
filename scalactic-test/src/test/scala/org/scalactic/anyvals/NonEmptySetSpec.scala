@@ -21,6 +21,7 @@ import scala.collection.mutable.ListBuffer
 
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
+import org.scalactic.NormalizingEquality
 
 import org.scalatest.CompatParColls.Converters._
 
@@ -212,13 +213,15 @@ class NonEmptySetSpec extends UnitSpec {
     e.contains(3) shouldBe true
     e.contains(4) shouldBe false
     val es = NonEmptySet("one", "two", "three")
-    es.contains("one") shouldBe true;
-    es.contains("ONE") shouldBe false;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.contains("one") shouldBe true;
-      es.contains("ONE") shouldBe false
-    }
+    es.contains("one") shouldBe true
+    es.contains("ONE") shouldBe false
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.contains("one") shouldBe true
+    es.contains("ONE") shouldBe false
+    // SKIP-DOTTY-END
   }
   it should "have 3 copyToArray methods" in {
 
@@ -446,9 +449,11 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(-1, -2, 3, 4, 5).minBy(_.abs) shouldBe -1
   }
   it should "have a mkString method" in {
-
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     NonEmptySet("hi").mkString shouldBe "hi"
     NonEmptySet(1, 2, 3).mkString shouldBe "231"
+    // SKIP-DOTTY-END
 
     NonEmptySet("hi").mkString("#") shouldBe "hi"
     NonEmptySet(1, 2, 3).mkString("#") shouldBe "2#3#1"

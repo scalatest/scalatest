@@ -25,7 +25,7 @@ import scala.tasty._
 
 import CompileTimeAssertions._
 
-private[scalactic] object RegexStringMacro {
+object RegexStringMacro {
 
   def isValid(s: String): Boolean =
     checkIsValid(s)._1

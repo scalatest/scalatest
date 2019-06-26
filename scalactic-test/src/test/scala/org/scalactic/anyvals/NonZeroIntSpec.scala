@@ -159,7 +159,10 @@ class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
     }
     it("should offer MaxValue and MinValue factory methods") {
       NonZeroInt.MaxValue shouldEqual NonZeroInt.from(Int.MaxValue).get
+      // SKIP-DOTTY-START
+      // not a literal
       NonZeroInt.MinValue shouldEqual NonZeroInt(Int.MinValue)
+      // SKIP-DOTTY-END
     }
 
     it("should be sortable") {

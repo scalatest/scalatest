@@ -30,7 +30,7 @@ object CompileMacro {
 
     if (!typing.typeChecks(code)) '{ Succeeded }
     else '{
-      val messageExpr = Resources.expectedCompileErrorButGotNone(${ code.toExpr })
+      val messageExpr = Resources.expectedTypeErrorButGotNone(${ code.toExpr })
       throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
     }
   }
@@ -121,7 +121,7 @@ object CompileMacro {
 
     if (typing.typeChecks(code)) '{ Succeeded }
     else '{
-      val messageExpr = Resources.expectedCompileErrorButGotNone(${ code.toExpr })
+      val messageExpr = Resources.expectedNoErrorButGotTypeError("unknown", ${ code.toExpr })
       throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
     }
   }

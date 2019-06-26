@@ -101,7 +101,7 @@ private[scalatest] trait Doc extends Suite { thisDoc =>
     "\ninclude[" + suite.getClass.getName + "]\n"
   }
 
-  // TODO write a test to ensure you get a proper exception when 
+  // TODO write a test to ensure you get a proper exception when
   // body is not called
   private lazy val snippets: Vector[Snippet] = getSnippets(bodyText.get)
 
@@ -127,13 +127,13 @@ println("&&&&&&&&&&&")
   override protected def runNestedSuites(args: Args): Status = {
 
     import args._
-    
+
     val statusBuffer = new ListBuffer[Status]()
 
     val (_, registeredSuites) = atomic.get.unpack
     snippets foreach {
-      case Markup(text) => 
-        reportMarkupProvided(thisDoc, reporter, tracker, None, trimMarkup(stripMargin(text)), 0, None, true)
+      case Markup(text) =>
+        reportMarkupProvided(thisDoc, reporter, tracker, None, trimMarkup(Doc.stripMargin(text)), 0, None, true)
       case IncludedSuite(suite) =>
         println("Send SuiteStarting ... ")  // TODO: Why is runTestedSuites even here?
         statusBuffer += suite.run(None, args)
@@ -189,7 +189,7 @@ private[scalatest] object Doc {
     val lines = text.lines.toList
     val zipLines = lines.zipWithIndex
     val firstNonWhiteLine = zipLines.find { case (line, _) => !line.trim.isEmpty }
-    val lastNonWhiteLine = zipLines.reverse.find { case (line, _) => !line.trim.isEmpty } 
+    val lastNonWhiteLine = zipLines.reverse.find { case (line, _) => !line.trim.isEmpty }
     (firstNonWhiteLine, lastNonWhiteLine) match {
       case (None, None) => text.trim // Will be either (None, None) or (Some, Some)
       case (Some((_, frontIdx)), Some((_, backIdx))) => lines.take(backIdx + 1).drop(frontIdx).mkString("\n")

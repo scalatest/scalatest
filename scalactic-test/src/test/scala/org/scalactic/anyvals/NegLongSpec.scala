@@ -149,7 +149,10 @@ class NegLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
     }
     it("should offer MaxValue and MinValue factory methods") {
       NegLong.MaxValue shouldEqual NegLong.from(-1L).get
+      // SKIP-DOTTY-START
+      // not constant literal
       NegLong.MinValue shouldEqual NegLong(Long.MinValue)
+      // SKIP-DOTTY-END
     }
 
     it("should be sortable") {

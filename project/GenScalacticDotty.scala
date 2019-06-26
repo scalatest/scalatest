@@ -99,22 +99,16 @@ object GenScalacticDotty {
       List(
         "BooleanMacro.scala", // Re-implemented
         "Requirements.scala", // Re-implemented
-        "Snapshots.scala"  // Pending macro re-implementation
+        "Snapshots.scala"  // Re-implemented
       )
     ) ++
     copyDir("scalactic/src/main/scala/org/scalactic/exceptions", "org/scalactic/exceptions", targetDir, List.empty) ++
     copyDir("scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir,
       List(
         "Position.scala",  // Re-implemented
-        "TypeInfo.scala"  // Pending macro re-implementation.
+        "TypeInfo.scala"  // Re-implemented
       )) ++
-    copyFiles("scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
-      List(
-        "NonEmptyArray.scala",
-        "NonEmptyList.scala",
-        "End.scala"
-      )
-    )
+    copyDir("scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
 
   def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic-macro/src/main/scala/org/scalactic", "org/scalactic", targetDir,
@@ -127,7 +121,7 @@ object GenScalacticDotty {
     copyDir("scalactic-macro/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir,
       List(
         "PositionMacro.scala",  // Already reimplemented in Position.scala
-        "TypeInfoMacro.scala"  // Not re-implemented yet
+        "TypeInfoMacro.scala"   // Already reimplemented
       )
     )
 
@@ -149,20 +143,14 @@ object GenScalacticDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
-        "ChainSpec.scala",  // Compilation error to be investigated further
-        "DecidersSpec.scala",  // Compilation error to be investigated further
-        "DifferSpec.scala",  // Test failed when run to be investigate further.
-        "DirectRequirementsSpec.scala",  // macro expansion error: invalid prefix NoType
-        "EverySpec.scala",  // Compilation error to be investigated further
-        "NormalizationSpec.scala",  // Compilation error to be investigated further.
-        "NormMethodsSpec.scala",  // Compilation error to be investigated further.
-        "OrSpec.scala",  // Compilation error to be investigated further.
-        "PrettifierSpec.scala",  // Test failed with java.lang.IllegalAccessException
-        "RequirementsSpec.scala",  // Error during macro expansion
-        "TolerantEquivalenceSpec.scala",   // Compilation error to be investigated further.
-        "TripleEqualsSpec.for210"  // Old staff, we shall delete this soon.
+        "TripleEqualsSpec.for210",  // Old staff, we shall delete this soon.
+        "FutureSugarSpec.scala"     // instability, occasional timeout in CI
       )) ++
-    //copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
+    copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
+      List(
+        "OddIntMacro.scala",  // not used, scala2 macros
+        "OddInt.scala"        // not used, scala2 macros
+      )) ++
     copyDir("scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
 
 }

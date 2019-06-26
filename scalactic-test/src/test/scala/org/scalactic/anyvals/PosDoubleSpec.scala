@@ -62,7 +62,7 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         PosDouble.from(-0.00001) shouldBe None
         PosDouble.from(-99.9) shouldBe None
       }
-    } 
+    }
     describe("should offer an ensuringValid factory method that") {
       it("returns PosDouble if the passed Double is greater than 0") {
         PosDouble.ensuringValid(50.23).value shouldBe 50.23
@@ -74,7 +74,10 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         an [AssertionError] should be thrownBy PosDouble.ensuringValid(-0.00001)
         an [AssertionError] should be thrownBy PosDouble.ensuringValid(-99.9)
         an [AssertionError] should be thrownBy PosDouble.ensuringValid(Double.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy PosDouble.ensuringValid(Double.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -132,7 +135,7 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         PosDouble.isValid(-0.00001) shouldBe false
         PosDouble.isValid(-99.9) shouldBe false
       }
-    } 
+    }
     describe("should offer a fromOrElse factory method that") {
       it("returns a PosDouble if the passed Double is greater than 0") {
         PosDouble.fromOrElse(50.23, PosDouble(42.0)).value shouldBe 50.23
@@ -143,7 +146,7 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         PosDouble.fromOrElse(-0.00001, PosDouble(42.0)).value shouldBe 42.0
         PosDouble.fromOrElse(-99.9, PosDouble(42.0)).value shouldBe 42.0
       }
-    } 
+    }
     it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
       PosDouble.MaxValue shouldEqual PosDouble.from(Double.MaxValue).get
       PosDouble.MinValue shouldEqual
@@ -386,7 +389,10 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       PosDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) shouldEqual PosDouble.ensuringValid(Double.PositiveInfinity)
       an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ - PosDouble.MaxValue) }
       an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
     }
   }
 }

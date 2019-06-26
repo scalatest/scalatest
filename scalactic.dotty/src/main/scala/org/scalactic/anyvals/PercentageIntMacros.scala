@@ -20,7 +20,7 @@ import scala.tasty._
 
 import CompileTimeAssertions._
 
-private[scalactic] object PercentageIntMacro {
+object PercentageIntMacro {
 
   def isValid(i: Int): Boolean = i >= 0 && i <= 100
 

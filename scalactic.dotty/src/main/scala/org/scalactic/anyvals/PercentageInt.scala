@@ -20,7 +20,7 @@ private[scalactic] final class PercentageInt private (val value: Int) extends An
   override def toString: String = s"PercentageInt($value)"
 }
 
-private[scalactic] object PercentageInt {
+object PercentageInt {
 
   def from(value: Int): Option[PercentageInt] =
     if (PercentageIntMacro.isValid(value)) Some(new PercentageInt(value)) else None

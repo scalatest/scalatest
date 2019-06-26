@@ -92,7 +92,10 @@ class NegZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
         an [AssertionError] should be thrownBy NegZFiniteDouble.ensuringValid(99.9)
         an [AssertionError] should be thrownBy NegZFiniteDouble.ensuringValid(Double.PositiveInfinity)
         an [AssertionError] should be thrownBy NegZFiniteDouble.ensuringValid(Double.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy NegZFiniteDouble.ensuringValid(Double.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -322,7 +325,10 @@ class NegZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
       an [AssertionError] should be thrownBy { NegZFiniteDouble.MaxValue.ensuringValid(_ - NegZFiniteDouble.MaxValue + 1) }
       an [AssertionError] should be thrownBy { NegZFiniteDouble.MaxValue.ensuringValid(_ => Double.PositiveInfinity) }
       an [AssertionError] should be thrownBy { NegZFiniteDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { NegZFiniteDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
     }
   }
 }

@@ -39,7 +39,7 @@ trait PosFloatSpecSupport {
           case Success(bFloat: Float) if bFloat.isNaN => true
           case _ => false
         }
-      case Success(double: Double) if double.isNaN => 
+      case Success(double: Double) if double.isNaN =>
         b match {
           case Success(bDouble: Double) if bDouble.isNaN => true
           case _ => false
@@ -67,7 +67,7 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         PosFloat.from(-0.00001F) shouldBe None
         PosFloat.from(-99.9F) shouldBe None
       }
-    } 
+    }
     describe("should offer an ensuringValid factory method that") {
       it("returns PosFloat if the passed Float is greater than 0") {
         PosFloat.ensuringValid(50.23F).value shouldBe 50.23F
@@ -79,7 +79,10 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(-0.00001F)
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(-99.9F)
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(Float.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(Float.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -137,7 +140,7 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         PosFloat.isValid(-0.00001f) shouldBe false
         PosFloat.isValid(-99.9f) shouldBe false
       }
-    } 
+    }
     describe("should offer a fromOrElse factory method that") {
       it("returns a PosFloat if the passed Float is greater than 0") {
         PosFloat.fromOrElse(50.23f, PosFloat(42.0f)).value shouldBe 50.23f
@@ -148,7 +151,7 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         PosFloat.fromOrElse(-0.00001f, PosFloat(42.0f)).value shouldBe 42.0f
         PosFloat.fromOrElse(-99.9f, PosFloat(42.0f)).value shouldBe 42.0f
       }
-    } 
+    }
     it("should offer MaxValue and MinValue factory methods") {
       PosFloat.MaxValue shouldEqual PosFloat.from(Float.MaxValue).get
       PosFloat.MinValue shouldEqual
@@ -176,7 +179,7 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
     }
 
     describe("when created with apply method") {
-  
+
       it("should compile when 8 is passed in") {
         "PosFloat(8)" should compile
         PosFloat(8).value shouldEqual 8.0F
@@ -185,13 +188,13 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         "PosFloat(8.0F)" should compile
         PosFloat(8.0F).value shouldEqual 8.0F
       }
-  
+
       it("should not compile when 0 is passed in") {
         "PosFloat(0)" shouldNot compile
         "PosFloat(0L)" shouldNot compile
         "PosFloat(0.0F)" shouldNot compile
       }
-  
+
       it("should not compile when -8 is passed in") {
         "PosFloat(-8)" shouldNot compile
         "PosFloat(-8L)" shouldNot compile
@@ -408,7 +411,10 @@ specifying floats so long as it is in the valid range for floats.
     PosFloat(33.0f).ensuringValid(_ => Float.PositiveInfinity) shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
     an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ - PosFloat.MaxValue) }
     an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6710
     an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NaN) }
+    // SKIP-DOTTY-END
   }
 }
-  
+
