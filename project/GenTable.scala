@@ -1099,7 +1099,7 @@ $columnsOfOnes$
 $columnsOfTwos$
       )
 
-    intercept[exceptions.TestFailedException] {
+    intercept[org.scalatest.exceptions.TestFailedException] {
       forEvery (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
     }
   }
@@ -1138,7 +1138,7 @@ $columnsOfOnes$
 $columnsOfTwos$
       )
 
-    intercept[exceptions.TestFailedException] {
+    intercept[org.scalatest.exceptions.TestFailedException] {
       exists (examples) { ($names$) => assert($sumOfArgs$ === ($n$)) }
     }
   }
@@ -1285,7 +1285,7 @@ $columnsOfOnes$
 $columnsOfTwos$
       )
 
-    recoverToSucceededIf[exceptions.TestFailedException] {
+    recoverToSucceededIf[org.scalatest.exceptions.TestFailedException] {
       forEvery (examples) { ($names$) => Future { assert($sumOfArgs$ === ($n$)) } }
     }
   }
@@ -1341,7 +1341,7 @@ $columnsOfOnes$
 $columnsOfTwos$
       )
 
-    recoverToSucceededIf[exceptions.TestFailedException] {
+    recoverToSucceededIf[org.scalatest.exceptions.TestFailedException] {
       exists (examples) { ($names$) => Future { assert($sumOfArgs$ === ($n$)) } }
     }
   }
