@@ -39,29 +39,38 @@ private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(imp
 
   future.onComplete {
     case Success(result) =>
-      for (f <- queue.iterator)
-        f(Success(result))
-      status.setCompleted()
+      synchronized {
+        /*for (f <- queue.iterator)
+        f(Success(result))*/
+        while (!queue.isEmpty) {
+          val f = queue.poll
+          f(Success(result))
+        }
+        status.setCompleted()
+      }
 
     case Failure(ex) =>
-      for (f <- queue.iterator)
-        f(Failure(ex))
-      status.setFailedWith(ex)
-      status.setCompleted()
+      synchronized {
+        /*for (f <- queue.iterator)
+        f(Failure(ex))*/
+        while (!queue.isEmpty) {
+          val f = queue.poll
+          f(Failure(ex))
+        }
+        status.setFailedWith(ex)
+        status.setCompleted()
+      }
   } /* fills in ctx here */
 
   def onComplete(f: Try[Outcome] => Unit): Unit = {
-    var executeLocally = false
     synchronized {
       if (!future.isCompleted)
         queue.add(f)
-      else
-        executeLocally = true
-    }
-    if (executeLocally) {
-      future.value.get match {
-        case Success(result) => f(new Success(result))
-        case Failure(ex) => f(new Failure(ex))
+      else {
+        future.value.get match {
+          case Success(result) => f(new Success(result))
+          case Failure(ex) => f(new Failure(ex))
+        }
       }
     }
   }

@@ -573,38 +573,40 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   def setCompleted(): Unit = {
     // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
     // we are iterating through the list of callbacks prior to adding the last one.
-    val it =
+    //val it =
       synchronized {
         // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
         // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
         // for this Status to complete.
         latch.countDown()
-        queue.iterator
+        //queue.iterator
+        val tri: Try[Boolean] =
+          unreportedException match {
+            case Some(ex) => Failure(ex)
+            case None => Success(succeeded)
+          }
+        /*for (f <- it)
+          f(tri)*/
+        while (!queue.isEmpty) {
+          val f = queue.poll
+          f(tri)
+        }
       }
-    val tri: Try[Boolean] =
-      unreportedException match {
-        case Some(ex) => Failure(ex)
-        case None => Success(succeeded)
-      }
-    for (f <- it)
-      f(tri)
+
   }
 
   def whenCompleted(f: Try[Boolean] => Unit): Unit = {
-    var executeLocally = false
     synchronized {
       if (!isCompleted)
         queue.add(f)
-      else
-        executeLocally = true
-    }
-    if (executeLocally) {
-      val tri: Try[Boolean] =
-        unreportedException match {
-          case Some(ex) => Failure(ex)
-          case None => Success(succeeded)
-        }
-      f(tri)
+      else {
+        val tri: Try[Boolean] =
+          unreportedException match {
+            case Some(ex) => Failure(ex)
+            case None => Success(succeeded)
+          }
+        f(tri)
+      }
     }
   }
 }
@@ -730,21 +732,26 @@ final class StatefulStatus extends Status with Serializable {
   def setCompleted(): Unit = {
     // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
     // we are iterating through the list of callbacks prior to adding the last one.
-    val it =
+    //val it =
       synchronized {
       // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
       // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
       // for this Status to complete.
         latch.countDown()
-        queue.iterator
+      //  queue.iterator
+
+        val tri: Try[Boolean] =
+          unreportedException match {
+            case Some(ex) => Failure(ex)
+            case None => Success(succeeded)
+          }
+        /*for (f <- it)
+          f(tri)*/
+        while (!queue.isEmpty) {
+          val f = queue.poll
+          f(tri)
+        }
       }
-    val tri: Try[Boolean] =
-      unreportedException match {
-        case Some(ex) => Failure(ex)
-        case None => Success(succeeded)
-      }
-    for (f <- it)
-      f(tri)
   }
 
   /**
@@ -756,21 +763,19 @@ final class StatefulStatus extends Status with Serializable {
    * </p>
    */
   def whenCompleted(f: Try[Boolean] => Unit): Unit = {
-    var executeLocally = false
     synchronized {
       if (!isCompleted)
         queue.add(f)
-      else
-        executeLocally = true
+      else {
+        val tri: Try[Boolean] =
+          unreportedException match {
+            case Some(ex) => Failure(ex)
+            case None => Success(succeeded)
+          }
+        f(tri)
+      }
     }
-    if (executeLocally) {
-      val tri: Try[Boolean] =
-        unreportedException match {
-          case Some(ex) => Failure(ex)
-          case None => Success(succeeded)
-        }
-      f(tri)
-    }
+
   }
 }
 
@@ -823,8 +828,12 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
             case Some(ex) => Failure(ex)
             case None => Success(succeeded)
           }
-        for (f <- queue.iterator)
+        /*for (f <- queue.iterator)
+          f(tri)*/
+        while (!queue.isEmpty) {
+          val f = queue.poll
           f(tri)
+        }
       }
     }
   }
