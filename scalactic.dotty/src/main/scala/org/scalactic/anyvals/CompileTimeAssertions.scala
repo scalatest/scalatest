@@ -18,7 +18,6 @@ package org.scalactic.anyvals
 import org.scalactic.Resources
 
 import scala.quoted._
-import scala.tasty._
 
 /**
  * Trait providing assertion methods that can be called at compile time from macros
@@ -201,8 +200,8 @@ trait CompileTimeAssertions {
    * @param notLiteralMsg a <code>String</code> message to include in the exception thrown if the expression is not a literal
    * @param isValid a function used to validate a literal value parsed from the given expression
    */
-  def ensureValidIntLiteral(value: Expr[Int], notValidMsg: String, notLiteralMsg: String)(isValid: Int => Boolean)(implicit refl: Reflection): Unit = {
-    import refl._
+  def ensureValidIntLiteral(value: Expr[Int], notValidMsg: String, notLiteralMsg: String)(isValid: Int => Boolean)(implicit qctx: QuoteContext): Unit = {
+    import qctx.tasty._
 
     value.unseal.underlyingArgument match {
       case Literal(intConst) =>
@@ -236,8 +235,8 @@ trait CompileTimeAssertions {
    * @param notLiteralMsg a <code>String</code> message to include in the exception thrown if the expression is not a literal
    * @param isValid a function used to validate a literal value parsed from the given expression
    */
-  def ensureValidLongLiteral(value: Expr[Long], notValidMsg: String, notLiteralMsg: String)(isValid: Long => Boolean)(implicit refl: Reflection): Unit = {
-    import refl._
+  def ensureValidLongLiteral(value: Expr[Long], notValidMsg: String, notLiteralMsg: String)(isValid: Long => Boolean)(implicit qctx: QuoteContext): Unit = {
+    import qctx.tasty._
 
     value.unseal.underlyingArgument match {
       case Literal(longConst) =>
@@ -271,8 +270,8 @@ trait CompileTimeAssertions {
    * @param notLiteralMsg a <code>String</code> message to include in the exception thrown if the expression is not a literal
    * @param isValid a function used to validate a literal value parsed from the given expression
    */
-  def ensureValidFloatLiteral(value: Expr[Float], notValidMsg: String, notLiteralMsg: String)(isValid: Float => Boolean)(implicit refl: Reflection): Unit = {
-    import refl._
+  def ensureValidFloatLiteral(value: Expr[Float], notValidMsg: String, notLiteralMsg: String)(isValid: Float => Boolean)(implicit qctx: QuoteContext): Unit = {
+    import qctx.tasty._
 
     value.unseal.underlyingArgument match {
       case Literal(floatConst) =>
@@ -306,8 +305,8 @@ trait CompileTimeAssertions {
    * @param notLiteralMsg a <code>String</code> message to include in the exception thrown if the expression is not a literal
    * @param isValid a function used to validate a literal value parsed from the given expression
    */
-  def ensureValidDoubleLiteral(value: Expr[Double], notValidMsg: String, notLiteralMsg: String)(isValid: Double => Boolean)(implicit refl: Reflection): Unit = {
-    import refl._
+  def ensureValidDoubleLiteral(value: Expr[Double], notValidMsg: String, notLiteralMsg: String)(isValid: Double => Boolean)(implicit qctx: QuoteContext): Unit = {
+    import qctx.tasty._
 
     value.unseal.underlyingArgument match {
       case Literal(doubleConst) =>
@@ -341,8 +340,8 @@ trait CompileTimeAssertions {
    * @param notLiteralMsg a <code>String</code> message to include in the exception thrown if the expression is not a literal
    * @param isValid a function used to validate a literal value parsed from the given expression
    */
-  def ensureValidStringLiteral(value: Expr[String], notValidMsg: String, notLiteralMsg: String)(isValid: String => Boolean)(implicit refl: Reflection): Unit = {
-    import refl._
+  def ensureValidStringLiteral(value: Expr[String], notValidMsg: String, notLiteralMsg: String)(isValid: String => Boolean)(implicit qctx: QuoteContext): Unit = {
+    import qctx.tasty._
 
     value.unseal.underlyingArgument match {
       case Literal(stringConst) =>
@@ -376,8 +375,8 @@ trait CompileTimeAssertions {
    * @param notLiteralMsg a <code>String</code> message to include in the exception thrown if the expression is not a literal
    * @param isValid a function used to validate a literal value parsed from the given expression
    */
-  def ensureValidCharLiteral(value: Expr[Char], notValidMsg: String, notLiteralMsg: String)(isValid: Char => Boolean)(implicit refl: Reflection): Unit = {
-    import refl._
+  def ensureValidCharLiteral(value: Expr[Char], notValidMsg: String, notLiteralMsg: String)(isValid: Char => Boolean)(implicit qctx: QuoteContext): Unit = {
+    import qctx.tasty._
 
     value.unseal.underlyingArgument match {
       case Literal(charConst) =>

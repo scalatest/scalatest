@@ -17,7 +17,6 @@ package org.scalactic.anyvals
 
 import org.scalactic.Resources
 import scala.quoted._
-import scala.tasty._
 
 import CompileTimeAssertions._
 
@@ -25,8 +24,8 @@ object NumericStringMacro {
 
   def isValid(s: String): Boolean = s.forall(c => c >= '0' && c <= '9')
 
-  def apply(value: Expr[String])(implicit refl: Reflection): Expr[NumericString] = {
-    import refl._
+  def apply(value: Expr[String])(implicit qctx: QuoteContext): Expr[NumericString] = {
+    import qctx.tasty._
 
     val notValidMsg =
       "NumericString.apply can only be invoked on String literals that contain numeric characters, i.e., decimal digits '0' through '9', " +

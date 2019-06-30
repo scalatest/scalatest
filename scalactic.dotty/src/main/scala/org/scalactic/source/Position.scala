@@ -16,7 +16,6 @@
 package org.scalactic.source
 
 import scala.quoted._
-import scala.tasty._
 
 /**
  * A source file position consisting of a simple source file name, the
@@ -67,13 +66,13 @@ object Position {
   /**
    * Helper method for Position macro.
    */
-  private def genPosition(implicit refl: Reflection): Expr[Position] = {
-    import refl._
+  private def genPosition(implicit qctx: QuoteContext): Expr[Position] = {
+    import qctx.tasty._
 
-    val file = refl.rootPosition.sourceFile
+    val file = rootPosition.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = if (showScalacticFillFilePathnames) file.toString else Resources.pleaseDefineScalacticFillFilePathnameEnvVar()
-    val lineNo: Int = refl.rootPosition.startLine
+    val lineNo: Int = rootPosition.startLine
     '{ Position(${fileName.toExpr}, ${filePath.toExpr}, ${lineNo.toExpr}) }
   }
 

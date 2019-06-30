@@ -16,14 +16,13 @@
 package org.scalatest
 
 import org.scalactic._
-import scala.tasty._
 import scala.quoted._
 
 
 object DiagrammedExprMacro {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
-  def parse(refl: Reflection)(expr: refl.Term): refl.Term = {
-    import refl._
+  def parse(qctx: QuoteContext)(expr: qctx.tasty.Term): qctx.tasty.Term = {
+    import qctx.tasty._
     import util._
 
     type R
@@ -64,7 +63,7 @@ object DiagrammedExprMacro {
             (diagrams, others :+ arg)
           case (arg, tp) =>
             if (tp.widen.typeSymbol.show.startsWith("scala.Function")) (diagrams, others :+ arg)
-            else (diagrams :+ parse(refl)(arg), others)
+            else (diagrams :+ parse(qctx)(arg), others)
         }
       }
 
@@ -84,7 +83,7 @@ object DiagrammedExprMacro {
       case sel @ Select(qual, name) =>
         type T
         implicit val objTp: quoted.Type[T] = qual.tpe.seal.asInstanceOf[quoted.Type[T]]
-        val obj = parse(refl)(qual).seal.cast[DiagrammedExpr[T]]
+        val obj = parse(qctx)(qual).seal.cast[DiagrammedExpr[T]]
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
 
         '{
@@ -94,13 +93,13 @@ object DiagrammedExprMacro {
 
       case Block(stats, expr) =>
         // call parse recursively using the expr argument if it is a block
-        Block(stats, parse(refl)(expr))
+        Block(stats, parse(qctx)(expr))
       case Apply(sel @ Select(lhs, op), rhs :: Nil) =>
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
         op match {
           case "||" | "|" =>
-            val left = parse(refl)(lhs).seal.cast[DiagrammedExpr[Boolean]]
-            val right = parse(refl)(rhs).seal.cast[DiagrammedExpr[Boolean]]
+            val left = parse(qctx)(lhs).seal.cast[DiagrammedExpr[Boolean]]
+            val right = parse(qctx)(rhs).seal.cast[DiagrammedExpr[Boolean]]
 
             '{
               val l = $left
@@ -111,8 +110,8 @@ object DiagrammedExprMacro {
               }
             }.unseal
           case "&&" | "&" =>
-            val left = parse(refl)(lhs).seal.cast[DiagrammedExpr[Boolean]]
-            val right = parse(refl)(rhs).seal.cast[DiagrammedExpr[Boolean]]
+            val left = parse(qctx)(lhs).seal.cast[DiagrammedExpr[Boolean]]
+            val right = parse(qctx)(rhs).seal.cast[DiagrammedExpr[Boolean]]
             '{
               val l = $left
               if (!l.value) l
@@ -124,7 +123,7 @@ object DiagrammedExprMacro {
           case _ =>
             type T
             implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
-            val left = parse(refl)(lhs)
+            val left = parse(qctx)(lhs)
 
             val methTp = sel.tpe.widen.asInstanceOf[MethodType]
             val (diagrams, others) = handleArgs(methTp.paramTypes, rhs :: Nil)
@@ -143,7 +142,7 @@ object DiagrammedExprMacro {
         type T
         implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
 
-        val left = parse(refl)(lhs)
+        val left = parse(qctx)(lhs)
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
 
         val methTp = sel.tpe.widen.asInstanceOf[MethodType]
@@ -162,8 +161,8 @@ object DiagrammedExprMacro {
       if isImplicitMethodType(f.tpe) =>
         type T
         implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
-        val left = parse(refl)(lhs)
-        val right = parse(refl)(rhs)
+        val left = parse(qctx)(lhs)
+        val right = parse(qctx)(rhs)
 
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
 
@@ -184,7 +183,7 @@ object DiagrammedExprMacro {
         type T
         implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
 
-        val left = parse(refl)(lhs)
+        val left = parse(qctx)(lhs)
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
 
         val methTp = fun.tpe.widen.asInstanceOf[MethodType]
@@ -204,7 +203,7 @@ object DiagrammedExprMacro {
         type T
         implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
 
-        val left = parse(refl)(lhs)
+        val left = parse(qctx)(lhs)
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
 
         let(left) { l =>
@@ -221,9 +220,9 @@ object DiagrammedExprMacro {
   def transform(
     helper: Expr[(DiagrammedExpr[Boolean], Any, String, source.Position) => Assertion],
     condition: Expr[Boolean], pos: Expr[source.Position], clue: Expr[Any], sourceText: String
-  )(implicit refl: Reflection): Expr[Assertion] = {
-    import refl._
-    val diagExpr = parse(refl)(condition.unseal.underlyingArgument).seal.cast[DiagrammedExpr[Boolean]]
+  )(implicit qctx: QuoteContext): Expr[Assertion] = {
+    import qctx.tasty._
+    val diagExpr = parse(qctx)(condition.unseal.underlyingArgument).seal.cast[DiagrammedExpr[Boolean]]
     '{ $helper($diagExpr, $clue, ${sourceText.toExpr}, $pos) }
   }
 }

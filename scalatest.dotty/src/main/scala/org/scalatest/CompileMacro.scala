@@ -20,13 +20,12 @@ import org.scalatest.words.{TypeCheckWord, CompileWord}
 import org.scalatest.exceptions._
 
 import scala.quoted._
-import scala.tasty._
 
 object CompileMacro {
 
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
-  def assertTypeErrorImpl(code: String, pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] = {
-    import refl._
+  def assertTypeErrorImpl(code: String, pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
+    import qctx.tasty._
 
     if (!typing.typeChecks(code)) '{ Succeeded }
     else '{
@@ -35,8 +34,8 @@ object CompileMacro {
     }
   }
 
-  def expectTypeErrorImpl(code: String, prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit refl: Reflection): Expr[Fact] = {
-    import refl._
+  def expectTypeErrorImpl(code: String, prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
+    import qctx.tasty._
 
     if (typing.typeChecks(code))
       '{
@@ -70,8 +69,8 @@ object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when both parse and type check succeeded
-  def assertDoesNotCompileImpl(code: String, pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] = {
-    import refl._
+  def assertDoesNotCompileImpl(code: String, pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
+    import qctx.tasty._
 
     if (!typing.typeChecks(code)) '{ Succeeded }
     else '{
@@ -81,8 +80,8 @@ object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to return Fact (Yes or No).
-  def expectDoesNotCompileImpl(code: String, prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit refl: Reflection): Expr[Fact] = {
-    import refl._
+  def expectDoesNotCompileImpl(code: String, prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
+    import qctx.tasty._
 
     if (typing.typeChecks(code))
       '{
@@ -116,8 +115,8 @@ object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when either parse or type check fails.
-  def assertCompilesImpl(code: String, pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] = {
-    import refl._
+  def assertCompilesImpl(code: String, pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
+    import qctx.tasty._
 
     if (typing.typeChecks(code)) '{ Succeeded }
     else '{
@@ -126,8 +125,8 @@ object CompileMacro {
     }
   }
 
-  def expectCompilesImpl(code: String, prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit refl: Reflection): Expr[Fact] = {
-    import refl._
+  def expectCompilesImpl(code: String, prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
+    import qctx.tasty._
 
     if (typing.typeChecks(code))
       '{
@@ -161,8 +160,8 @@ object CompileMacro {
   }
 
   // check that a code snippet does not compile
-  def assertNotCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
-    import refl._
+  def assertNotCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
+    import qctx.tasty._
     import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
@@ -204,16 +203,16 @@ object CompileMacro {
   }
 
   // used by shouldNot compile syntax, delegate to assertNotCompileImpl to generate code
-  def shouldNotCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
+  def shouldNotCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
     assertNotCompileImpl(self, compileWord, pos)("should")
 
   // used by mustNot compile syntax, delegate to assertNotCompileImpl to generate code
-  def mustNotCompileImpl(self: Expr[MustMatchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
+  def mustNotCompileImpl(self: Expr[MustMatchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
     assertNotCompileImpl(self, compileWord, pos)("must")
 
   // check that a code snippet does not compile
-  def assertNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
-    import refl._
+  def assertNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
+    import qctx.tasty._
     import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
@@ -257,16 +256,16 @@ object CompileMacro {
   }
 
   // used by shouldNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
-  def shouldNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
+  def shouldNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
     assertNotTypeCheckImpl(self, typeCheckWord, pos)("should")
 
   // used by mustNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
-  def mustNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
+  def mustNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
     assertNotTypeCheckImpl(self, typeCheckWord, pos)("must")
 
   // check that a code snippet compiles
-  def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit refl: Reflection): Expr[Assertion] = {
-    import refl._
+  def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
+    import qctx.tasty._
     import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
@@ -310,10 +309,10 @@ object CompileMacro {
   }
 
   // used by should compile syntax, delegate to assertCompileImpl to generate code
-  def shouldCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
+  def shouldCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
     assertCompileImpl(self, compileWord, pos)("should")
 
     // used by should compile syntax, delegate to assertCompileImpl to generate code
-  def mustCompileImpl(self: Expr[MustMatchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] =
+  def mustCompileImpl(self: Expr[MustMatchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
     assertCompileImpl(self, compileWord, pos)("must")
 }

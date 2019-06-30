@@ -1338,10 +1338,9 @@ trait Assertions extends TripleEquals  {
  * @author Bill Venners
  */
 object Assertions extends Assertions {
-  import scala.tasty._
   import scala.quoted._
 
-  def stripMarginImpl(x: String)(implicit refl: Reflection): Expr[String] =
+  def stripMarginImpl(x: String)(implicit qctx: QuoteContext): Expr[String] =
     new scala.collection.immutable.StringOps(x).stripMargin.toExpr
 
   @deprecated("The trap method is no longer needed for demos in the REPL, which now abreviates stack traces, so NormalResult will be removed in a future version of ScalaTest")

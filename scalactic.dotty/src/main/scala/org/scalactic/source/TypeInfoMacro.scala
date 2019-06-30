@@ -16,7 +16,6 @@
 package org.scalactic.source
 
 import scala.quoted._
-import scala.tasty._
 
 /**
   * Helper class for Position macro. (Will be removed from the public API if possible in a subsequent 3.0.0-RCx release.)
@@ -26,8 +25,8 @@ object TypeInfoMacro {
   /**
     * Helper method for TypeInfo macro.
     */
-  def genTypeInfo[T](tp: Type[T])(implicit refl: Reflection): Expr[TypeInfo[T]] = {
-    import refl._
+  def genTypeInfo[T](tp: Type[T])(implicit qctx: QuoteContext): Expr[TypeInfo[T]] = {
+    import qctx.tasty._
 
     val name = tp.show.toExpr
     '{ TypeInfo[$tp]($name) }

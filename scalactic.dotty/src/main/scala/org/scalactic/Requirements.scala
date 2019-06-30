@@ -18,7 +18,6 @@ package org.scalactic
 import exceptions.NullArgumentException
 
 import scala.quoted._
-import scala.tasty._
 
 /**
  * Trait that contains <code>require</code>, and <code>requireState</code>, and <code>requireNonNull</code> methods for checking pre-conditions
@@ -231,8 +230,8 @@ object RequirementsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message if requirement failed
    */
-  def require(condition: Expr[Boolean], prettifier: Expr[Prettifier], clue: Expr[Any])(implicit refl: Reflection): Expr[Unit] = {
-    import refl._
+  def require(condition: Expr[Boolean], prettifier: Expr[Prettifier], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Unit] = {
+    import qctx.tasty._
 
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ Requirements.requirementsHelper.macroRequire($bool, $clue) }
@@ -245,8 +244,8 @@ object RequirementsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message if requirement failed
    */
-  def requireState(condition: Expr[Boolean], prettifier: Expr[Prettifier], clue: Expr[Any])(implicit refl: Reflection): Expr[Unit] = {
-    import refl._
+  def requireState(condition: Expr[Boolean], prettifier: Expr[Prettifier], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Unit] = {
+    import qctx.tasty._
 
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ Requirements.requirementsHelper.macroRequireState($bool, $clue) }
@@ -259,8 +258,8 @@ object RequirementsMacro {
    * @param prettifier <code>Prettifier</code> to be used for error message
    * @return transformed expression that performs the requirement check and throw <code>NullArgumentException</code> with rich error message if requirement failed
    */
-  def requireNonNull(arguments: Expr[Seq[Any]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit reflect: Reflection): Expr[Unit] = {
-    import reflect._
+  def requireNonNull(arguments: Expr[Seq[Any]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Unit] = {
+    import qctx.tasty._
 
     def liftSeq(args: Seq[Expr[String]]): Expr[Seq[String]] = args match {
       case x :: xs  => '{ ($x) +: ${ liftSeq(xs) }  }

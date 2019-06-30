@@ -16,7 +16,6 @@
 package org.scalactic
 
 import scala.quoted._
-import scala.tasty._
 
 /**
  * Case class that stores the name and value of a variable or expression.
@@ -221,8 +220,8 @@ object Snapshots extends Snapshots
 
 object SnapshotsMacro {
 
-  def snap(expressions: Expr[Seq[Any]])(implicit refl: Reflection): Expr[SnapshotSeq] = {
-    import refl._
+  def snap(expressions: Expr[Seq[Any]])(implicit qctx: QuoteContext): Expr[SnapshotSeq] = {
+    import qctx.tasty._
 
     def liftSeq(args: Seq[Expr[Snapshot]]): Expr[Seq[Snapshot]] = args match {
       case x :: xs  => '{ ($x) +: ${ liftSeq(xs) }  }

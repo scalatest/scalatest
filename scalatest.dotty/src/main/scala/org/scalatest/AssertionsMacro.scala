@@ -17,7 +17,6 @@ package org.scalatest
 
 import org.scalactic._
 import scala.quoted._
-import scala.tasty._
 import org.scalatest.compatible.Assertion
 
 /**
@@ -30,7 +29,7 @@ object AssertionsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message if assertion failed
    */
-  def assert(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit refl: Reflection): Expr[Assertion] =
+  def assert(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Assertion] =
     transform('{Assertions.assertionsHelper.macroAssert}, condition, prettifier, pos, clue)
 
   /**
@@ -40,7 +39,7 @@ object AssertionsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the assumption check and throw <code>TestCanceledException</code> with rich error message if assumption failed
    */
-  def assume(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit refl: Reflection): Expr[Assertion] =
+  def assume(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Assertion] =
     transform('{Assertions.assertionsHelper.macroAssume}, condition, prettifier, pos, clue)
 
   def transform(
@@ -48,10 +47,10 @@ object AssertionsMacro {
     condition: Expr[Boolean], prettifier: Expr[Prettifier],
     pos: Expr[source.Position], clue: Expr[Any]
   )
-  (implicit refl: Reflection): Expr[Assertion] = {
+  (implicit qctx: QuoteContext): Expr[Assertion] = {
 
-    import refl._
-    
+    import qctx.tasty._
+
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ ($helper)($bool, $clue, $pos) }
   }
