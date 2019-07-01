@@ -160,18 +160,6 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(1, 2) + 0 shouldBe NonEmptySet(0, 1, 2)
     NonEmptySet("one", "two") + "zero" shouldBe NonEmptySet("zero", "one", "two")
   }
-  it should "have a /: method" in {
-    (0 /: NonEmptySet(1))(_ + _) shouldBe 1
-    (1 /: NonEmptySet(1))(_ + _) shouldBe 2
-    (0 /: NonEmptySet(1, 2, 3))(_ + _) shouldBe 6
-    (1 /: NonEmptySet(1, 2, 3))(_ + _) shouldBe 7
-  }
-  it should "have a :\\ method" in {
-    (NonEmptySet(1) :\ 0)(_ + _) shouldBe 1
-    (NonEmptySet(1) :\ 1)(_ + _) shouldBe 2
-    (NonEmptySet(1, 2, 3) :\ 0)(_ + _) shouldBe 6
-    (NonEmptySet(1, 2, 3) :\ 1)(_ + _) shouldBe 7
-  }
   it should "have 3 addString methods" in {
     NonEmptySet("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
     NonEmptySet(1, 2, 3).addString(new StringBuilder) shouldBe new StringBuilder("231")

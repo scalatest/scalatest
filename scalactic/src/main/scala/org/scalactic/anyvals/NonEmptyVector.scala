@@ -189,54 +189,6 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
     if (other.isEmpty) this else new NonEmptyVector(toVector ++ other.toIterable)
 
   /**
-    * Fold left: applies a binary operator to a start value, <code>z</code>, and all elements of this <code>NonEmptyVector</code>, going left to right.
-    *
-    * <p>
-    * Note: <code>/:</code> is alternate syntax for the <code>foldLeft</code> method; <code>z</code> <code>/:</code> <code>non-empty list</code> is the
-    * same as <code>non-empty list</code> <code>foldLeft</code> <code>z</code>.
-    * </p>
-    *
-    * @tparam B the result of the binary operator
-    * @param z the start value
-    * @param op the binary operator
-    * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyVector</code>, going left to right, with the start value,
-    *     <code>z</code>, on the left:
-    *
-    * <pre>
-    * op(...op(op(z, x_1), x_2), ..., x_n)
-    * </pre>
-    *
-    * <p>
-    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyVector</code>. 
-    * </p>
-    */
-  final def /:[B](z: B)(op: (B, T) => B): B = toVector./:(z)(op)
-
-  /**
-    * Fold right: applies a binary operator to all elements of this <code>NonEmptyVector</code> and a start value, going right to left.
-    *
-    * <p>
-    * Note: <code>:\</code> is alternate syntax for the <code>foldRight</code> method; <code>non-empty list</code> <code>:\</code> <code>z</code> is the same
-    * as <code>non-empty list</code> <code>foldRight</code> <code>z</code>.
-    * </p>
-    *
-    * @tparam B the result of the binary operator
-    * @param z the start value
-    * @param op the binary operator
-    * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyVector</code>, going right to left, with the start value,
-    *     <code>z</code>, on the right:
-    *
-    * <pre>
-    * op(x_1, op(x_2, ... op(x_n, z)...))
-    * </pre>
-    *
-    * <p>
-    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyVector</code>. 
-    * </p>
-    */
-  final def :\[B](z: B)(op: (T, B) => B): B = toVector.:\(z)(op)
-
-  /**
     * Returns a new <code>NonEmptyVector</code> with the given element prepended.
     *
     * <p>

@@ -121,21 +121,9 @@ class NonEmptyStringSpec extends UnitSpec {
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false
   }
-  it should "have a /: method" in {
-    (0 /: NonEmptyString("1"))(_ + _) shouldBe 49
-    (1 /: NonEmptyString("1"))(_ + _) shouldBe 50
-    (0 /: NonEmptyString("123"))(_ + _) shouldBe 150
-    (1 /: NonEmptyString("123"))(_ + _) shouldBe 151
-  }
   it should "have a :+ method" in {
     NonEmptyString("1") :+ '2' shouldBe NonEmptyString("12")
     NonEmptyString("12") :+ '3' shouldBe NonEmptyString("123")
-  }
-  it should "have a :\\ method" in {
-    (NonEmptyString("1") :\ 0)(_ + _) shouldBe 49
-    (NonEmptyString("1") :\ 1)(_ + _) shouldBe 50
-    (NonEmptyString("123") :\ 0)(_ + _) shouldBe 150
-    (NonEmptyString("123") :\ 1)(_ + _) shouldBe 151
   }
   it should "have 3 addString methods" in {
     NonEmptyString("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")

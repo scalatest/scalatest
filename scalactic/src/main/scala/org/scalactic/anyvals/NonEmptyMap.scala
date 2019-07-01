@@ -142,54 +142,6 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     if (other.isEmpty) this else new NonEmptyMap(toMap ++ other.toMap)
 
   /**
-    * Fold left: applies a binary operator to a start value, <code>z</code>, and all entries of this <code>NonEmptyMap</code>, going left to right.
-    *
-    * <p>
-    * Note: <code>/:</code> is alternate syntax for the <code>foldLeft</code> method; <code>z</code> <code>/:</code> <code>non-empty map</code> is the
-    * same as <code>non-empty map</code> <code>foldLeft</code> <code>z</code>.
-    * </p>
-    *
-    * @tparam B the result of the binary operator
-    * @param z the start value
-    * @param op the binary operator
-    * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyMap</code>, going left to right, with the start value,
-    *     <code>z</code>, on the left:
-    *
-    * <pre>
-    * op(...op(op(z, x_1), x_2), ..., x_n)
-    * </pre>
-    *
-    * <p>
-    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyMap</code>. 
-    * </p>
-    */
-  final def /:[B](z: B)(op: (B, (K, V)) => B): B = toMap./:(z)(op)
-
-  /**
-    * Fold right: applies a binary operator to all entries of this <code>NonEmptyMap</code> and a start value, going right to left.
-    *
-    * <p>
-    * Note: <code>:\</code> is alternate syntax for the <code>foldRight</code> method; <code>non-empty map</code> <code>:\</code> <code>z</code> is the same
-    * as <code>non-empty map</code> <code>foldRight</code> <code>z</code>.
-    * </p>
-    *
-    * @tparam B the result of the binary operator
-    * @param z the start value
-    * @param op the binary operator
-    * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyMap</code>, going right to left, with the start value,
-    *     <code>z</code>, on the right:
-    *
-    * <pre>
-    * op(x_1, op(x_2, ... op(x_n, z)...))
-    * </pre>
-    *
-    * <p>
-    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyMap</code>. 
-    * </p>
-    */
-  final def :\[B](z: B)(op: ((K, V), B) => B): B = toMap.:\(z)(op)
-
-  /**
     * Returns a new <code>NonEmptyMap</code> with the given entry added.
     *
     * <p>

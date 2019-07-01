@@ -185,21 +185,9 @@ class NonEmptyArraySpec extends UnitSpec {
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false
   }
-  it should "have a /: method" in {
-    (0 /: NonEmptyArray(1))(_ + _) shouldBe 1
-    (1 /: NonEmptyArray(1))(_ + _) shouldBe 2
-    (0 /: NonEmptyArray(1, 2, 3))(_ + _) shouldBe 6
-    (1 /: NonEmptyArray(1, 2, 3))(_ + _) shouldBe 7
-  }
   it should "have a :+ method" in {
     NonEmptyArray(1) :+ 2 shouldBe NonEmptyArray(1, 2)
     NonEmptyArray(1, 2) :+ 3 shouldBe NonEmptyArray(1, 2, 3)
-  }
-  it should "have a :\\ method" in {
-    (NonEmptyArray(1) :\ 0)(_ + _) shouldBe 1
-    (NonEmptyArray(1) :\ 1)(_ + _) shouldBe 2
-    (NonEmptyArray(1, 2, 3) :\ 0)(_ + _) shouldBe 6
-    (NonEmptyArray(1, 2, 3) :\ 1)(_ + _) shouldBe 7
   }
   it should "have 3 addString methods" in {
     NonEmptyArray("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
