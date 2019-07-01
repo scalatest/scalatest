@@ -297,55 +297,6 @@ specifying floats so long as it is in the valid range for floats.
       (PosFloat(1.0f) plus PosInt(2)) should === (PosFloat(3.0f))
     }
 
-    it("should offer overloaded 'sumOf' methods on the companion that take one PosFloat and one or more PosZFloats and returns a PosFloat") {
-
-      forAll { (posFloat: PosFloat, posZFloat: PosZFloat) =>
-        PosFloat.sumOf(posFloat, posZFloat) should === (PosFloat.ensuringValid(posFloat.value + posZFloat.value))
-      }
-      forAll { (posFloat: PosFloat, posZFloats: List[PosZFloat]) =>
-        whenever(posZFloats.nonEmpty) {
-          PosFloat.sumOf(posFloat, posZFloats.head, posZFloats.tail: _*) should === {
-            PosFloat.ensuringValid(posFloat.value + posZFloats.head.value + posZFloats.tail.map(_.value).sum)
-          }
-        }
-      }
-
-      val posEdgeValues: List[PosFloat] = List(PosFloat.MinValue, PosFloat.MaxValue, PosFloat.PositiveInfinity)
-      val posZEdgeValues = List(PosZFloat.MinValue, PosZFloat.MinPositiveValue, PosZFloat.MaxValue, PosZFloat.PositiveInfinity)
-      // First put each PosFloat edge in front, then follow it with all permutations (orders) of all four PosZFloat edge values.
-      Inspectors.forAll (posEdgeValues) { pos =>
-        Inspectors.forAll (posZEdgeValues.permutations.toList) { case posZHead :: posZTail =>
-          PosFloat.sumOf(pos, posZHead, posZTail: _*) should === {
-            PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
-          }
-        }
-      }
-
-      // Now do each PosFloat edge in front, then follow it with all combinations of 2 PosZEdgeFloats
-      // I get all combos by doing combinations(2) ++ combinations(2).reverse. That seems to do the trick.
-      val halfOfThePairs = posZEdgeValues.combinations(2).toList
-      val posZPairCombos = halfOfThePairs ++ (halfOfThePairs.reverse)
-      Inspectors.forAll (posEdgeValues) { pos =>
-        Inspectors.forAll (posZPairCombos) { case posZHead :: posZTail  =>
-          PosFloat.sumOf(pos, posZHead, posZTail: _*) should === {
-            PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
-          }
-        }
-      }
-
-      // Now do each PosFloat edge in front, then follow it with all combinations of 3 PosZEdgeFloats
-      // I get all combos by doing combinations(3) ++ combinations(3).reverse. That seems to do the trick.
-      val halfOfTheTriples = posZEdgeValues.combinations(3).toList
-      val posZTripleCombos = halfOfTheTriples ++ (halfOfTheTriples.reverse)
-      Inspectors.forAll (posEdgeValues) { pos =>
-        Inspectors.forAll (posZTripleCombos) { case posZHead :: posZTail  =>
-          PosFloat.sumOf(pos, posZHead, posZTail: _*) should === {
-            PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
-          }
-        }
-      }
-    }
-
     it("should offer 'min' and 'max' methods that are consistent with Float") {
       forAll { (pfloat1: PosFloat, pfloat2: PosFloat) =>
         pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)

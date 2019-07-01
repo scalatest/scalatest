@@ -322,65 +322,6 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
       PosZDouble(1.0) plus PosDouble(2.0) should === (PosZDouble(3.0))
     }
 
-    it("should offer overloaded 'sumOf' methods on the companion that takes two or more PosZDoubles and returns a PosZDouble") {
-
-      // Run these with a relatively high minSuccessful for a while, just to see if we find a problem case.
-      // Check the sumOf that takes exactly 2 args (the one that doesn't box)
-      forAll (minSuccessful(1000)) { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
-        PosZDouble.sumOf(posZDouble1, posZDouble2) should === (PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value))
-      }
-
-      // Check the sumOf that takes at least 2 args (the one that does box the var args part)
-      // First just pass 2 to it and an empty list, which I wonder if that will do the other one,
-      // but it doesn't matter.
-      forAll (minSuccessful(1000)) { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
-        PosZDouble.sumOf(posZDouble1, posZDouble2, List.empty[PosZDouble]: _*) should === {
-          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value)
-        }
-      }
-      // Then add some real lists in there
-      forAll (minSuccessful(1000)) { (posZDouble1: PosZDouble, posZDouble2: PosZDouble, posZDoubles: List[PosZDouble]) =>
-        PosZDouble.sumOf(posZDouble1, posZDouble2, posZDoubles: _*) should === {
-          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value + posZDoubles.map(_.value).sum)
-        }
-      }
-
-      // I want to try all combinations of edge cases in the boxing sumOf.
-      // And out of an abundance of caution, all permutations of them (all the different orders)
-      val posZEdgeValues = List(PosZDouble.MinValue, PosZDouble.MinPositiveValue, PosZDouble.MaxValue, PosZDouble.PositiveInfinity)
-      Inspectors.forAll (posZEdgeValues.permutations.toList) { case List(a, b, c, d) =>
-        PosZDouble.sumOf(a, b, c, d) should === {
-          PosZDouble.ensuringValid(a.value + b.value + c.value + d.value)
-        }
-      }
-
-      // Now try all combinations of 2 PosZEdgeDoubles followed by both nothing and an empty varargs.
-      // The idea is to test both forms with two args, though it is possible the compiler optiizes
-      // the empty list (though I don't think it can tell at compile time, because I don't let it have
-      // element type Nothing).
-      // I get all combos by doing combinations ++ combinations.reverse. That seems to do the trick.
-      val halfOfThePairs = posZEdgeValues.combinations(2).toList
-      val posZPairCombos = halfOfThePairs ++ (halfOfThePairs.reverse)
-      Inspectors.forAll (posZPairCombos) { case posZDouble1 :: posZDouble2 :: Nil  =>
-        // Call the two-arg form
-        PosZDouble.sumOf(posZDouble1, posZDouble2) should === {
-          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value)
-        }
-        // Most likely call the var-args form
-        PosZDouble.sumOf(posZDouble1, posZDouble2, List.empty[PosZDouble]: _*) should === {
-          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value)
-        }
-      }
-
-      val halfOfTheTriples = posZEdgeValues.combinations(3).toList
-      val posZTripleCombos = halfOfTheTriples ++ (halfOfTheTriples.reverse)
-      Inspectors.forAll (posZTripleCombos) { case posZDouble1 :: posZDouble2 :: posZDouble3 :: Nil  =>
-        PosZDouble.sumOf(posZDouble1, posZDouble2, posZDouble3) should === {
-          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value + posZDouble3.value)
-        }
-      }
-    }
-
     it("should offer 'min' and 'max' methods that are consistent with Double") {
       forAll { (pzdouble1: PosZDouble, pzdouble2: PosZDouble) =>
         pzdouble1.max(pzdouble2).toDouble shouldEqual pzdouble1.toDouble.max(pzdouble2.toDouble)
