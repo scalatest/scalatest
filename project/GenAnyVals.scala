@@ -523,15 +523,26 @@ object GenAnyVals {
         |final val NegativeInfinity: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.NegativeInfinity) // Can't use the macro here
      """.stripMargin
 
-  def isPosInfinity(primitiveType: String): String =
-    s"def isPosInfinity: Boolean = $primitiveType.PositiveInfinity == value\n"
+  def isPosInfinity(typePrefix: String, primitiveType: String): String =
+    s"""/**
+        |  * True if this <code>$typePrefix$primitiveType</code> value represents positive infinity, else false.
+        |  */
+        |def isPosInfinity: Boolean = $primitiveType.PositiveInfinity == value\n""".stripMargin
 
-  def isNegInfinity(primitiveType: String): String =
-    s"def isNegInfinity: Boolean = $primitiveType.NegativeInfinity == value\n"
+  def isNegInfinity(typePrefix: String, primitiveType: String): String =
+    s"""/**
+        |  * True if this <code>$typePrefix$primitiveType</code> value represents negative infinity, else false.
+        |  */
+        |def isNegInfinity: Boolean = $primitiveType.NegativeInfinity == value\n""".stripMargin
 
 
-  def minPositiveValue(typePrefix: String, primitiveName: String): String =
-    s"final val MinPositiveValue: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.MinPositiveValue)\n".stripMargin
+  def minPositiveValue(typePrefix: String, primitiveName: String): String = {
+    val theValue = if (primitiveName == "Float") "1.4E-45" else "4.9E-324"
+    s"""/**
+        |  * The smallest positive value greater than 0.0d representable as a <code>$typePrefix$primitiveName</code>, which is $typePrefix$primitiveName($theValue).
+        |  */
+        |final val MinPositiveValue: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.MinPositiveValue)\n""".stripMargin
+  }
 
   def round(typePrefix: String, primitiveName: String): String =
     s"""/**
@@ -605,16 +616,16 @@ object GenAnyVals {
       "Long.MaxValue", "9223372036854775807", nonZeroWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "NonZeroFloat", "non-zero", "Note: a <code>NonZeroFloat</code> may not equal 0.0.", "i != 0.0f && !i.isNaN", "NonZeroFloat(1.1f)", "NonZeroFloat(0.0f)", "1.1", "0.0", "Float.MinValue", "-3.4028235E38",
       "Float.MaxValue", "3.4028235E38",
-      isPosInfinity("Float") +
-      isNegInfinity("Float"),
+      isPosInfinity("NonZero", "Float") +
+      isNegInfinity("NonZero", "Float"),
       positiveInfinity("NonZero", "Float") +
       negativeInfinity("NonZero", "Float") +
       minPositiveValue("NonZero", "Float"),
       nonZeroWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NonZeroDouble", "non-zero", "Note: a <code>NonZeroDouble</code> may not equal 0.0.", "i != 0.0 && !i.isNaN", "NonZeroDouble(1.1)", "NonZeroDouble(0.0)", "1.1", "0.0", "Double.MinValue", "-1.7976931348623157E308",
       "Double.MaxValue", "1.7976931348623157E308",
-      isPosInfinity("Double") +
-      isNegInfinity("Double"),
+      isPosInfinity("NonZero", "Double") +
+      isNegInfinity("NonZero", "Double"),
       positiveInfinity("NonZero", "Double") +
       negativeInfinity("NonZero", "Double") +
       minPositiveValue("NonZero", "Double"),
@@ -639,7 +650,7 @@ object GenAnyVals {
       ceil("PosZ", "Float") +
       floor("PosZ", "Float") +
       plus("PosZ", "Float", "non-negative") +
-      isPosInfinity("Float"),
+      isPosInfinity("PosZ", "Float"),
       positiveInfinity("PosZ", "Float") +
       minPositiveValue("PosZ", "Float"),
       posZWidens("Float"), dotty) :::
@@ -649,7 +660,7 @@ object GenAnyVals {
       ceil("PosZ", "Double") +
       floor("PosZ", "Double") +
       plus("PosZ", "Double", "non-negative") +
-      isPosInfinity("Double"),
+      isPosInfinity("PosZ", "Double"),
       positiveInfinity("PosZ", "Double") +
       minPositiveValue("PosZ", "Double"),
       posZWidens("Double"), dotty) :::
@@ -663,7 +674,7 @@ object GenAnyVals {
       ceil("Pos", "Float") +
       floor("PosZ", "Float") +
       plus("Pos", "Float", "positive", "PosZ", "non-negative") +
-      isPosInfinity("Float"),
+      isPosInfinity("Pos", "Float"),
       positiveInfinity("Pos", "Float") +
       minPositiveValue("Pos", "Float"),
       posWidens("Float"), dotty) :::
@@ -673,7 +684,7 @@ object GenAnyVals {
       ceil("Pos", "Double") +
       floor("PosZ", "Double") +
       plus("Pos", "Double", "positive", "PosZ", "non-negative") +
-      isPosInfinity("Double"),
+      isPosInfinity("Pos", "Double"),
       positiveInfinity("Pos", "Double") +
       minPositiveValue("Pos", "Double"),
       posWidens("Double"), dotty) :::
@@ -687,7 +698,7 @@ object GenAnyVals {
       ceil("NegZ", "Float") +
       floor("Neg", "Float") +
       plus("Neg", "Float", "negative", "NegZ", "non-positive") +
-      isNegInfinity("Float"),
+      isNegInfinity("Neg", "Float"),
       negativeInfinity("Neg", "Float"),
       negWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NegDouble", "negative", "", "i < 0.0", "NegDouble(-1.1)", "NegDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308",
@@ -696,7 +707,7 @@ object GenAnyVals {
       ceil("NegZ", "Double") +
       floor("Neg", "Double") +
       plus("Neg", "Double", "negative", "NegZ", "non-positive") +
-      isNegInfinity("Double"),
+      isNegInfinity("Neg", "Double"),
       negativeInfinity("Neg", "Double"),
       negWidens("Double"), dotty) :::
     genIntAnyVal(dir, "NegZInt", "non-positive", "", "i <= 0", "NegZInt(-42)", "NegZInt(1)", "-42", "1", "Int.MinValue", "-2147483648",
@@ -708,7 +719,7 @@ object GenAnyVals {
       ceil("NegZ", "Float") +
       floor("NegZ", "Float") +
       plus("NegZ", "Float", "non-positive") +
-      isNegInfinity("Float"),
+      isNegInfinity("NegZ", "Float"),
       negativeInfinity("NegZ", "Float"),
       negZWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NegZDouble", "non-positive", "", "i <= 0.0", "NegZDouble(-1.1)", "NegZDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308", "0.0", "0.0",
@@ -716,7 +727,7 @@ object GenAnyVals {
       ceil("NegZ", "Double") +
       floor("NegZ", "Double") +
       plus("NegZ", "Double", "non-positive") +
-      isNegInfinity("Double"),
+      isNegInfinity("NegZ", "Double"),
       negativeInfinity("NegZ", "Double"),
       negZWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "PosFiniteFloat", "finite positive", "Note: a <code>PosFiniteFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFiniteFloat]].", "i > 0.0f && i != Float.PositiveInfinity", "PosFiniteFloat(42.1f)", "PosFiniteFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",
