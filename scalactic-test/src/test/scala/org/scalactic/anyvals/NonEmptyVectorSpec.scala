@@ -187,21 +187,9 @@ class NonEmptyVectorSpec extends UnitSpec {
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false
   }
-  it should "have a /: method" in {
-    (0 /: NonEmptyVector(1))(_ + _) shouldBe 1
-    (1 /: NonEmptyVector(1))(_ + _) shouldBe 2
-    (0 /: NonEmptyVector(1, 2, 3))(_ + _) shouldBe 6
-    (1 /: NonEmptyVector(1, 2, 3))(_ + _) shouldBe 7
-  }
   it should "have a :+ method" in {
     NonEmptyVector(1) :+ 2 shouldBe NonEmptyVector(1, 2)
     NonEmptyVector(1, 2) :+ 3 shouldBe NonEmptyVector(1, 2, 3)
-  }
-  it should "have a :\\ method" in {
-    (NonEmptyVector(1) :\ 0)(_ + _) shouldBe 1
-    (NonEmptyVector(1) :\ 1)(_ + _) shouldBe 2
-    (NonEmptyVector(1, 2, 3) :\ 0)(_ + _) shouldBe 6
-    (NonEmptyVector(1, 2, 3) :\ 1)(_ + _) shouldBe 7
   }
   it should "have 3 addString methods" in {
     NonEmptyVector("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")

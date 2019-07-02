@@ -210,6 +210,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyList</code>. 
    * </p>
    */
+  @deprecated("Please use foldLeft instead")
   final def /:[B](z: B)(op: (B, T) => B): B = toList./:(z)(op)
 
   /**
@@ -234,6 +235,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyList</code>. 
    * </p>
    */
+  @deprecated("Please use foldRight instead.")
   final def :\[B](z: B)(op: (T, B) => B): B = toList.:\(z)(op)
 
   /**

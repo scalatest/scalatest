@@ -182,18 +182,6 @@ class NonEmptyMapSpec extends UnitSpec {
     pf1.isDefinedAt(1) shouldBe true
     pf1.isDefinedAt(0) shouldBe false
   }
-  it should "have a /: method" in {
-    (0 /: NonEmptyMap(1 -> "one"))(_ + _._1) shouldBe 1
-    (1 /: NonEmptyMap(2 -> "two"))(_ + _._1) shouldBe 3
-    (0 /: NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three"))(_ + _._1) shouldBe 6
-    (1 /: NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three"))(_ + _._1) shouldBe 7
-  }
-  it should "have a :\\ method" in {
-    (NonEmptyMap(1 -> "one") :\ 0)(_._1 + _) shouldBe 1
-    (NonEmptyMap(1 -> "one") :\ 1)(_._1 + _) shouldBe 2
-    (NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three") :\ 0)(_._1 + _) shouldBe 6
-    (NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three") :\ 1)(_._1 + _) shouldBe 7
-  }
   it should "have 3 addString methods" in {
     NonEmptyMap("hi" -> "hello").addString(new StringBuilder) shouldBe new StringBuilder("hi -> hello")
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three").addString(new StringBuilder) shouldBe new StringBuilder("2 -> two3 -> three1 -> one")

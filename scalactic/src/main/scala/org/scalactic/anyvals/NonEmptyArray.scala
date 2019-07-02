@@ -29,11 +29,11 @@ import org.scalactic.Every
 
 // Can't be a LinearSeq[T] because Builder would be able to create an empty one.
 /**
-  * A non-empty list: an ordered, immutable, non-empty collection of elements with <code>LinearSeq</code> performance characteristics.
+  * A non-empty array: an ordered, mutable, non-empty collection of elements with <code>IndexedSeq</code> performance characteristics.
   *
   * <p>
-  * The purpose of <code>NonEmptyArray</code> is to allow you to express in a type that a <code>Array</code> is non-empty, thereby eliminating the
-  * need for (and potential exception from) a run-time check for non-emptiness. For a non-empty sequence with <code>IndexedSeq</code>
+  * The purpose of <code>NonEmptyArray</code> is to allow you to express in a type that an <code>Array</code> is non-empty, thereby eliminating the
+  * need for (and potential exception from) a run-time check for non-emptiness. For a non-empty immutable sequence with <code>IndexedSeq</code>
   * performance, see <a href="Every.html"><code>Every</code></a>.
   * </p>
   *
@@ -46,36 +46,6 @@ import org.scalactic.Every
   * <pre class="stHighlight">
   * scala&gt; NonEmptyArray(1, 2, 3)
   * res0: org.scalactic.anyvals.NonEmptyArray[Int] = NonEmptyArray(1, 2, 3)
-  * </pre>
-  *
-  * <p>
-  * Alternatively you can <em>cons</em> elements onto the <code>End</code> singleton object, similar to making a <code>Array</code> starting with <code>Nil</code>:
-  * </p>
-  *
-  * <pre class="stHighlight">
-  * scala&gt; 1 :: 2 :: 3 :: Nil
-  * res0: Array[Int] = Array(1, 2, 3)
-  *
-  * scala&gt; 1 :: 2 :: 3 :: End
-  * res1: org.scalactic.NonEmptyArray[Int] = NonEmptyArray(1, 2, 3)
-  * </pre>
-  *
-  * <p>
-  * Note that although <code>Nil</code> is a <code>Array[Nothing]</code>, <code>End</code> is
-  * not a <code>NonEmptyArray[Nothing]</code>, because no empty <code>NonEmptyArray</code> exists. (A non-empty list is a series
-  * of connected links; if you have no links, you have no non-empty list.)
-  * </p>
-  *
-  * <pre class="stHighlight">
-  * scala&gt; val nil: Array[Nothing] = Nil
-  * nil: Array[Nothing] = Array()
-  *
-  * scala&gt; val nada: NonEmptyArray[Nothing] = End
-  * &lt;console&gt;:16: error: type mismatch;
-  * found   : org.scalactic.anyvals.End.type
-  * required: org.scalactic.anyvals.NonEmptyArray[Nothing]
-  *        val nada: NonEmptyArray[Nothing] = End
-  *                                          ^
   * </pre>
   *
   * <h2>Working with <code>NonEmptyArray</code>s</h2>
@@ -187,54 +157,6 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     */
   def ++[U >: T](other: org.scalactic.ColCompatHelper.IterableOnce[U])(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
     new NonEmptyArray((toArray ++ other.toStream).toArray)
-
-  /**
-    * Fold left: applies a binary operator to a start value, <code>z</code>, and all elements of this <code>NonEmptyArray</code>, going left to right.
-    *
-    * <p>
-    * Note: <code>/:</code> is alternate syntax for the <code>foldLeft</code> method; <code>z</code> <code>/:</code> <code>non-empty list</code> is the
-    * same as <code>non-empty list</code> <code>foldLeft</code> <code>z</code>.
-    * </p>
-    *
-    * @tparam B the result of the binary operator
-    * @param z the start value
-    * @param op the binary operator
-    * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyArray</code>, going left to right, with the start value,
-    *     <code>z</code>, on the left:
-    *
-    * <pre>
-    * op(...op(op(z, x_1), x_2), ..., x_n)
-    * </pre>
-    *
-    * <p>
-    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyArray</code>. 
-    * </p>
-    */
-  final def /:[B](z: B)(op: (B, T) => B): B = toArray./:(z)(op)
-
-  /**
-    * Fold right: applies a binary operator to all elements of this <code>NonEmptyArray</code> and a start value, going right to left.
-    *
-    * <p>
-    * Note: <code>:\</code> is alternate syntax for the <code>foldRight</code> method; <code>non-empty list</code> <code>:\</code> <code>z</code> is the same
-    * as <code>non-empty list</code> <code>foldRight</code> <code>z</code>.
-    * </p>
-    *
-    * @tparam B the result of the binary operator
-    * @param z the start value
-    * @param op the binary operator
-    * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyArray</code>, going right to left, with the start value,
-    *     <code>z</code>, on the right:
-    *
-    * <pre>
-    * op(x_1, op(x_2, ... op(x_n, z)...))
-    * </pre>
-    *
-    * <p>
-    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyArray</code>. 
-    * </p>
-    */
-  final def :\[B](z: B)(op: (T, B) => B): B = toArray.:\(z)(op)
 
   /**
     * Returns a new <code>NonEmptyArray</code> with the given element prepended.
