@@ -469,7 +469,7 @@ object GenAnyVals {
   }
 
   def posFiniteWidens(primitiveType: String): List[String] = {
-    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Pos" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "Pos" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).map(p => "PosZ" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).map(p => "NonZero" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "PosFinite" + p) :::
@@ -478,13 +478,13 @@ object GenAnyVals {
   }
 
   def posZFiniteWidens(primitiveType: String): List[String] = {
-    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "PosZ" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "PosZ" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "PosZFinite" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Finite" + p)
   }
 
   def negFiniteWidens(primitiveType: String): List[String] = {
-    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Neg" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "Neg" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).map(p => "NegZ" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).map(p => "NonZero" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NegFinite" + p) :::
@@ -493,7 +493,7 @@ object GenAnyVals {
   }
 
   def negZFiniteWidens(primitiveType: String): List[String] = {
-    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NegZ" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "NegZ" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NegZFinite" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Finite" + p)
   }
@@ -534,6 +534,18 @@ object GenAnyVals {
         |  * True if this <code>$typePrefix$primitiveType</code> value represents negative infinity, else false.
         |  */
         |def isNegInfinity: Boolean = $primitiveType.NegativeInfinity == value\n""".stripMargin
+
+  def isInfinite(typePrefix: String, primitiveType: String): String =
+    s"""/**
+        |  * True if this <code>$typePrefix$primitiveType</code> value represents positive or negative infinity, else false.
+        |  */
+        |def isInfinite: Boolean = value.isInfinite\n""".stripMargin
+
+  def isFinite(typePrefix: String, primitiveType: String): String =
+    s"""/**
+        |  * True if this <code>$typePrefix$primitiveType</code> value is any finite value (i.e., it is neither positive nor negative infinity), else false.
+        |  */
+        |def isFinite: Boolean = !value.isInfinite\n""".stripMargin
 
   def minPositiveValue(typePrefix: String, primitiveName: String): String = {
     val theValue = if (primitiveName == "Float") "1.4E-45" else "4.9E-324"
@@ -622,7 +634,9 @@ object GenAnyVals {
     genFloatAnyVal(dir, "NonZeroFloat", "non-zero", "Note: a <code>NonZeroFloat</code> may not equal 0.0.", "i != 0.0f && !i.isNaN", "NonZeroFloat(1.1f)", "NonZeroFloat(0.0f)", "1.1", "0.0", "Float.MinValue", "-3.4028235E38",
       "Float.MaxValue", "3.4028235E38",
       isPosInfinity("NonZero", "Float") +
-      isNegInfinity("NonZero", "Float"),
+      isNegInfinity("NonZero", "Float") +
+      isInfinite("NonZero", "Float") +
+      isFinite("NonZero", "Float"),
       positiveInfinity("NonZero", "Float") +
       negativeInfinity("NonZero", "Float") +
       minPositiveValue("NonZero", "Float"),
@@ -630,7 +644,9 @@ object GenAnyVals {
     genDoubleAnyVal(dir, "NonZeroDouble", "non-zero", "Note: a <code>NonZeroDouble</code> may not equal 0.0.", "i != 0.0 && !i.isNaN", "NonZeroDouble(1.1)", "NonZeroDouble(0.0)", "1.1", "0.0", "Double.MinValue", "-1.7976931348623157E308",
       "Double.MaxValue", "1.7976931348623157E308",
       isPosInfinity("NonZero", "Double") +
-      isNegInfinity("NonZero", "Double"),
+      isNegInfinity("NonZero", "Double") +
+      isInfinite("NonZero", "Double") +
+      isFinite("NonZero", "Double"),
       positiveInfinity("NonZero", "Double") +
       negativeInfinity("NonZero", "Double") +
       minPositiveValue("NonZero", "Double"),
@@ -655,7 +671,8 @@ object GenAnyVals {
       ceil("PosZ", "Float") +
       floor("PosZ", "Float") +
       plus("PosZ", "Float", "non-negative") +
-      isPosInfinity("PosZ", "Float"),
+      isPosInfinity("PosZ", "Float") +
+      isFinite("PosZ", "Float"),
       positiveInfinity("PosZ", "Float") +
       minPositiveValue("PosZ", "Float"),
       posZWidens("Float"), dotty) :::
@@ -665,7 +682,8 @@ object GenAnyVals {
       ceil("PosZ", "Double") +
       floor("PosZ", "Double") +
       plus("PosZ", "Double", "non-negative") +
-      isPosInfinity("PosZ", "Double"),
+      isPosInfinity("PosZ", "Double") +
+      isFinite("PosZ", "Double"),
       positiveInfinity("PosZ", "Double") +
       minPositiveValue("PosZ", "Double"),
       posZWidens("Double"), dotty) :::
@@ -679,7 +697,8 @@ object GenAnyVals {
       ceil("Pos", "Float") +
       floor("PosZ", "Float") +
       plus("Pos", "Float", "positive", "PosZ", "non-negative") +
-      isPosInfinity("Pos", "Float"),
+      isPosInfinity("Pos", "Float") +
+      isFinite("Pos", "Float"),
       positiveInfinity("Pos", "Float") +
       minPositiveValue("Pos", "Float"),
       posWidens("Float"), dotty) :::
@@ -689,7 +708,8 @@ object GenAnyVals {
       ceil("Pos", "Double") +
       floor("PosZ", "Double") +
       plus("Pos", "Double", "positive", "PosZ", "non-negative") +
-      isPosInfinity("Pos", "Double"),
+      isPosInfinity("Pos", "Double") +
+      isFinite("Pos", "Double"),
       positiveInfinity("Pos", "Double") +
       minPositiveValue("Pos", "Double"),
       posWidens("Double"), dotty) :::
@@ -703,7 +723,8 @@ object GenAnyVals {
       ceil("NegZ", "Float") +
       floor("Neg", "Float") +
       plus("Neg", "Float", "negative", "NegZ", "non-positive") +
-      isNegInfinity("Neg", "Float"),
+      isNegInfinity("Neg", "Float") +
+      isFinite("Neg", "Float"),
       negativeInfinity("Neg", "Float"),
       negWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NegDouble", "negative", "", "i < 0.0", "NegDouble(-1.1)", "NegDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308",
@@ -712,7 +733,8 @@ object GenAnyVals {
       ceil("NegZ", "Double") +
       floor("Neg", "Double") +
       plus("Neg", "Double", "negative", "NegZ", "non-positive") +
-      isNegInfinity("Neg", "Double"),
+      isNegInfinity("Neg", "Double") +
+      isFinite("Neg", "Double"),
       negativeInfinity("Neg", "Double"),
       negWidens("Double"), dotty) :::
     genIntAnyVal(dir, "NegZInt", "non-positive", "", "i <= 0", "NegZInt(-42)", "NegZInt(1)", "-42", "1", "Int.MinValue", "-2147483648",
@@ -724,7 +746,8 @@ object GenAnyVals {
       ceil("NegZ", "Float") +
       floor("NegZ", "Float") +
       plus("NegZ", "Float", "non-positive") +
-      isNegInfinity("NegZ", "Float"),
+      isNegInfinity("NegZ", "Float") +
+      isFinite("NegZ", "Float"),
       negativeInfinity("NegZ", "Float"),
       negZWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NegZDouble", "non-positive", "", "i <= 0.0", "NegZDouble(-1.1)", "NegZDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308", "0.0", "0.0",
@@ -732,7 +755,8 @@ object GenAnyVals {
       ceil("NegZ", "Double") +
       floor("NegZ", "Double") +
       plus("NegZ", "Double", "non-positive") +
-      isNegInfinity("NegZ", "Double"),
+      isNegInfinity("NegZ", "Double") +
+      isFinite("NegZ", "Double"),
       negativeInfinity("NegZ", "Double"),
       negZWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "PosFiniteFloat", "finite positive", "Note: a <code>PosFiniteFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFiniteFloat]].", "i > 0.0f && i != Float.PositiveInfinity", "PosFiniteFloat(42.1f)", "PosFiniteFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",

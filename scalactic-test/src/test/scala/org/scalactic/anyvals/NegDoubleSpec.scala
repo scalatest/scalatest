@@ -339,5 +339,12 @@ class NegDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       an [AssertionError] should be thrownBy { NegDouble.MaxValue.ensuringValid(_ => Double.NaN) }
       // SKIP-DOTTY-END
     }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: NegFiniteDouble) =>
+        (n: NegDouble).isFinite should be (true)
+      }
+    }
   }
 }
+
+

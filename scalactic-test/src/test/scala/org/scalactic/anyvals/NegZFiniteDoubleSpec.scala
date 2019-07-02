@@ -175,9 +175,11 @@ class NegZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
     it("should not offer a PositiveInfinity factory method") {
       "NegZFiniteDouble.PositiveInfinity" shouldNot compile
     }
+/* This one now compiles, because of the newly added implicit NegZFiniteDouble => NegZDouble
     it("should not offer a isNegInfinity method") {
       "NegZFiniteDouble(-1.0).isNegInfinity" shouldNot compile
     }
+*/
     it("should not offer a isPosInfinity method") {
       "NegZFiniteDouble(-1.0f).isPosInfinity" shouldNot compile
     }
