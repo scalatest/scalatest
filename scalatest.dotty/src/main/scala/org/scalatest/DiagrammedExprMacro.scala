@@ -22,6 +22,7 @@ import scala.quoted._
 object DiagrammedExprMacro {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def parse(qctx: QuoteContext)(expr: qctx.tasty.Term): qctx.tasty.Term = {
+    implicit val qctx2: QuoteContext = qctx
     import qctx.tasty._
     import util._
 
