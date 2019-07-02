@@ -535,7 +535,6 @@ object GenAnyVals {
         |  */
         |def isNegInfinity: Boolean = $primitiveType.NegativeInfinity == value\n""".stripMargin
 
-
   def minPositiveValue(typePrefix: String, primitiveName: String): String = {
     val theValue = if (primitiveName == "Float") "1.4E-45" else "4.9E-324"
     s"""/**
@@ -544,11 +543,17 @@ object GenAnyVals {
         |final val MinPositiveValue: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.MinPositiveValue)\n""".stripMargin
   }
 
-  def round(typePrefix: String, primitiveName: String): String =
+  def round(typePrefix: String, primitiveName: String, integralName: String): String = {
+    val impl =
+      if (integralName == "Int" || integralName == "Long")
+        "math.round(value)"
+      else
+        s"$integralName.ensuringValid(math.round(value))"
     s"""/**
-      |  * Rounds this `$typePrefix$primitiveName` value to the nearest whole number value that can be expressed as an `$primitiveName`, returning the result as a `$typePrefix$primitiveName`.
+      |  * Rounds this `$typePrefix$primitiveName` value to the nearest whole number value that can be expressed as an `$integralName`, returning the result as a `$integralName`.
       |  */
-      |def round: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(math.round(value))""".stripMargin
+      |def round: $integralName = $impl""".stripMargin
+  }
 
   def ceil(typePrefix: String, primitiveName: String): String =
     s"""/**
@@ -646,7 +651,7 @@ object GenAnyVals {
       "Long.MaxValue", "9223372036854775807", posZWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "PosZFloat", "non-negative", "", "i >= 0.0f", "PosZFloat(1.1f)", "PosZFloat(-1.0f)", "1.1f", "-1.1f", "0.0f", "0.0f",
       "Float.MaxValue", "3.4028235E38",
-      round("PosZ", "Float") +
+      round("PosZ", "Float", "PosZInt") +
       ceil("PosZ", "Float") +
       floor("PosZ", "Float") +
       plus("PosZ", "Float", "non-negative") +
@@ -656,7 +661,7 @@ object GenAnyVals {
       posZWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "PosZDouble", "non-negative", "", "i >= 0.0", "PosZDouble(1.1)", "PosZDouble(-1.1)", "1.1", "-1.1", "0.0", "0.0",
       "Double.MaxValue", "1.7976931348623157E308",
-      round("PosZ", "Double") +
+      round("PosZ", "Double", "PosZLong") +
       ceil("PosZ", "Double") +
       floor("PosZ", "Double") +
       plus("PosZ", "Double", "non-negative") +
@@ -670,7 +675,7 @@ object GenAnyVals {
       "Long.MaxValue", "9223372036854775807", posWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "PosFloat", "positive", "Note: a <code>PosFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFloat]].", "i > 0.0f", "PosFloat(42.1f)", "PosFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",
       "Float.MaxValue", "3.4028235E38",
-      round("PosZ", "Float") +
+      round("Pos", "Float", "PosZInt") +
       ceil("Pos", "Float") +
       floor("PosZ", "Float") +
       plus("Pos", "Float", "positive", "PosZ", "non-negative") +
@@ -680,7 +685,7 @@ object GenAnyVals {
       posWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "PosDouble", "positive", "", "i > 0.0", "PosDouble(1.1)", "PosDouble(-1.1)", "1.1", "-1.1", "Double.MinPositiveValue", "4.9E-324",
       "Double.MaxValue", "1.7976931348623157E308",
-      round("PosZ", "Double") +
+      round("Pos", "Double", "PosZLong") +
       ceil("Pos", "Double") +
       floor("PosZ", "Double") +
       plus("Pos", "Double", "positive", "PosZ", "non-negative") +
@@ -694,7 +699,7 @@ object GenAnyVals {
       negWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "NegFloat", "megative", "Note: a <code>NegFloat</code> may not equal 0.0. If you want negative number or 0, use [[NegZFloat]].", "i < 0.0f", "NegFloat(-42.1f)", "NegFloat(0.0f)", "-42.1f", "0.0f", "Float.MinValue", "-3.4028235E38",
       "-Float.MinPositiveValue", "-1.4E-45",
-      round("NegZ", "Float") +
+      round("Neg", "Float", "NegZInt") +
       ceil("NegZ", "Float") +
       floor("Neg", "Float") +
       plus("Neg", "Float", "negative", "NegZ", "non-positive") +
@@ -703,7 +708,7 @@ object GenAnyVals {
       negWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NegDouble", "negative", "", "i < 0.0", "NegDouble(-1.1)", "NegDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308",
       "-Double.MinPositiveValue", "-4.9E-324",
-      round("NegZ", "Double") +
+      round("Neg", "Double", "NegZLong") +
       ceil("NegZ", "Double") +
       floor("Neg", "Double") +
       plus("Neg", "Double", "negative", "NegZ", "non-positive") +
@@ -715,7 +720,7 @@ object GenAnyVals {
     genLongAnyVal(dir, "NegZLong", "non-positive", "", "i <= 0L", "NegZLong(-42L)", "NegZLong(-1L)", "-42", "1", "Long.MinValue", "-9223372036854775808",
       "0L", "0L", negZWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "NegZFloat", "non-positive", "", "i <= 0.0f", "NegZFloat(-1.1f)", "NegZFloat(1.0f)", "-1.1f", "1.1f", "Float.MinValue", "-3.4028235E38", "0.0f", "0.0f",
-      round("NegZ", "Float") +
+      round("NegZ", "Float", "NegZInt") +
       ceil("NegZ", "Float") +
       floor("NegZ", "Float") +
       plus("NegZ", "Float", "non-positive") +
@@ -723,7 +728,7 @@ object GenAnyVals {
       negativeInfinity("NegZ", "Float"),
       negZWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NegZDouble", "non-positive", "", "i <= 0.0", "NegZDouble(-1.1)", "NegZDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308", "0.0", "0.0",
-      round("NegZ", "Double") +
+      round("NegZ", "Double", "NegZLong") +
       ceil("NegZ", "Double") +
       floor("NegZ", "Double") +
       plus("NegZ", "Double", "non-positive") +
@@ -732,66 +737,66 @@ object GenAnyVals {
       negZWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "PosFiniteFloat", "finite positive", "Note: a <code>PosFiniteFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFiniteFloat]].", "i > 0.0f && i != Float.PositiveInfinity", "PosFiniteFloat(42.1f)", "PosFiniteFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",
       "Float.MaxValue", "3.4028235E38",
-      round("PosZFinite", "Float") +
+      round("PosFinite", "Float", "PosZInt") +
       ceil("PosFinite", "Float") +
       floor("PosZFinite", "Float"),
       minPositiveValue("Pos", "Float"),
       posFiniteWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "PosFiniteDouble", "finite positive", "", "i > 0.0  && i != Double.PositiveInfinity", "PosFiniteDouble(1.1)", "PosFiniteDouble(-1.1)", "1.1", "-1.1", "Double.MinPositiveValue", "4.9E-324",
       "Double.MaxValue", "1.7976931348623157E308",
-      round("PosZFinite", "Double") +
+      round("PosFinite", "Double", "PosZLong") +
       ceil("PosFinite", "Double") +
       floor("PosZFinite", "Double"),
       minPositiveValue("PosFinite", "Double"),
       posFiniteWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "PosZFiniteFloat", "finite non-negative", "", "i >= 0.0f && i != Float.PositiveInfinity", "PosZFiniteFloat(1.1f)", "PosZFiniteFloat(-1.0f)", "1.1f", "-1.1f", "0.0f", "0.0f",
       "Float.MaxValue", "3.4028235E38",
-      round("PosZFinite", "Float") +
+      round("PosZFinite", "Float", "PosZInt") +
       ceil("PosZFinite", "Float") +
       floor("PosZFinite", "Float"),
       minPositiveValue("PosZFinite", "Float"),
       posZFiniteWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "PosZFiniteDouble", "finite non-negative", "", "i >= 0.0 && i != Double.PositiveInfinity", "PosZFiniteDouble(1.1)", "PosZFiniteDouble(-1.1)", "1.1", "-1.1", "0.0", "0.0",
       "Double.MaxValue", "1.7976931348623157E308",
-      round("PosZFinite", "Double") +
+      round("PosZFinite", "Double", "PosZLong") +
       ceil("PosZFinite", "Double") +
       floor("PosZFinite", "Double"),
       minPositiveValue("PosZFinite", "Double"),
       posZFiniteWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "NegFiniteFloat", "finite negative", "Note: a <code>NegFiniteFloat</code> may not equal 0.0. If you want negative number or 0, use [[NegZFiniteFloat]].", "i < 0.0f && i != Float.NegativeInfinity", "NegFiniteFloat(-42.1f)", "NegFiniteFloat(0.0f)", "-42.1f", "0.0f",
       "Float.MinValue", "-3.4028235E38", "-Float.MinPositiveValue", "-1.4E-45",
-      round("NegZFinite", "Float") +
+      round("NegFinite", "Float", "NegZInt") +
       ceil("NegZFinite", "Float") +
       floor("NegFinite", "Float"),
       "",
       negFiniteWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NegFiniteDouble", "finite negative", "", "i < 0.0  && i != Double.NegativeInfinity", "NegFiniteDouble(-1.1)", "NegFiniteDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308", "-Double.MinPositiveValue", "-4.9E-324",
-      round("NegZFinite", "Double") +
+      round("NegFinite", "Double", "NegZLong") +
       ceil("NegZFinite", "Double") +
       floor("NegFinite", "Double"),
       "",
       negFiniteWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "NegZFiniteFloat", "finite non-positive", "", "i <= 0.0f && i != Float.NegativeInfinity", "NegZFiniteFloat(-1.1f)", "NegZFiniteFloat(1.0f)", "-1.1f", "1.1f", "Float.MinValue", "-3.4028235E38", "0.0f", "0.0f",
-      round("NegZFinite", "Float") +
+      round("NegZFinite", "Float", "NegZInt") +
       ceil("NegZFinite", "Float") +
       floor("NegZFinite", "Float"),
       "",
       negZFiniteWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "NegZFiniteDouble", "finite non-positive", "", "i <= 0.0 && i != Double.NegativeInfinity", "PosZFiniteDouble(-1.1)", "NegZFiniteDouble(1.1)", "-1.1", "1.1", "Double.MinValue", "-1.7976931348623157E308", "0.0", "0.0",
-      round("NegZFinite", "Double") +
+      round("NegZFinite", "Double", "NegZLong") +
       ceil("NegZFinite", "Double") +
       floor("NegZFinite", "Double"),
       "",
       negZFiniteWidens("Double"), dotty) :::
     genFloatAnyVal(dir, "FiniteFloat", "finite", "", "i != Float.NegativeInfinity && i != Float.PositiveInfinity && !i.isNaN", "FiniteFloat(42.1f)", "FiniteFloat(Float.PositiveInfinity)", "42.1f", "Float.PositiveInfinity", "Float.MinValue", "-3.4028235E38",
       "Float.MaxValue", "3.4028235E38",
-      round("Finite", "Float") +
+      round("Finite", "Float", "Int") +
       ceil("Finite", "Float") +
       floor("Finite", "Float"),
       minPositiveValue("Finite", "Float"),
       finiteWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "FiniteDouble", "finite", "", "i != Double.NegativeInfinity && i != Double.PositiveInfinity && !i.isNaN", "FiniteDouble(1.1)", "FiniteDouble(FiniteDouble.PositiveInfinity)", "1.1", "Finite.PositiveInfinity", "Double.MinValue", "-1.7976931348623157E308", "Double.MaxValue", "1.7976931348623157E308",
-      round("Finite", "Double") +
+      round("Finite", "Double", "Long") +
       ceil("Finite", "Double") +
       floor("Finite", "Double"),
       minPositiveValue("Finite", "Double"),
