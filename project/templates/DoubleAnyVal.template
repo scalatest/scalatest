@@ -341,7 +341,9 @@ final class $typeName$ private (val value: Double) extends AnyVal {
   */
   def min(that: $typeName$): $typeName$ = if (math.min(value, that.value) == value) this else that
 
-  // TODO: Need Scaladoc
+  /**
+   * Indicates whether this `$typeName$` has a value that is a whole number: it is finite and it has no fraction part.
+   */
   def isWhole = {
     val longValue = value.toLong
     longValue.toDouble == value || longValue == Long.MaxValue && value < Double.PositiveInfinity || longValue == Long.MinValue && value > Double.NegativeInfinity
