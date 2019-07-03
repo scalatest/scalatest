@@ -504,7 +504,9 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
 
   @transient private final val latch = new CountDownLatch(1)
 
-  private var succeeded = true
+  import java.util.concurrent.atomic.AtomicBoolean
+
+  private val succeeded = new AtomicBoolean(true)
 
   private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
@@ -519,15 +521,15 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   // SKIP-SCALATESTJS,NATIVE-START
   def succeeds() = {
     waitUntilCompleted()
-    synchronized { succeeded }
+    succeeded.get
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
-  def isCompleted = synchronized { latch.getCount == 0L }
+  def isCompleted = latch.getCount == 0L
 
   // SKIP-SCALATESTJS,NATIVE-START
   def waitUntilCompleted(): Unit = {
-    synchronized { latch }.await()
+    latch.await()
     unreportedException match {
       case Some(ue) => throw ue
       case None => // Do nothing
@@ -536,11 +538,9 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   // SKIP-SCALATESTJS,NATIVE-END
 
   def setFailed(): Unit = {
-    synchronized {
-      if (isCompleted)
-        throw new IllegalStateException("status is already completed")
-      succeeded = false
-    }
+    if (isCompleted)
+      throw new IllegalStateException("status is already completed")
+    succeeded.set(false)
   }
 
   /**
@@ -557,16 +557,21 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
    * @param ex an unreported exception
    */
   def setFailedWith(ex: Throwable): Unit = {
-    synchronized {
-      if (isCompleted)
-        throw new IllegalStateException("status is already completed")
-      succeeded = false
-      if (asyncException.isEmpty)
-        asyncException = Some(ex)
-      else {
-        println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:")
-        ex.printStackTrace()
-      }
+    if (isCompleted)
+      throw new IllegalStateException("status is already completed")
+    succeeded.set(false)
+    if (asyncException.isEmpty)
+      asyncException = Some(ex)
+    else {
+      println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:")
+      ex.printStackTrace()
+    }
+  }
+
+  def executeQueue(tri: Try[Boolean]): Unit = {
+    while (!queue.isEmpty) {
+      val f = queue.poll
+      f(tri)
     }
   }
 
@@ -574,39 +579,29 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
     // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
     // we are iterating through the list of callbacks prior to adding the last one.
     //val it =
-      synchronized {
-        // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
-        // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
-        // for this Status to complete.
-        latch.countDown()
-        //queue.iterator
-        val tri: Try[Boolean] =
-          unreportedException match {
-            case Some(ex) => Failure(ex)
-            case None => Success(succeeded)
-          }
-        /*for (f <- it)
-          f(tri)*/
-        while (!queue.isEmpty) {
-          val f = queue.poll
-          f(tri)
-        }
+
+    // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
+    // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
+    // for this Status to complete.
+    latch.countDown()
+    val tri: Try[Boolean] =
+      unreportedException match {
+        case Some(ex) => Failure(ex)
+        case None => Success(succeeded.get)
       }
+    executeQueue(tri)
 
   }
 
   def whenCompleted(f: Try[Boolean] => Unit): Unit = {
-    synchronized {
-      if (!isCompleted)
-        queue.add(f)
-      else {
-        val tri: Try[Boolean] =
-          unreportedException match {
-            case Some(ex) => Failure(ex)
-            case None => Success(succeeded)
-          }
-        f(tri)
-      }
+    queue.add(f)
+    if (isCompleted) {
+      val tri: Try[Boolean] =
+        unreportedException match {
+          case Some(ex) => Failure(ex)
+          case None => Success(succeeded.get)
+        }
+      executeQueue(tri)
     }
   }
 }
@@ -626,8 +621,13 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
  * </p>
  */
 final class StatefulStatus extends Status with Serializable {
+
   @transient private final val latch = new CountDownLatch(1)
-  private var succeeded = true
+
+  import java.util.concurrent.atomic.AtomicBoolean
+
+  private val succeeded = new AtomicBoolean(true)
+
   private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
   private var asyncException: Option[Throwable] = None
@@ -639,31 +639,17 @@ final class StatefulStatus extends Status with Serializable {
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
-  /**
-   * Blocking call that waits until completion, as indicated by an invocation of <code>setCompleted</code> on this instance, then returns <code>false</code> 
-   * if <code>setFailed</code> was called on this instance, else returns <code>true</code>.
-   * 
-   * @return <code>true</code> if no tests failed and no suites aborted, <code>false</code> otherwise
-   */
   def succeeds() = {
     waitUntilCompleted()
-    synchronized { succeeded }
+    succeeded.get
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
-  /**
-   * Non-blocking call that returns <code>true</code> if <code>setCompleted</code> has been invoked on this instance, <code>false</code> otherwise.
-   * 
-   * @return <code>true</code> if the test or suite run is already completed, <code>false</code> otherwise.
-   */
-  def isCompleted = synchronized { latch.getCount == 0L }
+  def isCompleted = latch.getCount == 0L
 
   // SKIP-SCALATESTJS,NATIVE-START
-  /**
-   * Blocking call that returns only after <code>setCompleted</code> has been invoked on this <code>StatefulStatus</code> instance.
-   */
   def waitUntilCompleted(): Unit = {
-    synchronized { latch }.await()
+    latch.await()
     unreportedException match {
       case Some(ue) => throw ue
       case None => // Do nothing
@@ -671,111 +657,72 @@ final class StatefulStatus extends Status with Serializable {
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
-  /**
-   * Sets the status to failed without changing the completion status.
-   *
-   * <p>
-   * This method may be invoked repeatedly, even though invoking it once is sufficient to set the state of the <code>Status</code> to failed, but only
-   * up until <code>setCompleted</code> has been called. Once <code>setCompleted</code> has been called, invoking this method will result in a
-   * thrown <code>IllegalStateException</code>.
-   * </p>
-   *
-   * @throws IllegalStateException if this method is invoked on this instance after <code>setCompleted</code> has been invoked on this instance.
-   */
   def setFailed(): Unit = {
-    synchronized {
-      if (isCompleted)
-        throw new IllegalStateException("status is already completed")
-      succeeded = false
-    }
+    if (isCompleted)
+      throw new IllegalStateException("status is already completed")
+    succeeded.set(false)
   }
 
   /**
-   * Sets the status to failed with an unreported exception, without changing the completion status.
-   *
-   * <p>
-   * This method may be invoked repeatedly, even though invoking it once is sufficient to set the state of the <code>Status</code> to failed, but only
-   * up until <code>setCompleted</code> has been called. Once <code>setCompleted</code> has been called, invoking this method will result in a
-   * thrown <code>IllegalStateException</code>. Also, only the first exception passed will be reported as the unreported exception. Any exceptions
-   * passed via subsequent invocations of <code>setFailedWith</code> after the first will have their stack traces printed to standard output.
-   * </p>
-   *
-   * @throws IllegalStateException if this method is invoked on this instance after <code>setCompleted</code> has been invoked on this instance.
-   * @param ex an unreported exception
-   */
+    * Sets the status to failed with an unreported exception, without changing the completion status.
+    *
+    * <p>
+    * This method may be invoked repeatedly, even though invoking it once is sufficient to set the state of the <code>Status</code> to failed, but only
+    * up until <code>setCompleted</code> has been called. Once <code>setCompleted</code> has been called, invoking this method will result in a
+    * thrown <code>IllegalStateException</code>. Also, only the first exception passed will be reported as the unreported exception. Any exceptions
+    * passed via subsequent invocations of <code>setFailedWith</code> after the first will have their stack traces printed to standard output.
+    * </p>
+    *
+    * @throws IllegalStateException if this method is invoked on this instance after <code>setCompleted</code> has been invoked on this instance.
+    * @param ex an unreported exception
+    */
   def setFailedWith(ex: Throwable): Unit = {
-    synchronized {
-      if (isCompleted)
-        throw new IllegalStateException("status is already completed")
-      succeeded = false
-      if (asyncException.isEmpty)
-        asyncException = Some(ex)
-      else {
-        println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:")
-        ex.printStackTrace()
-      }
+    if (isCompleted)
+      throw new IllegalStateException("status is already completed")
+    succeeded.set(false)
+    if (asyncException.isEmpty)
+      asyncException = Some(ex)
+    else {
+      println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:")
+      ex.printStackTrace()
     }
   }
 
-  /**
-   * Sets the status to completed.
-   *
-   * <p>
-   * This method may be invoked repeatedly, even though invoking it once is sufficient to set the state of the <code>Status</code> to completed.
-   * </p>
-   *
-   * <p>
-   * <strong>TODO: Specify that this method invokes the callbacks on the invoking thread after it releases the lock
-   * such that the Status has completed.</strong>
-   * </p>
-   */
+  def executeQueue(tri: Try[Boolean]): Unit = {
+    while (!queue.isEmpty) {
+      val f = queue.poll
+      f(tri)
+    }
+  }
+
   def setCompleted(): Unit = {
     // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
     // we are iterating through the list of callbacks prior to adding the last one.
     //val it =
-      synchronized {
-      // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
-      // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
-      // for this Status to complete.
-        latch.countDown()
-      //  queue.iterator
 
-        val tri: Try[Boolean] =
-          unreportedException match {
-            case Some(ex) => Failure(ex)
-            case None => Success(succeeded)
-          }
-        /*for (f <- it)
-          f(tri)*/
-        while (!queue.isEmpty) {
-          val f = queue.poll
-          f(tri)
-        }
+    // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
+    // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
+    // for this Status to complete.
+    latch.countDown()
+    val tri: Try[Boolean] =
+      unreportedException match {
+        case Some(ex) => Failure(ex)
+        case None => Success(succeeded.get)
       }
+    executeQueue(tri)
+
   }
 
-  /**
-   * Registers the passed function to be executed when this status completes.
-   *
-   * <p>
-   * You may register multiple functions, which on completion will be executed in an undefined
-   * order.
-   * </p>
-   */
   def whenCompleted(f: Try[Boolean] => Unit): Unit = {
-    synchronized {
-      if (!isCompleted)
-        queue.add(f)
-      else {
-        val tri: Try[Boolean] =
-          unreportedException match {
-            case Some(ex) => Failure(ex)
-            case None => Success(succeeded)
-          }
-        f(tri)
-      }
+    queue.add(f)
+    if (isCompleted) {
+      val tri: Try[Boolean] =
+        unreportedException match {
+          case Some(ex) => Failure(ex)
+          case None => Success(succeeded.get)
+        }
+      executeQueue(tri)
     }
-
   }
 }
 

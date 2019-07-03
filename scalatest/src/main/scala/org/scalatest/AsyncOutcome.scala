@@ -39,40 +39,27 @@ private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(imp
 
   future.onComplete {
     case Success(result) =>
-      synchronized {
-        /*for (f <- queue.iterator)
-        f(Success(result))*/
-        while (!queue.isEmpty) {
-          val f = queue.poll
-          f(Success(result))
-        }
-        status.setCompleted()
-      }
+      executeQueue(Success(result))
+      status.setCompleted()
 
     case Failure(ex) =>
-      synchronized {
-        /*for (f <- queue.iterator)
-        f(Failure(ex))*/
-        while (!queue.isEmpty) {
-          val f = queue.poll
-          f(Failure(ex))
-        }
-        status.setFailedWith(ex)
-        status.setCompleted()
-      }
-  } /* fills in ctx here */
+      executeQueue(Failure(ex))
+      status.setFailedWith(ex)
+      status.setCompleted()
+  }
+
+  def executeQueue(result: Try[Outcome]): Unit = {
+    while (!queue.isEmpty) {
+      val f = queue.poll
+      if (f != null)
+        f(result)
+    }
+  }
 
   def onComplete(f: Try[Outcome] => Unit): Unit = {
-    synchronized {
-      if (!future.isCompleted)
-        queue.add(f)
-      else {
-        future.value.get match {
-          case Success(result) => f(new Success(result))
-          case Failure(ex) => f(new Failure(ex))
-        }
-      }
-    }
+    queue.add(f)
+    if (future.isCompleted)
+      executeQueue(future.value.get)
   }
   def toStatus: Status = status
   // SKIP-SCALATESTJS,NATIVE-START
