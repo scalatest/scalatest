@@ -170,12 +170,14 @@ class NonZeroFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks 
     it("should not offer a NegativeInfinity factory method") {
       "NonZeroFiniteDouble.NegativeInfinity" shouldNot compile
     }
+/* These now compile because of the new implicit widening conversion from NonZeroFiniteDouble to NonZeroDouble.
     it("should not offer a isNegInfinity method") {
       "NonZeroFiniteDouble(-1.0).isNegInfinity" shouldNot compile
     }
     it("should not offer a isPosInfinity method") {
       "NonZeroFiniteDouble(-1.0).isPosInfinity" shouldNot compile
     }
+*/
 
     it("should be sortable") {
       val xs = List(NonZeroFiniteDouble(2.2), NonZeroFiniteDouble(4.4), NonZeroFiniteDouble(1.1),

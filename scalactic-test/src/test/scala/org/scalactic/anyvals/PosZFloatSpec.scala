@@ -369,6 +369,12 @@ class PosZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       an [AssertionError] should be thrownBy { PosZFloat.MaxValue.ensuringValid(_ => Float.NaN) }
       // SKIP-DOTTY-END
     }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: PosZFiniteFloat) =>
+        (n: PosZFloat).isFinite should be (true)
+        PosZFloat.PositiveInfinity.isFinite should be (false)
+      }
+    }
   }
 }
 

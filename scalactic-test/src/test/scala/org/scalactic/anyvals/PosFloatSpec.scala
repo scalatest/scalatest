@@ -356,6 +356,12 @@ specifying floats so long as it is in the valid range for floats.
         widen(pfloat) shouldEqual widen(NonZeroDouble.from(pfloat.toFloat).get)
       }
     }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: PosFiniteFloat) =>
+        (n: PosFloat).isFinite should be (true)
+        PosFloat.PositiveInfinity.isFinite should be (false)
+      }
+    }
   }
   it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
     PosFloat(33.0f).ensuringValid(_ + 1.0f) shouldEqual PosFloat(34.0f)

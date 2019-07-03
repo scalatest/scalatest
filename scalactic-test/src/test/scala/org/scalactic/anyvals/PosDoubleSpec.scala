@@ -345,6 +345,12 @@ class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       an [AssertionError] should be thrownBy { PosDouble.MaxValue.ensuringValid(_ => Double.NaN) }
       // SKIP-DOTTY-END
     }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: PosFiniteDouble) =>
+        (n: PosDouble).isFinite should be (true)
+        PosDouble.PositiveInfinity.isFinite should be (false)
+      }
+    }
   }
 }
 

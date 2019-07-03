@@ -443,7 +443,7 @@ object GenAnyVals {
   }
 
   def nonZeroFiniteWidens(primitiveType: String): List[String] = {
-    primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NonZero" + p) :::
+    primitiveTypes.dropWhile(_ != primitiveType).map(p => "NonZero" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "NonZeroFinite" + p) :::
     primitiveTypes.dropWhile(_ != primitiveType).tail.map(p => "Finite" + p)
   }

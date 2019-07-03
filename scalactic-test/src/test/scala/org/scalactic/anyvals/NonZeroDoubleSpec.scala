@@ -314,5 +314,12 @@ class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with T
       an [AssertionError] should be thrownBy { NonZeroDouble.MaxValue.ensuringValid(_ - NonZeroDouble.MaxValue) }
       an [AssertionError] should be thrownBy { NonZeroDouble.MaxValue.ensuringValid(_ => Double.NaN) }
     }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: NonZeroFiniteDouble) =>
+        (n: NonZeroDouble).isFinite should be (true)
+        NonZeroDouble.NegativeInfinity.isFinite should be (false)
+        NonZeroDouble.PositiveInfinity.isFinite should be (false)
+      }
+    }
   }
 }

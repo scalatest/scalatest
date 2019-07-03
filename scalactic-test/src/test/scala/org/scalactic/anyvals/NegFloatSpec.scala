@@ -320,6 +320,12 @@ class NegFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         pfloat.toRadians shouldEqual pfloat.toFloat.toRadians
       }
     }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: NegFiniteFloat) =>
+        (n: NegFloat).isFinite should be (true)
+        NegFloat.NegativeInfinity.isFinite should be (false)
+      }
+    }
   }
   it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
     NegFloat(-33.0f).ensuringValid(_ + 1.0f) shouldEqual NegFloat(-32.0f)

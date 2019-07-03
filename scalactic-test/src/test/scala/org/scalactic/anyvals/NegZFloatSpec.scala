@@ -352,6 +352,12 @@ class NegZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       an [AssertionError] should be thrownBy { NegZFloat.MaxValue.ensuringValid(_ => Float.NaN) }
       // SKIP-DOTTY-END
     }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: NegZFiniteFloat) =>
+        (n: NegZFloat).isFinite should be (true)
+        NegZFloat.NegativeInfinity.isFinite should be (false)
+      }
+    }
   }
 }
 

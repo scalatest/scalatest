@@ -365,6 +365,12 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ => Double.NaN) }
       // SKIP-DOTTY-END
     }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: PosZFiniteDouble) =>
+        (n: PosZDouble).isFinite should be (true)
+        PosZDouble.PositiveInfinity.isFinite should be (false)
+      }
+    }
   }
 }
 

@@ -359,5 +359,11 @@ class NegZDoubleSpec extends FunSpec with Matchers with PropertyChecks with NegZ
       an [AssertionError] should be thrownBy { NegZDouble.MaxValue.ensuringValid(_ => Double.NaN) }
       // SKIP-DOTTY-END
     }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: NegZFiniteDouble) =>
+        (n: NegZDouble).isFinite should be (true)
+        NegZDouble.NegativeInfinity.isFinite should be (false)
+      }
+    }
   }
 }

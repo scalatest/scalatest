@@ -592,6 +592,13 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
         widen(pfloat) shouldEqual widen(NonZeroDouble.from(pfloat.toFloat).get)
       }*/
     }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: NonZeroFiniteFloat) =>
+        (n: NonZeroFloat).isFinite should be (true)
+        NonZeroFloat.NegativeInfinity.isFinite should be (false)
+        NonZeroFloat.PositiveInfinity.isFinite should be (false)
+      }
+    }
   }
   it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
     NonZeroFloat(33.0f).ensuringValid(_ + 1.0f) shouldEqual NonZeroFloat(34.0f)
