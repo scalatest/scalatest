@@ -505,17 +505,16 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   @transient private final val latch = new CountDownLatch(1)
 
   import java.util.concurrent.atomic.AtomicBoolean
+  import java.util.concurrent.atomic.AtomicReference
 
   private val succeeded = new AtomicBoolean(true)
 
   private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
-  private var asyncException: Option[Throwable] = None
+  private val asyncException: AtomicReference[Option[Throwable]] = new AtomicReference(None)
 
   override def unreportedException: Option[Throwable] = {
-    synchronized {
-      asyncException
-    }
+    asyncException.get
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -544,31 +543,29 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   }
 
   /**
-   * Sets the status to failed with an unreported exception, without changing the completion status.
-   *
-   * <p>
-   * This method may be invoked repeatedly, even though invoking it once is sufficient to set the state of the <code>Status</code> to failed, but only
-   * up until <code>setCompleted</code> has been called. Once <code>setCompleted</code> has been called, invoking this method will result in a
-   * thrown <code>IllegalStateException</code>. Also, only the first exception passed will be reported as the unreported exception. Any exceptions
-   * passed via subsequent invocations of <code>setFailedWith</code> after the first will have their stack traces printed to standard output.
-   * </p>
-   *
-   * @throws IllegalStateException if this method is invoked on this instance after <code>setCompleted</code> has been invoked on this instance.
-   * @param ex an unreported exception
-   */
+    * Sets the status to failed with an unreported exception, without changing the completion status.
+    *
+    * <p>
+    * This method may be invoked repeatedly, even though invoking it once is sufficient to set the state of the <code>Status</code> to failed, but only
+    * up until <code>setCompleted</code> has been called. Once <code>setCompleted</code> has been called, invoking this method will result in a
+    * thrown <code>IllegalStateException</code>. Also, only the first exception passed will be reported as the unreported exception. Any exceptions
+    * passed via subsequent invocations of <code>setFailedWith</code> after the first will have their stack traces printed to standard output.
+    * </p>
+    *
+    * @throws IllegalStateException if this method is invoked on this instance after <code>setCompleted</code> has been invoked on this instance.
+    * @param ex an unreported exception
+    */
   def setFailedWith(ex: Throwable): Unit = {
     if (isCompleted)
       throw new IllegalStateException("status is already completed")
     succeeded.set(false)
-    if (asyncException.isEmpty)
-      asyncException = Some(ex)
-    else {
+    if (!asyncException.compareAndSet(None, Some(ex))) {
       println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:")
       ex.printStackTrace()
     }
   }
 
-  def executeQueue(tri: Try[Boolean]): Unit = {
+  private def executeQueue(tri: Try[Boolean]): Unit = {
     while (!queue.isEmpty) {
       val f = queue.poll
       f(tri)
@@ -625,17 +622,16 @@ final class StatefulStatus extends Status with Serializable {
   @transient private final val latch = new CountDownLatch(1)
 
   import java.util.concurrent.atomic.AtomicBoolean
+  import java.util.concurrent.atomic.AtomicReference
 
   private val succeeded = new AtomicBoolean(true)
 
   private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
-  private var asyncException: Option[Throwable] = None
+  private val asyncException: AtomicReference[Option[Throwable]] = new AtomicReference(None)
 
   override def unreportedException: Option[Throwable] = {
-    synchronized {
-      asyncException
-    }
+    asyncException.get
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -680,15 +676,13 @@ final class StatefulStatus extends Status with Serializable {
     if (isCompleted)
       throw new IllegalStateException("status is already completed")
     succeeded.set(false)
-    if (asyncException.isEmpty)
-      asyncException = Some(ex)
-    else {
+    if (!asyncException.compareAndSet(None, Some(ex))) {
       println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:")
       ex.printStackTrace()
     }
   }
 
-  def executeQueue(tri: Try[Boolean]): Unit = {
+  private def executeQueue(tri: Try[Boolean]): Unit = {
     while (!queue.isEmpty) {
       val f = queue.poll
       f(tri)
