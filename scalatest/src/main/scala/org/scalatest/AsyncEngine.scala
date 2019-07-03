@@ -236,8 +236,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
     requireNonNull(testName, args)
 
-    println("###Running test: " + testName)
-
     if (!parallelAsyncTestExecution) {
       // Tell the TSR that the test is being distributed
       for (sorter <- args.distributedTestSorter)
@@ -307,17 +305,10 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         case _: TestPendingException => PastOutcome(Pending)
         case tfe: TestFailedException => PastOutcome(Failed(tfe))
         case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastOutcome(Failed(ex))
-        case ex: Throwable =>
-          println("******************this is supposed to propaget")
-          ex.printStackTrace()
-          throw ex
       }
-
-    println("###Registering onComplete: " + testName)
 
     asyncOutcome.onComplete { trial =>
       //println("###onComplete in the FORK!!")
-      println("###onComplete for: " + testName)
       trial match {
         case Success(outcome) =>
           outcome match {
@@ -377,10 +368,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
       // SKIP-SCALATESTJS,NATIVE-START
       val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
-      println("###test name: " + testName)
-      println("###oldInformer: " + oldInformer)
-      println("###shouldBeInformerForThisTest: " + shouldBeInformerForThisTest)
-      println("###informerForThisTest: " + informerForThisTest)
       if (shouldBeInformerForThisTest ne informerForThisTest)
         throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
 
@@ -642,8 +629,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     // SKIP-SCALATESTJS,NATIVE-START
     status.whenCompleted { r =>
       val shouldBeInformerForThisSuite = atomicInformer.getAndSet(zombieInformer)
-      println("###shouldBeInformerForThisSuite: " + shouldBeInformerForThisSuite)
-      println("###informerForThisSuite: " + informerForThisSuite)
       if (shouldBeInformerForThisSuite ne informerForThisSuite)
         throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
 
