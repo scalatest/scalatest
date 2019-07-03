@@ -334,13 +334,13 @@ final class $typeName$ private (val value: Float) extends AnyVal {
   // Stuff from RichFloat
 
   /**
-  * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
-  */
+   * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+   */
   def max(that: $typeName$): $typeName$ = if (math.max(value, that.value) == value) this else that
 
   /**
-  * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
-  */
+   * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+   */
   def min(that: $typeName$): $typeName$ = if (math.min(value, that.value) == value) this else that
 
   /**
@@ -352,16 +352,16 @@ final class $typeName$ private (val value: Float) extends AnyVal {
   }
 
   /** Converts an angle measured in degrees to an approximately equivalent
-  * angle measured in radians.
-  *
-  * @return the measurement of the angle x in radians.
-  */
+   * angle measured in radians.
+   *
+   * @return the measurement of the angle x in radians.
+   */
   def toRadians: Float = math.toRadians(value.toDouble).toFloat
 
   /** Converts an angle measured in radians to an approximately equivalent
-  * angle measured in degrees.
-  * @return the measurement of the angle x in degrees.
-  */
+   * angle measured in degrees.
+   * @return the measurement of the angle x in degrees.
+   */
   def toDegrees: Float = math.toDegrees(value.toDouble).toFloat
 
   /**
@@ -411,6 +411,7 @@ final class $typeName$ private (val value: Float) extends AnyVal {
  * for <code>$typeName$</code>.
  */
 object $typeName$ {
+
   /**
    * The largest value representable as a $typeDesc$ <code>Float</code>,
    * which is <code>$typeName$($typeMaxValueNumber$)</code>.
@@ -698,16 +699,16 @@ object $typeName$ {
 
   /**
    * Implicit widening conversion from <code>$typeName$</code> to
-  * <code>Float</code>.
-  *
-  * @param pos the <code>$typeName$</code> to widen
-  * @return the <code>Float</code> value underlying the
-  *     specified <code>$typeName$</code>
-  */
+   * <code>Float</code>.
+   *
+   * @param pos the <code>$typeName$</code> to widen
+   * @return the <code>Float</code> value underlying the
+   *     specified <code>$typeName$</code>
+   */
  implicit def widenToFloat(pos: $typeName$): Float = pos.value
 
- /**
-  * Implicit widening conversion from <code>$typeName$</code> to
+  /**
+   * Implicit widening conversion from <code>$typeName$</code> to
    * <code>Double</code>.
    *
    * @param pos the <code>$typeName$</code> to widen

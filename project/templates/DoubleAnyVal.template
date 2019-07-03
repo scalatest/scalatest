@@ -332,13 +332,13 @@ final class $typeName$ private (val value: Double) extends AnyVal {
   // Stuff from RichDouble
 
   /**
-  * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
-  */
+   * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+   */
   def max(that: $typeName$): $typeName$ = if (math.max(value, that.value) == value) this else that
 
   /**
-  * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
-  */
+   * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+   */
   def min(that: $typeName$): $typeName$ = if (math.min(value, that.value) == value) this else that
 
   /**
@@ -350,16 +350,16 @@ final class $typeName$ private (val value: Double) extends AnyVal {
   }
 
   /** Converts an angle measured in degrees to an approximately equivalent
-  * angle measured in radians.
-  *
-  * @return the measurement of the angle x in radians.
-  */
+   * angle measured in radians.
+   *
+   * @return the measurement of the angle x in radians.
+   */
   def toRadians: Double = math.toRadians(value)
 
   /** Converts an angle measured in radians to an approximately equivalent
-  * angle measured in degrees.
-  * @return the measurement of the angle x in degrees.
-  */
+   * angle measured in degrees.
+   * @return the measurement of the angle x in degrees.
+   */
   def toDegrees: Double = math.toDegrees(value)
 
   /**
@@ -409,6 +409,7 @@ final class $typeName$ private (val value: Double) extends AnyVal {
  * for <code>$typeName$</code>.
  */
 object $typeName$ {
+
   /**
    * The largest value representable as a $typeDesc$ <code>Double</code>,
    * which is <code>$typeName$($typeMaxValueNumber$)</code>.

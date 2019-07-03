@@ -28,31 +28,31 @@ object GenAnyVals {
 
       val macroCode =
         if (dotty)
-          s"""def apply(value: Expr[$primitiveTypeName])(implicit refl: Reflection): Expr[$typeName] = {
-             |  val notValidMsg = Resources.notValid$typeName
-             |  val notLiteralMsg = Resources.notLiteral$typeName
-             |  import refl._
-             |  ensureValid${primitiveTypeName}Literal(value, notValidMsg, notLiteralMsg)(isValid)
-             |  '{ $typeName.ensuringValid($$value) }
-             |}
-             |
-           """.stripMargin
+          s"""
+             |  def apply(value: Expr[$primitiveTypeName])(implicit refl: Reflection): Expr[$typeName] = {
+             |    val notValidMsg = Resources.notValid$typeName
+             |    val notLiteralMsg = Resources.notLiteral$typeName
+             |    import refl._
+             |    ensureValid${primitiveTypeName}Literal(value, notValidMsg, notLiteralMsg)(isValid)
+             |    '{ $typeName.ensuringValid($$value) }
+             |  }
+             |""".stripMargin
         else
           s"""
-             |def apply(c: Context)(value: c.Expr[$primitiveTypeName]): c.Expr[$typeName] = {
-             |  val notValidMsg = Resources.notValid$typeName
-             |  val notLiteralMsg = Resources.notLiteral$typeName
-             |  import c.universe._
-             |  ensureValid${primitiveTypeName}Literal(c)(value, notValidMsg, notLiteralMsg)(isValid)
-             |  reify { $typeName.ensuringValid(value.splice) }
-             |}
-             |
-           """.stripMargin
+             |  def apply(c: Context)(value: c.Expr[$primitiveTypeName]): c.Expr[$typeName] = {
+             |    val notValidMsg = Resources.notValid$typeName
+             |    val notLiteralMsg = Resources.notLiteral$typeName
+             |    import c.universe._
+             |    ensureValid${primitiveTypeName}Literal(c)(value, notValidMsg, notLiteralMsg)(isValid)
+             |    reify { $typeName.ensuringValid(value.splice) }
+             |  }
+             |""".stripMargin
 
       val macroObjectModifier = if (dotty) "" else "private[anyvals]"  // TODO: Hopefully Dotty can allow this in later version.
 
       val content =
-        s"""/*
+        s"""
+           |/*
            | * Copyright 2001-2016 Artima, Inc.
            | *
            | * Licensed under the Apache License, Version 2.0 (the "License");
@@ -78,7 +78,7 @@ object GenAnyVals {
            |
            |  $macroCode
            |}
-      """.stripMargin
+           |""".stripMargin
 
       val bw = new BufferedWriter(new FileWriter(targetFile))
 
@@ -126,7 +126,8 @@ object GenAnyVals {
       val widensToOtherAnyVals =
         widensToTypes.map { targetType =>
           val targetPrimitiveType = getPrimitiveType(targetType)
-          s"""/**
+          s"""
+             |/**
              | * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
              | *
              | * @param pos the <code>$typeName</code> to widen
@@ -182,7 +183,8 @@ object GenAnyVals {
       val widensToOtherAnyVals =
         widensToTypes.map { targetType =>
           val targetPrimitiveType = getPrimitiveType(targetType)
-          s"""/**
+          s"""
+             |/**
              | * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
              | *
              | * @param pos the <code>$typeName</code> to widen
@@ -190,7 +192,7 @@ object GenAnyVals {
              | *     widened to <code>$targetPrimitiveType</code> and wrapped in a <code>$targetType</code>.
              | */
              |implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
-          """.stripMargin
+             |""".stripMargin
         }.mkString
       st.setAttribute("widensToOtherAnyVals", widensToOtherAnyVals)
 
@@ -239,7 +241,8 @@ object GenAnyVals {
       val widensToOtherAnyVals =
         widensToTypes.map { targetType =>
           val targetPrimitiveType = getPrimitiveType(targetType)
-          s"""/**
+          s"""
+             |/**
              | * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
              | *
              | * @param pos the <code>$typeName</code> to widen
@@ -247,7 +250,7 @@ object GenAnyVals {
              | *     widened to <code>$targetPrimitiveType</code> and wrapped in a <code>$targetType</code>.
              | */
              |implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
-          """.stripMargin
+             |""".stripMargin
         }.mkString
 
       st.setAttribute("widensToOtherAnyVals", widensToOtherAnyVals)
@@ -297,7 +300,8 @@ object GenAnyVals {
       val widensToOtherAnyVals =
         widensToTypes.map { targetType =>
           val targetPrimitiveType = getPrimitiveType(targetType)
-          s"""/**
+          s"""
+             |/**
              | * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
              | *
              | * @param pos the <code>$typeName</code> to widen
@@ -305,7 +309,7 @@ object GenAnyVals {
              | *     widened to <code>$targetPrimitiveType</code> and wrapped in a <code>$targetType</code>.
              | */
              |implicit def widenTo$targetType(pos: $typeName): $targetType = $targetType.ensuringValid(pos.value)
-          """.stripMargin
+             |""".stripMargin
         }.mkString
       st.setAttribute("widensToOtherAnyVals", widensToOtherAnyVals)
 
@@ -352,7 +356,8 @@ object GenAnyVals {
       val widensToOtherAnyVals =
         widensToTypes.map { targetType =>
           val targetPrimitiveType = getPrimitiveType(targetType)
-          s"""/**
+          s"""
+             |/**
              | * Implicit widening conversion from <code>$typeName</code> to <code>$targetType</code>.
              | *
              | * @param pos the <code>$typeName</code> to widen
@@ -510,49 +515,61 @@ object GenAnyVals {
     primitiveTypes.filter(e => e != "Int" && e != "Long").map(p => "PosZFinite" + p)
 
   def positiveInfinity(typePrefix: String, primitiveName: String): String =
-    s"""/**
-      |  * The positive infinity value, which is <code>$typePrefix$primitiveName.ensuringValid($primitiveName.PositiveInfinity)</code>.
-      |  */
-      |final val PositiveInfinity: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.PositiveInfinity) // Can't use the macro here
-    """.stripMargin
+    s"""
+       |/**
+       | * The positive infinity value, which is <code>$typePrefix$primitiveName.ensuringValid($primitiveName.PositiveInfinity)</code>.
+       | */
+       |final val PositiveInfinity: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.PositiveInfinity) // Can't use the macro here
+       |""".stripMargin
 
   def negativeInfinity(typePrefix: String, primitiveName: String): String =
-    s"""/**
-        |  * The negative infinity value, which is <code>$typePrefix$primitiveName.ensuringValid($primitiveName.NegativeInfinity)</code>.
-        |  */
-        |final val NegativeInfinity: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.NegativeInfinity) // Can't use the macro here
-     """.stripMargin
+    s"""
+       |/**
+       | * The negative infinity value, which is <code>$typePrefix$primitiveName.ensuringValid($primitiveName.NegativeInfinity)</code>.
+       | */
+       |final val NegativeInfinity: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.NegativeInfinity) // Can't use the macro here
+       |""".stripMargin
 
   def isPosInfinity(typePrefix: String, primitiveType: String): String =
-    s"""/**
-        |  * True if this <code>$typePrefix$primitiveType</code> value represents positive infinity, else false.
-        |  */
-        |def isPosInfinity: Boolean = $primitiveType.PositiveInfinity == value\n""".stripMargin
+    s"""
+       |/**
+       | * True if this <code>$typePrefix$primitiveType</code> value represents positive infinity, else false.
+       | */
+       |def isPosInfinity: Boolean = $primitiveType.PositiveInfinity == value
+       |""".stripMargin
 
   def isNegInfinity(typePrefix: String, primitiveType: String): String =
-    s"""/**
-        |  * True if this <code>$typePrefix$primitiveType</code> value represents negative infinity, else false.
-        |  */
-        |def isNegInfinity: Boolean = $primitiveType.NegativeInfinity == value\n""".stripMargin
+    s"""
+       |/**
+       | * True if this <code>$typePrefix$primitiveType</code> value represents negative infinity, else false.
+       | */
+       |def isNegInfinity: Boolean = $primitiveType.NegativeInfinity == value
+       |""".stripMargin
 
   def isInfinite(typePrefix: String, primitiveType: String): String =
-    s"""/**
-        |  * True if this <code>$typePrefix$primitiveType</code> value represents positive or negative infinity, else false.
-        |  */
-        |def isInfinite: Boolean = value.isInfinite\n""".stripMargin
+    s"""
+       |/**
+       | * True if this <code>$typePrefix$primitiveType</code> value represents positive or negative infinity, else false.
+       | */
+       |def isInfinite: Boolean = value.isInfinite
+       |""".stripMargin
 
   def isFinite(typePrefix: String, primitiveType: String): String =
-    s"""/**
-        |  * True if this <code>$typePrefix$primitiveType</code> value is any finite value (i.e., it is neither positive nor negative infinity), else false.
-        |  */
-        |def isFinite: Boolean = !value.isInfinite\n""".stripMargin
+    s"""
+       |/**
+       | * True if this <code>$typePrefix$primitiveType</code> value is any finite value (i.e., it is neither positive nor negative infinity), else false.
+       | */
+       |def isFinite: Boolean = !value.isInfinite
+       |""".stripMargin
 
   def minPositiveValue(typePrefix: String, primitiveName: String): String = {
     val theValue = if (primitiveName == "Float") "1.4E-45" else "4.9E-324"
-    s"""/**
-        |  * The smallest positive value greater than 0.0d representable as a <code>$typePrefix$primitiveName</code>, which is $typePrefix$primitiveName($theValue).
-        |  */
-        |final val MinPositiveValue: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.MinPositiveValue)\n""".stripMargin
+    s"""
+       |/**
+       | * The smallest positive value greater than 0.0d representable as a <code>$typePrefix$primitiveName</code>, which is $typePrefix$primitiveName($theValue).
+       | */
+       |final val MinPositiveValue: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid($primitiveName.MinPositiveValue)
+       |""".stripMargin
   }
 
   def round(typePrefix: String, primitiveName: String, integralName: String): String = {
@@ -561,59 +578,61 @@ object GenAnyVals {
         "math.round(value)"
       else
         s"$integralName.ensuringValid(math.round(value))"
-    s"""/**
-      |  * Rounds this `$typePrefix$primitiveName` value to the nearest whole number value that can be expressed as an `$integralName`, returning the result as a `$integralName`.
-      |  */
-      |def round: $integralName = $impl""".stripMargin
+    s"""
+       |/**
+       | * Rounds this `$typePrefix$primitiveName` value to the nearest whole number value that can be expressed as an `$integralName`, returning the result as a `$integralName`.
+       | */
+       |def round: $integralName = $impl
+       |""".stripMargin
   }
 
   def ceil(typePrefix: String, primitiveName: String): String =
-    s"""/**
-        |  * Returns the smallest (closest to 0) `$typePrefix$primitiveName` that is greater than or equal to this `$typePrefix$primitiveName`
-        |  * and represents a mathematical integer.
-        |  */
-        |def ceil: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(math.ceil(value).to$primitiveName)
-        |
-     """.stripMargin
+    s"""
+       |/**
+       | * Returns the smallest (closest to 0) `$typePrefix$primitiveName` that is greater than or equal to this `$typePrefix$primitiveName`
+       | * and represents a mathematical integer.
+       | */
+       |def ceil: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(math.ceil(value).to$primitiveName)
+       |""".stripMargin
 
   def floor(typePrefix: String, primitiveName: String): String =
-    s"""/**
-       |  * Returns the greatest (closest to infinity) `$typePrefix$primitiveName` that is less than or equal to
-       |  * this `$typePrefix$primitiveName` and represents a mathematical integer.
-       |  */
+    s"""
+       |/**
+       | * Returns the greatest (closest to infinity) `$typePrefix$primitiveName` that is less than or equal to
+       | * this `$typePrefix$primitiveName` and represents a mathematical integer.
+       | */
        |def floor: $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(math.floor(value).to$primitiveName)
-       |
-     """.stripMargin
+       |""".stripMargin
 
   def plus(typePrefix: String, primitiveName: String, typeDesc: String): String =
-    s"""/**
-        |  * Returns the <code>$typePrefix$primitiveName</code> sum of this value and `x`.
-        |  *
-        |  * <p>
-        |  * This method will always succeed (not throw an exception) because
-        |  * adding a $typeDesc $primitiveName to another $typeDesc $primitiveName
-        |  * will always result in another $typeDesc $primitiveName
-        |  * value (though the result may be infinity).
-        |  * </p>
-        |  */
-        |def plus(x: $typePrefix$primitiveName): $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(value + x)
-        |
-     """.stripMargin
+    s"""
+       |/**
+       | * Returns the <code>$typePrefix$primitiveName</code> sum of this value and `x`.
+       | *
+       | * <p>
+       | * This method will always succeed (not throw an exception) because
+       | * adding a $typeDesc $primitiveName to another $typeDesc $primitiveName
+       | * will always result in another $typeDesc $primitiveName
+       | * value (though the result may be infinity).
+       | * </p>
+       | */
+       |def plus(x: $typePrefix$primitiveName): $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(value + x)
+       |""".stripMargin
 
   def plus(typePrefix: String, primitiveName: String, typeDesc: String, typePrefix2: String, typeDesc2: String): String =
-    s"""/**
-        | * Returns the <code>$typePrefix$primitiveName</code> sum of this <code>$typePrefix$primitiveName</code>'s value and the given <code>$typePrefix2$primitiveName</code> value.
-        | *
-        | * <p>
-        | * This method will always succeed (not throw an exception) because
-        | * adding a $typeDesc $primitiveName and $typeDesc2 $primitiveName and another
-        | * $typeDesc $primitiveName will always result in another $typeDesc $primitiveName
-        | * value (though the result may be infinity).
-        | * </p>
-        | */
-        |def plus(x: $typePrefix2$primitiveName): $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(value + x.value)
-        |
-     """.stripMargin
+    s"""
+       |/**
+       | * Returns the <code>$typePrefix$primitiveName</code> sum of this <code>$typePrefix$primitiveName</code>'s value and the given <code>$typePrefix2$primitiveName</code> value.
+       | *
+       | * <p>
+       | * This method will always succeed (not throw an exception) because
+       | * adding a $typeDesc $primitiveName and $typeDesc2 $primitiveName and another
+       | * $typeDesc $primitiveName will always result in another $typeDesc $primitiveName
+       | * value (though the result may be infinity).
+       | * </p>
+       | */
+       |def plus(x: $typePrefix2$primitiveName): $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(value + x.value)
+       |""".stripMargin
 
   def importsForMacro(dotty: Boolean): String =
     if (dotty)
@@ -1060,5 +1079,4 @@ object GenAnyVals {
     genAnyValTests(dir, "FiniteDouble", "Double", 3, finiteWidens("Double")) ++
     genAnyValTests(dir, "NumericChar", "Char", 3, numericCharWidens)
   }
-
 }

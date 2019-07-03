@@ -169,13 +169,13 @@ final class $typeName$ private (val value: Int) extends AnyVal {
    */
   def toDouble: Double = value.toDouble
   /**
-  * Returns the bitwise negation of this value.
-  * @example {{{
-  * ~5 == -6
-  * // in binary: ~00000101 ==
-  * // 11111010
-  * }}}
-  */
+   * Returns the bitwise negation of this value.
+   * @example {{{
+   * ~5 == -6
+   * // in binary: ~00000101 ==
+   * // 11111010
+   * }}}
+   */
   def unary_~ : Int = ~value
   /** Returns this value, unmodified. */
   def unary_+ : $typeName$ = this
@@ -186,60 +186,60 @@ final class $typeName$ private (val value: Int) extends AnyVal {
    */
   def +(x: String): String = value + x
   /**
-  * Returns this value bit-shifted left by the specified number of bits,
-  * filling in the new right bits with zeroes.
-  * @example {{{ 6 << 3 == 48 // in binary: 0110 << 3 == 0110000 }}}
-  */
+   * Returns this value bit-shifted left by the specified number of bits,
+   * filling in the new right bits with zeroes.
+   * @example {{{ 6 << 3 == 48 // in binary: 0110 << 3 == 0110000 }}}
+   */
   def <<(x: Int): Int = value << x
   /**
-  * Returns this value bit-shifted left by the specified number of bits,
-  * filling in the new right bits with zeroes.
-  * @example {{{ 6 << 3 == 48 // in binary: 0110 << 3 == 0110000 }}}
-  */
+   * Returns this value bit-shifted left by the specified number of bits,
+   * filling in the new right bits with zeroes.
+   * @example {{{ 6 << 3 == 48 // in binary: 0110 << 3 == 0110000 }}}
+   */
   def <<(x: Long): Int = value << x
   /**
-  * Returns this value bit-shifted right by the specified number of bits,
-  * filling the new left bits with zeroes.
-  * @example {{{ 21 >>> 3 == 2 // in binary: 010101 >>> 3 == 010 }}}
-  * @example {{{
-  * -21 >>> 3 == 536870909
-  * // in binary: 11111111 11111111 11111111 11101011 >>> 3 ==
-  * // 00011111 11111111 11111111 11111101
-  * }}}
-  */
+   * Returns this value bit-shifted right by the specified number of bits,
+   * filling the new left bits with zeroes.
+   * @example {{{ 21 >>> 3 == 2 // in binary: 010101 >>> 3 == 010 }}}
+   * @example {{{
+   * -21 >>> 3 == 536870909
+   * // in binary: 11111111 11111111 11111111 11101011 >>> 3 ==
+   * // 00011111 11111111 11111111 11111101
+   * }}}
+   */
   def >>>(x: Int): Int = value >>> x
   /**
-  * Returns this value bit-shifted right by the specified number of bits,
-  * filling the new left bits with zeroes.
-  * @example {{{ 21 >>> 3 == 2 // in binary: 010101 >>> 3 == 010 }}}
-  * @example {{{
-  * -21 >>> 3 == 536870909
-  * // in binary: 11111111 11111111 11111111 11101011 >>> 3 ==
-  * // 00011111 11111111 11111111 11111101
-  * }}}
-  */
+   * Returns this value bit-shifted right by the specified number of bits,
+   * filling the new left bits with zeroes.
+   * @example {{{ 21 >>> 3 == 2 // in binary: 010101 >>> 3 == 010 }}}
+   * @example {{{
+   * -21 >>> 3 == 536870909
+   * // in binary: 11111111 11111111 11111111 11101011 >>> 3 ==
+   * // 00011111 11111111 11111111 11111101
+   * }}}
+   */
   def >>>(x: Long): Int = value >>> x
   /**
-  * Returns this value bit-shifted left by the specified number of bits,
-  * filling in the right bits with the same value as the left-most bit of this.
-  * The effect of this is to retain the sign of the value.
-  * @example {{{
-  * -21 >> 3 == -3
-  * // in binary: 11111111 11111111 11111111 11101011 >> 3 ==
-  * // 11111111 11111111 11111111 11111101
-  * }}}
-  */
+   * Returns this value bit-shifted left by the specified number of bits,
+   * filling in the right bits with the same value as the left-most bit of this.
+   * The effect of this is to retain the sign of the value.
+   * @example {{{
+   * -21 >> 3 == -3
+   * // in binary: 11111111 11111111 11111111 11101011 >> 3 ==
+   * // 11111111 11111111 11111111 11111101
+   * }}}
+   */
   def >>(x: Int): Int = value >> x
   /**
-  * Returns this value bit-shifted left by the specified number of bits,
-  * filling in the right bits with the same value as the left-most bit of this.
-  * The effect of this is to retain the sign of the value.
-  * @example {{{
-  * -21 >> 3 == -3
-  * // in binary: 11111111 11111111 11111111 11101011 >> 3 ==
-  * // 11111111 11111111 11111111 11111101
-  * }}}
-  */
+   * Returns this value bit-shifted left by the specified number of bits,
+   * filling in the right bits with the same value as the left-most bit of this.
+   * The effect of this is to retain the sign of the value.
+   * @example {{{
+   * -21 >> 3 == -3
+   * // in binary: 11111111 11111111 11111111 11101011 >> 3 ==
+   * // 11111111 11111111 11111111 11111101
+   * }}}
+   */
   def >>(x: Long): Int = value >> x
   /** Returns `true` if this value is less than x, `false` otherwise. */
   def <(x: Byte): Boolean = value < x
@@ -298,169 +298,169 @@ final class $typeName$ private (val value: Int) extends AnyVal {
   /** Returns `true` if this value is greater than or equal to x, `false` otherwise. */
   def >=(x: Double): Boolean = value >= x
   /**
-  * Returns the bitwise OR of this value and `x`.
-  * @example {{{
-  * (0xf0 | 0xaa) == 0xfa
-  * // in binary: 11110000
-  * // | 10101010
-  * // --------
-  * // 11111010
-  * }}}
-  */
+   * Returns the bitwise OR of this value and `x`.
+   * @example {{{
+   * (0xf0 | 0xaa) == 0xfa
+   * // in binary: 11110000
+   * // | 10101010
+   * // --------
+   * // 11111010
+   * }}}
+   */
   def |(x: Byte): Int = value | x
   /**
-  * Returns the bitwise OR of this value and `x`.
-  * @example {{{
-  * (0xf0 | 0xaa) == 0xfa
-  * // in binary: 11110000
-  * // | 10101010
-  * // --------
-  * // 11111010
-  * }}}
-  */
+   * Returns the bitwise OR of this value and `x`.
+   * @example {{{
+   * (0xf0 | 0xaa) == 0xfa
+   * // in binary: 11110000
+   * // | 10101010
+   * // --------
+   * // 11111010
+   * }}}
+   */
   def |(x: Short): Int = value | x
   /**
-  * Returns the bitwise OR of this value and `x`.
-  * @example {{{
-  * (0xf0 | 0xaa) == 0xfa
-  * // in binary: 11110000
-  * // | 10101010
-  * // --------
-  * // 11111010
-  * }}}
-  */
+   * Returns the bitwise OR of this value and `x`.
+   * @example {{{
+   * (0xf0 | 0xaa) == 0xfa
+   * // in binary: 11110000
+   * // | 10101010
+   * // --------
+   * // 11111010
+   * }}}
+   */
   def |(x: Char): Int = value | x
   /**
-  * Returns the bitwise OR of this value and `x`.
-  * @example {{{
-  * (0xf0 | 0xaa) == 0xfa
-  * // in binary: 11110000
-  * // | 10101010
-  * // --------
-  * // 11111010
-  * }}}
-  */
+   * Returns the bitwise OR of this value and `x`.
+   * @example {{{
+   * (0xf0 | 0xaa) == 0xfa
+   * // in binary: 11110000
+   * // | 10101010
+   * // --------
+   * // 11111010
+   * }}}
+   */
   def |(x: Int): Int = value | x
   /**
-  * Returns the bitwise OR of this value and `x`.
-  * @example {{{
-  * (0xf0 | 0xaa) == 0xfa
-  * // in binary: 11110000
-  * // | 10101010
-  * // --------
-  * // 11111010
-  * }}}
-  */
+   * Returns the bitwise OR of this value and `x`.
+   * @example {{{
+   * (0xf0 | 0xaa) == 0xfa
+   * // in binary: 11110000
+   * // | 10101010
+   * // --------
+   * // 11111010
+   * }}}
+   */
   def |(x: Long): Long = value | x
   /**
-  * Returns the bitwise AND of this value and `x`.
-  * @example {{{
-  * (0xf0 & 0xaa) == 0xa0
-  * // in binary: 11110000
-  * // & 10101010
-  * // --------
-  * // 10100000
-  * }}}
-  */
+   * Returns the bitwise AND of this value and `x`.
+   * @example {{{
+   * (0xf0 & 0xaa) == 0xa0
+   * // in binary: 11110000
+   * // & 10101010
+   * // --------
+   * // 10100000
+   * }}}
+   */
   def &(x: Byte): Int = value & x
   /**
-  * Returns the bitwise AND of this value and `x`.
-  * @example {{{
-  * (0xf0 & 0xaa) == 0xa0
-  * // in binary: 11110000
-  * // & 10101010
-  * // --------
-  * // 10100000
-  * }}}
-  */
+   * Returns the bitwise AND of this value and `x`.
+   * @example {{{
+   * (0xf0 & 0xaa) == 0xa0
+   * // in binary: 11110000
+   * // & 10101010
+   * // --------
+   * // 10100000
+   * }}}
+   */
   def &(x: Short): Int = value & x
   /**
-  * Returns the bitwise AND of this value and `x`.
-  * @example {{{
-  * (0xf0 & 0xaa) == 0xa0
-  * // in binary: 11110000
-  * // & 10101010
-  * // --------
-  * // 10100000
-  * }}}
-  */
+   * Returns the bitwise AND of this value and `x`.
+   * @example {{{
+   * (0xf0 & 0xaa) == 0xa0
+   * // in binary: 11110000
+   * // & 10101010
+   * // --------
+   * // 10100000
+   * }}}
+   */
   def &(x: Char): Int = value & x
   /**
-  * Returns the bitwise AND of this value and `x`.
-  * @example {{{
-  * (0xf0 & 0xaa) == 0xa0
-  * // in binary: 11110000
-  * // & 10101010
-  * // --------
-  * // 10100000
-  * }}}
-  */
+   * Returns the bitwise AND of this value and `x`.
+   * @example {{{
+   * (0xf0 & 0xaa) == 0xa0
+   * // in binary: 11110000
+   * // & 10101010
+   * // --------
+   * // 10100000
+   * }}}
+   */
   def &(x: Int): Int = value & x
   /**
-  * Returns the bitwise AND of this value and `x`.
-  * @example {{{
-  * (0xf0 & 0xaa) == 0xa0
-  * // in binary: 11110000
-  * // & 10101010
-  * // --------
-  * // 10100000
-  * }}}
-  */
+   * Returns the bitwise AND of this value and `x`.
+   * @example {{{
+   * (0xf0 & 0xaa) == 0xa0
+   * // in binary: 11110000
+   * // & 10101010
+   * // --------
+   * // 10100000
+   * }}}
+   */
   def &(x: Long): Long = value & x
   /**
-  * Returns the bitwise XOR of this value and `x`.
-  * @example {{{
-  * (0xf0 ^ 0xaa) == 0x5a
-  * // in binary: 11110000
-  * // ^ 10101010
-  * // --------
-  * // 01011010
-  * }}}
-  */
+   * Returns the bitwise XOR of this value and `x`.
+   * @example {{{
+   * (0xf0 ^ 0xaa) == 0x5a
+   * // in binary: 11110000
+   * // ^ 10101010
+   * // --------
+   * // 01011010
+   * }}}
+   */
   def ^(x: Byte): Int = value ^ x
   /**
-  * Returns the bitwise XOR of this value and `x`.
-  * @example {{{
-  * (0xf0 ^ 0xaa) == 0x5a
-  * // in binary: 11110000
-  * // ^ 10101010
-  * // --------
-  * // 01011010
-  * }}}
-  */
+   * Returns the bitwise XOR of this value and `x`.
+   * @example {{{
+   * (0xf0 ^ 0xaa) == 0x5a
+   * // in binary: 11110000
+   * // ^ 10101010
+   * // --------
+   * // 01011010
+   * }}}
+   */
   def ^(x: Short): Int = value ^ x
   /**
-  * Returns the bitwise XOR of this value and `x`.
-  * @example {{{
-  * (0xf0 ^ 0xaa) == 0x5a
-  * // in binary: 11110000
-  * // ^ 10101010
-  * // --------
-  * // 01011010
-  * }}}
-  */
+   * Returns the bitwise XOR of this value and `x`.
+   * @example {{{
+   * (0xf0 ^ 0xaa) == 0x5a
+   * // in binary: 11110000
+   * // ^ 10101010
+   * // --------
+   * // 01011010
+   * }}}
+   */
   def ^(x: Char): Int = value ^ x
   /**
-  * Returns the bitwise XOR of this value and `x`.
-  * @example {{{
-  * (0xf0 ^ 0xaa) == 0x5a
-  * // in binary: 11110000
-  * // ^ 10101010
-  * // --------
-  * // 01011010
-  * }}}
-  */
+   * Returns the bitwise XOR of this value and `x`.
+   * @example {{{
+   * (0xf0 ^ 0xaa) == 0x5a
+   * // in binary: 11110000
+   * // ^ 10101010
+   * // --------
+   * // 01011010
+   * }}}
+   */
   def ^(x: Int): Int = value ^ x
   /**
-  * Returns the bitwise XOR of this value and `x`.
-  * @example {{{
-  * (0xf0 ^ 0xaa) == 0x5a
-  * // in binary: 11110000
-  * // ^ 10101010
-  * // --------
-  * // 01011010
-  * }}}
-  */
+   * Returns the bitwise XOR of this value and `x`.
+   * @example {{{
+   * (0xf0 ^ 0xaa) == 0x5a
+   * // in binary: 11110000
+   * // ^ 10101010
+   * // --------
+   * // 01011010
+   * }}}
+   */
   def ^(x: Long): Long = value ^ x
   /** Returns the sum of this value and `x`. */
   def +(x: Byte): Int = value + x
@@ -618,55 +618,55 @@ final class $typeName$ private (val value: Int) extends AnyVal {
   def toOctalString: String = java.lang.Integer.toOctalString(value)
 
   /**
-  * Create a <code>Range</code> from this <code>$typeName$</code> value
-  * until the specified <code>end</code> (exclusive) with step value 1.
-  *
-  * @param end The final bound of the range to make.
-  * @return A [[scala.collection.immutable.Range]] from `this` up to but
-  * not including `end`.
-  */
+   * Create a <code>Range</code> from this <code>$typeName$</code> value
+   * until the specified <code>end</code> (exclusive) with step value 1.
+   *
+   * @param end The final bound of the range to make.
+   * @return A [[scala.collection.immutable.Range]] from `this` up to but
+   * not including `end`.
+   */
   def until(end: Int): Range = Range(value, end)
 
   /**
-  * Create a <code>Range</code> from this <code>$typeName$</code> value
-  * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
-  *
-  * @param end The final bound of the range to make.
-  * @param step The number to increase by for each step of the range.
-  * @return A [[scala.collection.immutable.Range]] from `this` up to but
-  * not including `end`.
-  */
+   * Create a <code>Range</code> from this <code>$typeName$</code> value
+   * until the specified <code>end</code> (exclusive) with the specified <code>step</code> value.
+   *
+   * @param end The final bound of the range to make.
+   * @param step The number to increase by for each step of the range.
+   * @return A [[scala.collection.immutable.Range]] from `this` up to but
+   * not including `end`.
+   */
   def until(end: Int, step: Int): Range = Range(value, end, step)
 
   /**
-  * Create an inclusive <code>Range</code> from this <code>$typeName$</code> value
-  * to the specified <code>end</code> with step value 1.
-  *
-  * @param end The final bound of the range to make.
-  * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
-  * and including `end`.
-  */
+   * Create an inclusive <code>Range</code> from this <code>$typeName$</code> value
+   * to the specified <code>end</code> with step value 1.
+   *
+   * @param end The final bound of the range to make.
+   * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
+   * and including `end`.
+   */
   def to(end: Int): Range.Inclusive = Range.inclusive(value, end)
 
   /**
-  * Create an inclusive <code>Range</code> from this <code>$typeName$</code> value
-  * to the specified <code>end</code> with the specified <code>step</code> value.
-  *
-  * @param end The final bound of the range to make.
-  * @param step The number to increase by for each step of the range.
-  * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
-  * and including `end`.
-  */
+   * Create an inclusive <code>Range</code> from this <code>$typeName$</code> value
+   * to the specified <code>end</code> with the specified <code>step</code> value.
+   *
+   * @param end The final bound of the range to make.
+   * @param step The number to increase by for each step of the range.
+   * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
+   * and including `end`.
+   */
   def to(end: Int, step: Int): Range.Inclusive = Range.inclusive(value, end, step)
 
   /**
-  * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
-  */
+   * Returns <code>this</code> if <code>this &gt; that</code> or <code>that</code> otherwise.
+   */
   def max(that: $typeName$): $typeName$ = if (math.max(value, that.value) == value) this else that
 
   /**
-  * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
-  */
+   * Returns <code>this</code> if <code>this &lt; that</code> or <code>that</code> otherwise.
+   */
   def min(that: $typeName$): $typeName$ = if (math.min(value, that.value) == value) this else that
 
   /**
