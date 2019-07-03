@@ -321,5 +321,12 @@ class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with T
         NonZeroDouble.PositiveInfinity.isFinite should be (false)
       }
     }
+    it("should offer an isInfinite method that returns true if the value represents positive or negative infinity") {
+      forAll { (n: NonZeroFiniteDouble) =>
+        (n: NonZeroDouble).isInfinite should be (false)
+        NonZeroDouble.NegativeInfinity.isInfinite should be (true)
+        NonZeroDouble.PositiveInfinity.isInfinite should be (true)
+      }
+    }
   }
 }

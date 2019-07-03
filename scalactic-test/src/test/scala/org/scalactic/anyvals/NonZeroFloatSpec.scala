@@ -599,6 +599,13 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
         NonZeroFloat.PositiveInfinity.isFinite should be (false)
       }
     }
+    it("should offer an isInfinite method that returns true if the value represents positive or negative infinity") {
+      forAll { (n: NonZeroFiniteFloat) =>
+        (n: NonZeroFloat).isInfinite should be (false)
+        NonZeroFloat.NegativeInfinity.isInfinite should be (true)
+        NonZeroFloat.PositiveInfinity.isInfinite should be (true)
+      }
+    }
   }
   it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
     NonZeroFloat(33.0f).ensuringValid(_ + 1.0f) shouldEqual NonZeroFloat(34.0f)
