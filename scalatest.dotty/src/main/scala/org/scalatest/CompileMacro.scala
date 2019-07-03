@@ -162,7 +162,6 @@ object CompileMacro {
   // check that a code snippet does not compile
   def assertNotCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
     import qctx.tasty._
-    import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotCompile(code: String): Expr[Assertion] =
@@ -178,24 +177,24 @@ object CompileMacro {
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(code)
+                 Literal(Constant(code: String))
                )
              ),
              _
            ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
-        checkNotCompile(code.toString)
+        checkNotCompile(code)
 
       case Apply(
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(String(code))
+                 Literal(Constant(code: String))
                )
              ),
              _
            ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
-        checkNotCompile(code.toString)
+        checkNotCompile(code)
 
       case other =>
         throw QuoteError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
@@ -213,7 +212,6 @@ object CompileMacro {
   // check that a code snippet does not compile
   def assertNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
     import qctx.tasty._
-    import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotTypeCheck(code: String): Expr[Assertion] =
@@ -242,7 +240,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(String(code))
+                 Literal(Constant(code: String))
                )
              ),
              _
@@ -266,7 +264,6 @@ object CompileMacro {
   // check that a code snippet compiles
   def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
     import qctx.tasty._
-    import Constant._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkCompile(code: String): Expr[Assertion] =
@@ -282,7 +279,7 @@ object CompileMacro {
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(String(code))
+                 Literal(Constant(code: String))
                )
              ),
              _
@@ -294,7 +291,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(String(code))
+                 Literal(Constant(code: String))
                )
              ),
              _
