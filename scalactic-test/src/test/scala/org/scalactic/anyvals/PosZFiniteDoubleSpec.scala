@@ -178,9 +178,7 @@ class PosZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
       "PosZFiniteDouble.NegativeInfinity" shouldNot compile
     }
 /* This now compiles because of the newly added implicit PosZFiniteDouble => PosZDouble method
-    it("should not offer a isPosInfinity method") {
-      "PosZFiniteDouble(1.0f).isPosInfinity" shouldNot compile
-    }
+    PosZFiniteDouble(1.0f).isPosInfinity
 */
     it("should not offer a isNegInfinity method") {
       "PosZFiniteDouble(1.0f).isNegInfinity" shouldNot compile

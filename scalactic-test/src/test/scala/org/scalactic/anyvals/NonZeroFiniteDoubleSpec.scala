@@ -171,12 +171,8 @@ class NonZeroFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks 
       "NonZeroFiniteDouble.NegativeInfinity" shouldNot compile
     }
 /* These now compile because of the new implicit widening conversion from NonZeroFiniteDouble to NonZeroDouble.
-    it("should not offer a isNegInfinity method") {
-      "NonZeroFiniteDouble(-1.0).isNegInfinity" shouldNot compile
-    }
-    it("should not offer a isPosInfinity method") {
-      "NonZeroFiniteDouble(-1.0).isPosInfinity" shouldNot compile
-    }
+    NonZeroFiniteDouble(-1.0).isNegInfinity
+    NonZeroFiniteDouble(-1.0).isPosInfinity
 */
 
     it("should be sortable") {
