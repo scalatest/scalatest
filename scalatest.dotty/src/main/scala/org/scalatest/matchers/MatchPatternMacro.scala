@@ -64,7 +64,7 @@ private[scalatest] object MatchPatternMacro {
    *
    * org.scalatest.matchers.MatchPatternHelper.checkMatchPattern(left, right)
    */
-  def matchPattern(left: Expr[ResultOfNotWordForAny[_]], right: Expr[PartialFunction[Any, _]]): Expr[Unit] = {
+  def matchPattern(left: Expr[ResultOfNotWordForAny[_]], right: Expr[PartialFunction[Any, _]])(implicit qctx: QuoteContext): Expr[Unit] = {
     // checkCaseDefinitions(context)(tree)
 
     '{ MatchPatternHelper.checkMatchPattern($left, $right) }
