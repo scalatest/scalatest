@@ -38,6 +38,7 @@ import org.scalatest.exceptions._
 import org.scalatest.time.{Seconds, Span}
 import org.scalatest.tools.{SuiteSortingReporter, TestSortingReporter, TestSpecificReporter}
 import org.scalatest.tools.Utils.wrapReporterIfNecessary
+import scala.collection.immutable.ListSet
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
@@ -428,6 +429,8 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
                 if (ignoreTest) {
                   val testTextWithOptionalPrefix = prependChildPrefix(branch, testText)
                   val theTest = atomic.get.testsMap(testName)
+                  // TODO: May want to make a status to do this in order, sequentially. Else all the ignored ones
+                  // will be ignored immediately.
                   reportTestIgnored(theSuite, args.reporter, args.tracker, testName, testTextWithOptionalPrefix, getIndentedTextForTest(testTextWithOptionalPrefix, testLeaf.indentationLevel, true), theTest.location)
                   statusList
                 }
@@ -460,7 +463,13 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
               reportMarkupProvided(theSuite, args.reporter, args.tracker, None, message, markupLeaf.indentationLevel, location, true, includeIcon)
               statusList
 
-            case branch: Branch => runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, statusList, runTest)
+            case branch: Branch =>
+              if (parallelAsyncTestExecution || statusList.isEmpty) {
+                runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, statusList, runTest) // Even if serial async test execution (i.e., not parallelAsyncTestExection), first time still just go for it
+              }
+              else {
+                statusList :+ (statusList.last thenRun (new CompositeStatus(ListSet(runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, statusList, runTest): _*))))  // Only if serial async test execution (i.e., not parallelAsyncTestExecution), after first Status
+              }
           }
         }
         else
