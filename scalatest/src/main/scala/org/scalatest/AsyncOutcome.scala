@@ -37,32 +37,50 @@ private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(imp
   private final val queue = new ConcurrentLinkedQueue[Try[Outcome] => Unit]
   private final val status = new ScalaTestStatefulStatus
 
-  future.onComplete {
-    case Success(result) =>
-      for (f <- queue.iterator)
-        f(Success(result))
-      status.setCompleted()
+  private def executeQueue(result: Try[Outcome]): Unit = {
+    while (!queue.isEmpty) {
+      val f = queue.poll
+      if (f != null)
+        f(result)
+    }
+  }
 
-    case Failure(ex) =>
-      for (f <- queue.iterator)
-        f(Failure(ex))
-      status.setFailedWith(ex)
+  private def handleCompletion(tri: Try[Outcome]): Unit = {
+    executeQueue(tri)
+    if (!status.isCompleted) {
+      tri match {
+        case Failure(ex) =>
+          status.setFailedWith(ex)
+        case _ =>
+      }
       status.setCompleted()
-  } /* fills in ctx here */
+      executeQueue(tri) // Execute any callbacks that were registered after executeQueue returned above, but before we called setCompleted.
+    }
+  }
 
   def onComplete(f: Try[Outcome] => Unit): Unit = {
-    var executeLocally = false
-    synchronized {
-      if (!future.isCompleted)
-        queue.add(f)
-      else
-        executeLocally = true
-    }
-    if (executeLocally) {
-      future.value.get match {
-        case Success(result) => f(new Success(result))
-        case Failure(ex) => f(new Failure(ex))
-      }
+
+    queue.add(f)
+
+    future.value match {
+
+      case Some(tri) =>
+        // This is the case where the test future competed before ScalaTest AsyncEngine had
+        // a chance to call onComplete to register the test completion event to send to the reporter. So
+        // go ahead an send the test completion event to the reporter now. (We added it to the
+        // queue above at the beginning of this method.
+        handleCompletion(tri)
+
+      case None =>
+        // Because executeQueue removes a callback from the queue before it invokes it, it doesn't hurt
+        // to register the same callback each time. But only want to set completion on the status once.
+        // We don't register this in the constructor, because then there is a race condition between
+        // a test future that completes before AsyncEngine has a chance to call onComplete to register
+        // the sending of the test completion event to the reporter. This race condition can cause ScalaTest
+        // to throw a ConcurrentModificationException about the Informer being swapped ut too soon if
+        // a thread pool execution context (like global) is used instead of ScalaTest's default execution
+        // context in async styles.
+        future.onComplete { tri => handleCompletion(tri) }
     }
   }
   def toStatus: Status = status
