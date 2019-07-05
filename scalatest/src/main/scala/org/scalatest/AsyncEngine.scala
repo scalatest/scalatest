@@ -429,10 +429,19 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
                 if (ignoreTest) {
                   val testTextWithOptionalPrefix = prependChildPrefix(branch, testText)
                   val theTest = atomic.get.testsMap(testName)
-                  // TODO: May want to make a status to do this in order, sequentially. Else all the ignored ones
-                  // will be ignored immediately.
-                  reportTestIgnored(theSuite, args.reporter, args.tracker, testName, testTextWithOptionalPrefix, getIndentedTextForTest(testTextWithOptionalPrefix, testLeaf.indentationLevel, true), theTest.location)
-                  statusVec
+                  statusVec :+ (
+                    if (parallelAsyncTestExecution || statusVec.isEmpty) {
+                      // Even if serial async test execution (i.e., not parallelAsyncTestExection), first time still just go for it
+                      reportTestIgnored(theSuite, args.reporter, args.tracker, testName, testTextWithOptionalPrefix, getIndentedTextForTest(testTextWithOptionalPrefix, testLeaf.indentationLevel, true), theTest.location)
+                      SucceededStatus
+                    }
+                    else {
+                      statusVec.last thenRun {
+                        reportTestIgnored(theSuite, args.reporter, args.tracker, testName, testTextWithOptionalPrefix, getIndentedTextForTest(testTextWithOptionalPrefix, testLeaf.indentationLevel, true), theTest.location)
+                        SucceededStatus
+                      }  // Only if serial async test execution (i.e., not parallelAsyncTestExecution), after first Status
+                    }
+                  )
                 }
                 else {
                   statusVec :+ (
