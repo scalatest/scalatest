@@ -47,17 +47,15 @@ import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
+  private[scalatest] def transformPendingToFutureOutcome(testFun: () => PendingStatement): () => FutureOutcome =
     () => {
-      PastOutcome(
-        try { testFun; Succeeded }
-        catch {
-          case ex: TestCanceledException => Canceled(ex)
-          case _: TestPendingException => Pending
-          case tfe: TestFailedException => Failed(tfe)
-          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
-        }
-      )
+      try { testFun; FutureOutcome.succeeded } // TODO: Don't I need to say testFun()?
+      catch {
+        case ex: TestCanceledException => FutureOutcome.canceled(ex)
+        case _: TestPendingException => FutureOutcome.pending
+        case tfe: TestFailedException => FutureOutcome.failed(tfe)
+        case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => FutureOutcome.failed(ex)
+      }
     }
 
   private final val engine = new AsyncEngine(Resources.concurrentSpecMod, "Spec")
@@ -107,11 +105,11 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
+    engine.registerAsyncTest(testText, transformToFutureOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
   final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToFutureOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
   /**
@@ -134,23 +132,23 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
-    def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
+    def transformToFutureOutcomeParam: Future[compatible.Assertion] = testFun()
     def testRegistrationClosedMessageFun: String =
       methodName match {
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
+    engine.registerAsyncTest(specText, transformToFutureOutcome(transformToFutureOutcomeParam), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => PendingStatement, pos: source.Position): Unit = {
-    //def transformPendingToOutcomeParam: PendingStatement = testFun()
+    //def transformPendingToFutureOutcomeParam: PendingStatement = testFun()
     def testRegistrationClosedMessageFun: String =
       methodName match {
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
+    engine.registerAsyncTest(specText, transformPendingToFutureOutcome(testFun), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
   }
 
   /**
@@ -1640,8 +1638,8 @@ import resultOfStringPassedToVerb.verb
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-    def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
-    engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
+    def transformToFutureOutcomeParam: Future[compatible.Assertion] = testFun()
+    engine.registerIgnoredAsyncTest(specText, transformToFutureOutcome(transformToFutureOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement, pos: source.Position): Unit = {
@@ -1651,7 +1649,7 @@ import resultOfStringPassedToVerb.verb
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, transformPendingToFutureOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 
   /**
@@ -1693,7 +1691,7 @@ import resultOfStringPassedToVerb.verb
         withFixture(
           new NoArgAsyncTest {
             val name = testData.name
-            def apply(): FutureOutcome = { theTest.testFun().toFutureOutcome }
+            def apply(): FutureOutcome = { theTest.testFun() }
             val configMap = testData.configMap
             val scopes = testData.scopes
             val text = testData.text

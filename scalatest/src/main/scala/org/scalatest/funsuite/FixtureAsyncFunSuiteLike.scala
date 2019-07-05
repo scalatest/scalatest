@@ -92,20 +92,20 @@ trait FixtureAsyncFunSuiteLike extends org.scalatest.fixture.AsyncTestSuite with
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
+    engine.registerAsyncTest(testText, transformToFutureOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
   final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToFutureOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
   class ResultOfTestInvocation(testName: String, testTags: Tag*) {
     def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      engine.registerAsyncTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, None, None, pos, testTags: _*)
+      engine.registerAsyncTest(testName, transformToFutureOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, None, None, pos, testTags: _*)
     }
 
     def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      engine.registerAsyncTest(testName, transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.testCannotAppearInsideAnotherTest, None, None, pos, testTags: _*)
+      engine.registerAsyncTest(testName, transformToFutureOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.testCannotAppearInsideAnotherTest, None, None, pos, testTags: _*)
     }
   }
 
@@ -132,17 +132,17 @@ trait FixtureAsyncFunSuiteLike extends org.scalatest.fixture.AsyncTestSuite with
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-      engine.registerAsyncTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "test", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
+      engine.registerAsyncTest(testName, transformToFutureOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "test", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
     }
   */
 
   class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
     def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      engine.registerIgnoredAsyncTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideATest, None, pos, testTags: _*)
+      engine.registerIgnoredAsyncTest(testName, transformToFutureOutcome(testFun), Resources.ignoreCannotAppearInsideATest, None, pos, testTags: _*)
     }
 
     def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      engine.registerIgnoredAsyncTest(testName, transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideATest, None, pos, testTags: _*)
+      engine.registerIgnoredAsyncTest(testName, transformToFutureOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideATest, None, pos, testTags: _*)
     }
   }
 
@@ -170,7 +170,7 @@ trait FixtureAsyncFunSuiteLike extends org.scalatest.fixture.AsyncTestSuite with
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -7
-      engine.registerIgnoredAsyncTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+      engine.registerIgnoredAsyncTest(testName, transformToFutureOutcome(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
   */
 
@@ -207,7 +207,7 @@ trait FixtureAsyncFunSuiteLike extends org.scalatest.fixture.AsyncTestSuite with
             val name = testData.name
 
             def apply(fixture: FixtureParam): FutureOutcome =
-              theTest.testFun(fixture).toFutureOutcome
+              theTest.testFun(fixture)
 
             val configMap = testData.configMap
             val scopes = testData.scopes

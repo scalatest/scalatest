@@ -911,8 +911,8 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 }
 
 private[scalatest] class AsyncEngine(concurrentBundleModMessageFun: => String, simpleClassName: String)
-    extends AsyncSuperEngine[() => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
+    extends AsyncSuperEngine[() => FutureOutcome](concurrentBundleModMessageFun, simpleClassName)
 
 private[scalatest] class AsyncFixtureEngine[FixtureParam](concurrentBundleModMessageFun: => String, simpleClassName: String)
-    extends AsyncSuperEngine[FixtureParam => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
+    extends AsyncSuperEngine[FixtureParam => FutureOutcome](concurrentBundleModMessageFun, simpleClassName)
 

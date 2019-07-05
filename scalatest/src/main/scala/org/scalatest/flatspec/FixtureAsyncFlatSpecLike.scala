@@ -94,11 +94,11 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.fixture.AsyncTestSuite with
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
+    engine.registerAsyncTest(testText, transformToFutureOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
   final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToFutureOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
   /**
@@ -128,7 +128,7 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.fixture.AsyncTestSuite with
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerAsyncTest(specText, transformToOutcome(testFun), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
+    engine.registerAsyncTest(specText, transformToFutureOutcome(testFun), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement, pos: source.Position): Unit = {
@@ -2053,7 +2053,7 @@ import resultOfStringPassedToVerb.verb
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
-    engine.registerIgnoredAsyncTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, transformToFutureOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], testFun: FixtureParam => PendingStatement, pos: source.Position): Unit = {
@@ -2097,7 +2097,7 @@ import resultOfStringPassedToVerb.verb
             val name = testData.name
 
             def apply(fixture: FixtureParam): FutureOutcome =
-              theTest.testFun(fixture).toFutureOutcome
+              theTest.testFun(fixture)
 
             val configMap = testData.configMap
             val scopes = testData.scopes

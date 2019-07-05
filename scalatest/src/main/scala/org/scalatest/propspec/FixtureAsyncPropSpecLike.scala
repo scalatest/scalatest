@@ -56,7 +56,7 @@ trait FixtureAsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerAsyncTest", 4, stackDepthAdjustment, None, None, testTags: _*)
+    engine.registerAsyncTest(testText, transformToFutureOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerAsyncTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
@@ -64,7 +64,7 @@ trait FixtureAsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToFutureOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   class ResultOfPropertyInvocation(testName: String, testTags: Tag*) {
@@ -75,7 +75,7 @@ trait FixtureAsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-      engine.registerAsyncTest(testName, transformToOutcome(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
+      engine.registerAsyncTest(testName, transformToFutureOutcome(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
     }
     def apply(testFun: () => Future[compatible.Assertion]) {
       // SKIP-SCALATESTJS,NATIVE-START
@@ -84,7 +84,7 @@ trait FixtureAsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-      engine.registerAsyncTest(testName, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
+      engine.registerAsyncTest(testName, transformToFutureOutcome(new NoArgTestWrapper(testFun)), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
     }
   }
 
@@ -113,7 +113,7 @@ trait FixtureAsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -7
-      engine.registerIgnoredAsyncTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
+      engine.registerIgnoredAsyncTest(testName, transformToFutureOutcome(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
     def apply(testFun: () => Future[compatible.Assertion]) {
       // SKIP-SCALATESTJS,NATIVE-START
@@ -122,7 +122,7 @@ trait FixtureAsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -7
-      engine.registerIgnoredAsyncTest(testName, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
+      engine.registerIgnoredAsyncTest(testName, transformToFutureOutcome(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
   }
 
@@ -178,7 +178,7 @@ trait FixtureAsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration
             val name = testData.name
 
             def apply(fixture: FixtureParam): FutureOutcome =
-              theTest.testFun(fixture).toFutureOutcome
+              theTest.testFun(fixture)
 
             val configMap = testData.configMap
             val scopes = testData.scopes
