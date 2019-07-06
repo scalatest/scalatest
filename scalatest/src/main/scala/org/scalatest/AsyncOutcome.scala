@@ -5,7 +5,7 @@ import scala.util.{Success, Try, Failure}
 import scala.concurrent.{ExecutionContext, Future, Await}
 import scala.concurrent.duration._
 
-private[scalatest] trait AsyncOutcome {
+private[scalatest] sealed trait AsyncOutcome {
   def onComplete(f: Try[Outcome] => Unit)
   def toStatus: Status
   // SKIP-SCALATESTJS,NATIVE-START
