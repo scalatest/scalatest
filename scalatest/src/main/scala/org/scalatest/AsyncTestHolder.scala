@@ -13,6 +13,6 @@ private[scalatest] case class PastAsyncTestHolder(past: Outcome) extends AsyncTe
   def toFutureOutcome: FutureOutcome = FutureOutcome { Future.successful(past) }
 }
 
-private[scalatest] case class FutureAsyncTestHolder(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncTestHolder {
+private[scalatest] case class FutureAsyncTestHolder(future: Future[Outcome]) extends AsyncTestHolder {
   def toFutureOutcome: FutureOutcome = FutureOutcome { future }
 }
