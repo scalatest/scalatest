@@ -15,7 +15,7 @@ private[scalatest] sealed trait AsyncOutcome {
   def toFutureOutcome: FutureOutcome
 }
 
-private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
+private[scalatest] case class PastAsyncOutcome(past: Outcome) extends AsyncOutcome {
 
   def onComplete(f: Try[Outcome] => Unit): Unit = {
     f(new Success(past))

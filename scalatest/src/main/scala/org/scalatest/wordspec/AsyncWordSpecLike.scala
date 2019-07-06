@@ -45,7 +45,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
 
   private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
     () => {
-      PastOutcome(
+      PastAsyncOutcome(
         try { testFun; Succeeded }
         catch {
           case ex: TestCanceledException => Canceled(ex)
