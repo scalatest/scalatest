@@ -66,13 +66,13 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     import engine._
     val child = DescriptionBranch(Trunk, "child", Some("child prefix"), None)
     Trunk.subNodes ::= child
-    val childTest = TestLeaf(Trunk, "child test", "child test", () => PastAsyncOutcome(Succeeded), None, Some(source.Position.here))
+    val childTest = TestLeaf(Trunk, "child test", "child test", () => PastAsyncTestHolder(Succeeded), None, Some(source.Position.here))
     Trunk.subNodes ::= childTest
     val grandchild = DescriptionBranch(child, "grandchild", None, None)
     child.subNodes ::= grandchild
-    val grandchildTest = TestLeaf(child, "grandchild test", "grandchild test", () => PastAsyncOutcome(Succeeded), None, Some(source.Position.here))
+    val grandchildTest = TestLeaf(child, "grandchild test", "grandchild test", () => PastAsyncTestHolder(Succeeded), None, Some(source.Position.here))
     child.subNodes ::= grandchildTest
-    val greatGrandchildTest = TestLeaf(grandchild, "great-grandchild test", "great-grandchild test", () => PastAsyncOutcome(Succeeded), None, Some(source.Position.here))
+    val greatGrandchildTest = TestLeaf(grandchild, "great-grandchild test", "great-grandchild test", () => PastAsyncTestHolder(Succeeded), None, Some(source.Position.here))
     grandchild.subNodes ::= greatGrandchildTest
     Trunk.indentationLevel should be (0)
     child.indentationLevel should be (0)
@@ -92,16 +92,16 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
         engine.registerAsyncTest("then the list has only 1 in it", () => {
           list should be (ListBuffer(1)) 
           list.clear()
-          PastAsyncOutcome(Succeeded)
+          PastAsyncTestHolder(Succeeded)
         }, "Anything", None, None, source.Position.here)
         engine.registerAsyncTest("then the list length = 1", () => {
-          PastAsyncOutcome(outcomeOf { list.length should be (1) })
+          PastAsyncTestHolder(outcomeOf { list.length should be (1) })
         }, "Anything", None, None, source.Position.here)
       }, "Anything", None, source.Position.here)
       engine.registerNestedBranch("when 2 is inserted", None, {
         list += 2
         engine.registerAsyncTest("then the list has only 2 in it", () => {
-          PastAsyncOutcome(outcomeOf { list should be (ListBuffer(2)) })
+          PastAsyncTestHolder(outcomeOf { list should be (ListBuffer(2)) })
         }, "Anything", None, None, source.Position.here)
       }, "Anything", None, source.Position.here)
     }, "Anything", None, source.Position.here)

@@ -47,10 +47,10 @@ import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
+  private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncTestHolder =
     () => {
-      PastAsyncOutcome(
-        try { testFun; Succeeded }
+      PastAsyncTestHolder(
+        try { testFun; Succeeded } // testFun TODO: Add ()'s to testFun after writing a failing test.
         catch {
           case ex: TestCanceledException => Canceled(ex)
           case _: TestPendingException => Pending

@@ -48,10 +48,10 @@ import org.scalatest._
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
+  private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncTestHolder =
     () => {
-      PastAsyncOutcome(
-        try { testFun; Succeeded }
+      PastAsyncTestHolder(
+        try { testFun; Succeeded } // testFun TODO: Add ()'s to testFun after writing a failing test.
         catch {
           case ex: TestCanceledException => Canceled(ex)
           case _: TestPendingException => Pending
