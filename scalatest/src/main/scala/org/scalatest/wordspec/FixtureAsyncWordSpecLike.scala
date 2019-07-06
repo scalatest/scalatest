@@ -1160,7 +1160,7 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.fixture.AsyncTestSuite with
     def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
+      TestExecutingFutureAsyncOutcome(
         withFixture(
           new OneArgAsyncTest {
             val name = testData.name

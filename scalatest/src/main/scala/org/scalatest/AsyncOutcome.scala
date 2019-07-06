@@ -18,6 +18,7 @@ private[scalatest] sealed trait AsyncOutcome {
 private[scalatest] case class PastAsyncOutcome(past: Outcome) extends AsyncOutcome {
 
   def onComplete(f: Try[Outcome] => Unit): Unit = {
+    throw new Exception("in theory this was never used!!!")
     f(new Success(past))
   }
   def toStatus: Status =
@@ -32,7 +33,7 @@ private[scalatest] case class PastAsyncOutcome(past: Outcome) extends AsyncOutco
   def toFutureOutcome: FutureOutcome = FutureOutcome { Future.successful(past) }
 }
 
-private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
+private[scalatest] case class TestExecutingFutureAsyncOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
 
   private final val queue = new ConcurrentLinkedQueue[Try[Outcome] => Unit]
   private final val status = new ScalaTestStatefulStatus
@@ -64,6 +65,21 @@ private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(imp
         case Failure(ex) => f(new Failure(ex))
       }
     }
+  }
+  def toStatus: Status = status
+  // SKIP-SCALATESTJS,NATIVE-START
+  def toOutcome: Outcome = Await.result(future, Duration.Inf)
+  // SKIP-SCALATESTJS,NATIVE-END
+  def toFutureOfOutcome: Future[Outcome] = future
+  def toFutureOutcome: FutureOutcome = FutureOutcome { future }
+}
+
+private[scalatest] case class TestHoldingFutureAsyncOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
+
+  private final val status = new ScalaTestStatefulStatus
+
+  def onComplete(f: Try[Outcome] => Unit): Unit = {
+    throw new Exception("THIS WAS NOT SUPPOSED TO BE USED")
   }
   def toStatus: Status = status
   // SKIP-SCALATESTJS,NATIVE-START
