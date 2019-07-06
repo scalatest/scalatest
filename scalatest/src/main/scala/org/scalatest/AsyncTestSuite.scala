@@ -238,7 +238,7 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
   private[scalatest] def transformToOutcome(testFun: => Future[compatible.Assertion]): () => AsyncOutcome =
     () => {
       val futureSucceeded: Future[Succeeded.type] = testFun.map(_ => Succeeded)
-      InternalFutureOutcome(
+      FutureAsyncOutcome(
         futureSucceeded.recover {
           case ex: exceptions.TestCanceledException => Canceled(ex)
           case _: exceptions.TestPendingException => Pending

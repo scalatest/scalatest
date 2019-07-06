@@ -213,7 +213,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
     def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
+      FutureAsyncOutcome(
         withFixture(
           new NoArgAsyncTest {
             val name = testData.name

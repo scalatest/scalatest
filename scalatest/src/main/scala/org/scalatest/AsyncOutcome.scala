@@ -32,7 +32,7 @@ private[scalatest] case class PastAsyncOutcome(past: Outcome) extends AsyncOutco
   def toFutureOutcome: FutureOutcome = FutureOutcome { Future.successful(past) }
 }
 
-private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
+private[scalatest] case class FutureAsyncOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
 
   private final val queue = new ConcurrentLinkedQueue[Try[Outcome] => Unit]
   private final val status = new ScalaTestStatefulStatus
