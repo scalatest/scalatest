@@ -296,7 +296,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         val outcome = invokeWithFixture(theTest)
         executionContext match {
           case dec: concurrent.SerialExecutionContext =>
-            dec.runNow(outcome.toInternalFutureOutcome)
+            dec.runNow(outcome.toFutureOfOutcome)
           case _ =>
         }
         outcome
@@ -392,7 +392,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       executionContext match {
         case dec: concurrent.SerialExecutionContext =>
           try {
-            dec.runNow(asyncOutcome.toInternalFutureOutcome)
+            dec.runNow(asyncOutcome.toFutureOfOutcome)
             asyncOutcome
           }
           catch {
