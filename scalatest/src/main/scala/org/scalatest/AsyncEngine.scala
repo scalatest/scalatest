@@ -302,10 +302,10 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         outcome
       }
       catch {
-        case ex: TestCanceledException => PastOutcome(Canceled(ex)) // Probably don't need these anymore.
-        case _: TestPendingException => PastOutcome(Pending)
-        case tfe: TestFailedException => PastOutcome(Failed(tfe))
-        case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastOutcome(Failed(ex))
+        case ex: TestCanceledException => PastAsyncOutcome(Canceled(ex)) // Probably don't need these anymore.
+        case _: TestPendingException => PastAsyncOutcome(Pending)
+        case tfe: TestFailedException => PastAsyncOutcome(Failed(tfe))
+        case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastAsyncOutcome(Failed(ex))
       }
 
     asyncOutcome.onComplete { trial =>
@@ -396,10 +396,10 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
             asyncOutcome
           }
           catch {
-            case ex: TestCanceledException => PastOutcome(Canceled(ex)) // Probably don't need these anymore.
-            case _: TestPendingException => PastOutcome(Pending)
-            case tfe: TestFailedException => PastOutcome(Failed(tfe))
-            case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastOutcome(Failed(ex))
+            case ex: TestCanceledException => PastAsyncOutcome(Canceled(ex)) // Probably don't need these anymore.
+            case _: TestPendingException => PastAsyncOutcome(Pending)
+            case tfe: TestFailedException => PastAsyncOutcome(Failed(tfe))
+            case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastAsyncOutcome(Failed(ex))
           }
         case _ => asyncOutcome
       }
