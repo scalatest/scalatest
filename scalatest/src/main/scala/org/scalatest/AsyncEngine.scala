@@ -387,23 +387,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     }
 
     asyncOutcome.toStatus
-
-    /*val resultOutcome =
-      executionContext match {
-        case dec: concurrent.SerialExecutionContext =>
-          try {
-            dec.runNow(asyncOutcome.toFutureOfOutcome)
-            asyncOutcome
-          }
-          catch {
-            case ex: TestCanceledException => PastOutcome(Canceled(ex)) // Probably don't need these anymore.
-            case _: TestPendingException => PastOutcome(Pending)
-            case tfe: TestFailedException => PastOutcome(Failed(tfe))
-            case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastOutcome(Failed(ex))
-          }
-        case _ => asyncOutcome
-      }
-    resultOutcome.toStatus*/
   }
 
   private def runTestsInBranch(
