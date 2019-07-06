@@ -21,6 +21,7 @@ import org.scalactic.source
 import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
 import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
+import scala.util.Try
 
 /**
  * Implementation trait for class <code>FixtureAsyncFlatSpec</code>, which is
@@ -2088,7 +2089,7 @@ import resultOfStringPassedToVerb.verb
    * @throws NullArgumentException if <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
       FutureAsyncOutcome(
@@ -2105,7 +2106,8 @@ import resultOfStringPassedToVerb.verb
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 

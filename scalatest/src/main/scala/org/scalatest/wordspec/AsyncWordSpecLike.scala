@@ -22,6 +22,7 @@ import Suite.autoTagClassAnnotations
 import org.scalatest.exceptions._
 import org.scalatest.words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
 MustVerb, StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
+import scala.util.Try
 
 /**
  * Implementation trait for class <code>AsyncWordSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
@@ -1050,7 +1051,7 @@ one error found
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
       FutureAsyncOutcome(
@@ -1064,7 +1065,8 @@ one error found
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 

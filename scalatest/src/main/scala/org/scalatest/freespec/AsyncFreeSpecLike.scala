@@ -21,6 +21,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalatest.exceptions._
 import org.scalatest.words.BehaveWord
 import org.scalatest._
+import scala.util.Try
 
 /**
  * Implementation trait for class <code>AsyncFreeSpec</code>, which
@@ -396,7 +397,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
       FutureAsyncOutcome(
@@ -410,7 +411,8 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 

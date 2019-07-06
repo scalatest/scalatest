@@ -39,6 +39,7 @@ import org.scalatest.time.{Seconds, Span}
 import org.scalatest.tools.{SuiteSortingReporter, TestSortingReporter, TestSpecificReporter}
 import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import scala.collection.immutable.ListSet
+import scala.util.Try
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
@@ -232,7 +233,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     args: Args,
     includeIcon: Boolean,
     parallelAsyncTestExecution: Boolean,
-    invokeWithFixture: TestLeaf => AsyncOutcome
+    invokeWithFixture: (TestLeaf, Try[Outcome] => Unit) => AsyncOutcome
   )(implicit executionContext: ExecutionContext): Status = {
 
     requireNonNull(testName, args)
@@ -291,25 +292,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val oldAlerter = atomicAlerter.getAndSet(alerterForThisTest)
     val oldDocumenter = atomicDocumenter.getAndSet(documenterForThisTest)
 
-    val asyncOutcome: AsyncOutcome =
-      try {
-        val outcome = invokeWithFixture(theTest)
-        executionContext match {
-          case dec: concurrent.SerialExecutionContext =>
-            dec.runNow(outcome.toFutureOfOutcome)
-          case _ =>
-        }
-        outcome
-      }
-      catch {
-        case ex: TestCanceledException => PastAsyncOutcome(Canceled(ex)) // Probably don't need these anymore.
-        case _: TestPendingException => PastAsyncOutcome(Pending)
-        case tfe: TestFailedException => PastAsyncOutcome(Failed(tfe))
-        case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastAsyncOutcome(Failed(ex))
-      }
-
-    asyncOutcome.onComplete { trial =>
-      //println("###onComplete in the FORK!!")
+    val onCompleteFun: Try[Outcome] => Unit = { trial =>
       trial match {
         case Success(outcome) =>
           outcome match {
@@ -348,17 +331,17 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         // unreportedException. unreportedException is for when before or after code blows up, or a constructor blows up.
         // fatalException is for anExceptionThatShouldCauseASuiteToAbort no matter when it happens. And maybe once that
         // happens, everything just blows up with that exception.
-/*
-  suiteAbortingException: Option[Throwable] // These would be 2 different things.
-  threadKillingException: Option[Throwable]
+        /*
+          suiteAbortingException: Option[Throwable] // These would be 2 different things.
+          threadKillingException: Option[Throwable]
 
-   or could do unreportedException and fatalException
-   extraTestException
-   exceptionToReport
-   exceptionToRethrow
+           or could do unreportedException and fatalException
+           extraTestException
+           exceptionToReport
+           exceptionToRethrow
 
-   I like unreportedException and isFatal
-*/
+           I like unreportedException and isFatal
+        */
         case Failure(ex) =>
       }
 
@@ -369,6 +352,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
       // SKIP-SCALATESTJS,NATIVE-START
       val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
+
       if (shouldBeInformerForThisTest ne informerForThisTest)
         throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
 
@@ -385,6 +369,23 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(theSuite.getClass.getName))
       // SKIP-SCALATESTJS,NATIVE-END
     }
+
+    val asyncOutcome: AsyncOutcome =
+      try {
+        val outcome = invokeWithFixture(theTest, onCompleteFun)
+        executionContext match {
+          case dec: concurrent.SerialExecutionContext =>
+            dec.runNow(outcome.toFutureOfOutcome)
+          case _ =>
+        }
+        outcome
+      }
+      catch {
+        case ex: TestCanceledException => PastAsyncOutcome(Canceled(ex), onCompleteFun) // Probably don't need these anymore.
+        case _: TestPendingException => PastAsyncOutcome(Pending, onCompleteFun)
+        case tfe: TestFailedException => PastAsyncOutcome(Failed(tfe), onCompleteFun)
+        case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastAsyncOutcome(Failed(ex), onCompleteFun)
+      }
 
     asyncOutcome.toStatus
   }

@@ -21,6 +21,7 @@ import scala.concurrent.Future
 import Suite.autoTagClassAnnotations
 import org.scalatest.exceptions._
 import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
+import scala.util.Try
 
 /**
  * Implementation trait for class <code>AsyncFlatSpec</code>, which facilitates a
@@ -1686,7 +1687,7 @@ import resultOfStringPassedToVerb.verb
    */
   protected override def runTest(testName: String, args: Args): Status = {
     // Therefore, in test-specific instance, so run the test.
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
       FutureAsyncOutcome(
@@ -1700,7 +1701,8 @@ import resultOfStringPassedToVerb.verb
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 

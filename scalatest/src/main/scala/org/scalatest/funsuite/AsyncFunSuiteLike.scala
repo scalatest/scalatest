@@ -19,6 +19,7 @@ import org.scalactic.{Resources => _, _}
 import org.scalatest._
 import scala.concurrent.Future
 import Suite.autoTagClassAnnotations
+import scala.util.Try
 
 /**
   * Implementation trait for class <code>AsyncFunSuite</code>, which represents
@@ -159,7 +160,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
     *     is <code>null</code>.
     */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
       FutureAsyncOutcome(
@@ -173,7 +174,8 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying /* fills in executionContext here */
+        ).underlying,
+        onCompleteFun
       )
     }
 

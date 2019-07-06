@@ -18,6 +18,7 @@
 import scala.collection.immutable.ListSet
 import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
+import scala.util.Try
 
 /**
  * Implementation trait for class <code>AsyncPropSpec</code>, which represents
@@ -137,7 +138,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
       FutureAsyncOutcome(
@@ -150,7 +151,8 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
             val text = testData.text
             val tags = testData.tags
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 
