@@ -502,12 +502,16 @@ object FailedStatus extends Status with Serializable {
 // and setFailed methods. We wouldn't want that.
 private[scalatest] final class ScalaTestStatefulStatus extends Status with Serializable {
 
+  // Safely published
   @transient private final val latch = new CountDownLatch(1)
 
+  // protected by synchronized blocks
   private var succeeded = true
 
+  // Safely published
   private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
+  // protected by synchronized blocks
   private var asyncException: Option[Throwable] = None
 
   override def unreportedException: Option[Throwable] = {
@@ -523,11 +527,11 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
-  def isCompleted = synchronized { latch.getCount == 0L }
+  def isCompleted = latch.getCount == 0L
 
   // SKIP-SCALATESTJS,NATIVE-START
   def waitUntilCompleted(): Unit = {
-    synchronized { latch }.await()
+    latch.await()
     unreportedException match {
       case Some(ue) => throw ue
       case None => // Do nothing
@@ -571,23 +575,27 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   }
 
   def setCompleted(): Unit = {
-    // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
-    // we are iterating through the list of callbacks prior to adding the last one.
-    val it =
-      synchronized {
-        // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
-        // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
-        // for this Status to complete.
-        latch.countDown()
-        queue.iterator
-      }
+
+    def executeQueue(result: Try[Boolean]): Unit = {
+       while (!queue.isEmpty) {
+         val f = queue.poll
+         if (f != null)
+           f(result)
+       }
+     }
+
     val tri: Try[Boolean] =
       unreportedException match {
         case Some(ex) => Failure(ex)
         case None => Success(succeeded)
       }
-    for (f <- it)
-      f(tri)
+
+    executeQueue(tri)
+
+    latch.countDown()
+
+    executeQueue(tri) // Execute any callbacks that were registered by whenCompleted after executeQueue above finishes, but
+                      // before the latch was counted down.
   }
 
   def whenCompleted(f: Try[Boolean] => Unit): Unit = {
@@ -624,10 +632,16 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
  * </p>
  */
 final class StatefulStatus extends Status with Serializable {
+  // Safely published
   @transient private final val latch = new CountDownLatch(1)
+
+  // protected by synchronized blocks
   private var succeeded = true
+
+  // Safely published
   private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
+  // protected by synchronized blocks
   private var asyncException: Option[Throwable] = None
 
   override def unreportedException: Option[Throwable] = {
@@ -654,14 +668,14 @@ final class StatefulStatus extends Status with Serializable {
    * 
    * @return <code>true</code> if the test or suite run is already completed, <code>false</code> otherwise.
    */
-  def isCompleted = synchronized { latch.getCount == 0L }
+  def isCompleted = latch.getCount == 0L
 
   // SKIP-SCALATESTJS,NATIVE-START
   /**
    * Blocking call that returns only after <code>setCompleted</code> has been invoked on this <code>StatefulStatus</code> instance.
    */
   def waitUntilCompleted(): Unit = {
-    synchronized { latch }.await()
+    latch.await()
     unreportedException match {
       case Some(ue) => throw ue
       case None => // Do nothing
@@ -728,23 +742,27 @@ final class StatefulStatus extends Status with Serializable {
    * </p>
    */
   def setCompleted(): Unit = {
-    // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
-    // we are iterating through the list of callbacks prior to adding the last one.
-    val it =
-      synchronized {
-      // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
-      // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
-      // for this Status to complete.
-        latch.countDown()
-        queue.iterator
-      }
+
+    def executeQueue(result: Try[Boolean]): Unit = {
+       while (!queue.isEmpty) {
+         val f = queue.poll
+         if (f != null)
+           f(result)
+       }
+     }
+
     val tri: Try[Boolean] =
       unreportedException match {
         case Some(ex) => Failure(ex)
         case None => Success(succeeded)
       }
-    for (f <- it)
-      f(tri)
+
+    executeQueue(tri)
+
+    latch.countDown()
+
+    executeQueue(tri) // Execute any callbacks that were registered by whenCompleted after executeQueue above finishes, but
+                      // before the latch was counted down.
   }
 
   /**
