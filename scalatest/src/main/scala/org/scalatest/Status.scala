@@ -596,12 +596,14 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
     // in whenCompleted that checks the status of the latch by calling isCompleted,
     // then either adds to the queue or sets executeLocally to true:
     //
-    // synchronized {
-    //  if (!isCompleted)
-    //    queue.add(f)
-    //  else
-    //    executeLocally = true
-    // }
+    // val executeLocally = 
+    //   synchronized {
+    //     if (!isCompleted) {
+    //       queue.add(f)
+    //       false
+    //     }
+    //     else true
+    //   }
     //
     // This way either one or the other will go first. If this method goes first, then isCompleted will return false,
     // and the callback will be executed locally. If the whenCompleted method goes first, then isCompleted will
@@ -616,18 +618,19 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   }
 
   def whenCompleted(f: Try[Boolean] => Unit): Unit = {
-    var executeLocally = false
     // This synchronized block serializes this method's check of the latch via
     // the isCompleted method, followed by a potential queue insertion, with
     // the count down of the latch in the setCompleted method. This ensures no
     // callback is lost. It will either be executed later by the setCompleted method
     // or now by this method.
-    synchronized {
-      if (!isCompleted)
-        queue.add(f)
-      else
-        executeLocally = true
-    }
+    val executeLocally = 
+      synchronized {
+        if (!isCompleted) {
+          queue.add(f)
+          false
+        }
+        else true
+      }
     if (executeLocally) {
       val tri: Try[Boolean] =
         unreportedException match {
@@ -785,12 +788,14 @@ final class StatefulStatus extends Status with Serializable {
     // in whenCompleted that checks the status of the latch by calling isCompleted,
     // then either adds to the queue or sets executeLocally to true:
     //
-    // synchronized {
-    //  if (!isCompleted)
-    //    queue.add(f)
-    //  else
-    //    executeLocally = true
-    // }
+    // val executeLocally = 
+    //   synchronized {
+    //     if (!isCompleted) {
+    //       queue.add(f)
+    //       false
+    //     }
+    //     else true
+    //   }
     //
     // This way either one or the other will go first. If this method goes first, then isCompleted will return false,
     // and the callback will be executed locally. If the whenCompleted method goes first, then isCompleted will
@@ -813,18 +818,19 @@ final class StatefulStatus extends Status with Serializable {
    * </p>
    */
   def whenCompleted(f: Try[Boolean] => Unit): Unit = {
-    var executeLocally = false
     // This synchronized block serializes this method's check of the latch via
     // the isCompleted method, followed by a potential queue insertion, with
     // the count down of the latch in the setCompleted method. This ensures no
     // callback is lost. It will either be executed later by the setCompleted method
     // or now by this method.
-    synchronized {
-      if (!isCompleted)
-        queue.add(f)
-      else
-        executeLocally = true
-    }
+    val executeLocally = 
+      synchronized {
+        if (!isCompleted) {
+          queue.add(f)
+          false
+        }
+        else true
+      }
     if (executeLocally) {
       val tri: Try[Boolean] =
         unreportedException match {
