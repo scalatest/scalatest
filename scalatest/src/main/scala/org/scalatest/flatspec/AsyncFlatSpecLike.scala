@@ -51,7 +51,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncTestHolder =
     () => {
       PastAsyncTestHolder(
-        try { testFun; Succeeded } // testFun TODO: Add ()'s to testFun after writing a failing test.
+        try { testFun(); Succeeded }
         catch {
           case ex: TestCanceledException => Canceled(ex)
           case _: TestPendingException => Pending
