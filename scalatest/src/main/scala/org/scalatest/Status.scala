@@ -592,14 +592,36 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
 
     executeQueue(tri)
 
-    latch.countDown()
+    // Synchronize this latch count down so that it is serialized with the code
+    // in whenCompleted that checks the status of the latch by calling isCompleted,
+    // then either adds to the queue or sets executeLocally to true:
+    //
+    // synchronized {
+    //  if (!isCompleted)
+    //    queue.add(f)
+    //  else
+    //    executeLocally = true
+    // }
+    //
+    // This way either one or the other will go first. If this method goes first, then isCompleted will return false,
+    // and the callback will be executed locally. If the whenCompleted method goes first, then isCompleted will
+    // return false and the callback will be added to the queue. Once whenCompleted executes past the end of its
+    // synchronized block, this method will count down the latch, and the next line will execute the callback
+    // that was added. This way no callbacks should ever be lost.
+    synchronized { latch.countDown() }
 
-    executeQueue(tri) // Execute any callbacks that were registered by whenCompleted after executeQueue above finishes, but
-                      // before the latch was counted down.
+    // Execute any callbacks that were registered by whenCompleted after executeQueue above finishes, but
+    // before the latch was counted down.
+    executeQueue(tri)
   }
 
   def whenCompleted(f: Try[Boolean] => Unit): Unit = {
     var executeLocally = false
+    // This synchronized block serializes this method's check of the latch via
+    // the isCompleted method, followed by a potential queue insertion, with
+    // the count down of the latch in the setCompleted method. This ensures no
+    // callback is lost. It will either be executed later by the setCompleted method
+    // or now by this method.
     synchronized {
       if (!isCompleted)
         queue.add(f)
@@ -759,10 +781,27 @@ final class StatefulStatus extends Status with Serializable {
 
     executeQueue(tri)
 
-    latch.countDown()
+    // Synchronize this latch count down so that it is serialized with the code
+    // in whenCompleted that checks the status of the latch by calling isCompleted,
+    // then either adds to the queue or sets executeLocally to true:
+    //
+    // synchronized {
+    //  if (!isCompleted)
+    //    queue.add(f)
+    //  else
+    //    executeLocally = true
+    // }
+    //
+    // This way either one or the other will go first. If this method goes first, then isCompleted will return false,
+    // and the callback will be executed locally. If the whenCompleted method goes first, then isCompleted will
+    // return false and the callback will be added to the queue. Once whenCompleted executes past the end of its
+    // synchronized block, this method will count down the latch, and the next line will execute the callback
+    // that was added. This way no callbacks should ever be lost.
+    synchronized { latch.countDown() }
 
-    executeQueue(tri) // Execute any callbacks that were registered by whenCompleted after executeQueue above finishes, but
-                      // before the latch was counted down.
+    // Execute any callbacks that were registered by whenCompleted after executeQueue above finishes, but
+    // before the latch was counted down.
+    executeQueue(tri)
   }
 
   /**
@@ -775,6 +814,11 @@ final class StatefulStatus extends Status with Serializable {
    */
   def whenCompleted(f: Try[Boolean] => Unit): Unit = {
     var executeLocally = false
+    // This synchronized block serializes this method's check of the latch via
+    // the isCompleted method, followed by a potential queue insertion, with
+    // the count down of the latch in the setCompleted method. This ensures no
+    // callback is lost. It will either be executed later by the setCompleted method
+    // or now by this method.
     synchronized {
       if (!isCompleted)
         queue.add(f)
