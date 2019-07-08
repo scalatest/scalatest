@@ -51,20 +51,20 @@ class StatefulStatusSpec extends fixture.FunSpec {
       assert(!status.isCompleted)
     }
 
-    it("should return true for isCompleted after completes() is called") { status =>
+    it("should return true for isCompleted after setCompleted() is called") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
       assert(status.isCompleted)
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
-    it("should return true for succeeds() after completes() is called without fails()") { status =>
+    it("should return true for succeeds() after setCompleted() is called without setFailed()") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
       assert(status.succeeds)
     }
 
-    it("should return false for succeeds() after completes is called after fails()") { status =>
+    it("should return false for succeeds() after setCompleted() is called after setFailed()") { status =>
       import scala.language.reflectiveCalls
       status.setFailed()
       status.setCompleted()
@@ -73,7 +73,7 @@ class StatefulStatusSpec extends fixture.FunSpec {
     // SKIP-SCALATESTJS,NATIVE-END
 
     // SKIP-SCALATESTJS,NATIVE-START
-    it("waitUntilCompleted should not block after completes() is called") { status =>
+    it("waitUntilCompleted should not block after setCompleted() is called") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
       status.waitUntilCompleted()
