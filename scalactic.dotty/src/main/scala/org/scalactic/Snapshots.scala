@@ -235,7 +235,8 @@ object SnapshotsMacro {
           '{ Snapshot($str, ${ arg.seal.cast[Any] }) }
         }
       case arg =>
-        throw QuoteError("snap can only be used with sequence literal, not `seq : _*`")
+        qctx.error("snap can only be used with sequence literal, not `seq : _*`")
+        return '{???}
     }
 
     val argumentsS: Expr[Seq[Snapshot]] = liftSeq(snapshots)

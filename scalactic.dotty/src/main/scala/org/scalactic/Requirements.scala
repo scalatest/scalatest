@@ -270,7 +270,8 @@ object RequirementsMacro {
       case Typed(Repeated(args, _), _) => // only sequence literal
         args.map(arg => arg.seal.cast[Any].show.toExpr)
       case _ =>
-        throw QuoteError("requireNonNull can only be used with sequence literal, not `seq : _*`")
+        qctx.error("requireNonNull can only be used with sequence literal, not `seq : _*`")
+        return '{}
     }
 
     // generate AST that create array containing the argument name in source (get from calling 'show')

@@ -197,7 +197,8 @@ object CompileMacro {
         checkNotCompile(code)
 
       case other =>
-        throw QuoteError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
+        qctx.error("The '" + shouldOrMust + " compile' syntax only works with String literals.")
+        '{???}
     }
   }
 
@@ -249,7 +250,8 @@ object CompileMacro {
         checkNotTypeCheck(code.toString)
 
       case _ =>
-        throw QuoteError("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
+        qctx.error("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
+        '{???}
     }
   }
 
@@ -301,7 +303,8 @@ object CompileMacro {
 
       case other =>
         println("###other: " + other)
-        throw QuoteError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
+        qctx.error("The '" + shouldOrMust + " compile' syntax only works with String literals.")
+        '{???}
     }
   }
 
