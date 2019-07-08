@@ -597,7 +597,16 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
           pos match {
             case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
             case None =>
+              // SKIP-SCALATESTNATIVE-START
               val stackTraceElements = Thread.currentThread().getStackTrace
+              // SKIP-SCALATESTNATIVE-END
+              //SCALATESTNATIVE-ONLY val stackTraceElements = try {
+              //SCALATESTNATIVE-ONLY  throw new Exception()
+              //SCALATESTNATIVE-ONLY  null
+              //SCALATESTNATIVE-ONLY} catch {
+              //SCALATESTNATIVE-ONLY  case e: Throwable => e.getStackTrace
+              //SCALATESTNATIVE-ONLY}
+
               getLineInFile(stackTraceElements, stackDepth)
           }
       }
@@ -639,7 +648,15 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       pos match {
         case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
         case None =>
+          // SKIP-SCALATESTNATIVE-START
           val stackTraceElements = Thread.currentThread().getStackTrace
+          // SKIP-SCALATESTNATIVE-END
+          //SCALATESTNATIVE-ONLY val stackTraceElements = try {
+          //SCALATESTNATIVE-ONLY  throw new Exception()
+          //SCALATESTNATIVE-ONLY  null
+          //SCALATESTNATIVE-ONLY} catch {
+          //SCALATESTNATIVE-ONLY  case e: Throwable => e.getStackTrace
+          //SCALATESTNATIVE-ONLY}
           getLineInFile(stackTraceElements, stackDepth)
       }
     val newBranch = DescriptionBranch(Trunk, description, None, lineInFile)
@@ -684,7 +701,15 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
           pos match {
             case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
             case None =>
+              // SKIP-SCALATESTNATIVE-START
               val stackTraceElements = Thread.currentThread().getStackTrace
+              // SKIP-SCALATESTNATIVE-END
+              //SCALATESTNATIVE-ONLY val stackTraceElements = try {
+              //SCALATESTNATIVE-ONLY   throw new Exception()
+              //SCALATESTNATIVE-ONLY  null
+              //SCALATESTNATIVE-ONLY} catch {
+              //SCALATESTNATIVE-ONLY  case e: Throwable => e.getStackTrace
+              //SCALATESTNATIVE-ONLY}
               getLineInFile(stackTraceElements, stackDepth)
           }
       }
