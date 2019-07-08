@@ -514,6 +514,9 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   // protected by synchronized blocks
   private var asyncException: Option[Throwable] = None
 
+  // Safely published
+  private final val setCompletedMutex: AnyRef = new AnyRef with Serializable
+
   override def unreportedException: Option[Throwable] = {
     synchronized {
       asyncException
@@ -590,31 +593,36 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
         case None => Success(succeeded)
       }
 
-    executeQueue(tri)
+    // If setCompleted is called twice by two different threads concurrently, ensure
+    // one will execute all the callbacks in order before letting the second one proceed
+    // rather than allowing both to race through the queue concurrently.
+    setCompletedMutex.synchronized {
+      executeQueue(tri)
 
-    // Synchronize this latch count down so that it is serialized with the code
-    // in whenCompleted that checks the status of the latch by calling isCompleted,
-    // then either adds to the queue or sets executeLocally to true:
-    //
-    // val executeLocally = 
-    //   synchronized {
-    //     if (!isCompleted) {
-    //       queue.add(f)
-    //       false
-    //     }
-    //     else true
-    //   }
-    //
-    // This way either one or the other will go first. If this method goes first, then isCompleted will return false,
-    // and the callback will be executed locally. If the whenCompleted method goes first, then isCompleted will
-    // return false and the callback will be added to the queue. Once whenCompleted executes past the end of its
-    // synchronized block, this method will count down the latch, and the next line will execute the callback
-    // that was added. This way no callbacks should ever be lost.
-    synchronized { latch.countDown() }
+      // Synchronize this latch count down so that it is serialized with the code
+      // in whenCompleted that checks the status of the latch by calling isCompleted,
+      // then either adds to the queue or sets executeLocally to true:
+      //
+      // val executeLocally = 
+      //   synchronized {
+      //     if (!isCompleted) {
+      //       queue.add(f)
+      //       false
+      //     }
+      //     else true
+      //   }
+      //
+      // This way either one or the other will go first. If this method goes first, then isCompleted will return false,
+      // and the callback will be executed locally. If the whenCompleted method goes first, then isCompleted will
+      // return false and the callback will be added to the queue. Once whenCompleted executes past the end of its
+      // synchronized block, this method will count down the latch, and the next line will execute the callback
+      // that was added. This way no callbacks should ever be lost.
+      synchronized { latch.countDown() }
 
-    // Execute any callbacks that were registered by whenCompleted after executeQueue above finishes, but
-    // before the latch was counted down.
-    executeQueue(tri)
+      // Execute any callbacks that were registered by whenCompleted after executeQueue above finishes, but
+      // before the latch was counted down.
+      executeQueue(tri)
+    }
   }
 
   def whenCompleted(f: Try[Boolean] => Unit): Unit = {
@@ -668,6 +676,9 @@ final class StatefulStatus extends Status with Serializable {
 
   // protected by synchronized blocks
   private var asyncException: Option[Throwable] = None
+
+  // Safely published
+  private final val setCompletedMutex: AnyRef = new AnyRef with Serializable
 
   override def unreportedException: Option[Throwable] = {
     synchronized {
@@ -782,31 +793,36 @@ final class StatefulStatus extends Status with Serializable {
         case None => Success(succeeded)
       }
 
-    executeQueue(tri)
+    // If setCompleted is called twice by two different threads concurrently, ensure
+    // one will execute all the callbacks in order before letting the second one proceed
+    // rather than allowing both to race through the queue concurrently.
+    setCompletedMutex.synchronized {
+      executeQueue(tri)
 
-    // Synchronize this latch count down so that it is serialized with the code
-    // in whenCompleted that checks the status of the latch by calling isCompleted,
-    // then either adds to the queue or sets executeLocally to true:
-    //
-    // val executeLocally = 
-    //   synchronized {
-    //     if (!isCompleted) {
-    //       queue.add(f)
-    //       false
-    //     }
-    //     else true
-    //   }
-    //
-    // This way either one or the other will go first. If this method goes first, then isCompleted will return false,
-    // and the callback will be executed locally. If the whenCompleted method goes first, then isCompleted will
-    // return false and the callback will be added to the queue. Once whenCompleted executes past the end of its
-    // synchronized block, this method will count down the latch, and the next line will execute the callback
-    // that was added. This way no callbacks should ever be lost.
-    synchronized { latch.countDown() }
+      // Synchronize this latch count down so that it is serialized with the code
+      // in whenCompleted that checks the status of the latch by calling isCompleted,
+      // then either adds to the queue or sets executeLocally to true:
+      //
+      // val executeLocally = 
+      //   synchronized {
+      //     if (!isCompleted) {
+      //       queue.add(f)
+      //       false
+      //     }
+      //     else true
+      //   }
+      //
+      // This way either one or the other will go first. If this method goes first, then isCompleted will return false,
+      // and the callback will be executed locally. If the whenCompleted method goes first, then isCompleted will
+      // return false and the callback will be added to the queue. Once whenCompleted executes past the end of its
+      // synchronized block, this method will count down the latch, and the next line will execute the callback
+      // that was added. This way no callbacks should ever be lost.
+      synchronized { latch.countDown() }
 
-    // Execute any callbacks that were registered by whenCompleted after executeQueue above finishes, but
-    // before the latch was counted down.
-    executeQueue(tri)
+      // Execute any callbacks that were registered by whenCompleted after executeQueue above finishes, but
+      // before the latch was counted down.
+      executeQueue(tri)
+    }
   }
 
   /**

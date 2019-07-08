@@ -252,6 +252,38 @@ class StatefulStatusSpec extends fixture.FunSpec {
       assert(status.unreportedException.value.getMessage == "exception 1")
     }
 
+    // SKIP-SCALATESTJS,NATIVE-START
+    it("should allow setCompleted to be called multiple times, any after the first being a no-op") { status =>
+
+      var firstCallbackCompleted = false
+      var secondCallbackCompleted = false
+      status.whenCompleted { tri =>
+        println(s"Thread ${Thread.currentThread.toString} starting first callback")
+        Thread.sleep(100)
+        firstCallbackCompleted = true
+        assert(!secondCallbackCompleted)
+        println(s"Thread ${Thread.currentThread.toString} finished first callback")
+      }
+      status.whenCompleted { tri =>
+        println(s"Thread ${Thread.currentThread.toString} starting second callback")
+        secondCallbackCompleted = true
+        println(s"Thread ${Thread.currentThread.toString} finished second callback")
+      }
+
+      val runnable = 
+        new Runnable {
+          def run() = {
+            status.setCompleted()
+          }
+        }
+
+      (new Thread(runnable)).start() // And this should wait until the other thread also completes the second one
+      status.setCompleted() // This should start executing the first callback,
+      // Make sure the second thread isn't the one to complete the
+      // second callback, while the first one is still in the thread.sleep.
+      succeed
+    }
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 }
 
