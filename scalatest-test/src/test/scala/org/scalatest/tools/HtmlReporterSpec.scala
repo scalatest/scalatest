@@ -127,6 +127,7 @@ class HtmlReporterSpec extends FunSpec {
       assert(indexFile.exists())
       val fromIndexFile = Source.fromFile(indexFile, "UTF-8").mkString
       assert(fromIndexFile.contains("TestSuit\u20ac"))
+      assert(!fromIndexFile.contains("if ((bitSet &amp; mask)"))
 
       val suiteFile = new File(tempDir, "TestSuite.html")
       assert(suiteFile.exists())

@@ -505,6 +505,58 @@ private[scalatest] class HtmlReporter(
     val summary = results.summary
     import summary._
 
+    val script1 = new scala.xml.Unparsed("""
+      <script type="text/javascript">
+          var tagMap = {};
+          var SUCCEEDED_BIT = 1;
+          var FAILED_BIT = 2;
+          var IGNORED_BIT = 4;
+          var PENDING_BIT = 8;
+          var CANCELED_BIT = 16;
+          function applyFilter() {
+            var mask = 0;
+            if (document.getElementById('succeeded_checkbox').checked)
+              mask |= SUCCEEDED_BIT;
+            if (document.getElementById('failed_checkbox').checked)
+              mask |= FAILED_BIT;
+            if (document.getElementById('ignored_checkbox').checked)
+              mask |= IGNORED_BIT;
+            if (document.getElementById('pending_checkbox').checked)
+              mask |= PENDING_BIT;
+            if (document.getElementById('canceled_checkbox').checked)
+              mask |= CANCELED_BIT;
+            for (var key in tagMap) {
+              if (tagMap.hasOwnProperty(key)) {
+                var bitSet = tagMap[key];
+                var element = document.getElementById(key);
+                if ((bitSet & mask) != 0)
+                  element.style.display = "table-row";
+                else
+                  element.style.display = "none";
+              }
+            }
+          }
+          function showDetails(suiteName) {
+            document.getElementById('details_view').innerHTML = "<iframe src='" + suiteName + ".html' width='100%' height='100%'></iframe>";
+          }
+          function resizeDetailsView() {
+              var headerView = document.getElementById('scalatest-header');
+              var detailsView = document.getElementById('details_view');
+              var summaryView = document.getElementById('summary_view');
+              var left = summaryView.offsetWidth + 30;
+              detailsView.style.left = left + "px";
+              detailsView.style.width = (window.innerWidth - left - 30) + "px";
+              detailsView.style.height = (window.innerHeight - headerView.offsetHeight - 20) + "px";
+          }
+        </script>
+    """)
+
+    val script2 = new scala.xml.Unparsed("""
+        <script type="text/javascript">
+          resizeDetailsView();
+        </script>
+    """)
+
     val decimalFormat = new DecimalFormat("#.##")
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
       <head>
@@ -513,60 +565,16 @@ private[scalatest] class HtmlReporter(
         <meta http-equiv="Expires" content="-1" />
         <meta http-equiv="Pragma" content="no-cache" />
         <link href="css/styles.css" rel="stylesheet" />
-        { 
+        {
           cssUrl match {
-            case Some(cssUrl) => 
+            case Some(cssUrl) =>
               <link href="css/custom.css" rel="stylesheet" />
             case None => NodeSeq.Empty
           }
         }
         <script type="text/javascript" src="js/d3.v2.min.js"></script>
         <script type="text/javascript" src="js/sorttable.js"></script>
-        <script type="text/javascript">
-        //<![CDATA[
-            var tagMap = {};     
-            var SUCCEEDED_BIT = 1; 
-            var FAILED_BIT = 2; 
-            var IGNORED_BIT = 4; 
-            var PENDING_BIT = 8;
-            var CANCELED_BIT = 16;
-            function applyFilter() {
-              var mask = 0;
-              if (document.getElementById('succeeded_checkbox').checked) 
-                mask |= SUCCEEDED_BIT;  
-              if (document.getElementById('failed_checkbox').checked) 
-                mask |= FAILED_BIT; 
-              if (document.getElementById('ignored_checkbox').checked) 
-                mask |= IGNORED_BIT; 
-              if (document.getElementById('pending_checkbox').checked) 
-                mask |= PENDING_BIT; 
-              if (document.getElementById('canceled_checkbox').checked)
-                mask |= CANCELED_BIT;
-              for (var key in tagMap) { 
-                if (tagMap.hasOwnProperty(key)) { 
-                  var bitSet = tagMap[key]; 
-                  var element = document.getElementById(key);
-                  if ((bitSet & mask) != 0) 
-                    element.style.display = "table-row"; 
-                  else  
-                    element.style.display = "none";
-                }
-              }
-            }
-            function showDetails(suiteName) {
-              document.getElementById('details_view').innerHTML = "<iframe src='" + suiteName + ".html' width='100%' height='100%'></iframe>";
-            }
-            function resizeDetailsView() {
-              var headerView = document.getElementById('scalatest-header'); 
-              var detailsView = document.getElementById('details_view'); 
-              var summaryView = document.getElementById('summary_view');
-              var left = summaryView.offsetWidth + 30;
-              detailsView.style.left = left + "px"; 
-              detailsView.style.width = (window.innerWidth - left - 30) + "px";
-              detailsView.style.height = (window.innerHeight - headerView.offsetHeight - 20) + "px";
-            }
-        //]]>
-        </script>
+        { script1 }
       </head>
       <body onresize="resizeDetailsView()">
         <div class="scalatest-report"> 
@@ -624,11 +632,7 @@ private[scalatest] class HtmlReporter(
         <script type="text/javascript">
           { unparsedXml(tagMapScript) }
         </script>
-        <script type="text/javascript">
-          //<![CDATA[
-          resizeDetailsView();
-          //]]>
-        </script>
+        { script2 }
       </body>
     </html>
   }      
