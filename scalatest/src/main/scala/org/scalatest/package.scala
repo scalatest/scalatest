@@ -124,7 +124,7 @@ package object scalatest {
   type AsyncFunSuiteLike = funsuite.AsyncFunSuiteLike
   // SKIP-SCALATESTNATIVE-END
 
-  @deprecated("Please use org.scalatest.funsuite.AnyFeatureSpecLike instead")
+  @deprecated("Please use org.scalatest.funspec.AnyFeatureSpecLike instead")
   type FeatureSpecLike = featurespec.AnyFeatureSpecLike
 
   // SKIP-SCALATESTNATIVE-START
