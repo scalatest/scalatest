@@ -852,72 +852,58 @@ final class StatefulStatus extends Status with Serializable {
   }
 }
 
+import java.util.concurrent.atomic.AtomicReference
+
 /**
  * Composite <code>Status</code> that aggregates its completion and failed states of set of other <code>Status</code>es passed to its constructor.
  *
- * @param status the <code>Status</code>es out of which this status is composed.
+ * @param statuses the <code>Status</code>es out of which this status is composed.
  */
 final class CompositeStatus(statuses: Set[Status]) extends Status with Serializable {
-  
-  // TODO: Ensure this is visible to another thread, because I'm letting the reference
-  // escape with my for loop below prior to finishing this object's construction.
-  @transient private final val latch = new CountDownLatch(statuses.size)
 
-  @volatile private var succeeded = true
-  // This is set possibly by the whenCompleted function registered on all the
-  // inner statuses. If any of them are Failures, then that first one goes in
-  // as this Composite's unreported exception. Any subsequent ones are just printed.
-  // Then if it is the last inner status to complete, that unreported exception is passed
-  // to the callback functions registered with this composite status.
-  private var asyncException: Option[Throwable] = None
+  import CompositeStatus._
 
-  private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
+  // Before you can use the AtomicReference or ConcurrentLinkedQueue, you must acquire
+  // the lock on this mutex. You need not acquire it to use the CountDownLatch or the 
+  // statuses passed to the constructor.
+  private final val mutex: AnyRef = new AnyRef
 
-  for (status <- statuses) {
-    status.whenCompleted { tri =>
-      val youCompleteMe: Boolean =
-        synchronized {
-          latch.countDown()
+  // You must acquire the mutex to use this queue.
+  private final val queue: ConcurrentLinkedQueue[Try[Boolean] => Unit] = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
-          tri match {
-            case Success(res) =>
-              if (!res)
-                succeeded = false
-            case Failure(ex) =>
-              succeeded = false
-              if (asyncException.isEmpty)
-                asyncException = Some(ex)
-              else {
-                println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:") 
-                ex.printStackTrace()
-              }
-          }
+  // When this latch reaches zero, that means this Status has completed. You need
+  // not acquire the mutex to look at the latch.
+  private final val latch: CountDownLatch = new CountDownLatch(statuses.size)
 
-          latch.getCount == 0
-        }
-      if (youCompleteMe) {
-        val tri: Try[Boolean] =
-          unreportedException match {
-            case Some(ex) => Failure(ex)
-            case None => Success(succeeded)
-          }
-        for (f <- queue.iterator)
-          f(tri)
-      }
-    }
-  }
+  // You must acquire the mutex to use this atomic reference.
+  // The asyncException contained in this bundle is set possibly by the whenCompleted function
+  // registered on all the inner statuses. If any of them are Failures, then the first one to
+  // fail goes in as this Composite's unreported exception. Any subsequent exceptions are just printed
+  // to the standard output.  Then if it is the last inner status to complete, that unreported
+  // exception is passed to the callback functions registered with this composite status.
+  private final val bundleRef: AtomicReference[Bundle] =
+    new AtomicReference(
+      Bundle(
+        succeeded = false,
+        asyncException = None
+      )
+    )
+
+  // The this reference cannot escape during construction, because the this reference is not passed
+  // to the initializeBundle method.
+  intializeBundle(statuses, mutex, queue, latch, bundleRef)
 
   // SKIP-SCALATESTJS,NATIVE-START
   /**
    * Blocking call that waits until all composite <code>Status</code>es have completed, then returns
-   * <code>true</code> only if all of the composite <code>Status</code>es succeeded. If any <code>Status</code> passed in the <code>statuses</code> set fails, this method
-   * will return <code>false</code>.
+   * <code>true</code> only if all of the composite <code>Status</code>es succeeded. If any <code>Status</code>
+   * passed in the <code>statuses</code> set fails, this method will return <code>false</code>.
    * 
    * @return <code>true</code> if all composite <code>Status</code>es succeed, <code>false</code> otherwise.
    */
-  def succeeds() = {
-    synchronized { latch }.await()
-    synchronized { statuses }.forall(_.succeeds())
+  def succeeds(): Boolean = {
+    latch.await()
+    statuses.forall(_.succeeds())
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -927,16 +913,17 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
    * 
    * @return <code>true</code> if all composite <code>Status</code>es have completed, <code>false</code> otherwise.
    */
-  def isCompleted = synchronized { statuses }.forall(_.isCompleted)
+  def isCompleted(): Boolean = latch.getCount == 0
+  // Note, the previous implementation did this, grabbing statuses within a synchronized block, which makes no sense:
+  // statuses.forall(_.isCompleted())
+  // I think that was a fuzzy design if not a buggy one. In this implementation, the latch is the ultimate arbiter
+  // of whether the status has completed.
 
   // SKIP-SCALATESTJS,NATIVE-START
   /**
    * Blocking call that returns only after all composite <code>Status</code>s have completed.
    */
-  def waitUntilCompleted(): Unit = {
-    // statuses.foreach(_.waitUntilCompleted())
-    synchronized { latch }.await()
-  }
+  def waitUntilCompleted(): Unit = latch.await()
   // SKIP-SCALATESTJS,NATIVE-END
 
   /**
@@ -948,18 +935,28 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
    * </p>
    */
   def whenCompleted(f: Try[Boolean] => Unit): Unit = {
-    var executeLocally = false
-    synchronized {
-      if (!isCompleted)
-        queue.add(f)
-      else
-        executeLocally = true
-    }
+    val executeLocally =
+      mutex.synchronized {
+        // Check the latch (by calling isCompleted) inside a mutex.synchronized to prevent
+        // a race condition between this decision to either 1) add the callback, f, to the queue 
+        // or 2) execute it locally, with the execution of the final callback registered with the
+        // nested statuses that will execute the callbacks in the queue.
+        if (!isCompleted()) {
+          queue.add(f)
+          false
+        }
+        else true
+      }
     if (executeLocally) {
+      // Once this status is completed, the asyncException in the Bundle, if any, is the exception
+      // to be passed to the callback f. Note: StatefulStatus (and ScalaTestStatefulStatus) can
+      // fail without an exception via the setFailed method that takes no parameters. This supports
+      // tests that do not use exceptions to determine success or failure.
+      val bundle = bundleRef.get
       val tri: Try[Boolean] =
-        unreportedException match {
+        bundle.asyncException match {
           case Some(ex) => Failure(ex)
-          case None => Success(succeeded)
+          case None => Success(bundle.succeeded)
         }
       f(tri)
     }
@@ -976,14 +973,93 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
    * </p>
    */
   override def unreportedException: Option[Throwable] = {
-    synchronized {
-      if (asyncException.isDefined) asyncException
+    mutex.synchronized {
+      val bundle = bundleRef.get
+      if (bundle.asyncException.isDefined) bundle.asyncException
       else {
         val optStatusWithUnrepEx = statuses.find(_.unreportedException.isDefined)
         for {
           status <- optStatusWithUnrepEx
           unrepEx <- status.unreportedException 
         } yield unrepEx
+      }
+    }
+  }
+}
+
+private[scalatest] object CompositeStatus {
+
+  case class Bundle(
+    succeeded: Boolean,
+    asyncException: Option[Throwable]
+  )
+
+  // The asyncException is set possibly by the whenCompleted function registered on all the
+  // inner statuses. If any of them are Failures, then that first one goes in
+  // as this Composite's unreported exception. Any subsequent ones are just printed.
+  // Then if it is the last inner status to complete, that unreported exception is passed
+  // to the callback functions registered with this composite status.
+  def intializeBundle(
+    statuses: Set[Status],
+    mutex: AnyRef,
+    queue: ConcurrentLinkedQueue[Try[Boolean] => Unit],
+    latch: CountDownLatch,
+    bundleRef: AtomicReference[Bundle]
+  ): Unit = {
+
+    for (status <- statuses) {
+      status.whenCompleted { tri =>
+        mutex.synchronized {
+          val bundle = bundleRef.get
+          val (newSucceeded, newAsyncException) =
+            tri match {
+              case Success(res) =>
+                // Set succeeded to false if it either is already false or res is false.
+                // Given this tri is a Success, there's no new exception to deal with, so
+                // just keep the existing Option[Throwable] in place as the asyncException.
+                (bundle.succeeded && res, bundle.asyncException)
+              case Failure(ex) =>
+                // Given it is a failure, set succeeded to false (it may already be false, but
+                // it doesn't matter.
+                if (bundle.asyncException.isEmpty)
+                  // Given there's no asyncException currently in the bundle, add it.
+                  (false, Some(ex))
+                else {
+                  // Given there's already an asyncException in the bundle, just print this one
+                  // and keep the "winner" exception nit he bundle.
+                  println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:") 
+                  ex.printStackTrace()
+                  (false, bundle.asyncException)
+                }
+            }
+          bundleRef.set(Bundle(newSucceeded, newAsyncException))
+
+          if (latch.getCount == 1) {
+
+            // Because the latch is at 1, once we count it down the status will be completed.
+            // First execute the queue. We're doing this in the mutex.synchronized to mostly
+            // serialize async activities. This status will not be observed to complete until
+            // any callbacks in the queue are drained.
+            val completionTri: Try[Boolean] =
+              newAsyncException match {
+                case Some(ex) => Failure(ex)
+                case None => Success(newSucceeded)
+              }
+
+            import Status.executeQueue
+
+            // This will execute all callbacks currently in the queue. Because this is done in
+            // the mutex.synchronized, no others can be added until after we countdown the
+            // latch to zero. If a thread is currently blocked waiting to acquire the mutex
+            // in the whenCompleted method, it will observe the status as completed and
+            // therefore execute that callback locally.
+            executeQueue(queue, tri)
+          }
+
+          // Once this latch counts down to zero, other threads will see it because we don't synchronize
+          // on the mutex to look at the latch in CompositeStatus's methods.
+          latch.countDown()
+        }
       }
     }
   }
