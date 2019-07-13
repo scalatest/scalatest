@@ -411,6 +411,16 @@ sealed trait Status { thisStatus =>
   }
 }
 
+private[scalatest] object Status {
+  def executeQueue(queue: ConcurrentLinkedQueue[Try[Boolean] => Unit], result: Try[Boolean]): Unit = {
+    while (!queue.isEmpty) {
+      val f = queue.poll
+      if (f != null)
+        f(result)
+    }
+  }
+}
+
 /**
  * Singleton status that represents an already completed run with no tests failed and no suites aborted.
  *
@@ -579,14 +589,6 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
 
   def setCompleted(): Unit = {
 
-    def executeQueue(result: Try[Boolean]): Unit = {
-       while (!queue.isEmpty) {
-         val f = queue.poll
-         if (f != null)
-           f(result)
-       }
-     }
-
     val tri: Try[Boolean] =
       unreportedException match {
         case Some(ex) => Failure(ex)
@@ -597,7 +599,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
     // one will execute all the callbacks in order before letting the second one proceed
     // rather than allowing both to race through the queue concurrently.
     setCompletedMutex.synchronized {
-      executeQueue(tri)
+      Status.executeQueue(queue, tri)
 
       // Synchronize this latch count down so that it is serialized with the code
       // in whenCompleted that checks the status of the latch by calling isCompleted,
@@ -621,7 +623,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
 
       // Execute any callbacks that were registered by whenCompleted after executeQueue above finishes, but
       // before the latch was counted down.
-      executeQueue(tri)
+      Status.executeQueue(queue, tri)
     }
   }
 
@@ -779,14 +781,6 @@ final class StatefulStatus extends Status with Serializable {
    */
   def setCompleted(): Unit = {
 
-    def executeQueue(result: Try[Boolean]): Unit = {
-       while (!queue.isEmpty) {
-         val f = queue.poll
-         if (f != null)
-           f(result)
-       }
-     }
-
     val tri: Try[Boolean] =
       unreportedException match {
         case Some(ex) => Failure(ex)
@@ -797,7 +791,7 @@ final class StatefulStatus extends Status with Serializable {
     // one will execute all the callbacks in order before letting the second one proceed
     // rather than allowing both to race through the queue concurrently.
     setCompletedMutex.synchronized {
-      executeQueue(tri)
+      Status.executeQueue(queue, tri)
 
       // Synchronize this latch count down so that it is serialized with the code
       // in whenCompleted that checks the status of the latch by calling isCompleted,
@@ -821,7 +815,7 @@ final class StatefulStatus extends Status with Serializable {
 
       // Execute any callbacks that were registered by whenCompleted after executeQueue above finishes, but
       // before the latch was counted down.
-      executeQueue(tri)
+      Status.executeQueue(queue, tri)
     }
   }
 
