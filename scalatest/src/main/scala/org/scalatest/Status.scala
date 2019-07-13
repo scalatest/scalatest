@@ -111,7 +111,7 @@ sealed trait Status { thisStatus =>
    *
    * @return <code>true</code> if the test or suite run is already completed, <code>false</code> otherwise.
    */
-  def isCompleted: Boolean
+  def isCompleted(): Boolean
 
   // SKIP-SCALATESTJS,NATIVE-START
   /**
@@ -439,7 +439,7 @@ object SucceededStatus extends Status with Serializable {
    * 
    * @return <code>true</code>
    */
-  def isCompleted = true
+  def isCompleted() = true
 
   // SKIP-SCALATESTJS,NATIVE-START
   /**
@@ -482,7 +482,7 @@ object FailedStatus extends Status with Serializable {
    * 
    * @return <code>true</code>
    */
-  def isCompleted = true
+  def isCompleted() = true
 
   // SKIP-SCALATESTJS,NATIVE-START
   /**
@@ -530,7 +530,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
-  def isCompleted = latch.getCount == 0L
+  def isCompleted() = latch.getCount == 0L
 
   // SKIP-SCALATESTJS,NATIVE-START
   def waitUntilCompleted(): Unit = {
@@ -544,7 +544,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
 
   def setFailed(): Unit = {
     synchronized {
-      if (isCompleted)
+      if (isCompleted())
         throw new IllegalStateException("status is already completed")
       succeeded = false
     }
@@ -565,7 +565,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
    */
   def setFailedWith(ex: Throwable): Unit = {
     synchronized {
-      if (isCompleted)
+      if (isCompleted())
         throw new IllegalStateException("status is already completed")
       succeeded = false
       if (asyncException.isEmpty)
@@ -605,7 +605,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
       //
       // val executeLocally = 
       //   synchronized {
-      //     if (!isCompleted) {
+      //     if (!isCompleted()) {
       //       queue.add(f)
       //       false
       //     }
@@ -633,7 +633,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
     // or now by this method.
     val executeLocally = 
       synchronized {
-        if (!isCompleted) {
+        if (!isCompleted()) {
           queue.add(f)
           false
         }
@@ -704,7 +704,7 @@ final class StatefulStatus extends Status with Serializable {
    * 
    * @return <code>true</code> if the test or suite run is already completed, <code>false</code> otherwise.
    */
-  def isCompleted = latch.getCount == 0L
+  def isCompleted() = latch.getCount == 0L
 
   // SKIP-SCALATESTJS,NATIVE-START
   /**
@@ -732,7 +732,7 @@ final class StatefulStatus extends Status with Serializable {
    */
   def setFailed(): Unit = {
     synchronized {
-      if (isCompleted)
+      if (isCompleted())
         throw new IllegalStateException("status is already completed")
       succeeded = false
     }
@@ -753,7 +753,7 @@ final class StatefulStatus extends Status with Serializable {
    */
   def setFailedWith(ex: Throwable): Unit = {
     synchronized {
-      if (isCompleted)
+      if (isCompleted())
         throw new IllegalStateException("status is already completed")
       succeeded = false
       if (asyncException.isEmpty)
@@ -805,7 +805,7 @@ final class StatefulStatus extends Status with Serializable {
       //
       // val executeLocally = 
       //   synchronized {
-      //     if (!isCompleted) {
+      //     if (!isCompleted()) {
       //       queue.add(f)
       //       false
       //     }
@@ -841,7 +841,7 @@ final class StatefulStatus extends Status with Serializable {
     // or now by this method.
     val executeLocally = 
       synchronized {
-        if (!isCompleted) {
+        if (!isCompleted()) {
           queue.add(f)
           false
         }

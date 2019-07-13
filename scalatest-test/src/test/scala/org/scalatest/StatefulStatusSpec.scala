@@ -22,7 +22,7 @@ class StatefulStatusSpec extends fixture.FunSpec {
 
   protected type FixtureParam = {
     def setCompleted()
-    def isCompleted: Boolean
+    def isCompleted(): Boolean
     // SKIP-SCALATESTJS,NATIVE-START
     def succeeds(): Boolean
     // SKIP-SCALATESTJS,NATIVE-END
@@ -48,13 +48,13 @@ class StatefulStatusSpec extends fixture.FunSpec {
   describe("StatefulStatus ") {
     it("should by default return false for isCompleted") { status =>
       import scala.language.reflectiveCalls
-      assert(!status.isCompleted)
+      assert(!status.isCompleted())
     }
 
     it("should return true for isCompleted after setCompleted() is called") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
-      assert(status.isCompleted)
+      assert(status.isCompleted())
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
@@ -91,11 +91,11 @@ class StatefulStatusSpec extends fixture.FunSpec {
     it("should allow setCompleted() to be called multiple times") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
-      assert(status.isCompleted)
+      assert(status.isCompleted())
       status.setCompleted()
-      assert(status.isCompleted)
+      assert(status.isCompleted())
       status.setCompleted()
-      assert(status.isCompleted)
+      assert(status.isCompleted())
     }
 
     it("should invoke a function registered with whenCompleted, passing a succeeded value, after the status completes successfully") { status =>
