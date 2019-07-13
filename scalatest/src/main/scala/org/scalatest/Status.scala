@@ -136,7 +136,7 @@ sealed trait Status { thisStatus =>
    * @throws unreportedException if an exception occurred during the activity represented by this <code>Status</code> that was not reported
    *            via a ScalaTest event and therefore was installed as an unreported exception on this <code>Status</code>.
    */
-  def waitUntilCompleted()
+  def waitUntilCompleted(): Unit
   // SKIP-SCALATESTJS,NATIVE-END
 
   /**
@@ -167,7 +167,7 @@ sealed trait Status { thisStatus =>
    *
    * @param callback the callback function to execute once this <code>Status</code> has completed
    */
-  def whenCompleted(callback: Try[Boolean] => Unit)
+  def whenCompleted(callback: Try[Boolean] => Unit): Unit
 
   // TODO: We are not yet propagating installed unreported exceptions in thenRun. Write the tests and implement the code.
   /**
