@@ -204,8 +204,7 @@ sealed trait Status { thisStatus =>
    *
    * <p>
    * If an unreported exception is installed on this <code>Status</code>, the passed by-name function will
-   * <em>not</em> be executed. Instead, the same unreported exception will be installed on the <code>Status</code>
-   * returned by this method.
+   * <em>still</em> be executed.
    * </p>
    *
    * <p>
@@ -220,6 +219,9 @@ sealed trait Status { thisStatus =>
    */
   final def thenRun(f: => Status): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
+    // Ignore the completion status of this Status, because regardless of whether it
+    // represents a failure, we want to for sure run the next Status. For example, if
+    // some test fails, we still want to run the next test.
     whenCompleted { _ =>
       try {
         val innerStatus = f
@@ -325,10 +327,6 @@ sealed trait Status { thisStatus =>
    */
   def unreportedException: Option[Throwable] = None
 
-  // TODO: Currently we are attempting to execution the after code. This is a change from how
-  // ScalaTest has behaved from the beginning, and it is inconsistent also with thenRun. So 
-  // I think I want to go back to how we were doing it before, if the before code blows up
-  // or runTest, etc., then we don't attempt the after code.
   /**
    * Registers a by-name function (producing an optional exception) to execute
    * after this <code>Status</code> completes.
@@ -775,8 +773,11 @@ final class StatefulStatus extends Status with Serializable {
    * </p>
    *
    * <p>
-   * <strong>TODO: Specify that this method invokes the callbacks on the invoking thread after it releases the lock
-   * such that the Status has completed.</strong>
+   * This method invokes any callbacks that have been registered with <code>whenCompleted</code> using the thread that invoked
+   * this method prior to declaring this status as completed. This method then executes any callbacks that were registered between
+   * thie time this method decided it was done executing previously registered callbacks and the time it declared this status as
+   * completed. This second pass ensures no callbacks are lost. Any subsequent callbacks registered with <code>whenCompleted</code>
+   * will be executed using the thread that invoked <code>whenCompleted</code>.
    * </p>
    */
   def setCompleted(): Unit = {
