@@ -23,43 +23,43 @@ import Suite.autoTagClassAnnotations
 
 
 /**
- * Implementation trait for class <code>PathFreeSpec</code>, which is
+ * Implementation trait for class <code>PathAnyFreeSpec</code>, which is
  * a sister class to <code>org.scalatest.freespec.AnyFreeSpec</code> that isolates
  * tests by running each test in its own instance of the test class, and
  * for each test, only executing the <em>path</em> leading to that test.
  * 
  * <p>
- * <a href="PathFreeSpec.html"><code>PathFreeSpec</code></a> is a class, not a trait,
+ * <a href="PathAnyFreeSpec.html"><code>PathAnyFreeSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>PathFreeSpec</code> into some other class, you can use this
- * trait instead, because class <code>PathFreeSpec</code> does nothing more than
+ * behavior of <code>PathAnyFreeSpec</code> into some other class, you can use this
+ * trait instead, because class <code>PathAnyFreeSpec</code> does nothing more than
  * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="PathFreeSpec.html">detailed
- * overview of <code>PathFreeSpec</code></a>.
+ * See the documentation of the class for a <a href="PathAnyFreeSpec.html">detailed
+ * overview of <code>PathAnyFreeSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
-trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
   
   private final val engine = PathEngine.getEngine()
   import engine._
 
   // SKIP-SCALATESTJS,NATIVE-START
-  override def newInstance: org.scalatest.freespec.PathFreeSpecLike = this.getClass.newInstance.asInstanceOf[PathFreeSpecLike]
+  override def newInstance: org.scalatest.freespec.PathAnyFreeSpecLike = this.getClass.newInstance.asInstanceOf[PathAnyFreeSpecLike]
   // SKIP-SCALATESTJS,NATIVE-END
-  //SCALATESTJS,NATIVE-ONLY override def newInstance: org.scalatest.freespec.PathFreeSpecLike
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: org.scalatest.freespec.PathAnyFreeSpecLike
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor (including within a test, since
-   * those are invoked during construction in a <code>PathFreeSpec</code>, it
+   * those are invoked during construction in a <code>PathAnyFreeSpec</code>, it
    * will register the passed string for forwarding later when <code>run</code> is invoked. If invoked from inside a test function,
    * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
    * of the test completed event, such as <code>TestSucceeded</code>.  If invoked at any other time, it will print to the standard output.
@@ -81,7 +81,7 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
    * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>PathFreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>PathAnyFreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -90,7 +90,7 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
   /**
    * Returns a <code>Documenter</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor (including within a test, since
-   * those are invoked during construction in a <code>PathFreeSpec</code>, it
+   * those are invoked during construction in a <code>PathAnyFreeSpec</code>, it
    * will register the passed string for forwarding later when <code>run</code> is invoked. If invoked from inside a test function,
    * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
    * of the test completed event, such as <code>TestSucceeded</code>.  If invoked at any other time, it will print to the standard output.
@@ -212,7 +212,7 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
      * of <code>ResultOfTaggedAsInvocationOnString</code>) and invoke the passed function
      * based on whether or not this is part of the current "test path." For the details on this process, see
      * the <a href="#howItExecutes">How it executes</a> section of the main documentation for
-     * trait <code>org.scalatest.freespec.PathFreeSpec</code>.
+     * trait <code>org.scalatest.freespec.PathAnyFreeSpec</code>.
      * </p>
      */
     def is(testFun: => PendingNothing): Unit = {
@@ -260,7 +260,7 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
      * register the text (passed to the constructor of <code>FreeSpecStringWrapper</code>) and invoke the passed function
      * based on whether or not this is part of the current "test path." For the details on this process, see
      * the <a href="#howItExecutes">How it executes</a> section of the main documentation for trait
-     * <code>org.scalatest.freespec.PathFreeSpec</code>.
+     * <code>org.scalatest.freespec.PathAnyFreeSpec</code>.
      */
     def -(fun: => Unit): Unit = {
 
@@ -299,7 +299,7 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
      * of <code>FreeSpecStringWrapper</code>) and invoke the passed function
      * based on whether or not this is part of the current "test path." For the details on this process, see
      * the <a href="#howItExecutes">How it executes</a> section of the main documentation for
-     * trait <code>org.scalatest.freespec.PathFreeSpec</code>.
+     * trait <code>org.scalatest.freespec.PathAnyFreeSpec</code>.
      * </p>
      */
     def in(f: => Unit /* Assertion */): Unit = {
@@ -350,7 +350,7 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
      * of <code>FreeSpecStringWrapper</code>) and invoke the passed function
      * based on whether or not this is part of the current "test path." For the details on this process, see
      * the <a href="#howItExecutes">How it executes</a> section of the main documentation for
-     * trait <code>org.scalatest.freespec.PathFreeSpec</code>.
+     * trait <code>org.scalatest.freespec.PathAnyFreeSpec</code>.
      * </p>
      */
     def is(f: => PendingNothing): Unit = {
@@ -391,7 +391,7 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
   protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position): FreeSpecStringWrapper = new FreeSpecStringWrapper(s, pos)
 
   /**
-   * Supports shared test registration in <code>PathFreeSpec</code>s.
+   * Supports shared test registration in <code>PathAnyFreeSpec</code>s.
    *
    * <p>
    * This field enables syntax such as the following:
@@ -404,14 +404,14 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
    *
    * <p>
    * For more information and examples of the use of <cod>behave</code>, see the
-   * <a href="PathFreeSpec.html#SharedTests">Shared tests section</a> in the main documentation for sister
-   * trait <code>org.scalatest.freespec.PathFreeSpec</code>.
+   * <a href="PathAnyFreeSpec.html#SharedTests">Shared tests section</a> in the main documentation for sister
+   * trait <code>org.scalatest.freespec.PathAnyFreeSpec</code>.
    * </p>
    */
   protected val behave = new BehaveWord
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>PathFreeSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>PathAnyFreeSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
@@ -424,13 +424,13 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
    * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's
    * iterator will return those names in the order in which the tests were registered. Each test's name is composed
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
-   * example itself, with all components separated by a space. For example, consider this <code>PathFreeSpec</code>:
+   * example itself, with all components separated by a space. For example, consider this <code>PathAnyFreeSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
    * import org.scalatest.freespec
    *
-   * class StackSpec extends freespec.PathFreeSpec {
+   * class StackSpec extends freespec.PathAnyFreeSpec {
    *   "A Stack" - {
    *     "when not empty" - {
    *       "must allow me to pop" in {}
@@ -463,7 +463,7 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
   }
 
   /**
-   * The total number of tests that are expected to run when this <code>PathFreeSpec</code>'s <code>run</code> method
+   * The total number of tests that are expected to run when this <code>PathAnyFreeSpec</code>'s <code>run</code> method
    * is invoked.
    *
    * <p>
@@ -527,8 +527,8 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
   }
 
   /**
-   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>PathFreeSpec</code>
-   * belong, and values the <code>Set</code> of test names that belong to each tag. If this <code>PathFreeSpec</code>
+   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>PathAnyFreeSpec</code>
+   * belong, and values the <code>Set</code> of test names that belong to each tag. If this <code>PathAnyFreeSpec</code>
    * contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
@@ -612,12 +612,12 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
    * just return immediately.
    *
    * <p>
-   * Nested suites are not allowed in a <code>PathFreeSpec</code>. Because
-   * a <code>PathFreeSpec</code> executes tests eagerly at construction time, registering the results of
+   * Nested suites are not allowed in a <code>PathAnyFreeSpec</code>. Because
+   * a <code>PathAnyFreeSpec</code> executes tests eagerly at construction time, registering the results of
    * those test runs and reporting them later, the order of nested suites versus test runs would be different
-   * in a <code>org.scalatest.freespec.PathFreeSpec</code> than in an <code>org.scalatest.freespec.AnyFreeSpec</code>. In an
+   * in a <code>org.scalatest.freespec.PathAnyFreeSpec</code> than in an <code>org.scalatest.freespec.AnyFreeSpec</code>. In an
    * <code>org.scalatest.freespec.AnyFreeSpec</code>, nested suites are executed then tests are executed. In an
-   * <code>org.scalatest.freespec.PathFreeSpec</code> it would be the opposite. To make the code easy to reason about,
+   * <code>org.scalatest.freespec.PathAnyFreeSpec</code> it would be the opposite. To make the code easy to reason about,
    * therefore, this is just not allowed. If you want to add nested suites to a <code>path.FreeSpec</code>, you can
    * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a> 
    * object and put them in whatever order you wish.
@@ -635,13 +635,13 @@ trait PathFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with 
    *
    * <p>
    * This lifecycle method is unused by this trait. If invoked, it will return an empty list, because
-   * nested suites are not allowed in a <code>PathFreeSpec</code>. Because
-   * a <code>PathFreeSpec</code> executes tests eagerly at construction time, registering the results of
+   * nested suites are not allowed in a <code>PathAnyFreeSpec</code>. Because
+   * a <code>PathAnyFreeSpec</code> executes tests eagerly at construction time, registering the results of
    * those test runs and reporting them later, the order of nested suites versus test runs would be different
-   * in a <code>org.scalatest.freespec.PathFreeSpec</code> than in an <code>org.scalatest.freespec.AnyFreeSpec</code>. In an
+   * in a <code>org.scalatest.freespec.PathAnyFreeSpec</code> than in an <code>org.scalatest.freespec.AnyFreeSpec</code>. In an
    * <code>org.scalatest.freespec.AnyFreeSpec</code>, nested suites are executed then tests are executed. In an
-   * <code>org.scalatest.freespec.PathFreeSpec</code> it would be the opposite. To make the code easy to reason about,
-   * therefore, this is just not allowed. If you want to add nested suites to a <code>PathFreeSpec</code>, you can
+   * <code>org.scalatest.freespec.PathAnyFreeSpec</code> it would be the opposite. To make the code easy to reason about,
+   * therefore, this is just not allowed. If you want to add nested suites to a <code>PathAnyFreeSpec</code>, you can
    * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a> 
    * object and put them in whatever order you wish.
    * </p>
