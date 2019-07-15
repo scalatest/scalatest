@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #FFF;
-  font-size: 80%;
+  font-size: 100%;
   font-family: "Lucida Grande", Helvetica, sans-serif;
 }
 
@@ -40,7 +40,7 @@ a:hover {
 }
 
 #display-filters {            
-  padding: 0px 0 0 0px;
+  padding: 0 0 0 0;
   text-align: center;
 }
 
@@ -389,9 +389,7 @@ table.sortable tr td.total_with_failed {
   background-color: #FFF;
   margin: 0;
   padding: 15px;
-  border: solid;
-  border-width: 2px;
-  border-color: #CCCCCC;
+  border: 2px solid #CCCCCC;
 }
 
 .scope {
@@ -399,11 +397,8 @@ table.sortable tr td.total_with_failed {
   width: auto; 
   height: auto; 
   margin: 0;
-  padding-top: 0px;
-  padding-bottom: 0.5em;
-  padding-left: 0px;
-  padding-right: 0px;
-  font-size: 1.1em;
+  padding: 0 0 0.5em;
+  font-size: 1.0em;
   color: #111111;
 }
 
@@ -420,11 +415,8 @@ dl {
   width: auto; 
   height: auto; 
   margin: 0;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-left: 15px;
-  padding-right: 0px;
-  font-size: 1.1em;
+  padding: 0 0 0 15px;
+  font-size: 1.0em;
   color: #111111;
 }
 
@@ -436,12 +428,9 @@ dl {
   width: auto; 
   height: auto; 
   margin: 0;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-left: 15px;
-  padding-right: 0px;
+  padding: 0 0 0 15px;
   color: #874747;
-  font-size: 1.1em;
+  font-size: 1.0em;
 }
 
 .test_ignored {
@@ -452,12 +441,9 @@ dl {
   width: auto; 
   height: auto; 
   margin: 0;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-left: 15px;
-  padding-right: 0px;
+  padding: 0 0 0 15px;
   color: #878747;
-  font-size: 1.1em;
+  font-size: 1.0em;
 }
 
 .test_pending {
@@ -468,12 +454,9 @@ dl {
   width: auto; 
   height: auto; 
   margin: 0;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-left: 15px;
-  padding-right: 0px;
+  padding: 0 0 0 15px;
   color: #878747;
-  font-size: 1.1em;
+  font-size: 1.0em;
 }
 
 .test_canceled {
@@ -484,12 +467,9 @@ dl {
   width: auto; 
   height: auto; 
   margin: 0;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-left: 15px;
-  padding-right: 0px;
+  padding: 0 0 0 15px;
   color: #878747;
-  font-size: 1.1em;
+  font-size: 1.0em;
 }
 
 .markup {
@@ -499,12 +479,9 @@ dl {
   width: auto; 
   height: auto; 
   margin: 0;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-left: 0px;
-  padding-right: 0px;
+  padding: 0;
   color: #111111;
-  font-size: 1.1em;
+  font-size: 1.0em;
 }
 
 .info {
@@ -515,12 +492,9 @@ dl {
   width: auto; 
   height: auto; 
   margin: 0;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-left: 15px;
-  padding-right: 0px;
+  padding: 0 0 0 15px;
   color: #111111;
-  font-size: 1.1em;
+  font-size: 1.0em;
 }
             
 .gray { 
@@ -556,7 +530,7 @@ iframe {
   font-weight: bold;
   font-size: 2.5em;
   background-color: #FFF;
-  padding-top: 0px;
+  padding-top: 0;
   padding-bottom: 0.15em;
 }
 
@@ -653,4 +627,3 @@ iframe {
   font-size: 0.8em;
   padding-top: 5px;
 }
-
