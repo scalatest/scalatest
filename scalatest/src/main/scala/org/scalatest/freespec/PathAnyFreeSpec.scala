@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2019 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.path
+package org.scalatest.freespec
 
 import org.scalatest._
 
 /**
- * A sister class to <code>org.scalatest.FreeSpec</code> that isolates tests by running each test in its own
+ * A sister class to <code>org.scalatest.freespec.PathAnyFreeSpec</code> that isolates tests by running each test in its own
  * instance of the test class, and for each test, only executing the <em>path</em> leading to that test.
  *
  * <p>
- * Class <code>path.FreeSpec</code> behaves similarly to class <code>org.scalatest.FreeSpec</code>, except that tests
- * are isolated based on their path. The purpose of <code>path.FreeSpec</code> is to facilitate writing
+ * Class <code>PathAnyFreeSpec</code> behaves similarly to class <code>org.scalatest.freespec.AnyFreeSpec</code>, except that tests
+ * are isolated based on their path. The purpose of <code>PathAnyFreeSpec</code> is to facilitate writing
  * specification-style tests for mutable objects in a clear, boilerpate-free way. To test mutable objects, you need to
  * mutate them. Using a path class, you can make a statement in text, then implement that statement in code (including
  * mutating state), and nest and combine these test/code pairs in any way you wish. Each test will only see
@@ -31,11 +31,11 @@ import org.scalatest._
  * </p>
  *
  * <pre class="stHighlight">
- * import org.scalatest.path
+ * import org.scalatest.freespec
  * import org.scalatest.matchers.Matchers
  * import scala.collection.mutable.ListBuffer
  *
- * class ExampleSpec extends path.FreeSpec with Matchers {
+ * class ExampleSpec extends freespec.PathAnyFreeSpec with Matchers {
  *
  *   "A ListBuffer" - {
  *
@@ -199,8 +199,8 @@ import org.scalatest._
  * <p>
  * This kind of isolation of tests from each other is a consequence of running each test in its own instance of the test
  * class, and can also be achieved by simply mixing <code>OneInstancePerTest</code> into a regular
- * <code>org.scalatest.FreeSpec</code>. However, <code>path.FreeSpec</code> takes isolation one step further: a test
- * in a <code>path.FreeSpec</code> does not observe side effects performed outside tests in earlier blocks that do not
+ * <code>org.scalatest.freespec.PathAnyFreeSpec</code>. However, <code>PathAnyFreeSpec</code> takes isolation one step further: a test
+ * in a <code>PathAnyFreeSpec</code> does not observe side effects performed outside tests in earlier blocks that do not
  * enclose it. Here's an example:
  * </p>
  *
@@ -252,7 +252,7 @@ import org.scalatest._
  * </pre>
  *
  * <p>
- * <em>Note: class <code>path.FreeSpec</code>'s approach to isolation was inspired in part by the
+ * <em>Note: class <code>PathAnyFreeSpec</code>'s approach to isolation was inspired in part by the
  * <a href="https://github.com/orfjackal/specsy">specsy</a> framework, written by Esko Luontola.</em>
  * </p>
  *
@@ -264,7 +264,7 @@ import org.scalatest._
  * If a fixture is used by only one test, then the definitions of the fixture objects can
  * be local to the method. If multiple tests need to share an immutable fixture, you can simply
  * assign them to instance variables. If multiple tests need to share mutable fixture objects or <code>var</code>s,
- * there's one and only one way to do it in a <code>path.FreeSpec</code>: place the mutable objects lexically before
+ * there's one and only one way to do it in a <code>PathAnyFreeSpec</code>: place the mutable objects lexically before
  * the test. Any mutations needed by the test must be placed lexically before and/or after the test.
  * As used here, "Lexically before" means that the code needs to be executed during construction of that test's
  * instance of the test class to <em>reach</em> the test (or put another way, the
@@ -273,10 +273,10 @@ import org.scalatest._
  * </p>
  *
  * <p>
- * The reason lexical placement is the one and only one way to share fixtures in a <code>path.FreeSpec</code> is because
+ * The reason lexical placement is the one and only one way to share fixtures in a <code>PathAnyFreeSpec</code> is because
  * all of its lifecycle methods are overridden and declared <code>final</code>. Thus you can't mix in <code>BeforeAndAfter</code> or
  * <code>BeforeAndAfterEach</code>, because both override <code>runTest</code>, which is <code>final</code> in
- * a <code>path.FreeSpec</code>. You also can't override <code>withFixture</code>, because <code>path.FreeSpec</code>
+ * a <code>PathAnyFreeSpec</code>. You also can't override <code>withFixture</code>, because <code>PathAnyFreeSpec</code>
  * extends <a href="../Suite.html"><code>Suite</code></a> not <a href="../TestSuite.html"><code>TestSuite</code></a>,
  * where <code>withFixture</code> is defined. In short:
  * </p>
@@ -294,20 +294,20 @@ import org.scalatest._
  *
  * <p>
  * The reason the life cycle methods are final, by the way, is to prevent users from attempting to combine
- * a <code>path.FreeSpec</code>'s approach to isolation with other ways ScalaTest provides to share fixtures or
+ * a <code>PathAnyFreeSpec</code>'s approach to isolation with other ways ScalaTest provides to share fixtures or
  * execute tests, because doing so could make the resulting test code hard to reason about. A
- * <code>path.FreeSpec</code>'s execution model is a bit magical, but because it executes in one and only one
+ * <code>PathAnyFreeSpec</code>'s execution model is a bit magical, but because it executes in one and only one
  * way, users should be able to reason about the code.
- * To help you visualize how a <code>path.FreeSpec</code> is executed, consider the following variant of
+ * To help you visualize how a <code>PathAnyFreeSpec</code> is executed, consider the following variant of
  * <code>ExampleSpec</code> that includes print statements:
  * </p>
  *
  * <pre class="stHighlight">
- * import org.scalatest.path
+ * import org.scalatest.freespec
  * import org.scalatest.matchers.Matchers
  * import scala.collection.mutable.ListBuffer
  *
- * class ExampleSpec extends path.FreeSpec with Matchers {
+ * class ExampleSpec extends PathAnyFreeSpec with Matchers {
  *
  *   println("Start of: ExampleSpec")
  *   "A ListBuffer" - {
@@ -503,7 +503,7 @@ import org.scalatest._
  * </pre>
  *
  * <p>
- * Note that each test is executed in order of appearance in the <code>path.FreeSpec</code>, and that only
+ * Note that each test is executed in order of appearance in the <code>PathAnyFreeSpec</code>, and that only
  * those <code>println</code> statements residing in blocks that enclose the test being run are executed. Any
  * <code>println</code> statements in blocks that do not form the "path" to a test are not executed in the
  * instance of the class that executes that test.
@@ -513,20 +513,20 @@ import org.scalatest._
  * <h2>How it executes</h2>
  *
  * <p>
- * To provide its special brand of test isolation, <code>path.FreeSpec</code> executes quite differently from its
- * sister class in <code>org.scalatest</code>. An <code>org.scalatest.FreeSpec</code>
+ * To provide its special brand of test isolation, <code>PathAnyFreeSpec</code> executes quite differently from its
+ * sister class in <code>org.scalatest.freespec</code>. An <code>org.scalatest.freespec.PathAnyFreeSpec</code>
  * registers tests during construction and executes them when <code>run</code> is invoked. An
  * <code>org.scalatest.path.FreeSpec</code>, by contrast, runs each test in its own instance <em>while that
  * instance is being constructed</em>. During construction, it registers not the tests to run, but the results of
- * running those tests. When <code>run</code> is invoked on a <code>path.FreeSpec</code>, it reports the registered
+ * running those tests. When <code>run</code> is invoked on a <code>PathAnyFreeSpec</code>, it reports the registered
  * results and does not run the tests again. If <code>run</code> is invoked a second or third time, in fact,
- * a <code>path.FreeSpec</code> will each time report the same results registered during construction. If you want
- * to run the tests of a <code>path.FreeSpec</code> anew, you'll need to create a new instance and invoke
+ * a <code>PathAnyFreeSpec</code> will each time report the same results registered during construction. If you want
+ * to run the tests of a <code>PathAnyFreeSpec</code> anew, you'll need to create a new instance and invoke
  * <code>run</code> on that.
  * <p>
  *
  * <p>
- * A <code>path.FreeSpec</code> will create one instance for each "leaf" node it contains. The main kind of leaf node is
+ * A <code>PathAnyFreeSpec</code> will create one instance for each "leaf" node it contains. The main kind of leaf node is
  * a test, such as:
  * </p>
  *
@@ -562,10 +562,10 @@ import org.scalatest._
  *
  * <p>
  * To ensure that the correct path is taken in each instance, and to register its test results, the initial
- * <code>path.FreeSpec</code> instance must communicate with the other instances it creates for running any subsequent
+ * <code>PathAnyFreeSpec</code> instance must communicate with the other instances it creates for running any subsequent
  * leaf nodes. It does so by setting a thread-local variable prior to creating each instance (a technique
  * suggested by Esko Luontola). Each instance
- * of <code>path.FreeSpec</code> checks the thread-local variable. If the thread-local is not set, it knows it
+ * of <code>PathAnyFreeSpec</code> checks the thread-local variable. If the thread-local is not set, it knows it
  * is an initial instance and therefore executes every block it encounters until it discovers, and executes the
  * first test (or empty scope, if that's the first leaf node). It then discovers, but does not execute the next
  * leaf node, or discovers there are no other leaf nodes remaining to execute. It communicates the path to the next
@@ -577,8 +577,8 @@ import org.scalatest._
  * <h2>Ignored tests</h2>
  *
  * <p>
- * You mark a test as ignored in an <code>org.scalatest.path.FreeSpec</code> in the same manner as in
- * an <code>org.scalatest.FreeSpec</code>. Please see the <a href="../FreeSpec.html#ignoredTests">Ignored tests</a> section
+ * You mark a test as ignored in an <code>org.scalatest.freespec.PathAnyFreeSpec</code> in the same manner as in
+ * an <code>org.scalatest.freespec.AnyFreeSpec</code>. Please see the <a href="AnyFreeSpec.html#ignoredTests">Ignored tests</a> section
  * in its documentation for more information.
  * </p>
  *
@@ -592,8 +592,8 @@ import org.scalatest._
  * <h2>Informers</h2>
  *
  * <p>
- * You output information using <code>Informer</code>s in an <code>org.scalatest.path.FreeSpec</code> in the same manner
- * as in an <code>org.scalatest.FreeSpec</code>. Please see the <a href="../FreeSpec.html#informers">Informers</a>
+ * You output information using <code>Informer</code>s in an <code>org.scalatest.freespec.PathAnyFreeSpec</code> in the same manner
+ * as in an <code>org.scalatest.freespec.AnyFreeSpec</code>. Please see the <a href="../FreeSpec.html#informers">Informers</a>
  * section in its documentation for more information.
  * </p>
  *
@@ -601,8 +601,8 @@ import org.scalatest._
  * <h2>Pending tests</h2>
  *
  * <p>
- * You mark a test as pending in an <code>org.scalatest.path.FreeSpec</code> in the same manner as in
- * an <code>org.scalatest.FreeSpec</code>. Please see the <a href="../FreeSpec.html#pendingTests">Pending tests</a>
+ * You mark a test as pending in an <code>org.scalatest.freespec.PathAnyFreeSpec</code> in the same manner as in
+ * an <code>org.scalatest.freespec.AnyFreeSpec</code>. Please see the <a href="AnyFreeSpec.html#pendingTests">Pending tests</a>
  * section in its documentation for more information.
  * </p>
  * 
@@ -616,52 +616,52 @@ import org.scalatest._
  * <h2>Tagging tests</h2>
  *
  * <p>
- * You can place tests into groups by tagging them in an <code>org.scalatest.path.FreeSpec</code> in the same manner
- * as in an <code>org.scalatest.FreeSpec</code>. Please see the <a href="../FreeSpec.html#taggingTests">Tagging tests</a>
+ * You can place tests into groups by tagging them in an <code>org.scalatest.freespec.PathAnyFreeSpec</code> in the same manner
+ * as in an <code>org.scalatest.freespec.AnyFreeSpec</code>. Please see the <a href="AnyFreeSpec.html#taggingTests">Tagging tests</a>
  * section in its documentation for more information.
  * </p>
  *
  * <p>
  * Note that one difference between this class and its sister class
- * <code>org.scalatest.FreeSpec</code> is that because tests are executed at construction time, rather than each
- * time run is invoked, an <code>org.scalatest.path.FreeSpec</code> will always execute all non-ignored tests. When
- * <code>run</code> is invoked on a <code>path.FreeSpec</code>, if some tests are excluded based on tags, the registered
+ * <code>org.scalatest.freespec.AnyFreeSpec</code> is that because tests are executed at construction time, rather than each
+ * time run is invoked, an <code>org.scalatest.freespec.PathAnyFreeSpec</code> will always execute all non-ignored tests. When
+ * <code>run</code> is invoked on a <code>PathAnyFreeSpec</code>, if some tests are excluded based on tags, the registered
  * results of running those tests will not be reported. (But those tests will have already run and the results
- * registered.) By contrast, because an <code>org.scalatest.FreeSpec</code> only executes tests after <code>run</code>
+ * registered.) By contrast, because an <code>org.scalatest.freespec.PathAnyFreeSpec</code> only executes tests after <code>run</code>
  * has been called, and at that time the tags to include and exclude are known, only tests selected by the tags
  * will be executed.
  * </p>
  * 
  * <p>
- * In short, in an <code>org.scalatest.FreeSpec</code>, tests not selected by the tags to include
+ * In short, in an <code>org.scalatest.freespec.AnyFreeSpec</code>, tests not selected by the tags to include
  * and exclude specified for the run (via the <code>Filter</code> passed to <code>run</code>) will not be executed.
- * In an <code>org.scalatest.path.FreeSpec</code>, by contrast, all non-ignored tests will be executed, each
+ * In an <code>org.scalatest.freespec.PathAnyFreeSpec</code>, by contrast, all non-ignored tests will be executed, each
  * during the construction of its own instance, and tests not selected by the tags to include and exclude specified
  * for a run will not be reported. (One upshot of this is that if you have tests that you want to tag as being slow so
- * you can sometimes exclude them during a run, you probably don't want to put them in a <code>path.FreeSpec</code>. Because
- * in a <code>path.Freespec</code> the slow tests will be run regardless, with only their registered results not being <em>reported</em>
+ * you can sometimes exclude them during a run, you probably don't want to put them in a <code>PathAnyFreeSpec</code>. Because
+ * in a <code>PathFreespec</code> the slow tests will be run regardless, with only their registered results not being <em>reported</em>
  * if you exclude slow tests during a run.)
  * </p>
  *
  * <a name="SharedTests"></a><h2>Shared tests</h2>
  * <p>
- * You can factor out shared tests in an <code>org.scalatest.path.FreeSpec</code> in the same manner as in
- * an <code>org.scalatest.FreeSpec</code>. Please see the <a href="../FreeSpec.html#SharedTests">Shared tests</a>
+ * You can factor out shared tests in an <code>org.scalatest.freespec.PathAnyFreeSpec</code> in the same manner as in
+ * an <code>org.scalatest.freespec.AnyFreeSpec</code>. Please see the <a href="AnyFreeSpec.html#SharedTests">Shared tests</a>
  * section in its documentation for more information.
  * </p>
  *
  * <a name="nestedSuites"></a><h2>Nested suites</h2>
  *
  * <p>
- * Nested suites are not allowed in a <code>path.FreeSpec</code>. Because
- * a <code>path.FreeSpec</code> executes tests eagerly at construction time, registering the results of those test runs
+ * Nested suites are not allowed in a <code>PathAnyFreeSpec</code>. Because
+ * a <code>PathAnyFreeSpec</code> executes tests eagerly at construction time, registering the results of those test runs
  * and reporting them later when <code>run</code> is invoked, the order of nested suites versus test runs would be
- * different in a <code>org.scalatest.path.FreeSpec</code> than in an <code>org.scalatest.FreeSpec</code>. In
- * <code>org.scalatest.FreeSpec</code>'s implementation of <code>run</code>, nested suites are executed then tests
- * are executed. A <code>org.scalatest.path.FreeSpec</code> with nested suites would execute these in the opposite
- * order: first tests then nested suites. To help make <code>path.FreeSpec</code> code easier to
+ * different in a <code>org.scalatest.freespec.PathAnyFreeSpec</code> than in an <code>org.scalatest.freespec.AnyFreeSpec</code>. In
+ * <code>org.scalatest.freespec.AnyFreeSpec</code>'s implementation of <code>run</code>, nested suites are executed then tests
+ * are executed. A <code>org.scalatest.freespec.PathAnyFreeSpec</code> with nested suites would execute these in the opposite
+ * order: first tests then nested suites. To help make <code>PathAnyFreeSpec</code> code easier to
  * reason about by giving readers of one less difference to think about, nested suites are not allowed. If you want
- * to add nested suites to a <code>path.FreeSpec</code>, you can instead wrap them all in a
+ * to add nested suites to a <code>PathAnyFreeSpec</code>, you can instead wrap them all in a
  * <a href="../Suites.html"><code>Suites</code></a> object. They will
  * be executed in the order of appearance (unless a <a href="../Distributor">Distributor</a> is passed, in which case
  * they will execute in parallel).
@@ -676,14 +676,14 @@ import org.scalatest._
  * </p>
  *
  * <p>
- * In the test completion events fired by a <code>path.FreeSpec</code> (<code>TestSucceeded</code>,
+ * In the test completion events fired by a <code>PathAnyFreeSpec</code> (<code>TestSucceeded</code>,
  * <code>TestFailed</code>, or <code>TestPending</code>), the durations reported refer
  * to the time it took for the tests to run. This time is registered with the test results and reported along
  * with the test results each time <code>run</code> is invoked.
  * By contrast, the suite completion events fired for a <code>path.FreeSpec</code> represent the amount of time
  * it took to report the registered results. (These events are not fired by <code>path.FreeSpec</code>, but instead
  * by the entity that invokes <code>run</code> on the <code>path.FreeSpec</code>.) As a result, the total time
- * for running the tests of a <code>path.FreeSpec</code>, calculated by summing the durations of all the individual
+ * for running the tests of a <code>PathAnyFreeSpec</code>, calculated by summing the durations of all the individual
  * test completion events, may be greater than the duration reported for executing the entire suite.
  * </p>
  *
@@ -692,9 +692,9 @@ import org.scalatest._
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 // SKIP-SCALATESTJS,NATIVE-START
-class FreeSpec extends org.scalatest.path.FreeSpecLike {
+class PathAnyFreeSpec extends org.scalatest.freespec.PathAnyFreeSpecLike {
 // SKIP-SCALATESTJS,NATIVE-END
-//SCALATESTJS,NATIVE-ONLY abstract class FreeSpec extends org.scalatest.path.FreeSpecLike {
+//SCALATESTJS,NATIVE-ONLY abstract class PathAnyFreeSpec extends org.scalatest.freespec.PathAnyFreeSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
