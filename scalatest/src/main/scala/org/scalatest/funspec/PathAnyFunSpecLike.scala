@@ -29,37 +29,37 @@ import org.scalatest.PathEngine.isInTargetPath
  * and for each test, only executing the <em>path</em> leading to that test.
  * 
  * <p>
- * <a href="PathFunSpec.html"><code>PathFunSpec</code></a> is a class, not a trait,
+ * <a href="PathAnyFunSpec.html"><code>PathAnyFunSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>PathFunSpec</code> into some other class, you can use this
- * trait instead, because class <code>PathFunSpec</code> does nothing more than
+ * behavior of <code>PathAnyFunSpec</code> into some other class, you can use this
+ * trait instead, because class <code>PathAnyFunSpec</code> does nothing more than
  * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="PathFunSpec.html">detailed
- * overview of <code>PathFunSpec</code></a>.
+ * See the documentation of the class for a <a href="PathAnyFunSpec.html">detailed
+ * overview of <code>PathAnyFunSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
-trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
   
   private final val engine = PathEngine.getEngine()
   import engine._
 
   // SKIP-SCALATESTJS,NATIVE-START
-  override def newInstance: org.scalatest.funspec.PathFunSpecLike = this.getClass.newInstance.asInstanceOf[PathFunSpecLike]
+  override def newInstance: org.scalatest.funspec.PathAnyFunSpecLike = this.getClass.newInstance.asInstanceOf[PathAnyFunSpecLike]
   // SKIP-SCALATESTJS,NATIVE-END
-  //SCALATESTJS,NATIVE-ONLY override def newInstance: org.scalatest.funspec.PathFunSpecLike
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: org.scalatest.funspec.PathAnyFunSpecLike
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor (including within a test, since
-   * those are invoked during construction in a <code>PathFunSpec</code>, it
+   * those are invoked during construction in a <code>PathAnyFunSpec</code>, it
    * will register the passed string for forwarding later when <code>run</code> is invoked. If invoked from inside a test function,
    * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
    * of the test completed event, such as <code>TestSucceeded</code>.  If invoked at any other time, it will print to the standard output.
@@ -71,7 +71,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
    * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>PathFunSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>PathAnyFunSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -81,7 +81,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
    * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>PathFunSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>PathAnyFunSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -90,7 +90,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
   /**
    * Returns a <code>Documenter</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor (including within a test, since
-   * those are invoked during construction in a <code>PathFunSpec</code>, it
+   * those are invoked during construction in a <code>PathAnyFunSpec</code>, it
    * will register the passed string for forwarding later when <code>run</code> is invoked. If invoked from inside a test function,
    * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
    * of the test completed event, such as <code>TestSucceeded</code>.  If invoked at any other time, it will print to the standard output.
@@ -100,7 +100,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
 
   /**
    * Class that, via an instance referenced from the <code>it</code> field,
-   * supports test (and shared test) registration in <code>PathFunSpec</code>s.
+   * supports test (and shared test) registration in <code>PathAnyFunSpec</code>s.
    *
    * <p>
    * This class supports syntax such as the following test registration:
@@ -121,7 +121,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
    * </pre>
    *
    * <p>
-   * For more information and examples, see the <a href="PathFunSpec.html">main documentation for <code>PathFunSpec</code></a>.
+   * For more information and examples, see the <a href="PathAnyFunSpec.html">main documentation for <code>PathAnyFunSpec</code></a>.
    * </p>
    */
   protected class ItWord {
@@ -133,7 +133,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
      * This trait's implementation of this method will decide whether to register the text and invoke the passed function
      * based on whether or not this is part of the current "test path." For the details on this process, see
      * the <a href="#howItExecutes">How it executes</a> section of the main documentation for
-     * trait <code>org.scalatest.funspec.PathFunSpec</code>.
+     * trait <code>org.scalatest.funspec.PathAnyFunSpec</code>.
      * </p>
      *
      * @param testText the test text, which will be combined with the descText of any surrounding describers
@@ -151,7 +151,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-      handleTest(thisSuite, testText, Transformer(() => testFun), Resources.itCannotAppearInsideAnotherItOrThey, "PathFunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+      handleTest(thisSuite, testText, Transformer(() => testFun), Resources.itCannotAppearInsideAnotherItOrThey, "PathAnyFunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
     
     /**
@@ -167,8 +167,8 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="PathFunSpec.html#SharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>org.scalatest.funspec.PathFunSpec</code>.
+     * For examples of shared tests, see the <a href="PathAnyFunSpec.html#SharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>org.scalatest.funspec.PathAnyFunSpec</code>.
      * </p>
      */
     def should(behaveWord: BehaveWord) = behaveWord
@@ -186,15 +186,15 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="PathFunSpec.html#SharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>org.scalatest.funspec.PathFunSpec</code>.
+     * For examples of shared tests, see the <a href="PathAnyFunSpec.html#SharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>org.scalatest.funspec.PathAnyFunSpec</code>.
      * </p>
      */
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
   /**
-   * Supports test (and shared test) registration in <code>PathFunSpec</code>s.
+   * Supports test (and shared test) registration in <code>PathAnyFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -218,7 +218,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
 
   /**
    * Class that, via an instance referenced from the <code>they</code> field,
-   * supports test (and shared test) registration in <code>PathFunSpec</code>s.
+   * supports test (and shared test) registration in <code>PathAnyFunSpec</code>s.
    *
    * <p>
    * This class supports syntax such as the following test registration:
@@ -239,7 +239,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
    * </pre>
    *
    * <p>
-   * For more information and examples, see the <a href="PathFunSpec.html">main documentation for <code>PathFunSpec</code></a>.
+   * For more information and examples, see the <a href="PathAnyFunSpec.html">main documentation for <code>PathAnyFunSpec</code></a>.
    * </p>
    */
   protected class TheyWord {
@@ -251,7 +251,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
      * This trait's implementation of this method will decide whether to register the text and invoke the passed function
      * based on whether or not this is part of the current "test path." For the details on this process, see
      * the <a href="#howItExecutes">How it executes</a> section of the main documentation for
-     * trait <code>org.scalatest.funspec.PathFunSpec</code>.
+     * trait <code>org.scalatest.funspec.PathAnyFunSpec</code>.
      * </p>
      *
      * @param testText the test text, which will be combined with the descText of any surrounding describers
@@ -263,7 +263,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
-      handleTest(thisSuite, testText, Transformer(() => testFun), Resources.theyCannotAppearInsideAnotherItOrThey, "PathFunSpecLike.scala", "apply", 3, -2, None, Some(pos), testTags: _*)
+      handleTest(thisSuite, testText, Transformer(() => testFun), Resources.theyCannotAppearInsideAnotherItOrThey, "PathAnyFunSpecLike.scala", "apply", 3, -2, None, Some(pos), testTags: _*)
     }
  
     /**
@@ -279,8 +279,8 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="PathFunSpec.html#SharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>org.scalatest.funspec.PathFunSpec</code>.
+     * For examples of shared tests, see the <a href="PathAnyFunSpec.html#SharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>org.scalatest.funspec.PathAnyFunSpec</code>.
      * </p>
      */
     def should(behaveWord: BehaveWord) = behaveWord
@@ -298,15 +298,15 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
      * </pre>
      *
      * <p>
-     * For examples of shared tests, see the <a href="PathFunSpec.html#SharedTests">Shared tests section</a>
-     * in the main documentation for trait <code>org.scalatest.funspec.PathFunSpec</code>.
+     * For examples of shared tests, see the <a href="PathAnyFunSpec.html#SharedTests">Shared tests section</a>
+     * in the main documentation for trait <code>org.scalatest.funspec.PathAnyFunSpec</code>.
      * </p>
      */
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
   /**
-   * Supports test (and shared test) registration in <code>PathFunSpec</code>s.
+   * Supports test (and shared test) registration in <code>PathAnyFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -355,7 +355,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
     //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
     // Might not actually register it. Only will register it if it is its turn.
-    handleIgnoredTest(testText, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, "PathFunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    handleIgnoredTest(testText, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, "PathAnyFunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
   
   /**
@@ -368,7 +368,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
    * register the description text and invoke the passed function
    * based on whether or not this is part of the current "test path." For the details on this process, see
    * the <a href="#howItExecutes">How it executes</a> section of the main documentation for trait
-   * <code>org.scalatest.funspec.PathFunSpec</code>.
+   * <code>org.scalatest.funspec.PathAnyFunSpec</code>.
    * </p>
    */
   protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
@@ -378,7 +378,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
     //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
 
     try {
-      handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "PathFunSpecLike.scala", "describe", stackDepth, -2, None, Some(pos))
+      handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "PathAnyFunSpecLike.scala", "describe", stackDepth, -2, None, Some(pos))
     }
     catch {
       case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e.position.getOrElse(pos))
@@ -390,7 +390,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
   }
   
   /**
-   * Supports shared test registration in <code>PathFunSpec</code>s.
+   * Supports shared test registration in <code>PathAnyFunSpec</code>s.
    *
    * <p>
    * This field supports syntax such as the following:
@@ -410,7 +410,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
   protected val behave = new BehaveWord
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>PathFunSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>PathAnyFunSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
@@ -423,13 +423,13 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
    * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's
    * iterator will return those names in the order in which the tests were registered. Each test's name is composed
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
-   * example itself, with all components separated by a space. For example, consider this <code>PathFunSpec</code>:
+   * example itself, with all components separated by a space. For example, consider this <code>PathAnyFunSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
    * import org.scalatest.funspec
    *
-   * class StackSpec extends funspec.PathFunSpec {
+   * class StackSpec extends funspec.PathAnyFunSpec {
    *   describe("A Stack") {
    *     describe("when not empty") {
    *       "must allow me to pop" in {}
@@ -442,7 +442,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
    * </pre>
    *
    * <p>
-   * Invoking <code>testNames</code> on this <code>PathFunSpec</code> will yield a set that contains the following
+   * Invoking <code>testNames</code> on this <code>PathAnyFunSpec</code> will yield a set that contains the following
    * two test name strings:
    * </p>
    *
@@ -462,7 +462,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
   }
 
   /**
-   * The total number of tests that are expected to run when this <code>PathFunSpec</code>'s <code>run</code> method
+   * The total number of tests that are expected to run when this <code>PathAnyFunSpec</code>'s <code>run</code> method
    * is invoked.
    *
    * <p>
@@ -558,7 +558,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
   }
 
   /**
-   * Runs this <code>PathFunSpec</code>, reporting test results that were registered when the tests
+   * Runs this <code>PathAnyFunSpec</code>, reporting test results that were registered when the tests
    * were run, each during the construction of its own instance.
    *
    * <p>
@@ -570,7 +570,7 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
    * <p>If <code>testName</code> is <code>None</code>, this trait's implementation of this method
    * will report the registered results for all tests except any excluded by the passed <code>Filter</code>.
    * If <code>testName</code> is defined, it will report the results of only that named test. Because a
-   * <code>PathFunSpec</code> is not allowed to contain nested suites, this trait's implementation of
+   * <code>PathAnyFunSpec</code> is not allowed to contain nested suites, this trait's implementation of
    * this method does not call <code>runNestedSuites</code>.
    * </p>
    *
@@ -612,13 +612,13 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
    * just return immediately.
    *
    * <p>
-   * Nested suites are not allowed in a <code>PathFunSpec</code>. Because
-   * a <code>PathFunSpec</code> executes tests eagerly at construction time, registering the results of
+   * Nested suites are not allowed in a <code>PathAnyFunSpec</code>. Because
+   * a <code>PathAnyFunSpec</code> executes tests eagerly at construction time, registering the results of
    * those test runs and reporting them later, the order of nested suites versus test runs would be different
-   * in a <code>org.scalatest.funspec.PathFunSpec</code> than in an <code>org.scalatest.funspec.PathFunSpec</code>. In an
+   * in a <code>org.scalatest.funspec.PathAnyFunSpec</code> than in an <code>org.scalatest.funspec.PathAnyFunSpec</code>. In an
    * <code>org.scalatest.funspec.AnyFunSpec</code>, nested suites are executed then tests are executed. In an
-   * <code>org.scalatest.funspec.PathFunSpec</code> it would be the opposite. To make the code easy to reason about,
-   * therefore, this is just not allowed. If you want to add nested suites to a <code>PathFunSpec</code>, you can
+   * <code>org.scalatest.funspec.PathAnyFunSpec</code> it would be the opposite. To make the code easy to reason about,
+   * therefore, this is just not allowed. If you want to add nested suites to a <code>PathAnyFunSpec</code>, you can
    * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a>
    * object and put them in whatever order you wish.
    * </p>
@@ -635,13 +635,13 @@ trait PathFunSpecLike extends org.scalatest.Suite with OneInstancePerTest with I
    *
    * <p>
    * This lifecycle method is unused by this trait. If invoked, it will return an empty list, because
-   * nested suites are not allowed in a <code>PathFunSpec</code>. Because
-   * a <code>PathFunSpec</code> executes tests eagerly at construction time, registering the results of
+   * nested suites are not allowed in a <code>PathAnyFunSpec</code>. Because
+   * a <code>PathAnyFunSpec</code> executes tests eagerly at construction time, registering the results of
    * those test runs and reporting them later, the order of nested suites versus test runs would be different
-   * in a <code>org.scalatest.funspec.PathFunSpec</code> than in an <code>org.scalatest.funspec.AnyFunSpec</code>. In an
-   * <code>org.scalatest.funspec.PathFunSpec</code>, nested suites are executed then tests are executed. In an
-   * <code>org.scalatest.funspec.PathFunSpec</code> it would be the opposite. To make the code easy to reason about,
-   * therefore, this is just not allowed. If you want to add nested suites to a <code>PathFunSpec</code>, you can
+   * in a <code>org.scalatest.funspec.PathAnyFunSpec</code> than in an <code>org.scalatest.funspec.AnyFunSpec</code>. In an
+   * <code>org.scalatest.funspec.PathAnyFunSpec</code>, nested suites are executed then tests are executed. In an
+   * <code>org.scalatest.funspec.PathAnyFunSpec</code> it would be the opposite. To make the code easy to reason about,
+   * therefore, this is just not allowed. If you want to add nested suites to a <code>PathAnyFunSpec</code>, you can
    * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a>
    * object and put them in whatever order you wish.
    * </p>
