@@ -22,6 +22,7 @@ import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
 import words.BehaveWord
 import org.scalatest.fixture.{AsyncPendingTransformer, NoArgTestWrapper}
+import scala.util.Try
 
 /**
  * Implementation trait for class <code>FixtureAsyncFreeSpec</code>, which is
@@ -500,10 +501,10 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with
    * @throws NullArgumentException if <code>testName</code> or <code><args/code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
+      FutureAsyncOutcome(
         withFixture(
           new OneArgAsyncTest {
             val name = testData.name
@@ -517,7 +518,8 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 

@@ -263,7 +263,7 @@ object ScalatestBuild {
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
-      "-oDI",
+      "-oDIF",
       "-W", "120", "60",
       "-h", "target/html",
       "-u", "target/junit",

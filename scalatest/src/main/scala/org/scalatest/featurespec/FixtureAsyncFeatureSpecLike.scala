@@ -23,6 +23,7 @@ import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
+import scala.util.Try
 
 
 /**
@@ -223,10 +224,10 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.fixture.AsyncTestSuite w
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
+      FutureAsyncOutcome(
         withFixture(
           new OneArgAsyncTest {
             val name = testData.name
@@ -240,7 +241,8 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.fixture.AsyncTestSuite w
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 

@@ -19,6 +19,7 @@ import org.scalatest._
 import scala.collection.immutable.ListSet
 import org.scalatest.Suite.autoTagClassAnnotations
 import scala.concurrent.Future
+import scala.util.Try
 
 /**
  * Implementation trait for class <code>fixture.AsyncPropSpec</code>, which is
@@ -169,10 +170,10 @@ trait FixtureAsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration
    * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
+      FutureAsyncOutcome(
         withFixture(
           new OneArgAsyncTest {
             val name = testData.name
@@ -185,7 +186,8 @@ trait FixtureAsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration
             val text = testData.text
             val tags = testData.tags
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 

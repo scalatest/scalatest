@@ -5,21 +5,19 @@ import scala.util.{Success, Try, Failure}
 import scala.concurrent.{ExecutionContext, Future, Await}
 import scala.concurrent.duration._
 
-private[scalatest] trait AsyncOutcome {
-  def onComplete(f: Try[Outcome] => Unit)
+private[scalatest] sealed trait AsyncOutcome {
   def toStatus: Status
   // SKIP-SCALATESTJS,NATIVE-START
   def toOutcome: Outcome // may block
   // SKIP-SCALATESTJS,NATIVE-END
-  def toInternalFutureOutcome: Future[Outcome]
+  def toFutureOfOutcome: Future[Outcome]
   def toFutureOutcome: FutureOutcome
 }
 
-private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
+private[scalatest] case class PastAsyncOutcome(past: Outcome, onCompleteFun: Try[Outcome] => Unit) extends AsyncOutcome {
 
-  def onComplete(f: Try[Outcome] => Unit): Unit = {
-    f(new Success(past))
-  }
+  onCompleteFun(new Success(past))
+
   def toStatus: Status =
     past match {
       case _: Failed => FailedStatus
@@ -28,47 +26,29 @@ private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
   // SKIP-SCALATESTJS,NATIVE-START
   def toOutcome: Outcome = past
   // SKIP-SCALATESTJS,NATIVE-END
-  def toInternalFutureOutcome: Future[Outcome] = Future.successful(past)
+  def toFutureOfOutcome: Future[Outcome] = Future.successful(past)
   def toFutureOutcome: FutureOutcome = FutureOutcome { Future.successful(past) }
 }
 
-private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
+private[scalatest] case class FutureAsyncOutcome(future: Future[Outcome], onCompleteFun: Try[Outcome] => Unit)(implicit ctx: ExecutionContext) extends AsyncOutcome {
 
-  private final val queue = new ConcurrentLinkedQueue[Try[Outcome] => Unit]
   private final val status = new ScalaTestStatefulStatus
 
-  future.onComplete {
-    case Success(result) =>
-      for (f <- queue.iterator)
-        f(Success(result))
-      status.setCompleted()
-
-    case Failure(ex) =>
-      for (f <- queue.iterator)
-        f(Failure(ex))
-      status.setFailedWith(ex)
-      status.setCompleted()
+  // Must use future.onComplete so that we let the execution context
+  // decide how to execute it.
+  future.onComplete { tri =>
+    onCompleteFun(tri)
+    tri match {
+      case Failure(ex) => status.setFailedWith(ex)
+      case _ =>
+    }
+    status.setCompleted()
   } /* fills in ctx here */
 
-  def onComplete(f: Try[Outcome] => Unit): Unit = {
-    var executeLocally = false
-    synchronized {
-      if (!future.isCompleted)
-        queue.add(f)
-      else
-        executeLocally = true
-    }
-    if (executeLocally) {
-      future.value.get match {
-        case Success(result) => f(new Success(result))
-        case Failure(ex) => f(new Failure(ex))
-      }
-    }
-  }
   def toStatus: Status = status
   // SKIP-SCALATESTJS,NATIVE-START
   def toOutcome: Outcome = Await.result(future, Duration.Inf)
   // SKIP-SCALATESTJS,NATIVE-END
-  def toInternalFutureOutcome: Future[Outcome] = future
+  def toFutureOfOutcome: Future[Outcome] = future
   def toFutureOutcome: FutureOutcome = FutureOutcome { future }
 }

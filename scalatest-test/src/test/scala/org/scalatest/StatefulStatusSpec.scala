@@ -22,7 +22,7 @@ class StatefulStatusSpec extends fixture.FunSpec {
 
   protected type FixtureParam = {
     def setCompleted()
-    def isCompleted: Boolean
+    def isCompleted(): Boolean
     // SKIP-SCALATESTJS,NATIVE-START
     def succeeds(): Boolean
     // SKIP-SCALATESTJS,NATIVE-END
@@ -48,23 +48,23 @@ class StatefulStatusSpec extends fixture.FunSpec {
   describe("StatefulStatus ") {
     it("should by default return false for isCompleted") { status =>
       import scala.language.reflectiveCalls
-      assert(!status.isCompleted)
+      assert(!status.isCompleted())
     }
 
-    it("should return true for isCompleted after completes() is called") { status =>
+    it("should return true for isCompleted after setCompleted() is called") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
-      assert(status.isCompleted)
+      assert(status.isCompleted())
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
-    it("should return true for succeeds() after completes() is called without fails()") { status =>
+    it("should return true for succeeds() after setCompleted() is called without setFailed()") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
       assert(status.succeeds)
     }
 
-    it("should return false for succeeds() after completes is called after fails()") { status =>
+    it("should return false for succeeds() after setCompleted() is called after setFailed()") { status =>
       import scala.language.reflectiveCalls
       status.setFailed()
       status.setCompleted()
@@ -73,7 +73,7 @@ class StatefulStatusSpec extends fixture.FunSpec {
     // SKIP-SCALATESTJS,NATIVE-END
 
     // SKIP-SCALATESTJS,NATIVE-START
-    it("waitUntilCompleted should not block after completes() is called") { status =>
+    it("waitUntilCompleted should not block after setCompleted() is called") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
       status.waitUntilCompleted()
@@ -91,11 +91,11 @@ class StatefulStatusSpec extends fixture.FunSpec {
     it("should allow setCompleted() to be called multiple times") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
-      assert(status.isCompleted)
+      assert(status.isCompleted())
       status.setCompleted()
-      assert(status.isCompleted)
+      assert(status.isCompleted())
       status.setCompleted()
-      assert(status.isCompleted)
+      assert(status.isCompleted())
     }
 
     it("should invoke a function registered with whenCompleted, passing a succeeded value, after the status completes successfully") { status =>
@@ -252,6 +252,38 @@ class StatefulStatusSpec extends fixture.FunSpec {
       assert(status.unreportedException.value.getMessage == "exception 1")
     }
 
+    // SKIP-SCALATESTJS,NATIVE-START
+    it("should allow setCompleted to be called multiple times, any after the first being a no-op") { status =>
+
+      var firstCallbackCompleted = false
+      var secondCallbackCompleted = false
+      status.whenCompleted { tri =>
+        println(s"Thread ${Thread.currentThread.toString} starting first callback")
+        Thread.sleep(100)
+        firstCallbackCompleted = true
+        assert(!secondCallbackCompleted)
+        println(s"Thread ${Thread.currentThread.toString} finished first callback")
+      }
+      status.whenCompleted { tri =>
+        println(s"Thread ${Thread.currentThread.toString} starting second callback")
+        secondCallbackCompleted = true
+        println(s"Thread ${Thread.currentThread.toString} finished second callback")
+      }
+
+      val runnable = 
+        new Runnable {
+          def run() = {
+            status.setCompleted()
+          }
+        }
+
+      (new Thread(runnable)).start() // And this should wait until the other thread also completes the second one
+      status.setCompleted() // This should start executing the first callback,
+      // Make sure the second thread isn't the one to complete the
+      // second callback, while the first one is still in the thread.sleep.
+      succeed
+    }
+    // SKIP-SCALATESTJS,NATIVE-END
   }
 }
 

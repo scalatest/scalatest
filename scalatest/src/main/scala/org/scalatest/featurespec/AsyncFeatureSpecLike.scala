@@ -24,6 +24,7 @@ import Suite.autoTagClassAnnotations
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.exceptions._
+import scala.util.Try
 
 /**
  * Implementation trait for class <code>AsyncFeatureSpec</code>, which represents
@@ -210,10 +211,10 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
+      FutureAsyncOutcome(
         withFixture(
           new NoArgAsyncTest {
             val name = testData.name
@@ -224,7 +225,8 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 

@@ -32,6 +32,8 @@ private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
   def isEmpty: Boolean = queue.isEmpty
 
   def asScala: GenTraversable[T] = queue
+
+  def poll: T = queue.remove(0)
 }
 
 private[scalatest] class LinkedBlockingQueue[T] extends Serializable {
