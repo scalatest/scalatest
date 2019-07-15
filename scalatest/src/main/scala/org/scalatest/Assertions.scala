@@ -19,7 +19,6 @@ import org.scalactic.{Resources => _, FailureMessages => _, _}
 import Requirements._
 
 import scala.reflect.ClassTag
-import Assertions.NormalResult
 import Assertions.areEqualComparingArraysStructurally
 import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.StackDepthException.toExceptionFunction
@@ -828,106 +827,6 @@ trait Assertions extends TripleEquals  {
   }
 
   /**
-   * Trap and return any thrown exception that would normally cause a ScalaTest test to fail, or create and return a new <code>RuntimeException</code>
-   * indicating no exception is thrown.
-   *
-   * <p>
-   * This method is intended to be used in the Scala interpreter to eliminate large stack traces when trying out ScalaTest assertions and
-   * matcher expressions. It is not intended to be used in regular test code. If you want to ensure that a bit of code throws an expected
-   * exception, use <code>intercept</code>, not <code>trap</code>. Here's an example interpreter session without <code>trap</code>:
-   * </p>
-   *
-   * <pre class="stREPL">
-   * scala&gt; import org.scalatest._
-   * import org.scalatest._
-   *
-   * scala&gt; import Matchers._
-   * import Matchers._
-   *
-   * scala&gt; val x = 12
-   * a: Int = 12
-   *
-   * scala&gt; x shouldEqual 13
-   * org.scalatest.exceptions.TestFailedException: 12 did not equal 13
-   *    at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:449)
-   *    at org.scalatest.Assertions$.newAssertionFailedException(Assertions.scala:1203)
-   *    at org.scalatest.Assertions$AssertionsHelper.macroAssertTrue(Assertions.scala:417)
-   *    at .&lt;init&gt;(&lt;console&gt;:15)
-   *    at .&lt;clinit&gt;(&lt;console&gt;)
-   *    at .&lt;init&gt;(&lt;console&gt;:7)
-   *    at .&lt;clinit&gt;(&lt;console&gt;)
-   *    at $print(&lt;console&gt;)
-   *    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-   *    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-   *    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-   *    at java.lang.reflect.Method.invoke(Method.java:597)
-   *    at scala.tools.nsc.interpreter.IMain$ReadEvalPrint.call(IMain.scala:731)
-   *    at scala.tools.nsc.interpreter.IMain$Request.loadAndRun(IMain.scala:980)
-   *    at scala.tools.nsc.interpreter.IMain.loadAndRunReq$1(IMain.scala:570)
-   *    at scala.tools.nsc.interpreter.IMain.interpret(IMain.scala:601)
-   *    at scala.tools.nsc.interpreter.IMain.interpret(IMain.scala:565)
-   *    at scala.tools.nsc.interpreter.ILoop.reallyInterpret$1(ILoop.scala:745)
-   *    at scala.tools.nsc.interpreter.ILoop.interpretStartingWith(ILoop.scala:790)
-   *    at scala.tools.nsc.interpreter.ILoop.command(ILoop.scala:702)
-   *    at scala.tools.nsc.interpreter.ILoop.processLine$1(ILoop.scala:566)
-   *    at scala.tools.nsc.interpreter.ILoop.innerLoop$1(ILoop.scala:573)
-   *    at scala.tools.nsc.interpreter.ILoop.loop(ILoop.scala:576)
-   *    at scala.tools.nsc.interpreter.ILoop$$anonfun$process$1.apply$mcZ$sp(ILoop.scala:867)
-   *    at scala.tools.nsc.interpreter.ILoop$$anonfun$process$1.apply(ILoop.scala:822)
-   *    at scala.tools.nsc.interpreter.ILoop$$anonfun$process$1.apply(ILoop.scala:822)
-   *    at scala.tools.nsc.util.ScalaClassLoader$.savingContextLoader(ScalaClassLoader.scala:135)
-   *    at scala.tools.nsc.interpreter.ILoop.process(ILoop.scala:822)
-   *    at scala.tools.nsc.MainGenericRunner.runTarget$1(MainGenericRunner.scala:83)
-   *    at scala.tools.nsc.MainGenericRunner.process(MainGenericRunner.scala:96)
-   *    at scala.tools.nsc.MainGenericRunner$.main(MainGenericRunner.scala:105)
-   *    at scala.tools.nsc.MainGenericRunner.main(MainGenericRunner.scala)
-   * </pre>
-   * 
-   * <p>
-   * That's a pretty tall stack trace. Here's what it looks like when you use <code>trap</code>:
-   * </p>
-   *
-   * <pre class="stREPL">
-   * scala&gt; trap { x shouldEqual 13 }
-   * res1: Throwable = org.scalatest.exceptions.TestFailedException: 12 did not equal 13
-   * </pre>
-   *
-   * <p>
-   * Much less clutter. Bear in mind, however, that if <em>no</em> exception is thrown by the
-   * passed block of code, the <code>trap</code> method will create a new <a href="Assertions$$NormalResult.html"><code>NormalResult</code></a>
-   * (a subclass of <code>Throwable</code> made for this purpose only) and return that. If the result was the <code>Unit</code> value, it
-   * will simply say that no exception was thrown:
-   * </p>
-   *
-   * <pre class="stREPL">
-   * scala&gt; trap { x shouldEqual 12 }
-   * res2: Throwable = No exception was thrown.
-   * </pre>
-   *
-   * <p>
-   * If the passed block of code results in a value other than <code>Unit</code>, the <code>NormalResult</code>'s <code>toString</code> will print the value:
-   * </p>
-   *
-   * <pre class="stREPL">
-   * scala&gt; trap { "Dude!" }
-   * res3: Throwable = No exception was thrown. Instead, result was: "Dude!"
-   * </pre>
-   *
-   * <p>
-   * Although you can access the result value from the <code>NormalResult</code>, its type is <code>Any</code> and therefore not
-   * very convenient to use. It is not intended that <code>trap</code> be used in test code. The sole intended use case for <code>trap</code> is decluttering
-   * Scala interpreter sessions by eliminating stack traces when executing assertion and matcher expressions.
-   * </p>
-   */
-  @deprecated("The trap method is no longer needed for demos in the REPL, which now abreviates stack traces, and will be removed in a future version of ScalaTest")
-  def trap[T](f: => T): Throwable = {
-    try { new NormalResult(f) }
-    catch {
-      case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => ex
-    }
-  }
-
-  /**
    * Assert that the value passed as <code>expected</code> equals the value passed as <code>actual</code>.
    * If the <code>actual</code> equals the <code>expected</code>
    * (as determined by <code>==</code>), <code>assertResult</code> returns
@@ -1330,11 +1229,6 @@ trait Assertions extends TripleEquals  {
  * @author Bill Venners
  */
 object Assertions extends Assertions {
-
-  @deprecated("The trap method is no longer needed for demos in the REPL, which now abreviates stack traces, so NormalResult will be removed in a future version of ScalaTest")
-  case class NormalResult(result: Any) extends Throwable {
-    override def toString = if (result == ()) Resources.noExceptionWasThrown else Resources.resultWas(Prettifier.default(result))
-  }
 
   private[scalatest] def areEqualComparingArraysStructurally(left: Any, right: Any): Boolean = {
     // Prior to 2.0 this only called .deep if both sides were arrays. Loosened it

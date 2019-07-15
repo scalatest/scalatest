@@ -19,7 +19,6 @@ import org.scalatest.exceptions.TestFailedException
 import SharedHelpers.thisLineNumber
 import scala.util.Failure
 import scala.util.Success
-import Assertions.NormalResult
 import org.scalatest.exceptions.TestCanceledException
 import java.util.Date
 import org.scalactic.Prettifier

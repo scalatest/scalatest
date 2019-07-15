@@ -19,7 +19,6 @@ import org.scalatest.exceptions.TestFailedException
 import SharedHelpers.thisLineNumber
 import scala.util.Failure
 import scala.util.Success
-import Assertions.NormalResult
 import org.scalatest.exceptions.TestCanceledException
 import OptionValues._
 import java.util.Date
@@ -191,26 +190,6 @@ class DirectAssertionsSpec extends FunSpec {
           }
         org.scalatest.Assertions.assert(caught.cause.value eq wrongException)
       }
-    }
-  }
-  describe("The trap method") {
-    it("should be a shorthand for catch and return any thrown exception that would cause a test to fail") {
-      val a = 12
-      val trappedEx = org.scalatest.Assertions.trap { org.scalatest.Assertions.assert(a == 13) }
-      org.scalatest.Assertions.assert(trappedEx.isInstanceOf[TestFailedException])
-      org.scalatest.Assertions.assert(trappedEx.getMessage == "12 did not equal 13")
-      val trappedUnit = org.scalatest.Assertions.trap { org.scalatest.Assertions.assert(a == 12) }
-      org.scalatest.Assertions.assert(trappedUnit == NormalResult(Succeeded))
-      val trappedInt = org.scalatest.Assertions.trap { 12 }
-      org.scalatest.Assertions.assert(trappedInt == NormalResult(12))
-      val trappedString = org.scalatest.Assertions.trap { "12" }
-      org.scalatest.Assertions.assert(trappedString == NormalResult("12"))
-      org.scalatest.Assertions.assert(trappedString.toString == Resources.resultWas("\"12\""))
-      // SKIP-SCALATESTJS,NATIVE-START
-      intercept[OutOfMemoryError] {
-        org.scalatest.Assertions.trap { throw new OutOfMemoryError }
-      }
-      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 
