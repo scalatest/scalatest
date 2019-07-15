@@ -381,7 +381,6 @@ trait Checkers extends ScalaCheckConfiguration {
  *
  * @author Bill Venners
  */
-@deprecated("Checkers has been moved from org.scalatest.prop to org.scalatestplus.scalacheck. Please update your imports, as this deprecated type alias will be removed in a future version of ScalaTest.")
 object Checkers extends Checkers
 
   /*
