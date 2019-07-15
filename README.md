@@ -86,7 +86,7 @@ $ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalatestTestNative/test:compile
 $ sbt -Dscalatest.skip.jdk.check=true ++2.11.12 scalatestTestNative/test
 ```
 
-### Building Exmaples
+### Building Examples
 
 You can build examples project using this command: 
 
@@ -167,4 +167,4 @@ To publish scalactic, scalatest and scalatest-app use the following command:
     $ sbt ++2.11.12 "project scalatestAppJS" clean publishSigned
     $ sbt ++2.12.6 "project scalatestAppJS" clean publishSigned
     $ export SCALAJS_VERSION=1.0.0-M8
-    $ sbt ++2.13.0 "project scalatestAppJS" clean publishSigned  
+    $ sbt ++2.13.0 "project scalatestAppJS" clean publishSigned
