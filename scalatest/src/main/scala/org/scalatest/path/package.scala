@@ -20,10 +20,15 @@ package org.scalatest
  */
 package object path {
 
-  @deprecated("Please use org.scalatest.freespec.PathAnyFreeSpecLike instead")
+  @deprecated("Please use org.scalatest.freespec.PathAnyFreeSpecLike instead.")
   type FreeSpecLike = org.scalatest.freespec.PathAnyFreeSpecLike
 
-  @deprecated("Please use org.scalatest.funspec.PathAnyFunSpecLike instead")
+  @deprecated("Please use org.scalatest.funspec.PathAnyFunSpecLike instead.")
   type FunSpecLike = org.scalatest.funspec.PathAnyFunSpecLike
 
+  @deprecated("Please use org.scalatest.freespec.PathAnyFreeSpec instead.")
+  type FreeSpec = org.scalatest.freespec.PathAnyFreeSpec
+
+  @deprecated("Please use org.scalatest.funspec.PathAnyFunSpec instead.")
+  type FunSpec = org.scalatest.funspec.PathAnyFunSpec
 }
