@@ -23,4 +23,7 @@ package object path {
   @deprecated("Please use org.scalatest.freespec.PathFreeSpecLike instead")
   type FreeSpecLike = org.scalatest.freespec.PathFreeSpecLike
 
+  @deprecated("Please use org.scalatest.funspec.PathFunSpecLike instead")
+  type FunSpecLike = org.scalatest.funspec.PathFunSpecLike
+
 }
