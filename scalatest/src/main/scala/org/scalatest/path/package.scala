@@ -20,6 +20,12 @@ package org.scalatest
  */
 package object path {
 
+  /**
+   * Force Scaladoc to include the <code>org.scalatest.path</code> package.
+   */
+  @deprecated("This class is a workaround for a Scaladoc bug. It will be removed in a future version of ScalaTest.")
+  final class ForceScaladocGeneration private ()
+
   @deprecated("The org.scalatest.path.FreeSpecLike trait has been moved and renamed. Please use org.scalatest.freespec.PathAnyFreeSpecLike instead.")
   type FreeSpecLike = org.scalatest.freespec.PathAnyFreeSpecLike
 
