@@ -215,7 +215,7 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
      * trait <code>org.scalatest.freespec.PathAnyFreeSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing): Unit = {
+    def is(testFun: => PendingStatement): Unit = {
       registerTestToRun(specText, tags, "is", () => testFun, pos)
     }
 
@@ -353,7 +353,7 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
      * trait <code>org.scalatest.freespec.PathAnyFreeSpec</code>.
      * </p>
      */
-    def is(f: => PendingNothing): Unit = {
+    def is(f: => PendingStatement): Unit = {
       registerTestToRun(string, List(), "is", () => f, pos)
     }
 
