@@ -119,9 +119,15 @@ package object scalatest {
   @deprecated("Please use org.scalatest.funsuite.AnyFunSuiteLike instead")
   type FunSuiteLike = funsuite.AnyFunSuiteLike
 
+  @deprecated("Please use org.scalatest.funsuite.AnyFunSuite instead")
+  type FunSuite = funsuite.AnyFunSuite
+
   // SKIP-SCALATESTNATIVE-START
   @deprecated("Please use org.scalatest.funsuite.AsyncFunSuiteLike instead")
   type AsyncFunSuiteLike = funsuite.AsyncFunSuiteLike
+
+  @deprecated("Please use org.scalatest.funsuite.AsyncFunSuite instead")
+  type AsyncFunSuite = funsuite.AsyncFunSuite
   // SKIP-SCALATESTNATIVE-END
 
   @deprecated("Please use org.scalatest.funsuite.AnyFeatureSpecLike instead")
@@ -141,40 +147,60 @@ package object scalatest {
   @deprecated("Please use org.scalatest.funsuite.AnyFunSpecLike instead")
   type FunSpecLike = funspec.AnyFunSpecLike
 
+  @deprecated("Please use org.scalatest.funsuite.AnyFunSpec instead")
+  type FunSpec = funspec.AnyFunSpec
+
   // SKIP-SCALATESTNATIVE-START
   @deprecated("Please use org.scalatest.funspec.AsyncFunSpecLike instead")
   type AsyncFunSpecLike = funspec.AsyncFunSpecLike
+
+  @deprecated("Please use org.scalatest.funspec.AsyncFunSpec instead")
+  type AsyncFunSpec = funspec.AsyncFunSpec
   // SKIP-SCALATESTNATIVE-END
 
   @deprecated("Please use org.scalatest.freespec.AnyFreeSpecLike instead")
   type FreeSpecLike = freespec.AnyFreeSpecLike
 
+  @deprecated("Please use org.scalatest.freespec.AnyFreeSpec instead")
+  type FreeSpec = freespec.AnyFreeSpec
+
   // SKIP-SCALATESTNATIVE-START
   @deprecated("Please use org.scalatest.freespec.AsyncFreeSpecLike instead")
   type AsyncFreeSpecLike = freespec.AsyncFreeSpecLike
+
+  type AsyncFreeSpec = freespec.AsyncFreeSpec
   // SKIP-SCALATESTNATIVE-END
 
   @deprecated("Please use org.scalatest.flatspec.AnyFlatSpecLike instead")
   type FlatSpecLike = flatspec.AnyFlatSpecLike
 
+  @deprecated("Please use org.scalatest.flatspec.AnyFlatSpec instead")
+  type FlatSpec = flatspec.AnyFlatSpec
+
   // SKIP-SCALATESTNATIVE-START
   @deprecated("Please use org.scalatest.flatspec.AsyncFlatSpecLike instead")
   type AsyncFlatSpecLike = flatspec.AsyncFlatSpecLike
+
+  type AsyncFlatSpec = flatspec.AsyncFlatSpec
   // SKIP-SCALATESTNATIVE-END
 
   @deprecated("Please use org.scalatest.propspec.AnyPropSpecLike instead")
   type PropSpecLike = propspec.AnyPropSpecLike
 
-  // SKIP-SCALATESTNATIVE-START
-  //@deprecated("Please use org.scalatest.propspec.AsyncPropSpecLike instead")
-  //type AsyncPropSpecLike = propspec.AsyncPropSpecLike
-  // SKIP-SCALATESTNATIVE-END
+  @deprecated("Please use org.scalatest.propspec.AnyPropSpec instead")
+  type PropSpec = propspec.AnyPropSpec
 
   @deprecated("Please use org.scalatest.wordspec.AnyWordSpecLike instead")
   type WordSpecLike = wordspec.AnyWordSpecLike
 
+  @deprecated("Please use org.scalatest.wordspec.AnyWordSpec instead")
+  type WordSpec = wordspec.AnyWordSpec
+
   // SKIP-SCALATESTNATIVE-START
   @deprecated("Please use org.scalatest.wordspec.AsyncWordSpecLike instead")
   type AsyncWordSpecLike = wordspec.AsyncWordSpecLike
+
+  @deprecated("Please use org.scalatest.wordspec.AsyncWordSpec instead")
+  type AsyncWordSpec = wordspec.AsyncWordSpec
   // SKIP-SCALATESTNATIVE-END
 }

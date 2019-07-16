@@ -26,7 +26,7 @@ class ResultOfATypeInvocationSpec extends FunSpec {
     
     it("should have pretty toString") {
       val result = new ResultOfATypeInvocation(ClassTag[FunSpec](classOf[FunSpec]))
-      result.toString should be ("a [org.scalatest.FunSpec]")
+      result.toString should be ("a [org.scalatest.funspec.AnyFunSpec]")
     }
   }
   

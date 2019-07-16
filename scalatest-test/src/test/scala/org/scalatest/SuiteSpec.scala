@@ -107,16 +107,16 @@ class SuiteSpec extends FunSpec {
 
             ( "suite", "simple name"),
 
-            ( new FunSuite, "FunSuite"),
-            ( new FunSpec, "FunSpec"),
+            ( new FunSuite, "AnyFunSuite"),
+            ( new FunSpec, "AnyFunSpec"),
             // SKIP-SCALATESTJS,NATIVE-START
             ( new RefSpec, "RefSpec"),
             // SKIP-SCALATESTJS,NATIVE-END
-            ( new WordSpec, "WordSpec"),
-            ( new FlatSpec, "FlatSpec"),
-            ( new FreeSpec, "FreeSpec"),
+            ( new WordSpec, "AnyWordSpec"),
+            ( new FlatSpec, "AnyFlatSpec"),
+            ( new FreeSpec, "AnyFreeSpec"),
             ( new FeatureSpec, "AnyFeatureSpec"),
-            ( new PropSpec, "PropSpec"),
+            ( new PropSpec, "AnyPropSpec"),
 
             ( new MandarinOrangeFunSuite, "MandarinOrangeFunSuite"),
             ( new MandarinOrangeFunSpec, "MandarinOrangeFunSpec"),
@@ -164,38 +164,38 @@ class SuiteSpec extends FunSpec {
 
             ( "suite", "simple name"),
 
-            ( new MandarinOrangeFunSuite(new FunSuite), "MandarinOrangeFunSuite(FunSuite)"),
-            ( new MandarinOrangeFunSpec(new FunSuite), "MandarinOrangeFunSpec(FunSuite)"),
+            ( new MandarinOrangeFunSuite(new FunSuite), "MandarinOrangeFunSuite(AnyFunSuite)"),
+            ( new MandarinOrangeFunSpec(new FunSuite), "MandarinOrangeFunSpec(AnyFunSuite)"),
             // SKIP-SCALATESTJS,NATIVE-START
-            ( new MandarinOrangeSpec(new FunSuite), "MandarinOrangeSpec(FunSuite)"),
+            ( new MandarinOrangeSpec(new FunSuite), "MandarinOrangeSpec(AnyFunSuite)"),
             // SKIP-SCALATESTJS,NATIVE-END
-            ( new MandarinOrangeWordSpec(new FunSuite), "MandarinOrangeWordSpec(FunSuite)"),
-            ( new MandarinOrangeFlatSpec(new FunSuite), "MandarinOrangeFlatSpec(FunSuite)"),
-            ( new MandarinOrangeFreeSpec(new FunSuite), "MandarinOrangeFreeSpec(FunSuite)"),
-            ( new MandarinOrangeFeatureSpec(new FunSuite), "MandarinOrangeFeatureSpec(FunSuite)"),
-            ( new MandarinOrangePropSpec(new FunSuite), "MandarinOrangePropSpec(FunSuite)"),
+            ( new MandarinOrangeWordSpec(new FunSuite), "MandarinOrangeWordSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFlatSpec(new FunSuite), "MandarinOrangeFlatSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFreeSpec(new FunSuite), "MandarinOrangeFreeSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFeatureSpec(new FunSuite), "MandarinOrangeFeatureSpec(AnyFunSuite)"),
+            ( new MandarinOrangePropSpec(new FunSuite), "MandarinOrangePropSpec(AnyFunSuite)"),
 
-            ( new MandarinOrangeFixtureFunSuite(new FunSuite), "MandarinOrangeFixtureFunSuite(FunSuite)"),
-            ( new MandarinOrangeFixtureFunSpec(new FunSuite), "MandarinOrangeFixtureFunSpec(FunSuite)"),
+            ( new MandarinOrangeFixtureFunSuite(new FunSuite), "MandarinOrangeFixtureFunSuite(AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFunSpec(new FunSuite), "MandarinOrangeFixtureFunSpec(AnyFunSuite)"),
             // SKIP-SCALATESTJS,NATIVE-START
-            ( new MandarinOrangeFixtureSpec(new FunSuite), "MandarinOrangeFixtureSpec(FunSuite)"),
+            ( new MandarinOrangeFixtureSpec(new FunSuite), "MandarinOrangeFixtureSpec(AnyFunSuite)"),
             // SKIP-SCALATESTJS,NATIVE-END
-            ( new MandarinOrangeFixtureWordSpec(new FunSuite), "MandarinOrangeFixtureWordSpec(FunSuite)"),
-            ( new MandarinOrangeFixtureFlatSpec(new FunSuite), "MandarinOrangeFixtureFlatSpec(FunSuite)"),
-            ( new MandarinOrangeFixtureFreeSpec(new FunSuite), "MandarinOrangeFixtureFreeSpec(FunSuite)"),
-            ( new MandarinOrangeFixtureFeatureSpec(new FunSuite), "MandarinOrangeFixtureFeatureSpec(FunSuite)"),
-            ( new MandarinOrangeFixturePropSpec(new FunSuite), "MandarinOrangeFixturePropSpec(FunSuite)"),
+            ( new MandarinOrangeFixtureWordSpec(new FunSuite), "MandarinOrangeFixtureWordSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFlatSpec(new FunSuite), "MandarinOrangeFixtureFlatSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFreeSpec(new FunSuite), "MandarinOrangeFixtureFreeSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFeatureSpec(new FunSuite), "MandarinOrangeFixtureFeatureSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFixturePropSpec(new FunSuite), "MandarinOrangeFixturePropSpec(AnyFunSuite)"),
 
-            // ( new path.FunSpec(new FunSuite), "path.FunSpec(FunSuite)"),
-            // ( new path.FreeSpec(new FunSuite), "path.FreeSpec(FunSuite)"),
+            // ( new path.FunSpec(new FunSuite), "path.FunSpec(PathFunSuite)"),
+            // ( new path.FreeSpec(new FunSuite), "path.FreeSpec(PathFunSuite)"),
 
-            ( new Suites(new FunSuite), "Suites(FunSuite)"),
-            ( new Sequential(new FunSuite), "Sequential(FunSuite)"),
-            ( new Stepwise(new FunSuite), "Stepwise(FunSuite)"),
+            ( new Suites(new FunSuite), "Suites(AnyFunSuite)"),
+            ( new Sequential(new FunSuite), "Sequential(AnyFunSuite)"),
+            ( new Stepwise(new FunSuite), "Stepwise(AnyFunSuite)"),
 
-            ( new MandarinOrangeSuites(new FunSuite), "MandarinOrangeSuites(FunSuite)"),
-            ( new MandarinOrangeSequential(new FunSuite), "MandarinOrangeSequential(FunSuite)"),
-            ( new MandarinOrangeStepwise(new FunSuite), "MandarinOrangeStepwise(FunSuite)")
+            ( new MandarinOrangeSuites(new FunSuite), "MandarinOrangeSuites(AnyFunSuite)"),
+            ( new MandarinOrangeSequential(new FunSuite), "MandarinOrangeSequential(AnyFunSuite)"),
+            ( new MandarinOrangeStepwise(new FunSuite), "MandarinOrangeStepwise(AnyFunSuite)")
           )
         forAll (examples) { (suite, simpleName) =>
           assert(suite.toString === simpleName)
@@ -210,38 +210,38 @@ class SuiteSpec extends FunSpec {
 
             ( "suite", "simple name"),
 
-            ( new MandarinOrangeFunSuite(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFunSuite(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new MandarinOrangeFunSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFunSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
+            ( new MandarinOrangeFunSuite(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFunSuite(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFunSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFunSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
             // SKIP-SCALATESTJS,NATIVE-START
-            ( new MandarinOrangeSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
+            ( new MandarinOrangeSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
             // SKIP-SCALATESTJS,NATIVE-END
-            ( new MandarinOrangeWordSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeWordSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new MandarinOrangeFlatSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFlatSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new MandarinOrangeFreeSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFreeSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new MandarinOrangeFeatureSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFeatureSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new MandarinOrangePropSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangePropSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
+            ( new MandarinOrangeWordSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeWordSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFlatSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFlatSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFreeSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFreeSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFeatureSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFeatureSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangePropSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangePropSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
 
-            ( new MandarinOrangeFixtureFunSuite(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFunSuite(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new MandarinOrangeFixtureFunSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFunSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
+            ( new MandarinOrangeFixtureFunSuite(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFunSuite(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFunSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFunSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
             // SKIP-SCALATESTJS,NATIVE-START
-            ( new MandarinOrangeFixtureSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
+            ( new MandarinOrangeFixtureSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
             // SKIP-SCALATESTJS,NATIVE-END
-            ( new MandarinOrangeFixtureWordSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureWordSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new MandarinOrangeFixtureFlatSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFlatSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new MandarinOrangeFixtureFreeSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFreeSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new MandarinOrangeFixtureFeatureSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFeatureSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new MandarinOrangeFixturePropSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixturePropSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
+            ( new MandarinOrangeFixtureWordSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureWordSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFlatSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFlatSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFreeSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFreeSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFeatureSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFeatureSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFixturePropSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixturePropSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
 
-            // ( new path.FunSpec(new PropSpec, new FeatureSpec, new FunSuite), "path.FunSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
-            // ( new path.FreeSpec(new PropSpec, new FeatureSpec, new FunSuite), "path.FreeSpec(PropSpec, AnyFeatureSpec, FunSuite)"),
+            // ( new path.FunSpec(new PropSpec, new FeatureSpec, new FunSuite), "path.FunSpec(PathPropSpec, PathFeatureSpec, PathFunSuite)"),
+            // ( new path.FreeSpec(new PropSpec, new FeatureSpec, new FunSuite), "path.FreeSpec(PathPropSpec, PathFeatureSpec, PathFunSuite)"),
 
-            ( new Suites(new PropSpec, new FeatureSpec, new FunSuite), "Suites(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new Sequential(new PropSpec, new FeatureSpec, new FunSuite), "Sequential(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new Stepwise(new PropSpec, new FeatureSpec, new FunSuite), "Stepwise(PropSpec, AnyFeatureSpec, FunSuite)"),
+            ( new Suites(new PropSpec, new FeatureSpec, new FunSuite), "Suites(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new Sequential(new PropSpec, new FeatureSpec, new FunSuite), "Sequential(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new Stepwise(new PropSpec, new FeatureSpec, new FunSuite), "Stepwise(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
 
-            ( new MandarinOrangeSuites(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeSuites(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new MandarinOrangeSequential(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeSequential(PropSpec, AnyFeatureSpec, FunSuite)"),
-            ( new MandarinOrangeStepwise(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeStepwise(PropSpec, AnyFeatureSpec, FunSuite)")
+            ( new MandarinOrangeSuites(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeSuites(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeSequential(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeSequential(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeStepwise(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeStepwise(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)")
           )
         forAll (examples) { (suite, simpleName) =>
           assert(suite.toString === simpleName)
