@@ -43,7 +43,6 @@ expired, so now it is only testing that no style traits handle test: prefixes sp
 trait NonTestColonEscapeExamples extends Tables {
   // SKIP-SCALATESTJS,NATIVE-START
   def spec: RefSpec
-  def fixtureSpec: fixture.Spec
   def junit3Suite: JUnit3Suite
   def junitSuite: JUnitSuite
   def testngSuite: TestNGSuite
@@ -70,7 +69,6 @@ trait NonTestColonEscapeExamples extends Tables {
     ("suite", "succeeded", "failed", "ignored", "pending", "canceled"),
     // SKIP-SCALATESTJS,NATIVE-START
     (spec, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")),
-    (fixtureSpec, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")),
     (junit3Suite, Some("- test: A Succeeded Test(org.scalatest.TestColonEscapeExampleJUnit3Suite)"), Some("- test: A Failed Test(org.scalatest.TestColonEscapeExampleJUnit3Suite)"), None, None, None),
     (junitSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), None, None),
     (testngSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), None, None),
@@ -200,15 +198,6 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   // SKIP-SCALATESTJS,NATIVE-START
   def spec = new ExampleSpec()
   class ExampleSpec extends RefSpec {
-    def `test: A Succeeded Test`: Unit = {}
-    def `test: A Failed Test` = { fail }
-    @Ignore def `test: An Ignored Test`: Unit = {}
-    def `test: A Pending Test` = { pending }
-    def `test: A Canceled Test` = { cancel }
-  }
-  
-  def fixtureSpec = new ExampleFixtureSpec
-  class ExampleFixtureSpec extends fixture.Spec with StringFixture {
     def `test: A Succeeded Test`: Unit = {}
     def `test: A Failed Test` = { fail }
     @Ignore def `test: An Ignored Test`: Unit = {}

@@ -22,7 +22,6 @@ trait AllSuiteProp extends MethodSuiteProp with FunctionSuiteProp {
       "suite",
       // SKIP-SCALATESTJS,NATIVE-START
       spec,
-      fixtureSpec, 
       junit3Suite, 
       junitSuite,
       testngSuite,

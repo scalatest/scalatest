@@ -33,7 +33,6 @@ class BeforeAndAfterAllProp extends AllSuiteProp {
 
   // SKIP-SCALATESTJS,NATIVE-START
   def spec = new ExampleBeforeAndAfterAllPropSpec
-  def fixtureSpec = new ExampleBeforeAndAfterAllPropFixtureSpec
   def junit3Suite = new ExampleBeforeAndAfterAllPropJUnit3Suite
   def junitSuite = new ExampleBeforeAndAfterAllPropJUnitSuite
   def testngSuite = new ExampleBeforeAndAfterAllPropTestNGSuite
@@ -105,22 +104,6 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropSpec extends RefSpec with
     def `Test 1`: Unit = { Thread.sleep(10) }
     def `Test 2`: Unit = { Thread.sleep(10) }
     def `Test 3`: Unit = { Thread.sleep(10) }
-  }
-  
-  override protected def beforeAll(): Unit = {
-    beforeAllTime = System.currentTimeMillis
-  }
-  override protected def afterAll(): Unit = {
-    afterAllTime = System.currentTimeMillis
-  }
-}
-
-@DoNotDiscover
-protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureSpec extends fixture.Spec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
-  object `Scope 1` {
-    def `Test 1`(fixture: String): Unit = { Thread.sleep(10) }
-    def `Test 2`(fixture: String): Unit = { Thread.sleep(10) }
-    def `Test 3`(fixture: String): Unit = { Thread.sleep(10) }
   }
   
   override protected def beforeAll(): Unit = {

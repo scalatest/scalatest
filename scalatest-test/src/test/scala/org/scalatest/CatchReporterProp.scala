@@ -35,7 +35,6 @@ class CatchReporterProp extends AllSuiteProp {
   type FixtureServices = CatchReporterFixtureServices
   
   def spec = new ExampleCatchReporterSpec
-  def fixtureSpec = new ExampleCatchReporterFixtureSpec
   def junit3Suite = new ExampleCatchReporterJUnit3Suite
   def junitSuite = new ExampleCatchReporterJUnitSuite
   def testngSuite = new ExampleCatchReporterTestNGSuite
@@ -387,14 +386,6 @@ class ExampleCatchReporterSpec extends RefSpec with CatchReporterFixtureServices
   def `test 1`: Unit = {}
   def `test 2`: Unit = {}
   def `test 3`: Unit = {}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
-}
-
-@DoNotDiscover
-class ExampleCatchReporterFixtureSpec extends fixture.Spec with CatchReporterFixtureServices with StringFixture {
-  def `test 1`(fixture: String): Unit = {}
-  def `test 2`(fixture: String): Unit = {}
-  def `test 3`(fixture: String): Unit = {}
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 

@@ -82,7 +82,7 @@ object ParallelTestExecutionSuiteTimeoutExamples extends Tables {
 // SKIP-SCALATESTJS,NATIVE-START
 class ExampleParallelTestExecutionSuiteTimeoutSpecPair extends SuiteTimeoutSuites {
   def suite1 = new ExampleParallelTestExecutionSuiteTimeoutSpec
-  def suite2 = new ExampleParallelTestExecutionSuiteTimeoutFixtureSpec
+  def suite2 = new ExampleParallelTestExecutionSuiteTimeoutOtherSpec
   val holdingSuiteId = suite1.suiteId
   val holdingTestName = "test 3"
   val holdingScopeClosedName = None
@@ -119,10 +119,10 @@ protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutSpec extends 
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixtureSpec extends fixture.Spec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
-  def `test 1`(fixture: String): Unit = {}
-  def `test 2`(fixture: String): Unit = {}
-  def `test 3`(fixture: String): Unit = {}
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutOtherSpec extends RefSpec with ParallelTestExecution with SuiteTimeoutSetting {
+  def `test 1`: Unit = {}
+  def `test 2`: Unit = {}
+  def `test 3`: Unit = {}
 }
 // SKIP-SCALATESTJS,NATIVE-END
 

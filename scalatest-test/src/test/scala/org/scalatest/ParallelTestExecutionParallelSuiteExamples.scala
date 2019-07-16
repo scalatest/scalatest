@@ -45,7 +45,7 @@ object ParallelTestExecutionParallelSuiteExamples extends Tables {
 // SKIP-SCALATESTJS,NATIVE-START
 class ExampleParallelTestExecutionParallelSpecPair extends ParallelSuites {
   def suite1 = new ExampleParallelTestExecutionOrderSpec
-  def suite2 = new ExampleParallelTestExecutionOrderFixtureSpec
+  def suite2 = new ExampleParallelTestExecutionOrderOtherSpec
   
   def assertParallelSuites(events: List[Event]): Unit = {
     assert(events.size === 16)

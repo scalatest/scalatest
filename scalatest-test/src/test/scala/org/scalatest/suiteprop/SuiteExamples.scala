@@ -27,7 +27,6 @@ trait SuiteExamples extends Tables {
 
   // SKIP-SCALATESTJS,NATIVE-START
   val spec: RefSpec with FixtureServices
-  val fixtureSpec: fixture.Spec with FixtureServices
   // SKIP-SCALATESTJS,NATIVE-END
 
   val funSuite: FunSuite with FixtureServices
@@ -106,7 +105,6 @@ trait SuiteExamples extends Tables {
       "suite",
       // SKIP-SCALATESTJS,NATIVE-START
       spec,
-      fixtureSpec, // TODO: Need nested ones
       // SKIP-SCALATESTJS,NATIVE-END
       
       funSuite,

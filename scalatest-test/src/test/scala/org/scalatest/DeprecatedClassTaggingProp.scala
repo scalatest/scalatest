@@ -27,7 +27,6 @@ class DeprecatedClassTaggingProp extends AllSuiteProp {
   def suite = new DeprecatedExampleClassTaggingSuite
   def fixtureSuite = new DeprecatedExampleClassTaggingFixtureSuite
   def spec = new DeprecatedExampleClassTaggingSpec
-  def fixtureSpec = new DeprecatedExampleClassTaggingFixtureSpec
   def junit3Suite = new DeprecatedExampleClassTaggingJUnit3Suite
   def junitSuite = new DeprecatedExampleClassTaggingJUnitSuite
   def testngSuite = new DeprecatedExampleClassTaggingTestNGSuite
@@ -90,14 +89,6 @@ class DeprecatedExampleClassTaggingSpec extends RefSpec with DeprecatedClassTagg
   def `test 1`: Unit = {}
   def `test 2`: Unit = {}
   def `test 3`: Unit = {}
-}
-
-@DoNotDiscover
-@Ignore
-class DeprecatedExampleClassTaggingFixtureSpec extends fixture.Spec with DeprecatedClassTaggingFixtureServices with StringFixture {
-  def `test 1`(fixture: String): Unit = {}
-  def `test 2`(fixture: String): Unit = {}
-  def `test 3`(fixture: String): Unit = {}
 }
 
 @DoNotDiscover

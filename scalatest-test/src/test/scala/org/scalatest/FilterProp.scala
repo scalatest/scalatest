@@ -61,9 +61,6 @@ class FilterProp extends SuiteProp {
   def spec = new RefSpec {
     override def nestedSuites = Vector(new Suite {})
   }
-  def fixtureSpec = new fixture.Spec with StringFixture {
-    override def nestedSuites = Vector(new Suite {})
-  }
   // SKIP-SCALATESTJS,NATIVE-END
   def funSuite = new FunSuite {
     override def nestedSuites = Vector(new Suite {})

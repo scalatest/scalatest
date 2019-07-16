@@ -30,7 +30,6 @@ class StopOnFailureProp extends AllSuiteProp {
 
   // SKIP-SCALATESTJS,NATIVE-START
   def spec = new ExampleStopOnFailureSpec
-  def fixtureSpec = new ExampleStopOnFailureFixtureSpec
   def junit3Suite = new ExampleStopOnFailureJUnit3Suite
   def junitSuite = new ExampleStopOnFailureJUnitSuite
   def testngSuite = new ExampleStopOnFailureTestNGSuite
@@ -107,16 +106,6 @@ class ExampleStopOnFailureSpec extends RefSpec with StopOnFailure with StopOnFai
   @Ignore def `test 4`: Unit = {}
   def `test 5`: Unit = { fail }
   def `test 6`: Unit = {}
-}
-
-@DoNotDiscover
-class ExampleStopOnFailureFixtureSpec extends fixture.Spec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
-  def `test 1`(fixture: String): Unit = {}
-  def `test 2`(fixture: String): Unit = { pending }
-  def `test 3`(fixture: String): Unit = { cancel }
-  @Ignore def `test 4`(fixture: String): Unit = {}
-  def `test 5`(fixture: String): Unit = { fail }
-  def `test 6`(fixture: String): Unit = {}
 }
 
 @DoNotDiscover

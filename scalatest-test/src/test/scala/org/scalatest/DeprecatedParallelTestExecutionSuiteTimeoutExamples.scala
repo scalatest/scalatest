@@ -82,7 +82,7 @@ object DeprecatedParallelTestExecutionSuiteTimeoutExamples extends Tables {
 // SKIP-SCALATESTJS,NATIVE-START
 class DeprecatedExampleParallelTestExecutionSuiteTimeoutSpecPair extends DeprecatedSuiteTimeoutSuites {
   def suite1 = new DeprecatedExampleParallelTestExecutionSuiteTimeoutSpec
-  def suite2 = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureSpec
+  def suite2 = new DeprecatedExampleParallelTestExecutionSuiteTimeoutSpec
   val holdingSuiteId = suite1.suiteId
   val holdingTestName = "test 3"
   val holdingScopeClosedName = None
@@ -118,12 +118,6 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutSpe
   def `test 3`: Unit = {}
 }
 
-@DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureSpec extends fixture.Spec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
-  def `test 1`(fixture: String): Unit = {}
-  def `test 2`(fixture: String): Unit = {}
-  def `test 3`(fixture: String): Unit = {}
-}
 // SKIP-SCALATESTJS,NATIVE-END
 
 class DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSuitePair extends DeprecatedSuiteTimeoutSuites {

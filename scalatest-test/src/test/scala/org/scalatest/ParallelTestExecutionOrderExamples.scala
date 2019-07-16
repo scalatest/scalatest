@@ -29,7 +29,7 @@ object ParallelTestExecutionOrderExamples extends Tables {
 
   // SKIP-SCALATESTJS,NATIVE-START
   def orderSpec = new ExampleParallelTestExecutionOrderSpec
-  def orderFixtureSpec = new ExampleParallelTestExecutionOrderFixtureSpec
+  def orderOtherSpec = new ExampleParallelTestExecutionOrderOtherSpec
   // SKIP-SCALATESTJS,NATIVE-END
   def orderFunSuite = new ExampleParallelTestExecutionOrderFunSuite
   def orderFixtureFunSuite = new ExampleParallelTestExecutionOrderFixtureFunSuite
@@ -51,7 +51,7 @@ object ParallelTestExecutionOrderExamples extends Tables {
       "suite1",
       // SKIP-SCALATESTJS,NATIVE-START
       orderSpec,
-      orderFixtureSpec,
+      orderOtherSpec,
       // SKIP-SCALATESTJS,NATIVE-END
       orderFunSuite, 
       orderFixtureFunSuite, 
@@ -89,10 +89,10 @@ protected[scalatest] class ExampleParallelTestExecutionOrderSpec extends RefSpec
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFixtureSpec extends fixture.Spec with OrderExpectedResults with ParallelTestExecution with StringFixture {
-  def `test 1`(fixture: String): Unit = {}
-  def `test 2`(fixture: String): Unit = {}
-  def `test 3`(fixture: String): Unit = {}
+protected[scalatest] class ExampleParallelTestExecutionOrderOtherSpec extends RefSpec with OrderExpectedResults with ParallelTestExecution {
+  def `test 1`: Unit = {}
+  def `test 2`: Unit = {}
+  def `test 3`: Unit = {}
   
   def assertOrderTest(events: List[Event]): Unit = {
     assert(events.size === 6)

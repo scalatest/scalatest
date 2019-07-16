@@ -30,7 +30,6 @@ class DeprecatedTestNameProp  extends AllSuiteProp {
 
   // SKIP-SCALATESTJS,NATIVE-START
   def spec = new ExampleTestNameSpec
-  def fixtureSpec = new ExampleTestNameFixtureSpec
   def junit3Suite = new ExampleTestNameJUnit3Suite
   def junitSuite = new ExampleTestNameJUnitSuite
   def testngSuite = new ExampleTestNameTestNGSuite
@@ -138,77 +137,6 @@ class ExampleTestNameSpec extends RefSpec with TestNameFixtureServices {
   object `Testing 9  ` { 
     object `Scala code` {
       def `should be fun`: Unit = {}
-    }
-  }
-}
-
-@DoNotDiscover
-class ExampleTestNameFixtureSpec extends fixture.Spec with TestNameFixtureServices with StringFixture {
-  
-  val expectedTestNames = 
-    Set(
-     "Testing 1 Scala code should be fun", 
-     "Testing 2 Scala code should be fun", 
-     "Testing 3 Scala code should be fun", 
-     "Testing 4 Scala code should be fun", 
-     "Testing 5 Scala code should be fun", 
-     "Testing 6 Scala code should be fun", 
-     "Testing 7 Scala code should be fun", 
-     "Testing 8 Scala code should be fun", 
-     "Testing 9 Scala code should be fun"
-    )
-  
-  object `Testing 1` { 
-    object `Scala code` {
-      def `should be fun`(fixture: String): Unit = {}
-    }
-  }
-
-  object `Testing 2 ` { 
-    object `Scala code` {
-      def `should be fun`(fixture: String): Unit = {}
-    }
-  }
-
-  object `Testing 3` { 
-    object ` Scala code` {
-      def `should be fun`(fixture: String): Unit = {}
-    }
-  }
-
-  object `Testing 4` { 
-    object `Scala code ` {
-      def `should be fun`(fixture: String): Unit = {}
-    }
-  }
-
-  object `Testing 5` { 
-    object `Scala code` {
-      def ` should be fun`(fixture: String): Unit = {}
-    }
-  }
-
-  object ` Testing 6` { 
-    object `Scala code` {
-      def `should be fun`(fixture: String): Unit = {}
-    }
-  }
-
-  object `Testing 7` { 
-    object `Scala code` {
-      def `should be fun `(fixture: String): Unit = {}
-    }
-  }
-
-  object `Testing 8 ` {  
-    object ` Scala code` {
-      def `should be fun`(fixture: String): Unit = {}
-    }
-  }
-
-  object `Testing 9  ` {  
-    object `Scala code` {
-      def `should be fun`(fixture: String): Unit = {}
     }
   }
 }

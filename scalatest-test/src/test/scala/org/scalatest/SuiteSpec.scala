@@ -67,11 +67,6 @@ protected[scalatest] class MandarinOrangeFixtureFunSuite(ns: Suite*) extends fix
 protected[scalatest] class MandarinOrangeFixtureFunSpec(ns: Suite*) extends fixture.FunSpec with MandarinOrangeFixture {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-// SKIP-SCALATESTJS,NATIVE-START
-protected[scalatest] class MandarinOrangeFixtureSpec(ns: Suite*) extends fixture.Spec with MandarinOrangeFixture {
-  override def nestedSuites = Vector.empty ++ ns // ns.toVector
-}
-// SKIP-SCALATESTJS,NATIVE-END
 protected[scalatest] class MandarinOrangeFixtureWordSpec(ns: Suite*) extends fixture.WordSpec with MandarinOrangeFixture {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
@@ -131,9 +126,6 @@ class SuiteSpec extends FunSpec {
 
             ( new MandarinOrangeFixtureFunSuite, "MandarinOrangeFixtureFunSuite"),
             ( new MandarinOrangeFixtureFunSpec, "MandarinOrangeFixtureFunSpec"),
-            // SKIP-SCALATESTJS,NATIVE-START
-            ( new MandarinOrangeFixtureSpec, "MandarinOrangeFixtureSpec"),
-            // SKIP-SCALATESTJS,NATIVE-END
             ( new MandarinOrangeFixtureWordSpec, "MandarinOrangeFixtureWordSpec"),
             ( new MandarinOrangeFixtureFlatSpec, "MandarinOrangeFixtureFlatSpec"),
             ( new MandarinOrangeFixtureFreeSpec, "MandarinOrangeFixtureFreeSpec"),
@@ -177,9 +169,6 @@ class SuiteSpec extends FunSpec {
 
             ( new MandarinOrangeFixtureFunSuite(new FunSuite), "MandarinOrangeFixtureFunSuite(FunSuite)"),
             ( new MandarinOrangeFixtureFunSpec(new FunSuite), "MandarinOrangeFixtureFunSpec(FunSuite)"),
-            // SKIP-SCALATESTJS,NATIVE-START
-            ( new MandarinOrangeFixtureSpec(new FunSuite), "MandarinOrangeFixtureSpec(FunSuite)"),
-            // SKIP-SCALATESTJS,NATIVE-END
             ( new MandarinOrangeFixtureWordSpec(new FunSuite), "MandarinOrangeFixtureWordSpec(FunSuite)"),
             ( new MandarinOrangeFixtureFlatSpec(new FunSuite), "MandarinOrangeFixtureFlatSpec(FunSuite)"),
             ( new MandarinOrangeFixtureFreeSpec(new FunSuite), "MandarinOrangeFixtureFreeSpec(FunSuite)"),
@@ -223,9 +212,6 @@ class SuiteSpec extends FunSpec {
 
             ( new MandarinOrangeFixtureFunSuite(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFunSuite(PropSpec, FeatureSpec, FunSuite)"),
             ( new MandarinOrangeFixtureFunSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFunSpec(PropSpec, FeatureSpec, FunSuite)"),
-            // SKIP-SCALATESTJS,NATIVE-START
-            ( new MandarinOrangeFixtureSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureSpec(PropSpec, FeatureSpec, FunSuite)"),
-            // SKIP-SCALATESTJS,NATIVE-END
             ( new MandarinOrangeFixtureWordSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureWordSpec(PropSpec, FeatureSpec, FunSuite)"),
             ( new MandarinOrangeFixtureFlatSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFlatSpec(PropSpec, FeatureSpec, FunSuite)"),
             ( new MandarinOrangeFixtureFreeSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFreeSpec(PropSpec, FeatureSpec, FunSuite)"),

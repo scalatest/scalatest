@@ -28,7 +28,6 @@ trait MethodSuiteExamples extends Tables {
 
   // SKIP-SCALATESTJS,NATIVE-START
   def spec: RefSpec with FixtureServices
-  def fixtureSpec: fixture.Spec with FixtureServices
   def junit3Suite: JUnit3Suite with FixtureServices
   def junitSuite: JUnitSuite with FixtureServices
   def testngSuite: TestNGSuite with FixtureServices
@@ -39,7 +38,6 @@ trait MethodSuiteExamples extends Tables {
       // SKIP-SCALATESTJS,NATIVE-START
       "suite",
       spec,
-      fixtureSpec, 
       junit3Suite, 
       junitSuite,
       testngSuite
