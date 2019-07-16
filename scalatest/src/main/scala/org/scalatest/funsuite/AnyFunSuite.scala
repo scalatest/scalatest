@@ -1559,7 +1559,7 @@ import org.scalatest.{Suite, Finders}
   */
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
-abstract class AnyFunSuite extends AnyFunSuiteLike {
+class AnyFunSuite extends AnyFunSuiteLike {
 
   /**
     * Returns a user friendly string for this suite, composed of the
