@@ -88,41 +88,12 @@ package object scalatest {
    */
   type Assertion = compatible.Assertion
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  /**
-   * <strong>The name <code>org.scalatest.SpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
-   * its new name, <code>org.scalatest.refspec.RefSpecLike</code>, instead.</strong>
-   *
-   * <p>
-   * Because this style uses reflection at runtime to discover scopes and tests, it can only be supported on the JVM, not Scala.js.
-   * Thus in ScalaTest 3.0.0, class <code>org.scalatest.SpecLike</code> was moved to the <code>org.scalatest.refspec</code> package and renamed
-   * <code>RefSpecLike</code>, with the intention of later moving it to a separate module available only on the JVM.
-   * </p>
-   */
-  @deprecated("Please use org.scalatest.refspec.RefSpecLike instead")
-  type SpecLike = refspec.RefSpecLike
-
-  /**
-   * <strong>The name <code>org.scalatest.Spec</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
-   * its new name, <code>org.scalatest.refspec.RefSpec</code>, instead.</strong>
-   *
-   * <p>
-   * Because this style uses reflection at runtime to discover scopes and tests, it can only be supported on the JVM, not Scala.js.
-   * Thus in ScalaTest 3.0.0, class <code>org.scalatest.Spec</code> was moved to the <code>org.scalatest.refspec</code> package and renamed
-   * <code>RefSpec</code>, with the intention of later moving it to a separate module available only on the JVM.
-   * </p>
-   */
-  @deprecated("Please use org.scalatest.refspec.RefSpec instead")
-  type Spec = refspec.RefSpec
-  // SKIP-SCALATESTJS,NATIVE-END
-
   /**
    * <strong>The name <code>org.scalatest.FunSuiteLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.funsuite.AnyFunSuiteLike</code>, instead.</strong>
    *
    * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
    */
-  @deprecated("Please use org.scalatest.funsuite.AnyFunSuiteLike instead")
   @deprecated("The org.scalatest.FunSuiteLike trait has been moved and renamed. Please use org.scalatest.funsuite.AnyFunSuiteLike instead.")
   type FunSuiteLike = funsuite.AnyFunSuiteLike
 
