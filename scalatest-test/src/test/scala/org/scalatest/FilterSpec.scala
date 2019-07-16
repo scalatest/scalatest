@@ -27,11 +27,6 @@ class FilterSpec extends FunSpec {
   
   describe("A Filter") {
 
-    it("should during the deprecation cycle be usable as a particular Function2") {
-      def bippy(fn: Function2[Set[String], Map[String, Set[String]], List[(String, Boolean)]]) = fn
-      assertCompiles("bippy(Filter.default)")
-    }
-
     it("should throw NAEs if constructed with nulls") {
       intercept[NullArgumentException] {
         Filter(null, null)

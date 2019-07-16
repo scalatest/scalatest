@@ -102,12 +102,6 @@ trait ConductorMethods extends TestSuiteMixin with Conductors { this: TestSuite 
   protected def thread(f: => Any): Thread = conductor.get.thread{ f }
 
   /**
-   * <strong>The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.</strong>
-   */
-  @deprecated("The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.")
-  protected def thread(name: String)(f: => Any): Thread = conductor.get.thread(name){ f }
-
-  /**
    * Create a new thread that will execute the given function.
    * If the test is started, then the thread will run the function immediately.
    * If it is not yet started, the Thread will wait to run the function until
