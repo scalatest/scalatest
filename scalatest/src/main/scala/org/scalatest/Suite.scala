@@ -852,37 +852,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     }
   }
 
-  /**
-   * <strong>The parameterless <code>execute</code> method has been deprecated and will be removed in a future version
-   * of ScalaTest. Please invoke <code>execute</code> with empty parens instead: <code>execute()</code>.</strong>
-   *
-   * <p>
-   * The original purpose of this method, which simply invokes the other overloaded form of <code>execute</code> with default parameter values,
-   * was to serve as a mini-DSL for the Scala interpreter. It allowed you to execute a <code>Suite</code> in the
-   * interpreter with a minimum of finger typing:
-   * </p>
-   *
-   * <pre class="stREPL">
-   * scala&gt; org.scalatest.run(new SetSpec)
-   * <span class="stGreen">An empty Set</span>
-   * <span class="stGreen">- should have size 0</span>
-   * <span class="stYellow">- should produce NoSuchElementException when head is invoked !!! IGNORED !!!</span>
-   * </pre>
-   *
-   * <p>
-   * However it uses postfix notation, which is now behind a language feature import. Thus better to use
-   * the other <code>execute</code> method or <code>org.scalatest.run</code>:
-   * </p>
-   *
-   * <pre class="stREPL">
-   * (new ExampleSuite).execute()
-   * // or
-   * org.scalatest.run(new ExampleSuite)
-   * </pre>
-   */
-    @deprecated("The parameterless execute method has been deprecated and will be removed in a future version of ScalaTest. Please invoke execute with empty parens instead: execute().")
-   final def execute: Unit = { execute() }
-
   // SKIP-SCALATESTJS,NATIVE-END
 
   /**
