@@ -26,15 +26,39 @@ package object path {
   @deprecated("This class is a workaround for a Scaladoc bug. It will be removed in a future version of ScalaTest.")
   final class ForceScaladocGeneration private ()
 
+  /**
+   * <strong>The name <code>org.scalatest.path.FreeSpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.freespec.PathAnyFreeSpecLike</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
+   */
   @deprecated("The org.scalatest.path.FreeSpecLike trait has been moved and renamed. Please use org.scalatest.freespec.PathAnyFreeSpecLike instead.")
   type FreeSpecLike = org.scalatest.freespec.PathAnyFreeSpecLike
 
+  /**
+   * <strong>The name <code>org.scalatest.path.FunSpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.funspec.PathAnyFunSpecLike</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
+   */
   @deprecated("The org.scalatest.path.FunSpecLike trait has been moved and renamed. Please use org.scalatest.funspec.PathAnyFunSpecLike instead.")
   type FunSpecLike = org.scalatest.funspec.PathAnyFunSpecLike
 
+  /**
+   * <strong>The name <code>org.scalatest.path.FreeSpec</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.freespec.PathAnyFreeSpec</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
+   */
   @deprecated("The org.scalatest.path.FreeSpec class has been moved and renamed. Please use org.scalatest.freespec.PathAnyFreeSpec instead.")
   type FreeSpec = org.scalatest.freespec.PathAnyFreeSpec
 
+  /**
+   * <strong>The name <code>org.scalatest.path.FunSpec</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.funspec.PathAnyFunSpec</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
+   */
   @deprecated("The org.scalatest.path.FunSpec class has been moved and renamed. Please use org.scalatest.funspec.PathAnyFunSpec instead.")
   type FunSpec = org.scalatest.funspec.PathAnyFunSpec
 }
