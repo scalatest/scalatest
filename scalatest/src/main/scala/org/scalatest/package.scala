@@ -127,9 +127,15 @@ package object scalatest {
   @deprecated("Please use org.scalatest.funsuite.AnyFeatureSpecLike instead")
   type FeatureSpecLike = featurespec.AnyFeatureSpecLike
 
+  @deprecated("Please use org.scalatest.funsuite.AnyFeatureSpec instead")
+  type FeatureSpec = featurespec.AnyFeatureSpec
+
   // SKIP-SCALATESTNATIVE-START
   @deprecated("Please use org.scalatest.featurespec.AsyncFeatureSpecLike instead")
   type AsyncFeatureSpecLike = featurespec.AsyncFeatureSpecLike
+
+  @deprecated("Please use org.scalatest.featurespec.AsyncFeatureSpec instead")
+  type AsyncFeatureSpec = featurespec.AsyncFeatureSpec
   // SKIP-SCALATESTNATIVE-END
 
   @deprecated("Please use org.scalatest.funsuite.AnyFunSpecLike instead")
