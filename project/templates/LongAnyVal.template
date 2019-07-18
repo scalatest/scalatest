@@ -1079,4 +1079,6 @@ object $typeName$ {
     new Ordering[$typeName$] {
       def compare(x: $typeName$, y: $typeName$): Int = x.toLong.compare(y)
     }
+
+  $objectExtraMethods$  
 }

@@ -102,7 +102,7 @@ object GenAnyVals {
 
   def genIntAnyVal(targetDir: File, typeName: String, typeDesc: String, typeNote: String, typeBooleanExpr: String, typeValidExample: String, typeInvalidExample: String,
                    typeValidValue: String, typeInvalidValue: String, typeMinValue: String, typeMinValueNumber: String, typeMaxValue: String, typeMaxValueNumber: String,
-                   widensToTypes: Seq[String], dotty: Boolean): List[File] = {
+                   objectExtraMethods: String, widensToTypes: Seq[String], dotty: Boolean): List[File] = {
     val targetFile = new File(targetDir, typeName + ".scala")
     if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
       val templateSource = scala.io.Source.fromFile("project/templates/IntAnyVal.template")
@@ -121,6 +121,7 @@ object GenAnyVals {
       st.setAttribute("typeMinValueNumber", typeMinValueNumber)
       st.setAttribute("typeMaxValue", typeMaxValue)
       st.setAttribute("typeMaxValueNumber", typeMaxValueNumber)
+      st.setAttribute("objectExtraMethods", objectExtraMethods)
       st.setAttribute("negation", negation(typeName))
 
       val widensToOtherAnyVals =
@@ -159,7 +160,7 @@ object GenAnyVals {
 
   def genLongAnyVal(targetDir: File, typeName: String, typeDesc: String, typeNote: String, typeBooleanExpr: String, typeValidExample: String, typeInvalidExample: String,
                     typeValidValue: String, typeInvalidValue: String, typeMinValue: String, typeMinValueNumber: String, typeMaxValue: String, typeMaxValueNumber: String,
-                    widensToTypes: Seq[String], dotty: Boolean): List[File] = {
+                    objectExtraMethods: String, widensToTypes: Seq[String], dotty: Boolean): List[File] = {
     val targetFile = new File(targetDir, typeName + ".scala")
     if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
       val templateSource = scala.io.Source.fromFile("project/templates/LongAnyVal.template")
@@ -178,6 +179,7 @@ object GenAnyVals {
       st.setAttribute("typeMinValueNumber", typeMinValueNumber)
       st.setAttribute("typeMaxValue", typeMaxValue)
       st.setAttribute("typeMaxValueNumber", typeMaxValueNumber)
+      st.setAttribute("objectExtraMethods", objectExtraMethods)
       st.setAttribute("negation", negation(typeName))
 
       val widensToOtherAnyVals =
@@ -634,6 +636,18 @@ object GenAnyVals {
        |def plus(x: $typePrefix2$primitiveName): $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(value + x.value)
        |""".stripMargin
 
+  def deprecatedOrdering(name: String, typePrefix: String, primitiveName: String): String = 
+    s"""
+       |/**
+       | * Deprecated old implicit Ordering instance.
+       | */
+       |@deprecated("Please use ordering instead.")
+       |val $name: Ordering[$typePrefix$primitiveName] =
+       |  new Ordering[$typePrefix$primitiveName] {
+       |    def compare(x: $typePrefix$primitiveName, y: $typePrefix$primitiveName): Int = ordering.compare(x, y)
+       |  }
+    """.stripMargin     
+
   def importsForMacro(dotty: Boolean): String =
     if (dotty)
       """import scala.quoted._
@@ -647,9 +661,9 @@ object GenAnyVals {
     dir.mkdirs()
 
     genIntAnyVal(dir, "NonZeroInt", "non-zero", "Note: a <code>NonZeroInt</code> may not equal 0.", "i != 0", "NonZeroInt(42)", "NonZeroInt(0)", "42", "0", "Int.MinValue", "-2147483648",
-      "Int.MaxValue", "2147483647", nonZeroWidens("Int"), dotty) :::
+      "Int.MaxValue", "2147483647", "", nonZeroWidens("Int"), dotty) :::
     genLongAnyVal(dir, "NonZeroLong", "non-zero", "Note: a <code>NonZeroLong</code> may not equal 0.", "i != 0L", "NonZeroLong(42)", "NonZeroLong(0)", "42", "0", "Long.MinValue", "-9223372036854775808",
-      "Long.MaxValue", "9223372036854775807", nonZeroWidens("Long"), dotty) :::
+      "Long.MaxValue", "9223372036854775807", "", nonZeroWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "NonZeroFloat", "non-zero", "Note: a <code>NonZeroFloat</code> may not equal 0.0.", "i != 0.0f && !i.isNaN", "NonZeroFloat(1.1f)", "NonZeroFloat(0.0f)", "1.1", "0.0", "Float.MinValue", "-3.4028235E38",
       "Float.MaxValue", "3.4028235E38",
       isPosInfinity("NonZero", "Float") +
@@ -681,9 +695,9 @@ object GenAnyVals {
       minPositiveValue("NonZeroFinite", "Double"),
       nonZeroFiniteWidens("Double"), dotty) :::
     genIntAnyVal(dir, "PosZInt", "non-negative", "", "i >= 0", "PosZInt(42)", "PosZInt(-1)", "42", "-1", "0", "0",
-      "Int.MaxValue", "2147483647", posZWidens("Int"), dotty) :::
+      "Int.MaxValue", "2147483647", deprecatedOrdering("posZIntOrd", "PosZ", "Int"), posZWidens("Int"), dotty) :::
     genLongAnyVal(dir, "PosZLong", "non-negative", "", "i >= 0L", "PosZLong(42)", "PosZLong(-1)", "42", "-1", "0L", "0L",
-      "Long.MaxValue", "9223372036854775807", posZWidens("Long"), dotty) :::
+      "Long.MaxValue", "9223372036854775807", deprecatedOrdering("posZLongOrd", "PosZ", "Long"), posZWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "PosZFloat", "non-negative", "", "i >= 0.0f", "PosZFloat(1.1f)", "PosZFloat(-1.0f)", "1.1f", "-1.1f", "0.0f", "0.0f",
       "Float.MaxValue", "3.4028235E38",
       round("PosZ", "Float", "PosZInt") +
@@ -693,7 +707,8 @@ object GenAnyVals {
       isPosInfinity("PosZ", "Float") +
       isFinite("PosZ", "Float"),
       positiveInfinity("PosZ", "Float") +
-      minPositiveValue("PosZ", "Float"),
+      minPositiveValue("PosZ", "Float") + 
+      deprecatedOrdering("posZFloatOrd", "PosZ", "Float"),
       posZWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "PosZDouble", "non-negative", "", "i >= 0.0", "PosZDouble(1.1)", "PosZDouble(-1.1)", "1.1", "-1.1", "0.0", "0.0",
       "Double.MaxValue", "1.7976931348623157E308",
@@ -704,12 +719,13 @@ object GenAnyVals {
       isPosInfinity("PosZ", "Double") +
       isFinite("PosZ", "Double"),
       positiveInfinity("PosZ", "Double") +
-      minPositiveValue("PosZ", "Double"),
+      minPositiveValue("PosZ", "Double") + 
+      deprecatedOrdering("posZDoubleOrd", "PosZ", "Double"),
       posZWidens("Double"), dotty) :::
     genIntAnyVal(dir, "PosInt", "positive", "Note: a <code>PosInt</code> may not equal 0. If you want positive number or 0, use [[PosZInt]].", "i > 0", "PosInt(42)", "PosInt(0)", "42", "0", "1", "1",
-      "Int.MaxValue", "2147483647", posWidens("Int"), dotty) :::
+      "Int.MaxValue", "2147483647", deprecatedOrdering("posIntOrd", "Pos", "Int"), posWidens("Int"), dotty) :::
     genLongAnyVal(dir, "PosLong", "positive", "Note: a <code>PosLong</code> may not equal 0. If you want positive number or 0, use [[PosZLong]].", "i > 0L", "PosLong(42L)", "PosLong(0L)", "42L", "0L", "1L", "1L",
-      "Long.MaxValue", "9223372036854775807", posWidens("Long"), dotty) :::
+      "Long.MaxValue", "9223372036854775807", deprecatedOrdering("posLongOrd", "Pos", "Long"), posWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "PosFloat", "positive", "Note: a <code>PosFloat</code> may not equal 0.0. If you want positive number or 0, use [[PosZFloat]].", "i > 0.0f", "PosFloat(42.1f)", "PosFloat(0.0f)", "42.1f", "0.0f", "Float.MinPositiveValue", "1.4E-45",
       "Float.MaxValue", "3.4028235E38",
       round("Pos", "Float", "PosZInt") +
@@ -719,7 +735,8 @@ object GenAnyVals {
       isPosInfinity("Pos", "Float") +
       isFinite("Pos", "Float"),
       positiveInfinity("Pos", "Float") +
-      minPositiveValue("Pos", "Float"),
+      minPositiveValue("Pos", "Float") + 
+      deprecatedOrdering("posFloatOrd", "Pos", "Float"),
       posWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "PosDouble", "positive", "", "i > 0.0", "PosDouble(1.1)", "PosDouble(-1.1)", "1.1", "-1.1", "Double.MinPositiveValue", "4.9E-324",
       "Double.MaxValue", "1.7976931348623157E308",
@@ -730,12 +747,13 @@ object GenAnyVals {
       isPosInfinity("Pos", "Double") +
       isFinite("Pos", "Double"),
       positiveInfinity("Pos", "Double") +
-      minPositiveValue("Pos", "Double"),
+      minPositiveValue("Pos", "Double") + 
+      deprecatedOrdering("posDoubleOrd", "Pos", "Double"),
       posWidens("Double"), dotty) :::
     genIntAnyVal(dir, "NegInt", "negative", "Note: a <code>NegInt</code> may not equal 0. If you want negative number or 0, use [[NegZInt]].", "i < 0", "NegInt(-42)", "NegInt(0)", "-42", "0", "Int.MinValue", "-2147483648", "-1", "-1",
-      negWidens("Int"), dotty) :::
+      "", negWidens("Int"), dotty) :::
     genLongAnyVal(dir, "NegLong", "negative", "Note: a <code>NegLong</code> may not equal 0. If you want negative number or 0, use [[NegZLong]].", "i < 0L", "NegLong(-42L)", "NegLong(0L)", "-42L", "0L", "Long.MinValue", "-9223372036854775808", "-1L", "-1L",
-      negWidens("Long"), dotty) :::
+      "", negWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "NegFloat", "megative", "Note: a <code>NegFloat</code> may not equal 0.0. If you want negative number or 0, use [[NegZFloat]].", "i < 0.0f", "NegFloat(-42.1f)", "NegFloat(0.0f)", "-42.1f", "0.0f", "Float.MinValue", "-3.4028235E38",
       "-Float.MinPositiveValue", "-1.4E-45",
       round("Neg", "Float", "NegZInt") +
@@ -757,9 +775,9 @@ object GenAnyVals {
       negativeInfinity("Neg", "Double"),
       negWidens("Double"), dotty) :::
     genIntAnyVal(dir, "NegZInt", "non-positive", "", "i <= 0", "NegZInt(-42)", "NegZInt(1)", "-42", "1", "Int.MinValue", "-2147483648",
-      "0", "0", negZWidens("Int"), dotty) :::
+      "0", "0", "", negZWidens("Int"), dotty) :::
     genLongAnyVal(dir, "NegZLong", "non-positive", "", "i <= 0L", "NegZLong(-42L)", "NegZLong(-1L)", "-42", "1", "Long.MinValue", "-9223372036854775808",
-      "0L", "0L", negZWidens("Long"), dotty) :::
+      "0L", "0L", "", negZWidens("Long"), dotty) :::
     genFloatAnyVal(dir, "NegZFloat", "non-positive", "", "i <= 0.0f", "NegZFloat(-1.1f)", "NegZFloat(1.0f)", "-1.1f", "1.1f", "Float.MinValue", "-3.4028235E38", "0.0f", "0.0f",
       round("NegZ", "Float", "NegZInt") +
       ceil("NegZ", "Float") +
