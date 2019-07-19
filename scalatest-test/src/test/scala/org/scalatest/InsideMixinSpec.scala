@@ -20,7 +20,7 @@ import Matchers._
 import Inside._
 import OptionValues._
 import org.scalatest.exceptions.TestFailedException
-import org.scalactic._
+import org.scalactic.{Resources => _, _}
 import org.scalatest.exceptions.StackDepthException
 
 class InsideMixinSpec extends FunSpec {

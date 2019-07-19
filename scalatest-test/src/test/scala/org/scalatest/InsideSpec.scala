@@ -20,7 +20,7 @@ import org.scalatest.SharedHelpers.thisLineNumber
 import Matchers._
 import OptionValues._
 import org.scalatest.exceptions.TestFailedException
-import org.scalactic._
+import org.scalactic.{Resources => _, _}
 import org.scalatest.exceptions.StackDepthException
 
 class InsideSpec extends FunSpec {

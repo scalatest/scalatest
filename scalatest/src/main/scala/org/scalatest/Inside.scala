@@ -18,7 +18,7 @@ package org.scalatest
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.StackDepthException
 import scala.annotation.tailrec
-import org.scalactic._
+import org.scalactic.{Resources => _, _}
 
 /**
  * Trait containing the <code>inside</code> construct, which allows you to make statements about nested object graphs using pattern matching.
