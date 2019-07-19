@@ -639,9 +639,9 @@ object GenAnyVals {
   def deprecatedOrdering(name: String, typePrefix: String, primitiveName: String): String = 
     s"""
        |/**
-       | * Deprecated old implicit Ordering instance.
+       | * <strong>The formerly implicit <code>$name</code> field has been deprecated and will be removed in a future version of ScalaTest. Please use the <code>ordering</code> field instead.</strong>
        | */
-       |@deprecated("Please use ordering instead.")
+       |@deprecated("The formerly implicit $name field has been deprecated and will be removed in a future version of ScalaTest. Please use the ordering field instead.")
        |val $name: Ordering[$typePrefix$primitiveName] =
        |  new Ordering[$typePrefix$primitiveName] {
        |    def compare(x: $typePrefix$primitiveName, y: $typePrefix$primitiveName): Int = ordering.compare(x, y)
