@@ -2731,6 +2731,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     override def toString: String = "ResultOfHaveWordForExtent(" + Prettifier.default(left) + ", " + Prettifier.default(shouldBeTrue) + ")"
   }
 
+  implicit val floatOrdering: Ordering[Float] = org.scalactic.ColCompatHelper.DefaultFloatOrdering
+  implicit val doubleOrdering: Ordering[Double] = org.scalactic.ColCompatHelper.DefaultDoubleOrdering
+
   /**
    * This method enables the following syntax:
    *

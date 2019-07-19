@@ -67,6 +67,10 @@ object GenColCompatHelper {
           |  def newBuilder[A, C](f: Factory[A, C]): scala.collection.mutable.Builder[A, C] = f.newBuilder
           |
           |  type StringOps = scala.collection.StringOps
+          |
+          |  val DefaultFloatOrdering: Ordering[Float] = scala.math.Ordering.Float.IeeeOrdering
+          |
+          |  val DefaultDoubleOrdering: Ordering[Double] = scala.math.Ordering.Double.IeeeOrdering
           |}
           |
         """.stripMargin
@@ -129,6 +133,10 @@ object GenColCompatHelper {
           |  def newBuilder[A, C](f: Factory[A, C]): scala.collection.mutable.Builder[A, C] = f.apply()
           |
           |  type StringOps = scala.collection.immutable.StringOps
+          |
+          |  val DefaultFloatOrdering: Ordering[Float] = scala.math.Ordering.Float
+          |
+          |  val DefaultDoubleOrdering: Ordering[Double] = scala.math.Ordering.Double
           |}
           |
         """.stripMargin
