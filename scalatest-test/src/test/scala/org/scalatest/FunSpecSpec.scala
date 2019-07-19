@@ -1092,7 +1092,7 @@ class FunSpecSpec extends FreeSpec with GivenWhenThen {
     }
 */
     "should support expectations" ignore { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends FunSpec with Expectations {
+      class TestSpec extends FunSpec with expectations.Expectations {
         it("fail scenario") {
           expect(1 === 2); /* ASSERTION_SUCCEED */
         }

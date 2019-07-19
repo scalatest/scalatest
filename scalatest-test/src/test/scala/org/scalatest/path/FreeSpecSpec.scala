@@ -967,7 +967,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
     // SKIP-SCALATESTJS,NATIVE-END
 
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends PathFreeSpec with Expectations {
+      class TestSpec extends PathFreeSpec with expectations.Expectations {
         "it should do something" in {
           expect(1 === 2)
         }

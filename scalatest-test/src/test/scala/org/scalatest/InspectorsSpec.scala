@@ -68,7 +68,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     }
     
     ignore("should, when passed a Fact, convert that Fact to an Assertion") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      import Expectations._
+      import expectations.Expectations._
 
       forAll(List(1, 2, 3)) { x => expect(x > 0) } shouldBe Succeeded
 
