@@ -18,12 +18,13 @@ package org.scalatest
 import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _, _}
 import org.scalatest.enablers._
 import org.scalatest.matchers._
-import org.scalatest.words._
+ 
+import org.scalatest.matchersdsl._
 import org.scalatest.verbs.CompileWord
 import org.scalatest.verbs.TypeCheckWord
 import org.scalatest.verbs.ShouldVerb
-import org.scalatest.words.ResultOfNoElementsOfApplication
-import org.scalatest.words.ResultOfOneElementOfApplication
+import org.scalatest.matchersdsl.ResultOfNoElementsOfApplication
+import org.scalatest.matchersdsl.ResultOfOneElementOfApplication
 import scala.collection.GenTraversable
 import scala.reflect.{classTag, ClassTag}
 import scala.util.matching.Regex
@@ -384,7 +385,7 @@ import org.scalatest.exceptions._
  * not have an appropriately named predicate method, you'll get a <code>TestFailedException</code>
  * at runtime with a detailed message that explains the problem.
  * (For the details on how a field or method is selected during this
- * process, see the documentation for <a href="words/BeWord.html"><code>BeWord</code></a>.)
+ * process, see the documentation for <a href="matchersdsl/BeWord.html"><code>BeWord</code></a>.)
  * </p>
  *
  * <p>
