@@ -24,7 +24,7 @@ object GenFactoriesDotty {
   val generatorSource = new File("GenFactories.scala")
 
   val topPart = """
-package org.scalatest.matchers
+package org.scalatest.matchersdsl
 
 import org.scalatest.enablers._
 import org.scalatest.MatchersHelper.andMatchersAndApply
@@ -37,6 +37,15 @@ import TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
+import org.scalatest.matchers.Matcher
+import org.scalatest.matchers.MatchResult
+import org.scalatest.matchers.BeMatcher
+import org.scalatest.matchers.BePropertyMatcher
+import org.scalatest.matchers.HavePropertyMatcher
+import org.scalatest.matchers.AMatcher
+import org.scalatest.matchers.AnMatcher
+import org.scalatest.matchers.MatchPatternMacro
+import org.scalatest.matchers.TypeMatcherMacro
 import org.scalatest.matchersdsl.FullyMatchWord
 import org.scalatest.matchersdsl.StartWithWord
 import org.scalatest.matchersdsl.EndWithWord

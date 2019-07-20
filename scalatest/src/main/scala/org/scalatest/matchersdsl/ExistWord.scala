@@ -17,8 +17,8 @@ package org.scalatest.matchersdsl
 
 import org.scalatest.enablers.Existence
 import org.scalatest.matchers.Matcher
-import org.scalatest.matchers.MatcherFactory1
-import org.scalatest.matchers.MatcherFactory2
+import org.scalatest.matchersdsl.MatcherFactory1
+import org.scalatest.matchersdsl.MatcherFactory2
 import org.scalatest.Resources
 import org.scalatest.matchers.MatchResult
 

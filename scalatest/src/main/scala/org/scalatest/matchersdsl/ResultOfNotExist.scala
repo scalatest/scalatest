@@ -17,8 +17,8 @@ package org.scalatest.matchersdsl
 
 import org.scalatest.enablers.Existence
 import org.scalatest.matchers.Matcher
-import org.scalatest.matchers.MatcherFactory1
-import org.scalatest.matchers.MatcherFactory2
+import org.scalatest.matchersdsl.MatcherFactory1
+import org.scalatest.matchersdsl.MatcherFactory2
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
