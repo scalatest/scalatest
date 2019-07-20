@@ -20,7 +20,7 @@ import org.scalatest.fixture.{NoArgTestWrapper, AsyncPendingTransformer}
 import org.scalactic.source
 import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
-import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
+import verbs.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
 import scala.util.Try
 
 /**

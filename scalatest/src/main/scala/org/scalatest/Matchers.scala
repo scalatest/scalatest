@@ -19,6 +19,9 @@ import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _,
 import org.scalatest.enablers._
 import org.scalatest.matchers._
 import org.scalatest.words._
+import org.scalatest.verbs.CompileWord
+import org.scalatest.verbs.TypeCheckWord
+import org.scalatest.verbs.ShouldVerb
 import org.scalatest.words.ResultOfNoElementsOfApplication
 import org.scalatest.words.ResultOfOneElementOfApplication
 import scala.collection.GenTraversable

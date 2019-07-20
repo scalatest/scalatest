@@ -20,6 +20,8 @@ import org.scalactic._
 import org.scalatest.Resources
 import org.scalatest.Suite
 import org.scalactic.DefaultEquality.areEqualComparingArraysStructurally
+import org.scalatest.verbs.CompileWord
+import org.scalatest.verbs.TypeCheckWord
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

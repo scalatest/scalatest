@@ -20,7 +20,7 @@ import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
 import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
-import words.BehaveWord
+import verbs.BehaveWord
 import org.scalatest.fixture.{AsyncPendingTransformer, NoArgTestWrapper}
 import scala.util.Try
 

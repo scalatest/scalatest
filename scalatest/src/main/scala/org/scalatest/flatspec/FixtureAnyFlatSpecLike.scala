@@ -19,7 +19,7 @@ import org.scalatest.{Transformer => _, _}
 import org.scalatest.fixture.{Transformer, NoArgTestWrapper}
 import org.scalactic.source
 import org.scalatest.Suite.autoTagClassAnnotations
-import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
+import verbs.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
 
 /**
  * Implementation trait for class <code>FixtureAnyFlatSpec</code>, which is

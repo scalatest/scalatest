@@ -19,7 +19,7 @@ import org.scalatest.{Transformer => _, _}
 import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
 import org.scalatest.Suite.autoTagClassAnnotations
-import words.BehaveWord
+import verbs.BehaveWord
 import org.scalatest.fixture.{Transformer, NoArgTestWrapper}
 
 

@@ -18,7 +18,7 @@ package org.scalatest.funspec
 import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _, _}
 import org.scalatest._
 import Suite.autoTagClassAnnotations
-import words.BehaveWord
+import verbs.BehaveWord
 import org.scalatest.exceptions._
 
 /**

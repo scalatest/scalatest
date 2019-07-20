@@ -19,7 +19,7 @@ import org.scalactic.{Resources => _, FailureMessages => _, UnquotedString => _,
 import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalatest.exceptions._
-import org.scalatest.words.BehaveWord
+import org.scalatest.verbs.BehaveWord
 import org.scalatest._
 import scala.util.Try
 

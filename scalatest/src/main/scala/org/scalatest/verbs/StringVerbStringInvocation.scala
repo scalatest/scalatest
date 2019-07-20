@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest.verbs
 
 import org.scalactic._
 
@@ -36,7 +36,7 @@ import org.scalactic._
  *
  * @author Bill Venners
  */
-abstract class StringVerbBehaveLikeInvocation {
+abstract class StringVerbStringInvocation {
 
   /**
    * Registers a subject description in <code>WordSpec</code> and <code>fixture.WordSpec</code>.
@@ -52,6 +52,6 @@ abstract class StringVerbBehaveLikeInvocation {
    * </pre>
    *
    */
-  def apply(subject: String, pos: source.Position): BehaveWord
+  def apply(subject: String, verb: String, predicate: String, pos: source.Position): ResultOfStringPassedToVerb
 }
 

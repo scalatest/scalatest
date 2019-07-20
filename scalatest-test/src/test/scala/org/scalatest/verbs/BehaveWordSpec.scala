@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest.verbs
 
 import org.scalatest._
 import Matchers._
 
-class ResultOfAfterWordApplicationSpec extends FunSpec {
+class BehaveWordSpec extends FunSpec {
   
-  describe("ResultOfAfterWordApplication ") {
+  describe("BehaveWord ") {
+    
+    val behave = new BehaveWord
     
     it("should have pretty toString") {
-      val result = new ResultOfAfterWordApplication("some description", () => ())
-      result.toString should be ("some description")
+      behave.toString should be ("behave")
     }
+    
   }
   
 }

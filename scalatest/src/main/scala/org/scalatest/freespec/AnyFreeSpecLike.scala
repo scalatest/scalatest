@@ -18,7 +18,7 @@ package org.scalatest.freespec
 import org.scalactic.{Resources => _, FailureMessages => _, UnquotedString => _, _}
 import org.scalatest._
 import org.scalatest.Suite.autoTagClassAnnotations
-import org.scalatest.words.BehaveWord
+import org.scalatest.verbs.BehaveWord
 import org.scalatest.exceptions._
 
 /**

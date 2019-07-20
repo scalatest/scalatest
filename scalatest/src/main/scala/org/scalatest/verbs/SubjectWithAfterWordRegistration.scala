@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest.verbs
 
 import org.scalactic._
 
 /**
  * Class that provides a role-specific type for an implicit conversion used to support
- * the registration of subject descriptions in <code>WordSpec</code> and <code>fixture.WordSpec</code>.
+ * the registration of subject descriptions in <code>FlatSpec</code> and <code>FreeSpec</code> styles.
  *
  * <p>
  * For example, this class enables syntax such as the following in <code>WordSpec</code>
@@ -36,7 +36,7 @@ import org.scalactic._
  *
  * @author Bill Venners
  */
-abstract class StringVerbBlockRegistration {
+abstract class SubjectWithAfterWordRegistration {
 
   /**
    * Registers a subject description in <code>WordSpec</code> and <code>fixture.WordSpec</code>.
@@ -52,6 +52,6 @@ abstract class StringVerbBlockRegistration {
    * </pre>
    *
    */
-  def apply(string: String, verb: String, pos: source.Position, block: () => Unit): Unit
+  def apply(subject: String, verb: String, resultOfAfterWordApplication: ResultOfAfterWordApplication, pos: source.Position): Unit
 }
 

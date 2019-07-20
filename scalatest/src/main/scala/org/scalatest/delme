@@ -1,0 +1,4 @@
+
+
+vi flatspec/AnyFlatSpecLike.scala flatspec/AsyncFlatSpecLike.scala flatspec/FixtureAnyFlatSpecLike.scala flatspec/FixtureAsyncFlatSpecLike.scala freespec/AnyFreeSpecLike.scala freespec/AsyncFreeSpecLike.scala freespec/FixtureAnyFreeSpecLike.scala freespec/FixtureAsyncFreeSpecLike.scala freespec/PathAnyFreeSpecLike.scala funspec/AnyFunSpecLike.scala funspec/AsyncFunSpecLike.scala funspec/FixtureAnyFunSpecLike.scala funspec/FixtureAsyncFunSpecLike.scala funspec/PathAnyFunSpecLike.scala wordspec/AnyWordSpecLike.scala wordspec/AsyncWordSpecLike.scala wordspec/FixtureAnyWordSpecLike.scala wordspec/FixtureAsyncWordSpecLike.scala
+

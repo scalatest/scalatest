@@ -18,7 +18,7 @@ package org.scalatest.freespec
 import org.scalatest._
 import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
-import org.scalatest.words.BehaveWord
+import org.scalatest.verbs.BehaveWord
 import Suite.autoTagClassAnnotations
 
 
