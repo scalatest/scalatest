@@ -15,10 +15,10 @@
  */
 package org.scalatest.matchers
 
-import org.scalatest.matchersdsl.{ResultOfAnTypeInvocation, MatcherWords, ResultOfATypeInvocation}
+import org.scalatest.matchers.dsl.{ResultOfAnTypeInvocation, MatcherWords, ResultOfATypeInvocation}
 import scala.reflect.macros.Context
 
-//import org.scalatest.matchersdsl.{FactResultOfAnTypeInvocation, FactResultOfATypeInvocation}
+//import org.scalatest.matchers.dsl.{FactResultOfAnTypeInvocation, FactResultOfATypeInvocation}
 import org.scalactic.Prettifier
 import org.scalatest.{UnquotedString, Resources, Suite, FailureMessages, Assertions}
 

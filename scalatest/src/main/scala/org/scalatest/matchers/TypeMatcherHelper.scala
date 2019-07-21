@@ -19,7 +19,7 @@ import org.scalactic.source
 import org.scalatest.{FailureMessages, Resources, Suite, UnquotedString}
 import org.scalactic.Prettifier
 import org.scalatest.MatchersHelper._
-import org.scalatest.matchersdsl.{ResultOfATypeInvocation, ResultOfAnTypeInvocation}
+import org.scalatest.matchers.dsl.{ResultOfATypeInvocation, ResultOfAnTypeInvocation}
 
 import scala.reflect.ClassTag
 //import org.scalatest.words.{FactResultOfAnTypeInvocation, FactResultOfATypeInvocation}
