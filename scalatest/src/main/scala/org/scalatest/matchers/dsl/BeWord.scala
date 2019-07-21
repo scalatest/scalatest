@@ -24,7 +24,7 @@ import org.scalatest.Resources
 import org.scalatest.Suite
 import org.scalatest.UnquotedString
 // SKIP-SCALATESTJS,NATIVE-START
-import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
+import org.scalatest.matchers.MatchersHelper.matchSymbolToPredicateMethod
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.enablers.Definition
 import org.scalatest.enablers.Emptiness

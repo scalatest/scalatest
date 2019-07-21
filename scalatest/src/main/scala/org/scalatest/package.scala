@@ -330,4 +330,40 @@ package object scalatest {
   @deprecated("The org.scalatest.AsyncWordSpec trait has been moved and renamed. Please use org.scalatest.wordspec.AsyncWordSpec instead.")
   type AsyncWordSpec = wordspec.AsyncWordSpec
   // SKIP-SCALATESTNATIVE-END
+
+  /**
+   * <strong>The name <code>org.scalatest.Matchers</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.matchers.should.Matchers</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
+   */
+  @deprecated("The org.scalatest.Matchers trait has been moved and renamed. Please use org.scalatest.matchers.should.Matchers instead.")
+  type Matchers = matchers.should.Matchers
+
+  /**
+   * <strong>The name <code>org.scalatest.Matchers</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.matchers.should.Matchers</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
+   */
+  @deprecated("The org.scalatest.Matchers trait has been moved and renamed. Please use org.scalatest.matchers.should.Matchers instead.")
+  val Matchers = matchers.should.Matchers
+
+  /**
+   * <strong>The name <code>org.scalatest.MustMatchers</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.matchers.must.MustMatchers</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
+   */
+  @deprecated("The org.scalatest.MustMatchers trait has been moved and renamed. Please use org.scalatest.matchers.must.MustMatchers instead.")
+  type MustMatchers = matchers.must.MustMatchers
+
+  /**
+   * <strong>The name <code>org.scalatest.MustMatchers</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.matchers.must.MustMatchers</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
+   */
+  @deprecated("The org.scalatest.MustMatchers trait has been moved and renamed. Please use org.scalatest.matchers.must.MustMatchers instead.")
+  val MustMatchers = matchers.must.MustMatchers
 }

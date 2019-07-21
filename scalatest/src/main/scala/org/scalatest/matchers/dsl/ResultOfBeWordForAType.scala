@@ -16,11 +16,11 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest.Resources
-import org.scalatest.MatchersHelper.checkExpectedException
+import org.scalatest.matchers.MatchersHelper.checkExpectedException
 import org.scalatest.Assertion
 import org.scalatest.exceptions.TestFailedException
-import org.scalatest.MatchersHelper.indicateSuccess
-import org.scalatest.MatchersHelper.indicateFailure
+import org.scalatest.matchers.MatchersHelper.indicateSuccess
+import org.scalatest.matchers.MatchersHelper.indicateFailure
 import org.scalactic._
 
 /**

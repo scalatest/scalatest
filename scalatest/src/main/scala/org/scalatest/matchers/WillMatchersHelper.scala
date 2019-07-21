@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.scalatest
+package matchers
 
 import org.scalactic.Prettifier
 import org.scalactic.Prettifier

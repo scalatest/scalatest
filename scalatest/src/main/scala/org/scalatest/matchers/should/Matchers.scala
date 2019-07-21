@@ -13,7 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.matchers.should
+
+import org.scalatest.FailureMessages
+import org.scalatest.Resources
+import org.scalatest.Assertion
+import org.scalatest.Assertions
+import org.scalatest.Suite
+import org.scalatest.UnquotedString
+import org.scalatest.CompileMacro
 
 import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _, _}
 import org.scalatest.enablers._
@@ -29,6 +37,7 @@ import scala.collection.GenTraversable
 import scala.reflect.{classTag, ClassTag}
 import scala.util.matching.Regex
 import DefaultEquality.areEqualComparingArraysStructurally
+import org.scalatest.matchers.MatchersHelper
 import MatchersHelper.transformOperatorChars
 import TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation

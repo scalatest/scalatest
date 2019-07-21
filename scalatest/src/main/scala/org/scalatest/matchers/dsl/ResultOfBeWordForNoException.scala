@@ -15,7 +15,7 @@
  */
 package org.scalatest.matchers.dsl
 
-import org.scalatest.MatchersHelper.checkNoException
+import org.scalatest.matchers.MatchersHelper.checkNoException
 import org.scalatest.Assertion
 import org.scalactic._
 

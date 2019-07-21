@@ -22,9 +22,9 @@ import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import org.scalactic.DefaultEquality.areEqualComparingArraysStructurally
-import org.scalatest.MatchersHelper.andMatchersAndApply
-import org.scalatest.MatchersHelper.orMatchersAndApply
-import org.scalatest.MatchersHelper.transformOperatorChars
+import org.scalatest.matchers.MatchersHelper.andMatchersAndApply
+import org.scalatest.matchers.MatchersHelper.orMatchersAndApply
+import org.scalatest.matchers.MatchersHelper.transformOperatorChars
 import scala.collection.GenMap
 import scala.collection.GenSeq
 import scala.collection.GenTraversable
@@ -34,16 +34,16 @@ import scala.util.matching.Regex
 import TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
 // SKIP-SCALATESTJS,NATIVE-START
-import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
+import org.scalatest.matchers.MatchersHelper.matchSymbolToPredicateMethod
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.Assertion
-import org.scalatest.MatchersHelper.endWithRegexWithGroups
-import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
-import org.scalatest.MatchersHelper.includeRegexWithGroups
-import org.scalatest.MatchersHelper.indicateFailure
-import org.scalatest.MatchersHelper.indicateSuccess
-import org.scalatest.MatchersHelper.newTestFailedException
-import org.scalatest.MatchersHelper.startWithRegexWithGroups
+import org.scalatest.matchers.MatchersHelper.endWithRegexWithGroups
+import org.scalatest.matchers.MatchersHelper.fullyMatchRegexWithGroups
+import org.scalatest.matchers.MatchersHelper.includeRegexWithGroups
+import org.scalatest.matchers.MatchersHelper.indicateFailure
+import org.scalatest.matchers.MatchersHelper.indicateSuccess
+import org.scalatest.matchers.MatchersHelper.newTestFailedException
+import org.scalatest.matchers.MatchersHelper.startWithRegexWithGroups
 import org.scalatest.Succeeded
 import org.scalatest.{FailureMessages, UnquotedString}
 import scala.annotation.tailrec

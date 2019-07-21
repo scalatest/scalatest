@@ -21,7 +21,7 @@ import scala.util.matching.Regex
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
 import org.scalatest.UnquotedString
-import org.scalatest.MatchersHelper.endWithRegexWithGroups
+import org.scalatest.matchers.MatchersHelper.endWithRegexWithGroups
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

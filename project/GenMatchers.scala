@@ -157,7 +157,7 @@ object GenMatchers {
     junitDir.mkdirs()
 
     Seq(
-      translateFile(targetDir, "MustMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, dotty, translateShouldToMust)
+      translateFile(targetDir, "MustMatchers.scala", "scalatest/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, scalaJS, dotty, translateShouldToMust)
       /*translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
       translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
       translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,

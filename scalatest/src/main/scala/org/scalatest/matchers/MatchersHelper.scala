@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.scalatest
+package matchers
 
 import org.scalatest.exceptions._
 import org.scalatest.matchers._

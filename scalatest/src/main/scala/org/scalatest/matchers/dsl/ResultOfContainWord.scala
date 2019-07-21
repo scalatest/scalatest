@@ -25,8 +25,8 @@ import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.Assertion
-import org.scalatest.MatchersHelper.indicateSuccess
-import org.scalatest.MatchersHelper.indicateFailure
+import org.scalatest.matchers.MatchersHelper.indicateSuccess
+import org.scalatest.matchers.MatchersHelper.indicateFailure
 import org.scalactic._
 
 /**

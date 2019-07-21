@@ -17,7 +17,7 @@ package org.scalatest.matchers.dsl
 
 import org.scalactic._
 import org.scalatest.Resources
-import org.scalatest.MatchersHelper.checkExpectedException
+import org.scalatest.matchers.MatchersHelper.checkExpectedException
 
 import scala.reflect.ClassTag
 

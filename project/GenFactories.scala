@@ -27,8 +27,8 @@ object GenFactories {
 package org.scalatest.matchers.dsl
 
 import org.scalatest.enablers._
-import org.scalatest.MatchersHelper.andMatchersAndApply
-import org.scalatest.MatchersHelper.orMatchersAndApply
+import org.scalatest.matchers.MatchersHelper.andMatchersAndApply
+import org.scalatest.matchers.MatchersHelper.orMatchersAndApply
 import org.scalatest.matchers.dsl.MatcherWords
 import scala.collection.GenTraversable
 import scala.util.matching.Regex
