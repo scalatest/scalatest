@@ -148,7 +148,7 @@ import org.scalatest.exceptions._
  *
  * <p>
  * The &ldquo;<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>&rdquo; syntax requires an
- * <a href="../scalactic/Equality.html"><code>org.scalactic.Equality[L]</code></a> to be provided (either implicitly or explicitly), where
+ * <code>org.scalactic.Equality[L]</code> to be provided (either implicitly or explicitly), where
  * <code>L</code> is the left-hand type on which <code>should</code> is invoked. In the "<code>left</code> <code>should</code> <code>equal</code> <code>(right)</code>" case,
  * for example, <code>L</code> is the type of <code>left</code>. Thus if <code>left</code> is type <code>Int</code>, the "<code>left</code> <code>should</code>
  * <code>equal</code> <code>(right)</code>"
@@ -186,7 +186,7 @@ import org.scalatest.exceptions._
  * or <code>shouldEqual</code> syntax by defining implicit <code>Equality</code> instances that will be used instead of default <code>Equality</code>.
  * You might do this to normalize types before comparing them with <code>==</code>, for instance, or to avoid calling the <code>==</code> method entirely,
  * such as if you want to compare <code>Double</code>s with a tolerance.
- * For an example, see the main documentation of <a href="../scalactic/Equality.html">trait <code>Equality</code></a>.
+ * For an example, see the main documentation of trait <code>org.scalactic.Equality</code>.
  * </p>
  *
  * <p>
@@ -196,8 +196,8 @@ import org.scalatest.exceptions._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import org.scalatest.Matchers._
- * import org.scalatest.Matchers._
+ * scala&gt; import org.scalatest.matchers.should.Matchers._
+ * import org.scalatest.matchers.should.Matchers._
  *
  * scala&gt; import org.scalactic.Explicitly._
  * import org.scalactic.Explicitly._
@@ -211,7 +211,7 @@ import org.scalatest.exceptions._
  * <p>
  * The <code>after</code> <code>being</code> <code>lowerCased</code> expression results in an <code>Equality[String]</code>, which is then passed
  * explicitly as the second curried parameter to <code>equal</code>. For more information on the explictly DSL, see the main documentation
- * for trait <a href="../scalactic/Explicitly.html"><code>Explicitly</code></a>.
+ * for trait <code>org.scalactic.Explicitly</code>.
  * </p>
  *
  * <p>
@@ -227,8 +227,8 @@ import org.scalatest.exceptions._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import org.scalatest.Matchers._
- * import org.scalatest.Matchers._
+ * scala&gt; import org.scalatest.matchers.should.Matchers._
+ * import org.scalatest.matchers.should.Matchers._
  *
  * scala&gt; import org.scalactic.TypeCheckedTripleEquals._
  * import org.scalactic.TypeCheckedTripleEquals._
@@ -244,7 +244,7 @@ import org.scalatest.exceptions._
  * <p>
  * By default, the "<code>Some(2)</code> <code>should</code> <code>===</code> <code>(2)</code>" statement would fail at runtime. By mixing in
  * the equality constraints provided by <code>TypeCheckedTripleEquals</code>, however, the statement fails to compile. For more information
- * and examples, see the main documentation for <a href="../scalactic/TypeCheckedTripleEquals.html">trait <code>TypeCheckedTripleEquals</code></a>.
+ * and examples, see the main documentation for trait <code>org.scalactic.TypeCheckedTripleEquals</code>.
  * </p>
  *
  * <a name="checkingSizeAndLength"></a>
@@ -540,8 +540,8 @@ import org.scalatest.exceptions._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import org.scalatest.Matchers._
- * import org.scalatest.Matchers._
+ * scala&gt; import org.scalatest.matchers.should.Matchers._
+ * import org.scalatest.matchers.should.Matchers._
  *
  * scala&gt; List.empty shouldBe empty
  *
@@ -579,8 +579,8 @@ import org.scalatest.exceptions._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import org.scalatest.Matchers._
- * import org.scalatest.Matchers._
+ * scala&gt; import org.scalatest.matchers.should.Matchers._
+ * import org.scalatest.matchers.should.Matchers._
  *
  * scala&gt; List(1, 2, 3) should contain (2)
  *
@@ -606,8 +606,8 @@ import org.scalatest.exceptions._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import org.scalatest.Matchers._
- * import org.scalatest.Matchers._
+ * scala&gt; import org.scalatest.matchers.should.Matchers._
+ * import org.scalatest.matchers.should.Matchers._
  *
  * scala&gt; List("Hi", "Di", "Ho") should contain ("ho")
  * org.scalatest.exceptions.TestFailedException: List(Hi, Di, Ho) did not contain element "ho"
@@ -934,7 +934,7 @@ import org.scalatest.exceptions._
  * <h2>Working with iterators</h2>
  *
  * <p>
- * Althought it seems desireable to provide similar matcher syntax for Scala and Java iterators to that provided for sequences like
+ * Although it seems desireable to provide similar matcher syntax for Scala and Java iterators to that provided for sequences like
  * <code>Seq</code>s, <code>Array</code>, and <code>java.util.List</code>, the
  * ephemeral nature of iterators makes this problematic. Some syntax (such as <code>should</code> <code>contain</code>) is relatively straightforward to
  * support on iterators, but other syntax (such
@@ -1021,8 +1021,8 @@ import org.scalatest.exceptions._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import org.scalatest.Matchers._
- * import org.scalatest.Matchers._
+ * scala&gt; import org.scalatest.matchers.should.Matchers._
+ * import org.scalatest.matchers.should.Matchers._
  *
  * scala&gt; val xs = List(1, 2, 3, 4, 5)
  * xs: List[Int] = List(1, 2, 3, 4, 5)
@@ -1063,8 +1063,8 @@ import org.scalatest.exceptions._
  * scala&gt; import org.scalatest._
  * import org.scalatest._
  *
- * scala&gt; import Matchers._
- * import Matchers._
+ * scala&gt; import matchers.should.Matchers._
+ * import matchers.should.Matchers._
  *
  * scala&gt; all (Array(1, 2, 3)) should be &lt; 5
  *
@@ -1182,8 +1182,8 @@ import org.scalatest.exceptions._
  * scala&gt; import org.scalatest._
  * import org.scalatest._
  *
- * scala&gt; import Matchers._
- * import Matchers._
+ * scala&gt; import matchers.should.Matchers._
+ * import matchers.should.Matchers._
  *
  * scala&gt; atLeast (2, Array(1, 2, 3)) should be &gt; 1
  *

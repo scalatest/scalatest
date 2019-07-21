@@ -40,8 +40,8 @@ object GenMatchers {
       .replaceAll("I_NEED_TO_STAY_SMALL_MUST", "must")
       .replaceAll("I_NEED_TO_STAY_SHOULDMATCHERS", "ShouldMatchers")
       .replaceAll("I_NEED_TO_STAY_MUSTMATCHERS", "MustMatchers")
-      .replaceAll("import Matchers._", "import MustMatchers._")
-      .replaceAll("import org.scalatest.Matchers._", "import org.scalatest.MustMatchers._")
+      .replaceAll("import matchers.should.Matchers._", "import matchers.must.MustMatchers._")
+      .replaceAll("import org.scalatest.matchers.should.Matchers._", "import org.scalatest.matchers.must.MustMatchers._")
       .replaceAll("Matchers.scala", "MustMatchers.scala")
   }
 
@@ -74,8 +74,8 @@ object GenMatchers {
       .replaceAll("I_NEED_TO_STAY_SHOULDMATCHERS", "ShouldMatchers")
       .replaceAll("I_NEED_TO_STAY_WILLMATCHERS", "WillMatchers")
       .replaceAll("I_NEED_TO_STAY_ASSERTIONS", "Assertions")
-      .replaceAll("import Matchers._", "import WillMatchers._")
-      .replaceAll("import org.scalatest.Matchers._", "import org.scalatest.WillMatchers._")
+      .replaceAll("import matchers.should.Matchers._", "import matchers.will.WillMatchers._")
+      .replaceAll("import org.scalatest.matchers.should.Matchers._", "import org.scalatest.matchers.will.WillMatchers._")
       .replaceAll("Matchers.scala", "WillMatchers.scala")
       .replaceAll("NoExceptionWord", "FactExceptionWord")
       .replaceAll("ResultOfATypeInvocation", "FactResultOfATypeInvocation")
