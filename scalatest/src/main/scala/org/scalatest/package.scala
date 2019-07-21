@@ -351,19 +351,19 @@ package object scalatest {
 
   /**
    * <strong>The name <code>org.scalatest.MustMatchers</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
-   * its new name, <code>org.scalatest.matchers.must.MustMatchers</code>, instead.</strong>
+   * its new name, <code>org.scalatest.matchers.must.Matchers</code>, instead.</strong>
    *
    * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.MustMatchers trait has been moved and renamed. Please use org.scalatest.matchers.must.MustMatchers instead.")
-  type MustMatchers = matchers.must.MustMatchers
+  @deprecated("The org.scalatest.MustMatchers trait has been moved and renamed. Please use org.scalatest.matchers.must.Matchers instead.")
+  type MustMatchers = matchers.must.Matchers
 
   /**
    * <strong>The name <code>org.scalatest.MustMatchers</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
-   * its new name, <code>org.scalatest.matchers.must.MustMatchers</code>, instead.</strong>
+   * its new name, <code>org.scalatest.matchers.must.Matchers</code>, instead.</strong>
    *
    * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.MustMatchers trait has been moved and renamed. Please use org.scalatest.matchers.must.MustMatchers instead.")
-  val MustMatchers = matchers.must.MustMatchers
+  @deprecated("The org.scalatest.MustMatchers trait has been moved and renamed. Please use org.scalatest.matchers.must.Matchers instead.")
+  val MustMatchers = matchers.must.Matchers
 }

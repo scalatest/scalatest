@@ -24,25 +24,24 @@ object GenMatchers {
 
   def translateShouldToMust(shouldLine: String): String = {
     shouldLine
-      .replaceAll("Trait <a href=\"MustMatchers.html\"><code>MustMatchers</code></a> is an alternative to <code>Matchers</code>", "Trait <code>MustMatchers</code> is an alternative to <a href=\"Matchers.html\"><code>Matchers</code></a>")
+      .replaceAll("Trait <a href=\"../must/Matchers.html\"><code>must.Matchers</code></a> is an alternative to <!-- PRESERVE --><code>should.Matchers</code>", "Trait <code>must.Matchers</code> is an alternative to <!-- PRESERVE --><a href=\"../should/Matchers.html\"><!-- PRESERVE --><code>should.Matchers</code></a>")
       .replaceAll("MustMatchers", "I_NEED_TO_STAY_MUSTMATCHERS")
       .replaceAll("ShouldMatchers", "I_NEED_TO_STAY_SHOULDMATCHERS")
       .replaceAll("must", "I_NEED_TO_STAY_SMALL_MUST")
       .replaceAll("Must", "I_NEED_TO_STAY_BIG_MUST")
       .replaceAll("<!-- PRESERVE --><code>should", "<code>I_NEED_TO_STAY_SMALL_SHOULD")
       .replaceAll("<!-- PRESERVE -->should", " I_NEED_TO_STAY_SMALL_SHOULD") // Why is there a space in front?
+      .replaceAll("<!-- PRESERVE --><a href=\"../should/Matchers.html\">", " I_NEED_IN_LINK_TO_STAY_SMALL_SHOULD") // Why is there a space in front?
       .replaceAll("should", "must")
       .replaceAll("Should", "Must")
-      .replaceAll("trait Matchers", "trait MustMatchers")
-      .replaceAll("object Matchers extends Matchers", "object MustMatchers extends MustMatchers")
       .replaceAll("I_NEED_TO_STAY_SMALL_SHOULD", "should")
+      .replaceAll("I_NEED_IN_LINK_TO_STAY_SMALL_SHOULD", "<a href=\"../should/Matchers.html\">")
       .replaceAll("I_NEED_TO_STAY_BIG_MUST", "Must")
       .replaceAll("I_NEED_TO_STAY_SMALL_MUST", "must")
       .replaceAll("I_NEED_TO_STAY_SHOULDMATCHERS", "ShouldMatchers")
       .replaceAll("I_NEED_TO_STAY_MUSTMATCHERS", "MustMatchers")
-      .replaceAll("import matchers.should.Matchers._", "import matchers.must.MustMatchers._")
-      .replaceAll("import org.scalatest.matchers.should.Matchers._", "import org.scalatest.matchers.must.MustMatchers._")
-      .replaceAll("Matchers.scala", "MustMatchers.scala")
+      .replaceAll("import matchers.should.Matchers._", "import matchers.must.Matchers._")
+      .replaceAll("import org.scalatest.matchers.should.Matchers._", "import org.scalatest.matchers.must.Matchers._")
   }
 
   def translateShouldToWill(shouldLine: String): String = {
@@ -157,7 +156,7 @@ object GenMatchers {
     junitDir.mkdirs()
 
     Seq(
-      translateFile(targetDir, "MustMatchers.scala", "scalatest/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, scalaJS, dotty, translateShouldToMust)
+      translateFile(targetDir, "Matchers.scala", "scalatest/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, scalaJS, dotty, translateShouldToMust)
       /*translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
       translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
       translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,

@@ -124,8 +124,8 @@ import org.scalatest.exceptions._
  * </ul>
  *
  * <p>
- * Trait <a href="MustMatchers.html"><code>MustMatchers</code></a> is an alternative to <code>Matchers</code> that provides the exact same
- * meaning, syntax, and behavior as <code>Matchers</code>, but uses the verb <code>must</code> instead of <!-- PRESERVE --><code>should</code>.
+ * Trait <a href="../must/Matchers.html"><code>must.Matchers</code></a> is an alternative to <!-- PRESERVE --><code>should.Matchers</code> that provides the exact same
+ * meaning, syntax, and behavior as <!-- PRESERVE --><code>should.Matchers</code>, but uses the verb <code>must</code> instead of <!-- PRESERVE --><code>should</code>.
  * The two traits differ only in the English semantics of the verb: <!-- PRESERVE --><code>should</code>
  * is informal, making the code feel like conversation between the writer and the reader; <code>must</code> is more formal, making the code feel more like
  * a written specification.
