@@ -33,7 +33,7 @@ trait FixtureAsyncTestRegistration { theSuite: org.scalatest.FixtureAsyncTestSui
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position)
+  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit
 
   /**
    * Registers an ignored test.
@@ -42,5 +42,5 @@ trait FixtureAsyncTestRegistration { theSuite: org.scalatest.FixtureAsyncTestSui
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position)
+  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit
 }

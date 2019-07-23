@@ -2267,7 +2267,7 @@ object Randomizer {
     val buf = ArrayBuffer.empty[T]
     buf ++= xs
 
-    def swap(i: Int, j: Int) {
+    def swap(i: Int, j: Int): Unit = {
       val tmp = buf(i)
       buf(i) = buf(j)
       buf(j) = tmp

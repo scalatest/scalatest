@@ -31,7 +31,7 @@ trait AsyncTestRegistration { theSuite: AsyncTestSuite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position)
+  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit
 
   /**
    * Registers an ignored test.
@@ -40,5 +40,5 @@ trait AsyncTestRegistration { theSuite: AsyncTestSuite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position)
+  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit
 }

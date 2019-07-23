@@ -44,7 +44,7 @@ trait DistributedTestSorter {
    *
    * @param testName the name of the test that has completed
    */
-  def distributingTest(testName: String)
+  def distributingTest(testName: String): Unit
 
   /**
    * Report an event for a distributed test.
@@ -53,7 +53,7 @@ trait DistributedTestSorter {
    * @param event the event to report
    * @throws NullArgumentException if either <code>testName</code> or <code>event</code> is null.
    */
-  def apply(testName: String, event: Event)
+  def apply(testName: String, event: Event): Unit
 
   /**
    * Indicates the events for the distributed test with the specified name have all been fired.
@@ -65,5 +65,5 @@ trait DistributedTestSorter {
    *
    * @param testName the name of the test that has completed
    */
-  def completedTest(testName: String)
+  def completedTest(testName: String): Unit
 }
