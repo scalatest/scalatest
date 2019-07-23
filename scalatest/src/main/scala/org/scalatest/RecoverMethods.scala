@@ -209,7 +209,7 @@ trait RecoverMethods {
   }
 
   private[scalatest] def newAssertionFailedExceptionForRecover(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
-    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, pos)
+    new org.scalatest.exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, pos)
 }
 
 /**
