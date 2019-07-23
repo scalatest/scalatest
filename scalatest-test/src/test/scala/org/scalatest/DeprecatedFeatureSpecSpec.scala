@@ -1552,7 +1552,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
 
     }
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends FeatureSpec with Expectations {
+      class TestSpec extends FeatureSpec with expectations.Expectations {
         scenario("fail scenario") {
           expect(1 === 2); /* ASSERTION_SUCCEED */
         }

@@ -366,4 +366,22 @@ package object scalatest {
    */
   @deprecated("The org.scalatest.MustMatchers trait has been moved and renamed. Please use org.scalatest.matchers.must.Matchers instead.")
   val MustMatchers = matchers.must.Matchers
+
+  /**
+   * <strong>The name <code>org.scalatest.DiagrammedAssertions</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.diagrams.Diagrams</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
+   */
+  @deprecated("The org.scalatest.DiagrammedAssertions trait has been moved and renamed. Please use org.scalatest.diagrams.Diagrams instead.")
+  type DiagrammedAssertions = diagrams.Diagrams
+
+  /**
+   * <strong>The name <code>org.scalatest.DiagrammedAssertions</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.diagrams.Diagrams</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
+   */
+  @deprecated("The org.scalatest.DiagrammedAssertions object has been moved and renamed. Please use org.scalatest.diagrams.Diagrams instead.")
+  val DiagrammedAssertions = diagrams.Diagrams
 }

@@ -1441,7 +1441,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends FlatSpec with Expectations {
+      class TestSpec extends FlatSpec with expectations.Expectations {
         "a widget" should "do something"  in {
           expect(1 === 2); /* ASSERTION_SUCCEED */
         }

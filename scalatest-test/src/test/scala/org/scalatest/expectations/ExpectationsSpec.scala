@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.scalatest
+package expectations
 
 import exceptions.TestFailedException
 import OptionValues._

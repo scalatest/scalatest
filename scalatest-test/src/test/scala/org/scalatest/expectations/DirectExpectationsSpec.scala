@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.scalatest
+package expectations
 
 import exceptions.TestFailedException
 import OptionValues._
@@ -25,7 +26,7 @@ class DirectExpectationsSpec extends FunSpec {
 
   describe("The expectResult method") {
     it("should give a correct Fact result when the expectation fails") {
-      val fact = org.scalatest.Expectations.expectResult(3) { 2 } 
+      val fact = org.scalatest.expectations.Expectations.expectResult(3) { 2 } 
       assert(fact.isNo)
       assert(fact.factMessage  == "Expected 3, but got 2")
       assert(fact.simplifiedFactMessage == "3 did not equal 2")
@@ -43,7 +44,7 @@ class DirectExpectationsSpec extends FunSpec {
       assert(!fact.isVacuousYes)
     }
     it("should give a correct Fact result when the expectation succeeds") {
-      val fact = org.scalatest.Expectations.expectResult(3) { 3 } 
+      val fact = org.scalatest.expectations.Expectations.expectResult(3) { 3 } 
       assert(fact.isYes)
       assert(fact.factMessage  == "Expected 3, and got 3")
       assert(fact.simplifiedFactMessage == "3 equaled 3")
@@ -61,7 +62,7 @@ class DirectExpectationsSpec extends FunSpec {
       assert(!fact.isVacuousYes)
     }
     it("should give a basic (non-diagrammed) error message for simple leaf nodes") {
-      val fact = org.scalatest.Expectations.expectResult(3) { 4 }
+      val fact = org.scalatest.expectations.Expectations.expectResult(3) { 4 }
       assert(fact.isNo)
       assert(fact.factMessage  == "Expected 3, but got 4")
       assert(fact.simplifiedFactMessage == "3 did not equal 4")
@@ -80,7 +81,7 @@ class DirectExpectationsSpec extends FunSpec {
       assert(fact.toString == "No(expected 3, but got 4)")
     }
     it("should still give a basic error message after negating a leaf with !") {
-      val fact = !org.scalatest.Expectations.expectResult(3) { 3 }
+      val fact = !org.scalatest.expectations.Expectations.expectResult(3) { 3 }
       assert(fact.isNo)
       assert(fact.factMessage  == "3 equaled 3")
       assert(fact.simplifiedFactMessage == "3 equaled 3")
@@ -103,7 +104,7 @@ class DirectExpectationsSpec extends FunSpec {
       )
     }
     it("should give a basic message for a && binary expression with 2 leafs") {
-      val fact1 = org.scalatest.Expectations.expectResult(3) { 3 } && org.scalatest.Expectations.expectResult(3) { 4 }
+      val fact1 = org.scalatest.expectations.Expectations.expectResult(3) { 3 } && org.scalatest.expectations.Expectations.expectResult(3) { 4 }
       assert(fact1.isNo)
       assert(fact1.factMessage  == "3 equaled 3, but 3 did not equal 4")
       assert(fact1.toString ==
@@ -114,7 +115,7 @@ class DirectExpectationsSpec extends FunSpec {
       )
       assert(!fact1.isVacuousYes)
 
-      val fact2 = org.scalatest.Expectations.expectResult(3) { 3 } && !org.scalatest.Expectations.expectResult(4) { 4 }
+      val fact2 = org.scalatest.expectations.Expectations.expectResult(3) { 3 } && !org.scalatest.expectations.Expectations.expectResult(4) { 4 }
       assert(fact2.isNo)
       assert(fact2.factMessage  == "3 equaled 3, but 4 equaled 4")
       assert(fact2.toString ==
@@ -128,7 +129,7 @@ class DirectExpectationsSpec extends FunSpec {
       assert(!fact2.isVacuousYes)
     }
     it("should give a basic message for a & binary expression with 2 leafs") {
-      val fact1 = org.scalatest.Expectations.expectResult(3) { 3 } & org.scalatest.Expectations.expectResult(3) { 4 }
+      val fact1 = org.scalatest.expectations.Expectations.expectResult(3) { 3 } & org.scalatest.expectations.Expectations.expectResult(3) { 4 }
       assert(fact1.isNo)
       assert(fact1.factMessage  == "3 equaled 3, but 3 did not equal 4")
       assert(fact1.toString ==
@@ -139,7 +140,7 @@ class DirectExpectationsSpec extends FunSpec {
       )
       assert(!fact1.isVacuousYes)
 
-      val fact2 = org.scalatest.Expectations.expectResult(3) { 3 } & !org.scalatest.Expectations.expectResult(4) { 4 }
+      val fact2 = org.scalatest.expectations.Expectations.expectResult(3) { 3 } & !org.scalatest.expectations.Expectations.expectResult(4) { 4 }
       assert(fact2.isNo)
       assert(fact2.factMessage  == "3 equaled 3, but 4 equaled 4")
       assert(fact2.toString ==
@@ -153,7 +154,7 @@ class DirectExpectationsSpec extends FunSpec {
       assert(!fact2.isVacuousYes)
     }
     it("should use vertical diagrammed style of message when one of component in && and || binary expression is not a leaf") {
-      val fact = (org.scalatest.Expectations.expectResult(3) { 3 } && org.scalatest.Expectations.expectResult(3) { 4 }) || org.scalatest.Expectations.expectResult(5) { 6 }
+      val fact = (org.scalatest.expectations.Expectations.expectResult(3) { 3 } && org.scalatest.expectations.Expectations.expectResult(3) { 4 }) || org.scalatest.expectations.Expectations.expectResult(5) { 6 }
       assert(fact.factMessage ==
         "No(" + NEWLINE +
         "  No(" + NEWLINE +
@@ -175,7 +176,7 @@ class DirectExpectationsSpec extends FunSpec {
       assert(!fact.isVacuousYes)
     }
     it("should use vertical diagrammed style of message when one of component in & and | binary expression is not a leaf") {
-      val fact = (org.scalatest.Expectations.expectResult(3) { 3 } & org.scalatest.Expectations.expectResult(3) { 4 }) | org.scalatest.Expectations.expectResult(5) { 6 }
+      val fact = (org.scalatest.expectations.Expectations.expectResult(3) { 3 } & org.scalatest.expectations.Expectations.expectResult(3) { 4 }) | org.scalatest.expectations.Expectations.expectResult(5) { 6 }
       assert(fact.factMessage ==
         "No(" + NEWLINE +
           "  No(" + NEWLINE +
@@ -197,7 +198,7 @@ class DirectExpectationsSpec extends FunSpec {
       assert(!fact.isVacuousYes)
     }
     it("should use vertical diagrammed style of message and prefix Unary_! instance with !") {
-      val fact = (org.scalatest.Expectations.expectResult(3) { 3 } && !org.scalatest.Expectations.expectResult(4) { 4 }) || org.scalatest.Expectations.expectResult(5) { 6 }
+      val fact = (org.scalatest.expectations.Expectations.expectResult(3) { 3 } && !org.scalatest.expectations.Expectations.expectResult(4) { 4 }) || org.scalatest.expectations.Expectations.expectResult(5) { 6 }
       assert(fact.factMessage ==
         "No(" + NEWLINE +
         "  No(" + NEWLINE +
@@ -223,101 +224,101 @@ class DirectExpectationsSpec extends FunSpec {
       assert(!fact.isVacuousYes)
     }
     it("should short-circuit and just return No when used with No && No") {
-      val fact = org.scalatest.Expectations.expectResult(2) {4} && org.scalatest.Expectations.expectResult(3) {5}
+      val fact = org.scalatest.expectations.Expectations.expectResult(2) {4} && org.scalatest.expectations.Expectations.expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Leaf])
       assert(fact.isNo)
       assert(fact.factMessage == "Expected 2, but got 4")
       assert(!fact.isVacuousYes)
     }
     it("should short-circuit and just return No when used with No && Yes") {
-      val fact = org.scalatest.Expectations.expectResult(2) {4} && org.scalatest.Expectations.expectResult(3) {3}
+      val fact = org.scalatest.expectations.Expectations.expectResult(2) {4} && org.scalatest.expectations.Expectations.expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Leaf])
       assert(fact.isNo)
       assert(fact.factMessage == "Expected 2, but got 4")
       assert(!fact.isVacuousYes)
     }
     it("should return Binary_&& when used with Yes && No") {
-      val fact = org.scalatest.Expectations.expectResult(4) {4} && org.scalatest.Expectations.expectResult(3) {5}
+      val fact = org.scalatest.expectations.Expectations.expectResult(4) {4} && org.scalatest.expectations.Expectations.expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Binary_&&])
       assert(fact.factMessage == "4 equaled 4, but 3 did not equal 5")
       assert(!fact.isVacuousYes)
     }
     it("should return Binary_&& when used with Yes && Yes") {
-      val fact = org.scalatest.Expectations.expectResult(4) {4} && org.scalatest.Expectations.expectResult(3) {3}
+      val fact = org.scalatest.expectations.Expectations.expectResult(4) {4} && org.scalatest.expectations.Expectations.expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Binary_&&])
       assert(fact.factMessage == "4 equaled 4, and 3 equaled 3")
       assert(!fact.isVacuousYes)
     }
     it("should return Binary_& when used with No & No") {
-      val fact = org.scalatest.Expectations.expectResult(2) {4} & org.scalatest.Expectations.expectResult(3) {5}
+      val fact = org.scalatest.expectations.Expectations.expectResult(2) {4} & org.scalatest.expectations.Expectations.expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Binary_&])
       assert(fact.factMessage == "2 did not equal 4, and 3 did not equal 5")
       assert(!fact.isVacuousYes)
     }
     it("should return Binary_& when used with No & Yes") {
-      val fact = org.scalatest.Expectations.expectResult(2) {4} & org.scalatest.Expectations.expectResult(3) {3}
+      val fact = org.scalatest.expectations.Expectations.expectResult(2) {4} & org.scalatest.expectations.Expectations.expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Binary_&])
       assert(fact.factMessage == "2 did not equal 4, and 3 equaled 3")
       assert(!fact.isVacuousYes)
     }
     it("should return Binary_& when used with Yes & No") {
-      val fact = org.scalatest.Expectations.expectResult(4) {4} & org.scalatest.Expectations.expectResult(3) {5}
+      val fact = org.scalatest.expectations.Expectations.expectResult(4) {4} & org.scalatest.expectations.Expectations.expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Binary_&])
       assert(fact.factMessage == "4 equaled 4, but 3 did not equal 5")
       assert(!fact.isVacuousYes)
     }
     it("should return Binary_& when used with Yes & Yes") {
-      val fact = org.scalatest.Expectations.expectResult(4) {4} & org.scalatest.Expectations.expectResult(3) {3}
+      val fact = org.scalatest.expectations.Expectations.expectResult(4) {4} & org.scalatest.expectations.Expectations.expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Binary_&])
       assert(fact.factMessage == "4 equaled 4, and 3 equaled 3")
       assert(!fact.isVacuousYes)
     }
     it("should return Binary_|| when used with No || No") {
-      val fact = org.scalatest.Expectations.expectResult(2) {4} || org.scalatest.Expectations.expectResult(3) {5}
+      val fact = org.scalatest.expectations.Expectations.expectResult(2) {4} || org.scalatest.expectations.Expectations.expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Binary_||])
       assert(fact.factMessage == "2 did not equal 4, and 3 did not equal 5")
       assert(!fact.isVacuousYes)
     }
     it("should return Binary_|| when used with No || Yes") {
-      val fact = org.scalatest.Expectations.expectResult(2) {4} || org.scalatest.Expectations.expectResult(3) {3}
+      val fact = org.scalatest.expectations.Expectations.expectResult(2) {4} || org.scalatest.expectations.Expectations.expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Binary_||])
       assert(fact.factMessage == "2 did not equal 4, and 3 equaled 3")
       assert(!fact.isVacuousYes)
     }
     it("should short-circuit and return Yes when used with Yes || No") {
-      val fact = org.scalatest.Expectations.expectResult(4) {4} || org.scalatest.Expectations.expectResult(3) {5}
+      val fact = org.scalatest.expectations.Expectations.expectResult(4) {4} || org.scalatest.expectations.Expectations.expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Leaf])
       assert(fact.isYes)
       assert(fact.factMessage == "Expected 4, and got 4")
       assert(!fact.isVacuousYes)
     }
     it("should short-circuit and return Yes when used with Yes || Yes") {
-      val fact = org.scalatest.Expectations.expectResult(4) {4} || org.scalatest.Expectations.expectResult(3) {3}
+      val fact = org.scalatest.expectations.Expectations.expectResult(4) {4} || org.scalatest.expectations.Expectations.expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Leaf])
       assert(fact.isYes)
       assert(fact.factMessage == "Expected 4, and got 4")
       assert(!fact.isVacuousYes)
     }
     it("should return Binary_| when used with No | No") {
-      val fact = org.scalatest.Expectations.expectResult(2) {4} | org.scalatest.Expectations.expectResult(3) {5}
+      val fact = org.scalatest.expectations.Expectations.expectResult(2) {4} | org.scalatest.expectations.Expectations.expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Binary_|])
       assert(fact.factMessage == "2 did not equal 4, and 3 did not equal 5")
       assert(!fact.isVacuousYes)
     }
     it("should return Binary_| when used with No | Yes") {
-      val fact = org.scalatest.Expectations.expectResult(2) {4} | org.scalatest.Expectations.expectResult(3) {3}
+      val fact = org.scalatest.expectations.Expectations.expectResult(2) {4} | org.scalatest.expectations.Expectations.expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Binary_|])
       assert(fact.factMessage == "2 did not equal 4, and 3 equaled 3")
       assert(!fact.isVacuousYes)
     }
     it("should return Binary_| when used with Yes | No") {
-      val fact = org.scalatest.Expectations.expectResult(4) {4} | org.scalatest.Expectations.expectResult(3) {5}
+      val fact = org.scalatest.expectations.Expectations.expectResult(4) {4} | org.scalatest.expectations.Expectations.expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Binary_|])
       assert(fact.factMessage == "4 equaled 4, and 3 did not equal 5")
       assert(!fact.isVacuousYes)
     }
     it("should return Binary_| when used with Yes | Yes") {
-      val fact = org.scalatest.Expectations.expectResult(4) {4} | org.scalatest.Expectations.expectResult(3) {3}
+      val fact = org.scalatest.expectations.Expectations.expectResult(4) {4} | org.scalatest.expectations.Expectations.expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Binary_|])
       assert(fact.factMessage == "4 equaled 4, and 3 equaled 3")
       assert(!fact.isVacuousYes)
@@ -330,10 +331,10 @@ class DirectExpectationsSpec extends FunSpec {
       class MyExceptionSubClass extends MyException
       assert(
         (
-          org.scalatest.Expectations.expectThrows[MyException] {
+          org.scalatest.expectations.Expectations.expectThrows[MyException] {
             throw new MyException
           } &&
-          org.scalatest.Expectations.expectThrows[MyException] {
+          org.scalatest.expectations.Expectations.expectThrows[MyException] {
             throw new MyExceptionSubClass
           } && {
             // Try with a trait
@@ -341,7 +342,7 @@ class DirectExpectationsSpec extends FunSpec {
               def someRandomMethod(): Unit = {}
             }
             class AnotherException extends RuntimeException with MyTrait
-            org.scalatest.Expectations.expectThrows[MyTrait] {
+            org.scalatest.expectations.Expectations.expectThrows[MyTrait] {
               throw new AnotherException
             }
           }
@@ -351,7 +352,7 @@ class DirectExpectationsSpec extends FunSpec {
     it("should include the expected exception as the cause so that it will be there if negated") {
         val expectedException = new IllegalArgumentException("I meant to do that!")
         val fact =
-          org.scalatest.Expectations.expectThrows[IllegalArgumentException] {
+          org.scalatest.expectations.Expectations.expectThrows[IllegalArgumentException] {
             throw expectedException
           }
         assert(fact.cause.value eq expectedException)
@@ -361,7 +362,7 @@ class DirectExpectationsSpec extends FunSpec {
       it("should include that wrong exception as the Fact's cause") {
         val wrongException = new RuntimeException("oops!")
         val fact =
-          org.scalatest.Expectations.expectThrows[IllegalArgumentException] {
+          org.scalatest.expectations.Expectations.expectThrows[IllegalArgumentException] {
             throw wrongException
           }
         assert(fact.cause.value eq wrongException)
@@ -374,7 +375,7 @@ class DirectExpectationsSpec extends FunSpec {
     val a = 1
 
     it("should return Yes when used to check a == 1") {
-      val fact = org.scalatest.Expectations.expect(a == 1)
+      val fact = org.scalatest.expectations.Expectations.expect(a == 1)
       assert(fact.isInstanceOf[Fact.Leaf])
       assert(fact.isYes)
       assert(fact.factMessage == "1 equaled 1")
@@ -382,7 +383,7 @@ class DirectExpectationsSpec extends FunSpec {
     }
 
     it("should return No when used to check a == 2") {
-      val fact = org.scalatest.Expectations.expect(a == 2)
+      val fact = org.scalatest.expectations.Expectations.expect(a == 2)
       assert(fact.isInstanceOf[Fact.Leaf])
       assert(fact.isNo)
       assert(fact.factMessage == "1 did not equal 2")
@@ -395,7 +396,7 @@ class DirectExpectationsSpec extends FunSpec {
     describe("when work with string literal") {
 
       it("should return Yes with correct fact message when type check failed") {
-        val fact = org.scalatest.Expectations.expectDoesNotCompile("val a: String = 1")
+        val fact = org.scalatest.expectations.Expectations.expectDoesNotCompile("val a: String = 1")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isYes)
         assert(fact.factMessage == Resources.didNotCompile("val a: String = 1"))
@@ -403,7 +404,7 @@ class DirectExpectationsSpec extends FunSpec {
       }
 
       it("should return No with correct fact message when parse and type check passed") {
-        val fact = org.scalatest.Expectations.expectDoesNotCompile("val a = 1")
+        val fact = org.scalatest.expectations.Expectations.expectDoesNotCompile("val a = 1")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
         assert(fact.factMessage == Resources.expectedCompileErrorButGotNone("val a = 1"))
@@ -411,7 +412,7 @@ class DirectExpectationsSpec extends FunSpec {
       }
 
       it("should return Yes with correct fact messsage when parse failed") {
-        val fact = org.scalatest.Expectations.expectDoesNotCompile("println(\"test)")
+        val fact = org.scalatest.expectations.Expectations.expectDoesNotCompile("println(\"test)")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isYes)
         assert(fact.factMessage == Resources.didNotCompile("println(\"test)"))
@@ -419,7 +420,7 @@ class DirectExpectationsSpec extends FunSpec {
       }
 
       it("should do nothing when used with 'val i: Int = null'") {
-        val fact = org.scalatest.Expectations.expectDoesNotCompile("val i: Int = null")
+        val fact = org.scalatest.expectations.Expectations.expectDoesNotCompile("val i: Int = null")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isYes)
       }
@@ -428,7 +429,7 @@ class DirectExpectationsSpec extends FunSpec {
     describe("when used with triple quotes string literal with stripMargin") {
 
       it("should return Yes with correct fact message when type check failed") {
-        val fact = org.scalatest.Expectations.expectDoesNotCompile(
+        val fact = org.scalatest.expectations.Expectations.expectDoesNotCompile(
           """
             |val a: String = 2
             |""".stripMargin
@@ -444,7 +445,7 @@ class DirectExpectationsSpec extends FunSpec {
       }
 
       it("should return No with correct fact message when parse and type check passed") {
-        val fact = org.scalatest.Expectations.expectDoesNotCompile(
+        val fact = org.scalatest.expectations.Expectations.expectDoesNotCompile(
           """
             |val a = 1
             |""".stripMargin
@@ -460,7 +461,7 @@ class DirectExpectationsSpec extends FunSpec {
       }
 
       it("should return Yes with correct fact message when parse failed ") {
-        val fact = org.scalatest.Expectations.expectDoesNotCompile(
+        val fact = org.scalatest.expectations.Expectations.expectDoesNotCompile(
           """
             |println(\"test)
             |""".stripMargin
@@ -482,7 +483,7 @@ class DirectExpectationsSpec extends FunSpec {
     describe("when work with string literal") {
 
       it("should return Yes with correct fact message when type check passed") {
-        val fact = org.scalatest.Expectations.expectCompiles("val a = 1")
+        val fact = org.scalatest.expectations.Expectations.expectCompiles("val a = 1")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isYes)
         assert(fact.factMessage == Resources.compiledSuccessfully("val a = 1"))
@@ -490,7 +491,7 @@ class DirectExpectationsSpec extends FunSpec {
       }
 
       it("should return No with correct fact message when type check failed") {
-        val fact = org.scalatest.Expectations.expectCompiles("val a: String = 2")
+        val fact = org.scalatest.expectations.Expectations.expectCompiles("val a: String = 2")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
         assert(fact.factMessage == Resources.expectedNoErrorButGotTypeError(
@@ -501,7 +502,7 @@ class DirectExpectationsSpec extends FunSpec {
       }
 
       it("should return No with correct fact message when parse failed") {
-        val fact = org.scalatest.Expectations.expectCompiles("println(\"test)")
+        val fact = org.scalatest.expectations.Expectations.expectCompiles("println(\"test)")
         if (ScalaTestVersions.BuiltForScalaVersion == "2.10")
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but eof found.", "println(\"test)"))
         else
@@ -515,7 +516,7 @@ class DirectExpectationsSpec extends FunSpec {
 
       it("should return Fact with correct fact message when type check passed") {
         val fact =
-          org.scalatest.Expectations.expectCompiles(
+          org.scalatest.expectations.Expectations.expectCompiles(
             """
               |val a = 1
               |""".stripMargin
@@ -532,7 +533,7 @@ class DirectExpectationsSpec extends FunSpec {
 
       it("should return No with correct fact message when type check failed") {
         val fact =
-          org.scalatest.Expectations.expectCompiles(
+          org.scalatest.expectations.Expectations.expectCompiles(
             """
               |val a: String = 2
               |""".stripMargin
@@ -551,7 +552,7 @@ class DirectExpectationsSpec extends FunSpec {
 
       it("should return No with correct fact message when parse failed") {
         val fact =
-          org.scalatest.Expectations.expectCompiles(
+          org.scalatest.expectations.Expectations.expectCompiles(
             """
               |println("test)
               |""".stripMargin
@@ -577,7 +578,7 @@ class DirectExpectationsSpec extends FunSpec {
     describe("when work with string literal") {
 
       it("should return Yes with correct fact message when type check failed") {
-        val fact = org.scalatest.Expectations.expectTypeError("val a: String = 1")
+        val fact = org.scalatest.expectations.Expectations.expectTypeError("val a: String = 1")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isYes)
         assert(fact.factMessage == Resources.gotTypeErrorAsExpected("val a: String = 1"))
@@ -585,7 +586,7 @@ class DirectExpectationsSpec extends FunSpec {
       }
 
       it("should return No with correct fact message when type check passed") {
-        val fact = org.scalatest.Expectations.expectTypeError("val a = 1")
+        val fact = org.scalatest.expectations.Expectations.expectTypeError("val a = 1")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
         assert(fact.factMessage == Resources.expectedTypeErrorButGotNone("val a = 1"))
@@ -593,7 +594,7 @@ class DirectExpectationsSpec extends FunSpec {
       }
 
       it("should return No with correct fact message when parse failed") {
-        val fact = org.scalatest.Expectations.expectTypeError("println(\"test)")
+        val fact = org.scalatest.expectations.Expectations.expectTypeError("println(\"test)")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
         if (ScalaTestVersions.BuiltForScalaVersion == "2.10")
@@ -608,7 +609,7 @@ class DirectExpectationsSpec extends FunSpec {
 
       it("should return Yes with correct fact message when type check failed") {
         val fact =
-          org.scalatest.Expectations.expectTypeError(
+          org.scalatest.expectations.Expectations.expectTypeError(
             """
               |val a: String = 2
               |""".stripMargin
@@ -625,7 +626,7 @@ class DirectExpectationsSpec extends FunSpec {
 
       it("should return No with correct fact message when type check passed") {
         val fact =
-          org.scalatest.Expectations.expectTypeError(
+          org.scalatest.expectations.Expectations.expectTypeError(
             """
               |val a = 1
               |""".stripMargin
@@ -642,7 +643,7 @@ class DirectExpectationsSpec extends FunSpec {
 
       it("should return No with correct fact message when parse failed ") {
         val fact =
-          org.scalatest.Expectations.expectTypeError(
+          org.scalatest.expectations.Expectations.expectTypeError(
             """
               |println("test)
               |""".stripMargin

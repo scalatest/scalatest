@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 package org.scalatest
+package diagrams
 
 import org.scalactic._
 import reflect.macros.Context
 
-private[scalatest] object DiagrammedAssertionsMacro {
+private[scalatest] object DiagramsMacro {
 
   /**
    * Get first line number of the given expression.
@@ -81,12 +82,15 @@ private[scalatest] object DiagrammedAssertionsMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Select(
+                  Ident(newTermName("_root_")),
+                  newTermName("org")
+                ),
+                newTermName("scalatest")
               ),
-              newTermName("scalatest")
+              newTermName("diagrams")
             ),
-            newTermName("DiagrammedAssertions")
+            newTermName("Diagrams")
           ),
           newTermName("diagrammedAssertionsHelper")
         ),

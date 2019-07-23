@@ -24,7 +24,7 @@ class FactWheneverSpec extends FunSpec with Matchers with Whenever {
     describe("when the result type of the block is Expectation") {
       describe("when the Boolean condition is true") {
         it("should pass the result of the block through") {
-          import Expectations._
+          import expectations.Expectations._
           val x = 1
           val yes = expect(x == 1)
           val no = expect(x == 2)
@@ -36,7 +36,7 @@ class FactWheneverSpec extends FunSpec with Matchers with Whenever {
       }
       describe("when the Boolean condition is false") {
         it("should return a vacuous Yes") {
-          import Expectations._
+          import expectations.Expectations._
           val x = 1
           val yes = expect(x == 1)
           val no = expect(x == 2)
