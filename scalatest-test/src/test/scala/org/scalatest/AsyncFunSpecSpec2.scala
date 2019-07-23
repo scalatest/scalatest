@@ -28,7 +28,7 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
 
     it("can be used for tests that return a Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with Expectations */ { // Can resurrect expect later
+      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with expectations.Expectations */ { // Can resurrect expect later
 
         val a = 1
 
@@ -104,7 +104,7 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with Expectations */ {
+      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with expectations.Expectations */ {
 
         val a = 1
 

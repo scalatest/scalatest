@@ -3691,7 +3691,7 @@ $okayAssertions$
         bw.write(generatorSuitePreamble)
         if (!mixinInvitationStyle)
           bw.write("import " + traitOrObjectName + "._\n")
-        bw.write("import org.scalatest.Expectations._\n")
+        bw.write("import org.scalatest.expectations.Expectations._\n")
         if (async)
           bw.write("import scala.concurrent.Future\n")
         bw.write("\n")

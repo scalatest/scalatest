@@ -1387,7 +1387,7 @@ class FunSuiteSpec extends FunSpec {
     }
 
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends FunSuite with Expectations {
+      class TestSpec extends FunSuite with expectations.Expectations {
         test("fail scenario") {
           expect(1 === 2); /* ASSERTION_SUCCEED */
         }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.scalatest
+package diagrams
 
 import SharedHelpers.thisLineNumber
 import java.util.Date
@@ -21,9 +22,9 @@ import org.scalactic.Prettifier
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
 
-class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAssertions {
+class DiagramsSpec extends FunSpec with Matchers with Diagrams {
 
-  val fileName: String = "DiagrammedAssertionsSpec.scala"
+  val fileName: String = "DiagramsSpec.scala"
 
   class Stateful {
     var state = false
@@ -93,7 +94,7 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
   def woof(f: => Unit) = "woof"
   def meow(x: Int = 0, y: Int = 3) = "meow"
 
-  describe("DiagrammedAssertions") {
+  describe("Diagrams") {
 
     val a = 3
     val b = 5

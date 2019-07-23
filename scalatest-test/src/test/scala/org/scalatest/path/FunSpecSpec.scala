@@ -844,7 +844,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     }
 */
     "should support expectations" ignore { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends PathFunSpec with Expectations {
+      class TestSpec extends PathFunSpec with expectations.Expectations {
         it("fail scenario") {
           expect(1 === 2)
         }

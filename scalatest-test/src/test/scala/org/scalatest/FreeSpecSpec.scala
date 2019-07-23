@@ -1283,7 +1283,7 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends FreeSpec with Expectations {
+      class TestSpec extends FreeSpec with expectations.Expectations {
         "it should do something" in {
           expect(1 === 2); /* ASSERTION_SUCCEED */
         }

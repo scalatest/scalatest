@@ -32,7 +32,7 @@ class AsyncFunSpecSpec extends FunSpec {
 
     it("can be used for tests that return a Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with Expectations */ { // Can resurrect Expectations tests later
+      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with expectations.Expectations */ { // Can resurrect expectations.Expectations tests later
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -112,7 +112,7 @@ class AsyncFunSpecSpec extends FunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with Expectations */ {
+      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with expectations.Expectations */ {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global

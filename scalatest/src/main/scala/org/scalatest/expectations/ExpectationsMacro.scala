@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.scalatest
+package expectations
 
 import org.scalactic._
 import reflect.macros.Context
@@ -30,10 +31,13 @@ private[scalatest] object ExpectationsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
+              newTermName("scalatest")
             ),
-            newTermName("scalatest")
+            newTermName("expectations")
           ),
           newTermName("Expectations")
         ),
