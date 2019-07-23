@@ -75,7 +75,7 @@ import org.scalatest._
   * @author Bill Venners
   * @author Chee Seng
   */
-trait AsyncConfigMapFixture { this: fixture.AsyncTestSuite =>
+trait AsyncConfigMapFixture { this: FixtureAsyncTestSuite =>
 
   /**
     * The type of the <code>configMap</code>, which is <code>ConfigMap</code>.

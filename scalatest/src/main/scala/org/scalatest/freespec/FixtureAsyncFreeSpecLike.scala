@@ -47,7 +47,7 @@ import scala.util.Try
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait FixtureAsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.scalatest.fixture.AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with org.scalatest.FixtureAsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureFreeSpecMod, "FixtureFreeSpec")
 

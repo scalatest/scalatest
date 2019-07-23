@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest
 
 import org.scalactic._
 import org.scalatest.Tag
+import scala.concurrent.Future
+import org.scalatest.compatible
 
 /**
  * Trait declaring methods that can be used to register test functions that accept
- * a fixture parameter and have any result type.
+ * a fixture parameter and have result type <code>Future[Assertion]</code>.
  */
-trait TestRegistration { theSuite: org.scalatest.fixture.Suite =>
+trait FixtureAsyncTestRegistration { theSuite: org.scalatest.FixtureAsyncTestSuite =>
 
   /**
    * Registers a test.
@@ -31,7 +33,7 @@ trait TestRegistration { theSuite: org.scalatest.fixture.Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position)
+  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position)
 
   /**
    * Registers an ignored test.
@@ -40,5 +42,5 @@ trait TestRegistration { theSuite: org.scalatest.fixture.Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position)
+  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position)
 }

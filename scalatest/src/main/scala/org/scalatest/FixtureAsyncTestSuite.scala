@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest
 
 import org.scalatest._
 
@@ -191,7 +191,7 @@ import scala.concurrent.Future
  * unchanged. The suite will abort asynchronously with any exception returned in a <code>Failure</code>.
  * </p>
  */
-trait AsyncTestSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncTestSuite {
+trait FixtureAsyncTestSuite extends org.scalatest.FixtureSuite with org.scalatest.AsyncTestSuite {
 
   /**
    * Transform the test outcome, `Registration` type to `AsyncOutcome`.

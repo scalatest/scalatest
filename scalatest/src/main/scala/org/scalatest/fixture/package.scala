@@ -265,4 +265,49 @@ package object fixture {
   @deprecated("The org.scalatest.fixture.AsyncWordSpec trait has been moved and renamed. Please use org.scalatest.wordspec.FixtureAsyncWordSpec instead.")
   type AsyncWordSpec = org.scalatest.wordspec.FixtureAsyncWordSpec
   // SKIP-SCALATESTNATIVE-END
+
+  /**
+   * <strong>The name <code>org.scalatest.fixture.AsyncTestRegistration</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.FixtureAsyncTestRegistration</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   */
+  @deprecated("The org.scalatest.fixture.AsyncTestRegistration trait has been moved and renamed. Please use org.scalatest.FixtureAsyncTestRegistration instead.")
+  type AsyncTestRegistration = org.scalatest.FixtureAsyncTestRegistration
+
+  /**
+   * <strong>The name <code>org.scalatest.fixture.AsyncTestSuite</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.FixtureAsyncTestSuite</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   */
+  @deprecated("The org.scalatest.fixture.AsyncTestSuite trait has been moved and renamed. Please use org.scalatest.FixtureAsyncTestSuite instead.")
+  type AsyncTestSuite = org.scalatest.FixtureAsyncTestSuite
+
+  /**
+   * <strong>The name <code>org.scalatest.fixture.Suite</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.FixtureSuite</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   */
+  @deprecated("The org.scalatest.fixture.Suite trait has been moved and renamed. Please use org.scalatest.FixtureSuite instead.")
+  type Suite = org.scalatest.FixtureSuite
+
+  /**
+   * <strong>The name <code>org.scalatest.fixture.TestRegistration</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.FixtureTestRegistration</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   */
+  @deprecated("The org.scalatest.fixture.TestRegistration trait has been moved and renamed. Please use org.scalatest.FixtureTestRegistration instead.")
+  type TestRegistration = org.scalatest.FixtureTestRegistration
+
+  /**
+   * <strong>The name <code>org.scalatest.fixture.TestSuite</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.FixtureTestSuite</code>, instead.</strong>
+   *
+   * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   */
+  @deprecated("The org.scalatest.fixture.TestSuite trait has been moved and renamed. Please use org.scalatest.FixtureTestSuite instead.")
+  type TestSuite = org.scalatest.FixtureTestSuite
 }

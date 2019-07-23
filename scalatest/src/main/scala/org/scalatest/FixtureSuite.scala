@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
-
+package org.scalatest
 
 /**
  * Base trait for a family of style traits that can pass a fixture object into tests.
  *
  * @author Bill Venners
  */
-trait Suite extends org.scalatest.Suite { thisSuite =>
+trait FixtureSuite extends org.scalatest.Suite { thisSuite =>
 
   /**
    * The type of the fixture parameter that can be passed into tests in this suite.
@@ -339,9 +338,9 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
   /**
    * Suite style name.
    *
-   * @return <code>org.scalatest.fixture.Suite</code>
+   * @return <code>org.scalatest.FixtureSuite</code>
    */
-  override val styleName: String = "org.scalatest.fixture.Suite"
+  override val styleName: String = "org.scalatest.FixtureSuite"
 }
 
 /*

@@ -46,7 +46,7 @@ import org.scalatest.fixture.{Transformer, NoArgTestWrapper}
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait FixtureAnyFreeSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fixture.TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.scalatest.FixtureTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFreeSpecMod, "FixtureFreeSpec")
 

@@ -44,7 +44,7 @@ import org.scalatest._
   *
   * @author Bill Venners
   */
-trait AsyncTestDataFixture { this: fixture.AsyncTestSuite =>
+trait AsyncTestDataFixture { this: FixtureAsyncTestSuite =>
 
   /**
     * The type of the fixture, which is <code>TestData</code>.

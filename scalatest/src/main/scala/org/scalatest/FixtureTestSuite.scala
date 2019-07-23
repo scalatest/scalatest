@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest
 
 import org.scalatest._
 import OutcomeOf.outcomeOf
 import org.scalactic._
 
-trait TestSuite extends org.scalatest.fixture.Suite with org.scalatest.TestSuite { thisTestSuite =>
+trait FixtureTestSuite extends org.scalatest.FixtureSuite with org.scalatest.TestSuite { thisTestSuite =>
 
   /**
    * A test function taking a fixture parameter and returning an <code>Outcome</code>.
@@ -150,6 +150,5 @@ trait TestSuite extends org.scalatest.fixture.Suite with org.scalatest.TestSuite
     val tags = testData.tags
     val pos = testData.pos
   }
-
 }
 
