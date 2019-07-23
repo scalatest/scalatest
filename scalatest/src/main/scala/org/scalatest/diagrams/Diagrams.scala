@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.scalatest
+package diagrams
+
 
 import org.scalactic._
 import org.scalactic.Requirements._
@@ -21,14 +23,14 @@ import scala.collection.mutable.ListBuffer
 import collection.immutable.TreeMap
 
 /**
- * Sub-trait of <code>Assertions</code> that override <code>assert</code> and <code>assume</code> methods to include
+ * Sub-trait of <code>Assertions</code> that overrides <code>assert</code> and <code>assume</code> methods to include
  * a diagram showing the values of expression in the error message when the assertion or assumption fails.
  *
  * Here are some examples:
  *
  * <pre class="stREPL">
- * scala&gt; import DiagrammedAssertions._
- * import DiagrammedAssertions._
+ * scala&gt; import org.scalatest.diagrams.Diagrams._
+ * import org.scalatest.diagrams.Diagrams._
  * 
  * scala&gt; assert(a == b || c &gt;= d)
  * org.scalatest.exceptions.TestFailedException:
@@ -110,9 +112,9 @@ import collection.immutable.TreeMap
  * </pre>
  *
  * <p>
- * If the expression passed to <code>assert</code> or <code>assume</code> spans more than one line, <code>DiagrammedAssertions</code> falls
+ * If the expression passed to <code>assert</code> or <code>assume</code> spans more than one line, <code>Diagrams</code> falls
  * back to the default style of error message, since drawing a diagram would be difficult. Here's an example showing how
- * <code>DiagrammedAssertions</code> will treat a multi-line assertion (<em>i.e.</em>, you don't get a diagram):
+ * <code>Diagrams</code> will treat a multi-line assertion (<em>i.e.</em>, you don't get a diagram):
  * </p>
  * 
  * <pre class="stREPL">
@@ -150,9 +152,9 @@ import collection.immutable.TreeMap
  *         ...
  * </pre>
  *
- * <p>Trait <code>DiagrammedAssertions</code> was inspired by Peter Niederwieser's work in <a href="http://code.google.com/p/spock/">Spock</a> and <a href="https://github.com/pniederw/expecty">Expecty</a>.
+ * <p>Trait <code>Diagrams</code> was inspired by Peter Niederwieser's work in <a href="http://code.google.com/p/spock/">Spock</a> and <a href="https://github.com/pniederw/expecty">Expecty</a>.
  */
-trait DiagrammedAssertions extends Assertions {
+trait Diagrams extends Assertions {
 
   import language.experimental.macros
 
@@ -174,7 +176,7 @@ trait DiagrammedAssertions extends Assertions {
    * @param condition the boolean condition to assert
    * @throws TestFailedException if the condition is <code>false</code>.
    */
-  override def assert(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro DiagrammedAssertionsMacro.assert
+  override def assert(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro DiagramsMacro.assert
 
   /**
    * Assert that a boolean condition, described in <code>String</code>
@@ -195,7 +197,7 @@ trait DiagrammedAssertions extends Assertions {
    * @throws TestFailedException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  override def assert(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro DiagrammedAssertionsMacro.assertWithClue
+  override def assert(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro DiagramsMacro.assertWithClue
 
   /**
    * Assume that a boolean condition is true.
@@ -215,7 +217,7 @@ trait DiagrammedAssertions extends Assertions {
    * @param condition the boolean condition to assume
    * @throws TestCanceledException if the condition is <code>false</code>.
    */
-  override def assume(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro DiagrammedAssertionsMacro.assume
+  override def assume(condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro DiagramsMacro.assume
 
   /**
    * Assume that a boolean condition, described in <code>String</code>
@@ -236,12 +238,12 @@ trait DiagrammedAssertions extends Assertions {
    * @throws TestCanceledException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  override def assume(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro DiagrammedAssertionsMacro.assumeWithClue
+  override def assume(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro DiagramsMacro.assumeWithClue
 }
 
 /**
- * Companion object that facilitates the importing of <code>DiagrammedAssertions</code> members as
- * an alternative to mixing it in. One use case is to import <code>DiagrammedAssertions</code> members so you can use
+ * Companion object that facilitates the importing of <code>Diagrams</code> members as
+ * an alternative to mixing it in. One use case is to import <code>Diagrams</code> members so you can use
  * them in the Scala interpreter:
  *
  * <pre class="stREPL">
@@ -262,8 +264,8 @@ trait DiagrammedAssertions extends Assertions {
  *          false
  *
  *      at org.scalatest.Assertions$class.newAssertionFailedException(Assertions.scala:422)
- * 	    at org.scalatest.DiagrammedAssertions$.newAssertionFailedException(DiagrammedAssertions.scala:249)
- * 	    at org.scalatest.DiagrammedAssertions$DiagrammedAssertionsHelper.macroAssert(DiagrammedAssertions.scala:111)
+ * 	    at org.scalatest.Diagrams$.newAssertionFailedException(Diagrams.scala:249)
+ * 	    at org.scalatest.Diagrams$DiagramsHelper.macroAssert(Diagrams.scala:111)
  * 	    at .&lt;init&gt;(&lt;console&gt;:20)
  * 	    at .&lt;clinit&gt;(&lt;console&gt;)
  * 	    at .&lt;init&gt;(&lt;console&gt;:7)
@@ -272,12 +274,12 @@ trait DiagrammedAssertions extends Assertions {
  * 	    at sun.reflect.NativeMethodAccessorImpl.invoke...
  * </pre>
  */
-object DiagrammedAssertions extends DiagrammedAssertions {
+object Diagrams extends Diagrams {
 
   /**
     * Helper class used by code generated by the overriden <code>assert</code> macro.
     */
-  class DiagrammedAssertionsHelper {
+  class DiagramsHelper {
 
     // this is taken from expecty
     private[this] def fits(line: StringBuilder, str: String, anchor: Int): Boolean =
@@ -382,6 +384,5 @@ object DiagrammedAssertions extends DiagrammedAssertions {
   /**
     * Helper instance used by code generated by the overriden macro assertion.
     */
-  val diagrammedAssertionsHelper = new DiagrammedAssertionsHelper
-
+  val diagrammedAssertionsHelper = new DiagramsHelper
 }

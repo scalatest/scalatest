@@ -129,6 +129,7 @@ object GenScalaTestNative {
         "run.scala"
       ) ++ asyncs("scalatest/src/main/scala/org/scalatest")
     ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "Spec.scala",

@@ -264,6 +264,7 @@ object ScalatestBuild {
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
       "-m", "org.scalatest.expectations",
+      "-m", "org.scalatest.diagrams",
       "-oDIF",
       "-W", "120", "60",
       "-h", "target/html",
@@ -291,6 +292,7 @@ object ScalatestBuild {
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
       "-m", "org.scalatest.expectations",
+      "-m", "org.scalatest.diagrams",
       "-oDIF"))
 
   def scalatestTestNativeOptions =
@@ -314,6 +316,7 @@ object ScalatestBuild {
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
       "-m", "org.scalatest.expectations",
+      "-m", "org.scalatest.diagrams",
       "-oDIF"))
 
   lazy val commonTest = Project("common-test", file("common-test"))
@@ -798,6 +801,7 @@ object ScalatestBuild {
         "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.check",
+        "org.scalatest.diagrams",
         "org.scalatest.enablers",
         "org.scalatest.events",
         "org.scalatest.exceptions",
@@ -908,6 +912,7 @@ object ScalatestBuild {
         "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.check",
+        "org.scalatest.diagrams",
         "org.scalatest.enablers",
         "org.scalatest.events",
         "org.scalatest.exceptions",
@@ -1006,6 +1011,7 @@ object ScalatestBuild {
       "org.scalatest.compatible",
       "org.scalatest.concurrent",
       "org.scalatest.check",
+      "org.scalatest.diagrams",
       "org.scalatest.enablers",
       "org.scalatest.events",
       "org.scalatest.exceptions",
@@ -1160,6 +1166,7 @@ object ScalatestBuild {
       "org.scalatest.compatible",
       "org.scalatest.concurrent",
       "org.scalatest.check",
+      "org.scalatest.diagrams",
       "org.scalatest.enablers",
       "org.scalatest.events",
       "org.scalatest.exceptions",
@@ -1273,6 +1280,7 @@ object ScalatestBuild {
         "org.scalatest",
         "org.scalatest.compatible",
         "org.scalatest.concurrent",
+        "org.scalatest.diagrams",
         "org.scalatest.enablers",
         "org.scalatest.events",
         "org.scalatest.exceptions",
@@ -1348,6 +1356,7 @@ object ScalatestBuild {
         "org.scalatest",
         "org.scalatest.compatible",
         "org.scalatest.concurrent",
+        "org.scalatest.diagrams",
         "org.scalatest.enablers",
         "org.scalatest.events",
         "org.scalatest.exceptions",
@@ -1421,6 +1430,7 @@ object ScalatestBuild {
           "org.scalatest",
           "org.scalatest.compatible",
           "org.scalatest.concurrent",
+          "org.scalatest.diagrams",
           "org.scalatest.enablers",
           "org.scalatest.events",
           "org.scalatest.exceptions",
