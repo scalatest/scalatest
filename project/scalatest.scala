@@ -263,6 +263,7 @@ object ScalatestBuild {
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
+      "-m", "org.scalatest.diagrams",
       "-oDIF",
       "-W", "120", "60",
       "-h", "target/html",
@@ -289,6 +290,7 @@ object ScalatestBuild {
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
+      "-m", "org.scalatest.diagrams",
       "-oDIF"))
 
   def scalatestTestNativeOptions =
@@ -311,6 +313,7 @@ object ScalatestBuild {
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
+      "-m", "org.scalatest.diagrams",
       "-oDIF"))
 
   lazy val commonTest = Project("common-test", file("common-test"))
