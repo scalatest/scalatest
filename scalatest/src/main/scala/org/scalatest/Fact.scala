@@ -66,7 +66,7 @@ private[scalatest] sealed abstract class Fact {
    *
    * @return a simplified version of this Fact
    */
-  def unary_!(): Fact = Fact.Unary_!(this)
+  def unary_! : Fact = Fact.Unary_!(this)
 
   final def ||(rhs: => Fact): Fact = if (isYes) this else Fact.Binary_||(this, rhs)
 
@@ -846,7 +846,7 @@ private[scalatest] object Fact {
     val isYes: Boolean = !(underlying.isYes)
     val isVacuousYes: Boolean = false
 
-    override def unary_!(): org.scalatest.Fact = underlying
+    override def unary_! : org.scalatest.Fact = underlying
 
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
