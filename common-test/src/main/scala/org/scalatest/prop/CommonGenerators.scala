@@ -2403,7 +2403,7 @@ trait CommonGenerators {
   // classify will need to use the same sizing algo as forAll, and same edges approach
   def classify[A](count: PosInt, genOfA: Generator[A])(pf: PartialFunction[A, String]): Classification = {
 
-    val (initEdges, rnd1) = genOfA.initEdges(100, Randomizer.default())
+    val (initEdges, rnd1) = genOfA.initEdges(100, Randomizer.default)
     @tailrec
     def loop(currentCount: Int, edges: List[A], rnd: Randomizer, acc: Map[String, PosZInt]): Map[String, PosZInt] = {
       if (currentCount >= count) acc
