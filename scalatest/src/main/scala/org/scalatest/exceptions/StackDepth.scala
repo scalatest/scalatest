@@ -33,17 +33,17 @@ trait StackDepth { this: Throwable =>
   /**
    * An optional detail message for this <code>StackDepth</code> exception.
    */
-  val message: Option[String]
- 
+  def message: Option[String]
+
   /**
    * An optional cause, the <code>Throwable</code> that caused this <code>StackDepth</code> exception to be thrown.
    */
-  val cause: Option[Throwable]
+  def cause: Option[Throwable]
 
   /**
    * The depth in the stack trace of this exception at which the line of test code that failed resides.
    */
-  val failedCodeStackDepth: Int
+  def failedCodeStackDepth: Int
 
   /**
    * A string that provides the full pathname of the source file containing the line of code that failed, suitable
@@ -51,12 +51,12 @@ trait StackDepth { this: Throwable =>
    *
    * @return a string containing the full pathname of the source file containing the line of code that caused this exception
    */
-  val failedCodeFilePathname: Option[String]
+  def failedCodeFilePathname: Option[String]
 
   /**
    * An optional source position describing the line of test code that caused this exception.
    */
-  val position: Option[source.Position]
+  def position: Option[source.Position]
 
   /**
    * A string that provides the filename and line number of the line of code that failed, suitable
@@ -145,7 +145,7 @@ trait StackDepth { this: Throwable =>
   }
 
   /**
-   * Returns an exception of the same class with <code>failedExceptionStackDepth</code> set to 0 and 
+   * Returns an exception of the same class with <code>failedExceptionStackDepth</code> set to 0 and
    * all frames above this stack depth severed off. This can be useful when working with tools (such as IDEs) that do not
    * directly support ScalaTest. (Tools that directly support ScalaTest can use the stack depth information delivered
    * in the StackDepth exceptions.)
