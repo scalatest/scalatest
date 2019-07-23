@@ -137,6 +137,13 @@ object GenScalaTestNative {
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/matchers/should", "org/scalatest/matchers/should", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/matchers/dsl", "org/scalatest/matchers/dsl", targetDir, 
+      List(
+        "JavaCollectionWrapper.scala",
+        "JavaMapWrapper.scala"
+      )
+    ) ++ 
     copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
         "AboutJDialog.scala",
@@ -195,12 +202,7 @@ object GenScalaTestNative {
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir,
-      List(
-        "JavaCollectionWrapper.scala",
-        "JavaMapWrapper.scala"
-      )
-    ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir,
       asyncs("scalatest/src/main/scala/org/scalatest/funsuite")
@@ -255,7 +257,8 @@ object GenScalaTestNative {
         "InternetExplorerBrowser.scala",  // skipped because selenium not supported.
         "SafariBrowser.scala"  // skipped because selenium not supported.
       )
-    )
+    ) ++ 
+    copyDir("scalatest/src/main/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty)
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
@@ -638,11 +641,6 @@ object GenScalaTestNative {
     copyDir("scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir,
-      List(
-        "ResultOfNotWordForAnySpec.scala"
-      )
-    ) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
         "DashboardReporterSpec.scala",
