@@ -266,6 +266,7 @@ package object fixture {
   type AsyncWordSpec = org.scalatest.wordspec.FixtureAsyncWordSpec
   // SKIP-SCALATESTNATIVE-END
 
+  // SKIP-SCALATESTJS,NATIVE-START
   /**
    * <strong>The name <code>org.scalatest.fixture.AsyncTestRegistration</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.FixtureAsyncTestRegistration</code>, instead.</strong>
@@ -283,6 +284,7 @@ package object fixture {
    */
   @deprecated("The org.scalatest.fixture.AsyncTestSuite trait has been moved and renamed. Please use org.scalatest.FixtureAsyncTestSuite instead.")
   type AsyncTestSuite = org.scalatest.FixtureAsyncTestSuite
+  // SKIP-SCALATESTJS,NATIVE-END
 
   /**
    * <strong>The name <code>org.scalatest.fixture.Suite</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
