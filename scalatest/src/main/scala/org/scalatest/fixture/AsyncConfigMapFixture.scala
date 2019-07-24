@@ -18,7 +18,7 @@ package org.scalatest.fixture
 import org.scalatest._
 
 /**
-  * Trait that when mixed into a <a href="AsyncTestSuite.html"><code>fixture.AsyncTestSuite</code></a> passes
+  * Trait that when mixed into a <a href="../FixtureAsyncTestSuite.html"><code>FixtureAsyncTestSuite</code></a> passes
   * the config map passed to <code>runTest</code> as a fixture into each test.
   *
   * <p>

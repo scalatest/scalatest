@@ -39,7 +39,7 @@ package org.scalatest
  * The config map is accessible inside a <code>Suite</code> in many ways. It is passed to <code>run</code>,
  * <code>runNestedSuites</code>, <code>runTests</code>, and <code>runTest</code>. It is also passed to
  * <code>withFixture</code>, accessible via a method on <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> and
- * <a href="fixture/Suite$OneArgTest.html"><code>OneArgTest</code></a>.
+ * <a href="FixtureSuite$OneArgTest.html"><code>OneArgTest</code></a>.
  * It is passed to an overloaded forms of the <code>beforeEach</code> and <code>afterEach</code> methods of trait
  * <a href="BeforeAndAfterEach.html"><code>BeforeAndAfterEach</code></a>, as well as overloaded forms of the <code>beforeAll</code> and
  * <code>afterAll</code> methods of trait <a href="BeforeAndAfterAll.html"><code>BeforeAndAfterAll</code></a>. Tests themselves can have information

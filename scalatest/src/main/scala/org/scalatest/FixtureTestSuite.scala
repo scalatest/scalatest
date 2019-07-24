@@ -48,13 +48,13 @@ trait FixtureTestSuite extends org.scalatest.FixtureSuite with org.scalatest.Tes
      *
      * <p>
      * This method makes it easier to invoke the <code>withFixture</code> method
-     * that takes a <code>NoArgTest</code>. For example, if a <code>fixture.Suite</code> 
+     * that takes a <code>NoArgTest</code>. For example, if a <code>FixtureSuite</code> 
      * mixes in <code>SeveredStackTraces</code>, it will inherit an implementation
      * of <code>withFixture(NoArgTest)</code> provided by
      * <code>SeveredStackTraces</code> that implements the stack trace severing
-     * behavior. If the <code>fixture.Suite</code> does not delegate to that
+     * behavior. If the <code>FixtureSuite</code> does not delegate to that
      * <code>withFixture(NoArgTest)</code> method, the stack trace severing behavior
-     * will not happen. Here's how that might look in a <code>fixture.Suite</code>
+     * will not happen. Here's how that might look in a <code>FixtureSuite</code>
      * whose <code>FixtureParam</code> is <code>StringBuilder</code>:
      * </p>
      *

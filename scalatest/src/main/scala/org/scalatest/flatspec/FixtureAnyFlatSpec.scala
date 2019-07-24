@@ -154,7 +154,7 @@ import org.scalatest._
  *   }
  * }
  * 
- * trait DbFixture { this: fixture.Suite =&gt;
+ * trait DbFixture { this: FixtureSuite =&gt;
  * 
  *   type FixtureParam = Db
  * 

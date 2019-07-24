@@ -25,7 +25,7 @@ import scala.concurrent.Future
  *
  * <p>
  * This trait provides a final override of <code>withFixture(OneArgTest)</code>, declared in
- * supertrait <code>fixture.Suite</code>, because the <code>withFixture(OneArgTest)</code> lifecycle
+ * supertrait <code>FixtureSuite</code>, because the <code>withFixture(OneArgTest)</code> lifecycle
  * method assumes synchronous testing. Here is its signature:
  * </p>
  *
@@ -241,7 +241,7 @@ trait FixtureAsyncTestSuite extends org.scalatest.FixtureSuite with org.scalates
      * <p>
      * This method makes it easier to invoke the <code>withFixture</code> method
      * that takes a <code>NoArgAsyncTest</code>.
-     * Here's how that might look in a <code>fixture.AsyncTestSuite</code>
+     * Here's how that might look in a <code>FixtureAsyncTestSuite</code>
      * whose <code>FixtureParam</code> is <code>StringBuilder</code>:
      * </p>
      *

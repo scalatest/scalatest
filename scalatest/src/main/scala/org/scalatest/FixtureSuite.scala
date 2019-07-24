@@ -27,7 +27,7 @@ trait FixtureSuite extends org.scalatest.Suite { thisSuite =>
    */
   protected type FixtureParam
   /*
-   * A <code>Set</code> of test names. If this <code>fixture.Suite</code> contains no tests, this method returns an empty <code>Set</code>.
+   * A <code>Set</code> of test names. If this <code>FixtureSuite</code> contains no tests, this method returns an empty <code>Set</code>.
    *
    * <p>
    * This trait's implementation of this method uses Java reflection to discover all public methods whose name starts with <code>"test"</code>,
@@ -299,7 +299,7 @@ trait FixtureSuite extends org.scalatest.Suite { thisSuite =>
 */
 
 /*
-  // Overriding this in fixture.Suite to reduce duplication of tags method
+  // Overriding this in FixtureSuite to reduce duplication of tags method
   private[scalatest] override def getMethodForTestName(theSuite: org.scalatest.Suite, testName: String): Method = {
     val candidateMethods = theSuite.getClass.getMethods.filter(_.getName == Suite.simpleNameForTest(testName))
     val found =
