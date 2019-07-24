@@ -22,7 +22,7 @@ import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
-import org.scalactic.{FailureMessages => _, UnquotedString => _, _}
+import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _, _}
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
