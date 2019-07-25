@@ -16,7 +16,7 @@
 package org.scalatest
 package expectations
 
-import org.scalactic._
+import org.scalactic.{Resources => _, _}
 import Fact._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
