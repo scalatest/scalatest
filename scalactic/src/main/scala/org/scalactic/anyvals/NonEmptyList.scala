@@ -210,7 +210,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyList</code>. 
    * </p>
    */
-  @deprecated("Please use foldLeft instead")
+  @deprecated("The /: method has been deprecated and will be removed in a future version of Scalactic. Please use foldLeft instead.", "3.1.x")
   final def /:[B](z: B)(op: (B, T) => B): B = toList./:(z)(op)
 
   /**
@@ -235,7 +235,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyList</code>. 
    * </p>
    */
-  @deprecated("Please use foldRight instead.")
+  @deprecated("The :\\ method has been deprecated and will be removed in a future version of Scalactic. Please use foldRight instead.", "3.1.x")
   final def :\[B](z: B)(op: (T, B) => B): B = toList.:\(z)(op)
 
   /**
