@@ -75,7 +75,7 @@ class AccumulationSpec extends UnitSpec with Accumulation with TypeCheckedTriple
   "The Accumulation trait" can "insert one Or into a function" in {
     def parseAddressForPerson(name: String, date: Date, in: String): Person Or Every[ErrorMessage] = {
       val address: List[String] Or One[ErrorMessage] = parseOptionalAddress(if (in.isEmpty) None else Some(in))
-      withGood(address) {
+      address.map {
         Person(name, date, _)
       } 
     }
@@ -151,7 +151,7 @@ class AccumulationSpec extends UnitSpec with Accumulation with TypeCheckedTriple
 
   def gimme1(s: String, ca: Char): X1 Or Every[Char] = {
     val xa = parse(s, ca)
-    withGood(xa) { X1(_) }
+    xa.map { X1(_) }
   }
 
   def gimme2(s: String, ca: Char, cb: Char): X2 Or Every[Char] = {
