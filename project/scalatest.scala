@@ -105,6 +105,7 @@ object ScalatestBuild {
 
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
+    scalaVersion := "2.13.0", 
     crossScalaVersions := supportedScalaVersions,
     version := releaseVersion,
     scalacOptions ++= Seq("-feature"),
@@ -1463,6 +1464,7 @@ object ScalatestBuild {
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
+    scalaVersion := "2.13.0", 
     crossScalaVersions := supportedScalaVersions,
     scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty else Seq("-Ypartial-unification")),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
