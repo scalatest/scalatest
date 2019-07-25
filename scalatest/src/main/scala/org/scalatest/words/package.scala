@@ -32,7 +32,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.BeWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.BeWord instead.")
+  @deprecated("The org.scalatest.words.BeWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.BeWord instead.", "3.1.0")
   type BeWord = org.scalatest.matchers.dsl.BeWord
 
   /**
@@ -41,7 +41,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ContainWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ContainWord instead.")
+  @deprecated("The org.scalatest.words.ContainWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ContainWord instead.", "3.1.0")
   type ContainWord = org.scalatest.matchers.dsl.ContainWord
 
   /**
@@ -50,7 +50,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.DefinedWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.DefinedWord instead.")
+  @deprecated("The org.scalatest.words.DefinedWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.DefinedWord instead.", "3.1.0")
   type DefinedWord = org.scalatest.matchers.dsl.DefinedWord
 
   /**
@@ -59,7 +59,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.EmptyWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.EmptyWord instead.")
+  @deprecated("The org.scalatest.words.EmptyWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.EmptyWord instead.", "3.1.0")
   type EmptyWord = org.scalatest.matchers.dsl.EmptyWord
 
   /**
@@ -68,7 +68,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.EndWithWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.EndWithWord instead.")
+  @deprecated("The org.scalatest.words.EndWithWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.EndWithWord instead.", "3.1.0")
   type EndWithWord = org.scalatest.matchers.dsl.EndWithWord
 
   /**
@@ -77,7 +77,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ExistWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ExistWord instead.")
+  @deprecated("The org.scalatest.words.ExistWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ExistWord instead.", "3.1.0")
   type ExistWord = org.scalatest.matchers.dsl.ExistWord
 
   /**
@@ -86,7 +86,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.FullyMatchWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.FullyMatchWord instead.")
+  @deprecated("The org.scalatest.words.FullyMatchWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.FullyMatchWord instead.", "3.1.0")
   type FullyMatchWord = org.scalatest.matchers.dsl.FullyMatchWord
 
   /**
@@ -95,7 +95,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.HaveWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.HaveWord instead.")
+  @deprecated("The org.scalatest.words.HaveWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.HaveWord instead.", "3.1.0")
   type HaveWord = org.scalatest.matchers.dsl.HaveWord
 
   /**
@@ -104,7 +104,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.IncludeWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.IncludeWord instead.")
+  @deprecated("The org.scalatest.words.IncludeWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.IncludeWord instead.", "3.1.0")
   type IncludeWord = org.scalatest.matchers.dsl.IncludeWord
 
   /**
@@ -113,7 +113,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.LengthWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.LengthWord instead.")
+  @deprecated("The org.scalatest.words.LengthWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.LengthWord instead.", "3.1.0")
   type LengthWord = org.scalatest.matchers.dsl.LengthWord
 
   /**
@@ -122,7 +122,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.MatchPatternWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.MatchPatternWord instead.")
+  @deprecated("The org.scalatest.words.MatchPatternWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.MatchPatternWord instead.", "3.1.0")
   type MatchPatternWord = org.scalatest.matchers.dsl.MatchPatternWord
 
   /**
@@ -131,7 +131,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.MatcherWords class has been moved and renamed. Please use org.scalatest.matchers.dsl.MatcherWords instead.")
+  @deprecated("The org.scalatest.words.MatcherWords class has been moved and renamed. Please use org.scalatest.matchers.dsl.MatcherWords instead.", "3.1.0")
   type MatcherWords = org.scalatest.matchers.dsl.MatcherWords
 
   /**
@@ -140,7 +140,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.NoExceptionWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.NoExceptionWord instead.")
+  @deprecated("The org.scalatest.words.NoExceptionWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.NoExceptionWord instead.", "3.1.0")
   type NoExceptionWord = org.scalatest.matchers.dsl.NoExceptionWord
 
   /**
@@ -149,7 +149,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.NotWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.NotWord instead.")
+  @deprecated("The org.scalatest.words.NotWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.NotWord instead.", "3.1.0")
   type NotWord = org.scalatest.matchers.dsl.NotWord
 
   /**
@@ -158,7 +158,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.PleaseUseNoExceptionShouldSyntaxInstead class has been moved and renamed. Please use org.scalatest.matchers.dsl.PleaseUseNoExceptionShouldSyntaxInstead instead.")
+  @deprecated("The org.scalatest.words.PleaseUseNoExceptionShouldSyntaxInstead class has been moved and renamed. Please use org.scalatest.matchers.dsl.PleaseUseNoExceptionShouldSyntaxInstead instead.", "3.1.0")
   type PleaseUseNoExceptionShouldSyntaxInstead = org.scalatest.matchers.dsl.PleaseUseNoExceptionShouldSyntaxInstead
 
   /**
@@ -167,7 +167,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ReadableWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ReadableWord instead.")
+  @deprecated("The org.scalatest.words.ReadableWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ReadableWord instead.", "3.1.0")
   type ReadableWord = org.scalatest.matchers.dsl.ReadableWord
 
   /**
@@ -176,7 +176,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.RegexWithGroups class has been moved and renamed. Please use org.scalatest.matchers.dsl.RegexWithGroups instead.")
+  @deprecated("The org.scalatest.words.RegexWithGroups class has been moved and renamed. Please use org.scalatest.matchers.dsl.RegexWithGroups instead.", "3.1.0")
   type RegexWithGroups = org.scalatest.matchers.dsl.RegexWithGroups
 
   /**
@@ -185,7 +185,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfATypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfATypeInvocation instead.")
+  @deprecated("The org.scalatest.words.ResultOfATypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfATypeInvocation instead.", "3.1.0")
   type ResultOfATypeInvocation[T] = org.scalatest.matchers.dsl.ResultOfATypeInvocation[T]
 
   /**
@@ -194,7 +194,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAWordToAMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAWordToAMatcherApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAWordToAMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAWordToAMatcherApplication instead.", "3.1.0")
   type ResultOfAWordToAMatcherApplication[T] = org.scalatest.matchers.dsl.ResultOfAWordToAMatcherApplication[T]
 
   /**
@@ -203,7 +203,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAWordToBePropertyMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAWordToBePropertyMatcherApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAWordToBePropertyMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAWordToBePropertyMatcherApplication instead.", "3.1.0")
   type ResultOfAWordToBePropertyMatcherApplication[T] = org.scalatest.matchers.dsl.ResultOfAWordToBePropertyMatcherApplication[T]
 
   /**
@@ -212,7 +212,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAWordToSymbolApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAWordToSymbolApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAWordToSymbolApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAWordToSymbolApplication instead.", "3.1.0")
   type ResultOfAWordToSymbolApplication = org.scalatest.matchers.dsl.ResultOfAWordToSymbolApplication
 
   /**
@@ -221,7 +221,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAllElementsOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAllElementsOfApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAllElementsOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAllElementsOfApplication instead.", "3.1.0")
   type ResultOfAllElementsOfApplication = org.scalatest.matchers.dsl.ResultOfAllElementsOfApplication
 
   /**
@@ -230,7 +230,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAllOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAllOfApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAllOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAllOfApplication instead.", "3.1.0")
   type ResultOfAllOfApplication = org.scalatest.matchers.dsl.ResultOfAllOfApplication
 
   /**
@@ -239,7 +239,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAnTypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnTypeInvocation instead.")
+  @deprecated("The org.scalatest.words.ResultOfAnTypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnTypeInvocation instead.", "3.1.0")
   type ResultOfAnTypeInvocation[T] = org.scalatest.matchers.dsl.ResultOfAnTypeInvocation[T]
 
   /**
@@ -248,7 +248,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAnWordToAnMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnWordToAnMatcherApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAnWordToAnMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnWordToAnMatcherApplication instead.", "3.1.0")
   type ResultOfAnWordToAnMatcherApplication[T] = org.scalatest.matchers.dsl.ResultOfAnWordToAnMatcherApplication[T]
 
   /**
@@ -257,7 +257,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAnWordToBePropertyMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnWordToBePropertyMatcherApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAnWordToBePropertyMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnWordToBePropertyMatcherApplication instead.", "3.1.0")
   type ResultOfAnWordToBePropertyMatcherApplication[T] = org.scalatest.matchers.dsl.ResultOfAnWordToBePropertyMatcherApplication[T]
 
   /**
@@ -266,7 +266,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAnWordToSymbolApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnWordToSymbolApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAnWordToSymbolApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnWordToSymbolApplication instead.", "3.1.0")
   type ResultOfAnWordToSymbolApplication = org.scalatest.matchers.dsl.ResultOfAnWordToSymbolApplication
 
   /**
@@ -275,7 +275,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAtLeastOneElementOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtLeastOneElementOfApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAtLeastOneElementOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtLeastOneElementOfApplication instead.", "3.1.0")
   type ResultOfAtLeastOneElementOfApplication = org.scalatest.matchers.dsl.ResultOfAtLeastOneElementOfApplication
 
   /**
@@ -284,7 +284,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAtLeastOneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtLeastOneOfApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAtLeastOneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtLeastOneOfApplication instead.", "3.1.0")
   type ResultOfAtLeastOneOfApplication = org.scalatest.matchers.dsl.ResultOfAtLeastOneOfApplication
 
   /**
@@ -293,7 +293,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAtMostOneElementOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtMostOneElementOfApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAtMostOneElementOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtMostOneElementOfApplication instead.", "3.1.0")
   type ResultOfAtMostOneElementOfApplication = org.scalatest.matchers.dsl.ResultOfAtMostOneElementOfApplication
 
   /**
@@ -302,7 +302,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAtMostOneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtMostOneOfApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAtMostOneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtMostOneOfApplication instead.", "3.1.0")
   type ResultOfAtMostOneOfApplication = org.scalatest.matchers.dsl.ResultOfAtMostOneOfApplication
 
   /**
@@ -311,7 +311,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfBeThrownBy class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeThrownBy instead.")
+  @deprecated("The org.scalatest.words.ResultOfBeThrownBy class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeThrownBy instead.", "3.1.0")
   type ResultOfBeThrownBy = org.scalatest.matchers.dsl.ResultOfBeThrownBy
 
   /**
@@ -320,7 +320,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfBeWordForAType class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeWordForAType instead.")
+  @deprecated("The org.scalatest.words.ResultOfBeWordForAType class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeWordForAType instead.", "3.1.0")
   type ResultOfBeWordForAType[T] = org.scalatest.matchers.dsl.ResultOfBeWordForAType[T]
 
   /**
@@ -329,7 +329,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfBeWordForAnType class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeWordForAnType instead.")
+  @deprecated("The org.scalatest.words.ResultOfBeWordForAnType class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeWordForAnType instead.", "3.1.0")
   type ResultOfBeWordForAnType[T] = org.scalatest.matchers.dsl.ResultOfBeWordForAnType[T]
 
   /**
@@ -338,7 +338,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfBeWordForNoException class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeWordForNoException instead.")
+  @deprecated("The org.scalatest.words.ResultOfBeWordForNoException class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeWordForNoException instead.", "3.1.0")
   type ResultOfBeWordForNoException = org.scalatest.matchers.dsl.ResultOfBeWordForNoException
 
   /**
@@ -347,7 +347,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfContainWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfContainWord instead.")
+  @deprecated("The org.scalatest.words.ResultOfContainWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfContainWord instead.", "3.1.0")
   type ResultOfContainWord[T] = org.scalatest.matchers.dsl.ResultOfContainWord[T]
 
   /**
@@ -356,7 +356,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfDefinedAt class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfDefinedAt instead.")
+  @deprecated("The org.scalatest.words.ResultOfDefinedAt class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfDefinedAt instead.", "3.1.0")
   type ResultOfDefinedAt[T] = org.scalatest.matchers.dsl.ResultOfDefinedAt[T]
 
   /**
@@ -365,7 +365,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfGreaterThanComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfGreaterThanComparison instead.")
+  @deprecated("The org.scalatest.words.ResultOfGreaterThanComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfGreaterThanComparison instead.", "3.1.0")
   type ResultOfGreaterThanComparison[T] = org.scalatest.matchers.dsl.ResultOfGreaterThanComparison[T]
 
   /**
@@ -374,7 +374,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfGreaterThanOrEqualToComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfGreaterThanOrEqualToComparison instead.")
+  @deprecated("The org.scalatest.words.ResultOfGreaterThanOrEqualToComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfGreaterThanOrEqualToComparison instead.", "3.1.0")
   type ResultOfGreaterThanOrEqualToComparison[T] = org.scalatest.matchers.dsl.ResultOfGreaterThanOrEqualToComparison[T]
 
   /**
@@ -383,7 +383,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfInOrderApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfInOrderApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfInOrderApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfInOrderApplication instead.", "3.1.0")
   type ResultOfInOrderApplication = org.scalatest.matchers.dsl.ResultOfInOrderApplication
 
   /**
@@ -392,7 +392,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfInOrderElementsOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfInOrderElementsOfApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfInOrderElementsOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfInOrderElementsOfApplication instead.", "3.1.0")
   type ResultOfInOrderElementsOfApplication = org.scalatest.matchers.dsl.ResultOfInOrderElementsOfApplication
 
   /**
@@ -401,7 +401,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfInOrderOnlyApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfInOrderOnlyApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfInOrderOnlyApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfInOrderOnlyApplication instead.", "3.1.0")
   type ResultOfInOrderOnlyApplication = org.scalatest.matchers.dsl.ResultOfInOrderOnlyApplication
 
   /**
@@ -410,7 +410,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfKeyWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfKeyWordApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfKeyWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfKeyWordApplication instead.", "3.1.0")
   type ResultOfKeyWordApplication = org.scalatest.matchers.dsl.ResultOfKeyWordApplication
 
   /**
@@ -419,7 +419,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfLengthWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfLengthWordApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfLengthWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfLengthWordApplication instead.", "3.1.0")
   type ResultOfLengthWordApplication = org.scalatest.matchers.dsl.ResultOfLengthWordApplication
 
   /**
@@ -428,7 +428,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfLessThanComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfLessThanComparison instead.")
+  @deprecated("The org.scalatest.words.ResultOfLessThanComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfLessThanComparison instead.", "3.1.0")
   type ResultOfLessThanComparison[T] = org.scalatest.matchers.dsl.ResultOfLessThanComparison[T]
 
   /**
@@ -437,7 +437,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfLessThanOrEqualToComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfLessThanOrEqualToComparison instead.")
+  @deprecated("The org.scalatest.words.ResultOfLessThanOrEqualToComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfLessThanOrEqualToComparison instead.", "3.1.0")
   type ResultOfLessThanOrEqualToComparison[T] = org.scalatest.matchers.dsl.ResultOfLessThanOrEqualToComparison[T]
 
   /**
@@ -446,7 +446,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfMessageWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfMessageWordApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfMessageWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfMessageWordApplication instead.", "3.1.0")
   type ResultOfMessageWordApplication = org.scalatest.matchers.dsl.ResultOfMessageWordApplication
 
   /**
@@ -455,7 +455,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfNoElementsOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNoElementsOfApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfNoElementsOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNoElementsOfApplication instead.", "3.1.0")
   type ResultOfNoElementsOfApplication = org.scalatest.matchers.dsl.ResultOfNoElementsOfApplication
 
   /**
@@ -464,7 +464,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfNoneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNoneOfApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfNoneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNoneOfApplication instead.", "3.1.0")
   type ResultOfNoneOfApplication = org.scalatest.matchers.dsl.ResultOfNoneOfApplication
 
   /**
@@ -473,7 +473,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfNotExist class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNotExist instead.")
+  @deprecated("The org.scalatest.words.ResultOfNotExist class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNotExist instead.", "3.1.0")
   type ResultOfNotExist = org.scalatest.matchers.dsl.ResultOfNotExist
 
   /**
@@ -482,7 +482,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfNotWordForAny class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNotWordForAny instead.")
+  @deprecated("The org.scalatest.words.ResultOfNotWordForAny class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNotWordForAny instead.", "3.1.0")
   type ResultOfNotWordForAny[T] = org.scalatest.matchers.dsl.ResultOfNotWordForAny[T]
 
   /**
@@ -491,7 +491,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfOfTypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOfTypeInvocation instead.")
+  @deprecated("The org.scalatest.words.ResultOfOfTypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOfTypeInvocation instead.", "3.1.0")
   type ResultOfOfTypeInvocation[T] = org.scalatest.matchers.dsl.ResultOfOfTypeInvocation[T]
 
   /**
@@ -500,7 +500,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfOneElementOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOneElementOfApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfOneElementOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOneElementOfApplication instead.", "3.1.0")
   type ResultOfOneElementOfApplication = org.scalatest.matchers.dsl.ResultOfOneElementOfApplication
 
   /**
@@ -509,7 +509,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfOneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOneOfApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfOneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOneOfApplication instead.", "3.1.0")
   type ResultOfOneOfApplication = org.scalatest.matchers.dsl.ResultOfOneOfApplication
 
   /**
@@ -518,7 +518,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfOnlyApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOnlyApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfOnlyApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOnlyApplication instead.", "3.1.0")
   type ResultOfOnlyApplication = org.scalatest.matchers.dsl.ResultOfOnlyApplication
 
   /**
@@ -527,7 +527,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfRegexWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfRegexWordApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfRegexWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfRegexWordApplication instead.", "3.1.0")
   type ResultOfRegexWordApplication = org.scalatest.matchers.dsl.ResultOfRegexWordApplication
 
   /**
@@ -536,7 +536,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfSizeWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfSizeWordApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfSizeWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfSizeWordApplication instead.", "3.1.0")
   type ResultOfSizeWordApplication = org.scalatest.matchers.dsl.ResultOfSizeWordApplication
 
   /**
@@ -545,7 +545,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfTheSameElementsAsApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheSameElementsAsApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfTheSameElementsAsApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheSameElementsAsApplication instead.", "3.1.0")
   type ResultOfTheSameElementsAsApplication = org.scalatest.matchers.dsl.ResultOfTheSameElementsAsApplication
 
   /**
@@ -554,7 +554,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfTheSameElementsInOrderAsApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheSameElementsInOrderAsApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfTheSameElementsInOrderAsApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheSameElementsInOrderAsApplication instead.", "3.1.0")
   type ResultOfTheSameElementsInOrderAsApplication = org.scalatest.matchers.dsl.ResultOfTheSameElementsInOrderAsApplication
 
   /**
@@ -563,7 +563,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfTheSameInstanceAsApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheSameInstanceAsApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfTheSameInstanceAsApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheSameInstanceAsApplication instead.", "3.1.0")
   type ResultOfTheSameInstanceAsApplication = org.scalatest.matchers.dsl.ResultOfTheSameInstanceAsApplication
 
   /**
@@ -572,7 +572,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfTheTypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheTypeInvocation instead.")
+  @deprecated("The org.scalatest.words.ResultOfTheTypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheTypeInvocation instead.", "3.1.0")
   type ResultOfTheTypeInvocation[T] = org.scalatest.matchers.dsl.ResultOfTheTypeInvocation[T]
 
   /**
@@ -581,7 +581,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfThrownByApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfThrownByApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfThrownByApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfThrownByApplication instead.", "3.1.0")
   type ResultOfThrownByApplication = org.scalatest.matchers.dsl.ResultOfThrownByApplication
 
   /**
@@ -590,7 +590,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfValueWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfValueWordApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfValueWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfValueWordApplication instead.", "3.1.0")
   type ResultOfValueWordApplication = org.scalatest.matchers.dsl.ResultOfValueWordApplication
 
   /**
@@ -599,7 +599,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.SizeWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.SizeWord instead.")
+  @deprecated("The org.scalatest.words.SizeWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.SizeWord instead.", "3.1.0")
   type SizeWord = org.scalatest.matchers.dsl.SizeWord
 
   /**
@@ -608,7 +608,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.SortedWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.SortedWord instead.")
+  @deprecated("The org.scalatest.words.SortedWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.SortedWord instead.", "3.1.0")
   type SortedWord = org.scalatest.matchers.dsl.SortedWord
 
   /**
@@ -617,7 +617,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.StartWithWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.StartWithWord instead.")
+  @deprecated("The org.scalatest.words.StartWithWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.StartWithWord instead.", "3.1.0")
   type StartWithWord = org.scalatest.matchers.dsl.StartWithWord
 
   /**
@@ -626,7 +626,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.WritableWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.WritableWord instead.")
+  @deprecated("The org.scalatest.words.WritableWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.WritableWord instead.", "3.1.0")
   type WritableWord = org.scalatest.matchers.dsl.WritableWord
 
   /**
@@ -635,7 +635,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.BehaveWord class has been moved and renamed. Please use org.scalatest.verbs.BehaveWord instead.")
+  @deprecated("The org.scalatest.words.BehaveWord class has been moved and renamed. Please use org.scalatest.verbs.BehaveWord instead.", "3.1.0")
   type BehaveWord = org.scalatest.verbs.BehaveWord
 
   /**
@@ -644,7 +644,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.CanVerb class has been moved and renamed. Please use org.scalatest.verbs.CanVerb instead.")
+  @deprecated("The org.scalatest.words.CanVerb class has been moved and renamed. Please use org.scalatest.verbs.CanVerb instead.", "3.1.0")
   type CanVerb = org.scalatest.verbs.CanVerb
 
   /**
@@ -653,7 +653,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.CompileWord class has been moved and renamed. Please use org.scalatest.verbs.CompileWord instead.")
+  @deprecated("The org.scalatest.words.CompileWord class has been moved and renamed. Please use org.scalatest.verbs.CompileWord instead.", "3.1.0")
   type CompileWord = org.scalatest.verbs.CompileWord
 
   /**
@@ -662,7 +662,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.MustVerb class has been moved and renamed. Please use org.scalatest.verbs.MustVerb instead.")
+  @deprecated("The org.scalatest.words.MustVerb class has been moved and renamed. Please use org.scalatest.verbs.MustVerb instead.", "3.1.0")
   type MustVerb = org.scalatest.verbs.MustVerb
 
   /**
@@ -671,7 +671,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAfterWordApplication class has been moved and renamed. Please use org.scalatest.verbs.ResultOfAfterWordApplication instead.")
+  @deprecated("The org.scalatest.words.ResultOfAfterWordApplication class has been moved and renamed. Please use org.scalatest.verbs.ResultOfAfterWordApplication instead.", "3.1.0")
   type ResultOfAfterWordApplication = org.scalatest.verbs.ResultOfAfterWordApplication
 
   /**
@@ -680,7 +680,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfStringPassedToVerb class has been moved and renamed. Please use org.scalatest.verbs.ResultOfStringPassedToVerb instead.")
+  @deprecated("The org.scalatest.words.ResultOfStringPassedToVerb class has been moved and renamed. Please use org.scalatest.verbs.ResultOfStringPassedToVerb instead.", "3.1.0")
   type ResultOfStringPassedToVerb = org.scalatest.verbs.ResultOfStringPassedToVerb
 
   /**
@@ -689,7 +689,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfTaggedAsInvocation class has been moved and renamed. Please use org.scalatest.verbs.ResultOfTaggedAsInvocation instead.")
+  @deprecated("The org.scalatest.words.ResultOfTaggedAsInvocation class has been moved and renamed. Please use org.scalatest.verbs.ResultOfTaggedAsInvocation instead.", "3.1.0")
   type ResultOfTaggedAsInvocation = org.scalatest.verbs.ResultOfTaggedAsInvocation
 
   /**
@@ -698,7 +698,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.ShouldVerb class has been moved and renamed. Please use org.scalatest.verbs.ShouldVerb instead.")
+  @deprecated("The org.scalatest.words.ShouldVerb class has been moved and renamed. Please use org.scalatest.verbs.ShouldVerb instead.", "3.1.0")
   type ShouldVerb = org.scalatest.verbs.ShouldVerb
 
   /**
@@ -707,7 +707,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.StringVerbBehaveLikeInvocation class has been moved and renamed. Please use org.scalatest.verbs.StringVerbBehaveLikeInvocation instead.")
+  @deprecated("The org.scalatest.words.StringVerbBehaveLikeInvocation class has been moved and renamed. Please use org.scalatest.verbs.StringVerbBehaveLikeInvocation instead.", "3.1.0")
   type StringVerbBehaveLikeInvocation = org.scalatest.verbs.StringVerbBehaveLikeInvocation
 
   /**
@@ -716,7 +716,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.StringVerbBlockRegistration class has been moved and renamed. Please use org.scalatest.verbs.StringVerbBlockRegistration instead.")
+  @deprecated("The org.scalatest.words.StringVerbBlockRegistration class has been moved and renamed. Please use org.scalatest.verbs.StringVerbBlockRegistration instead.", "3.1.0")
   type StringVerbBlockRegistration = org.scalatest.verbs.StringVerbBlockRegistration
 
   /**
@@ -725,7 +725,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.StringVerbStringInvocation class has been moved and renamed. Please use org.scalatest.verbs.StringVerbStringInvocation instead.")
+  @deprecated("The org.scalatest.words.StringVerbStringInvocation class has been moved and renamed. Please use org.scalatest.verbs.StringVerbStringInvocation instead.", "3.1.0")
   type StringVerbStringInvocation = org.scalatest.verbs.StringVerbStringInvocation
 
   /**
@@ -734,7 +734,7 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.SubjectWithAfterWordRegistration class has been moved and renamed. Please use org.scalatest.verbs.SubjectWithAfterWordRegistration instead.")
+  @deprecated("The org.scalatest.words.SubjectWithAfterWordRegistration class has been moved and renamed. Please use org.scalatest.verbs.SubjectWithAfterWordRegistration instead.", "3.1.0")
   type SubjectWithAfterWordRegistration = org.scalatest.verbs.SubjectWithAfterWordRegistration
 
   /**
@@ -743,6 +743,6 @@ package object words {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.words.TypeCheckWord class has been moved and renamed. Please use org.scalatest.verbs.TypeCheckWord instead.")
+  @deprecated("The org.scalatest.words.TypeCheckWord class has been moved and renamed. Please use org.scalatest.verbs.TypeCheckWord instead.", "3.1.0")
   type TypeCheckWord = org.scalatest.verbs.TypeCheckWord
 }

@@ -26,7 +26,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.FunSuiteLike trait has been moved and renamed. Please use org.scalatest.funsuite.FixtureAnyFunSuiteLike instead.")
+  @deprecated("The org.scalatest.fixture.FunSuiteLike trait has been moved and renamed. Please use org.scalatest.funsuite.FixtureAnyFunSuiteLike instead.", "3.1.0")
   type FunSuiteLike = org.scalatest.funsuite.FixtureAnyFunSuiteLike
 
   /**
@@ -35,7 +35,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.FunSuite trait has been moved and renamed. Please use org.scalatest.funsuite.FixtureAnyFunSuite instead.")
+  @deprecated("The org.scalatest.fixture.FunSuite trait has been moved and renamed. Please use org.scalatest.funsuite.FixtureAnyFunSuite instead.", "3.1.0")
   type FunSuite = org.scalatest.funsuite.FixtureAnyFunSuite
 
   // SKIP-SCALATESTNATIVE-START
@@ -45,7 +45,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncFunSuiteLike trait has been moved and renamed. Please use org.scalatest.funsuite.FixtureAsyncFunSuiteLike instead.")
+  @deprecated("The org.scalatest.fixture.AsyncFunSuiteLike trait has been moved and renamed. Please use org.scalatest.funsuite.FixtureAsyncFunSuiteLike instead.", "3.1.0")
   type AsyncFunSuiteLike = org.scalatest.funsuite.FixtureAsyncFunSuiteLike
 
   /**
@@ -54,7 +54,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncFunSuite trait has been moved and renamed. Please use org.scalatest.funsuite.FixtureAsyncFunSuite instead.")
+  @deprecated("The org.scalatest.fixture.AsyncFunSuite trait has been moved and renamed. Please use org.scalatest.funsuite.FixtureAsyncFunSuite instead.", "3.1.0")
   type AsyncFunSuite = org.scalatest.funsuite.FixtureAsyncFunSuite
 
   // SKIP-SCALATESTNATIVE-END
@@ -64,7 +64,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.FeatureSpecLike trait has been moved and renamed. Please use org.scalatest.featurespec.FixtureAnyFeatureSpecLike instead.")
+  @deprecated("The org.scalatest.fixture.FeatureSpecLike trait has been moved and renamed. Please use org.scalatest.featurespec.FixtureAnyFeatureSpecLike instead.", "3.1.0")
   type FeatureSpecLike = org.scalatest.featurespec.FixtureAnyFeatureSpecLike
 
   /**
@@ -73,7 +73,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.FeatureSpec trait has been moved and renamed. Please use org.scalatest.featurespec.FixtureAnyFeatureSpec instead.")
+  @deprecated("The org.scalatest.fixture.FeatureSpec trait has been moved and renamed. Please use org.scalatest.featurespec.FixtureAnyFeatureSpec instead.", "3.1.0")
   type FeatureSpec = org.scalatest.featurespec.FixtureAnyFeatureSpec
 
   // SKIP-SCALATESTNATIVE-START
@@ -83,7 +83,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncFeatureSpecLike trait has been moved and renamed. Please use org.scalatest.featurespec.FixtureAsyncFeatureSpecLike instead.")
+  @deprecated("The org.scalatest.fixture.AsyncFeatureSpecLike trait has been moved and renamed. Please use org.scalatest.featurespec.FixtureAsyncFeatureSpecLike instead.", "3.1.0")
   type AsyncFeatureSpecLike = org.scalatest.featurespec.FixtureAsyncFeatureSpecLike
 
   /**
@@ -92,7 +92,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncFeatureSpec trait has been moved and renamed. Please use org.scalatest.featurespec.FixtureAsyncFeatureSpec instead.")
+  @deprecated("The org.scalatest.fixture.AsyncFeatureSpec trait has been moved and renamed. Please use org.scalatest.featurespec.FixtureAsyncFeatureSpec instead.", "3.1.0")
   type AsyncFeatureSpec = org.scalatest.featurespec.FixtureAsyncFeatureSpec
   
   // SKIP-SCALATESTNATIVE-END
@@ -102,7 +102,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.FunSpecLike trait has been moved and renamed. Please use org.scalatest.funspec.FixtureAnyFunSpecLike instead.")
+  @deprecated("The org.scalatest.fixture.FunSpecLike trait has been moved and renamed. Please use org.scalatest.funspec.FixtureAnyFunSpecLike instead.", "3.1.0")
   type FunSpecLike = org.scalatest.funspec.FixtureAnyFunSpecLike
 
   /**
@@ -111,7 +111,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.FunSpec trait has been moved and renamed. Please use org.scalatest.funspec.FixtureAnyFunSpec instead.")
+  @deprecated("The org.scalatest.fixture.FunSpec trait has been moved and renamed. Please use org.scalatest.funspec.FixtureAnyFunSpec instead.", "3.1.0")
   type FunSpec = org.scalatest.funspec.FixtureAnyFunSpec
 
   // SKIP-SCALATESTNATIVE-START
@@ -121,7 +121,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncFunSpecLike trait has been moved and renamed. Please use org.scalatest.funspec.FixtureAsyncFunSpecLike instead.")
+  @deprecated("The org.scalatest.fixture.AsyncFunSpecLike trait has been moved and renamed. Please use org.scalatest.funspec.FixtureAsyncFunSpecLike instead.", "3.1.0")
   type AsyncFunSpecLike = org.scalatest.funspec.FixtureAsyncFunSpecLike
 
   /**
@@ -130,7 +130,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncFunSpec trait has been moved and renamed. Please use org.scalatest.funspec.FixtureAsyncFunSpec instead.")
+  @deprecated("The org.scalatest.fixture.AsyncFunSpec trait has been moved and renamed. Please use org.scalatest.funspec.FixtureAsyncFunSpec instead.", "3.1.0")
   type AsyncFunSpec = org.scalatest.funspec.FixtureAsyncFunSpec
 
   // SKIP-SCALATESTNATIVE-END
@@ -140,7 +140,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.FreeSpecLike trait has been moved and renamed. Please use org.scalatest.freespec.FixtureAnyFreeSpecLike instead.")
+  @deprecated("The org.scalatest.fixture.FreeSpecLike trait has been moved and renamed. Please use org.scalatest.freespec.FixtureAnyFreeSpecLike instead.", "3.1.0")
   type FreeSpecLike = org.scalatest.freespec.FixtureAnyFreeSpecLike
 
   /**
@@ -149,7 +149,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.FreeSpec trait has been moved and renamed. Please use org.scalatest.freespec.FixtureAnyFreeSpec instead.")
+  @deprecated("The org.scalatest.fixture.FreeSpec trait has been moved and renamed. Please use org.scalatest.freespec.FixtureAnyFreeSpec instead.", "3.1.0")
   type FreeSpec = org.scalatest.freespec.FixtureAnyFreeSpec
 
   // SKIP-SCALATESTNATIVE-START
@@ -159,7 +159,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncFreeSpecLike trait has been moved and renamed. Please use org.scalatest.freespec.FixtureAsyncFreeSpecLike instead.")
+  @deprecated("The org.scalatest.fixture.AsyncFreeSpecLike trait has been moved and renamed. Please use org.scalatest.freespec.FixtureAsyncFreeSpecLike instead.", "3.1.0")
   type AsyncFreeSpecLike = org.scalatest.freespec.FixtureAsyncFreeSpecLike
 
   /**
@@ -168,7 +168,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncFreeSpec trait has been moved and renamed. Please use org.scalatest.freespec.FixtureAsyncFreeSpec instead.")
+  @deprecated("The org.scalatest.fixture.AsyncFreeSpec trait has been moved and renamed. Please use org.scalatest.freespec.FixtureAsyncFreeSpec instead.", "3.1.0")
   type AsyncFreeSpec = org.scalatest.freespec.FixtureAsyncFreeSpec
 
   // SKIP-SCALATESTNATIVE-END
@@ -178,7 +178,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.FlatSpecLike trait has been moved and renamed. Please use org.scalatest.flatspec.FixtureAnyFlatSpecLike instead.")
+  @deprecated("The org.scalatest.fixture.FlatSpecLike trait has been moved and renamed. Please use org.scalatest.flatspec.FixtureAnyFlatSpecLike instead.", "3.1.0")
   type FlatSpecLike = org.scalatest.flatspec.FixtureAnyFlatSpecLike
 
   /**
@@ -187,7 +187,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.FlatSpec trait has been moved and renamed. Please use org.scalatest.flatspec.FixtureAnyFlatSpec instead.")
+  @deprecated("The org.scalatest.fixture.FlatSpec trait has been moved and renamed. Please use org.scalatest.flatspec.FixtureAnyFlatSpec instead.", "3.1.0")
   type FlatSpec = org.scalatest.flatspec.FixtureAnyFlatSpec
 
   // SKIP-SCALATESTNATIVE-START
@@ -197,7 +197,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncFlatSpecLike trait has been moved and renamed. Please use org.scalatest.flatspec.FixtureAsyncFlatSpecLike instead.")
+  @deprecated("The org.scalatest.fixture.AsyncFlatSpecLike trait has been moved and renamed. Please use org.scalatest.flatspec.FixtureAsyncFlatSpecLike instead.", "3.1.0")
   type AsyncFlatSpecLike = org.scalatest.flatspec.FixtureAsyncFlatSpecLike
 
   /**
@@ -206,7 +206,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncFlatSpec trait has been moved and renamed. Please use org.scalatest.flatspec.FixtureAsyncFlatSpec instead.")
+  @deprecated("The org.scalatest.fixture.AsyncFlatSpec trait has been moved and renamed. Please use org.scalatest.flatspec.FixtureAsyncFlatSpec instead.", "3.1.0")
   type AsyncFlatSpec = org.scalatest.flatspec.FixtureAsyncFlatSpec
 
   // SKIP-SCALATESTNATIVE-END
@@ -216,7 +216,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.PropSpecLike trait has been moved and renamed. Please use org.scalatest.flatspec.FixtureAnyPropSpecLike instead.")
+  @deprecated("The org.scalatest.fixture.PropSpecLike trait has been moved and renamed. Please use org.scalatest.flatspec.FixtureAnyPropSpecLike instead.", "3.1.0")
   type PropSpecLike = org.scalatest.propspec.FixtureAnyPropSpecLike
 
   /**
@@ -225,7 +225,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.PropSpec trait has been moved and renamed. Please use org.scalatest.flatspec.FixtureAnyPropSpec instead.")
+  @deprecated("The org.scalatest.fixture.PropSpec trait has been moved and renamed. Please use org.scalatest.flatspec.FixtureAnyPropSpec instead.", "3.1.0")
   type PropSpec = org.scalatest.propspec.FixtureAnyPropSpec
 
   /**
@@ -234,7 +234,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.WordSpec trait has been moved and renamed. Please use org.scalatest.wordspec.FixtureAnyWordSpec instead.")
+  @deprecated("The org.scalatest.fixture.WordSpec trait has been moved and renamed. Please use org.scalatest.wordspec.FixtureAnyWordSpec instead.", "3.1.0")
   type WordSpec = org.scalatest.wordspec.FixtureAnyWordSpec
 
   /**
@@ -243,7 +243,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.WordSpecLike trait has been moved and renamed. Please use org.scalatest.wordspec.FixtureAnyWordSpecLike instead.")
+  @deprecated("The org.scalatest.fixture.WordSpecLike trait has been moved and renamed. Please use org.scalatest.wordspec.FixtureAnyWordSpecLike instead.", "3.1.0")
   type WordSpecLike = org.scalatest.wordspec.FixtureAnyWordSpecLike
 
   // SKIP-SCALATESTNATIVE-START
@@ -253,7 +253,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncWordSpecLike trait has been moved and renamed. Please use org.scalatest.wordspec.FixtureAsyncWordSpecLike instead.")
+  @deprecated("The org.scalatest.fixture.AsyncWordSpecLike trait has been moved and renamed. Please use org.scalatest.wordspec.FixtureAsyncWordSpecLike instead.", "3.1.0")
   type AsyncWordSpecLike = org.scalatest.wordspec.FixtureAsyncWordSpecLike
 
   /**
@@ -262,7 +262,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncWordSpec trait has been moved and renamed. Please use org.scalatest.wordspec.FixtureAsyncWordSpec instead.")
+  @deprecated("The org.scalatest.fixture.AsyncWordSpec trait has been moved and renamed. Please use org.scalatest.wordspec.FixtureAsyncWordSpec instead.", "3.1.0")
   type AsyncWordSpec = org.scalatest.wordspec.FixtureAsyncWordSpec
   // SKIP-SCALATESTNATIVE-END
 
@@ -273,7 +273,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncTestRegistration trait has been moved and renamed. Please use org.scalatest.FixtureAsyncTestRegistration instead.")
+  @deprecated("The org.scalatest.fixture.AsyncTestRegistration trait has been moved and renamed. Please use org.scalatest.FixtureAsyncTestRegistration instead.", "3.1.0")
   type AsyncTestRegistration = org.scalatest.FixtureAsyncTestRegistration
 
   /**
@@ -282,7 +282,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.AsyncTestSuite trait has been moved and renamed. Please use org.scalatest.FixtureAsyncTestSuite instead.")
+  @deprecated("The org.scalatest.fixture.AsyncTestSuite trait has been moved and renamed. Please use org.scalatest.FixtureAsyncTestSuite instead.", "3.1.0")
   type AsyncTestSuite = org.scalatest.FixtureAsyncTestSuite
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -292,7 +292,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.Suite trait has been moved and renamed. Please use org.scalatest.FixtureSuite instead.")
+  @deprecated("The org.scalatest.fixture.Suite trait has been moved and renamed. Please use org.scalatest.FixtureSuite instead.", "3.1.0")
   type Suite = org.scalatest.FixtureSuite
 
   /**
@@ -301,7 +301,7 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.TestRegistration trait has been moved and renamed. Please use org.scalatest.FixtureTestRegistration instead.")
+  @deprecated("The org.scalatest.fixture.TestRegistration trait has been moved and renamed. Please use org.scalatest.FixtureTestRegistration instead.", "3.1.0")
   type TestRegistration = org.scalatest.FixtureTestRegistration
 
   /**
@@ -310,6 +310,6 @@ package object fixture {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.fixture.TestSuite trait has been moved and renamed. Please use org.scalatest.FixtureTestSuite instead.")
+  @deprecated("The org.scalatest.fixture.TestSuite trait has been moved and renamed. Please use org.scalatest.FixtureTestSuite instead.", "3.1.0")
   type TestSuite = org.scalatest.FixtureTestSuite
 }

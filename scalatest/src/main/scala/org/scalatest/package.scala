@@ -91,7 +91,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.FunSuiteLike trait has been moved and renamed. Please use org.scalatest.funsuite.AnyFunSuiteLike instead.")
+  @deprecated("The org.scalatest.FunSuiteLike trait has been moved and renamed. Please use org.scalatest.funsuite.AnyFunSuiteLike instead.", "3.1.0")
   type FunSuiteLike = funsuite.AnyFunSuiteLike
 
   /**
@@ -100,7 +100,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.FunSuite trait has been moved and renamed. Please use org.scalatest.funsuite.AnyFunSuite instead.")
+  @deprecated("The org.scalatest.FunSuite trait has been moved and renamed. Please use org.scalatest.funsuite.AnyFunSuite instead.", "3.1.0")
   type FunSuite = funsuite.AnyFunSuite
 
   // SKIP-SCALATESTNATIVE-START
@@ -110,7 +110,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.AsyncFunSuiteLike trait has been moved and renamed. Please use org.scalatest.funsuite.AsyncFunSuiteLike instead.")
+  @deprecated("The org.scalatest.AsyncFunSuiteLike trait has been moved and renamed. Please use org.scalatest.funsuite.AsyncFunSuiteLike instead.", "3.1.0")
   type AsyncFunSuiteLike = funsuite.AsyncFunSuiteLike
 
   /**
@@ -119,7 +119,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.AsyncFunSuite trait has been moved and renamed. Please use org.scalatest.funsuite.AsyncFunSuite instead.")
+  @deprecated("The org.scalatest.AsyncFunSuite trait has been moved and renamed. Please use org.scalatest.funsuite.AsyncFunSuite instead.", "3.1.0")
   type AsyncFunSuite = funsuite.AsyncFunSuite
   // SKIP-SCALATESTNATIVE-END
 
@@ -129,7 +129,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.FeatureSpecLike trait has been moved and renamed. Please use org.scalatest.featurespec.AnyFeatureSpecLike instead.")
+  @deprecated("The org.scalatest.FeatureSpecLike trait has been moved and renamed. Please use org.scalatest.featurespec.AnyFeatureSpecLike instead.", "3.1.0")
   type FeatureSpecLike = featurespec.AnyFeatureSpecLike
 
   /**
@@ -138,7 +138,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.FeatureSpec trait has been moved and renamed. Please use org.scalatest.featurespec.AnyFeatureSpec instead.")
+  @deprecated("The org.scalatest.FeatureSpec trait has been moved and renamed. Please use org.scalatest.featurespec.AnyFeatureSpec instead.", "3.1.0")
   type FeatureSpec = featurespec.AnyFeatureSpec
 
   // SKIP-SCALATESTNATIVE-START
@@ -148,7 +148,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.AsyncFeatureSpecLike trait has been moved and renamed. Please use org.scalatest.featurespec.AsyncFeatureSpecLike instead.")
+  @deprecated("The org.scalatest.AsyncFeatureSpecLike trait has been moved and renamed. Please use org.scalatest.featurespec.AsyncFeatureSpecLike instead.", "3.1.0")
   type AsyncFeatureSpecLike = featurespec.AsyncFeatureSpecLike
 
   /**
@@ -157,7 +157,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.AsyncFeatureSpec trait has been moved and renamed. Please use org.scalatest.featurespec.AsyncFeatureSpec instead.")
+  @deprecated("The org.scalatest.AsyncFeatureSpec trait has been moved and renamed. Please use org.scalatest.featurespec.AsyncFeatureSpec instead.", "3.1.0")
   type AsyncFeatureSpec = featurespec.AsyncFeatureSpec
   // SKIP-SCALATESTNATIVE-END
 
@@ -167,7 +167,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.FunSpecLike trait has been moved and renamed. Please use org.scalatest.funspec.AnyFunSpecLike instead.")
+  @deprecated("The org.scalatest.FunSpecLike trait has been moved and renamed. Please use org.scalatest.funspec.AnyFunSpecLike instead.", "3.1.0")
   type FunSpecLike = funspec.AnyFunSpecLike
 
   /**
@@ -176,7 +176,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.FunSpec trait has been moved and renamed. Please use org.scalatest.funspec.AnyFunSpec instead.")
+  @deprecated("The org.scalatest.FunSpec trait has been moved and renamed. Please use org.scalatest.funspec.AnyFunSpec instead.", "3.1.0")
   type FunSpec = funspec.AnyFunSpec
 
   // SKIP-SCALATESTNATIVE-START
@@ -186,7 +186,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.AsyncFunSpecLike trait has been moved and renamed. Please use org.scalatest.funspec.AsyncFunSpecLike instead.")
+  @deprecated("The org.scalatest.AsyncFunSpecLike trait has been moved and renamed. Please use org.scalatest.funspec.AsyncFunSpecLike instead.", "3.1.0")
   type AsyncFunSpecLike = funspec.AsyncFunSpecLike
 
   /**
@@ -195,7 +195,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.AsyncFunSpec trait has been moved and renamed. Please use org.scalatest.funspec.AsyncFunSpec instead.")
+  @deprecated("The org.scalatest.AsyncFunSpec trait has been moved and renamed. Please use org.scalatest.funspec.AsyncFunSpec instead.", "3.1.0")
   type AsyncFunSpec = funspec.AsyncFunSpec
   // SKIP-SCALATESTNATIVE-END
 
@@ -205,7 +205,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.FreeSpecLike trait has been moved and renamed. Please use org.scalatest.freespec.AnyFreeSpecLike instead.")
+  @deprecated("The org.scalatest.FreeSpecLike trait has been moved and renamed. Please use org.scalatest.freespec.AnyFreeSpecLike instead.", "3.1.0")
   type FreeSpecLike = freespec.AnyFreeSpecLike
 
   /**
@@ -214,7 +214,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.FreeSpec trait has been moved and renamed. Please use org.scalatest.freespec.AnyFreeSpec instead.")
+  @deprecated("The org.scalatest.FreeSpec trait has been moved and renamed. Please use org.scalatest.freespec.AnyFreeSpec instead.", "3.1.0")
   type FreeSpec = freespec.AnyFreeSpec
 
   // SKIP-SCALATESTNATIVE-START
@@ -224,7 +224,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.AsyncFreeSpecLike trait has been moved and renamed. Please use org.scalatest.freespec.AsyncFreeSpecLike instead.")
+  @deprecated("The org.scalatest.AsyncFreeSpecLike trait has been moved and renamed. Please use org.scalatest.freespec.AsyncFreeSpecLike instead.", "3.1.0")
   type AsyncFreeSpecLike = freespec.AsyncFreeSpecLike
 
   /**
@@ -233,7 +233,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.AsyncFreeSpec trait has been moved and renamed. Please use org.scalatest.freespec.AsyncFreeSpec instead.")
+  @deprecated("The org.scalatest.AsyncFreeSpec trait has been moved and renamed. Please use org.scalatest.freespec.AsyncFreeSpec instead.", "3.1.0")
   type AsyncFreeSpec = freespec.AsyncFreeSpec
   // SKIP-SCALATESTNATIVE-END
 
@@ -243,7 +243,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.FlatSpecLike trait has been moved and renamed. Please use org.scalatest.flatspec.AnyFlatSpecLike instead.")
+  @deprecated("The org.scalatest.FlatSpecLike trait has been moved and renamed. Please use org.scalatest.flatspec.AnyFlatSpecLike instead.", "3.1.0")
   type FlatSpecLike = flatspec.AnyFlatSpecLike
 
   /**
@@ -252,7 +252,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.FlatSpec trait has been moved and renamed. Please use org.scalatest.flatspec.AnyFlatSpec instead.")
+  @deprecated("The org.scalatest.FlatSpec trait has been moved and renamed. Please use org.scalatest.flatspec.AnyFlatSpec instead.", "3.1.0")
   type FlatSpec = flatspec.AnyFlatSpec
 
   /**
@@ -262,7 +262,7 @@ package object scalatest {
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
   // SKIP-SCALATESTNATIVE-START
-  @deprecated("The org.scalatest.AsyncFlatSpecLike trait has been moved and renamed. Please use org.scalatest.flatspec.AsyncFlatSpecLike instead.")
+  @deprecated("The org.scalatest.AsyncFlatSpecLike trait has been moved and renamed. Please use org.scalatest.flatspec.AsyncFlatSpecLike instead.", "3.1.0")
   type AsyncFlatSpecLike = flatspec.AsyncFlatSpecLike
 
   /**
@@ -271,7 +271,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.AsyncFlatSpec trait has been moved and renamed. Please use org.scalatest.flatspec.AsyncFlatSpec instead.")
+  @deprecated("The org.scalatest.AsyncFlatSpec trait has been moved and renamed. Please use org.scalatest.flatspec.AsyncFlatSpec instead.", "3.1.0")
   type AsyncFlatSpec = flatspec.AsyncFlatSpec
   // SKIP-SCALATESTNATIVE-END
 
@@ -281,7 +281,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.PropSpecLike trait has been moved and renamed. Please use org.scalatest.propspec.AnyPropSpecLike instead.")
+  @deprecated("The org.scalatest.PropSpecLike trait has been moved and renamed. Please use org.scalatest.propspec.AnyPropSpecLike instead.", "3.1.0")
   type PropSpecLike = propspec.AnyPropSpecLike
 
   /**
@@ -290,7 +290,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.PropSpec trait has been moved and renamed. Please use org.scalatest.propspec.AnyPropSpec instead.")
+  @deprecated("The org.scalatest.PropSpec trait has been moved and renamed. Please use org.scalatest.propspec.AnyPropSpec instead.", "3.1.0")
   type PropSpec = propspec.AnyPropSpec
 
   /**
@@ -299,7 +299,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.WordSpecLike trait has been moved and renamed. Please use org.scalatest.wordspec.AnyWordSpecLike instead.")
+  @deprecated("The org.scalatest.WordSpecLike trait has been moved and renamed. Please use org.scalatest.wordspec.AnyWordSpecLike instead.", "3.1.0")
   type WordSpecLike = wordspec.AnyWordSpecLike
 
   /**
@@ -308,7 +308,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.WordSpec trait has been moved and renamed. Please use org.scalatest.wordspec.AnyWordSpec instead.")
+  @deprecated("The org.scalatest.WordSpec trait has been moved and renamed. Please use org.scalatest.wordspec.AnyWordSpec instead.", "3.1.0")
   type WordSpec = wordspec.AnyWordSpec
 
   // SKIP-SCALATESTNATIVE-START
@@ -318,7 +318,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.AsyncWordSpecLike trait has been moved and renamed. Please use org.scalatest.wordspec.AsyncWordSpecLike instead.")
+  @deprecated("The org.scalatest.AsyncWordSpecLike trait has been moved and renamed. Please use org.scalatest.wordspec.AsyncWordSpecLike instead.", "3.1.0")
   type AsyncWordSpecLike = wordspec.AsyncWordSpecLike
 
   /**
@@ -327,7 +327,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.AsyncWordSpec trait has been moved and renamed. Please use org.scalatest.wordspec.AsyncWordSpec instead.")
+  @deprecated("The org.scalatest.AsyncWordSpec trait has been moved and renamed. Please use org.scalatest.wordspec.AsyncWordSpec instead.", "3.1.0")
   type AsyncWordSpec = wordspec.AsyncWordSpec
   // SKIP-SCALATESTNATIVE-END
 
@@ -337,7 +337,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.Matchers trait has been moved and renamed. Please use org.scalatest.matchers.should.Matchers instead.")
+  @deprecated("The org.scalatest.Matchers trait has been moved and renamed. Please use org.scalatest.matchers.should.Matchers instead.", "3.1.0")
   type Matchers = matchers.should.Matchers
 
   /**
@@ -346,7 +346,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.Matchers trait has been moved and renamed. Please use org.scalatest.matchers.should.Matchers instead.")
+  @deprecated("The org.scalatest.Matchers trait has been moved and renamed. Please use org.scalatest.matchers.should.Matchers instead.", "3.1.0")
   val Matchers = matchers.should.Matchers
 
   /**
@@ -355,7 +355,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.MustMatchers trait has been moved and renamed. Please use org.scalatest.matchers.must.Matchers instead.")
+  @deprecated("The org.scalatest.MustMatchers trait has been moved and renamed. Please use org.scalatest.matchers.must.Matchers instead.", "3.1.0")
   type MustMatchers = matchers.must.Matchers
 
   /**
@@ -364,7 +364,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.MustMatchers trait has been moved and renamed. Please use org.scalatest.matchers.must.Matchers instead.")
+  @deprecated("The org.scalatest.MustMatchers trait has been moved and renamed. Please use org.scalatest.matchers.must.Matchers instead.", "3.1.0")
   val MustMatchers = matchers.must.Matchers
 
   /**
@@ -373,7 +373,7 @@ package object scalatest {
    *
    * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.DiagrammedAssertions trait has been moved and renamed. Please use org.scalatest.diagrams.Diagrams instead.")
+  @deprecated("The org.scalatest.DiagrammedAssertions trait has been moved and renamed. Please use org.scalatest.diagrams.Diagrams instead.", "3.1.0")
   type DiagrammedAssertions = diagrams.Diagrams
 
   /**
@@ -382,6 +382,6 @@ package object scalatest {
    *
    * <p>This type has been renamed to suport future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.DiagrammedAssertions object has been moved and renamed. Please use org.scalatest.diagrams.Diagrams instead.")
+  @deprecated("The org.scalatest.DiagrammedAssertions object has been moved and renamed. Please use org.scalatest.diagrams.Diagrams instead.", "3.1.0")
   val DiagrammedAssertions = diagrams.Diagrams
 }

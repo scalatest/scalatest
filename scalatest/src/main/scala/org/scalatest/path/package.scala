@@ -32,7 +32,7 @@ package object path {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.path.FreeSpecLike trait has been moved and renamed. Please use org.scalatest.freespec.PathAnyFreeSpecLike instead.")
+  @deprecated("The org.scalatest.path.FreeSpecLike trait has been moved and renamed. Please use org.scalatest.freespec.PathAnyFreeSpecLike instead.", "3.1.0")
   type FreeSpecLike = org.scalatest.freespec.PathAnyFreeSpecLike
 
   /**
@@ -41,7 +41,7 @@ package object path {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.path.FunSpecLike trait has been moved and renamed. Please use org.scalatest.funspec.PathAnyFunSpecLike instead.")
+  @deprecated("The org.scalatest.path.FunSpecLike trait has been moved and renamed. Please use org.scalatest.funspec.PathAnyFunSpecLike instead.", "3.1.0")
   type FunSpecLike = org.scalatest.funspec.PathAnyFunSpecLike
 
   /**
@@ -50,7 +50,7 @@ package object path {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.path.FreeSpec class has been moved and renamed. Please use org.scalatest.freespec.PathAnyFreeSpec instead.")
+  @deprecated("The org.scalatest.path.FreeSpec class has been moved and renamed. Please use org.scalatest.freespec.PathAnyFreeSpec instead.", "3.1.0")
   type FreeSpec = org.scalatest.freespec.PathAnyFreeSpec
 
   /**
@@ -59,6 +59,6 @@ package object path {
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
    */
-  @deprecated("The org.scalatest.path.FunSpec class has been moved and renamed. Please use org.scalatest.funspec.PathAnyFunSpec instead.")
+  @deprecated("The org.scalatest.path.FunSpec class has been moved and renamed. Please use org.scalatest.funspec.PathAnyFunSpec instead.", "3.1.0")
   type FunSpec = org.scalatest.funspec.PathAnyFunSpec
 }
