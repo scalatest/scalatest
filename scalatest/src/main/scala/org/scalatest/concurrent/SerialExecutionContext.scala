@@ -36,6 +36,7 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
   its access.
   */
   private final val queue = new org.scalatest.LinkedBlockingQueue[Runnable]
+  private final val errors = new org.scalatest.LinkedBlockingQueue[Throwable]
 
   def execute(runnable: Runnable): Unit = {
     queue.put(runnable)
@@ -45,8 +46,11 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
     // synchronized { notifyAll() }
   }
 
-  def reportFailure(t: Throwable): Unit =
-    t.printStackTrace()
+  def reportFailure(t: Throwable): Unit = {
+    errors.put(t)
+  }
+
+  def reportedFailures: Seq[Throwable] = errors.toList
 
   /*
      runNow will keep executing jobs passed to execute until the
@@ -118,6 +122,20 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
       //SCALATESTJS,NATIVE-ONLY throw new IllegalStateException("Queue is empty while future is not completed, this means you're probably using a wrong ExecutionContext for your task, please double check your Future.")
       val task = queue.take() // Note that this will block if queue is empty, alternatively we can use poll(timeout, timeUnit) to deal with deadlines
       task.run()  // TODO: this should abort the suite, let's write a test for that
+      // Starting Scala 2.13 run() no longer propagate non-fatal error, we'll check if it is Promise and its future value (if available) to propagete the error manually here. 
+      task match {
+        case p: scala.concurrent.Promise[_] => 
+          p.future.value match {
+            case Some(scala.util.Failure(error)) => 
+              error match {
+                case execEx: java.util.concurrent.ExecutionException if execEx.getCause != null => reportFailure(execEx.getCause) 
+                case _ => reportFailure(error)
+              } 
+            case _ => 
+          }
+        case _ =>
+      }
+      //SCALATESTJS,NATIVE-ONLY if (queue.size > 0)
       recRunNow(future)
     }
 }

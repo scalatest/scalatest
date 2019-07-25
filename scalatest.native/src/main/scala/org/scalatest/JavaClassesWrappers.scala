@@ -45,6 +45,8 @@ private[scalatest] class LinkedBlockingQueue[T] extends Serializable {
   def take(): T = queue.remove(0)
 
   def size: Int = queue.size
+
+  def toList: Seq[T] = queue.toList
 }
 
 private[scalatest] class CountDownLatch(count: Int) {

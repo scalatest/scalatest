@@ -314,9 +314,15 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
           }
         }
 
-        assertThrows[InterruptedException] {
-          execContext.runNow(future)
-        }
+        //SCALATESTJS,NATIVE-ONLY if (ScalaTestVersions.BuiltForScalaVersion == "2.13") { // For 2.13 the run() function of Runnable passed to ExecutionContext only propagate fatal errors.
+        //SCALATESTJS,NATIVE-ONLY   execContext.runNow(future)
+        //SCALATESTJS,NATIVE-ONLY   assert(execContext.reportedFailures.length == 1)
+        //SCALATESTJS,NATIVE-ONLY   assert(execContext.reportedFailures(0).isInstanceOf[InterruptedException])
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY else
+          assertThrows[InterruptedException] {
+            execContext.runNow(future)
+          }
       }
 
       it("should wait for the test to finish when DoNotSignal.") {
@@ -570,9 +576,15 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
             })
           }
 
-        assertThrows[InterruptedException] {
-          execContext.runNow(future.toFuture)
-        }
+        //SCALATESTJS,NATIVE-ONLY if (ScalaTestVersions.BuiltForScalaVersion == "2.13") { // For 2.13 the run() function of Runnable passed to ExecutionContext only propagate fatal errors.
+        //SCALATESTJS,NATIVE-ONLY   execContext.runNow(future.toFuture)
+        //SCALATESTJS,NATIVE-ONLY   assert(execContext.reportedFailures.length == 1)
+        //SCALATESTJS,NATIVE-ONLY   assert(execContext.reportedFailures(0).isInstanceOf[InterruptedException])
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY else 
+          assertThrows[InterruptedException] {
+            execContext.runNow(future.toFuture)
+          }
       }
 
       it("should wait for the test to finish when DoNotSignal.") {
@@ -852,9 +864,15 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
             }
           }
 
-        assertThrows[InterruptedException] {
-          execContext.runNow(future)
-        }
+        //SCALATESTJS,NATIVE-ONLY if (ScalaTestVersions.BuiltForScalaVersion == "2.13") { // For 2.13 the run() function of Runnable passed to ExecutionContext only propagate fatal errors.
+        //SCALATESTJS,NATIVE-ONLY   execContext.runNow(future)
+        //SCALATESTJS,NATIVE-ONLY   assert(execContext.reportedFailures.length == 1)
+        //SCALATESTJS,NATIVE-ONLY   assert(execContext.reportedFailures(0).isInstanceOf[InterruptedException])
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY else
+          assertThrows[InterruptedException] {
+            execContext.runNow(future)
+          }
       }
 
       it("should wait for the test to finish when DoNotSignal.") {
@@ -1077,9 +1095,15 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
             })
           }
 
-        assertThrows[InterruptedException] {
-          execContext.runNow(future.toFuture)
-        }
+        //SCALATESTJS,NATIVE-ONLY if (ScalaTestVersions.BuiltForScalaVersion == "2.13") { // For 2.13 the run() function of Runnable passed to ExecutionContext only propagate fatal errors.
+        //SCALATESTJS,NATIVE-ONLY   execContext.runNow(future.toFuture)
+        //SCALATESTJS,NATIVE-ONLY   assert(execContext.reportedFailures.length == 1)
+        //SCALATESTJS,NATIVE-ONLY   assert(execContext.reportedFailures(0).isInstanceOf[InterruptedException])
+        //SCALATESTJS,NATIVE-ONLY }
+        //SCALATESTJS,NATIVE-ONLY else
+          assertThrows[InterruptedException] {
+            execContext.runNow(future.toFuture)
+          }
       }
 
       it("should wait for the test to finish when DoNotSignal.") {
