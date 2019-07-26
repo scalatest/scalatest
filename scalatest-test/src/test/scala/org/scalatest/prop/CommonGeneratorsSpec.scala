@@ -4947,6 +4947,10 @@ If it doesn't show up for a while, please delete this comment.
       }
     }
     "offer a gen method" that {
+      // Use posDoubleValues and posFloatValues instead of posZDoubleValues and posZFloatValues, because our should be >=
+      // works on anything with an Ordering, and in 2.13, the default Ordering for Float and Double was changed from the
+      // IEEE Ordering to a total ordering. This was a breaking change in Scala 2.13 that we should pass through to our
+      // users. Having their tests fail when they upgrade to 2.13 might help them prevent bugs from escaping to production.
       "produces generators given construct and deconstruct functions for 1 type" in {
         case class Person(age: Int)
         val persons = instancesOf(Person) { p => p.age } (posZIntValues)
@@ -4976,7 +4980,7 @@ If it doesn't show up for a while, please delete this comment.
         case class Person(name: String, age: Int, attr3: Long, attr4: Double)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4) =>
           ag should be >= 0
@@ -4988,7 +4992,7 @@ If it doesn't show up for a while, please delete this comment.
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5) =>
           ag should be >= 0
@@ -5001,7 +5005,7 @@ If it doesn't show up for a while, please delete this comment.
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6) =>
           ag should be >= 0
@@ -5015,7 +5019,7 @@ If it doesn't show up for a while, please delete this comment.
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7) =>
           ag should be >= 0
@@ -5030,7 +5034,7 @@ If it doesn't show up for a while, please delete this comment.
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8) =>
           ag should be >= 0
@@ -5046,7 +5050,7 @@ If it doesn't show up for a while, please delete this comment.
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9) =>
           ag should be >= 0
@@ -5063,7 +5067,7 @@ If it doesn't show up for a while, please delete this comment.
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10) =>
           ag should be >= 0
@@ -5081,7 +5085,7 @@ If it doesn't show up for a while, please delete this comment.
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11) =>
           ag should be >= 0
@@ -5100,7 +5104,7 @@ If it doesn't show up for a while, please delete this comment.
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12) =>
           ag should be >= 0
@@ -5120,7 +5124,7 @@ If it doesn't show up for a while, please delete this comment.
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13) =>
           ag should be >= 0
@@ -5141,7 +5145,7 @@ If it doesn't show up for a while, please delete this comment.
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14) =>
           ag should be >= 0
@@ -5163,7 +5167,7 @@ If it doesn't show up for a while, please delete this comment.
         case class Person(name: String, age: Int, attr3: Long, attr4: Double, attr5: Float, attr6: Int, attr7: Long, attr8: Double, attr9: Float, attr10: Int, attr11: Long, attr12: Double, attr13: Float, attr14: Int, attr15: Long)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15) =>
           ag should be >= 0
@@ -5187,8 +5191,8 @@ If it doesn't show up for a while, please delete this comment.
                           attr16: Double)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues,
-          posZDoubleValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+          posDoubleValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16) =>
           ag should be >= 0
@@ -5213,8 +5217,8 @@ If it doesn't show up for a while, please delete this comment.
                           attr16: Double, attr17: Float)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16, p.attr17)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues,
-          posZDoubleValues, posZFloatValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+          posDoubleValues, posFloatValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16, attr17) =>
           ag should be >= 0
@@ -5240,8 +5244,8 @@ If it doesn't show up for a while, please delete this comment.
                           attr16: Double, attr17: Float, attr18: Int)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16, p.attr17, p.attr18)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues,
-          posZDoubleValues, posZFloatValues, posZIntValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+          posDoubleValues, posFloatValues, posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16, attr17, attr18) =>
           ag should be >= 0
@@ -5268,8 +5272,8 @@ If it doesn't show up for a while, please delete this comment.
                           attr16: Double, attr17: Float, attr18: Int, attr19: Long)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16, p.attr17, p.attr18, p.attr19)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues,
-          posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+          posDoubleValues, posFloatValues, posZIntValues, posZLongValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16, attr17, attr18, attr19) =>
           ag should be >= 0
@@ -5297,8 +5301,8 @@ If it doesn't show up for a while, please delete this comment.
                           attr16: Double, attr17: Float, attr18: Int, attr19: Long, attr20: Double)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16, p.attr17, p.attr18, p.attr19, p.attr20)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues,
-          posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+          posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16, attr17, attr18, attr19, attr20) =>
           ag should be >= 0
@@ -5327,8 +5331,8 @@ If it doesn't show up for a while, please delete this comment.
                           attr16: Double, attr17: Float, attr18: Int, attr19: Long, attr20: Double, attr21: Float)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16, p.attr17, p.attr18, p.attr19, p.attr20, p.attr21)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues,
-          posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+          posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16, attr17, attr18, attr19, attr20, attr21) =>
           ag should be >= 0
@@ -5358,8 +5362,8 @@ If it doesn't show up for a while, please delete this comment.
                           attr16: Double, attr17: Float, attr18: Int, attr19: Long, attr20: Double, attr21: Float, attr22: Int)
         val persons = instancesOf(Person) { p =>
           (p.name, p.age, p.attr3, p.attr4, p.attr5, p.attr6, p.attr7, p.attr8, p.attr9, p.attr10, p.attr11, p.attr12, p.attr13, p.attr14, p.attr15, p.attr16, p.attr17, p.attr18, p.attr19, p.attr20, p.attr21, p.attr22)
-        } (strings, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues,
-          posZDoubleValues, posZFloatValues, posZIntValues, posZLongValues, posZDoubleValues, posZFloatValues, posZIntValues)
+        } (strings, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues, posZLongValues,
+          posDoubleValues, posFloatValues, posZIntValues, posZLongValues, posDoubleValues, posFloatValues, posZIntValues)
         import org.scalatest.prop.GeneratorDrivenPropertyChecks._
         forAll (persons) { case Person(_, ag, attr3, attr4, attr5, attr6, attr7, attr8, attr9, attr10, attr11, attr12, attr13, attr14, attr15, attr16, attr17, attr18, attr19, attr20, attr21, attr22) =>
           ag should be >= 0
