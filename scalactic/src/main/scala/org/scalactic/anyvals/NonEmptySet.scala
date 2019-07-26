@@ -477,7 +477,7 @@ final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
   final def headOption: Option[T] = toSet.headOption
 
   /**
-    * Returns <code>false</code> to indicate this <code>NonEmptySet</code>, like all <code>NonEmptySet<code>s, is non-empty.
+    * Returns <code>false</code> to indicate this <code>NonEmptySet</code>, like all <code>NonEmptySet</code>s, is non-empty.
     *
     * @return false
     */

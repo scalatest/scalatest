@@ -393,27 +393,6 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
     }
 
   /**
-   * Given a <code>Good</code> accumulating <code>Or</code>, apply it to the given function and return the result, wrapped in a <code>Good</code>;
-   * else return the given <code>Bad</code>.
-   *
-   * <p>
-   * For more information and examples, see the <a href="Or.html#accumulatingErrors">Accumulating errors with <code>Or</code></a> section
-   * of the main documentation for class <code>Or</code>.
-   * </p>
-   */
-  @deprecated("Please call map on the Or passed as the first argument to withGood, passing to map the function passed as the second argument to withGood, instead")
-  def withGood[A, ERR, RESULT](
-    a: A Or Every[ERR]
-  )(
-    fn: A => RESULT
-  ): RESULT Or Every[ERR] = {
-    a match {
-      case Good(valid) => Good(fn(valid))
-      case Bad(every) => Bad(every)
-    }
-  }
-
-  /**
    * Given 2 <code>Good</code> accumulating <code>Or</code>s, apply them to the given function and return the result, wrapped in a <code>Good</code>;
    * else return a <code>Bad</code> containing every error (<em>i.e.</em>, a <code>Bad</code> whose <code>Every</code> includes every value that
    * appears in any <code>Bad</code>s passed to <code>withGood</code>).
@@ -438,7 +417,7 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
   )(
     fn: A => B => RESULT
   ): RESULT Or Every[ERR] = {
-    val funOrError: (B => RESULT) Or Every[ERR] = withGood[A, ERR, B => RESULT](a)(fn)
+    val funOrError: (B => RESULT) Or Every[ERR] = a.map(fn) // withGood[A, ERR, B => RESULT](a)(fn)
     b match {
       case Good(valid) =>
         funOrError match {
