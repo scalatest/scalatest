@@ -115,6 +115,20 @@ class ListShouldContainOnlyLogicalOrSpec extends FunSpec {
           e2.failedCodeFileName.get should be(fileName)
           e2.failedCodeLineNumber.get should be(thisLineNumber - 3)
           e2.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (contain.only() or contain only("fie", "fee", "fum", "foe"))
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+
+          val e2 = intercept[exceptions.NotAllowedException] {
+            fumList should (contain only("fie", "fee", "fum", "foe") or contain.only())
+          }
+          e2.failedCodeFileName.get should be(fileName)
+          e2.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e2.message should be(Some(Resources.onlyEmpty))
         }
       }
       
@@ -184,6 +198,13 @@ class ListShouldContainOnlyLogicalOrSpec extends FunSpec {
           e1.failedCodeFileName.get should be(fileName)
           e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
           e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (equal(fumList) or contain.only())
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
         }
       }
       
@@ -246,6 +267,13 @@ class ListShouldContainOnlyLogicalOrSpec extends FunSpec {
           e1.failedCodeFileName.get should be(fileName)
           e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
           e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (be(fumList) or contain.only())
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
         }
       }
       
@@ -304,6 +332,13 @@ class ListShouldContainOnlyLogicalOrSpec extends FunSpec {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
             fumList should (contain only() or be(fumList))
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (contain.only() or be(fumList))
           }
           e1.failedCodeFileName.get should be(fileName)
           e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
@@ -594,6 +629,20 @@ class ListShouldContainOnlyLogicalOrSpec extends FunSpec {
           e2.failedCodeFileName.get should be(fileName)
           e2.failedCodeLineNumber.get should be(thisLineNumber - 3)
           e2.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            all(list1s) should (contain.only() or contain only(1, 3, 2))
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+
+          val e2 = intercept[exceptions.NotAllowedException] {
+            all(list1s) should (contain only(1, 3, 2) or contain.only())
+          }
+          e2.failedCodeFileName.get should be(fileName)
+          e2.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e2.message should be(Some(Resources.onlyEmpty))
         }
       }
       
@@ -662,6 +711,13 @@ class ListShouldContainOnlyLogicalOrSpec extends FunSpec {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
             all(list1s) should (be(List(3, 2, 1)) or contain only())
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            all(list1s) should (be(List(3, 2, 1)) or contain.only())
           }
           e1.failedCodeFileName.get should be(fileName)
           e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
