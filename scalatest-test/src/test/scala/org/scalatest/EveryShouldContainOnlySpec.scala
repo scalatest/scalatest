@@ -89,6 +89,13 @@ class EveryShouldContainOnlySpec extends FunSpec {
           e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
           e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
           e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should contain.only()
+          }
+          e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -142,6 +149,13 @@ class EveryShouldContainOnlySpec extends FunSpec {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
             fumList should (contain only())
+          }
+          e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (contain.only())
           }
           e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
           e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
@@ -310,6 +324,13 @@ class EveryShouldContainOnlySpec extends FunSpec {
           e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
           e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
           e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            toList shouldNot contain.only()
+          }
+          e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -363,6 +384,13 @@ class EveryShouldContainOnlySpec extends FunSpec {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
             toList shouldNot (contain only())
+          }
+          e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            toList shouldNot (contain.only())
           }
           e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
           e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
@@ -454,6 +482,13 @@ class EveryShouldContainOnlySpec extends FunSpec {
           e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
           e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
           e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            all(list1s) should contain.only()
+          }
+          e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -532,6 +567,13 @@ class EveryShouldContainOnlySpec extends FunSpec {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
             all(list1s) should (contain only())
+          }
+          e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            all(list1s) should (contain.only())
           }
           e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
           e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
@@ -718,6 +760,13 @@ class EveryShouldContainOnlySpec extends FunSpec {
           e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
           e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
           e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            all(toLists) shouldNot contain.only()
+          }
+          e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
         }
       }
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -776,6 +825,13 @@ class EveryShouldContainOnlySpec extends FunSpec {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
             all(toLists) shouldNot (contain only())
+          }
+          e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            all(toLists) shouldNot (contain.only())
           }
           e1.failedCodeFileName.get should be("EveryShouldContainOnlySpec.scala")
           e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
