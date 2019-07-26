@@ -38,7 +38,7 @@ implicit def arraySeqEqualityConstraint[EA, CA[_] <: Array[_], EB, CB[_] <: coll
 // Need a low priority one for the value going in VB <:< VA direction
 implicit def arrayEqualityConstraint[EA, CA[_] <: Array[_], EB, CB[_] <: Array[_]](implicit equalityOfA: Equality[CA[EA]], ev: EA <:< EB): EqualityConstraint[CA[EA], CB[EB]] = new BasicEqualityConstraint[CA[EA], CB[EB]](equalityOfA)
 
-// These are not in TypeCheckedTripleEquals or ConversionCheckedTripleEquals. Just available in addition.
+// These are not in TypeCheckedTripleEquals. Just available in addition.
 
 trait SeqConstraints
 trait SetConstraints

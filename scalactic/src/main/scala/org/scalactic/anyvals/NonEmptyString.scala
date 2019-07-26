@@ -677,7 +677,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
   final def isDefinedAt(idx: Int): Boolean = theString.isDefinedAt(idx)
 
   /**
-    * Returns <code>false</code> to indicate this <code>NonEmptyString</code>, like all <code>NonEmptyString<code>s, is non-empty.
+    * Returns <code>false</code> to indicate this <code>NonEmptyString</code>, like all <code>NonEmptyString</code>s, is non-empty.
     *
     * @return false
     */
@@ -1483,7 +1483,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     *
     * @param idx the position of the replacement
     * @param c the replacing character
-    * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyString<code>
+    * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyString</code>
     * @return a copy of this <code>NonEmptyString</code> with the character at position <code>idx</code> replaced by <code>c</code>.
     */
   final def updated(idx: Int, c: Char): NonEmptyString =

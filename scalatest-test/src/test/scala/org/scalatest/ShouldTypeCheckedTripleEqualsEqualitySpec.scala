@@ -28,6 +28,7 @@ import Matchers._
 
 import org.scalactic.ArrayHelper.deep
 
+// TODO: Shouldn't this actually use TypeCheckedTripleEquals?
 class ShouldTypeCheckedTripleEqualsEqualitySpec extends FunSpec with NonImplicitAssertions {
 
   describe("the === operator should use the appropriate Equality type class") {

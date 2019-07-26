@@ -663,7 +663,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
   final def isDefinedAt(idx: Int): Boolean = toArray.isDefinedAt(idx)
 
   /**
-    * Returns <code>false</code> to indicate this <code>NonEmptyArray</code>, like all <code>NonEmptyArray<code>s, is non-empty.
+    * Returns <code>false</code> to indicate this <code>NonEmptyArray</code>, like all <code>NonEmptyArray</code>s, is non-empty.
     *
     * @return false
     */
@@ -1421,7 +1421,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     *
     * @param idx the position of the replacement
     * @param elem the replacing element
-    * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyArray<code>
+    * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyArray</code>
     * @return a copy of this <code>NonEmptyArray</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
     */
   final def updated[U >: T](idx: Int, elem: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =

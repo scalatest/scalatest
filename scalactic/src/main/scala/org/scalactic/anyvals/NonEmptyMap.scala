@@ -478,7 +478,7 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
   final def isDefinedAt(key: K): Boolean = toMap.isDefinedAt(key)
 
   /**
-    * Returns <code>false</code> to indicate this <code>NonEmptyMap</code>, like all <code>NonEmptyMap<code>s, is non-empty.
+    * Returns <code>false</code> to indicate this <code>NonEmptyMap</code>, like all <code>NonEmptyMap</code>s, is non-empty.
     *
     * @return false
     */
