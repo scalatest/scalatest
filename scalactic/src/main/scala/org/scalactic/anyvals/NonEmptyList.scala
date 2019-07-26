@@ -797,7 +797,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
   final def isDefinedAt(idx: Int): Boolean = toList.isDefinedAt(idx)
 
   /**
-   * Returns <code>false</code> to indicate this <code>NonEmptyList</code>, like all <code>NonEmptyList<code>s, is non-empty.
+   * Returns <code>false</code> to indicate this <code>NonEmptyList</code>, like all <code>NonEmptyList</code>s, is non-empty.
    *
    * @return false
    */
@@ -1633,7 +1633,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    *
    * @param idx the position of the replacement
    * @param elem the replacing element
-   * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyList<code>
+   * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyList</code>
    * @return a copy of this <code>NonEmptyList</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
    */
   final def updated[U >: T](idx: Int, elem: U): NonEmptyList[U] =

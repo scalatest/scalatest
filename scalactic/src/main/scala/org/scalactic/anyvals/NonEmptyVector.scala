@@ -703,7 +703,7 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
   final def isDefinedAt(idx: Int): Boolean = toVector.isDefinedAt(idx)
 
   /**
-    * Returns <code>false</code> to indicate this <code>NonEmptyVector</code>, like all <code>NonEmptyVector<code>s, is non-empty.
+    * Returns <code>false</code> to indicate this <code>NonEmptyVector</code>, like all <code>NonEmptyVector</code>s, is non-empty.
     *
     * @return false
     */
@@ -1524,7 +1524,7 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
     *
     * @param idx the position of the replacement
     * @param elem the replacing element
-    * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyVector<code>
+    * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyVector</code>
     * @return a copy of this <code>NonEmptyVector</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
     */
   final def updated[U >: T](idx: Int, elem: U): NonEmptyVector[U] =
