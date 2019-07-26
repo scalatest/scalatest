@@ -181,7 +181,7 @@ package org.scalatest.featurespec
  *   }
  * }
  *
- * trait DbFixture { this: fixture.AsyncTestSuite =&gt;
+ * trait DbFixture { this: FixtureAsyncTestSuite =&gt;
  *
  *   type FixtureParam = Db
  *

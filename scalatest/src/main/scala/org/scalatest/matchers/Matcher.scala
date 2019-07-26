@@ -17,10 +17,10 @@ package org.scalatest.matchers
 
 import org.scalactic._
 import org.scalatest.enablers._
-import org.scalatest.words._
+import org.scalatest.matchers.dsl._
 import org.scalatest.FailureMessages
-import org.scalatest.MatchersHelper.andMatchersAndApply
-import org.scalatest.MatchersHelper.orMatchersAndApply
+import MatchersHelper.andMatchersAndApply
+import MatchersHelper.orMatchersAndApply
 import org.scalatest.Resources
 import scala.collection.GenTraversable
 import scala.reflect.ClassTag

@@ -20,7 +20,7 @@ import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
 import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
-import words.BehaveWord
+import verbs.BehaveWord
 import org.scalatest.fixture.{AsyncPendingTransformer, NoArgTestWrapper}
 import scala.util.Try
 
@@ -47,7 +47,7 @@ import scala.util.Try
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait FixtureAsyncFreeSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.scalatest.fixture.AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with org.scalatest.FixtureAsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureFreeSpecMod, "FixtureFreeSpec")
 

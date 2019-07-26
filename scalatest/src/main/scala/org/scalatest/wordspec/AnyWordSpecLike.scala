@@ -19,7 +19,7 @@ import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _,
 import org.scalatest._
 import org.scalatest.exceptions._
 import Suite.autoTagClassAnnotations
-import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
+import verbs.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
   MustVerb, StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
 
 /**

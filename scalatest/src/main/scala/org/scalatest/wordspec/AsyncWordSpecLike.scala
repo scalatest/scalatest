@@ -20,7 +20,7 @@ import org.scalatest._
 import scala.concurrent.Future
 import Suite.autoTagClassAnnotations
 import org.scalatest.exceptions._
-import org.scalatest.words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
+import org.scalatest.verbs.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
 MustVerb, StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
 import scala.util.Try
 

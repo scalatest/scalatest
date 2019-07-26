@@ -19,7 +19,7 @@ import org.scalatest.{Transformer => _, _}
 import org.scalatest.fixture.{Transformer, NoArgTestWrapper}
 import org.scalactic.source
 import org.scalatest.Suite.autoTagClassAnnotations
-import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
+import verbs.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
 
 /**
  * Implementation trait for class <code>FixtureAnyFlatSpec</code>, which is
@@ -44,7 +44,7 @@ import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-trait FixtureAnyFlatSpecLike extends org.scalatest.fixture.TestSuite with org.scalatest.fixture.TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with org.scalatest.FixtureTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFlatSpecMod, "FixtureFlatSpec")
 

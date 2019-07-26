@@ -387,7 +387,7 @@ object MatchResult {
     )
 }
 
-class EqualMatchResult(
+private[scalatest] class EqualMatchResult(
   matches: Boolean,
   rawFailureMessage: String,
   rawNegatedFailureMessage: String,
@@ -418,7 +418,7 @@ class EqualMatchResult(
 
 }
 
-class NotEqualMatchResult(
+private[scalatest] class NotEqualMatchResult(
   matches: Boolean,
   rawFailureMessage: String,
   rawNegatedFailureMessage: String,

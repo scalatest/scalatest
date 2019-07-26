@@ -1259,7 +1259,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec {
       }
     }
     "should support expectations" ignore { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends fixture.FunSpec with Expectations {
+      class TestSpec extends fixture.FunSpec with expectations.Expectations {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         it("fail scenario") { () =>

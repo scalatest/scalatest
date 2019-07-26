@@ -442,7 +442,7 @@ import tools.SuiteDiscoveryHelper
  * so one way to access it in your suite is to override one of those methods. If you need to use the config map inside your tests, you
  * can access it from the <code>NoArgTest</code> passed to <code>withFixture</code>, or the <code>OneArgTest</code> passed to
  * <code>withFixture</code> in the traits in the <code>org.scalatest.fixture</code> package. (See the
- * <a href="fixture/Suite.html">documentation for <code>fixture.Suite</code></a>
+ * <a href="FixtureSuite.html">documentation for <code>FixtureSuite</code></a>
  * for instructions on how to access the config map in tests.)
  * </p>
  *
@@ -2051,7 +2051,7 @@ used for test events like succeeded/failed, etc.
   def getTopOfMethod(theSuite: Suite, method: Method) = TopOfMethod(theSuite.getClass.getName, method.toGenericString())
   def getTopOfMethod(theSuite: Suite, testName: String) = TopOfMethod(theSuite.getClass.getName, getMethodForTestName(theSuite, testName).toGenericString())
 
-  // Factored out to share this with fixture.Suite.runTest
+  // Factored out to share this with FixtureSuite.runTest
   def getSuiteRunTestGoodies(theSuite: Suite, stopper: Stopper, reporter: Reporter, testName: String): (Stopper, Reporter, Method, Long) = {
     val (theStopper, report, testStartTime) = getRunTestGoodies(theSuite, stopper, reporter, testName)
     val method = getMethodForTestName(theSuite, testName)
@@ -2061,7 +2061,7 @@ used for test events like succeeded/failed, etc.
 
   //SCALATESTJS,NATIVE-ONLY def getTopOfMethod(theSuite: Suite, testName: String) = TopOfMethod(theSuite.getClass.getName, "test" + testName.capitalize)
 
-  // Sharing this with FunSuite and fixture.FunSuite as well as Suite and fixture.Suite
+  // Sharing this with FunSuite and fixture.FunSuite as well as Suite and FixtureSuite
   def getRunTestGoodies(theSuite: Suite, stopper: Stopper, reporter: Reporter, testName: String): (Stopper, Reporter, Long) = {
 
     val report = wrapReporterIfNecessary(theSuite, reporter)
@@ -2144,7 +2144,7 @@ used for test events like succeeded/failed, etc.
 
     def isTestMethod(m: Method) = {
 
-      // Factored out to share code with fixture.Suite.testNames
+      // Factored out to share code with FixtureSuite.testNames
       val (isInstanceMethod, simpleName, firstFour, paramTypes, hasNoParams, isTestNames, isTestTags, isTestDataFor) = isTestMethodGoodies(m)
 
       isInstanceMethod && (firstFour == "test") && !isTestDataFor && ((hasNoParams && !isTestNames && !isTestTags) || takesInformer(m))
