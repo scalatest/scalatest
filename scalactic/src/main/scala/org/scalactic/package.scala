@@ -60,12 +60,30 @@ package object scalactic {
    */
   val ScalacticVersion: String = ScalacticVersions.ScalacticVersion
 
+  /**
+   * <strong>The name <code>org.scalactic.Chain</code> has been deprecated and will be removed in a future version of Scalactic. Please use
+   * its new name, <code>org.scalatest.anyvals.NonEmptyList</code>, instead.</strong>
+   *
+   * <p>This type has been renamed for consistency with other '<code>NonEmpty</code>' anyvals.</p>
+   */
   @deprecated("Chain has been deprecated and will be removed in a future version of Scalactic. Please use org.scalactic.anyvals.NonEmptyList instead.", "3.1.0")
   type Chain[+T] = org.scalactic.anyvals.NonEmptyList[T]
 
+  /**
+   * <strong>The name <code>org.scalactic.Chain</code> has been deprecated and will be removed in a future version of Scalactic. Please use
+   * its new name, <code>org.scalatest.anyvals.NonEmptyList</code>, instead.</strong>
+   *
+   * <p>This type has been renamed for consistency with other '<code>NonEmpty</code>' anyvals.</p>
+   */
   @deprecated("Chain has been deprecated and will be removed in a future version of Scalactic. Please use org.scalactic.anyvals.NonEmptyList instead.", "3.1.0")
   val Chain = org.scalactic.anyvals.NonEmptyList
 
+  /**
+   * <strong>The name <code>org.scalactic.End</code> has been deprecated and will be removed in a future version of Scalactic. Please use
+   * its new name, <code>org.scalatest.anyvals.End</code>, instead.</strong>
+   *
+   * <p>This type has been renamed for consistency with other '<code>NonEmpty</code>' anyvals.</p>
+   */
   @deprecated("End has been deprecated and will be removed in a future version of Scalactic. Please use org.scalactic.anyvals.End instead.", "3.1.0")
   val End = org.scalactic.anyvals.End
 }
