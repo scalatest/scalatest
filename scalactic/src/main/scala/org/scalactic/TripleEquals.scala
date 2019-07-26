@@ -31,8 +31,8 @@ import TripleEqualsSupport._
  * </td></tr></table>
  *
  * <p>
- * This trait will override or hide implicit methods defined by its sibling traits,
- * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> or <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>,
+ * This trait will override or hide implicit methods defined by its sibling trait,
+ * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>,
  * and can therefore be used to temporarily turn of type checking in a limited scope. Here's an example, in which <code>TypeCheckedTripleEquals</code> will
  * cause a compiler error:
  * </p>
@@ -63,8 +63,7 @@ import TripleEqualsSupport._
  *
  * <pre>
  * Example.scala:9: error: types Int and Long do not adhere to the equality constraint selected for
- * the === and !== operators; they must either be in a subtype/supertype relationship, or, if
- * ConversionCheckedTripleEquals is in force, implicitly convertible in one direction or the other;
+ * the === and !== operators; they must either be in a subtype/supertype relationship;
  * the missing implicit parameter is of type org.scalactic.Constraint[Int,Long]
  *     if (a === b) 0      // This line won't compile
  *           ^
@@ -135,9 +134,13 @@ trait TripleEquals extends TripleEqualsSupport {
   override def typeCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): A CanEqual B = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
   override def convertEquivalenceToBToAConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): A CanEqual B = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 
+  @deprecated("The lowPriorityConversionCheckedConstraint method has been deprecated and will be removed in a future version of ScalaTest. It is no longer needed now that the deprecation period of ConversionCheckedTripleEquals has expired. It will not be replaced.", "3.1.0")
   override def lowPriorityConversionCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], cnv: A => B): A CanEqual B = new AToBEquivalenceConstraint[A, B](equivalenceOfB, cnv)
+  @deprecated("The convertEquivalenceToAToBConversionConstraint method has been deprecated and will be removed in a future version of ScalaTest. It is no longer needed now that the deprecation period of ConversionCheckedTripleEquals has expired. It will not be replaced.", "3.1.0")
   override def convertEquivalenceToAToBConversionConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A => B): A CanEqual B = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+  @deprecated("The conversionCheckedConstraint method has been deprecated and will be removed in a future version of ScalaTest. It is no longer needed now that the deprecation period of ConversionCheckedTripleEquals has expired. It will not be replaced.", "3.1.0")
   override def conversionCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): A CanEqual B = new BToAEquivalenceConstraint[A, B](equivalenceOfA, cnv)
+  @deprecated("The convertEquivalenceToBToAConversionConstraint method has been deprecated and will be removed in a future version of ScalaTest. It is no longer needed now that the deprecation period of ConversionCheckedTripleEquals has expired. It will not be replaced.", "3.1.0")
   override def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): A CanEqual B = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 }
 
