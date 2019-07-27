@@ -776,7 +776,7 @@ object ScalatestBuild {
      moduleName := "scalatest",
      initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
-                                      |import Matchers._""".stripMargin,
+                                      |import matchers.should.Matchers._""".stripMargin,
      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
      libraryDependencies ++= scalatestLibraryDependencies,
      genMustMatchersTask,
@@ -2189,7 +2189,9 @@ object ScalatestBuild {
   val scalatestDocScalacOptionsSetting =
     scalacOptions in (Compile, doc) :=
       Seq[String](
-        "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
+        // -Ymacro-no-expand is not supported (or needed) under 2.13. In case we want
+        // to run Scaladoc under 2.12 again, this is the line that is required:
+        // "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
         "-groups", // enables the @group tags in Scaladocs
         "-sourcepath", docsrcDir.value.getAbsolutePath,
         "-doc-title", projectTitle.value +" "+ releaseVersion,
@@ -2198,7 +2200,9 @@ object ScalatestBuild {
   val scalacticDocScalacOptionsSetting =
     scalacOptions in (Compile, doc) :=
       Seq[String](
-        "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
+        // -Ymacro-no-expand is not supported (or needed) under 2.13. In case we want
+        // to run Scaladoc under 2.12 again, this is the line that is required:
+        // "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
         "-groups", // enables the @group tags in Scaladocs
         "-sourcepath", docsrcDir.value.getAbsolutePath,
         "-doc-title", projectTitle.value +" "+ releaseVersion,
