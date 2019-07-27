@@ -309,12 +309,12 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         val future: Future[Outcome] =
         failAfter(Span(100, Millis)) {
           Future {
-            throw new InterruptedException
+            throw new UnknownError // Scala.js 2.13.0 is catching InterruptedException, whereas JVM is not, so use a different "fatal" exception
             Succeeded
           }
         }
 
-        assertThrows[InterruptedException] {
+        assertThrows[UnknownError] {
           execContext.runNow(future)
         }
       }
@@ -565,12 +565,12 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         val future: FutureOutcome =
           failAfter(Span(100, Millis)) {
             FutureOutcome(Future {
-              throw new InterruptedException
+              throw new UnknownError // Scala.js 2.13.0 is catching InterruptedException, whereas JVM is not, so use a different "fatal" exception
               Succeeded
             })
           }
 
-        assertThrows[InterruptedException] {
+        assertThrows[UnknownError] {
           execContext.runNow(future.toFuture)
         }
       }
@@ -847,12 +847,12 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         val future: Future[Outcome] =
           cancelAfter(Span(100, Millis)) {
             Future {
-              throw new InterruptedException
+              throw new UnknownError // Scala.js 2.13.0 is catching InterruptedException, whereas JVM is not, so use a different "fatal" exception
               Succeeded
             }
           }
 
-        assertThrows[InterruptedException] {
+        assertThrows[UnknownError] {
           execContext.runNow(future)
         }
       }
@@ -1072,12 +1072,12 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         val future: FutureOutcome =
           cancelAfter(Span(100, Millis)) {
             FutureOutcome(Future {
-              throw new InterruptedException
+              throw new UnknownError // Scala.js 2.13.0 is catching InterruptedException, whereas JVM is not, so use a different "fatal" exception
               Succeeded
             })
           }
 
-        assertThrows[InterruptedException] {
+        assertThrows[UnknownError] {
           execContext.runNow(future.toFuture)
         }
       }
