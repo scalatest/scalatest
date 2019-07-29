@@ -127,7 +127,7 @@ private[scalatest] trait Expectations {
   implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
 }
 
-object Expectations extends Expectations {
+private[scalatest] object Expectations extends Expectations {
 
   class ExpectationsHelper {
 
