@@ -377,9 +377,9 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
   /**
    * Suite style name.
    *
-   * @return <code>org.scalatest.fixture.FeatureSpec</code>
+   * @return `org.scalatest.featurespec.FixtureAsyncFeatureSpec`
    */
-  final override val styleName: String = "org.scalatest.fixture.FeatureSpec"
+  final override val styleName: String = "org.scalatest.featurespec.FixtureAsyncFeatureSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

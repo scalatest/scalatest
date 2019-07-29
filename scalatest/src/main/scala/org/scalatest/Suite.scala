@@ -1326,6 +1326,8 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.Suite`
    */
   val styleName: String = "org.scalatest.Suite"
   

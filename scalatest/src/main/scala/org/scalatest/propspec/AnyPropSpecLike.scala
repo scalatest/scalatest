@@ -257,8 +257,10 @@ trait AnyPropSpecLike extends TestSuite with TestRegistration with Informing wit
   
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.propspec.AnyPropSpec`
    */
-  final override val styleName: String = "org.scalatest.PropSpec"
+  final override val styleName: String = "org.scalatest.propspec.AnyPropSpec"
   
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

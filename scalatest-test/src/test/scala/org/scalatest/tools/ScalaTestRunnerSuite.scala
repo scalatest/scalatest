@@ -262,7 +262,7 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       val listener = new EventHandler {
         def handle(event: Event): Unit = {}
       }
-      runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-y", "org.scalatest.FunSuite", "-C", classOf[EventRecordingReporter].getName))
+      runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-y", "org.scalatest.funsuite.AnyFunSuite", "-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
         case Some(dispatchRep: DispatchReporter) => 
           dispatchRep.doDispose()
@@ -282,7 +282,7 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       val listener = new EventHandler {
         def handle(event: Event): Unit = {}
       }
-      runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-y", "org.scalatest.FunSpec", "-C", classOf[EventRecordingReporter].getName))
+      runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-y", "org.scalatest.funspec.AnyFunSpec", "-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
         case Some(dispatchRep: DispatchReporter) => 
           dispatchRep.doDispose()
@@ -293,7 +293,7 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
               assert(suiteAbortedEvents.size === 1)
               suiteAbortedEvents(0).throwable match {
                 case Some(e: NotAllowedException) => 
-                  assert(e.getMessage === Resources.notTheChosenStyle("org.scalatest.FunSuite", "org.scalatest.FunSpec"))
+                  assert(e.getMessage === Resources.notTheChosenStyle("org.scalatest.funsuite.AnyFunSuite", "org.scalatest.funspec.AnyFunSpec"))
                 case _ => fail("Expected SuiteAborted to carry NotAllowedException, but it did not.")
               }
             case _ => fail("Expected to find EventRecordingReporter, but not found.")

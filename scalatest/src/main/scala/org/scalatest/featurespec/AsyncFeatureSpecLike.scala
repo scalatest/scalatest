@@ -359,8 +359,10 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
 
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.featurespec.AsyncFeatureSpec`
    */
-  final override val styleName: String = "org.scalatest.FeatureSpec"
+  final override val styleName: String = "org.scalatest.featurespec.AsyncFeatureSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

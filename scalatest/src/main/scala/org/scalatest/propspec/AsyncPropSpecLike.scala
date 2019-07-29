@@ -219,8 +219,10 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
 
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.propspec.AsyncPropSpec`
    */
-  final override val styleName: String = "org.scalatest.PropSpec"
+  final override val styleName: String = "org.scalatest.propspec.AsyncPropSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }*/

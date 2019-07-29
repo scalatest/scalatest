@@ -338,7 +338,7 @@ trait FixtureSuite extends org.scalatest.Suite { thisSuite =>
   /**
    * Suite style name.
    *
-   * @return <code>org.scalatest.FixtureSuite</code>
+   * @return `org.scalatest.FixtureSuite`
    */
   override val styleName: String = "org.scalatest.FixtureSuite"
 }

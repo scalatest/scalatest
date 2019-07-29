@@ -242,9 +242,10 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
 
   /**
     * Suite style name.
+   *
+   * @return `org.scalatest.funsuite.AsyncFunSuite`
     */
-  @deprecated("styleName is deprecated and will be removed in the future version of ScalaTest, because FunSuite will be refactored as its own module.")
-  final override val styleName: String = "org.scalatest.FunSuite"
+  final override val styleName: String = "org.scalatest.funsuite.AsyncFunSuite"
 
   // Inherits scaladoc
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)

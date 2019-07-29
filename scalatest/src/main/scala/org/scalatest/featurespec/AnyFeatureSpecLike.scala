@@ -377,8 +377,10 @@ trait AnyFeatureSpecLike extends TestSuite with TestRegistration with Informing 
   
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.featurespec.AnyFeatureSpec`
    */
-  final override val styleName: String = "org.scalatest.FeatureSpec"
+  final override val styleName: String = "org.scalatest.featurespec.AnyFeatureSpec"
     
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

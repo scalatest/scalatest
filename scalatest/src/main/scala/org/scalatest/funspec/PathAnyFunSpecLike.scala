@@ -655,8 +655,10 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
 
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.funspec.PathAnyFunSpec`
    */
-  final override val styleName: String = "org.scalatest.path.FunSpec"
+  final override val styleName: String = "org.scalatest.funspec.PathAnyFunSpec"
     
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
     ensureTestResultsRegistered(thisSuite)

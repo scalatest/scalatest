@@ -341,6 +341,8 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
   
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.refspec.RefSpec`
    */
   final override val styleName: String = "org.scalatest.refspec.RefSpec"
     

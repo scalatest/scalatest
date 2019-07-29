@@ -1269,9 +1269,9 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
   /**
    * Suite style name.
    *
-   * @return <code>org.scalatest.fixture.WordSpec</code>
+   * @return `org.scalatest.wordspec.FixtureAsyncWordSpec`
    */
-  final override val styleName: String = "org.scalatest.fixture.WordSpec"
+  final override val styleName: String = "org.scalatest.wordspec.FixtureAsyncWordSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

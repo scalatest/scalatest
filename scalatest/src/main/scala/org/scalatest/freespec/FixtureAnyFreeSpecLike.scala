@@ -635,9 +635,9 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
   /**
    * Suite style name.
    *
-   * @return <code>org.scalatest.fixture.FreeSpec</code>
+   * @return `org.scalatest.freespec.FixtureAnyFreeSpec`
    */
-  final override val styleName: String = "org.scalatest.fixture.FreeSpec"
+  final override val styleName: String = "org.scalatest.freespec.FixtureAnyFreeSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

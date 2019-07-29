@@ -612,9 +612,9 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
   /**
    * Suite style name.
    *
-   * @return <code>org.scalatest.fixture.FreeSpec</code>
+   * @return `org.scalatest.freespec.FixtureAsyncFreeSpec`
    */
-  final override val styleName: String = "org.scalatest.fixture.FreeSpec"
+  final override val styleName: String = "org.scalatest.freespec.FixtureAsyncFreeSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

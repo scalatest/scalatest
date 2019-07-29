@@ -1314,9 +1314,9 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
   /**
    * Suite style name.
    *
-   * @return <code>org.scalatest.fixture.WordSpec</code>
+   * @return `org.scalatest.wordspec.FixtureAnyWordSpec`
    */
-  final override val styleName: String = "org.scalatest.fixture.WordSpec"
+  final override val styleName: String = "org.scalatest.wordspec.FixtureAnyWordSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

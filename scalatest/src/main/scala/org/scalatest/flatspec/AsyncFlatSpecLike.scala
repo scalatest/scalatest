@@ -1833,8 +1833,10 @@ import resultOfStringPassedToVerb.verb
 
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.flatspec.AsyncFlatSpec`
    */
-  final override val styleName: String = "org.scalatest.FlatSpec"
+  final override val styleName: String = "org.scalatest.flatspec.AsyncFlatSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

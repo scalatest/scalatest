@@ -60,10 +60,10 @@ class SuitesSpec extends FunSpec {
       // OK if no chosen styles specified
       g.run(None, Args(SilentReporter))
       // OK if chosen styles is Suite, because that's the style of *tests* written in this Suites
-      g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec")), None, new Tracker, Set.empty))
+      g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.funspec.AnyFunSpec")), None, new Tracker, Set.empty))
       intercept[NotAllowedException] {
         // Should not allow if chosen styles is FunSuite, because Suite is the style of *tests* written in this Suites
-        g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSuite")), None, new Tracker, Set.empty))
+        g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.funsuite.AnyFunSuite")), None, new Tracker, Set.empty))
       }
     }
   }
