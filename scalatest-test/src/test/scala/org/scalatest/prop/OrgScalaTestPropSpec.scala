@@ -111,7 +111,7 @@ class OrgScalaTestPropSpec extends WordSpec with Matchers with GeneratorDrivenPr
 
         // Now invoke valueOf() with all that, and confirm that we get the same value each time:
         def callValueOf(): genTpe.Result = {
-          valueOf[genTpe.Result](vs.head, vs.tail:_*)(multiplier)(genTpe.gen)
+          org.scalatest.prop.CommonGenerators.valueOf[genTpe.Result](vs.head, vs.tail:_*)(multiplier)(genTpe.gen)
         }
         val first = callValueOf()
         val second = callValueOf()

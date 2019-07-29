@@ -435,36 +435,4 @@ import prop._
   * that class for the full details.
   */
 package object prop {
-  /**
-    * Deterministically generate a value for the given Generator.
-    *
-    * This function takes a set of anywhere from 1-22 parameters, plus a "multiplier". It combines these to
-    * generate a pseudo-random (but deterministic) seed, feeds that into the Generator, and returns the
-    * result. Since the results are deterministic, calling this repeatedly with the same parameters will produce
-    * the same output.
-    *
-    * This is mainly helpful when generating random Functions -- since the inputs for a test run are
-    * complex, you need more than a simple random seed to reproduce the same results. In order to make
-    * this more useful, the `toString` of a instance of a Function [[Generator]] shows how to invoke
-    * `valueOf()` to reproduce the same result.
-    *
-    * @param first The first parameter to use for calculating the seed.
-    * @param others Any additional parameters to use for calculating the seed.
-    * @param multiplier A number to combine with the other parameters, to calculate the seed.
-    * @param genOfA A Generator. (Usually a Function Generator.)
-    * @tparam A The type of the Generator.
-    * @return An instance of A, computed by feeding the calculated seed into the Generator.
-    */
-  def valueOf[A](first: Any, others: Any*)(multiplier: Int)(implicit genOfA: Generator[A]): A = {
-    val combinedHashCode: Int =
-      others.foldLeft(first.hashCode) { (acc, next) =>
-        (37 * (acc + 37)) + next.hashCode
-      }
-    val seed = combinedHashCode.toLong * multiplier
-    val rnd = Randomizer(seed)
-    val maxSize = PosZInt(20)
-    val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfA.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
-    result
-  }
 }
