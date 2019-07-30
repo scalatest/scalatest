@@ -107,11 +107,11 @@ import org.scalactic._
  *   val outcome = super.withFixture(test) // Invoke the test function
  *
  *   outcome match {
- *     case failed: Failed =>
+ *     case failed: Failed =&gt;
  *       // perform action that you want to occur
  *       // only if a test fails here
  *       failed
- *     case other => other
+ *     case other =&gt; other
  *   }
  * }
  * </pre>
@@ -128,9 +128,9 @@ import org.scalactic._
  * override def withFixture(test: NoArgTest) = {
  *
  *   super.withFixture(test) match {
- *     case Failed(ex: ParticularException) =>
+ *     case Failed(ex: ParticularException) =&gt;
  *       Canceled("Muting flicker", ex)
- *     case other => other
+ *     case other =&gt; other
  *   }
  * }
  * </pre>

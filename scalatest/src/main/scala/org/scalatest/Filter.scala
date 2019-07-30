@@ -246,6 +246,9 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
   }
 }
 
+/**
+ * Companion object to `Filter` offering a default `Filter` and a factory method for `Filter`s.
+ */
 object Filter {
   private final val IgnoreTag = "org.scalatest.Ignore"
 

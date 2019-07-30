@@ -19,6 +19,149 @@ import org.scalatest._
 import OutcomeOf.outcomeOf
 import org.scalactic._
 
+/**
+ * The base trait for ScalaTest's synchronous testing styles that accept a fixture
+ * object passed into tests. This trait defines a
+ * <code>withFixture</code> lifecycle method that takes as its parameter a test function
+ * that accepts a fixture object and returns an <a href="Outcome.html"><code>Outcome</code></a>.
+ *
+ * <p>
+ * The abstract <code>withFixture</code> method add by this trait has the
+ * following signature:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * def withFixture(test: OneArgTest): Outcome
+ * </pre>
+ *
+ * The <code>apply</code> method of test function interface,
+ * <code>OneArgTest</code>, also returns <code>Outcome</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // In trait OneArgTest:
+ * def apply(fixture: FixtureParam): Outcome
+ * </pre>
+ *
+ * <p>
+ * Because the result of a test is an <code>Outcome</code>, when the test function returns, the test body must have determined an outcome already. It
+ * will already be one of <a href="Succeeded$.html"><code>Succeeded</code></a>, <a href="Failed.html"><code>Failed</code></a>, <a href="Canceled.html"><code>Canceled</code></a>, or <a href="Pending$.html"></code>Pending</code></a>. This is
+ * also true when <code>withFixture(OneArgTest)</code> returns: because the result type of <code>withFixture(OneArgTest)</code> is <code>Outcome</code>,
+ * the test has by definition already finished execution.
+ * </p>
+ *
+ * <p>
+ * The recommended way to ensure cleanup is performed after a test body finishes execution is
+ * to use a <code>try</code>-<code>finally</code> clause.
+ * Using <code>try</code>-<code>finally</code> will ensure that cleanup will occur whether
+ * the test function completes abruptly by throwing a suite-aborting exception, or returns
+ * normally yielding an <code>Outcome</code>. Note that the only situation in which a test function
+ * will complete abruptly with an exception is if the test body throws a suite-aborting exception.
+ * Any other exception will be caught and reported as either a <code>Failed</code>, <code>Canceled</code>,
+ * or <code>Pending</code>.
+ * </p>
+ *
+ * <p>
+ * To enable the stacking of traits that define <code>withFixture(NoArgTest)</code>, it is a good idea to let
+ * <code>withFixture(NoArgTest)</code> invoke the test function instead of invoking the test
+ * function directly. To do so, you'll need to convert the <code>OneArgTest</code> to a <code>NoArgTest</code>. You can do that by passing
+ * the fixture object to the <code>toNoArgTest</code> method of <code>OneArgTest</code>. In other words, instead of
+ * writing &ldquo;<code>test(theFixture)</code>&rdquo;, you'd delegate responsibility for
+ * invoking the test function to the <code>withFixture(NoArgTest)</code> method of the same instance by writing:
+ * </p>
+ *
+ * <pre>
+ * withFixture(test.toNoArgTest(theFixture))
+ * </pre>
+ *
+ * <p>
+ * The <code>withFixture</code> method is designed to be stacked, and to enable this, you should always call the <code>super</code> implementation
+ * of <code>withFixture</code>, and let it invoke the test function rather than invoking the test function directly. In other words, instead of writing
+ * &ldquo;<code>test(...)</code>&rdquo;, you should write &ldquo;<code>super.withFixture(test)</code>&rdquo;. Thus, the recommended
+ * structure of a <code>withFixture</code> implementation that performs cleanup looks like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // Your implementation
+ * type FixtureParam = String
+ *
+ * override def withFixture(test: OneArgTest) = {
+ *   // Perform setup here
+ *   val theFixture = "hello"
+ *   try {
+ *     withFixture(test.toNoArgTest(theFixture)) // Invoke the test function
+ *   } finally {
+ *     // Perform cleanup here
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * If you have no cleanup to perform, you can write <code>withFixture</code> like this instead:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // Your implementation
+ * type FixtureParam = String
+ *
+ * override def withFixture(test: NoArgTest) = {
+ *   // Perform setup here
+ *   val theFixture = "hello"
+ *   withFixture(test.toNoArgTest(theFixture)) // Invoke the test function
+ * }
+ * </pre>
+ *
+ * <p>
+ * If you want to perform an action only for certain outcomes, you can use
+ * a pattern match.
+ * For example, if you want to perform an action if a test fails, you'd
+ * match on <code>Failed</code>, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // Your implementation
+ * type FixtureParam = String
+ *
+ * override def withFixture(test: NoArgTest) = {
+ *
+ *   // Perform setup here
+ *   val theFixture = "hello"
+ *
+ *   val outcome = withFixture(test.toNoArgTest(theFixture)) // Invoke the test function
+ *
+ *   outcome match {
+ *     case failed: Failed =&gt;
+ *       // perform action that you want to occur
+ *       // only if a test fails here
+ *       failed
+ *     case other =&gt; other
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * If you want to change the outcome in some way in <code>withFixture</code>, you can also
+ * use a pattern match.
+ * For example, if a particular exception intermittently causes a test to fail, and can
+ * transform those failures into cancelations, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // Your implementation
+ * type FixtureParam = String
+ *
+ * override def withFixture(test: NoArgTest) = {
+ *
+ *   val theFixture = "hello"
+ *
+ *   withFixture(test.toNoArgTest(theFixture)) match {
+ *     case Failed(ex: ParticularException) =&gt;
+ *       Canceled("Muting flicker", ex)
+ *     case other =&gt; other
+ *   }
+ * }
+ * </pre>
+ */
 trait FixtureTestSuite extends org.scalatest.FixtureSuite with org.scalatest.TestSuite { thisTestSuite =>
 
   /**
@@ -48,7 +191,7 @@ trait FixtureTestSuite extends org.scalatest.FixtureSuite with org.scalatest.Tes
      *
      * <p>
      * This method makes it easier to invoke the <code>withFixture</code> method
-     * that takes a <code>NoArgTest</code>. For example, if a <code>FixtureSuite</code> 
+     * that takes a <code>NoArgTest</code>. For example, if a <code>FixtureSuite</code>
      * mixes in <code>SeveredStackTraces</code>, it will inherit an implementation
      * of <code>withFixture(NoArgTest)</code> provided by
      * <code>SeveredStackTraces</code> that implements the stack trace severing
@@ -73,7 +216,7 @@ trait FixtureTestSuite extends org.scalatest.FixtureSuite with org.scalatest.Tes
      * @param fixture the <code>FixtureParam</code>
      * @return an new instance of <code>NoArgTest</code>
      */
-    def toNoArgTest(fixture: FixtureParam) = 
+    def toNoArgTest(fixture: FixtureParam) =
       new NoArgTest {
         val name = thisOneArgTest.name
         val configMap = thisOneArgTest.configMap

@@ -415,6 +415,9 @@ case class Failed(exception: Throwable) extends Exceptional(exception) {
   def toSucceeded: Succeeded.type = throw exception
 }
 
+/**
+ * Companion object for `Failed` offering several factory methods.
+ */
 object Failed {
 
   /**
