@@ -21,15 +21,19 @@ import org.scalatest.freespec._
 import org.scalatest.funspec._
 import org.scalatest.funsuite._
 import org.scalatest.propspec._
+// SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec._
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.wordspec._
 
+// SKIP-SCALATESTJS,NATIVE-START
 trait AsyncStringFixture { this: FixtureAsyncTestSuite =>
   type FixtureParam = String
   def withFixture(test: OneArgAsyncTest): FutureOutcome = {
     test("hi")
   }
 }
+// SKIP-SCALATESTJS,NATIVE-END
 
 class StyleNameSpec extends AnyFunSuite {
 
@@ -43,6 +47,7 @@ class StyleNameSpec extends AnyFunSuite {
     assert((new FixtureAnyFeatureSpecLike with StringFixture {} ).styleName == "org.scalatest.featurespec.FixtureAnyFeatureSpec")
   }
 
+  // SKIP-SCALATESTJS,NATIVE-START
   test("AsyncFeatureSpec and AsyncFeatureSpecLike should return org.scalatest.featurespec.AsyncFeatureSpec from styleName") {
     assert((new AsyncFeatureSpec {}).styleName == "org.scalatest.featurespec.AsyncFeatureSpec")
     assert((new AsyncFeatureSpecLike {}).styleName == "org.scalatest.featurespec.AsyncFeatureSpec")
@@ -52,6 +57,7 @@ class StyleNameSpec extends AnyFunSuite {
     assert((new FixtureAsyncFeatureSpec with AsyncStringFixture).styleName == "org.scalatest.featurespec.FixtureAsyncFeatureSpec")
     assert((new FixtureAsyncFeatureSpecLike with AsyncStringFixture {}).styleName == "org.scalatest.featurespec.FixtureAsyncFeatureSpec")
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   test("AnyFlatSpec and AnyFlatSpecLike should return org.scalatest.flatspec.AnyFlatSpec from styleName") {
     assert((new AnyFlatSpec).styleName == "org.scalatest.flatspec.AnyFlatSpec")
@@ -63,6 +69,7 @@ class StyleNameSpec extends AnyFunSuite {
     assert((new FixtureAnyFlatSpecLike with StringFixture {} ).styleName == "org.scalatest.flatspec.FixtureAnyFlatSpec")
   }
 
+  // SKIP-SCALATESTJS,NATIVE-START
   test("AsyncFlatSpec and AsyncFlatSpecLike should return org.scalatest.flatspec.AsyncFlatSpec from styleName") {
     assert((new AsyncFlatSpec {}).styleName == "org.scalatest.flatspec.AsyncFlatSpec")
     assert((new AsyncFlatSpecLike {}).styleName == "org.scalatest.flatspec.AsyncFlatSpec")
@@ -72,6 +79,7 @@ class StyleNameSpec extends AnyFunSuite {
     assert((new FixtureAsyncFlatSpec with AsyncStringFixture).styleName == "org.scalatest.flatspec.FixtureAsyncFlatSpec")
     assert((new FixtureAsyncFlatSpecLike with AsyncStringFixture {}).styleName == "org.scalatest.flatspec.FixtureAsyncFlatSpec")
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   test("AnyFreeSpec and AnyFreeSpecLike should return org.scalatest.freespec.AnyFreeSpec from styleName") {
     assert((new AnyFreeSpec).styleName == "org.scalatest.freespec.AnyFreeSpec")
@@ -83,6 +91,7 @@ class StyleNameSpec extends AnyFunSuite {
     assert((new FixtureAnyFreeSpecLike with StringFixture {} ).styleName == "org.scalatest.freespec.FixtureAnyFreeSpec")
   }
 
+  // SKIP-SCALATESTJS,NATIVE-START
   test("AsyncFreeSpec and AsyncFreeSpecLike should return org.scalatest.freespec.AsyncFreeSpec from styleName") {
     assert((new AsyncFreeSpec {}).styleName == "org.scalatest.freespec.AsyncFreeSpec")
     assert((new AsyncFreeSpecLike {}).styleName == "org.scalatest.freespec.AsyncFreeSpec")
@@ -92,10 +101,17 @@ class StyleNameSpec extends AnyFunSuite {
     assert((new FixtureAsyncFreeSpec with AsyncStringFixture).styleName == "org.scalatest.freespec.FixtureAsyncFreeSpec")
     assert((new FixtureAsyncFreeSpecLike with AsyncStringFixture {}).styleName == "org.scalatest.freespec.FixtureAsyncFreeSpec")
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   test("PathAnyFreeSpec and PathAnyFreeSpecLike should return org.scalatest.freespec.PathAnyFreeSpec from styleName") {
-    assert((new PathAnyFreeSpec).styleName == "org.scalatest.freespec.PathAnyFreeSpec")
-    assert((new PathAnyFreeSpecLike {}).styleName == "org.scalatest.freespec.PathAnyFreeSpec")
+    class MySpec extends PathAnyFreeSpec {
+      //SCALATESTJS,NATIVE-ONLY override def newInstance: org.scalatest.freespec.PathAnyFreeSpec = new MySpec
+    }
+    assert((new MySpec).styleName == "org.scalatest.freespec.PathAnyFreeSpec")
+    class MySpecLike extends PathAnyFreeSpecLike {
+      //SCALATESTJS,NATIVE-ONLY override def newInstance: org.scalatest.freespec.PathAnyFreeSpecLike = new MySpecLike
+    }
+    assert((new MySpecLike).styleName == "org.scalatest.freespec.PathAnyFreeSpec")
   }
 
   test("AnyFunSpec and AnyFunSpecLike should return org.scalatest.funspec.AnyFunSpec from styleName") {
@@ -108,20 +124,30 @@ class StyleNameSpec extends AnyFunSuite {
     assert((new FixtureAnyFunSpecLike with StringFixture {} ).styleName == "org.scalatest.funspec.FixtureAnyFunSpec")
   }
 
+  // SKIP-SCALATESTJS,NATIVE-START
   test("AsyncFunSpec and AsyncFunSpecLike should return org.scalatest.funspec.AsyncFunSpec from styleName") {
     assert((new AsyncFunSpec {}).styleName == "org.scalatest.funspec.AsyncFunSpec")
     assert((new AsyncFunSpecLike {}).styleName == "org.scalatest.funspec.AsyncFunSpec")
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   test("PathAnyFunSpec and PathAnyFunSpecLike should return org.scalatest.funspec.PathAnyFunSpec from styleName") {
-    assert((new PathAnyFunSpec).styleName == "org.scalatest.funspec.PathAnyFunSpec")
-    assert((new PathAnyFunSpecLike {}).styleName == "org.scalatest.funspec.PathAnyFunSpec")
+    class MySpec extends PathAnyFunSpec {
+      //SCALATESTJS,NATIVE-ONLY override def newInstance: org.scalatest.funspec.PathAnyFunSpec = new MySpec
+    }
+    assert((new MySpec).styleName == "org.scalatest.funspec.PathAnyFunSpec")
+    class MySpecLike extends PathAnyFunSpecLike {
+      //SCALATESTJS,NATIVE-ONLY override def newInstance: org.scalatest.funspec.PathAnyFunSpecLike = new MySpecLike
+    }
+    assert((new MySpecLike).styleName == "org.scalatest.funspec.PathAnyFunSpec")
   }
 
+  // SKIP-SCALATESTJS,NATIVE-START
   test("FixtureAsyncFunSpec and FixtureAsyncFunSpecLike should return org.scalatest.funspec.FixtureAsyncFunSpec from styleName") {
     assert((new FixtureAsyncFunSpec with AsyncStringFixture).styleName == "org.scalatest.funspec.FixtureAsyncFunSpec")
     assert((new FixtureAsyncFunSpecLike with AsyncStringFixture {}).styleName == "org.scalatest.funspec.FixtureAsyncFunSpec")
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   test("AnyFunSuite and AnyFunSuiteLike should return org.scalatest.funsuite.AnyFunSuite from styleName") {
     assert((new AnyFunSuite).styleName == "org.scalatest.funsuite.AnyFunSuite")
@@ -133,6 +159,7 @@ class StyleNameSpec extends AnyFunSuite {
     assert((new FixtureAnyFunSuiteLike with StringFixture {} ).styleName == "org.scalatest.funsuite.FixtureAnyFunSuite")
   }
 
+  // SKIP-SCALATESTJS,NATIVE-START
   test("AsyncFunSuite and AsyncFunSuiteLike should return org.scalatest.funsuite.AsyncFunSuite from styleName") {
     assert((new AsyncFunSuite {}).styleName == "org.scalatest.funsuite.AsyncFunSuite")
     assert((new AsyncFunSuiteLike {}).styleName == "org.scalatest.funsuite.AsyncFunSuite")
@@ -142,16 +169,19 @@ class StyleNameSpec extends AnyFunSuite {
     assert((new FixtureAsyncFunSuite with AsyncStringFixture).styleName == "org.scalatest.funsuite.FixtureAsyncFunSuite")
     assert((new FixtureAsyncFunSuiteLike with AsyncStringFixture {}).styleName == "org.scalatest.funsuite.FixtureAsyncFunSuite")
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   test("AnyPropSpec and AnyPropSpecLike should return org.scalatest.propspec.AnyPropSpec from styleName") {
     assert((new AnyPropSpec).styleName == "org.scalatest.propspec.AnyPropSpec")
     assert((new AnyPropSpecLike {}).styleName == "org.scalatest.propspec.AnyPropSpec")
   }
 
+  // SKIP-SCALATESTJS,NATIVE-START
   test("RefSpec and RefSpecLike should return org.scalatest.refspec.RefSpec from styleName") {
     assert((new RefSpec).styleName == "org.scalatest.refspec.RefSpec")
     assert((new RefSpecLike {}).styleName == "org.scalatest.refspec.RefSpec")
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 
   test("FixtureAnyPropSpec and FixtureAnyPropSpecLike should return org.scalatest.propspec.FixtureAnyPropSpec from styleName") {
     assert((new FixtureAnyPropSpec with StringFixture).styleName == "org.scalatest.propspec.FixtureAnyPropSpec")
@@ -180,6 +210,7 @@ class StyleNameSpec extends AnyFunSuite {
     assert((new FixtureAnyWordSpecLike with StringFixture {} ).styleName == "org.scalatest.wordspec.FixtureAnyWordSpec")
   }
 
+  // SKIP-SCALATESTJS,NATIVE-START
   test("AsyncWordSpec and AsyncWordSpecLike should return org.scalatest.wordspec.AsyncWordSpec from styleName") {
     assert((new AsyncWordSpec {}).styleName == "org.scalatest.wordspec.AsyncWordSpec")
     assert((new AsyncWordSpecLike {}).styleName == "org.scalatest.wordspec.AsyncWordSpec")
@@ -189,5 +220,6 @@ class StyleNameSpec extends AnyFunSuite {
     assert((new FixtureAsyncWordSpec with AsyncStringFixture).styleName == "org.scalatest.wordspec.FixtureAsyncWordSpec")
     assert((new FixtureAsyncWordSpecLike with AsyncStringFixture {}).styleName == "org.scalatest.wordspec.FixtureAsyncWordSpec")
   }
+  // SKIP-SCALATESTJS,NATIVE-END
 }
 
