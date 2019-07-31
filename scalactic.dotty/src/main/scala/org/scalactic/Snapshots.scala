@@ -16,7 +16,6 @@
 package org.scalactic
 
 import scala.quoted._
-import scala.tasty._
 
 /**
  * Case class that stores the name and value of a variable or expression.
@@ -221,8 +220,8 @@ object Snapshots extends Snapshots
 
 object SnapshotsMacro {
 
-  def snap(expressions: Expr[Seq[Any]])(implicit refl: Reflection): Expr[SnapshotSeq] = {
-    import refl._
+  def snap(expressions: Expr[Seq[Any]])(implicit qctx: QuoteContext): Expr[SnapshotSeq] = {
+    import qctx.tasty._
 
     def liftSeq(args: Seq[Expr[Snapshot]]): Expr[Seq[Snapshot]] = args match {
       case x :: xs  => '{ ($x) +: ${ liftSeq(xs) }  }
@@ -232,11 +231,12 @@ object SnapshotsMacro {
     val snapshots: List[Expr[Snapshot]] = expressions.unseal.underlyingArgument match {
       case Typed(Repeated(args, _), _) => // only sequence literal
         args.map { arg =>
-          val str = arg.seal.cast[Any].show(the[Context].withoutColors).toExpr
+          val str = arg.seal.cast[Any].show.toExpr
           '{ Snapshot($str, ${ arg.seal.cast[Any] }) }
         }
       case arg =>
-        throw QuoteError("snap can only be used with sequence literal, not `seq : _*`")
+        qctx.error("snap can only be used with sequence literal, not `seq : _*`")
+        return '{???}
     }
 
     val argumentsS: Expr[Seq[Snapshot]] = liftSeq(snapshots)

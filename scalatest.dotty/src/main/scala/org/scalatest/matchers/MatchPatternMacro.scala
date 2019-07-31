@@ -53,7 +53,7 @@ private[scalatest] object MatchPatternMacro {
 //   }
 
   // Do checking on case definition and generate AST that returns a match pattern matcher
-  def matchPatternMatcher(right: Expr[PartialFunction[Any, _]])(implicit refl: Reflection): Expr[Matcher[Any]] = {
+  def matchPatternMatcher(right: Expr[PartialFunction[Any, _]])(implicit qctx: QuoteContext): Expr[Matcher[Any]] = {
     // checkCaseDefinitions(context)(tree)
 
     '{ MatchPatternHelper.matchPatternMatcher($right) }
@@ -64,22 +64,22 @@ private[scalatest] object MatchPatternMacro {
    *
    * org.scalatest.matchers.MatchPatternHelper.checkMatchPattern(left, right)
    */
-  def matchPattern(left: Expr[ResultOfNotWordForAny[_]], right: Expr[PartialFunction[Any, _]]): Expr[Unit] = {
+  def matchPattern(left: Expr[ResultOfNotWordForAny[_]], right: Expr[PartialFunction[Any, _]])(implicit qctx: QuoteContext): Expr[Unit] = {
     // checkCaseDefinitions(context)(tree)
 
     '{ MatchPatternHelper.checkMatchPattern($left, $right) }
   }
 
-  def andNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#AndNotWord], right: Expr[PartialFunction[Any, _]])(implicit refl: Reflection): Expr[Matcher[T]] = {
-    import refl._
-    
+  def andNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#AndNotWord], right: Expr[PartialFunction[Any, _]])(implicit qctx: QuoteContext): Expr[Matcher[T]] = {
+    import qctx.tasty._
+
     val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher($right) }
     '{ ($self).owner.and($notMatcher) }
   }
 
-  def orNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#OrNotWord], right: Expr[PartialFunction[Any, _]])(implicit refl: Reflection): Expr[Matcher[T]] = {
-    import refl._
-    
+  def orNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#OrNotWord], right: Expr[PartialFunction[Any, _]])(implicit qctx: QuoteContext): Expr[Matcher[T]] = {
+    import qctx.tasty._
+
     val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher($right) }
     '{ ($self).owner.or($notMatcher) }
   }

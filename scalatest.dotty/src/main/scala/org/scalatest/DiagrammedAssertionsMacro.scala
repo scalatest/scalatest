@@ -16,7 +16,6 @@
 package org.scalatest
 
 import org.scalactic._
-import scala.tasty._
 import scala.quoted._
 
 object DiagrammedAssertionsMacro {
@@ -29,11 +28,11 @@ object DiagrammedAssertionsMacro {
     fallback: Expr[(Bool, Any, source.Position) => Assertion],
     condition: Expr[Boolean], clue: Expr[Any],
     prettifier: Expr[Prettifier],
-    pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] = {
-    import refl._
+    pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
+    import qctx.tasty._
 
-    val startLine = refl.rootPosition.startLine // Get the expression first line number
-    val endLine = refl.rootPosition.endLine // Get the expression last line number
+    val startLine = rootPosition.startLine // Get the expression first line number
+    val endLine = rootPosition.endLine // Get the expression last line number
 
     if (startLine == endLine) // Only use diagram macro if it is one line, where startLine will be equaled to endLine
       DiagrammedExprMacro.transform(helper, condition, pos, clue, rootPosition.sourceCode)
@@ -41,14 +40,14 @@ object DiagrammedAssertionsMacro {
       AssertionsMacro.transform(fallback, condition, prettifier, pos, clue)
   }
 
-  def assert(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit refl: Reflection): Expr[Assertion] = {
+  def assert(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Assertion] = {
     macroImpl(
       '{ DiagrammedAssertions.diagrammedAssertionsHelper.macroAssert },
       '{ Assertions.assertionsHelper.macroAssert },
       condition, clue, prettifier, pos)
   }
 
-  def assume(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit refl: Reflection): Expr[Assertion] = {
+  def assume(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Assertion] = {
     macroImpl(
       '{ DiagrammedAssertions.diagrammedAssertionsHelper.macroAssume },
       '{ Assertions.assertionsHelper.macroAssume },

@@ -16,7 +16,6 @@
 package org.scalactic.anyvals
 
 import scala.quoted._
-import scala.tasty._
 
 import CompileTimeAssertions._
 
@@ -24,8 +23,8 @@ object PercentageIntMacro {
 
   def isValid(i: Int): Boolean = i >= 0 && i <= 100
 
-  def apply(value: Expr[Int])(implicit refl: Reflection): Expr[PercentageInt] = {
-    import refl._
+  def apply(value: Expr[Int])(implicit qctx: QuoteContext): Expr[PercentageInt] = {
+    import qctx.tasty._
 
     val notValidMsg =
       "PercentageInt.apply can only be invoked on Int literals between 0 and 100, "+
