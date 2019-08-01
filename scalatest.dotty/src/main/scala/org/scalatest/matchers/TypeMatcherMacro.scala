@@ -15,7 +15,7 @@
  */
 package org.scalatest.matchers
 
-import org.scalatest.words.{ResultOfAnTypeInvocation, MatcherWords, ResultOfATypeInvocation, ResultOfNotWordForAny}
+import org.scalatest.matchers.dsl.{ResultOfAnTypeInvocation, MatcherWords, ResultOfATypeInvocation, ResultOfNotWordForAny}
 
 // //import org.scalatest.words.{FactResultOfAnTypeInvocation, FactResultOfATypeInvocation}
 // import org.scalactic.Prettifier
@@ -24,7 +24,7 @@ import org.scalatest.words.{ResultOfAnTypeInvocation, MatcherWords, ResultOfATyp
 import scala.quoted._
 import scala.tasty._
 
-private[scalatest] object TypeMatcherMacro {
+ object TypeMatcherMacro {
 
 //   // Check that no type parameter is specified, if any does, give a friendly compiler warning.
   def checkTypeParameter(qctx: QuoteContext)(tree: qctx.tasty.Term, methodName: String): Unit = {
@@ -169,7 +169,7 @@ private[scalatest] object TypeMatcherMacro {
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'shouldBe a [type]' syntax
-  def shouldBeATypeImpl(self: Expr[org.scalatest.Matchers#AnyShouldWrapper[_]], aType: Expr[ResultOfATypeInvocation[_]])(implicit qctx: QuoteContext): Expr[org.scalatest.Assertion] = {
+  def shouldBeATypeImpl(self: Expr[org.scalatest.matchers.should.Matchers#AnyShouldWrapper[_]], aType: Expr[ResultOfATypeInvocation[_]])(implicit qctx: QuoteContext): Expr[org.scalatest.Assertion] = {
     import qctx.tasty._
     checkTypeParameter(qctx)(aType.unseal, "a")
     '{
@@ -178,7 +178,7 @@ private[scalatest] object TypeMatcherMacro {
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'mustBe a [type]' syntax
-  def mustBeATypeImpl(self: Expr[org.scalatest.MustMatchers#AnyMustWrapper[_]], aType: Expr[ResultOfATypeInvocation[_]])(implicit qctx: QuoteContext): Expr[org.scalatest.Assertion] = {
+  def mustBeATypeImpl(self: Expr[org.scalatest.matchers.must.Matchers#AnyMustWrapper[_]], aType: Expr[ResultOfATypeInvocation[_]])(implicit qctx: QuoteContext): Expr[org.scalatest.Assertion] = {
     import qctx.tasty._
     checkTypeParameter(qctx)(aType.unseal, "a")
     '{
@@ -187,7 +187,7 @@ private[scalatest] object TypeMatcherMacro {
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'shouldBe an [type]' syntax
-  def shouldBeAnTypeImpl(self: Expr[org.scalatest.Matchers#AnyShouldWrapper[_]], anType: Expr[ResultOfAnTypeInvocation[_]])(implicit qctx: QuoteContext): Expr[org.scalatest.Assertion] = {
+  def shouldBeAnTypeImpl(self: Expr[org.scalatest.matchers.should.Matchers#AnyShouldWrapper[_]], anType: Expr[ResultOfAnTypeInvocation[_]])(implicit qctx: QuoteContext): Expr[org.scalatest.Assertion] = {
     import qctx.tasty._
     checkTypeParameter(qctx)(anType.unseal, "an")
     '{
@@ -196,7 +196,7 @@ private[scalatest] object TypeMatcherMacro {
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAnType, used by 'mustBe an [type]' syntax
-  def mustBeAnTypeImpl(self: Expr[org.scalatest.MustMatchers#AnyMustWrapper[_]], anType: Expr[ResultOfAnTypeInvocation[_]])(implicit qctx: QuoteContext): Expr[org.scalatest.Assertion] = {
+  def mustBeAnTypeImpl(self: Expr[org.scalatest.matchers.must.Matchers#AnyMustWrapper[_]], anType: Expr[ResultOfAnTypeInvocation[_]])(implicit qctx: QuoteContext): Expr[org.scalatest.Assertion] = {
     import qctx.tasty._
     checkTypeParameter(qctx)(anType.unseal, "an")
     '{

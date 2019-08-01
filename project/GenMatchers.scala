@@ -152,11 +152,17 @@ object GenMatchers {
     targetDir.mkdirs()
     val matchersDir = new File(targetDir, "matchers")
     matchersDir.mkdirs()
-    val junitDir = new File(targetDir, "junit")
-    junitDir.mkdirs()
+    val shouldDir = new File(matchersDir, "should")
+    shouldDir.mkdirs()
+    val mustDir = new File(matchersDir, "must")
+    mustDir.mkdirs()
 
+    (if (scalaJS || dotty)
+      Seq(translateFile(shouldDir, "Matchers.scala", "scalatest/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, scalaJS, dotty, line => line))
+    else
+      Seq.empty[File]) ++  
     Seq(
-      translateFile(targetDir, "Matchers.scala", "scalatest/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, scalaJS, dotty, translateShouldToMust)
+      translateFile(mustDir, "Matchers.scala", "scalatest/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, scalaJS, dotty, translateShouldToMust)
       /*translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
       translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
       translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,

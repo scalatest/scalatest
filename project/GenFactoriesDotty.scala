@@ -46,6 +46,7 @@ import org.scalatest.matchers.AMatcher
 import org.scalatest.matchers.AnMatcher
 import org.scalatest.matchers.MatchPatternMacro
 import org.scalatest.matchers.TypeMatcherMacro
+import org.scalatest.matchers.MatchPatternHelper
 import org.scalatest.matchers.dsl.FullyMatchWord
 import org.scalatest.matchers.dsl.StartWithWord
 import org.scalatest.matchers.dsl.EndWithWord

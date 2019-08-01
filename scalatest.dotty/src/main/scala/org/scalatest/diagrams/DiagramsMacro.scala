@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.diagrams
 
 import org.scalactic._
 import scala.quoted._
+import org.scalatest.{Assertions, DiagrammedExpr}
+import org.scalatest.compatible.Assertion
 
-
-object DiagrammedExprMacro {
+object DiagramsMacro {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def parse(qctx: QuoteContext)(expr: qctx.tasty.Term): qctx.tasty.Term = {
     implicit val qctx2: QuoteContext = qctx

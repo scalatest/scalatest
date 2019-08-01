@@ -144,6 +144,12 @@ object GenScalaTestDotty {
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, 
+      List(
+        "Diagrams.scala", 
+        "DiagramsMacro.scala"
+      )
+    ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
@@ -160,20 +166,25 @@ object GenScalaTestDotty {
         "TypeMatcherMacro.scala"   // Re-implemented with new macro
       )
     ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/matchers/dsl", "org/scalatest/matchers/dsl", targetDir, 
+      List(
+        "BeWord.scala", 
+        "JavaCollectionWrapper.scala",
+        "JavaMapWrapper.scala", 
+        "MatchPatternWord.scala",
+        "NotWord.scala", 
+        "ResultOfNotWordForAny.scala"
+      )
+    ) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/matchers/should", "org/scalatest/matchers/should", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
+    copyDir("scalatest/src/main/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/refspec", "org/scalatest/refspec", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir,
-      List(
-        "BeWord.scala",
-        "MatchPatternWord.scala",
-        "NotWord.scala",
-        "ResultOfNotWordForAny.scala"
-      )
-    ) ++ 
+    copyDir("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty) ++ 
     copyDir("scalatest/src/main/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)
   }
 

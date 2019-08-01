@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest.matchers.dsl
 
 import org.scalactic.Prettifier
 import org.scalatest.matchers.{MatchResult, Matcher}

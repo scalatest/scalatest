@@ -16,7 +16,7 @@
 package org.scalatest.matchers
 
 import org.scalatest.Resources
-import org.scalatest.words.ResultOfNotWordForAny
+import org.scalatest.matchers.dsl.ResultOfNotWordForAny
 import scala.quoted._
 import scala.tasty._
 
