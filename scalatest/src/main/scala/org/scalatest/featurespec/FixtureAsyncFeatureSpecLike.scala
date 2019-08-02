@@ -114,7 +114,13 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
     }
   }
 
-  @deprecated("use Scenario instead", "ScalaTest 3.1.1")
+  /**
+   * '''The `scenario` (starting with lowercase 's') method has been deprecated and will be removed in a future version of ScalaTest. Please use `Scenario` (starting with an uppercase 'S') instead.'''
+   *
+   * This method has been renamed for consistency with ScalaTest's `Given`, `When`, and `Then` methods, which were changed to uppper case
+   * when Scala deprecated `then` as an identifier, and Cucumber, one of the main original inspirations for `FeatureSpec`.
+   */
+  @deprecated("The scenario (starting with lowercase 's') method has been deprecated and will be removed in a future version of ScalaTest. Please use Scenario (starting with an uppercase 'S') instead.", "3.1.0")
   protected def scenario(specText: String, testTags: Tag*): ResultOfScenarioInvocation = Scenario(specText, testTags: _*)
 
   /**
@@ -168,7 +174,13 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
   protected def ignore(specText: String, testTags: Tag*): ResultOfIgnoreInvocation =
     new ResultOfIgnoreInvocation(specText, testTags: _*)
 
-  @deprecated("use Feature instead", "ScalaTest 3.1.1")
+  /**
+   * '''The `feature` (starting with lowercase 'f') method has been deprecated and will be removed in a future version of ScalaTest. Please use `Feature` (starting with an uppercase 'F') instead.'''
+   *
+   * This method has been renamed for consistency with ScalaTest's `Given`, `When`, and `Then` methods, which were changed to uppper case
+   * when Scala deprecated `then` as an identifier, and Cucumber, one of the main original inspirations for `FeatureSpec`.
+   */
+  @deprecated("The feature (starting with lowercase 'f') method has been deprecated and will be removed in a future version of ScalaTest. Please use Feature (starting with an uppercase 'F') instead.", "3.1.0")
   protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = Feature(description)(fun)(pos)
 
   /**
@@ -314,7 +326,13 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
     runImpl(thisSuite, testName, args, parallelAsyncTestExecution, super.run)
   }
 
-  @deprecated("use ScenariosFor instead", "ScalaTest 3.1.1")
+  /**
+   * '''The `scenariosFor` (starting with lowercase 's') method has been deprecated and will be removed in a future version of ScalaTest. Please use `ScenariosFor` (starting with an uppercase 'S') instead.'''
+   *
+   * This method has been renamed for consistency with ScalaTest's `Given`, `When`, and `Then` methods, which were changed to uppper case
+   * when Scala deprecated `then` as an identifier, and Cucumber, one of the main original inspirations for `FeatureSpec`.
+   */
+  @deprecated("The scenariosFor (starting with lowercase 's') method has been deprecated and will be removed in a future version of ScalaTest. Please use ScenariosFor (starting with an uppercase 'S') instead.", "3.1.0")
   protected def scenariosFor(unit: Unit): Unit = ScenariosFor(unit)
 
   /**
@@ -377,9 +395,9 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
   /**
    * Suite style name.
    *
-   * @return <code>org.scalatest.fixture.FeatureSpec</code>
+   * @return `org.scalatest.featurespec.FixtureAsyncFeatureSpec`
    */
-  final override val styleName: String = "org.scalatest.fixture.FeatureSpec"
+  final override val styleName: String = "org.scalatest.featurespec.FixtureAsyncFeatureSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

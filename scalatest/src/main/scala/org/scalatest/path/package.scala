@@ -16,7 +16,7 @@
 package org.scalatest
 
 /**
- * ScalaTest's old path package that contains deprecated alias for path style traits.
+ * ScalaTest's old path package that contains deprecated aliases for path style traits.
  */
 package object path {
 

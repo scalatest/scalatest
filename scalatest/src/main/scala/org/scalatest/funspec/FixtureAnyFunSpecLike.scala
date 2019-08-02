@@ -632,9 +632,9 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
   /**
    * Suite style name.
    *
-   * @return <code>org.scalatest.fixture.FunSpec</code>
+   * @return `org.scalatest.funspec.FixtureAnyFunSpec`
    */
-  final override val styleName: String = "org.scalatest.fixture.FunSpec"
+  final override val styleName: String = "org.scalatest.funspec.FixtureAnyFunSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

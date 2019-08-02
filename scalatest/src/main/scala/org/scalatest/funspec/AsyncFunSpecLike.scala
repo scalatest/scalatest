@@ -503,8 +503,10 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
 
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.funspec.AsyncFunSpec`
    */
-  final override val styleName: String = "org.scalatest.FunSpec"
+  final override val styleName: String = "org.scalatest.funspec.AsyncFunSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

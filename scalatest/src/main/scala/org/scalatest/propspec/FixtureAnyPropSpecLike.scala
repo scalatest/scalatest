@@ -353,9 +353,9 @@ trait FixtureAnyPropSpecLike extends org.scalatest.FixtureTestSuite with org.sca
   /**
    * Suite style name.
    *
-   * @return <code>org.scalatest.fixture.PropSpec</code>
+   * @return `org.scalatest.propspec.FixtureAnyPropSpec`
    */
-  final override val styleName: String = "org.scalatest.fixture.PropSpec"
+  final override val styleName: String = "org.scalatest.propspec.FixtureAnyPropSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

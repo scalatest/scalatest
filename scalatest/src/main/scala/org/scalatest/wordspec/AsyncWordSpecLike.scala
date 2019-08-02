@@ -1198,8 +1198,10 @@ one error found
 
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.wordspec.AsyncWordSpec`
    */
-  final override val styleName: String = "org.scalatest.WordSpec"
+  final override val styleName: String = "org.scalatest.wordspec.AsyncWordSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

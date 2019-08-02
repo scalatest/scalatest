@@ -189,7 +189,7 @@ class ScalaTestFramework extends SbtFramework {
           configMap.getAndSet(Some(if (chosenStyleSet.isEmpty) propertiesMap else propertiesMap + (Suite.CHOSEN_STYLES -> chosenStyleSet)))
 
           if (chosenStyleSet.nonEmpty)
-            println(Resources.deprecatedChosenStyleWarning())
+            println(Resources.deprecatedChosenStyleWarning)
 
           val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
           val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")

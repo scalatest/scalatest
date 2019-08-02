@@ -1226,7 +1226,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
           }
         case Some(distribute) =>
           for (nestedSuite <- nestedSuitesArray) 
-            statusBuffer += distribute(nestedSuite, args.copy(tracker = tracker.nextTracker))
+            statusBuffer += distribute(nestedSuite, args.copy(tracker = tracker.nextTracker()))
       }
     }
     new CompositeStatus(Set.empty ++ statusBuffer)
@@ -1326,6 +1326,8 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.Suite`
    */
   val styleName: String = "org.scalatest.Suite"
   

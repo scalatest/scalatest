@@ -2200,9 +2200,9 @@ import resultOfStringPassedToVerb.verb
   /**
    * Suite style name.
    *
-   * @return <code>org.scalatest.fixture.FlatSpec</code>
+   * @return `org.scalatest.flatspec.FixtureAsyncFlatSpec`
    */
-  final override val styleName: String = "org.scalatest.fixture.FlatSpec"
+  final override val styleName: String = "org.scalatest.flatspec.FixtureAsyncFlatSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

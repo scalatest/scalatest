@@ -68,7 +68,7 @@ private[scalatest] trait TimerTask extends Runnable {
 
   val timerTaskRef: AtomicReference[Option[java.util.TimerTask]] = new AtomicReference(None)
 
-  def run()
+  def run(): Unit
 
   def cancel(): Unit = {
     timerTaskRef.get match {

@@ -524,8 +524,10 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
   
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.funspec.AnyFunSpec`
    */
-  final override val styleName: String = "org.scalatest.FunSpec"
+  final override val styleName: String = "org.scalatest.funspec.AnyFunSpec"
     
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

@@ -540,8 +540,10 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
   
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.freespec.AnyFreeSpec`
    */
-  final override val styleName: String = "org.scalatest.FreeSpec"
+  final override val styleName: String = "org.scalatest.freespec.AnyFreeSpec"
     
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

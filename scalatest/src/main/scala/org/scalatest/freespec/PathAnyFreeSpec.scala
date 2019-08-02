@@ -32,7 +32,7 @@ import org.scalatest._
  *
  * <pre class="stHighlight">
  * import org.scalatest.freespec
- * import org.scalatest.matchers.Matchers
+ * import org.scalatest.matchers.should.Matchers
  * import scala.collection.mutable.ListBuffer
  *
  * class ExampleSpec extends freespec.PathAnyFreeSpec with Matchers {

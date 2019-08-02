@@ -543,8 +543,10 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
 
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.freespec.AsyncFreeSpec`
    */
-  final override val styleName: String = "org.scalatest.FreeSpec"
+  final override val styleName: String = "org.scalatest.freespec.AsyncFreeSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

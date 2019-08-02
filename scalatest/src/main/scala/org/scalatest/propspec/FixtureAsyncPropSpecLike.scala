@@ -317,9 +317,9 @@ trait FixtureAsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration
   /**
    * Suite style name.
    *
-   * @return <code>org.scalatest.fixture.PropSpec</code>
+   * @return `org.scalatest.propspec.FixtureAsyncPropSpec`
    */
-  final override val styleName: String = "org.scalatest.fixture.PropSpec"
+  final override val styleName: String = "org.scalatest.propspec.FixtureAsyncPropSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }*/

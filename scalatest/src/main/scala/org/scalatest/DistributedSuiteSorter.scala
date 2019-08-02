@@ -34,12 +34,12 @@ trait DistributedSuiteSorter {
     *
     * @param suiteId the <code>suiteId</code> for the suite that's starting to execute its tests
     */
-  def distributingTests(suiteId: String)
+  def distributingTests(suiteId: String): Unit
 
   /**
     * This method is called after all tests in the suite completed execution
     *
     * @param suiteId the <code>suiteId</code> for the suite that's completed its tests execution
     */
-  def completedTests(suiteId: String)
+  def completedTests(suiteId: String): Unit
 }

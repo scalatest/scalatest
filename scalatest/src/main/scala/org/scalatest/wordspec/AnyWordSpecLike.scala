@@ -1211,8 +1211,10 @@ one error found
   
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.wordspec.AnyWordSpec`
    */
-  final override val styleName: String = "org.scalatest.WordSpec"
+  final override val styleName: String = "org.scalatest.wordspec.AnyWordSpec"
     
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

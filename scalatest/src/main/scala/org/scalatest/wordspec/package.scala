@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2012 Artima, Inc.
+ * Copyright 2001-2019 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,9 @@
  */
 package org.scalatest
 
-import org.scalactic._
-import scala.quoted._
-import scala.tasty._
-
 /**
- * Macro implementation that provides rich error message for boolean expression assertion.
+ * Classes and traits for ScalaTest's `WordSpec` style.
+ *
+ * This package is released as the `scalatest-wordspec` module.
  */
-object ExpectationsMacro {
-
-  def expect(condition: Expr[Boolean])(prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit refl: Reflection): Expr[Fact] = {
-    import refl._
-
-    val bool = BooleanMacro.parse(condition, prettifier)
-    '{ Expectations.expectationsHelper.macroExpect($bool, "", $prettifier, $pos) }
-  }
-}
+package object wordspec

@@ -98,11 +98,11 @@ class GeneratorSpec extends FunSpec with Matchers {
     it("should offer a filter method that throws an exception if too many objects are filtered out") {
       val doNotDoThisAtHome = CommonGenerators.ints.filter(i => i == 0) // Only keep zero
       a [IllegalStateException] should be thrownBy {
-        doNotDoThisAtHome.next(SizeParam(PosZInt(0), 100, 100), Nil, Randomizer.default())
+        doNotDoThisAtHome.next(SizeParam(PosZInt(0), 100, 100), Nil, Randomizer.default)
       }
       val okToDoThisAtHome = CommonGenerators.ints.filter(i => i != 0) // Only keep non-zeros
       noException should be thrownBy {
-        okToDoThisAtHome.next(SizeParam(PosZInt(0), 100, 100), Nil, Randomizer.default())
+        okToDoThisAtHome.next(SizeParam(PosZInt(0), 100, 100), Nil, Randomizer.default)
       }
     }
     it("should mix up both i and d when used in a for expression") {
@@ -2808,7 +2808,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       it("should offer a tuple2 generator") {
         val gen = implicitly[Generator[(Int, Int)]]
         val intGen = implicitly[Generator[Int]]
-        val (it8, rnd1) = intGen.shrink(8, Randomizer.default())
+        val (it8, rnd1) = intGen.shrink(8, Randomizer.default)
         val (it18, rnd2)= intGen.shrink(18, rnd1)
         val list8 = it8.toList
         val list18 = it18.toList
@@ -2823,7 +2823,7 @@ class GeneratorSpec extends FunSpec with Matchers {
         val tupGen: Generator[(String, Int)] = Generator.tuple2Generator[String, Int]
         case class Person(name: String, age: Int)
         val persons = for (tup <- tupGen) yield Person(tup._1, tup._2)
-        val (it, _) = persons.shrink(Person("Harry Potter", 32), Randomizer.default())
+        val (it, _) = persons.shrink(Person("Harry Potter", 32), Randomizer.default)
         it.toList should not be empty
       }
     }

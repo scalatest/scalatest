@@ -16,7 +16,10 @@
 package org.scalatest
 
 /**
- * Package fixture deprecated types.
+ * Classes and traits supporting ScalaTest's "fixture" style traits, which
+ * allow you to pass fixture objects into tests.
+ *
+ * This package is released as part of the `scalatest-core` module.
  */
 package object fixture {
 

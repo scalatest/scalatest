@@ -655,8 +655,10 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
   
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.freespec.PathAnyFreeSpec`
    */
-  final override val styleName: String = "org.scalatest.path.FreeSpec"
+  final override val styleName: String = "org.scalatest.freespec.PathAnyFreeSpec"
     
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
     ensureTestResultsRegistered(thisSuite)
