@@ -192,13 +192,18 @@ object GenScalaTestDotty {
     copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
         "AssertionsSpec.scala",
-        "DiagrammedAssertionsSpec.scala",
-        "ExpectationsSpec.scala",
         "ShouldCompileSpec.scala",
-        "ShouldNotCompileSpec.scala",
-        "ShouldNotTypeCheckSpec.scala"
+        "ShouldNotCompileSpec.scala"/*,
+        "ShouldNotTypeCheckSpec.scala"*/
       )
-    ) /*++
+    ) ++ 
+    copyDir("scalatest-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty) ++ 
+    copyDir("scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, 
+      List(
+        "DirectExpectationsSpec.scala"
+      )
+    ) 
+    /*++
       copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
         List(
           "WaitersSpec.scala",    // skipped because Waiters not supported.

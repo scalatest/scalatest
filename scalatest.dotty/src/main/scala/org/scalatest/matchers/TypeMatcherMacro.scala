@@ -24,7 +24,7 @@ import org.scalatest.matchers.dsl.{ResultOfAnTypeInvocation, MatcherWords, Resul
 import scala.quoted._
 import scala.tasty._
 
- object TypeMatcherMacro {
+object TypeMatcherMacro {
 
 //   // Check that no type parameter is specified, if any does, give a friendly compiler warning.
   def checkTypeParameter(qctx: QuoteContext)(tree: qctx.tasty.Term, methodName: String): Unit = {

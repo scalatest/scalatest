@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.expectations
 
-import org.scalactic._
+import org.scalactic.{Resources => _, _}
+import org.scalatest.{Assertion, CompileMacro, Expectation, Fact, Suite, Resources}
 import Fact._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
