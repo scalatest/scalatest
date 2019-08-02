@@ -2204,7 +2204,7 @@ object Randomizer {
   /**
     * This seed is empty under ordinary circumstances. It is here so that the test
     * Runner can poke in a seed value to be used during a test run. If set, it will be used
-    * as the seed for all calls to [[Randomizer.default()]].
+    * as the seed for all calls to [[Randomizer.default]].
     */
   private[scalatest] val defaultSeed: AtomicReference[Option[Long]] = new AtomicReference(None)
 
@@ -2216,7 +2216,7 @@ object Randomizer {
     *
     * @return A Randomizer, ready to begin producing random values.
     */
-  def default(): Randomizer =
+  def default: Randomizer =
     apply(
       defaultSeed.get() match {
         case Some(seed) => seed
@@ -2236,7 +2236,7 @@ object Randomizer {
     * your "random" events.
     *
     * If you want to create an adequate seed to feed into here, the value of [[System.currentTimeMillis()]] is
-    * reasonable (and is used in [[Randomizer.default()]]). It's a somewhat weak seed, but decent for most
+    * reasonable (and is used in [[Randomizer.default]]). It's a somewhat weak seed, but decent for most
     * purposes.
     *
     * @param seed A number that will be used to initialize a new Randomizer.
@@ -2267,7 +2267,7 @@ object Randomizer {
     val buf = ArrayBuffer.empty[T]
     buf ++= xs
 
-    def swap(i: Int, j: Int) {
+    def swap(i: Int, j: Int): Unit = {
       val tmp = buf(i)
       buf(i) = buf(j)
       buf(j) = tmp

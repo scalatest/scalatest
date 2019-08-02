@@ -16,8 +16,8 @@
 package org.scalatest
 
 import org.scalactic._
-import scala.tasty._
 import scala.quoted._
+import org.scalatest.diagrams._
 
 object DiagrammedAssertionsMacro {
   /**
@@ -29,28 +29,28 @@ object DiagrammedAssertionsMacro {
     fallback: Expr[(Bool, Any, source.Position) => Assertion],
     condition: Expr[Boolean], clue: Expr[Any],
     prettifier: Expr[Prettifier],
-    pos: Expr[source.Position])(implicit refl: Reflection): Expr[Assertion] = {
-    import refl._
+    pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
+    import qctx.tasty._
 
-    val startLine = refl.rootPosition.startLine // Get the expression first line number
-    val endLine = refl.rootPosition.endLine // Get the expression last line number
+    val startLine = rootPosition.startLine // Get the expression first line number
+    val endLine = rootPosition.endLine // Get the expression last line number
 
     if (startLine == endLine) // Only use diagram macro if it is one line, where startLine will be equaled to endLine
-      DiagrammedExprMacro.transform(helper, condition, pos, clue, rootPosition.sourceCode)
+      DiagramsMacro.transform(helper, condition, pos, clue, rootPosition.sourceCode)
     else // otherwise we'll just fallback to use BooleanMacro
       AssertionsMacro.transform(fallback, condition, prettifier, pos, clue)
   }
 
-  def assert(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit refl: Reflection): Expr[Assertion] = {
+  def assert(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Assertion] = {
     macroImpl(
-      '{ DiagrammedAssertions.diagrammedAssertionsHelper.macroAssert },
+      '{ Diagrams.diagrammedAssertionsHelper.macroAssert },
       '{ Assertions.assertionsHelper.macroAssert },
       condition, clue, prettifier, pos)
   }
 
-  def assume(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit refl: Reflection): Expr[Assertion] = {
+  def assume(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Assertion] = {
     macroImpl(
-      '{ DiagrammedAssertions.diagrammedAssertionsHelper.macroAssume },
+      '{ Diagrams.diagrammedAssertionsHelper.macroAssume },
       '{ Assertions.assertionsHelper.macroAssume },
       condition, clue, prettifier, pos)
   }

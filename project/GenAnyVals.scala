@@ -29,10 +29,10 @@ object GenAnyVals {
       val macroCode =
         if (dotty)
           s"""
-             |  def apply(value: Expr[$primitiveTypeName])(implicit refl: Reflection): Expr[$typeName] = {
+             |  def apply(value: Expr[$primitiveTypeName])(implicit qctx: QuoteContext): Expr[$typeName] = {
              |    val notValidMsg = Resources.notValid$typeName
              |    val notLiteralMsg = Resources.notLiteral$typeName
-             |    import refl._
+             |    import qctx.tasty._
              |    ensureValid${primitiveTypeName}Literal(value, notValidMsg, notLiteralMsg)(isValid)
              |    '{ $typeName.ensuringValid($$value) }
              |  }
@@ -650,9 +650,7 @@ object GenAnyVals {
 
   def importsForMacro(dotty: Boolean): String =
     if (dotty)
-      """import scala.quoted._
-        |import scala.tasty._
-      """.stripMargin
+      "import scala.quoted._"
     else
       "import reflect.macros.Context"
 

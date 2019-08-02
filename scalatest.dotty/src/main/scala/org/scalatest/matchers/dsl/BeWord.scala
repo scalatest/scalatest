@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest.matchers.dsl
 
 import org.scalactic._
 import org.scalatest.matchers._
@@ -24,7 +24,7 @@ import org.scalatest.Resources
 import org.scalatest.Suite
 import org.scalatest.UnquotedString
 // SKIP-SCALATESTJS,NATIVE-START
-import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
+import org.scalatest.matchers.MatchersHelper.matchSymbolToPredicateMethod
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.enablers.Definition
 import org.scalatest.enablers.Emptiness

@@ -21,7 +21,6 @@ import java.util.regex.PatternSyntaxException
 // SKIP-SCALATESTJS,NATIVE-END
 
 import scala.quoted._
-import scala.tasty._
 
 import CompileTimeAssertions._
 
@@ -43,8 +42,8 @@ object RegexStringMacro {
         (false, "\n" + e.getMessage)
     }
 
-  def apply(value: Expr[String])(implicit refl: Reflection): Expr[RegexString] = {
-    import refl._
+  def apply(value: Expr[String])(implicit qctx: QuoteContext): Expr[RegexString] = {
+    import qctx.tasty._
 
     val notValidExceptionMsg: String = {
       value.unseal match {

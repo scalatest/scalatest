@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.words
+package org.scalatest.matchers.dsl
 
 import org.scalactic._
 import org.scalatest.enablers._
@@ -24,13 +24,13 @@ import org.scalactic.DefaultEquality.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
 import TripleEqualsSupport.TripleEqualsInvocation
 // SKIP-SCALATESTJS,NATIVE-START
-import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
+import org.scalatest.matchers.MatchersHelper.matchSymbolToPredicateMethod
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.FailureMessages
-import org.scalatest.MatchersHelper.endWithRegexWithGroups
-import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
-import org.scalatest.MatchersHelper.includeRegexWithGroups
-import org.scalatest.MatchersHelper.startWithRegexWithGroups
+import org.scalatest.matchers.MatchersHelper.endWithRegexWithGroups
+import org.scalatest.matchers.MatchersHelper.fullyMatchRegexWithGroups
+import org.scalatest.matchers.MatchersHelper.includeRegexWithGroups
+import org.scalatest.matchers.MatchersHelper.startWithRegexWithGroups
 import org.scalatest.Resources
 import org.scalatest.Suite.getObjectsForFailureMessage
 import org.scalatest.UnquotedString

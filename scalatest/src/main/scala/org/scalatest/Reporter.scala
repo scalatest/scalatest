@@ -116,7 +116,7 @@ trait Reporter {
    *
    * @param event the event being reported
    */
-  def apply(event: Event)
+  def apply(event: Event): Unit
 }
 
 private[scalatest] object Reporter {
