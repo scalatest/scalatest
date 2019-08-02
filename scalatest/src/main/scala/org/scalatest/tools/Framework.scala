@@ -983,7 +983,7 @@ import java.net.{ServerSocket, InetAddress}
         propertiesMap + (Suite.CHOSEN_STYLES -> chosenStyleSet)
 
     if (chosenStyleSet.nonEmpty)
-      println(Resources.deprecatedChosenStyleWarning())
+      println(Resources.deprecatedChosenStyleWarning)
       
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")

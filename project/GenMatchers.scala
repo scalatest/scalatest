@@ -156,11 +156,6 @@ object GenMatchers {
     shouldDir.mkdirs()
     val mustDir = new File(matchersDir, "must")
     mustDir.mkdirs()
-
-    (if (scalaJS || dotty)
-      Seq(translateFile(shouldDir, "Matchers.scala", "scalatest/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, scalaJS, dotty, line => line))
-    else
-      Seq.empty[File]) ++  
     Seq(
       translateFile(mustDir, "Matchers.scala", "scalatest/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, scalaJS, dotty, translateShouldToMust)
       /*translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)

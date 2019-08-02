@@ -155,7 +155,7 @@ trait ParallelTestExecution extends OneInstancePerTest { this: Suite =>
             sorter.distributingTest(testName)
 
           // It will be oneInstance, testName, args.copy(reporter = ...)
-          distribute(new DistributedTestRunnerSuite(newInstance, testName, args), args.copy(tracker = args.tracker.nextTracker))
+          distribute(new DistributedTestRunnerSuite(newInstance, testName, args), args.copy(tracker = args.tracker.nextTracker()))
         }
         else {
           // In test-specific (distributed) instance, so just run the test. (RTINI was

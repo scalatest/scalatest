@@ -53,7 +53,7 @@ trait Stopper {
    * and if a stop has been requested, terminates gracefully.
    * </p>
    */
-  def requestStop()
+  def requestStop(): Unit
 }
 
 /**
