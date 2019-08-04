@@ -94,7 +94,13 @@ final class Tracker(firstOrdinal: Ordinal = new Ordinal(0)) {
   }
 }
 
+/**
+ * Companion object to `Tracker` offering a default `Tracker`.
+ */
 object Tracker {
   private val defaultTracker = new Tracker()
+  /**
+   * A default `Tracker`.
+   */
   def default: Tracker = defaultTracker
 }

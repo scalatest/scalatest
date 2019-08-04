@@ -19,8 +19,9 @@ import org.scalatest._
 import org.scalactic.{Resources => _, FailureMessages => _, UnquotedString => _, _}
 import scala.concurrent.Future
 import Suite.autoTagClassAnnotations
-import words.BehaveWord
+import verbs.BehaveWord
 import org.scalatest.exceptions._
+import scala.util.Try
 
 /**
  * Implementation trait for class <code>AsyncFunSpec</code>, which
@@ -422,10 +423,10 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
+      FutureAsyncOutcome(
         withFixture(
           new NoArgAsyncTest {
             val name = testData.name
@@ -436,7 +437,8 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 
@@ -501,8 +503,10 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
 
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.funspec.AsyncFunSpec`
    */
-  final override val styleName: String = "org.scalatest.FunSpec"
+  final override val styleName: String = "org.scalatest.funspec.AsyncFunSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

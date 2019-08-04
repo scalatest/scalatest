@@ -42,20 +42,6 @@ class RandomTestOrderSpec extends FunSpec {
 
     override def newInstance = new ExampleSpec(listBuffer)
   }
-
-  class ExampleFixtureSpec(listBuffer: ListBuffer[Int]) extends fixture.Spec with StringFixture with RandomTestOrder {
-    def `test 1`: Unit = {
-      listBuffer += 0
-    }
-    def `test 2`: Unit = {
-      listBuffer += 1
-    }
-    def `test 3`: Unit = {
-      listBuffer += 2
-    }
-
-    override def newInstance = new ExampleFixtureSpec(listBuffer)
-  }
   // SKIP-SCALATESTJS,NATIVE-END
 
   class ExampleFunSuite(listBuffer: ListBuffer[Int]) extends FunSuite with RandomTestOrder {
@@ -275,7 +261,6 @@ class RandomTestOrderSpec extends FunSpec {
       ("suite", "test1Name", "test2Name", "test3Name"),
       // SKIP-SCALATESTJS,NATIVE-START
       ((buffer: ListBuffer[Int]) => new ExampleSpec(buffer), "test 1", "test 2", "test 3"),
-      ((buffer: ListBuffer[Int]) => new ExampleFixtureSpec(buffer), "test 1", "test 2", "test 3"),
       // SKIP-SCALATESTJS,NATIVE-END
       ((buffer: ListBuffer[Int]) => new ExampleFunSuite(buffer), "test 1", "test 2", "test 3"),
       ((buffer: ListBuffer[Int]) => new ExampleFixtureFunSuite(buffer), "test 1", "test 2", "test 3"),

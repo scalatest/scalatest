@@ -32,10 +32,5 @@ class NonImplicitAssertionsSuite extends FunSuite with NonImplicitAssertions {
       assert(1 === 1)
     }
   }
-  test("ConversionCheckedTripleEquals should work still if mixed in after NonImplicitAssertions") {
-    class MySpec extends FunSpec with NonImplicitAssertions with ConversionCheckedTripleEquals {
-      assert(1 === 1)
-    }
-  }
 }
 

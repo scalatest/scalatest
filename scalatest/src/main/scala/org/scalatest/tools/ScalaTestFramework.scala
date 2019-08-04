@@ -33,6 +33,7 @@ import org.scalatest.events.SuiteStarting
 import org.scalatest.events.TopOfClass
 import org.scalatest.time.{Seconds, Span}
 import org.scalatools.testing.{Framework => SbtFramework, _}
+// import org.scalatest.prop.Randomizer
 
 /**
  * Class that makes ScalaTest tests visible to SBT (prior to version 0.13).
@@ -154,7 +155,8 @@ class ScalaTestFramework extends SbtFramework {
             chosenStyles, 
             spanScaleFactors, 
             testSortingReporterTimeouts,
-            slowpokeArgs
+            slowpokeArgs,
+            seedArgs
           ) = parseArgs(args)
           
           if (!runpathArgs.isEmpty)
@@ -187,7 +189,7 @@ class ScalaTestFramework extends SbtFramework {
           configMap.getAndSet(Some(if (chosenStyleSet.isEmpty) propertiesMap else propertiesMap + (Suite.CHOSEN_STYLES -> chosenStyleSet)))
 
           if (chosenStyleSet.nonEmpty)
-            println(Resources.deprecatedChosenStyleWarning())
+            println(Resources.deprecatedChosenStyleWarning)
 
           val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
           val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
@@ -207,25 +209,18 @@ class ScalaTestFramework extends SbtFramework {
               slowpokeDetectionPeriod.getAndSet(60000L)
           }
 
-          val runnerInstance =
-            if (ScalaTestVersions.BuiltForScalaVersion == "2.10") {
-              val runnerCompanionClass = testLoader.loadClass("org.scalatest.tools.Runner$")
-              val module = runnerCompanionClass.getField("MODULE$")
-              val obj = module.get(runnerCompanionClass)
-              obj.asInstanceOf[org.scalatest.tools.Runner.type]
-            }
-            else {
-              // We need to use the following code to set Runner object instance for different Runner using different class loader.
-              import scala.reflect.runtime._
-
-              val runtimeMirror = universe.runtimeMirror(testLoader)
-
-              val module = runtimeMirror.staticModule("org.scalatest.tools.Runner$")
-              val obj = runtimeMirror.reflectModule(module)
-              obj.instance.asInstanceOf[org.scalatest.tools.Runner.type]
-            }
+          val runnerCompanionClass = testLoader.loadClass("org.scalatest.tools.Runner$")
+          val module = runnerCompanionClass.getField("MODULE$")
+          val obj = module.get(runnerCompanionClass)
+          val runnerInstance = obj.asInstanceOf[org.scalatest.tools.Runner.type]
 
           runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+
+          parseLongArgument(seedArgs, "-S") match {
+            case Some(seed) => // Randomizer.defaultSeed.getAndSet(Some(seed))
+              println("Note: -S for setting the Randomizer seed is not yet supported.")
+            case None => // do nothing
+          }
           
           val fullReporterConfigurations = parseReporterArgsIntoConfigurations(reporterArgs)
           val sbtNoFormat = java.lang.Boolean.getBoolean("sbt.log.noformat")

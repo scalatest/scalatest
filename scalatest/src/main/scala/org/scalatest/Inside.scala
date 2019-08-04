@@ -18,7 +18,7 @@ package org.scalatest
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.StackDepthException
 import scala.annotation.tailrec
-import org.scalactic._
+import org.scalactic.{Resources => _, _}
 
 /**
  * Trait containing the <code>inside</code> construct, which allows you to make statements about nested object graphs using pattern matching.
@@ -116,12 +116,7 @@ trait Inside {
       }
     }
 
-    if (Inside.level.get == null) {
-      Inside.level.set(1)
-    }
-    else {
-      Inside.level.set(Inside.level.get + 1)
-    }
+    Inside.level.set(Option(Inside.level.get).getOrElse(0) + 1)
 
     if (pf.isDefinedAt(value)) {
       try {

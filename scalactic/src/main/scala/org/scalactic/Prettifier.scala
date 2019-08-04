@@ -18,9 +18,6 @@ package org.scalactic
 import scala.collection._
 import mutable.WrappedArray
 import scala.util.Success
-// SKIP-SCALATESTJS,NATIVE-START
-import scala.xml
-// SKIP-SCALATESTJS,NATIVE-END
 
 /**
  * A function that given any object will produce a &ldquo;pretty&rdquo; string representation of that object,
@@ -192,7 +189,7 @@ object Prettifier {
             case null => "null"
             case aUnit: Unit => "<(), the Unit value>"
             case aString: String => "\"" + aString + "\""
-            case aStringWrapper: scala.collection.immutable.StringOps => "\"" + aStringWrapper + "\""
+            case aStringWrapper: org.scalactic.ColCompatHelper.StringOps => "\"" + aStringWrapper.mkString + "\""
             case aChar: Char =>  "\'" + aChar + "\'"
             case Some(e) => "Some(" + apply(e) + ")"
             case Success(e) => "Success(" + apply(e) + ")"
@@ -205,16 +202,11 @@ object Prettifier {
             case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
             case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
             case anArrayOps if ArrayHelper.isArrayOps(anArrayOps) => "Array(" + (ArrayHelper.asArrayOps(anArrayOps) map apply).mkString(", ") + ")"
-            case aGenMap: GenMap[_, _] =>
+            case aGenMap: scala.collection.GenMap[_, _] =>
               ColCompatHelper.className(aGenMap) + "(" +
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
                 apply(key) + " -> " + apply(value)
               }).mkString(", ") + ")"
-            // SKIP-SCALATESTJS,NATIVE-START
-            case anXMLNodeSeq: xml.NodeSeq => anXMLNodeSeq.toString
-            case anXMLNodeBuffer: xml.NodeBuffer =>
-              xml.NodeSeq.fromSeq(anXMLNodeBuffer).toString
-            // SKIP-SCALATESTJS,NATIVE-END
             case aGenTraversable: GenTraversable[_] =>
               val isSelf =
                 if (aGenTraversable.size == 1) {
@@ -224,13 +216,18 @@ object Prettifier {
                   }
                 }
                 else
-                  false
+                  false    
               if (isSelf)
                 aGenTraversable.toString
-              else
-                ColCompatHelper.className(aGenTraversable) + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
-            // SKIP-SCALATESTJS,NATIVE-START
-
+              else {
+                val className = aGenTraversable.getClass.getName
+                if (className.startsWith("scala.xml.NodeSeq$") || className == "scala.xml.NodeBuffer")
+                  aGenTraversable.mkString
+                else
+                  ColCompatHelper.className(aGenTraversable) + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
+              }  
+                
+            // SKIP-SCALATESTJS-START
             case javaCol: java.util.Collection[_] =>
               // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
               // let's do our best to prettify its element when it is not overriden

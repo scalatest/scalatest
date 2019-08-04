@@ -24,12 +24,12 @@ object GenFactories {
   val generatorSource = new File("GenFactories.scala")
 
   val topPart = """
-package org.scalatest.matchers
+package org.scalatest.matchers.dsl
 
 import org.scalatest.enablers._
-import org.scalatest.MatchersHelper.andMatchersAndApply
-import org.scalatest.MatchersHelper.orMatchersAndApply
-import org.scalatest.words.MatcherWords
+import org.scalatest.matchers.MatchersHelper.andMatchersAndApply
+import org.scalatest.matchers.MatchersHelper.orMatchersAndApply
+import org.scalatest.matchers.dsl.MatcherWords
 import scala.collection.GenTraversable
 import scala.util.matching.Regex
 import org.scalactic._
@@ -37,58 +37,67 @@ import TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
-import org.scalatest.words.FullyMatchWord
-import org.scalatest.words.StartWithWord
-import org.scalatest.words.EndWithWord
-import org.scalatest.words.IncludeWord
-import org.scalatest.words.HaveWord
-import org.scalatest.words.BeWord
-import org.scalatest.words.NotWord
-import org.scalatest.words.ContainWord
-import org.scalatest.words.ResultOfLengthWordApplication
-import org.scalatest.words.ResultOfSizeWordApplication
-import org.scalatest.words.ResultOfMessageWordApplication
-import org.scalatest.words.ResultOfLessThanComparison
-import org.scalatest.words.ResultOfGreaterThanComparison
-import org.scalatest.words.ResultOfLessThanOrEqualToComparison
-import org.scalatest.words.ResultOfGreaterThanOrEqualToComparison
-import org.scalatest.words.ResultOfAWordToSymbolApplication
-import org.scalatest.words.ResultOfAWordToBePropertyMatcherApplication
-import org.scalatest.words.ResultOfAWordToAMatcherApplication
-import org.scalatest.words.ResultOfAnWordToSymbolApplication
-import org.scalatest.words.ResultOfAnWordToBePropertyMatcherApplication
-import org.scalatest.words.ResultOfAnWordToAnMatcherApplication
-import org.scalatest.words.ResultOfTheSameInstanceAsApplication
-import org.scalatest.words.ResultOfRegexWordApplication
-import org.scalatest.words.ResultOfKeyWordApplication
-import org.scalatest.words.ResultOfValueWordApplication
-import org.scalatest.words.RegexWithGroups
-import org.scalatest.words.ResultOfDefinedAt
-import org.scalatest.words.ResultOfOneOfApplication
-import org.scalatest.words.ResultOfOneElementOfApplication
-import org.scalatest.words.ResultOfAtLeastOneOfApplication
-import org.scalatest.words.ResultOfAtLeastOneElementOfApplication
-import org.scalatest.words.ResultOfNoneOfApplication
-import org.scalatest.words.ResultOfNoElementsOfApplication
-import org.scalatest.words.ResultOfTheSameElementsAsApplication
-import org.scalatest.words.ResultOfTheSameElementsInOrderAsApplication
-import org.scalatest.words.ResultOfOnlyApplication
-import org.scalatest.words.ResultOfAllOfApplication
-import org.scalatest.words.ResultOfAllElementsOfApplication
-import org.scalatest.words.ResultOfInOrderOnlyApplication
-import org.scalatest.words.ResultOfInOrderApplication
-import org.scalatest.words.ResultOfInOrderElementsOfApplication
-import org.scalatest.words.ResultOfAtMostOneOfApplication
-import org.scalatest.words.ResultOfAtMostOneElementOfApplication
-import org.scalatest.words.SortedWord
-import org.scalatest.words.ResultOfATypeInvocation
-import org.scalatest.words.ResultOfAnTypeInvocation
-import org.scalatest.words.ExistWord
-import org.scalatest.words.ResultOfNotExist
-import org.scalatest.words.ReadableWord
-import org.scalatest.words.WritableWord
-import org.scalatest.words.EmptyWord
-import org.scalatest.words.DefinedWord
+import org.scalatest.matchers.Matcher
+import org.scalatest.matchers.MatchResult
+import org.scalatest.matchers.BeMatcher
+import org.scalatest.matchers.BePropertyMatcher
+import org.scalatest.matchers.HavePropertyMatcher
+import org.scalatest.matchers.AMatcher
+import org.scalatest.matchers.AnMatcher
+import org.scalatest.matchers.MatchPatternMacro
+import org.scalatest.matchers.TypeMatcherMacro
+import org.scalatest.matchers.dsl.FullyMatchWord
+import org.scalatest.matchers.dsl.StartWithWord
+import org.scalatest.matchers.dsl.EndWithWord
+import org.scalatest.matchers.dsl.IncludeWord
+import org.scalatest.matchers.dsl.HaveWord
+import org.scalatest.matchers.dsl.BeWord
+import org.scalatest.matchers.dsl.NotWord
+import org.scalatest.matchers.dsl.ContainWord
+import org.scalatest.matchers.dsl.ResultOfLengthWordApplication
+import org.scalatest.matchers.dsl.ResultOfSizeWordApplication
+import org.scalatest.matchers.dsl.ResultOfMessageWordApplication
+import org.scalatest.matchers.dsl.ResultOfLessThanComparison
+import org.scalatest.matchers.dsl.ResultOfGreaterThanComparison
+import org.scalatest.matchers.dsl.ResultOfLessThanOrEqualToComparison
+import org.scalatest.matchers.dsl.ResultOfGreaterThanOrEqualToComparison
+import org.scalatest.matchers.dsl.ResultOfAWordToSymbolApplication
+import org.scalatest.matchers.dsl.ResultOfAWordToBePropertyMatcherApplication
+import org.scalatest.matchers.dsl.ResultOfAWordToAMatcherApplication
+import org.scalatest.matchers.dsl.ResultOfAnWordToSymbolApplication
+import org.scalatest.matchers.dsl.ResultOfAnWordToBePropertyMatcherApplication
+import org.scalatest.matchers.dsl.ResultOfAnWordToAnMatcherApplication
+import org.scalatest.matchers.dsl.ResultOfTheSameInstanceAsApplication
+import org.scalatest.matchers.dsl.ResultOfRegexWordApplication
+import org.scalatest.matchers.dsl.ResultOfKeyWordApplication
+import org.scalatest.matchers.dsl.ResultOfValueWordApplication
+import org.scalatest.matchers.dsl.RegexWithGroups
+import org.scalatest.matchers.dsl.ResultOfDefinedAt
+import org.scalatest.matchers.dsl.ResultOfOneOfApplication
+import org.scalatest.matchers.dsl.ResultOfOneElementOfApplication
+import org.scalatest.matchers.dsl.ResultOfAtLeastOneOfApplication
+import org.scalatest.matchers.dsl.ResultOfAtLeastOneElementOfApplication
+import org.scalatest.matchers.dsl.ResultOfNoneOfApplication
+import org.scalatest.matchers.dsl.ResultOfNoElementsOfApplication
+import org.scalatest.matchers.dsl.ResultOfTheSameElementsAsApplication
+import org.scalatest.matchers.dsl.ResultOfTheSameElementsInOrderAsApplication
+import org.scalatest.matchers.dsl.ResultOfOnlyApplication
+import org.scalatest.matchers.dsl.ResultOfAllOfApplication
+import org.scalatest.matchers.dsl.ResultOfAllElementsOfApplication
+import org.scalatest.matchers.dsl.ResultOfInOrderOnlyApplication
+import org.scalatest.matchers.dsl.ResultOfInOrderApplication
+import org.scalatest.matchers.dsl.ResultOfInOrderElementsOfApplication
+import org.scalatest.matchers.dsl.ResultOfAtMostOneOfApplication
+import org.scalatest.matchers.dsl.ResultOfAtMostOneElementOfApplication
+import org.scalatest.matchers.dsl.SortedWord
+import org.scalatest.matchers.dsl.ResultOfATypeInvocation
+import org.scalatest.matchers.dsl.ResultOfAnTypeInvocation
+import org.scalatest.matchers.dsl.ExistWord
+import org.scalatest.matchers.dsl.ResultOfNotExist
+import org.scalatest.matchers.dsl.ReadableWord
+import org.scalatest.matchers.dsl.WritableWord
+import org.scalatest.matchers.dsl.EmptyWord
+import org.scalatest.matchers.dsl.DefinedWord
 
 import scala.language.higherKinds
 
@@ -1518,7 +1527,7 @@ $endif$
      *                         ^
      * </pre>
      */
-     def matchPattern(right: PartialFunction[Any, _]) = macro MatchPatternMacro.andNotMatchPatternMatcher
+     def matchPattern(right: PartialFunction[Any, _]): Matcher[Any] = macro MatchPatternMacro.andNotMatchPatternMatcher
   }
                     """
 
@@ -2812,7 +2821,7 @@ $endif$
      *                        ^
      * </pre>
      */
-    def matchPattern(right: PartialFunction[Any, _]) = macro MatchPatternMacro.orNotMatchPatternMatcher
+    def matchPattern(right: PartialFunction[Any, _]): Matcher[Any] = macro MatchPatternMacro.orNotMatchPatternMatcher
   }
 
   /**
@@ -3002,7 +3011,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
     val targetDir = args(0)
     val version = args(1)
     val scalaVersion = args(2)
-    val mainDir = new File(targetDir + "/main/scala/org/scalatest/matchers")
+    val mainDir = new File(targetDir + "/main/scala/org/scalatest/matchers/dsl")
     mainDir.mkdirs()
     genMain(mainDir, version, scalaVersion)
     

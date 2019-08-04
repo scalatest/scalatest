@@ -24,25 +24,24 @@ object GenMatchers {
 
   def translateShouldToMust(shouldLine: String): String = {
     shouldLine
-      .replaceAll("Trait <a href=\"MustMatchers.html\"><code>MustMatchers</code></a> is an alternative to <code>Matchers</code>", "Trait <code>MustMatchers</code> is an alternative to <a href=\"Matchers.html\"><code>Matchers</code></a>")
+      .replaceAll("Trait <a href=\"../must/Matchers.html\"><code>must.Matchers</code></a> is an alternative to <!-- PRESERVE --><code>should.Matchers</code>", "Trait <code>must.Matchers</code> is an alternative to <!-- PRESERVE --><a href=\"../should/Matchers.html\"><!-- PRESERVE --><code>should.Matchers</code></a>")
       .replaceAll("MustMatchers", "I_NEED_TO_STAY_MUSTMATCHERS")
       .replaceAll("ShouldMatchers", "I_NEED_TO_STAY_SHOULDMATCHERS")
       .replaceAll("must", "I_NEED_TO_STAY_SMALL_MUST")
       .replaceAll("Must", "I_NEED_TO_STAY_BIG_MUST")
       .replaceAll("<!-- PRESERVE --><code>should", "<code>I_NEED_TO_STAY_SMALL_SHOULD")
       .replaceAll("<!-- PRESERVE -->should", " I_NEED_TO_STAY_SMALL_SHOULD") // Why is there a space in front?
+      .replaceAll("<!-- PRESERVE --><a href=\"../should/Matchers.html\">", " I_NEED_IN_LINK_TO_STAY_SMALL_SHOULD") // Why is there a space in front?
       .replaceAll("should", "must")
       .replaceAll("Should", "Must")
-      .replaceAll("trait Matchers", "trait MustMatchers")
-      .replaceAll("object Matchers extends Matchers", "object MustMatchers extends MustMatchers")
       .replaceAll("I_NEED_TO_STAY_SMALL_SHOULD", "should")
+      .replaceAll("I_NEED_IN_LINK_TO_STAY_SMALL_SHOULD", "<a href=\"../should/Matchers.html\">")
       .replaceAll("I_NEED_TO_STAY_BIG_MUST", "Must")
       .replaceAll("I_NEED_TO_STAY_SMALL_MUST", "must")
       .replaceAll("I_NEED_TO_STAY_SHOULDMATCHERS", "ShouldMatchers")
       .replaceAll("I_NEED_TO_STAY_MUSTMATCHERS", "MustMatchers")
-      .replaceAll("import Matchers._", "import MustMatchers._")
-      .replaceAll("import org.scalatest.Matchers._", "import org.scalatest.MustMatchers._")
-      .replaceAll("Matchers.scala", "MustMatchers.scala")
+      .replaceAll("import matchers.should.Matchers._", "import matchers.must.Matchers._")
+      .replaceAll("import org.scalatest.matchers.should.Matchers._", "import org.scalatest.matchers.must.Matchers._")
   }
 
   def translateShouldToWill(shouldLine: String): String = {
@@ -74,8 +73,8 @@ object GenMatchers {
       .replaceAll("I_NEED_TO_STAY_SHOULDMATCHERS", "ShouldMatchers")
       .replaceAll("I_NEED_TO_STAY_WILLMATCHERS", "WillMatchers")
       .replaceAll("I_NEED_TO_STAY_ASSERTIONS", "Assertions")
-      .replaceAll("import Matchers._", "import WillMatchers._")
-      .replaceAll("import org.scalatest.Matchers._", "import org.scalatest.WillMatchers._")
+      .replaceAll("import matchers.should.Matchers._", "import matchers.will.WillMatchers._")
+      .replaceAll("import org.scalatest.matchers.should.Matchers._", "import org.scalatest.matchers.will.WillMatchers._")
       .replaceAll("Matchers.scala", "WillMatchers.scala")
       .replaceAll("NoExceptionWord", "FactExceptionWord")
       .replaceAll("ResultOfATypeInvocation", "FactResultOfATypeInvocation")
@@ -88,7 +87,7 @@ object GenMatchers {
       .replaceAll("MatcherWords", "FactMatcherWords")
   }
 
-  def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, translateFun: String => String): File = {
+  def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, dotty: Boolean, translateFun: String => String): File = {
     val outputFile = new File(targetDir, fileName)
     if (!outputFile.exists || generatorSource.lastModified > outputFile.lastModified) {
       val outputWriter = new BufferedWriter(new FileWriter(outputFile))
@@ -115,6 +114,24 @@ object GenMatchers {
               else
                 ""
             }
+            else if (dotty) {
+              if (line.trim == "// SKIP-DOTTY-START") {
+                skipMode = true
+                ""
+              }
+              else if (line.trim == "// SKIP-DOTTY-END") {
+                skipMode = false
+                ""
+              }
+              else if (!skipMode) {
+                if (line.trim.startsWith("//DOTTY-ONLY "))
+                  translateFun(line.substring(line.indexOf("//DOTTY-ONLY ") + 13))
+                else
+                  translateFun(line)
+              }
+              else
+                ""
+            }
             else
               translateFun(line)
 
@@ -131,15 +148,16 @@ object GenMatchers {
     outputFile
   }
 
-  def genMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
+  def genMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean, dotty: Boolean): Seq[File] = {
     targetDir.mkdirs()
     val matchersDir = new File(targetDir, "matchers")
     matchersDir.mkdirs()
-    val junitDir = new File(targetDir, "junit")
-    junitDir.mkdirs()
-
+    val shouldDir = new File(matchersDir, "should")
+    shouldDir.mkdirs()
+    val mustDir = new File(matchersDir, "must")
+    mustDir.mkdirs()
     Seq(
-      translateFile(targetDir, "MustMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToMust)
+      translateFile(mustDir, "Matchers.scala", "scalatest/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, scalaJS, dotty, translateShouldToMust)
       /*translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
       translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
       translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,
@@ -160,10 +178,14 @@ object GenMatchers {
   }
 
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    genMainImpl(targetDir, version, scalaVersion, false)
+    genMainImpl(targetDir, version, scalaVersion, false, false)
   }
 
   def genMainForScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    genMainImpl(targetDir, version, scalaVersion, true)
+    genMainImpl(targetDir, version, scalaVersion, true, false)
+  }
+
+  def genMainForDotty(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    genMainImpl(targetDir, version, scalaVersion, false, true)
   }
 }

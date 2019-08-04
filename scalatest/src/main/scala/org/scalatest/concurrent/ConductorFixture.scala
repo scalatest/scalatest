@@ -28,12 +28,12 @@ import org.scalatest.OutcomeOf.outcomeOf
  * </p>
  *
  * <pre class="stHighlight">
- * import org.scalatest.fixture
+ * import org.scalatest.funsuite
  * import org.scalatest.concurrent.ConductorFixture
  * import org.scalatest.matchers.Matchers
  * import java.util.concurrent.ArrayBlockingQueue
  *
- * class ArrayBlockingQueueSuite extends fixture.FunSuite with ConductorFixture with Matchers {
+ * class ArrayBlockingQueueSuite extends FixtureFunSuite with ConductorFixture with Matchers {
  * 
  *   test("calling put on a full queue blocks the producer thread") { conductor =&gt; import conductor._
  *
@@ -85,7 +85,7 @@ import org.scalatest.OutcomeOf.outcomeOf
  *
  * @author Bill Venners
  */
-trait ConductorFixture extends TestSuiteMixin with Conductors { this: fixture.TestSuite =>
+trait ConductorFixture extends TestSuiteMixin with Conductors { this: FixtureTestSuite =>
 
   /**
    * Defines type <code>Fixture</code> to be <code>Conductor</code>.

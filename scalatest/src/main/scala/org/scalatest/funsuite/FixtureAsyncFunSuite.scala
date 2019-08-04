@@ -185,7 +185,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
   *   }
   * }
   *
-  * trait DbFixture { this: fixture.AsyncTestSuite =&gt;
+  * trait DbFixture { this: FixtureAsyncTestSuite =&gt;
   *
   *   type FixtureParam = Db
   *

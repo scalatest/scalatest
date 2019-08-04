@@ -15,8 +15,6 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen.choose
 import org.scalatest._
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
@@ -30,18 +28,8 @@ import scala.util.{Failure, Success, Try}
 import org.scalatest.Inspectors
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
-import org.scalactic.NumberCompatHelper
 
 trait NonZeroDoubleSpecSupport {
-  val nonZeroDoubleGen: Gen[NonZeroDouble] =
-    for {i <- choose(Double.MinValue, Double.MaxValue)} yield {
-      if (i == 0.0)
-        NonZeroDouble.ensuringValid(1.0)
-      else
-        NonZeroDouble.ensuringValid(i)
-    }
-
-  implicit val arbNonZeroDouble: Arbitrary[NonZeroDouble] = Arbitrary(nonZeroDoubleGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
@@ -311,20 +299,6 @@ class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with T
       }
     }
 
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Double") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pdouble: NonZeroDouble, end: Double, step: Double) =>
-        rangeEqual(pdouble.until(end).by(1f), NumberCompatHelper.doubleUntil(pdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pdouble.until(end, step), NumberCompatHelper.doubleUntil(pdouble.toDouble, end, step)) shouldBe true
-        rangeEqual(pdouble.to(end).by(1f), NumberCompatHelper.doubleTo(pdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pdouble.to(end, step), NumberCompatHelper.doubleTo(pdouble.toDouble, end, step)) shouldBe true
-      }
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
-
     it("should offer widening methods for basic types that are consistent with Double") {
       forAll { (pdouble: NonZeroDouble) =>
         def widen(value: Double): Double = value
@@ -339,6 +313,20 @@ class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with T
       NonZeroDouble(-33.0).ensuringValid(_ => Double.NegativeInfinity) shouldEqual NonZeroDouble.ensuringValid(Double.NegativeInfinity)
       an [AssertionError] should be thrownBy { NonZeroDouble.MaxValue.ensuringValid(_ - NonZeroDouble.MaxValue) }
       an [AssertionError] should be thrownBy { NonZeroDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+    }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: NonZeroFiniteDouble) =>
+        (n: NonZeroDouble).isFinite should be (true)
+        NonZeroDouble.NegativeInfinity.isFinite should be (false)
+        NonZeroDouble.PositiveInfinity.isFinite should be (false)
+      }
+    }
+    it("should offer an isInfinite method that returns true if the value represents positive or negative infinity") {
+      forAll { (n: NonZeroFiniteDouble) =>
+        (n: NonZeroDouble).isInfinite should be (false)
+        NonZeroDouble.NegativeInfinity.isInfinite should be (true)
+        NonZeroDouble.PositiveInfinity.isInfinite should be (true)
+      }
     }
   }
 }

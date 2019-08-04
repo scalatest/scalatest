@@ -19,7 +19,7 @@ import scala.collection.JavaConverters._
 import org.scalactic.{Equality, Every}
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
-import org.scalatest.words.ArrayWrapper
+import org.scalatest.verbs.ArrayWrapper
 import org.scalactic.ColCompatHelper.aggregate
 import scala.annotation.tailrec
 

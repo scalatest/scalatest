@@ -17,8 +17,6 @@ package org.scalactic.anyvals
 
 import org.scalatest._
 import OptionValues._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
@@ -27,27 +25,21 @@ import scala.collection.immutable.NumericRange
 import scala.util.{Failure, Success, Try}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
-import org.scalactic.NumberCompatHelper
 
 import org.scalactic.Equality
 
 trait NonZeroFloatSpecSupport {
-
-  val nonZeroFloatGen: Gen[NonZeroFloat] =
-    for {i <- choose(Float.MinValue, Float.MaxValue)} yield {
-      if (i == 0.0f)
-        NonZeroFloat.ensuringValid(1.0f)
-      else
-        NonZeroFloat.ensuringValid(i)
-    }
-
-  implicit val arbNonZeroFloat: Arbitrary[NonZeroFloat] = Arbitrary(nonZeroFloatGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
       // I needed this because with GenDrivenPropertyChecks, got:
       // [info] - should offer a '%' method that is consistent with Int *** FAILED ***
       // [info]   Success(NaN) did not equal Success(NaN) (PosIntExperiment.scala:498)
+      case Success(double: Double) if double.isNaN =>  
+        b match {
+          case Success(bDouble: Double) if bDouble.isNaN => true
+          case _ => false
+        }
       case Success(float: Float) if float.isNaN =>
         b match {
           case Success(bFloat: Float) if bFloat.isNaN => true
@@ -64,6 +56,14 @@ trait NonZeroFloatSpecSupport {
 }
 
 class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroFloatSpecSupport {
+
+  // Float on either side should widen correctly.
+  def areEqualForgivingNaNs(x: Double, y: Double): Assertion = {
+    if (x.isNaN && y.isNaN)
+      succeed
+    else
+      x shouldEqual y
+  }
 
   describe("A NonZeroFloat") {
     describe("should offer a from factory method that") {
@@ -398,10 +398,14 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
         (pfloat + long) shouldEqual (pfloat.toFloat + long)
       }
       forAll { (pfloat: NonZeroFloat, float: Float) =>
-        (pfloat + float) shouldEqual (pfloat.toFloat + float)
+        val x = pfloat + float
+        val y = pfloat.toFloat + float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, double: Double) =>
-        (pfloat + double) shouldEqual (pfloat.toFloat + double)
+        val x = pfloat + double
+        val y = pfloat.toFloat + double
+        areEqualForgivingNaNs(x, y)
       }
     }
 
@@ -422,34 +426,52 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
         (pfloat - long) shouldEqual (pfloat.toFloat - long)
       }
       forAll { (pfloat: NonZeroFloat, float: Float) =>
-        (pfloat - float) shouldEqual (pfloat.toFloat - float)
+        val x = pfloat - float
+        val y = pfloat.toFloat - float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, double: Double) =>
-        (pfloat - double) shouldEqual (pfloat.toFloat - double)
+        val x = pfloat - double
+        val y = pfloat.toFloat - double
+        areEqualForgivingNaNs(x, y)
       }
     }
 
     it("should offer a '*' method that is consistent with Float") {
       forAll { (pfloat: NonZeroFloat, byte: Byte) =>
-        (pfloat * byte) shouldEqual (pfloat.toFloat * byte)
+        val x = pfloat * byte
+        val y = pfloat.toFloat * byte
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, short: Short) =>
-        (pfloat * short) shouldEqual (pfloat.toFloat * short)
+        val x = pfloat * short
+        val y = pfloat.toFloat * short
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, char: Char) =>
-        (pfloat * char) shouldEqual (pfloat.toFloat * char)
+        val x = pfloat * char
+        val y = pfloat.toFloat * char
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, int: Int) =>
-        (pfloat * int) shouldEqual (pfloat.toFloat * int)
+        val x = pfloat * int
+        val y = pfloat.toFloat * int
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, long: Long) =>
-        (pfloat * long) shouldEqual (pfloat.toFloat * long)
+        val x = pfloat * long
+        val y = pfloat.toFloat * long
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, float: Float) =>
-        (pfloat * float) shouldEqual (pfloat.toFloat * float)
+        val x = pfloat * float
+        val y = pfloat.toFloat * float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, double: Double) =>
-        (pfloat * double) shouldEqual (pfloat.toFloat * double)
+        val x = pfloat * double
+        val y = pfloat.toFloat * double
+        areEqualForgivingNaNs(x, y)
       }
     }
 
@@ -470,10 +492,16 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
         pfloat / long shouldEqual pfloat.toFloat / long
       }
       forAll { (pfloat: NonZeroFloat, float: Float) =>
-        pfloat / float shouldEqual pfloat.toFloat / float
+        val x = pfloat / float
+        val y = pfloat.toFloat / float
+        areEqualForgivingNaNs(x, y)
       }
       forAll { (pfloat: NonZeroFloat, double: Double) =>
-        pfloat / double shouldEqual pfloat.toFloat / double
+        // ecala> Double.NegativeInfinity / Double.NegativeInfinity
+        // res0: Double = NaN
+        val x = pfloat / double
+        val y = pfloat.toFloat / double
+        areEqualForgivingNaNs(x, y)
       }
     }
 
@@ -550,20 +578,6 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
       }
     }
 
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Float") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pfloat: NonZeroFloat, end: Float, step: Float) =>
-        rangeEqual(pfloat.until(end).by(1f), NumberCompatHelper.floatUntil(pfloat.toFloat, end).by(1f)) shouldBe true
-        rangeEqual(pfloat.until(end, step), NumberCompatHelper.floatUntil(pfloat.toFloat, end, step)) shouldBe true
-        rangeEqual(pfloat.to(end).by(1f), NumberCompatHelper.floatTo(pfloat.toFloat, end).by(1f)) shouldBe true
-        rangeEqual(pfloat.to(end, step), NumberCompatHelper.floatTo(pfloat.toFloat, end, step)) shouldBe true
-      }
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
-
     it("should offer widening methods for basic types that are consistent with Float") {
       forAll { (pfloat: NonZeroFloat) =>
         def widen(value: Float): Float = value
@@ -577,6 +591,20 @@ class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with Ty
         def widen(value: NonZeroDouble): NonZeroDouble = value
         widen(pfloat) shouldEqual widen(NonZeroDouble.from(pfloat.toFloat).get)
       }*/
+    }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: NonZeroFiniteFloat) =>
+        (n: NonZeroFloat).isFinite should be (true)
+        NonZeroFloat.NegativeInfinity.isFinite should be (false)
+        NonZeroFloat.PositiveInfinity.isFinite should be (false)
+      }
+    }
+    it("should offer an isInfinite method that returns true if the value represents positive or negative infinity") {
+      forAll { (n: NonZeroFiniteFloat) =>
+        (n: NonZeroFloat).isInfinite should be (false)
+        NonZeroFloat.NegativeInfinity.isInfinite should be (true)
+        NonZeroFloat.PositiveInfinity.isInfinite should be (true)
+      }
     }
   }
   it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {

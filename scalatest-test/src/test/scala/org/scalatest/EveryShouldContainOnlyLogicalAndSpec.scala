@@ -105,19 +105,35 @@ class EveryShouldContainOnlyLogicalAndSpec extends FunSpec {
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain only () and contain only ("fie", "fee", "fum", "foe"))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources.onlyEmpty))
+        if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (contain only() and contain only("fie", "fee", "fum", "foe"))
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
 
-        val e2 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain only ("fie", "fee", "fum", "foe") and contain only ())
+          val e2 = intercept[exceptions.NotAllowedException] {
+            fumList should (contain only("fie", "fee", "fum", "foe") and contain only())
+          }
+          e2.failedCodeFileName.get should be(fileName)
+          e2.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e2.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (contain.only() and contain only("fie", "fee", "fum", "foe"))
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+
+          val e2 = intercept[exceptions.NotAllowedException] {
+            fumList should (contain only("fie", "fee", "fum", "foe") and contain.only())
+          }
+          e2.failedCodeFileName.get should be(fileName)
+          e2.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e2.message should be(Some(Resources.onlyEmpty))
         }
-        e2.failedCodeFileName.get should be (fileName)
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(Resources.onlyEmpty))
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -189,12 +205,21 @@ class EveryShouldContainOnlyLogicalAndSpec extends FunSpec {
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (equal (fumList) and contain only ())
+        if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (equal(fumList) and contain only())
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (equal(fumList) and contain.only())
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
         }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources.onlyEmpty))
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -255,12 +280,21 @@ class EveryShouldContainOnlyLogicalAndSpec extends FunSpec {
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (be (fumList) and contain only ())
+        if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (be(fumList) and contain only())
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (be(fumList) and contain.only())
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
         }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources.onlyEmpty))
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -321,12 +355,21 @@ class EveryShouldContainOnlyLogicalAndSpec extends FunSpec {
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          fumList should (contain only () and be (fumList))
+        if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (contain only() and be(fumList))
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            fumList should (contain.only() and be(fumList))
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
         }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources.onlyEmpty))
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -629,19 +672,35 @@ class EveryShouldContainOnlyLogicalAndSpec extends FunSpec {
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (contain only () and contain only (1, 3, 2))
-        }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources.onlyEmpty))
+        if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
+          val e1 = intercept[exceptions.NotAllowedException] {
+            all(list1s) should (contain only() and contain only(1, 3, 2))
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
 
-        val e2 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (contain only (1, 3, 2) and contain only ())
+          val e2 = intercept[exceptions.NotAllowedException] {
+            all(list1s) should (contain only(1, 3, 2) and contain only())
+          }
+          e2.failedCodeFileName.get should be(fileName)
+          e2.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e2.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            all(list1s) should (contain.only() and contain only(1, 3, 2))
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+
+          val e2 = intercept[exceptions.NotAllowedException] {
+            all(list1s) should (contain only(1, 3, 2) and contain.only())
+          }
+          e2.failedCodeFileName.get should be(fileName)
+          e2.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e2.message should be(Some(Resources.onlyEmpty))
         }
-        e2.failedCodeFileName.get should be (fileName)
-        e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some(Resources.onlyEmpty))
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -737,12 +796,21 @@ class EveryShouldContainOnlyLogicalAndSpec extends FunSpec {
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
-        val e1 = intercept[exceptions.NotAllowedException] {
-          all (list1s) should (be (Many(3, 2, 1)) and contain only ())
+        if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
+          val e1 = intercept[exceptions.NotAllowedException] {
+            all(list1s) should (be(Many(3, 2, 1)) and contain only())
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
+        } else {
+          val e1 = intercept[exceptions.NotAllowedException] {
+            all(list1s) should (be(Many(3, 2, 1)) and contain.only())
+          }
+          e1.failedCodeFileName.get should be(fileName)
+          e1.failedCodeLineNumber.get should be(thisLineNumber - 3)
+          e1.message should be(Some(Resources.onlyEmpty))
         }
-        e1.failedCodeFileName.get should be (fileName)
-        e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message should be (Some(Resources.onlyEmpty))
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {

@@ -31,5 +31,5 @@ trait ResourcefulReporter extends Reporter {
    * usable anymore. If the <code>Reporter</code> holds no resources, it may do nothing when
    * this method is invoked, however, in that case, it probably won't implement <code>ResourcefulReporter</code>.
    */
-  def dispose()
+  def dispose(): Unit
 }

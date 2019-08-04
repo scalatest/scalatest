@@ -189,7 +189,14 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
     if (other.isEmpty) this else new NonEmptyList(toList ++ other.toStream)
 
   /**
+   * <strong>The <code>/:</code> method has been deprecated and will be removed in a future version of Scalactic. Please use
+   * <code>foldLeft</code> instead.</strong>
+   *
+   * <p>This method has been deprecated for consistency with Scala 2.13's collections API.</p>
+   *
+   * <p>
    * Fold left: applies a binary operator to a start value, <code>z</code>, and all elements of this <code>NonEmptyList</code>, going left to right.
+   * </p>
    *
    * <p>
    * Note: <code>/:</code> is alternate syntax for the <code>foldLeft</code> method; <code>z</code> <code>/:</code> <code>non-empty list</code> is the
@@ -210,9 +217,15 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyList</code>. 
    * </p>
    */
+  @deprecated("The /: method has been deprecated and will be removed in a future version of Scalactic. Please use foldLeft instead.", "3.1.x")
   final def /:[B](z: B)(op: (B, T) => B): B = toList./:(z)(op)
 
   /**
+   * <strong>The <code>:\\</code> method has been deprecated and will be removed in a future version of Scalactic. Please use
+   * <code>foldRight</code> instead.</strong>
+   *
+   * <p>This method has been deprecated for consistency with Scala 2.13's collections API.</p>
+   *
    * Fold right: applies a binary operator to all elements of this <code>NonEmptyList</code> and a start value, going right to left.
    *
    * <p>
@@ -234,6 +247,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyList</code>. 
    * </p>
    */
+  @deprecated("The :\\ method has been deprecated and will be removed in a future version of Scalactic. Please use foldRight instead.", "3.1.x")
   final def :\[B](z: B)(op: (T, B) => B): B = toList.:\(z)(op)
 
   /**
@@ -783,7 +797,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
   final def isDefinedAt(idx: Int): Boolean = toList.isDefinedAt(idx)
 
   /**
-   * Returns <code>false</code> to indicate this <code>NonEmptyList</code>, like all <code>NonEmptyList<code>s, is non-empty.
+   * Returns <code>false</code> to indicate this <code>NonEmptyList</code>, like all <code>NonEmptyList</code>s, is non-empty.
    *
    * @return false
    */
@@ -1619,7 +1633,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    *
    * @param idx the position of the replacement
    * @param elem the replacing element
-   * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyList<code>
+   * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyList</code>
    * @return a copy of this <code>NonEmptyList</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
    */
   final def updated[U >: T](idx: Int, elem: U): NonEmptyList[U] =

@@ -16,6 +16,7 @@
 package org.scalatest
 
 import Matchers._
+import matchers.MatchersHelper
 
 class PropertyFunSuite extends FunSuite {
 

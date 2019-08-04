@@ -31,7 +31,6 @@ class DeprecatedScopePendingProp extends AllSuiteProp {
   def suite = new ExampleScopePendingSuite
   def fixtureSuite = new ExampleScopePendingFixtureSuite
   def spec = new ExampleScopePendingSpec
-  def fixtureSpec = new ExampleScopePendingFixtureSpec
   def junit3Suite = new ExampleScopePendingJUnit3Suite
   def junitSuite = new ExampleScopePendingJUnitSuite
   def testngSuite = new ExampleScopePendingTestNGSuite
@@ -114,37 +113,17 @@ class ExampleScopePendingSpec extends RefSpec with ScopePendingFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleScopePendingFixtureSpec extends fixture.Spec with ScopePendingFixtureServices with StringFixture {
-  object `scope 1` {
-    def `test 1`(fixture: String): Unit = {}
-    def `test 2`(fixture: String): Unit = {}
-    def `test 3`(fixture: String): Unit = {}
-  }
-  
-  object `scope 2` {
-    def `test 1`(fixture: String): Unit = {}
-    pending
-    def `test 2`(fixture: String): Unit = {}
-    def `test 3`(fixture: String): Unit = {}
-  }
-  
-  override val expectedTestNames: Set[String] = Set("scope 1 test 1", 
-                                                     "scope 1 test 2", 
-                                                     "scope 1 test 3")
-}
-
-@DoNotDiscover
-class ExampleScopePendingJUnit3Suite extends junit.JUnit3Suite with ScopePendingFixtureServices {
+class ExampleScopePendingJUnit3Suite extends org.scalatestplus.junit.JUnit3Suite with ScopePendingFixtureServices {
   override val supportScope = false
 }
 
 @DoNotDiscover
-class ExampleScopePendingJUnitSuite extends junit.JUnitSuite with ScopePendingFixtureServices {
+class ExampleScopePendingJUnitSuite extends org.scalatestplus.junit.JUnitSuite with ScopePendingFixtureServices {
   override val supportScope = false
 }
 
 @DoNotDiscover
-class ExampleScopePendingTestNGSuite extends testng.TestNGSuite with ScopePendingFixtureServices {
+class ExampleScopePendingTestNGSuite extends org.scalatestplus.testng.TestNGSuite with ScopePendingFixtureServices {
   override val supportScope = false
 }
 // SKIP-SCALATESTJS,NATIVE-END

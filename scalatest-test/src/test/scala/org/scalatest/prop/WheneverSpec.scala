@@ -16,7 +16,6 @@
 package org.scalatest.prop
 
 import org.scalatest._
-import org.scalacheck.util.Pretty
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
@@ -28,10 +27,10 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
   describe("The whenever construct") {
     describe("when the result type of the block is Expectation") {
       describe("when the Boolean condition is true") {
-        // TODO: Re-enable this when we bring in Expectations.
+        // TODO: Re-enable this when we bring in expectations.Expectations.
         /*it("should pass the result of the block through") {
 
-          import Expectations._
+          import expectations.Expectations._
           val x = 1
           val yes = expect(x == 1)
           val no = expect(x == 2)
@@ -52,7 +51,7 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
       }
       describe("when the Boolean condition is false") {
         it("should throw DiscardedEvaluationException") {
-          import Expectations._
+          import expectations.Expectations._
           val x = 1
           val yes = expect(x == 1)
           val no = expect(x == 2)

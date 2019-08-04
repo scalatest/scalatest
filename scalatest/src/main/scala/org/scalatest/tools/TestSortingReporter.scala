@@ -242,7 +242,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
         if (newHead.ready)
           fireReadyEvents()
         else
-          scheduleTimeoutTask
+          scheduleTimeoutTask()
       }
     }
     else if (waitingBuffer.size == 1) {

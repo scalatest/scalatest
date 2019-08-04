@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
@@ -30,19 +28,8 @@ import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
-import org.scalactic.NumberCompatHelper
 
 trait PosZFiniteDoubleSpecSupport {
-
-  val posZFiniteDoubleGen: Gen[PosZFiniteDouble] =
-    for {i <- choose(0, Double.MaxValue)} yield PosZFiniteDouble.from(i).get
-
-  implicit val arbPosZFiniteDouble: Arbitrary[PosZFiniteDouble] = Arbitrary(posZFiniteDoubleGen)
-
-  val posFiniteDoubleGen: Gen[PosFiniteDouble] =
-    for {i <- choose(1, Double.MaxValue)} yield PosFiniteDouble.from(i).get
-
-  implicit val arbPosFiniteDouble: Arbitrary[PosFiniteDouble] = Arbitrary(posFiniteDoubleGen)
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {
@@ -105,7 +92,10 @@ class PosZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
         an [AssertionError] should be thrownBy PosZFiniteDouble.ensuringValid(-99.9)
         an [AssertionError] should be thrownBy PosZFiniteDouble.ensuringValid(Double.PositiveInfinity)
         an [AssertionError] should be thrownBy PosZFiniteDouble.ensuringValid(Double.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy PosZFiniteDouble.ensuringValid(Double.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -187,9 +177,9 @@ class PosZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
     it("should not offer a NegativeInfinity factory method") {
       "PosZFiniteDouble.NegativeInfinity" shouldNot compile
     }
-    it("should not offer a isPosInfinity method") {
-      "PosZFiniteDouble(1.0f).isPosInfinity" shouldNot compile
-    }
+/* This now compiles because of the newly added implicit PosZFiniteDouble => PosZDouble method
+    PosZFiniteDouble(1.0f).isPosInfinity
+*/
     it("should not offer a isNegInfinity method") {
       "PosZFiniteDouble(1.0f).isNegInfinity" shouldNot compile
     }
@@ -326,20 +316,6 @@ class PosZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
       }
     }
 
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Double") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pzdouble: PosZFiniteDouble, end: Double, step: Double) =>
-        rangeEqual(pzdouble.until(end).by(1f), NumberCompatHelper.doubleUntil(pzdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.until(end, step), NumberCompatHelper.doubleUntil(pzdouble.toDouble, end, step)) shouldBe true
-        rangeEqual(pzdouble.to(end).by(1f), NumberCompatHelper.doubleTo(pzdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.to(end, step), NumberCompatHelper.doubleTo(pzdouble.toDouble, end, step)) shouldBe true
-      }
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
-
     it("should offer widening methods for basic types that are consistent with Double") {
       forAll { (pzdouble: PosZFiniteDouble) =>
         def widen(value: Double): Double = value
@@ -351,7 +327,10 @@ class PosZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
       an [AssertionError] should be thrownBy { PosZFiniteDouble.MaxValue.ensuringValid(_ - PosZFiniteDouble.MaxValue - 1) }
       an [AssertionError] should be thrownBy { PosZFiniteDouble.MaxValue.ensuringValid(_ => Double.PositiveInfinity) }
       an [AssertionError] should be thrownBy { PosZFiniteDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { PosZFiniteDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
     }
   }
 }

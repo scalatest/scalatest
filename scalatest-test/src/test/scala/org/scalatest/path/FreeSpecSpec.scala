@@ -245,7 +245,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
 
     it("should create new instance as FreeSpecLike") {
       val spec = new ExampleFreeSpecLike
-      assert(spec.newInstance.isInstanceOf[FreeSpecLike])
+      assert(spec.newInstance.isInstanceOf[org.scalatest.path.FreeSpecLike])
     }
 
     describe("(with info calls)") {
@@ -967,7 +967,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
     // SKIP-SCALATESTJS,NATIVE-END
 
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends PathFreeSpec with Expectations {
+      class TestSpec extends PathFreeSpec with expectations.Expectations {
         "it should do something" in {
           expect(1 === 2)
         }

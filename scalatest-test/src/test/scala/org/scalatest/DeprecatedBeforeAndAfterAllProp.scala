@@ -16,10 +16,10 @@
 package org.scalatest
 
 // SKIP-SCALATESTJS,NATIVE-START
-import org.scalatest.junit.JUnit3Suite
-import org.scalatest.junit.JUnitSuite
+import org.scalatestplus.junit.JUnit3Suite
+import org.scalatestplus.junit.JUnitSuite
 import org.scalatest.refspec.RefSpec
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 // SKIP-SCALATESTJS,NATIVE-END
@@ -33,7 +33,6 @@ class DeprecatedBeforeAndAfterAllProp extends AllSuiteProp {
 
   // SKIP-SCALATESTJS,NATIVE-START
   def spec = new DeprecatedExampleBeforeAndAfterAllPropSpec
-  def fixtureSpec = new DeprecatedExampleBeforeAndAfterAllPropFixtureSpec
   def junit3Suite = new DeprecatedExampleBeforeAndAfterAllPropJUnit3Suite
   def junitSuite = new DeprecatedExampleBeforeAndAfterAllPropJUnitSuite
   def testngSuite = new DeprecatedExampleBeforeAndAfterAllPropTestNGSuite
@@ -105,22 +104,6 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropSpec extends Re
     def `Test 1`: Unit = { Thread.sleep(10) }
     def `Test 2`: Unit = { Thread.sleep(10) }
     def `Test 3`: Unit = { Thread.sleep(10) }
-  }
-  
-  override protected def beforeAll(): Unit = {
-    beforeAllTime = System.currentTimeMillis
-  }
-  override protected def afterAll(): Unit = {
-    afterAllTime = System.currentTimeMillis
-  }
-}
-
-@DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureSpec extends fixture.Spec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
-  object `Scope 1` {
-    def `Test 1`(fixture: String): Unit = { Thread.sleep(10) }
-    def `Test 2`(fixture: String): Unit = { Thread.sleep(10) }
-    def `Test 3`(fixture: String): Unit = { Thread.sleep(10) }
   }
   
   override protected def beforeAll(): Unit = {

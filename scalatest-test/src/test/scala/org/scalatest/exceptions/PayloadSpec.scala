@@ -21,7 +21,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 import time.{Span, Second}
 
 // SKIP-SCALATESTJS,NATIVE-START
-import junit.JUnitTestFailedError
+import org.scalatestplus.junit.JUnitTestFailedError
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalactic.source
 

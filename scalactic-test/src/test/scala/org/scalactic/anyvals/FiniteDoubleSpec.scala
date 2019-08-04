@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
@@ -30,14 +28,8 @@ import scala.util.{Failure, Success, Try}
 import org.scalatest.Inspectors
 import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
-import org.scalactic.NumberCompatHelper
 
 trait FiniteDoubleSpecSupport {
-
-  val finiteDoubleGen: Gen[FiniteDouble] =
-    for {i <- choose(1, Double.MaxValue)} yield FiniteDouble.ensuringValid(i)
-
-  implicit val arbFiniteDouble: Arbitrary[FiniteDouble] = Arbitrary(finiteDoubleGen)
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {
@@ -147,7 +139,10 @@ class FiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with Ty
         FiniteDouble.goodOrElse(0.0)(i => i) shouldBe Good(FiniteDouble(0.0))
         FiniteDouble.goodOrElse(-1.1)(i => i) shouldBe Good(FiniteDouble(-1.1))
         FiniteDouble.goodOrElse(-99.0)(i => i) shouldBe Good(FiniteDouble(-99.0))
+        // SKIP-DOTTY-START
+        // not constant literal
         FiniteDouble.goodOrElse(Double.MinPositiveValue)(i => i) shouldBe Good(FiniteDouble(Double.MinPositiveValue))
+        // SKIP-DOTTY-END
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is NOT greater than 0, wrapped in a Bad") {
         FiniteDouble.goodOrElse(Double.NegativeInfinity)(i => s"$i did not taste good") shouldBe Bad("-Infinity did not taste good")
@@ -162,7 +157,10 @@ class FiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with Ty
         FiniteDouble.rightOrElse(0.0)(i => i) shouldBe Right(FiniteDouble(0.0))
         FiniteDouble.rightOrElse(-1.1)(i => i) shouldBe Right(FiniteDouble(-1.1))
         FiniteDouble.rightOrElse(-99.9)(i => i) shouldBe Right(FiniteDouble(-99.9))
+        // SKIP-DOTTY-START
+        // not constant literal
         FiniteDouble.rightOrElse(Double.MinPositiveValue)(i => i) shouldBe Right(FiniteDouble(Double.MinPositiveValue))
+        // SKIP-DOTTY-END
       }
       it("returns an error value produced by passing the given Double to the given function if the passed Double is infinite, wrapped in a Left") {
         FiniteDouble.rightOrElse(Double.NegativeInfinity)(i => s"$i did not taste good") shouldBe Left("-Infinity did not taste good")
@@ -370,20 +368,6 @@ class FiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with Ty
         pdouble.toRadians shouldEqual pdouble.toDouble.toRadians
       }
     }
-
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Double") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pdouble: FiniteDouble, end: Double, step: Double) =>
-        rangeEqual(pdouble.until(end).by(1f), NumberCompatHelper.doubleUntil(pdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pdouble.until(end, step), NumberCompatHelper.doubleUntil(pdouble.toDouble, end, step)) shouldBe true
-        rangeEqual(pdouble.to(end).by(1f), NumberCompatHelper.doubleTo(pdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pdouble.to(end, step), NumberCompatHelper.doubleTo(pdouble.toDouble, end, step)) shouldBe true
-      }
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
       FiniteDouble(33.0).ensuringValid(_ + 1.0) shouldEqual FiniteDouble(34.0)

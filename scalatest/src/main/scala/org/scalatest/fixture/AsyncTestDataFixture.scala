@@ -18,7 +18,7 @@ package org.scalatest.fixture
 import org.scalatest._
 
 /**
-  * Trait that when mixed into a <a href="AsyncTestSuite.html"><code>fixture.AsyncTestSuite</code></a> passes the
+  * Trait that when mixed into a <a href="../FixtureAsyncTestSuite.html"><code>FixtureAsyncTestSuite</code></a> passes the
   * <a href="../TestData.html"><code>TestData</code></a> passed to <code>withFixture</code> as a fixture into each test.
   *
   * <p>
@@ -44,7 +44,7 @@ import org.scalatest._
   *
   * @author Bill Venners
   */
-trait AsyncTestDataFixture { this: fixture.AsyncTestSuite =>
+trait AsyncTestDataFixture { this: FixtureAsyncTestSuite =>
 
   /**
     * The type of the fixture, which is <code>TestData</code>.

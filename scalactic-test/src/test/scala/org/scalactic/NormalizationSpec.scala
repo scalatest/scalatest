@@ -21,17 +21,17 @@ class NormalizationSpec extends FunSpec with StringNormalizations {
 
   describe("A Uniformity") {
     describe("when anded with another Uniformity") {
-      it("should produce a Uniformity") { 
+      it("should produce a Uniformity") {
         assert(lowerCased.isInstanceOf[Uniformity[_]])
         assert((lowerCased and trimmed).isInstanceOf[Uniformity[_]])
       }
     }
     describe("when anded with a regular Normalization (on left or right)") {
-      val shouted: Normalization[String] = 
+      val shouted: Normalization[String] =
         new Normalization[String] {
           def normalized(s: String): String = s.toUpperCase
         }
-      it("should produce a Normalization that is not also a Uniformity") { 
+      it("should produce a Normalization that is not also a Uniformity") {
         assert(!shouted.isInstanceOf[Uniformity[_]])
         assert(trimmed.isInstanceOf[Uniformity[_]])
         val tAndS: Normalization[String] = trimmed and shouted
@@ -47,20 +47,23 @@ class NormalizationSpec extends FunSpec with StringNormalizations {
       assert(!(lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDX "))
       assert(!lowerCased.toEquality.areEqual("howdy", "XOWDY"))
       assert(!(lowerCased and trimmed).toEquality.areEqual(" howdy", "XOWDY "))
-      implicit val firstCharStringEquality =
-        new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean =
-            b match {
-              case bString: String => a(0) == bString(0)
-              case _ => false
-            }
-        }
-      assert(lowerCased.toEquality.areEqual("howdy", "HOWDY"))
-      assert((lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDY "))
-      assert(lowerCased.toEquality.areEqual("howdy", "HOWDX"))
-      assert((lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDX "))
-      assert(!lowerCased.toEquality.areEqual("howdy", "XOWDY"))
-      assert(!(lowerCased and trimmed).toEquality.areEqual(" howdy", "XOWDY "))
+
+      {
+        implicit val firstCharStringEquality: Equality[String] =
+          new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean =
+              b match {
+                case bString: String => a(0) == bString(0)
+                case _ => false
+              }
+          }
+        assert(lowerCased.toEquality.areEqual("howdy", "HOWDY"))
+        assert((lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDY "))
+        assert(lowerCased.toEquality.areEqual("howdy", "HOWDX"))
+        assert((lowerCased and trimmed).toEquality.areEqual(" howdy", "HOWDX "))
+        assert(!lowerCased.toEquality.areEqual("howdy", "XOWDY"))
+        assert(!(lowerCased and trimmed).toEquality.areEqual(" howdy", "XOWDY "))
+      }
     }
   }
   describe("A Normalization") {
@@ -71,16 +74,19 @@ class NormalizationSpec extends FunSpec with StringNormalizations {
       assert(!(lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDX "))
       assert(!lowerCased.toEquivalence.areEquivalent("howdy", "XOWDY"))
       assert(!(lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "XOWDY "))
-      implicit val firstCharStringEquivalence =
-        new Equivalence[String] {
-          def areEquivalent(a: String, b: String): Boolean = a(0) == b(0)
-        }
-      assert(lowerCased.toEquivalence.areEquivalent("howdy", "HOWDY"))
-      assert((lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDY "))
-      assert(lowerCased.toEquivalence.areEquivalent("howdy", "HOWDX"))
-      assert((lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDX "))
-      assert(!lowerCased.toEquivalence.areEquivalent("howdy", "XOWDY"))
-      assert(!(lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "XOWDY "))
+
+      {
+        implicit val firstCharStringEquivalence: Equivalence[String] =
+          new Equivalence[String] {
+            def areEquivalent(a: String, b: String): Boolean = a(0) == b(0)
+          }
+        assert(lowerCased.toEquivalence.areEquivalent("howdy", "HOWDY"))
+        assert((lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDY "))
+        assert(lowerCased.toEquivalence.areEquivalent("howdy", "HOWDX"))
+        assert((lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "HOWDX "))
+        assert(!lowerCased.toEquivalence.areEquivalent("howdy", "XOWDY"))
+        assert(!(lowerCased and trimmed).toEquivalence.areEquivalent(" howdy", "XOWDY "))
+      }
     }
   }
 }

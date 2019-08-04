@@ -32,6 +32,8 @@ private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
   def isEmpty: Boolean = queue.isEmpty
 
   def asScala: GenTraversable[T] = queue.asScala
+
+  def poll: T = queue.poll()
 }
 
 private[scalatest] class LinkedBlockingQueue[T] extends Serializable {
@@ -66,7 +68,7 @@ private[scalatest] trait TimerTask extends Runnable {
 
   val timerTaskRef: AtomicReference[Option[java.util.TimerTask]] = new AtomicReference(None)
 
-  def run()
+  def run(): Unit
 
   def cancel(): Unit = {
     timerTaskRef.get match {

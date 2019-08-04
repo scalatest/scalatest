@@ -58,7 +58,7 @@ trait Writability[-T] {
  */
 object Writability {
 
-  // DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
+  //DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
 
   /**
    * Enable <code>Writability</code> implementation for <code>java.io.File</code>.

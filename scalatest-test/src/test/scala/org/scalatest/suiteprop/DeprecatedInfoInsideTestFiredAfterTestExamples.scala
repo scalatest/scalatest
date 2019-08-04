@@ -61,13 +61,6 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
     override val theTestName = "testMethod(Informer)"
   }
-  
-  class FixtureSpecExample extends StringFixtureSpec with Services {
-    def `test method`(s: String) = {
-      info(msg)
-    }
-    override val theTestName = "testMethod(FixtureParam, Informer)"
-  }
   // SKIP-SCALATESTJS,NATIVE-END
 
   class FunSuiteExample extends FunSuite with Services {
@@ -515,7 +508,6 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
 
   // SKIP-SCALATESTJS,NATIVE-START
   lazy val spec = new SpecExample
-  lazy val fixtureSpec = new FixtureSpecExample
   // SKIP-SCALATESTJS,NATIVE-END
   lazy val funSuite = new FunSuiteExample
   lazy val fixtureFunSuite = new FixtureFunSuiteExample

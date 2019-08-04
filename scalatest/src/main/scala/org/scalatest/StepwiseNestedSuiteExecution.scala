@@ -20,7 +20,7 @@ import org.scalatest.events._
 import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
-import Suite.wrapReporterIfNecessary
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import collection.mutable.ListBuffer
 
 /**

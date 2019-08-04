@@ -41,6 +41,7 @@ class ShouldNotTypeCheckSpec extends FunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
 
+      // SKIP-DOTTY-START
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           "println(\"test)" shouldNot typeCheck
@@ -51,6 +52,7 @@ class ShouldNotTypeCheckSpec extends FunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when used with 'val i: Int = null") {
         "val i: Int = null" shouldNot typeCheck
@@ -73,6 +75,56 @@ class ShouldNotTypeCheckSpec extends FunSpec {
       }
     }
 
+    describe("when work with triple quotes string literal") {
+
+      it("should do nothing when type check failed") {
+        """val a: String = 2""" shouldNot typeCheck
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when type check passed") {
+        val e = intercept[TestFailedException] {
+          """val a = 1""" shouldNot typeCheck
+        }
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone("val a = 1")))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      }
+
+      // SKIP-DOTTY-START
+      it("should throw TestFailedException with correct message and stack depth when parse failed") {
+        val e = intercept[TestFailedException] {
+          """println("test)""" shouldNot typeCheck
+        }
+        val errMsg = Resources.expectedTypeErrorButGotParseError("", "")
+        assert(e.message.get.startsWith(errMsg.substring(0, errMsg.indexOf(':'))))
+        assert(e.message.get.indexOf("println(\"test)") >= 0)
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+      }
+      // SKIP-DOTTY-END
+
+      it("should do nothing when used with 'val i: Int = null") {
+        """val i: Int = null""" shouldNot typeCheck
+      }
+
+      it("should work correctly with the implicit view is in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          """arrayList.asScala""" shouldNot typeCheck
+        }
+        assert(e.message == Some(Resources.expectedTypeErrorButGotNone("arrayList.asScala")))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      }
+    }
+
+    // SKIP-DOTTY-START
     describe("when work with triple quotes string literal with stripMargin") {
 
       it("should do nothing when type check failed") {
@@ -129,5 +181,6 @@ class ShouldNotTypeCheckSpec extends FunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
     }
+    // SKIP-DOTTY-END
   }
 }

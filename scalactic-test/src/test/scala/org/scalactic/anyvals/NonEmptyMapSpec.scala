@@ -21,6 +21,7 @@ import scala.collection.mutable.ListBuffer
 
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
+import org.scalactic.NormalizingEquality
 
 import org.scalatest.CompatParColls.Converters._
 
@@ -181,18 +182,6 @@ class NonEmptyMapSpec extends UnitSpec {
     pf1.isDefinedAt(1) shouldBe true
     pf1.isDefinedAt(0) shouldBe false
   }
-  it should "have a /: method" in {
-    (0 /: NonEmptyMap(1 -> "one"))(_ + _._1) shouldBe 1
-    (1 /: NonEmptyMap(2 -> "two"))(_ + _._1) shouldBe 3
-    (0 /: NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three"))(_ + _._1) shouldBe 6
-    (1 /: NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three"))(_ + _._1) shouldBe 7
-  }
-  it should "have a :\\ method" in {
-    (NonEmptyMap(1 -> "one") :\ 0)(_._1 + _) shouldBe 1
-    (NonEmptyMap(1 -> "one") :\ 1)(_._1 + _) shouldBe 2
-    (NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three") :\ 0)(_._1 + _) shouldBe 6
-    (NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three") :\ 1)(_._1 + _) shouldBe 7
-  }
   it should "have 3 addString methods" in {
     NonEmptyMap("hi" -> "hello").addString(new StringBuilder) shouldBe new StringBuilder("hi -> hello")
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three").addString(new StringBuilder) shouldBe new StringBuilder("2 -> two3 -> three1 -> one")
@@ -256,9 +245,14 @@ class NonEmptyMapSpec extends UnitSpec {
     val es = NonEmptyMap("one" -> 1, "two" -> 2, "three" -> 3)
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
+
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
     implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.contains("one") shouldBe true
     es.contains("ONE") shouldBe false
+    // SKIP-DOTTY-END
   }
   it should "have 3 copyToArray methods" in {
 
@@ -487,9 +481,11 @@ class NonEmptyMapSpec extends UnitSpec {
     NonEmptyMap(-1 -> "-1", -2 -> "-2", 3 -> "-3", 4 -> "4", 5 -> "5").minBy(_._1.abs) shouldBe (-1 -> "-1")
   }
   it should "have a mkString method" in {
-
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     NonEmptyMap("hi" -> "ho").mkString shouldBe "hi -> ho"
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").mkString shouldBe "2 -> 23 -> 31 -> 1"
+    // SKIP-DOTTY-END
 
     NonEmptyMap("hi" -> "ho").mkString("#") shouldBe "hi -> ho"
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").mkString("#") shouldBe "2 -> 2#3 -> 3#1 -> 1"

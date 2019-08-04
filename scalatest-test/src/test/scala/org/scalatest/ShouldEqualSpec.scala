@@ -15,16 +15,13 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
-import org.scalacheck._
-import Arbitrary._
-import Prop._
+import org.scalatest.prop.PropertyChecks
 import org.scalatest.exceptions._
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 import org.scalactic.Good
 
-class ShouldEqualSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+class ShouldEqualSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
   // Checking for equality with "equal"
   describe("The equal token") {
@@ -34,11 +31,11 @@ class ShouldEqualSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAs
       1 shouldEqual 1
 
       // objects should equal themselves
-      check((s: String) => returnsNormally(s should equal (s)))
-      check((i: Int) => returnsNormally(i should equal (i)))
+      forAll((s: String) => s should equal (s))
+      forAll((i: Int) => i should equal (i))
 
       // a string should equal another string with the same value
-      check((s: String) => returnsNormally(s should equal (new String(s))))
+      forAll((s: String) => s should equal (new String(s)))
     }
 
     it("should work correctly with List(Good(3)).combined shouldBe Good(List(3))") {
@@ -54,8 +51,8 @@ class ShouldEqualSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAs
       1 should not equal (2)
 
       // unequal objects should not equal each other
-      check((s: String, t: String) => s != t ==> returnsNormally(s should not { equal (t) }))
-      check((s: String, t: String) => s != t ==> returnsNormally(s should not equal (t)))
+      forAll((s: String, t: String) => if (s != t) s should not { equal (t) } else succeed)
+      forAll((s: String, t: String) => if (s != t) s should not equal (t) else succeed)
     }
 
     it("should do nothing when equal and used in a logical-and expression") {
@@ -99,7 +96,7 @@ class ShouldEqualSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAs
       assert(caught1.getMessage === "1 did not equal 2")
 
       // unequal objects used with "a should equal (b)" should throw an TestFailedException
-      check((s: String, t: String) => s != t ==> throwsTestFailedException(s should equal (t)))
+      forAll((s: String, t: String) => if (s != t) assertThrows[TestFailedException](s should equal (t)) else succeed)
 
       val caught2 = intercept[TestFailedException] {
         1 should not (not equal (2))
@@ -124,14 +121,14 @@ class ShouldEqualSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAs
       assert(caught2.getMessage === "1 equaled 1")
 
       // the same object used with "a should not { equal (a) } should throw TestFailedException
-      check((s: String) => throwsTestFailedException(s should not { equal (s) }))
-      check((i: Int) => throwsTestFailedException(i should not { equal (i) }))
-      check((s: String) => throwsTestFailedException(s should not equal (s)))
-      check((i: Int) => throwsTestFailedException(i should not equal (i)))
+      forAll((s: String) => assertThrows[TestFailedException](s should not { equal (s) }))
+      forAll((i: Int) => assertThrows[TestFailedException](i should not { equal (i) }))
+      forAll((s: String) => assertThrows[TestFailedException](s should not equal (s)))
+      forAll((i: Int) => assertThrows[TestFailedException](i should not equal (i)))
 
       // two different strings with the same value used with "s should not { equal (t) } should throw TestFailedException
-      check((s: String) => throwsTestFailedException(s should not { equal (new String(s)) }))
-      check((s: String) => throwsTestFailedException(s should not equal (new String(s))))
+      forAll((s: String) => assertThrows[TestFailedException](s should not { equal (new String(s)) }))
+      forAll((s: String) => assertThrows[TestFailedException](s should not equal (new String(s))))
 
       val caught3 = intercept[TestFailedException] {
         1 should not (not (not equal (1)))

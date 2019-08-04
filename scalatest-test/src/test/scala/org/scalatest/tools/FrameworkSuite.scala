@@ -1182,7 +1182,7 @@ class FrameworkSuite extends FunSuite {
   }
 
   test("-y should do nothing when the task to execute is a chosen style", Retryable) {
-    val runner = framework.runner(Array("-y", "org.scalatest.FunSuite", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    val runner = framework.runner(Array("-y", "org.scalatest.funsuite.AnyFunSuite", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     makeSureDone(runner) {
       val testEventHandler = new TestEventHandler
       val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
@@ -1202,7 +1202,7 @@ class FrameworkSuite extends FunSuite {
   }
   
   test("-y should get SuiteAborted event with NotAllowedException when the task to execute is not a chosen style") {
-    val runner = framework.runner(Array("-y", "org.scalatest.FunSpec", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    val runner = framework.runner(Array("-y", "org.scalatest.funspec.AnyFunSpec", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     makeSureDone(runner) {
       val testEventHandler = new TestEventHandler
       val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
@@ -1219,7 +1219,7 @@ class FrameworkSuite extends FunSuite {
           assert(suiteAbortedEvents.size === 1)
           suiteAbortedEvents(0).throwable match {
             case Some(e: NotAllowedException) => 
-              assert(e.getMessage === Resources.notTheChosenStyle("org.scalatest.FunSuite", "org.scalatest.FunSpec"))
+              assert(e.getMessage === Resources.notTheChosenStyle("org.scalatest.funsuite.AnyFunSuite", "org.scalatest.funspec.AnyFunSpec"))
             case _ => fail("Expected SuiteAborted to carry NotAllowedException, but it did not.")
           }
         case _ => fail("Expected to find EventRecordingReporter, but not found.")

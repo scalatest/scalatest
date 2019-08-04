@@ -37,6 +37,9 @@ import collection.mutable.ListBuffer
 import org.scalatest.exceptions._
 import org.scalatest.time.{Seconds, Span}
 import org.scalatest.tools.{SuiteSortingReporter, TestSortingReporter, TestSpecificReporter}
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
+import scala.collection.immutable.ListSet
+import scala.util.Try
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
@@ -230,7 +233,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     args: Args,
     includeIcon: Boolean,
     parallelAsyncTestExecution: Boolean,
-    invokeWithFixture: TestLeaf => AsyncOutcome
+    invokeWithFixture: (TestLeaf, Try[Outcome] => Unit) => AsyncOutcome
   )(implicit executionContext: ExecutionContext): Status = {
 
     requireNonNull(testName, args)
@@ -289,25 +292,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val oldAlerter = atomicAlerter.getAndSet(alerterForThisTest)
     val oldDocumenter = atomicDocumenter.getAndSet(documenterForThisTest)
 
-    val asyncOutcome: AsyncOutcome =
-      try {
-        val outcome = invokeWithFixture(theTest)
-        executionContext match {
-          case dec: concurrent.SerialExecutionContext =>
-            dec.runNow(outcome.toInternalFutureOutcome)
-          case _ =>
-        }
-        outcome
-      }
-      catch {
-        case ex: TestCanceledException => PastOutcome(Canceled(ex)) // Probably don't need these anymore.
-        case _: TestPendingException => PastOutcome(Pending)
-        case tfe: TestFailedException => PastOutcome(Failed(tfe))
-        case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastOutcome(Failed(ex))
-      }
-
-    asyncOutcome.onComplete { trial =>
-      //println("###onComplete in the FORK!!")
+    val onCompleteFun: Try[Outcome] => Unit = { trial =>
       trial match {
         case Success(outcome) =>
           outcome match {
@@ -346,17 +331,17 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         // unreportedException. unreportedException is for when before or after code blows up, or a constructor blows up.
         // fatalException is for anExceptionThatShouldCauseASuiteToAbort no matter when it happens. And maybe once that
         // happens, everything just blows up with that exception.
-/*
-  suiteAbortingException: Option[Throwable] // These would be 2 different things.
-  threadKillingException: Option[Throwable]
+        /*
+          suiteAbortingException: Option[Throwable] // These would be 2 different things.
+          threadKillingException: Option[Throwable]
 
-   or could do unreportedException and fatalException
-   extraTestException
-   exceptionToReport
-   exceptionToRethrow
+           or could do unreportedException and fatalException
+           extraTestException
+           exceptionToReport
+           exceptionToRethrow
 
-   I like unreportedException and isFatal
-*/
+           I like unreportedException and isFatal
+        */
         case Failure(ex) =>
       }
 
@@ -367,6 +352,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
       // SKIP-SCALATESTJS,NATIVE-START
       val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
+
       if (shouldBeInformerForThisTest ne informerForThisTest)
         throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
 
@@ -384,24 +370,24 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       // SKIP-SCALATESTJS,NATIVE-END
     }
 
-    asyncOutcome.toStatus
-
-    /*val resultOutcome =
-      executionContext match {
-        case dec: concurrent.SerialExecutionContext =>
-          try {
-            dec.runNow(asyncOutcome.toInternalFutureOutcome)
-            asyncOutcome
-          }
-          catch {
-            case ex: TestCanceledException => PastOutcome(Canceled(ex)) // Probably don't need these anymore.
-            case _: TestPendingException => PastOutcome(Pending)
-            case tfe: TestFailedException => PastOutcome(Failed(tfe))
-            case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastOutcome(Failed(ex))
-          }
-        case _ => asyncOutcome
+    val asyncOutcome: AsyncOutcome =
+      try {
+        val outcome = invokeWithFixture(theTest, onCompleteFun)
+        executionContext match {
+          case dec: concurrent.SerialExecutionContext =>
+            dec.runNow(outcome.toFutureOfOutcome)
+          case _ =>
+        }
+        outcome
       }
-    resultOutcome.toStatus*/
+      catch {
+        case ex: TestCanceledException => PastAsyncOutcome(Canceled(ex), onCompleteFun) // Probably don't need these anymore.
+        case _: TestPendingException => PastAsyncOutcome(Pending, onCompleteFun)
+        case tfe: TestFailedException => PastAsyncOutcome(Failed(tfe), onCompleteFun)
+        case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastAsyncOutcome(Failed(ex), onCompleteFun)
+      }
+
+    asyncOutcome.toStatus
   }
 
   private def runTestsInBranch(
@@ -410,15 +396,15 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     args: Args,
     includeIcon: Boolean,
     parallelAsyncTestExecution: Boolean,
-    initStatusList: List[Status],
+    initStatusVec: Vector[Status],
     runTest: (String, Args) => Status
-  ): List[Status] = {
+  ): Vector[Status] = {
 
     import args.stopper
 
-    def traverseSubNodes(): List[Status] = {
+    def traverseSubNodes(): Vector[Status] = {
       //branch.subNodes.reverse.flatMap { node =>
-      branch.subNodes.reverse.foldLeft(initStatusList) { case (statusList, node) =>
+      branch.subNodes.reverse.foldLeft(initStatusVec) { case (statusVec, node) =>
         if (!stopper.stopRequested) {
           node match {
             case testLeaf @ TestLeaf(_, testName, testText, _, _, _, _) =>
@@ -427,43 +413,60 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
                 if (ignoreTest) {
                   val testTextWithOptionalPrefix = prependChildPrefix(branch, testText)
                   val theTest = atomic.get.testsMap(testName)
-                  reportTestIgnored(theSuite, args.reporter, args.tracker, testName, testTextWithOptionalPrefix, getIndentedTextForTest(testTextWithOptionalPrefix, testLeaf.indentationLevel, true), theTest.location)
-                  statusList
+                  statusVec :+ (
+                    if (parallelAsyncTestExecution || statusVec.isEmpty) {
+                      // Even if serial async test execution (i.e., not parallelAsyncTestExection), first time still just go for it
+                      reportTestIgnored(theSuite, args.reporter, args.tracker, testName, testTextWithOptionalPrefix, getIndentedTextForTest(testTextWithOptionalPrefix, testLeaf.indentationLevel, true), theTest.location)
+                      SucceededStatus
+                    }
+                    else {
+                      statusVec.last thenRun {
+                        reportTestIgnored(theSuite, args.reporter, args.tracker, testName, testTextWithOptionalPrefix, getIndentedTextForTest(testTextWithOptionalPrefix, testLeaf.indentationLevel, true), theTest.location)
+                        SucceededStatus
+                      }  // Only if serial async test execution (i.e., not parallelAsyncTestExecution), after first Status
+                    }
+                  )
                 }
                 else {
-                  statusList ::: List(
-                    if (parallelAsyncTestExecution || statusList.isEmpty) {
+                  statusVec :+ (
+                    if (parallelAsyncTestExecution || statusVec.isEmpty) {
                       runTest(testName, args) // Even if serial async test execution (i.e., not parallelAsyncTestExection), first time still just go for it
                     }
                     else {
-                      statusList.last thenRun runTest(testName, args)  // Only if serial async test execution (i.e., not parallelAsyncTestExecution), after first Status
+                      statusVec.last thenRun runTest(testName, args)  // Only if serial async test execution (i.e., not parallelAsyncTestExecution), after first Status
                     }
                   )
                 }
               else
-                statusList
+                statusVec
 
             case infoLeaf @ InfoLeaf(_, message, payload, location) =>
               reportInfoProvided(theSuite, args.reporter, args.tracker, None, message, payload, infoLeaf.indentationLevel, location, true, includeIcon)
-              statusList
+              statusVec
 
             case noteLeaf @ NoteLeaf(_, message, payload, location) =>
               reportNoteProvided(theSuite, args.reporter, args.tracker, None, message, payload, noteLeaf.indentationLevel, location, true, includeIcon)
-              statusList
+              statusVec
 
             case alertLeaf @ AlertLeaf(_, message, payload, location) =>
               reportAlertProvided(theSuite, args.reporter, args.tracker, None, message, payload, alertLeaf.indentationLevel, location, true, includeIcon)
-              statusList
+              statusVec
 
             case markupLeaf @ MarkupLeaf(_, message, location) =>
               reportMarkupProvided(theSuite, args.reporter, args.tracker, None, message, markupLeaf.indentationLevel, location, true, includeIcon)
-              statusList
+              statusVec
 
-            case branch: Branch => runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, statusList, runTest)
+            case branch: Branch =>
+              if (parallelAsyncTestExecution || statusVec.isEmpty) {
+                runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, statusVec, runTest) // Even if serial async test execution (i.e., not parallelAsyncTestExection), first time still just go for it
+              }
+              else {
+                statusVec :+ (statusVec.last thenRun (new CompositeStatus(ListSet(runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, statusVec, runTest): _*))))  // Only if serial async test execution (i.e., not parallelAsyncTestExecution), after first Status
+              }
           }
         }
         else
-          statusList
+          statusVec
       }
     }
 
@@ -474,12 +477,12 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         val descriptionTextWithOptionalPrefix = prependChildPrefix(parent, descriptionText)
         val indentationLevel = desc.indentationLevel
         reportScopeOpened(theSuite, args.reporter, args.tracker, descriptionTextWithOptionalPrefix, indentationLevel, false, lineInFile)
-        val statusList = traverseSubNodes()
+        val statusVec = traverseSubNodes()
         if (desc.pending)
           reportScopePending(theSuite, args.reporter, args.tracker, descriptionTextWithOptionalPrefix, indentationLevel, false, lineInFile)
         else
           reportScopeClosed(theSuite, args.reporter, args.tracker, descriptionTextWithOptionalPrefix, indentationLevel, false, lineInFile)
-        statusList
+        statusVec
 
       case Trunk =>
         traverseSubNodes()
@@ -531,10 +534,10 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
     // so that exceptions are caught and transformed
     // into error messages on the standard error stream.
-    val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
+    val report = wrapReporterIfNecessary(theSuite, reporter)
     val newArgs = if (report eq reporter) args else args.copy(reporter = report)
     
-    val statusList: List[Status] =
+    val statusList: Vector[Status] =
       // If a testName is passed to run, just run that, else run the tests returned
       // by testNames.
       testName match {
@@ -544,16 +547,16 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
             if (ignoreTest) {
               val theTest = atomic.get.testsMap(tn)
               reportTestIgnored(theSuite, report, tracker, tn, tn, getIndentedTextForTest(tn, 1, true), theTest.location)
-              List.empty
+              Vector.empty
             }
             else {
-              List(runTest(tn, newArgs))
+              Vector(runTest(tn, newArgs))
             }
           }
           else
-            List.empty
+            Vector.empty
 
-        case None => runTestsInBranch(theSuite, Trunk, newArgs, includeIcon, parallelAsyncTestExecution, List.empty, runTest)
+        case None => runTestsInBranch(theSuite, Trunk, newArgs, includeIcon, parallelAsyncTestExecution, Vector.empty, runTest)
       }
     new CompositeStatus(Set.empty ++ statusList)
   }
@@ -585,7 +588,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     if (!registrationClosed)
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, true))
 
-    val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
+    val report = wrapReporterIfNecessary(theSuite, reporter)
 
     val informerForThisSuite =
       ConcurrentInformer(
@@ -892,8 +895,8 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 }
 
 private[scalatest] class AsyncEngine(concurrentBundleModMessageFun: => String, simpleClassName: String)
-    extends AsyncSuperEngine[() => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
+    extends AsyncSuperEngine[() => AsyncTestHolder](concurrentBundleModMessageFun, simpleClassName)
 
 private[scalatest] class AsyncFixtureEngine[FixtureParam](concurrentBundleModMessageFun: => String, simpleClassName: String)
-    extends AsyncSuperEngine[FixtureParam => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
+    extends AsyncSuperEngine[FixtureParam => AsyncTestHolder](concurrentBundleModMessageFun, simpleClassName)
 

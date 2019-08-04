@@ -32,6 +32,6 @@ import org.scalactic.Requirements._
  * @throws NullPointerException if either <code>suiteTags</code> or <code>testTags</code> is <code>null</code>
  *
  */
-final case class DynaTags(suiteTags: Map[String, Set[String]], testTags: Map[String, Map[String, Set[String]]]) extends Serializable {
+final case class DynaTags(suiteTags: Map[String, Set[String]], testTags: Map[String, Map[String, Set[String]]]) {
   requireNonNull(suiteTags, testTags)
 }

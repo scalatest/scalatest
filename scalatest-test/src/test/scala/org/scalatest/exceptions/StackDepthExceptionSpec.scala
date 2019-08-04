@@ -21,7 +21,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.time.Second
 import org.scalatest.time.Span
 // SKIP-SCALATESTJS,NATIVE-START
-import org.scalatest.junit.JUnitTestFailedError
+import org.scalatestplus.junit.JUnitTestFailedError
 // SKIP-SCALATESTJS,NATIVE-END
 
 class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenPropertyChecks {

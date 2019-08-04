@@ -170,6 +170,11 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   def ++[U >: T](other: GenTraversableOnce[U]): Every[U]
 
   /**
+   * <strong>The <code>/:</code> method has been deprecated and will be removed in a future version of Scalactic. Please use
+   * <code>foldLeft</code> instead.</strong>
+   *
+   * <p>This method has been deprecated for consistency with Scala 2.13's collections API.</p>
+   *
    * Fold left: applies a binary operator to a start value, <code>z</code>, and all elements of this <code>Every</code>, going left to right.
    *
    * <p>
@@ -191,9 +196,15 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>Every</code>.
    * </p>
    */
+  @deprecated("The /: method has been deprecated and will be removed in a future version of Scalactic. Please use foldLeft instead.", "3.1.x")
   final def /:[B](z: B)(op: (B, T) => B): B = underlying./:(z)(op)
 
   /**
+   * <strong>The <code>:\\</code> method has been deprecated and will be removed in a future version of Scalactic. Please use
+   * <code>foldRight</code> instead.</strong>
+   *
+   * <p>This method has been deprecated for consistency with Scala 2.13's collections API.</p>
+   *
    * Fold right: applies a binary operator to all elements of this <code>Every</code> and a start value, going right to left.
    *
    * <p>
@@ -215,6 +226,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>Every</code>.
    * </p>
    */
+  @deprecated("The :\\ method has been deprecated and will be removed in a future version of Scalactic. Please use foldRight instead.", "3.1.x")
   final def :\[B](z: B)(op: (T, B) => B): B = underlying.:\(z)(op)
 
   /**
@@ -537,9 +549,9 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * That is, every key <code>k</code> is bound to an <code>Every</code> of those elements <code>x</code> for which <code>f(x)</code> equals <code>k</code>.
    * </p>
    */
-  final def groupBy[K](f: T => K): Map[K, Every[T]] = {
+  final def groupBy[K](f: T => K) = {
     val mapKToVec = underlying.groupBy(f)
-    mapKToVec.mapValues { vec => Every(vec.head, vec.tail: _*) }
+    (mapKToVec.mapValues { vec => Every(vec.head, vec.tail: _*) }).toMap
   }
 
   /**
@@ -598,7 +610,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   /**
    * Finds first index where this <code>Every</code> contains a given <code>GenSeq</code> as a slice.
    *
-   * @param that the <code>GenSeq<code> defining the slice to look for
+   * @param that the <code>GenSeq</code> defining the slice to look for
    * @return the first index at which the elements of this <code>Every</code> starting at that index match the elements of
    *     <code>GenSeq</code> <code>that</code>, or <code>-1</code> of no such subsequence exists.
    */
@@ -607,7 +619,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   /**
    * Finds first index after or at a start index where this <code>Every</code> contains a given <code>GenSeq</code> as a slice.
    *
-   * @param that the <code>GenSeq<code> defining the slice to look for
+   * @param that the <code>GenSeq</code> defining the slice to look for
    * @param from the start index
    * @return the first index <code>&gt;=</code> <code>from</code> at which the elements of this <code>Every</code> starting at that index match the elements of
    *     <code>GenSeq</code> <code>that</code>, or <code>-1</code> of no such subsequence exists.
@@ -617,7 +629,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   /**
    * Finds first index where this <code>Every</code> contains a given <code>Every</code> as a slice.
    *
-   * @param that the <code>Every<code> defining the slice to look for
+   * @param that the <code>Every</code> defining the slice to look for
    * @return the first index such that the elements of this <code>Every</code> starting at this index match the elements of
    *     <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists.
    */
@@ -626,7 +638,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   /**
    * Finds first index after or at a start index where this <code>Every</code> contains a given <code>Every</code> as a slice.
    *
-   * @param that the <code>Every<code> defining the slice to look for
+   * @param that the <code>Every</code> defining the slice to look for
    * @param from the start index
    * @return the first index <code>&gt;=</code> <code>from</code> such that the elements of this <code>Every</code> starting at this index match the elements of
    *     <code>Every</code> <code>that</code>, or <code>-1</code> of no such subsequence exists.
@@ -668,14 +680,14 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   final def isDefinedAt(idx: Int): Boolean = underlying.isDefinedAt(idx)
 
   /**
-   * Returns <code>false</code> to indicate this <code>Every</code>, like all <code>Every<code>s, is non-empty.
+   * Returns <code>false</code> to indicate this <code>Every</code>, like all <code>Every</code>s, is non-empty.
    *
    * @return false
    */
   final def isEmpty: Boolean = false
 
   /**
-   * Returns <code>true</code> to indicate this <code>Every</code>, like all <code>Every<code>s, can be traversed repeatedly.
+   * Returns <code>true</code> to indicate this <code>Every</code>, like all <code>Every</code>s, can be traversed repeatedly.
    *
    * @return true
    */
@@ -872,7 +884,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   final def mkString(start: String, sep: String, end: String): String = underlying.mkString(start, sep, end)
 
   /**
-   * Returns <code>true</code> to indicate this <code>Every</code>, like all <code>Every<code>s, is non-empty.
+   * Returns <code>true</code> to indicate this <code>Every</code>, like all <code>Every</code>s, is non-empty.
    *
    * @return true
    */
@@ -1151,7 +1163,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
 
   /**
    * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.),
-   * moving the sliding window by a given <code>step<code> each time.
+   * moving the sliding window by a given <code>step</code> each time.
    *
    * @param size the number of elements per group
    * @param step the distance between the first elements of successive groups

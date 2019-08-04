@@ -15,12 +15,11 @@
  */
 package org.scalatest.events
 
-import org.scalatest.prop.Checkers
 import org.scalatest.SharedHelpers.{ EventRecordingReporter, thisLineNumber }
 
 // SKIP-SCALATESTJS,NATIVE-START
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
+import org.scalatestplus.junit.JUnitRunner
 import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest._
@@ -29,7 +28,7 @@ import Inside._
 // SKIP-SCALATESTJS,NATIVE-START
 @RunWith(classOf[JUnitRunner])
 // SKIP-SCALATESTJS,NATIVE-END
-class LocationSpec extends FunSpec with Checkers {
+class LocationSpec extends FunSpec {
   
   class TestLocationFunSuite extends FunSuite {
     test("succeed") {

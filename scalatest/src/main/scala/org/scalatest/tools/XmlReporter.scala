@@ -311,7 +311,7 @@ private[scalatest] class XmlReporter(directory: String) extends Reporter {
   //
   // Creates an xml string describing a run of a test suite.
   //
-  def xmlify(testsuite: Testsuite): String = {
+  private def xmlify(testsuite: Testsuite): String = {
     val xmlVal =
       <testsuite
         errors    = { "" + testsuite.errors         }

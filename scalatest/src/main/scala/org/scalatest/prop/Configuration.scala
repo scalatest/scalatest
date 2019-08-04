@@ -15,10 +15,8 @@
  */
 package org.scalatest.prop
 
-import org.scalacheck.Test.Parameters
-import org.scalactic.anyvals.{PosZInt, PosZDouble, PosInt}
-import org.scalacheck.Test.TestCallback
-
+import org.scalactic.anyvals.{PosInt, PosZDouble, PosZInt}
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Trait providing methods and classes used to configure property checks provided by the
@@ -29,129 +27,56 @@ import org.scalacheck.Test.TestCallback
  */
 trait Configuration {
 
-  @deprecated("Use PropertyCheckConfiguration directly instead.")
-  trait PropertyCheckConfigurable {
-    private [prop] def asPropertyCheckConfiguration: PropertyCheckConfiguration
-   }
-
+  /**
+    * Internal utility functions for configuration management.
+    */
   object PropertyCheckConfiguration {
+    /**
+      * Compute the new-style MaxDiscardedFactor based on the old-style MaxDiscarded.
+      *
+      * @param minSuccessful the provided minimum number of successful evaluations
+      * @param maxDiscarded the old-style provided maximum number of discards to allow
+      * @return the new-style ratio of maximum discards to successful evaluations
+      */
     private[scalatest] def calculateMaxDiscardedFactor(minSuccessful: Int, maxDiscarded: Int): Double =
-      ((maxDiscarded + 1): Double) / (minSuccessful: Double)
+      (maxDiscarded.toDouble + 1.0) / minSuccessful.toDouble
+
+    /**
+      * Compute the actual number of discards allowed for this run.
+      *
+      * Note that this function appears to only be used in one place, in a test. It really should be
+      * merged with the version in [[Configuration]].
+      *
+      * @param maxDiscardedRatio the maximum number of discards, as a multiplier of the minimum number of
+      *                          successful evaluations
+      * @param minSuccessful the number of successful evaluations to require
+      * @return the maximum number of discards to allow for this run
+      */
     private[scalatest] def calculateMaxDiscarded(maxDiscardedRatio: Double, minSuccessful: Int): Double =
-      (maxDiscardedRatio * minSuccessful) - 1
+      (maxDiscardedRatio * minSuccessful.toDouble) - 1.0
   }
 
+  /**
+    * Describes the configuration to use when evaluating a property.
+    *
+    * @param minSuccessful      the minimum number of successful property evaluations required for
+    *                           the property to pass; see [[MinSuccessful]]
+    * @param maxDiscardedFactor how many generated values may be discarded,
+    *                           as a multiple of the successful attempts, before the property check is considered to be
+    *                           [[org.scalatest.prop.PropertyCheckResult.Exhausted]]; see [[MaxDiscardedFactor]]
+    * @param minSize      the minimum size parameter to provide to ScalaCheck, which it will use when
+    *                     generating objects for which size matters (such as strings or lists); see [[MinSize]]
+    * @param sizeRange    the maximum size parameter to provide to ScalaCheck, which it will use when
+    *                     generating objects for which size matters (such as strings or lists); see [[SizeRange]]
+    * @param workers      number of worker threads to use when evaluating a property; see [[Workers]]
+    */
   case class PropertyCheckConfiguration(minSuccessful: PosInt = PosInt(10),
                                         maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
-                                        minSize: PosZInt = PosZInt(0),
-                                        sizeRange: PosZInt = PosZInt(100),
-                                        workers: PosInt = PosInt(1)) extends PropertyCheckConfigurable {
-    @deprecated("Transitional value to ensure upgrade compatibility when mixing PropertyCheckConfig and minSuccessful parameters.  Remove with PropertyCheckConfig class")
-    private [scalatest] val legacyMaxDiscarded: Option[Int] = None
-    @deprecated("Transitional value to ensure upgrade compatibility when mixing PropertyCheckConfig and minSize parameters.  Remove with PropertyCheckConfig class")
-    private [scalatest] val legacyMaxSize: Option[Int] = None
-    private [prop] def asPropertyCheckConfiguration = this
-  }
-
-  /**
-   * Configuration object for property checks.
-   *
-   * <p>
-   * The default values for the parameters are:
-   * </p>
-   *
-   * <table style="border-collapse: collapse; border: 1px solid black">
-   * <tr>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * minSuccessful
-   * </td>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * 100
-   * </td>
-   * </tr>
-   * <tr>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * maxDiscarded
-   * </td>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * 500
-   * </td>
-   * </tr>
-   * <tr>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * minSize
-   * </td>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * 0
-   * </td>
-   * </tr>
-   * <tr>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * maxSize
-   * </td>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * 100
-   * </td>
-   * </tr>
-   * <tr>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * workers
-   * </td>
-   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
-   * 1
-   * </td>
-   * </tr>
-   * </table>
-   *
-   * @param minSuccessful the minimum number of successful property evaluations required for the property to pass.
-   * @param maxDiscarded the maximum number of discarded property evaluations allowed during a property check
-   * @param minSize the minimum size parameter to provide to ScalaCheck, which it will use when generating objects for which size matters (such as strings or lists).
-   * @param maxSize the maximum size parameter to provide to ScalaCheck, which it will use when generating objects for which size matters (such as strings or lists).
-   * @param workers specifies the number of worker threads to use during property evaluation
-   * @throws IllegalArgumentException if the specified <code>minSuccessful</code> value is less than or equal to zero,
-   *   the specified <code>maxDiscarded</code> value is less than zero,
-   *   the specified <code>minSize</code> value is less than zero,
-   *   the specified <code>maxSize</code> value is less than zero,
-   *   the specified <code>minSize</code> is greater than the specified or default value of <code>maxSize</code>, or
-   *   the specified <code>workers</code> value is less than or equal to zero.
-   *
-   * @author Bill Venners
-   */
-  @deprecated("Use PropertyCheckConfiguration instead")
-  case class PropertyCheckConfig(
-    minSuccessful: Int = 10,
-    maxDiscarded: Int = 500,
-    minSize: Int = 0,
-    maxSize: Int = 100,
-    workers: Int = 1
-  ) extends PropertyCheckConfigurable {
-    require(minSuccessful > 0, "minSuccessful had value " + minSuccessful + ", but must be greater than zero")
-    require(maxDiscarded >= 0, "maxDiscarded had value " + maxDiscarded + ", but must be greater than or equal to zero")
-    require(minSize >= 0, "minSize had value " + minSize + ", but must be greater than or equal to zero")
-    require(maxSize >= 0, "maxSize had value " + maxSize + ", but must be greater than or equal to zero")
-    require(minSize <= maxSize, "minSize had value " + minSize + ", which must be less than or equal to maxSize, which had value " + maxSize)
-    require(workers > 0, "workers had value " + workers + ", but must be greater than zero")
-    private [prop] def asPropertyCheckConfiguration = this
-  }
+                                        minSize: PosZInt = Configuration.minSize.get(),
+                                        sizeRange: PosZInt = Configuration.sizeRange.get(),
+                                        workers: PosInt = PosInt(1))
 
   import scala.language.implicitConversions
-
-  /**
-   * Implicitly converts <code>PropertyCheckConfig</code>s to <code>PropertyCheckConfiguration</code>,
-   * which enables a smoother upgrade path.
-   */
-  implicit def PropertyCheckConfig2PropertyCheckConfiguration(p: PropertyCheckConfig): PropertyCheckConfiguration = {
-    val maxDiscardedFactor = PropertyCheckConfiguration.calculateMaxDiscardedFactor(p.minSuccessful, p.maxDiscarded)
-      new PropertyCheckConfiguration(
-        minSuccessful = PosInt.from(p.minSuccessful).get,
-        maxDiscardedFactor = PosZDouble.from(maxDiscardedFactor).get,
-        minSize = PosZInt.from(p.minSize).get,
-        sizeRange = PosZInt.from(p.maxSize - p.minSize).get,
-        workers = PosInt.from(p.workers).get) {
-        override private [scalatest]  val legacyMaxDiscarded = Some(p.maxDiscarded)
-        override private [scalatest]  val legacyMaxSize      = Some(p.maxSize)
-      }
-  }
 
   /**
    * Abstract class defining a family of configuration parameters for property checks.
@@ -169,63 +94,63 @@ trait Configuration {
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the minimum number of successful
    * property evaluations required for the property to pass.
+    *
+    * Once this many evaluations have passed, the property will return
+    * [[PropertyCheckResult.Success]].
    *
    * @author Bill Venners
    */
   case class MinSuccessful(value: PosInt) extends PropertyCheckConfigParam
 
   /**
-   * A <code>PropertyCheckConfigParam</code> that specifies the maximum number of discarded
-   * property evaluations allowed during property evaluation.
-   *
-   * <p>
-   * In <code>GeneratorDrivenPropertyChecks</code>, a property evaluation is discarded if it throws
-   * <code>DiscardedEvaluationException</code>, which is produce by <code>whenever</code> clause that
-   * evaluates to false. For example, consider this ScalaTest property check:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * // forAll defined in <code>GeneratorDrivenPropertyChecks</code>
-   * forAll { (n: Int) => 
-   *   whenever (n > 0) {
-   *     doubleIt(n) should equal (n * 2)
-   *   }
-   * }
-   *
-   * </pre>
-   *
-   * <p>
-   * In the above code, whenever a non-positive <code>n</code> is passed, the property function will complete abruptly
-   * with <code>DiscardedEvaluationException</code>.
-   * </p>
-   *
-   * <p>
-   * Similarly, in <code>Checkers</code>, a property evaluation is discarded if the expression to the left
-   * of ScalaCheck's <code>==></code> operator is false. Here's an example:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * // forAll defined in <code>Checkers</code>
-   * forAll { (n: Int) => 
-   *   (n > 0) ==> doubleIt(n) == (n * 2)
-   * }
-   *
-   * </pre>
-   *
-   * <p>
-   * For either kind of property check, <code>MaxDiscarded</code> indicates the maximum number of discarded 
-   * evaluations that will be allowed. As soon as one past this number of evaluations indicates it needs to be discarded,
-   * the property check will fail.
-   * </p>
-   *
-   * @throws IllegalArgumentException if specified <code>value</code> is less than zero.
-   *
-   * @author Bill Venners
-   */
-  @deprecated case class MaxDiscarded(value: Int) extends PropertyCheckConfigParam {
-    require(value >= 0)
-  }
-
+    * A [[PropertyCheckConfigParam]] that specifies how many generated values may be discarded,
+    * as a multiple of the successful attempts, before the property check is considered to be
+    * [[org.scalatest.prop.PropertyCheckResult.Exhausted]].
+    *
+    *
+    * <p>
+    * In <code>GeneratorDrivenPropertyChecks</code>, a property evaluation is discarded if it throws
+    * <code>DiscardedEvaluationException</code>, which is produced by a <code>whenever</code> clause that
+    * evaluates to false. For example, consider this ScalaTest property check:
+    * </p>
+    *
+    * <pre class="stHighlight">
+    * // forAll defined in <code>GeneratorDrivenPropertyChecks</code>
+    * forAll { (n: Int) =>
+    *   whenever (n > 0) {
+    *     doubleIt(n) should equal (n * 2)
+    *   }
+    * }
+    *
+    * </pre>
+    *
+    * <p>
+    * In the above code, whenever a non-positive <code>n</code> is passed, the property function will complete abruptly
+    * with <code>DiscardedEvaluationException</code>.
+    * </p>
+    *
+    * <p>
+    * Similarly, in <code>Checkers</code>, a property evaluation is discarded if the expression to the left
+    * of ScalaCheck's <code>==></code> operator is false. Here's an example:
+    * </p>
+    *
+    * <pre class="stHighlight">
+    * // forAll defined in <code>Checkers</code>
+    * forAll { (n: Int) =>
+    *   (n > 0) ==> doubleIt(n) == (n * 2)
+    * }
+    *
+    * </pre>
+    *
+    * <p>
+    * For either kind of property check, <code>MaxDiscardedFactor</code> indicates the maximum fraction of
+    * total tests that may be discarded, relative to the number of successful tests. For example, if this
+    * is set to 4.0, and you are running 100 tests, it may discard up to 400 tries before considering the
+    * test to be [[org.scalatest.prop.PropertyCheckResult.Exhausted]].
+    * </p>
+    *
+    * @param value the permitted number of discarded tests, as a multiple of successful ones.
+    */
   case class MaxDiscardedFactor(value: PosZDouble) extends PropertyCheckConfigParam
   
   /**
@@ -233,32 +158,9 @@ trait Configuration {
    * provide to ScalaCheck, which it will use when generating objects for which size matters (such as
    * strings or lists).
    *
-   * @throws IllegalArgumentException if specified <code>value</code> is less than zero.
-   *
    * @author Bill Venners
    */
   case class MinSize(value: PosZInt) extends PropertyCheckConfigParam
-  
-  /**
-   * A <code>PropertyCheckConfigParam</code> that specifies the maximum size parameter to
-   * provide to ScalaCheck, which it will use when generating objects for which size matters (such as
-   * strings or lists).
-   *
-   * <p>
-   * Note that the maximum size should be greater than or equal to the minimum size. This requirement is
-   * enforced by the <code>PropertyCheckConfig</code> constructor and the <code>forAll</code> methods of
-   * traits <code>PropertyChecks</code> and <code>Checkers</code>. In other words, it is enforced at the point
-   * both a maximum and minimum size are provided together.
-   * </p>
-   * 
-   * @throws IllegalArgumentException if specified <code>value</code> is less than zero.
-   *
-   * @author Bill Venners
-   */
-  @deprecated("use SizeRange instead")
-  case class MaxSize(value: Int) extends PropertyCheckConfigParam {
-    require(value >= 0)
-  }
 
   /**
    * A <code>PropertyCheckConfigParam</code> that (with minSize) specifies the maximum size parameter to
@@ -277,8 +179,12 @@ trait Configuration {
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the number of worker threads
    * to use when evaluating a property.
-   *
-   * @throws IllegalArgumentException if specified <code>value</code> is less than or equal to zero.
+    *
+    * Property evaluation runs on a single thread by default, but may run multiple
+    * threads if desired. If so, the evaluation will generally run faster. However,
+    * be careful not to use this if there is any risk of deadlocks, race conditions,
+    * or other hazards of multi-threaded code in evaluating this property or the
+    * code under test.
    *
    * @author Bill Venners
    */
@@ -290,15 +196,6 @@ trait Configuration {
    *
    */
   def minSuccessful(value: PosInt): MinSuccessful = new MinSuccessful(value)
-
-  /**
-   * Returns a <code>MaxDiscarded</code> property check configuration parameter containing the passed value, which specifies the maximum number of discarded
-   * property evaluations allowed during property evaluation.
-   *
-   * @throws IllegalArgumentException if specified <code>value</code> is less than zero.
-   */
-  @deprecated("use maxDiscardedFactor instead")
-  def maxDiscarded(value: Int): MaxDiscarded = new MaxDiscarded(value)
 
   /**
    * Returns a <code>MaxDiscardedFactor</code> property check configuration parameter containing the passed value, which specifies the factor of discarded
@@ -314,22 +211,6 @@ trait Configuration {
    *
    */
   def minSize(value: PosZInt): MinSize = new MinSize(value)
-
-  /**
-   * Returns a <code>MaxSize</code> property check configuration parameter containing the passed value, which specifies the maximum size parameter to
-   * provide to ScalaCheck, which it will use when generating objects for which size matters (such as
-   * strings or lists).
-   *
-   * <p>
-   * Note that the maximum size should be greater than or equal to the minimum size. This requirement is
-   * enforced by the <code>PropertyCheckConfig</code> constructor and the <code>forAll</code> methods of
-   * traits <code>PropertyChecks</code> and <code>Checkers</code>. In other words, it is enforced at the point
-   * both a maximum and minimum size are provided together.
-   * </p>
-   * 
-   * @throws IllegalArgumentException if specified <code>value</code> is less than zero.
-   */
-  @deprecated("use SizeRange instead") def maxSize(value: Int): MaxSize = new MaxSize(value)
 
   /**
    * Returns a <code>SizeRange</code> property check configuration parameter containing the passed value, that (with minSize) specifies the maximum size parameter to
@@ -352,18 +233,27 @@ trait Configuration {
    */
   def workers(value: PosInt): Workers = new Workers(value)
 
-  private[scalatest] def getScalaCheckParams(
-    configParams: Seq[Configuration#PropertyCheckConfigParam],
-    c: PropertyCheckConfigurable
-  ): Parameters = {
+  /**
+    * Given some optional [[PropertyCheckConfigParam]]s and a [[PropertyCheckConfiguration]], compute the resulting
+    * [[Configuration.Parameter]].
+    *
+    * This function deals with resolving the various forms of these configuration values, into a consistent form
+    * suitable for using in properties.
+    *
+    * Duplicate [[PropertyCheckConfigParam]] entries are not permitted in the `configParams` list.
+    *
+    * TODO: should this function be public? It feels like an internal implementation detail -- I think it should be private.
+    *
+    * @param configParams optionally, some parameters that differ from the provided `c`
+    * @param c a configuration object, describing how to run property evaluations
+    * @return a fully-set-up [[Configuration.Parameter]] object, ready to evaluate properties with.
+    */
+  def getParameter(configParams: Seq[Configuration#PropertyCheckConfigParam], config: PropertyCheckConfiguration): Configuration.Parameter = {
 
-    val config: PropertyCheckConfiguration = c.asPropertyCheckConfiguration
     var minSuccessful: Option[Int] = None
-    var maxDiscarded: Option[Int] = None
     var maxDiscardedFactor: Option[Double] = None
     var pminSize: Option[Int] = None
     var psizeRange: Option[Int] = None
-    var pmaxSize: Option[Int] = None
     var pworkers: Option[Int] = None
 
     var minSuccessfulTotalFound = 0
@@ -371,7 +261,6 @@ trait Configuration {
     var maxDiscardedFactorTotalFound = 0
     var minSizeTotalFound = 0
     var sizeRangeTotalFound = 0
-    var maxSizeTotalFound = 0
     var workersTotalFound = 0
 
     for (configParam <- configParams) {
@@ -379,9 +268,6 @@ trait Configuration {
         case param: MinSuccessful =>
           minSuccessful = Some(param.value)
           minSuccessfulTotalFound += 1
-        case param: MaxDiscarded =>
-          maxDiscarded = Some(param.value)
-          maxDiscardedTotalFound += 1
         case param: MaxDiscardedFactor =>
           maxDiscardedFactor = Some(param.value)
           maxDiscardedFactorTotalFound += 1
@@ -391,9 +277,6 @@ trait Configuration {
         case param: SizeRange =>
           psizeRange = Some(param.value)
           sizeRangeTotalFound += 1
-        case param: MaxSize =>
-          pmaxSize = Some(param.value)
-          maxSizeTotalFound += 1
         case param: Workers =>
           pworkers = Some(param.value)
           workersTotalFound += 1
@@ -407,9 +290,8 @@ trait Configuration {
       throw new IllegalArgumentException("can pass at most one MaxDiscarded or MaxDiscardedFactor config parameters, but " + maxDiscardedAndFactorTotalFound + " were passed")
     if (minSizeTotalFound > 1)
       throw new IllegalArgumentException("can pass at most one MinSize config parameters, but " + minSizeTotalFound + " were passed")
-    val maxSizeAndSizeRangeTotalFound = maxSizeTotalFound + sizeRangeTotalFound
-    if (maxSizeAndSizeRangeTotalFound > 1)
-      throw new IllegalArgumentException("can pass at most one SizeRange or MaxSize config parameters, but " + maxSizeAndSizeRangeTotalFound + " were passed")
+    if (sizeRangeTotalFound > 1)
+      throw new IllegalArgumentException("can pass at most one SizeRange config parameters, but " + sizeRangeTotalFound + " were passed")
     if (workersTotalFound > 1)
       throw new IllegalArgumentException("can pass at most one Workers config parameters, but " + workersTotalFound + " were passed")
 
@@ -417,37 +299,28 @@ trait Configuration {
 
     val minSize: Int = pminSize.getOrElse(config.minSize)
 
-    val maxSize = {
-      (psizeRange, pmaxSize, config.legacyMaxSize) match {
-        case (None, None, Some(legacyMaxSize)) =>
-          legacyMaxSize
-        case (None, Some(maxSize), _) =>
-          maxSize
-        case _ =>
-          psizeRange.getOrElse(config.sizeRange.value) + minSize
-      }
-    }
+    val maxSize = psizeRange.getOrElse(config.sizeRange.value) + minSize
 
-    val maxDiscardRatio: Float = {
-      (maxDiscardedFactor, maxDiscarded, config.legacyMaxDiscarded, minSuccessful) match {
-        case (None, None, Some(legacyMaxDiscarded), Some(specifiedMinSuccessful)) =>
-          PropertyCheckConfiguration.calculateMaxDiscardedFactor(specifiedMinSuccessful, legacyMaxDiscarded).toFloat
-        case (None, Some(md), _, _) =>
-          if (md < 0) Parameters.default.maxDiscardRatio
-          else PropertyCheckConfiguration.calculateMaxDiscardedFactor(minSuccessfulTests, md).toFloat
-        case _ =>
-          maxDiscardedFactor.getOrElse(config.maxDiscardedFactor.value).toFloat
-      }
-    }
+    val maxDiscardRatio: Float = maxDiscardedFactor.getOrElse(config.maxDiscardedFactor.value).toFloat
 
-    Parameters.default
-      .withMinSuccessfulTests(minSuccessfulTests)
-      .withMinSize(minSize)
-      .withMaxSize(maxSize)
-      .withWorkers(pworkers.getOrElse(config.workers))
-      .withTestCallback(new TestCallback {})
-      .withMaxDiscardRatio(maxDiscardRatio)
-      .withCustomClassLoader(None)
+    val param =
+      Configuration.Parameter(
+        PosInt.from(minSuccessfulTests).getOrElse(config.minSuccessful),
+        PosZDouble.from(maxDiscardRatio).getOrElse(config.maxDiscardedFactor),
+        PosZInt.from(minSize).getOrElse(config.minSize),
+        PosZInt.from(maxSize - minSize).getOrElse(config.sizeRange),
+        PosInt.from(pworkers.getOrElse(config.workers)).getOrElse(config.workers)
+      )
+
+    if(
+      param.minSuccessful.value <= 0 ||
+      param.maxDiscardedFactor.value <= 0 ||
+      param.minSize.value < 0 ||
+      maxSize < param.minSize.value ||
+      param.workers.value <= 0
+    ) throw new IllegalArgumentException("Invalid test parameters")
+
+    param
   }
 
   /**
@@ -461,4 +334,68 @@ trait Configuration {
  * an alternative to mixing it in. One use case is to import <code>Configuration</code> members so you can use
  * them in the Scala interpreter.
  */
-object Configuration extends Configuration
+object Configuration extends Configuration {
+
+  // TODO: I assume these are intended for poking default values in from the Runner? They are used in
+  // PropertyCheckConfiguration.
+  private[scalatest] lazy val minSize: AtomicReference[PosZInt] = new AtomicReference(PosZInt(0))
+  private[scalatest] lazy val sizeRange: AtomicReference[PosZInt] = new AtomicReference(PosZInt(100))
+
+  /**
+    * The parameters that define how a property evaluation should be executed.
+    *
+    * You typically will not build this directly. Instead, you should define a
+    * [[PropertyCheckConfiguration]] and/or some [[PropertyCheckConfigParam]]s, pass
+    * those in, and the system will resolve those to a coherent [[Parameter]].
+    *
+    * @param minSuccessful      the minimum number of successful property evaluations required for
+    *                           the property to pass; see [[MinSuccessful]]
+    * @param maxDiscardedFactor how many generated values may be discarded,
+    *                           as a multiple of the successful attempts, before the property check is considered to be
+    *                           [[org.scalatest.prop.PropertyCheckResult.Exhausted]]; see [[MaxDiscardedFactor]]
+    * @param minSize      the minimum size parameter to provide to ScalaCheck, which it will use when
+    *                     generating objects for which size matters (such as strings or lists); see [[MinSize]]
+    * @param sizeRange    the maximum size parameter to provide to ScalaCheck, which it will use when
+    *                     generating objects for which size matters (such as strings or lists); see [[SizeRange]]
+    * @param workers      number of worker threads to use when evaluating a property; see [[Workers]]
+    */
+  case class Parameter(minSuccessful: PosInt = PosInt(10),
+                       maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
+                       minSize: PosZInt = PosZInt(0),
+                       sizeRange: PosZInt = PosZInt(100),
+                       workers: PosInt = PosInt(1)) {
+
+    import org.scalactic.Requirements._
+
+    require(minSize.value + sizeRange.value >= 0)
+
+    lazy val maxSize: PosZInt = {
+      PosZInt.ensuringValid(minSize.value + sizeRange.value)
+    }
+  }
+
+  /**
+    * Compute the newer MaxDiscardedFactor from the older parameters.
+    *
+    * TODO: is this actually used anywhere? All calls I find seem to be using the version in
+    * [[PropertyCheckConfiguration]] instead.
+    *
+    * @param minSuccessful the minimum number of successful evaluations
+    * @param maxDiscarded the maximum number that may be discarded
+    * @return the newer-style ratio
+    */
+  private[scalatest] def calculateMaxDiscardedFactor(minSuccessful: Int, maxDiscarded: Int): Double =
+    ((maxDiscarded + 1): Double) / (minSuccessful: Double)
+
+  /**
+    * Compute the number of discarded evaluation attempts that will be considered to be exhausted. This is a
+    * multiple of two config parameters.
+    *
+    * @param maxDiscardedRatio the multiplier of acceptable discarded-to-successful evaluations
+    * @param minSuccessful the minimum number of successful evaluations
+    * @return how many discarded evaluations to allow in this run
+    */
+  private[scalatest] def calculateMaxDiscarded(maxDiscardedRatio: Double, minSuccessful: Int): Double =
+    (maxDiscardedRatio * minSuccessful) - 1
+
+}

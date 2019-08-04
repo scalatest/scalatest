@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2015 Artima, Inc.
+ * Copyright 2001-2019 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+  Commenting this out for 3.1.0, because it hides the one we moved temporarily
+  to common-test.
+
 package org.scalatest
 
-import org.scalactic.anyvals._
-import scala.annotation.tailrec
-import scala.reflect.runtime.universe.TypeTag
-
-package object prop {
-
-  /**
-   * <strong>Checkers has been moved from org.scalatest.prop to org.scalatest.check. Please update
-   * your imports, as this deprecated type alias will be removed in a future version of ScalaTest.</strong>
-   */
-  @deprecated("Please use org.scalatest.check.Checkers instead.", "ScalaTest 3.1.0")
-  type Checkers = org.scalatest.check.Checkers
-
-  /**
-   * <strong>Checkers has been moved from org.scalatest.prop to org.scalatest.check. Please update
-   * your imports, as this deprecated type alias will be removed in a future version of ScalaTest.</strong>
-   */
-  @deprecated("Please use org.scalatest.check.Checkers instead.", "ScalaTest 3.1.0")
-  val Checkers: org.scalatest.check.Checkers.type = org.scalatest.check.Checkers 
-}
-
-
+/**
+ * Classes and traits supporing table-driven and property-based testing in ScalaTest.
+ *
+ * This package is released as part of the `scalatest-core` module.
+ */
+package object prop
+*/

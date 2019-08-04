@@ -21,17 +21,17 @@ package org.scalatest
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
  * Use trait <code>BeforeAndAfterEach</code> when you want to stack traits that perform side-effects before and/or after tests, rather
- * than at the beginning or end of tests. 
+ * than at the beginning or end of tests.
  * <em>Note: For more insight into where <code>BeforeAndAfterEach</code> fits into the big picture, see the </em>
  * <a href="FlatSpec.html#sharedFixtures">Shared fixtures</a></em> section in the documentation for your chosen style trait.
  * </td></tr></table>
- * 
+ *
  * <p>
  * A test <em>fixture</em> is composed of the objects and other artifacts (files, sockets, database
  * connections, <em>etc.</em>) tests use to do their work.
  * When multiple tests need to work with the same fixtures, it is important to try and avoid
  * duplicating the fixture code across those tests. The more code duplication you have in your
- * tests, the greater drag the tests will have on refactoring the actual production code, and 
+ * tests, the greater drag the tests will have on refactoring the actual production code, and
  * the slower your compile will likely be.
  * Trait <code>BeforeAndAfterEach</code> offers one way to eliminate such code duplication:
  * a <code>beforeEach</code> method that will be run before each test (like JUnit's <code>setUp</code>),
@@ -44,19 +44,19 @@ package org.scalatest
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.flatspec.composingbeforeandaftereach
- * 
+ *
  * import org.scalatest._
  * import collection.mutable.ListBuffer
- * 
+ *
  * trait Builder extends BeforeAndAfterEach { this: Suite =&gt;
- * 
+ *
  *   val builder = new StringBuilder
- * 
+ *
  *   override def beforeEach() {
  *     builder.append("ScalaTest is ")
  *     super.beforeEach() // To be stackable, must call super.beforeEach
  *   }
- * 
+ *
  *   override def afterEach() {
  *     try {
  *       super.afterEach() // To be stackable, must call super.afterEach
@@ -66,11 +66,11 @@ package org.scalatest
  *     }
  *   }
  * }
- * 
+ *
  * trait Buffer extends BeforeAndAfterEach { this: Suite =&gt;
- * 
+ *
  *   val buffer = new ListBuffer[String]
- * 
+ *
  *   override def afterEach() {
  *     try {
  *       super.afterEach() // To be stackable, must call super.afterEach
@@ -80,16 +80,16 @@ package org.scalatest
  *     }
  *   }
  * }
- * 
+ *
  * class ExampleSpec extends FlatSpec with Builder with Buffer {
- * 
+ *
  *   "Testing" should "be easy" in {
  *     builder.append("easy!")
  *     assert(builder.toString === "ScalaTest is easy!")
  *     assert(buffer.isEmpty)
  *     buffer += "sweet"
  *   }
- * 
+ *
  *   it should "be fun" in {
  *     builder.append("fun!")
  *     assert(builder.toString === "ScalaTest is fun!")
@@ -127,12 +127,12 @@ trait BeforeAndAfterEach extends SuiteMixin {
    * Defines a method to be run before each of this suite's tests.
    *
    * <p>
-   * This trait's implementation
-   * of <code>runTest</code> invokes the overloaded form of this method that
-   * takes a <code>configMap</code> before running
-   * each test. This trait's implementation of that <code>beforeEach(Map[String, Any])</code> method simply invokes this
-   * <code>beforeEach()</code> method. Thus this method can be used to set up a test fixture
-   * needed by each test, when you don't need anything from the <code>configMap</code>.
+   * This trait's implementation of <code>runTest</code> invokes this method before
+   * invoking <code>super.runTest</code>. Thus this method can be used to set up a test
+   * fixture needed by each test, before each test begins execution.
+   * </p>
+   *
+   * <p>
    * This trait's implementation of this method does nothing.
    * </p>
    */
@@ -143,36 +143,49 @@ trait BeforeAndAfterEach extends SuiteMixin {
    *
    * <p>
    * This trait's implementation
-   * of <code>runTest</code> invokes the overloaded form of this method that
-   * takes a <code>configMap</code> map after running
-   * each test. This trait's implementation of that <code>afterEach(Map[String, Any])</code> method simply invokes this
-   * <code>afterEach()</code> method. Thus this method can be used to tear down a test fixture
-   * needed by each test, when you don't need anything from the <code>configMap</code>.
+   * of <code>runTest</code> invokes this method after invoking <code>super.runTest</code>.
+   * Thus this method can be used to tear down a test fixture
+   * needed by each test, after each test completes execution.
+   * </p>
+   *
+   * <p>
    * This trait's implementation of this method does nothing.
    * </p>
    */
   protected def afterEach() = ()
 
   /**
-   * Run a test surrounded by calls to <code>beforeEach</code> and <code>afterEach</code>.
+   * Runs a test surrounded by calls to <code>beforeEach()</code> and <code>afterEach()</code>.
    *
    * <p>
    * This trait's implementation of this method ("this method") invokes
-   * <code>beforeEach(configMap)</code>
-   * before running each test and <code>afterEach(configMap)</code>
+   * <code>beforeEach()</code>
+   * before running each test and <code>afterEach()</code>
    * after running each test. It runs each test by invoking <code>super.runTest</code>, passing along
    * the two parameters passed to it.
    * </p>
-   * 
+   *
    * <p>
-   * If any invocation of <code>beforeEach</code> completes abruptly with an exception, this
-   * method will complete abruptly with the same exception. If any call to
+   * If any invocation of <code>beforeEach()</code> completes abruptly with an exception, this
+   * method will complete abruptly with the same exception, however, before doing so, it will
+   * invoke <code>afterEach()</code>.
+   * If <code>beforeEach()</code> returns normally, but the subsequent call to
    * <code>super.runTest</code> completes abruptly with an exception, this method
    * will complete abruptly with the same exception, however, before doing so, it will
-   * invoke <code>afterEach</code>. If <cod>afterEach</code> <em>also</em> completes abruptly with an exception, this
-   * method will nevertheless complete abruptly with the exception previously thrown by <code>super.runTest</code>.
-   * If <code>super.runTest</code> returns normally, but <code>afterEach</code> completes abruptly with an
-   * exception, this method will complete abruptly with the exception thrown by <code>afterEach</code>.
+   * invoke <code>afterEach()</code>.
+   * If <code>afterEach()</code> completes abruptly with an exception, this
+   * method will nevertheless complete abruptly with an exception previously thrown by either
+   * <code>beforeEach()</code> or <code>super.runTest</code>.
+   * If both <code>beforeEach()</code> and <code>super.runTest</code> return normally, but
+   * <code>afterEach()</code> completes abruptly with an exception, this method will complete
+   * abruptly with the exception thrown by <code>afterEach()</code>.
+   * </p>
+   *
+   * <p>
+   *  The reason this method invokes <code>afterEach()</code> even if <code>beforeEach()</code> or
+   * <code>super.runTest</code> throws an exception is to reduce the chance that a resource
+   * acquired by <code>beforeEach()</code> or <code>super.runTest</code> prior to completing
+   * abruptly with the exception is not cleaned up and therefore leaked.
    * </p>
    *
    * @param testName the name of one test to run.
@@ -189,7 +202,7 @@ trait BeforeAndAfterEach extends SuiteMixin {
       super.runTest(testName, args)
     }
     catch {
-      case e: Exception => 
+      case e: Exception =>
         thrownException = Some(e)
         FailedStatus
     }
@@ -225,7 +238,7 @@ trait BeforeAndAfterEach extends SuiteMixin {
           thrownException = Some(e)
           FailedStatus
       }
-    // And if the exception should cause an abort, abort the afterAll too. (TODO: Update the Scaladoc.)
+    // And if the exception should cause an abort, abort the afterEach too.
     try {
       val statusToReturn: Status =
         if (!args.runTestInNewInstance) {
@@ -233,11 +246,12 @@ trait BeforeAndAfterEach extends SuiteMixin {
             try {
               afterEach()
             }
-            catch { 
+            catch {
               case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) && thrownException.isDefined =>
-                // We will swallow the exception thrown from afterEach if it is not test-aborting and exception was already thrown by beforeEach or test itself.
+                // We will swallow an exception thrown from afterEach if it is not test-aborting
+                // and an exception was already thrown by beforeEach or test itself.
             }
-          } // Make sure that afterEach is called even if runTest completes abruptly.
+          } // Make sure that afterEach is called even if (beforeEach or runTest) completes abruptly.
         }
         else
           runTestStatus
@@ -249,7 +263,13 @@ trait BeforeAndAfterEach extends SuiteMixin {
     }
     catch {
       case laterException: Exception =>
-        thrownException match { // If both run and afterAll throw an exception, report the test exception
+        thrownException match {
+          // If both (beforeEach or runTest) and afterEach throw an exception, throw the
+          // earlier exception and swallow the later exception. The reason we swallow
+          // the later exception rather than printing it is that it may be noisy because
+          // it is caused by the beforeEach failing in the first place. Our goal with
+          // this approach is to minimize the chances that a finite non-memory resource
+          // acquired in beforeEach is not cleaned up in afterEach.
           case Some(earlierException) => throw earlierException
           case None => throw laterException
         }

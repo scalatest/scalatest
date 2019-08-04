@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
@@ -30,19 +28,8 @@ import scala.util.{Failure, Success, Try}
 import org.scalatest.Inspectors
 import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
-import org.scalactic.NumberCompatHelper
 
 trait PosFiniteDoubleSpecSupport {
-
-  val posZFiniteDoubleGen: Gen[PosZFiniteDouble] =
-    for {i <- choose(0, Double.MaxValue)} yield PosZFiniteDouble.ensuringValid(i)
-
-  implicit val arbPosZFiniteDouble: Arbitrary[PosZFiniteDouble] = Arbitrary(posZFiniteDoubleGen)
-
-  val posFiniteDoubleGen: Gen[PosFiniteDouble] =
-    for {i <- choose(1, Double.MaxValue)} yield PosFiniteDouble.ensuringValid(i)
-
-  implicit val arbPosFiniteDouble: Arbitrary[PosFiniteDouble] = Arbitrary(posFiniteDoubleGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
@@ -87,7 +74,10 @@ class PosFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
         an [AssertionError] should be thrownBy PosFiniteDouble.ensuringValid(-99.9)
         an [AssertionError] should be thrownBy PosFiniteDouble.ensuringValid(Double.PositiveInfinity)
         an [AssertionError] should be thrownBy PosFiniteDouble.ensuringValid(Double.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy PosFiniteDouble.ensuringValid(Double.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -298,26 +288,15 @@ class PosFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with
       }
     }
 
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Double") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pdouble: PosFiniteDouble, end: Double, step: Double) =>
-        rangeEqual(pdouble.until(end).by(1f), NumberCompatHelper.doubleUntil(pdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pdouble.until(end, step), NumberCompatHelper.doubleUntil(pdouble.toDouble, end, step)) shouldBe true
-        rangeEqual(pdouble.to(end).by(1f), NumberCompatHelper.doubleTo(pdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pdouble.to(end, step), NumberCompatHelper.doubleTo(pdouble.toDouble, end, step)) shouldBe true
-      }
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
-
     it("should offer an ensuringValid method that takes a Double => Double, throwing AssertionError if the result is invalid") {
       PosFiniteDouble(33.0).ensuringValid(_ + 1.0) shouldEqual PosFiniteDouble(34.0)
       an [AssertionError] should be thrownBy { PosFiniteDouble.MaxValue.ensuringValid(_ - PosFiniteDouble.MaxValue) }
       an [AssertionError] should be thrownBy { PosFiniteDouble.MaxValue.ensuringValid(_ => Double.PositiveInfinity) }
       an [AssertionError] should be thrownBy { PosFiniteDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { PosFiniteDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
     }
   }
 }

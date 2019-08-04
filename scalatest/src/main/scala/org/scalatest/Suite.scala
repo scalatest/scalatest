@@ -15,9 +15,39 @@
  */
 package org.scalatest
 
-import org.scalactic.{Resources => _, _}
-import org.scalatest.events._
-import Requirements._
+import org.scalactic.{Resources => _, NameUtil, Requirements}
+import org.scalatest.events.{
+  TopOfClass,
+  Formatter,
+  Location,
+  TopOfMethod,
+  IndentedText,
+  RunStarting,
+  SuiteAborted,
+  SuiteStarting,
+  SeeStackDepthException,
+  SuiteCompleted,
+  RunCompleted,
+  RunAborted,
+  InfoProvided,
+  NameInfo,
+  MotionToSuppress,
+  RecordableEvent,
+  TestFailed,
+  TestStarting,
+  TestPending,
+  TestCanceled,
+  TestSucceeded,
+  NoteProvided,
+  AlertProvided,
+  MarkupProvided,
+  ScopeOpened,
+  ScopeClosed,
+  ScopePending,
+  LineInFile,
+  TestIgnored
+}
+import Requirements.requireNonNull
 import org.scalatest.exceptions._
 import java.lang.annotation.AnnotationFormatError
 import java.lang.reflect.{Method, Modifier}
@@ -39,7 +69,7 @@ import Suite.getTopOfMethod
 import Suite.isTestMethodGoodies
 import Suite.reportTestIgnored
 import Suite.takesInformer
-import Suite.wrapReporterIfNecessary
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import annotation.tailrec
 import collection.GenTraversable
 import collection.mutable.ListBuffer
@@ -412,7 +442,7 @@ import tools.SuiteDiscoveryHelper
  * so one way to access it in your suite is to override one of those methods. If you need to use the config map inside your tests, you
  * can access it from the <code>NoArgTest</code> passed to <code>withFixture</code>, or the <code>OneArgTest</code> passed to
  * <code>withFixture</code> in the traits in the <code>org.scalatest.fixture</code> package. (See the
- * <a href="fixture/Suite.html">documentation for <code>fixture.Suite</code></a>
+ * <a href="FixtureSuite.html">documentation for <code>FixtureSuite</code></a>
  * for instructions on how to access the config map in tests.)
  * </p>
  *
@@ -822,37 +852,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     }
   }
 
-  /**
-   * <strong>The parameterless <code>execute</code> method has been deprecated and will be removed in a future version
-   * of ScalaTest. Please invoke <code>execute</code> with empty parens instead: <code>execute()</code>.</strong>
-   *
-   * <p>
-   * The original purpose of this method, which simply invokes the other overloaded form of <code>execute</code> with default parameter values,
-   * was to serve as a mini-DSL for the Scala interpreter. It allowed you to execute a <code>Suite</code> in the
-   * interpreter with a minimum of finger typing:
-   * </p>
-   *
-   * <pre class="stREPL">
-   * scala&gt; org.scalatest.run(new SetSpec)
-   * <span class="stGreen">An empty Set</span>
-   * <span class="stGreen">- should have size 0</span>
-   * <span class="stYellow">- should produce NoSuchElementException when head is invoked !!! IGNORED !!!</span>
-   * </pre>
-   *
-   * <p>
-   * However it uses postfix notation, which is now behind a language feature import. Thus better to use
-   * the other <code>execute</code> method or <code>org.scalatest.run</code>:
-   * </p>
-   *
-   * <pre class="stREPL">
-   * (new ExampleSuite).execute()
-   * // or
-   * org.scalatest.run(new ExampleSuite)
-   * </pre>
-   */
-    @deprecated("The parameterless execute method has been deprecated and will be removed in a future version of ScalaTest. Please invoke execute with empty parens instead: execute().")
-   final def execute: Unit = { execute() }
-
   // SKIP-SCALATESTJS,NATIVE-END
 
   /**
@@ -888,30 +887,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * This trait's implementation of this method returns an empty <code>Set</code>.
    */
   def testNames: Set[String] = Set.empty
-
-  // SKIP-SCALATESTJS,NATIVE-START
-  // Leave this around for a while so can print out a warning if we find testXXX methods.
-  private[scalatest] def yeOldeTestNames: Set[String] = {
-
-    def isTestMethod(m: Method) = {
-
-      // Factored out to share code with fixture.Suite.testNames
-      val (isInstanceMethod, simpleName, firstFour, paramTypes, hasNoParams, isTestNames, isTestTags, isTestDataFor) = isTestMethodGoodies(m)
-
-      isInstanceMethod && (firstFour == "test") && !isTestDataFor && ((hasNoParams && !isTestNames && !isTestTags) || takesInformer(m))
-    }
-
-    val testNameArray =
-      for (m <- getClass.getMethods; if isTestMethod(m)) 
-        yield if (takesInformer(m)) m.getName + InformerInParens else m.getName
-
-    val result = TreeSet.empty[String](EncodedOrdering) ++ testNameArray
-    if (result.size != testNameArray.length) {
-      throw new NotAllowedException("Howdy", 0)
-    }
-    result
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
 
   /*
   Old style method names will have (Informer) at the end still, but new ones will
@@ -1027,13 +1002,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   protected def runTests(testName: Option[String], args: Args): Status = {
 
     requireNonNull(testName, args)
-
-    // SKIP-SCALATESTJS,NATIVE-START
-    if (!this.isInstanceOf[refspec.RefSpec] && yeOldeTestNames.nonEmpty) {
-      if (yeOldeTestNames.size > 1) println(s"""WARNING: methods with names starting with "test" exist on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run those methods as tests, please use trait Spec instead. The methods whose names start with "test" are: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
-      else println(s"""WARNING: a method whose name starts with "test" exists on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run that method as a test, please use trait Spec instead. The method whose name starts with "test" is: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
 
     import args._
 
@@ -1258,7 +1226,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
           }
         case Some(distribute) =>
           for (nestedSuite <- nestedSuitesArray) 
-            statusBuffer += distribute(nestedSuite, args.copy(tracker = tracker.nextTracker))
+            statusBuffer += distribute(nestedSuite, args.copy(tracker = tracker.nextTracker()))
       }
     }
     new CompositeStatus(Set.empty ++ statusBuffer)
@@ -1358,6 +1326,8 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   
   /**
    * Suite style name.
+   *
+   * @return `org.scalatest.Suite`
    */
   val styleName: String = "org.scalatest.Suite"
   
@@ -2083,7 +2053,7 @@ used for test events like succeeded/failed, etc.
   def getTopOfMethod(theSuite: Suite, method: Method) = TopOfMethod(theSuite.getClass.getName, method.toGenericString())
   def getTopOfMethod(theSuite: Suite, testName: String) = TopOfMethod(theSuite.getClass.getName, getMethodForTestName(theSuite, testName).toGenericString())
 
-  // Factored out to share this with fixture.Suite.runTest
+  // Factored out to share this with FixtureSuite.runTest
   def getSuiteRunTestGoodies(theSuite: Suite, stopper: Stopper, reporter: Reporter, testName: String): (Stopper, Reporter, Method, Long) = {
     val (theStopper, report, testStartTime) = getRunTestGoodies(theSuite, stopper, reporter, testName)
     val method = getMethodForTestName(theSuite, testName)
@@ -2093,7 +2063,7 @@ used for test events like succeeded/failed, etc.
 
   //SCALATESTJS,NATIVE-ONLY def getTopOfMethod(theSuite: Suite, testName: String) = TopOfMethod(theSuite.getClass.getName, "test" + testName.capitalize)
 
-  // Sharing this with FunSuite and fixture.FunSuite as well as Suite and fixture.Suite
+  // Sharing this with FunSuite and fixture.FunSuite as well as Suite and FixtureSuite
   def getRunTestGoodies(theSuite: Suite, stopper: Stopper, reporter: Reporter, testName: String): (Stopper, Reporter, Long) = {
 
     val report = wrapReporterIfNecessary(theSuite, reporter)
@@ -2101,14 +2071,6 @@ used for test events like succeeded/failed, etc.
     val testStartTime = System.currentTimeMillis
 
     (stopper, report, testStartTime)
-  }
-
-  // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
-  // so that exceptions are caught and transformed
-  // into error messages on the standard error stream.
-  def wrapReporterIfNecessary(theSuite: Suite, reporter: Reporter): Reporter = reporter match {
-    case cr: CatchReporter => cr
-    case _ => theSuite.createCatchReporter(reporter)
   }
 
   def testMethodTakesAFixtureAndInformer(testName: String) = testName.endsWith(FixtureAndInformerInParens)
@@ -2177,6 +2139,30 @@ used for test events like succeeded/failed, etc.
     (Map[A, B]() /: (for (m <- ms; kv <- m) yield kv)) { (a, kv) =>
       a + (if (a.contains(kv._1)) kv._1 -> f(a(kv._1), kv._2) else kv)
     }
+
+  // SKIP-SCALATESTJS-START
+  // Leave this around for a while so can print out a warning if we find testXXX methods.
+  def yeOldeTestNames(theSuite: Suite): Set[String] = {
+
+    def isTestMethod(m: Method) = {
+
+      // Factored out to share code with FixtureSuite.testNames
+      val (isInstanceMethod, simpleName, firstFour, paramTypes, hasNoParams, isTestNames, isTestTags, isTestDataFor) = isTestMethodGoodies(m)
+
+      isInstanceMethod && (firstFour == "test") && !isTestDataFor && ((hasNoParams && !isTestNames && !isTestTags) || takesInformer(m))
+    }
+
+    val testNameArray =
+      for (m <- theSuite.getClass.getMethods; if isTestMethod(m))
+        yield if (takesInformer(m)) m.getName + InformerInParens else m.getName
+
+    val result = TreeSet.empty[String](EncodedOrdering) ++ testNameArray
+    if (result.size != testNameArray.length) {
+      throw new NotAllowedException("Howdy", 0)
+    }
+    result
+  }
+  // SKIP-SCALATESTJS-END
 }
 
 

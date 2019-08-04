@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
@@ -30,19 +28,8 @@ import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
-import org.scalactic.NumberCompatHelper
 
 trait NegZFiniteDoubleSpecSupport {
-
-  val negZFiniteDoubleGen: Gen[NegZFiniteDouble] =
-    for {i <- choose(Double.MinValue, 0.0)} yield NegZFiniteDouble.from(i).get
-
-  implicit val arbNegZFiniteDouble: Arbitrary[NegZFiniteDouble] = Arbitrary(negZFiniteDoubleGen)
-
-  val negFiniteDoubleGen: Gen[NegFiniteDouble] =
-    for {i <- choose(Double.MinValue, -Double.MinPositiveValue)} yield NegFiniteDouble.from(i).get
-
-  implicit val arbNegFiniteDouble: Arbitrary[NegFiniteDouble] = Arbitrary(negFiniteDoubleGen)
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {
@@ -105,7 +92,10 @@ class NegZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
         an [AssertionError] should be thrownBy NegZFiniteDouble.ensuringValid(99.9)
         an [AssertionError] should be thrownBy NegZFiniteDouble.ensuringValid(Double.PositiveInfinity)
         an [AssertionError] should be thrownBy NegZFiniteDouble.ensuringValid(Double.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy NegZFiniteDouble.ensuringValid(Double.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -185,9 +175,9 @@ class NegZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
     it("should not offer a PositiveInfinity factory method") {
       "NegZFiniteDouble.PositiveInfinity" shouldNot compile
     }
-    it("should not offer a isNegInfinity method") {
-      "NegZFiniteDouble(-1.0).isNegInfinity" shouldNot compile
-    }
+/* This one now compiles, because of the newly added implicit NegZFiniteDouble => NegZDouble
+    NegZFiniteDouble(-1.0).isNegInfinity
+*/
     it("should not offer a isPosInfinity method") {
       "NegZFiniteDouble(-1.0f).isPosInfinity" shouldNot compile
     }
@@ -324,20 +314,6 @@ class NegZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
       }
     }
 
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Double") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pzdouble: NegZFiniteDouble, end: Double, step: Double) =>
-        rangeEqual(pzdouble.until(end).by(1f), NumberCompatHelper.doubleUntil(pzdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.until(end, step), NumberCompatHelper.doubleUntil(pzdouble.toDouble, end, step)) shouldBe true
-        rangeEqual(pzdouble.to(end).by(1f), NumberCompatHelper.doubleTo(pzdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.to(end, step), NumberCompatHelper.doubleTo(pzdouble.toDouble, end, step)) shouldBe true
-      }
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
-
     it("should offer widening methods for basic types that are consistent with Double") {
       forAll { (pzdouble: NegZFiniteDouble) =>
         def widen(value: Double): Double = value
@@ -349,7 +325,10 @@ class NegZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
       an [AssertionError] should be thrownBy { NegZFiniteDouble.MaxValue.ensuringValid(_ - NegZFiniteDouble.MaxValue + 1) }
       an [AssertionError] should be thrownBy { NegZFiniteDouble.MaxValue.ensuringValid(_ => Double.PositiveInfinity) }
       an [AssertionError] should be thrownBy { NegZFiniteDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { NegZFiniteDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
     }
   }
 }

@@ -1751,7 +1751,7 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends fixture.FlatSpec with Expectations {
+      class TestSpec extends fixture.FlatSpec with expectations.Expectations {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "a widget" should "do something"  in { fixture =>

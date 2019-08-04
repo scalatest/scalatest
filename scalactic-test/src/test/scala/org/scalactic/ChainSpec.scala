@@ -135,8 +135,8 @@ class ChainSpec extends UnitSpec {
     }
   }
   it should "have an apply method" in {
-    Chain(1, 2, 3)(0) shouldEqual 1 
-    Chain(1, 2, 3)(1) shouldEqual 2 
+    Chain(1, 2, 3)(0) shouldEqual 1
+    Chain(1, 2, 3)(1) shouldEqual 2
     Chain("hi")(0) shouldEqual "hi"
     Chain(7, 8, 9)(2) shouldEqual 9
     the [IndexOutOfBoundsException] thrownBy {
@@ -257,7 +257,7 @@ class ChainSpec extends UnitSpec {
   // Could have an implicit conversion from Every[Char] to CharSequence like
   // there is for Seq in Predef.
   /*
-  scala> Vector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i / 2 }  
+  scala> Vector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i / 2 }
   res1: scala.collection.immutable.Vector[Int] = Vector()
   */
   it should "have an collectFirst method" in {
@@ -286,13 +286,15 @@ class ChainSpec extends UnitSpec {
     e.contains(3) shouldBe true
     e.contains(4) shouldBe false
     val es = Chain("one", "two", "three")
+    es.contains("one") shouldBe true
+    es.contains("ONE") shouldBe false
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.contains("one") shouldBe true;
-    es.contains("ONE") shouldBe false;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.contains("one") shouldBe true;
-      es.contains("ONE") shouldBe false
-    }
+    es.contains("ONE") shouldBe false
+    // SKIP-DOTTY-END
   }
   // Decided to just overload one for GenSeq and one for Every. Could have done
   // what that has a Slicing nature, but that's a bit too fancy pants.
@@ -380,7 +382,7 @@ class ChainSpec extends UnitSpec {
   }
 
   /*
-  it should not have an drop method 
+  it should not have an drop method
     scala> Vector(1, 2, 3).drop(3)
     res1: scala.collection.immutable.Vector[Int] = Vector()
 
@@ -545,80 +547,93 @@ class ChainSpec extends UnitSpec {
     Chain(1, 2, 3, 4, 5).indexOf(5, 3) shouldBe 4
 
     val es = Chain("one", "two", "three")
-    es.indexOf("one") shouldBe 0;
+    es.indexOf("one") shouldBe 0
     es.indexOf("one", 1) shouldBe -1
-    es.indexOf("ONE") shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.indexOf("one") shouldBe 0;
-      es.indexOf("ONE") shouldBe -1
-    }
+    es.indexOf("ONE") shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.indexOf("one") shouldBe 0;
+    es.indexOf("ONE") shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take a GenSeq" in {
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3)) shouldBe 1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5)) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(5)) shouldBe 4
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5)) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List.empty) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4) shouldBe 4
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List.empty) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4)
 
     val es = Chain("one", "two", "three", "four", "five")
-    es.indexOfSlice(List("one", "two")) shouldBe 0;
-    es.indexOfSlice(List("one", "two"), 1) shouldBe -1
-    es.indexOfSlice(List("ONE", "TWO")) shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.indexOfSlice(List("one", "two")) shouldBe 0;
-      es.indexOfSlice(List("ONE", "TWO")) shouldBe -1
-    }
+    val el = List("one", "two", "three", "four", "five")
+    es.indexOfSlice(List("one", "two")) shouldBe el.indexOfSlice(List("one", "two"))
+    es.indexOfSlice(List("one", "two"), 1) shouldBe el.indexOfSlice(List("one", "two"), 1)
+    es.indexOfSlice(List("ONE", "TWO")) shouldBe el.indexOfSlice(List("ONE", "TWO"))
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.indexOfSlice(List("one", "two")) shouldBe 0
+    es.indexOfSlice(List("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take an Every" in {
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3)) shouldBe 1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3), 3) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5), 3) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5)) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(5)) shouldBe 4
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5)) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 0) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 1) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe 0
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3), 3)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5), 3)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3, 5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 0)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), 1)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1)
 
     val es = Chain("one", "two", "three", "four", "five")
+    val el = List("one", "two", "three", "four", "five")
+    es.indexOfSlice(Every("one", "two")) shouldBe el.indexOfSlice(Every("one", "two"))
+    es.indexOfSlice(Every("one", "two"), 1) shouldBe el.indexOfSlice(Every("one", "two"), 1)
+    es.indexOfSlice(Every("ONE", "TWO")) shouldBe el.indexOfSlice(Every("ONE", "TWO"))
+
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(Every("one", "two")) shouldBe 0;
-    es.indexOfSlice(Every("one", "two"), 1) shouldBe -1
-    es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.indexOfSlice(Every("one", "two")) shouldBe 0;
-      es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1
-    }
+    es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take a Chain" in {
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3)) shouldBe 1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3), 3) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3, 5), 3) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3, 5)) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(5)) shouldBe 4
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5)) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5), 0) shouldBe 0
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5), 1) shouldBe -1
-    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5), -1) shouldBe 0
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5))
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1)
+    Chain(1, 2, 3, 4, 5).indexOfSlice(Chain(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1)
 
     val es = Chain("one", "two", "three", "four", "five")
+    val el = Chain("one", "two", "three", "four", "five")
+    es.indexOfSlice(Chain("one", "two")) shouldBe el.indexOfSlice(List("one", "two"))
+    es.indexOfSlice(Chain("one", "two"), 1) shouldBe el.indexOfSlice(List("one", "two"), 1)
+    es.indexOfSlice(Chain("ONE", "TWO")) shouldBe el.indexOfSlice(List("ONE", "TWO"))
+
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
     es.indexOfSlice(Chain("one", "two")) shouldBe 0;
-    es.indexOfSlice(Chain("one", "two"), 1) shouldBe -1
-    es.indexOfSlice(Chain("ONE", "TWO")) shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.indexOfSlice(Chain("one", "two")) shouldBe 0;
-      es.indexOfSlice(Chain("ONE", "TWO")) shouldBe -1
-    }
+    es.indexOfSlice(Chain("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 indexWhere methods" in {
     Chain(1, 2, 3, 4, 5).indexWhere(_ == 3) shouldBe 2
@@ -686,12 +701,14 @@ class ChainSpec extends UnitSpec {
     es.lastIndexOf("two") shouldBe 1
     es.lastIndexOf("three") shouldBe 2
     es.lastIndexOf("three", 1) shouldBe -1
-    es.lastIndexOf("ONE") shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.lastIndexOf("one") shouldBe 0;
-      es.lastIndexOf("ONE") shouldBe -1
-    }
+    es.lastIndexOf("ONE") shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOf("one") shouldBe 0
+    es.lastIndexOf("ONE") shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take a GenSeq" in {
     Chain(1, 2, 3, 4, 5).lastIndexOfSlice(List(2, 3)) shouldBe 1
@@ -710,12 +727,14 @@ class ChainSpec extends UnitSpec {
     val es = Chain("one", "two", "three", "four", "five")
     es.lastIndexOfSlice(List("one", "two")) shouldBe 0;
     es.lastIndexOfSlice(List("two", "three"), 0) shouldBe -1
-    es.lastIndexOfSlice(List("ONE", "TWO")) shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.lastIndexOfSlice(List("one", "two")) shouldBe 0;
-      es.lastIndexOfSlice(List("ONE", "TWO")) shouldBe -1
-    }
+    es.lastIndexOfSlice(List("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOfSlice(List("one", "two")) shouldBe 0
+    es.lastIndexOfSlice(List("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take an Every" in {
     Chain(1, 2, 3, 4, 5).lastIndexOfSlice(Every(2, 3)) shouldBe 1
@@ -729,14 +748,16 @@ class ChainSpec extends UnitSpec {
     Chain(1, 2, 3, 4, 5).lastIndexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe -1
 
     val es = Chain("one", "two", "three", "four", "five")
-    es.lastIndexOfSlice(Every("one", "two")) shouldBe 0;
+    es.lastIndexOfSlice(Every("one", "two")) shouldBe 0
     es.lastIndexOfSlice(Every("two", "three"), 0) shouldBe -1
-    es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.lastIndexOfSlice(Every("one", "two")) shouldBe 0;
-      es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1
-    }
+    es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOfSlice(Every("one", "two")) shouldBe 0
+    es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take a Chain" in {
     Chain(1, 2, 3, 4, 5).lastIndexOfSlice(Chain(2, 3)) shouldBe 1
@@ -752,12 +773,14 @@ class ChainSpec extends UnitSpec {
     val es = Chain("one", "two", "three", "four", "five")
     es.lastIndexOfSlice(Chain("one", "two")) shouldBe 0;
     es.lastIndexOfSlice(Chain("two", "three"), 0) shouldBe -1
-    es.lastIndexOfSlice(Chain("ONE", "TWO")) shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.lastIndexOfSlice(Chain("one", "two")) shouldBe 0;
-      es.lastIndexOfSlice(Chain("ONE", "TWO")) shouldBe -1
-    }
+    es.lastIndexOfSlice(Chain("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOfSlice(Chain("one", "two")) shouldBe 0
+    es.lastIndexOfSlice(Chain("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexWhere methods" in {
     Chain(1, 2, 3, 4, 5).lastIndexWhere(_ == 2) shouldBe 1
@@ -823,8 +846,11 @@ class ChainSpec extends UnitSpec {
   }
   it should "have a mkString method" in {
 
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     Chain("hi").mkString shouldBe "hi"
     Chain(1, 2, 3).mkString shouldBe "123"
+    // SKIP-DOTTY-END
 
     Chain("hi").mkString("#") shouldBe "hi"
     Chain(1, 2, 3).mkString("#") shouldBe "1#2#3"
@@ -1211,7 +1237,7 @@ class ChainSpec extends UnitSpec {
     scala> Vector(1, 2, 3).take(-1)
     res12: scala.collection.immutable.Vector[Int] = Vector()
 
-  it should not have a takeRight method 
+  it should not have a takeRight method
     scala> Vector(1).takeRight(1)
     res13: scala.collection.immutable.Vector[Int] = Vector(1)
     scala> Vector(1).takeRight(0)

@@ -17,8 +17,6 @@ package org.scalactic.anyvals
 
 import org.scalatest._
 import OptionValues._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
@@ -28,19 +26,8 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.Equality
-import org.scalactic.NumberCompatHelper
 
 trait NegFloatSpecSupport {
-
-  val negZFloatGen: Gen[NegZFloat] =
-    for {i <- choose(Float.MinValue, 0.0f)} yield NegZFloat.ensuringValid(i)
-
-  implicit val arbNegZFloat: Arbitrary[NegZFloat] = Arbitrary(negZFloatGen)
-
-  val negFloatGen: Gen[NegFloat] =
-    for {i <- choose(Float.MinValue, -Float.MinPositiveValue)} yield NegFloat.ensuringValid(i)
-
-  implicit val arbNegFloat: Arbitrary[NegFloat] = Arbitrary(negFloatGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
@@ -50,6 +37,11 @@ trait NegFloatSpecSupport {
       case Success(float: Float) if float.isNaN =>
         b match {
           case Success(bFloat: Float) if bFloat.isNaN => true
+          case _ => false
+        }
+      case Success(double: Double) if double.isNaN =>
+        b match {
+          case Success(bDouble: Double) if bDouble.isNaN => true
           case _ => false
         }
       case _: Success[_] => a == b
@@ -87,7 +79,10 @@ class NegFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         an [AssertionError] should be thrownBy NegFloat.ensuringValid(0.00001F)
         an [AssertionError] should be thrownBy NegFloat.ensuringValid(99.9F)
         an [AssertionError] should be thrownBy NegFloat.ensuringValid(Float.PositiveInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy NegFloat.ensuringValid(Float.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -297,55 +292,6 @@ class NegFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
       (NegFloat(-1.0f) plus NegInt(-2)) should === (NegFloat(-3.0f))
     }
 
-    it("should offer overloaded 'sumOf' methods on the companion that take one NegFloat and one or more NegZFloats and returns a NegFloat") {
-
-      forAll { (negFloat: NegFloat, negZFloat: NegZFloat) =>
-        NegFloat.sumOf(negFloat, negZFloat) should === (NegFloat.ensuringValid(negFloat.value + negZFloat.value))
-      }
-      forAll { (negFloat: NegFloat, negZFloats: List[NegZFloat]) =>
-        whenever(negZFloats.nonEmpty) {
-          NegFloat.sumOf(negFloat, negZFloats.head, negZFloats.tail: _*) should === {
-            NegFloat.ensuringValid(negFloat.value + negZFloats.head.value + negZFloats.tail.map(_.value).sum)
-          }
-        }
-      }
-
-      val posEdgeValues: List[NegFloat] = List(NegFloat.MinValue, NegFloat.MaxValue, NegFloat.NegativeInfinity)
-      val posZEdgeValues = List(NegZFloat.MinValue, NegZFloat.MaxValue, NegZFloat.NegativeInfinity)
-      // First put each NegFloat edge in front, then follow it with all permutations (orders) of all four NegZFloat edge values.
-      Inspectors.forAll (posEdgeValues) { pos =>
-        Inspectors.forAll (posZEdgeValues.permutations.toList) { case posZHead :: posZTail =>
-          NegFloat.sumOf(pos, posZHead, posZTail: _*) should === {
-            NegFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
-          }
-        }
-      }
-
-      // Now do each NegFloat edge in front, then follow it with all combinations of 2 PosZEdgeFloats
-      // I get all combos by doing combinations(2) ++ combinations(2).reverse. That seems to do the trick.
-      val halfOfThePairs = posZEdgeValues.combinations(2).toList
-      val posZPairCombos = halfOfThePairs ++ (halfOfThePairs.reverse)
-      Inspectors.forAll (posEdgeValues) { pos =>
-        Inspectors.forAll (posZPairCombos) { case posZHead :: posZTail  =>
-          NegFloat.sumOf(pos, posZHead, posZTail: _*) should === {
-            NegFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
-          }
-        }
-      }
-
-      // Now do each NegFloat edge in front, then follow it with all combinations of 3 PosZEdgeFloats
-      // I get all combos by doing combinations(3) ++ combinations(3).reverse. That seems to do the trick.
-      val halfOfTheTriples = posZEdgeValues.combinations(3).toList
-      val posZTripleCombos = halfOfTheTriples ++ (halfOfTheTriples.reverse)
-      Inspectors.forAll (posEdgeValues) { pos =>
-        Inspectors.forAll (posZTripleCombos) { case posZHead :: posZTail  =>
-          NegFloat.sumOf(pos, posZHead, posZTail: _*) should === {
-            NegFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
-          }
-        }
-      }
-    }
-
     it("should offer 'min' and 'max' methods that are consistent with Float") {
       forAll { (pfloat1: NegFloat, pfloat2: NegFloat) =>
         pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
@@ -374,26 +320,21 @@ class NegFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         pfloat.toRadians shouldEqual pfloat.toFloat.toRadians
       }
     }
-
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Float") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pfloat: NegFloat, end: Float, step: Float) =>
-        rangeEqual(pfloat.until(end).by(1f), NumberCompatHelper.floatUntil(pfloat.toFloat, end).by(1f)) shouldBe true
-        rangeEqual(pfloat.until(end, step), NumberCompatHelper.floatUntil(pfloat.toFloat, end, step)) shouldBe true
-        rangeEqual(pfloat.to(end).by(1f), NumberCompatHelper.floatTo(pfloat.toFloat, end).by(1f)) shouldBe true
-        rangeEqual(pfloat.to(end, step), NumberCompatHelper.floatTo(pfloat.toFloat, end, step)) shouldBe true
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: NegFiniteFloat) =>
+        (n: NegFloat).isFinite should be (true)
+        NegFloat.NegativeInfinity.isFinite should be (false)
       }
     }
-    // SKIP-SCALATESTJS,NATIVE-END
   }
   it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
     NegFloat(-33.0f).ensuringValid(_ + 1.0f) shouldEqual NegFloat(-32.0f)
     NegFloat(-33.0f).ensuringValid(_ => Float.NegativeInfinity) shouldEqual NegFloat.ensuringValid(Float.NegativeInfinity)
     an [AssertionError] should be thrownBy { NegFloat.MaxValue.ensuringValid(_ - NegFloat.MaxValue) }
     an [AssertionError] should be thrownBy { NegFloat.MaxValue.ensuringValid(_ => Float.PositiveInfinity) }
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6710
     an [AssertionError] should be thrownBy { NegFloat.MaxValue.ensuringValid(_ => Float.NaN) }
+    // SKIP-DOTTY-END
   }
 }

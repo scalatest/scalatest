@@ -36,6 +36,7 @@ import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
 import Suite.mergeMap
+// import org.scalatest.prop.Randomizer
 
 
 /**
@@ -435,9 +436,7 @@ class Framework extends SbtFramework {
       if (accessible || runnable) {
         val suite =
           try {
-            if (accessible)
-              suiteClass.newInstance.asInstanceOf[Suite]
-            else {
+            if (runnable) { // When it is runnable WrapWith is available, this will take precedence and this behavior will be consistent with Runner and the old ScalaTestFramework.
               val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
               val suiteClazz = wrapWithAnnotation.value
               val constructorList = suiteClazz.getDeclaredConstructors()
@@ -447,6 +446,8 @@ class Framework extends SbtFramework {
               }
               constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
             }
+            else
+              suiteClass.newInstance.asInstanceOf[Suite] 
           } catch {
             case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, t)
           }
@@ -950,7 +951,8 @@ import java.net.{ServerSocket, InetAddress}
       chosenStyles, 
       spanScaleFactors, 
       testSortingReporterTimeouts,
-      slowpokeArgs
+      slowpokeArgs,
+      seedArgs
     ) = parseArgs(args)
     
     if (!runpathArgs.isEmpty)
@@ -981,7 +983,7 @@ import java.net.{ServerSocket, InetAddress}
         propertiesMap + (Suite.CHOSEN_STYLES -> chosenStyleSet)
 
     if (chosenStyleSet.nonEmpty)
-      println(Resources.deprecatedChosenStyleWarning())
+      println(Resources.deprecatedChosenStyleWarning)
       
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
@@ -994,25 +996,18 @@ import java.net.{ServerSocket, InetAddress}
         case _ => (false, 60000L, 60000L)
       }
 
-    val runnerInstance =
-      if (ScalaTestVersions.BuiltForScalaVersion == "2.10") {
-        val runnerCompanionClass = testClassLoader.loadClass("org.scalatest.tools.Runner$")
-        val module = runnerCompanionClass.getField("MODULE$")
-        val obj = module.get(runnerCompanionClass)
-        obj.asInstanceOf[Runner.type]
-      }
-      else {
-        // We need to use the following code to set Runner object instance for different Runner using different class loader.
-        import scala.reflect.runtime._
-
-        val runtimeMirror = universe.runtimeMirror(testClassLoader)
-
-        val module = runtimeMirror.staticModule("org.scalatest.tools.Runner$")
-        val obj = runtimeMirror.reflectModule(module)
-        obj.instance.asInstanceOf[Runner.type]
-      }
+    val runnerCompanionClass = testClassLoader.loadClass("org.scalatest.tools.Runner$")
+    val module = runnerCompanionClass.getField("MODULE$")
+    val obj = module.get(runnerCompanionClass)
+    val runnerInstance = obj.asInstanceOf[Runner.type]
 
     runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+
+    parseLongArgument(seedArgs, "-S") match {
+      case Some(seed) => // Randomizer.defaultSeed.getAndSet(Some(seed))
+        println("Note: -S for setting the Randomizer seed is not yet supported.")
+      case None => // do nothing
+    }
 
     val autoSelectors = parseSuiteArgs(suiteArgs)
 

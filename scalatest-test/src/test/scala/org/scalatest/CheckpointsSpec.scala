@@ -19,8 +19,8 @@ import org.scalatest.Checkpoints._
 import org.scalatest.OptionValues._
 
 // SKIP-SCALATESTJS,NATIVE-START
-import org.scalatest.junit.AssertionsForJUnit
-import org.scalatest.junit.JUnitTestFailedError
+import org.scalatestplus.junit.AssertionsForJUnit
+import org.scalatestplus.junit.JUnitTestFailedError
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.TestFailedException

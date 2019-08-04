@@ -15,8 +15,6 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen.choose
 import org.scalatest._
 import org.scalactic.Equality
 import org.scalactic.TypeCheckedTripleEquals
@@ -30,18 +28,8 @@ import scala.util.{Failure, Success, Try}
 import org.scalatest.Inspectors
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
-import org.scalactic.NumberCompatHelper
 
 trait NonZeroFiniteDoubleSpecSupport {
-  val nonZeroFiniteDoubleGen: Gen[NonZeroFiniteDouble] =
-    for {i <- choose(Double.MinValue, Double.MaxValue)} yield {
-      if (i == 0.0)
-        NonZeroFiniteDouble.ensuringValid(1.0)
-      else
-        NonZeroFiniteDouble.ensuringValid(i)
-    }
-
-  implicit val arbNonZeroFiniteDouble: Arbitrary[NonZeroFiniteDouble] = Arbitrary(nonZeroFiniteDoubleGen)
 
   implicit def tryEquality[T]: Equality[Try[T]] = new Equality[Try[T]] {
     override def areEqual(a: Try[T], b: Any): Boolean = a match {
@@ -182,12 +170,10 @@ class NonZeroFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks 
     it("should not offer a NegativeInfinity factory method") {
       "NonZeroFiniteDouble.NegativeInfinity" shouldNot compile
     }
-    it("should not offer a isNegInfinity method") {
-      "NonZeroFiniteDouble(-1.0).isNegInfinity" shouldNot compile
-    }
-    it("should not offer a isPosInfinity method") {
-      "NonZeroFiniteDouble(-1.0).isPosInfinity" shouldNot compile
-    }
+/* These now compile because of the new implicit widening conversion from NonZeroFiniteDouble to NonZeroDouble.
+    NonZeroFiniteDouble(-1.0).isNegInfinity
+    NonZeroFiniteDouble(-1.0).isPosInfinity
+*/
 
     it("should be sortable") {
       val xs = List(NonZeroFiniteDouble(2.2), NonZeroFiniteDouble(4.4), NonZeroFiniteDouble(1.1),
@@ -312,20 +298,6 @@ class NonZeroFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks 
         pdouble.toRadians shouldEqual pdouble.toDouble.toRadians
       }
     }
-
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Double") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pdouble: NonZeroFiniteDouble, end: Double, step: Double) =>
-        rangeEqual(pdouble.until(end).by(1f), NumberCompatHelper.doubleUntil(pdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pdouble.until(end, step), NumberCompatHelper.doubleUntil(pdouble.toDouble, end, step)) shouldBe true
-        rangeEqual(pdouble.to(end).by(1f), NumberCompatHelper.doubleTo(pdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pdouble.to(end, step), NumberCompatHelper.doubleTo(pdouble.toDouble, end, step)) shouldBe true
-      }
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
 
     it("should offer widening methods for basic types that are consistent with Double") {
       forAll { (pdouble: NonZeroFiniteDouble) =>

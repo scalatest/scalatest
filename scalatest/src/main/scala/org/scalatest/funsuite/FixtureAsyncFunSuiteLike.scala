@@ -19,6 +19,7 @@ import org.scalatest._
 import org.scalactic.source
 import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
+import scala.util.Try
 
 /**
   * Implementation trait for class <code>FixtureAsyncFunSuite</code>, which is
@@ -43,7 +44,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
   */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
-trait FixtureAsyncFunSuiteLike extends org.scalatest.fixture.AsyncTestSuite with org.scalatest.fixture.AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAsyncFunSuiteLike extends org.scalatest.FixtureAsyncTestSuite with org.scalatest.FixtureAsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureFunSuiteMod, "FixtureFunSuite")
 
@@ -198,10 +199,10 @@ trait FixtureAsyncFunSuiteLike extends org.scalatest.fixture.AsyncTestSuite with
     * @throws NullArgumentException if <code>testName</code> or <code>args</code> is <code>null</code>.
     */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
+      FutureAsyncOutcome(
         withFixture(
           new OneArgAsyncTest {
             val name = testData.name
@@ -215,7 +216,8 @@ trait FixtureAsyncFunSuiteLike extends org.scalatest.fixture.AsyncTestSuite with
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 
@@ -343,10 +345,9 @@ trait FixtureAsyncFunSuiteLike extends org.scalatest.fixture.AsyncTestSuite with
   /**
     * Suite style name.
     *
-    * @return <code>org.scalatest.fixture.FunSuite</code>
+   * @return `org.scalatest.funsuite.FixtureAsyncFunSuite`
     */
-  @deprecated("styleName is deprecated and will be removed in the future version of ScalaTest, because FunSuite will be refactored as its own module.")
-  final override val styleName: String = "org.scalatest.fixture.FunSuite"
+  final override val styleName: String = "org.scalatest.funsuite.FixtureAsyncFunSuite"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

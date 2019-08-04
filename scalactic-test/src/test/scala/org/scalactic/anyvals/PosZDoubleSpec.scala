@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.collection.immutable.NumericRange
@@ -30,19 +28,8 @@ import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
-import org.scalactic.NumberCompatHelper
 
 trait PosZDoubleSpecSupport {
-
-  val posZDoubleGen: Gen[PosZDouble] =
-    for {i <- choose(0, Double.MaxValue)} yield PosZDouble.from(i).get
-
-  implicit val arbPosZDouble: Arbitrary[PosZDouble] = Arbitrary(posZDoubleGen)
-
-  val posDoubleGen: Gen[PosDouble] =
-    for {i <- choose(1, Double.MaxValue)} yield PosDouble.from(i).get
-
-  implicit val arbPosDouble: Arbitrary[PosDouble] = Arbitrary(posDoubleGen)
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {
@@ -93,7 +80,7 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
         PosZDouble.from(-0.00001) shouldBe None
         PosZDouble.from(-99.9) shouldBe None
       }
-    } 
+    }
     describe("should offer an ensuringValid factory method that") {
       it("returns PosZDouble if the passed Double is greater than or equal to 0") {
         PosZDouble.ensuringValid(0.0).value shouldBe 0.0
@@ -105,7 +92,10 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
         an [AssertionError] should be thrownBy PosZDouble.ensuringValid(-0.00001)
         an [AssertionError] should be thrownBy PosZDouble.ensuringValid(-99.9)
         an [AssertionError] should be thrownBy PosZDouble.ensuringValid(Double.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy PosZDouble.ensuringValid(Double.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -163,7 +153,7 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
         PosZDouble.isValid(-0.00001) shouldBe false
         PosZDouble.isValid(-99.9) shouldBe false
       }
-    } 
+    }
     describe("should offer a fromOrElse factory method that") {
       it("returns a PosZDouble if the passed Double is greater than or equal to 0") {
         PosZDouble.fromOrElse(50.23, PosZDouble(42.0)).value shouldBe 50.23
@@ -174,7 +164,7 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
         PosZDouble.fromOrElse(-0.00001, PosZDouble(42.0)).value shouldBe 42.0
         PosZDouble.fromOrElse(-99.9, PosZDouble(42.0)).value shouldBe 42.0
       }
-    } 
+    }
     it("should offer MaxValue, MinValue, and MinPositiveValue factory methods") {
       PosZDouble.MaxValue shouldEqual PosZDouble.from(Double.MaxValue).get
       PosZDouble.MinValue shouldEqual PosZDouble(0.0)
@@ -332,65 +322,6 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
       PosZDouble(1.0) plus PosDouble(2.0) should === (PosZDouble(3.0))
     }
 
-    it("should offer overloaded 'sumOf' methods on the companion that takes two or more PosZDoubles and returns a PosZDouble") {
-
-      // Run these with a relatively high minSuccessful for a while, just to see if we find a problem case.
-      // Check the sumOf that takes exactly 2 args (the one that doesn't box)
-      forAll (minSuccessful(1000)) { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
-        PosZDouble.sumOf(posZDouble1, posZDouble2) should === (PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value))
-      }
-
-      // Check the sumOf that takes at least 2 args (the one that does box the var args part)
-      // First just pass 2 to it and an empty list, which I wonder if that will do the other one,
-      // but it doesn't matter. 
-      forAll (minSuccessful(1000)) { (posZDouble1: PosZDouble, posZDouble2: PosZDouble) =>
-        PosZDouble.sumOf(posZDouble1, posZDouble2, List.empty[PosZDouble]: _*) should === {
-          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value)
-        }
-      }
-      // Then add some real lists in there
-      forAll (minSuccessful(1000)) { (posZDouble1: PosZDouble, posZDouble2: PosZDouble, posZDoubles: List[PosZDouble]) =>
-        PosZDouble.sumOf(posZDouble1, posZDouble2, posZDoubles: _*) should === {
-          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value + posZDoubles.map(_.value).sum)
-        }
-      }
-
-      // I want to try all combinations of edge cases in the boxing sumOf.
-      // And out of an abundance of caution, all permutations of them (all the different orders)
-      val posZEdgeValues = List(PosZDouble.MinValue, PosZDouble.MinPositiveValue, PosZDouble.MaxValue, PosZDouble.PositiveInfinity)
-      Inspectors.forAll (posZEdgeValues.permutations.toList) { case List(a, b, c, d) =>
-        PosZDouble.sumOf(a, b, c, d) should === {
-          PosZDouble.ensuringValid(a.value + b.value + c.value + d.value)
-        }
-      }
-
-      // Now try all combinations of 2 PosZEdgeDoubles followed by both nothing and an empty varargs.
-      // The idea is to test both forms with two args, though it is possible the compiler optiizes
-      // the empty list (though I don't think it can tell at compile time, because I don't let it have
-      // element type Nothing).
-      // I get all combos by doing combinations ++ combinations.reverse. That seems to do the trick.
-      val halfOfThePairs = posZEdgeValues.combinations(2).toList
-      val posZPairCombos = halfOfThePairs ++ (halfOfThePairs.reverse)
-      Inspectors.forAll (posZPairCombos) { case posZDouble1 :: posZDouble2 :: Nil  =>
-        // Call the two-arg form
-        PosZDouble.sumOf(posZDouble1, posZDouble2) should === {
-          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value)
-        }
-        // Most likely call the var-args form
-        PosZDouble.sumOf(posZDouble1, posZDouble2, List.empty[PosZDouble]: _*) should === {
-          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value)
-        }
-      }
-
-      val halfOfTheTriples = posZEdgeValues.combinations(3).toList
-      val posZTripleCombos = halfOfTheTriples ++ (halfOfTheTriples.reverse)
-      Inspectors.forAll (posZTripleCombos) { case posZDouble1 :: posZDouble2 :: posZDouble3 :: Nil  =>
-        PosZDouble.sumOf(posZDouble1, posZDouble2, posZDouble3) should === {
-          PosZDouble.ensuringValid(posZDouble1.value + posZDouble2.value + posZDouble3.value)
-        }
-      }
-    }
-
     it("should offer 'min' and 'max' methods that are consistent with Double") {
       forAll { (pzdouble1: PosZDouble, pzdouble2: PosZDouble) =>
         pzdouble1.max(pzdouble2).toDouble shouldEqual pzdouble1.toDouble.max(pzdouble2.toDouble)
@@ -418,20 +349,6 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
       }
     }
 
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Double") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pzdouble: PosZDouble, end: Double, step: Double) =>
-        rangeEqual(pzdouble.until(end).by(1f), NumberCompatHelper.doubleUntil(pzdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.until(end, step), NumberCompatHelper.doubleUntil(pzdouble.toDouble, end, step)) shouldBe true
-        rangeEqual(pzdouble.to(end).by(1f), NumberCompatHelper.doubleTo(pzdouble.toDouble, end).by(1f)) shouldBe true
-        rangeEqual(pzdouble.to(end, step), NumberCompatHelper.doubleTo(pzdouble.toDouble, end, step)) shouldBe true
-      }
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
-
     it("should offer widening methods for basic types that are consistent with Double") {
       forAll { (pzdouble: PosZDouble) =>
         def widen(value: Double): Double = value
@@ -443,7 +360,16 @@ class PosZDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZ
       PosZDouble(33.0).ensuringValid(_ => Double.PositiveInfinity) shouldEqual PosZDouble.ensuringValid(Double.PositiveInfinity)
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ - PosZDouble.MaxValue - 1) }
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { PosZDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
+    }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: PosZFiniteDouble) =>
+        (n: PosZDouble).isFinite should be (true)
+        PosZDouble.PositiveInfinity.isFinite should be (false)
+      }
     }
   }
 }

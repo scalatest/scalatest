@@ -2,17 +2,11 @@ language: scala
 scala:
   - 2.10.7
   - 2.11.12
-  - 2.12.6
-#  - 2.13.0-M2
-addons:
-  apt:
-    packages:
-      - openjdk-6-jdk
+  - 2.12.8
+  - 2.13.0
 
 jdk:
-  - openjdk6
   - oraclejdk8
-  - oraclejdk9
 
 dist: trusty
 sudo: true
@@ -50,23 +44,6 @@ env:
     - MODE=genEmptyTests
     - MODE=examples
     - MODE=examplesJS
-
-matrix:
-  exclude:
-    - scala: "2.13.0-M2"
-      jdk: openjdk6
-    - scala: "2.13.0-M2"
-      jdk: oraclejdk9
-    - scala: "2.12.6"
-      jdk: openjdk6
-    - scala: "2.11.12"
-      jdk: oraclejdk8
-    - scala: "2.11.12"
-      jdk: oraclejdk9
-    - scala: "2.10.7"
-      jdk: oraclejdk8
-    - scala: "2.10.7"
-      jdk: oraclejdk9
 
 branches:
   only:

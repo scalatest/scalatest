@@ -17,8 +17,6 @@ package org.scalactic.anyvals
 
 import org.scalatest._
 import OptionValues._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.prop.PropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
@@ -28,14 +26,8 @@ import scala.util.{Failure, Success, Try}
 import org.scalactic.{Good, Bad}
 import org.scalactic.{Pass, Fail}
 import org.scalactic.Equality
-import org.scalactic.NumberCompatHelper
 
 trait FiniteFloatSpecSupport {
-
-  val finiteFloatGen: Gen[FiniteFloat] =
-    for {i <- choose(1, Float.MaxValue)} yield FiniteFloat.ensuringValid(i)
-
-  implicit val arbFiniteFloat: Arbitrary[FiniteFloat] = Arbitrary(finiteFloatGen)
 
   implicit val floatEquality: Equality[Float] =
     new Equality[Float] {
@@ -99,7 +91,10 @@ class FiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with Typ
       it("throws AssertionError if the passed Float is infinite") {
         an [AssertionError] should be thrownBy FiniteFloat.ensuringValid(Float.PositiveInfinity)
         an [AssertionError] should be thrownBy FiniteFloat.ensuringValid(Float.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy FiniteFloat.ensuringValid(Float.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -338,20 +333,6 @@ class FiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with Typ
         pfloat.toRadians shouldEqual pfloat.toFloat.toRadians
       }
     }
-
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Float") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pfloat: FiniteFloat, end: Float, step: Float) =>
-        rangeEqual(pfloat.until(end).by(1f), NumberCompatHelper.floatUntil(pfloat.toFloat, end).by(1f)) shouldBe true
-        rangeEqual(pfloat.until(end, step), NumberCompatHelper.floatUntil(pfloat.toFloat, end, step)) shouldBe true
-        rangeEqual(pfloat.to(end).by(1f), NumberCompatHelper.floatTo(pfloat.toFloat, end).by(1f)) shouldBe true
-        rangeEqual(pfloat.to(end, step), NumberCompatHelper.floatTo(pfloat.toFloat, end, step)) shouldBe true
-      }
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
   }
   it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
     FiniteFloat(2.0f).ensuringValid(_ + 1.0f) shouldEqual FiniteFloat(3.0f)

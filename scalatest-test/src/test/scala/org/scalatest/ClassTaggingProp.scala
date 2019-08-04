@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
-import org.scalatest.junit._
+import org.scalatestplus.junit._
 import org.junit.Test
 import org.scalatest.refspec.RefSpec
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 
 class ClassTaggingProp extends AllSuiteProp {
 
@@ -27,7 +27,6 @@ class ClassTaggingProp extends AllSuiteProp {
   def suite = new ExampleClassTaggingSuite
   def fixtureSuite = new ExampleClassTaggingFixtureSuite
   def spec = new ExampleClassTaggingSpec
-  def fixtureSpec = new ExampleClassTaggingFixtureSpec
   def junit3Suite = new ExampleClassTaggingJUnit3Suite
   def junitSuite = new ExampleClassTaggingJUnitSuite
   def testngSuite = new ExampleClassTaggingTestNGSuite
@@ -90,14 +89,6 @@ class ExampleClassTaggingSpec extends RefSpec with ClassTaggingFixtureServices {
   def `test 1`: Unit = {}
   def `test 2`: Unit = {}
   def `test 3`: Unit = {}
-}
-
-@DoNotDiscover
-@Ignore
-class ExampleClassTaggingFixtureSpec extends fixture.Spec with ClassTaggingFixtureServices with StringFixture {
-  def `test 1`(fixture: String): Unit = {}
-  def `test 2`(fixture: String): Unit = {}
-  def `test 3`(fixture: String): Unit = {}
 }
 
 @DoNotDiscover

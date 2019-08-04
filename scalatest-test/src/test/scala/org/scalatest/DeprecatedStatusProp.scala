@@ -16,9 +16,9 @@
 package org.scalatest.deprecated
 
 import org.scalatest._
-import org.scalatest.junit.JUnit3Suite
-import org.scalatest.junit.JUnitSuite
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.junit.JUnit3Suite
+import org.scalatestplus.junit.JUnitSuite
+import org.scalatestplus.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 import scala.collection.mutable.ListBuffer
@@ -31,7 +31,6 @@ class DeprecatedStatusProp extends AllSuiteProp {
   type FixtureServices = StatusFixtureServices
 
   def spec = new ExampleStatusSpec
-  def fixtureSpec = new ExampleStatusFixtureSpec
   def junit3Suite = new ExampleStatusJUnit3Suite
   def junitSuite = new ExampleStatusJUnitSuite
   def testngSuite = new ExampleStatusTestNGSuite
@@ -141,14 +140,6 @@ class ExampleStatusSpec extends RefSpec with StatusFixtureServices with Parallel
   def `test 1`: Unit = {}
   def `test 2`: Unit = { throw new VirtualMachineError {} }
   def `test 3`: Unit = {}
-  val testNameToRun = "test 2"
-}
-
-@DoNotDiscover
-class ExampleStatusFixtureSpec extends fixture.Spec with StatusFixtureServices with StringFixture with ParallelTestExecution {
-  def `test 1`(fixture: String): Unit = {}
-  def `test 2`(fixture: String): Unit = { throw new VirtualMachineError {} }
-  def `test 3`(fixture: String): Unit = {}
   val testNameToRun = "test 2"
 }
 

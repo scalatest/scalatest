@@ -55,7 +55,18 @@ object GenColCompatHelper {
           |
           |  object Factory {}
           |
-          |  def className(col: scala.collection.Iterable[_]): String = org.scalactic.NameUtil.getSimpleNameOfAnObjectsClass(col)
+          |  def className(col: scala.collection.Iterable[_]): String = {
+          |    val colToString = col.toString
+          |    val bracketIdx = colToString.indexOf("(")
+          |    if (bracketIdx >= 0)
+          |      colToString.take(bracketIdx)
+          |    else
+          |      org.scalactic.NameUtil.getSimpleNameOfAnObjectsClass(col)
+          |  }
+          |
+          |  def newBuilder[A, C](f: Factory[A, C]): scala.collection.mutable.Builder[A, C] = f.newBuilder
+          |
+          |  type StringOps = scala.collection.StringOps
           |}
           |
         """.stripMargin
@@ -115,6 +126,9 @@ object GenColCompatHelper {
           |  }
           |  def className(col: scala.collection.GenTraversable[_]): String = col.stringPrefix
           |
+          |  def newBuilder[A, C](f: Factory[A, C]): scala.collection.mutable.Builder[A, C] = f.apply()
+          |
+          |  type StringOps = scala.collection.immutable.StringOps
           |}
           |
         """.stripMargin

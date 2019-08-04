@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import org.scalatest.junit.{JUnitSuite, JUnit3Suite}
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.junit.{JUnitSuite, JUnit3Suite}
+import org.scalatestplus.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG}
 import org.scalatest.refspec.RefSpec
@@ -503,20 +503,4 @@ class InheritedTagProp extends SuiteProp {
     def `test something`: Unit = {}
   }
   def spec = new InheritedTagSpec
-
-  @org.scalatest.tags.ChromeBrowser
-  @org.scalatest.tags.FirefoxBrowser
-  @org.scalatest.tags.HtmlUnitBrowser
-  @org.scalatest.tags.InternetExplorerBrowser
-  @org.scalatest.tags.SafariBrowser
-  @org.scalatest.tags.CPU
-  @org.scalatest.tags.Disk
-  @org.scalatest.tags.Network
-  @org.scalatest.tags.Retryable
-  @org.scalatest.tags.Slow
-  class BaseTagFixtureSpec extends fixture.Spec with StringFixture with FixtureServices
-  class InheritedTagFixtureSpec extends BaseTagFixtureSpec {
-    def `test something`: Unit = {}
-  }
-  def fixtureSpec = new InheritedTagFixtureSpec
 }

@@ -16,8 +16,6 @@
 package org.scalactic.anyvals
 
 import org.scalatest._
-import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.PropertyChecks
 import org.scalactic.TypeCheckedTripleEquals
 // SKIP-SCALATESTJS,NATIVE-START
@@ -30,14 +28,8 @@ import org.scalactic.Equality
 import org.scalactic.{Pass, Fail}
 import org.scalactic.{Good, Bad}
 import scala.util.{Try, Success, Failure}
-import org.scalactic.NumberCompatHelper
 
 trait PosZFiniteFloatSpecSupport {
-
-  val posZFiniteFloatGen: Gen[PosZFiniteFloat] =
-    for {i <- choose(0, Float.MaxValue)} yield PosZFiniteFloat.from(i).get
-
-  implicit val arbPosZFiniteFloat: Arbitrary[PosZFiniteFloat] = Arbitrary(posZFiniteFloatGen)
 
   implicit val doubleEquality: Equality[Double] =
     new Equality[Double] {
@@ -65,6 +57,11 @@ trait PosZFiniteFloatSpecSupport {
       case Success(float: Float) if float.isNaN =>
         b match {
           case Success(bFloat: Float) if bFloat.isNaN => true
+          case _ => false
+        }
+      case Success(double: Double) if double.isNaN =>
+        b match {
+          case Success(bDouble: Double) if bDouble.isNaN => true
           case _ => false
         }
       case _: Success[_] => a == b
@@ -103,7 +100,10 @@ class PosZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with
         an [AssertionError] should be thrownBy PosZFiniteFloat.ensuringValid(-99.9f)
         an [AssertionError] should be thrownBy PosZFiniteFloat.ensuringValid(Float.PositiveInfinity)
         an [AssertionError] should be thrownBy PosZFiniteFloat.ensuringValid(Float.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy PosZFiniteFloat.ensuringValid(Float.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -309,20 +309,6 @@ class PosZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with
       }
     }
 
-    // SKIP-SCALATESTJS,NATIVE-START
-    it("should offer 'to' and 'until' method that is consistent with Float") {
-      def rangeEqual(a: NumericRange[_], b: NumericRange[_]): Boolean =
-        a.start == b.start && a.end == b.end && a.step == b.step
-
-      forAll { (pzfloat: PosZFiniteFloat, end: Float, step: Float) =>
-        rangeEqual(pzfloat.until(end).by(1f), NumberCompatHelper.floatUntil(pzfloat.toFloat, end).by(1f)) shouldBe true
-        rangeEqual(pzfloat.until(end, step), NumberCompatHelper.floatUntil(pzfloat.toFloat, end, step)) shouldBe true
-        rangeEqual(pzfloat.to(end).by(1f), NumberCompatHelper.floatTo(pzfloat.toFloat, end).by(1f)) shouldBe true
-        rangeEqual(pzfloat.to(end, step), NumberCompatHelper.floatTo(pzfloat.toFloat, end, step)) shouldBe true
-      }
-    }
-    // SKIP-SCALATESTJS,NATIVE-END
-
     it("should offer widening methods for basic types that are consistent with Float") {
       forAll { (pzfloat: PosZFiniteFloat) =>
         def widen(value: Float): Float = value
@@ -342,7 +328,10 @@ class PosZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with
       an [AssertionError] should be thrownBy { PosZFiniteFloat.MaxValue.ensuringValid(_ - PosZFiniteFloat.MaxValue - 1) }
       an [AssertionError] should be thrownBy { PosFiniteFloat.MaxValue.ensuringValid(_ => Float.PositiveInfinity) }
       an [AssertionError] should be thrownBy { PosFiniteFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { PosZFiniteFloat.MaxValue.ensuringValid(_ => Float.NaN) }
+      // SKIP-DOTTY-END
     }
   }
 }

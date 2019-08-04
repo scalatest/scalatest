@@ -126,7 +126,7 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
    * </p>
    *
    * <pre class="stHighlight">
-   * for ((testName, ignoreTest) <- filter(testNames, tags))
+   * for ((testName, ignoreTest) &lt;- filter(testNames, tags))
    *   if (ignoreTest)
    *     // ignore the test
    *   else
@@ -139,26 +139,6 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
    *
    * @throws IllegalArgumentException if any set contained in the passed <code>tags</code> map is empty
    */
-// I will make this private so I can keep using that darned deprecated implicit conversion.
-// TODO: REMOVE THIS DEPRECATED ONCE TESTS PASS, AND AFTER DEPRECATION CYCLE OF THE Function2
-// IMPLICIT, REMOVE THE WHOLE PRIVATE METHOD.
-  @deprecated("Please use the apply method that takes a suiteId instead, the one with this signature: def apply(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): List[(String, Boolean)]")
-  private def apply(testNames: Set[String], tags: Map[String, Set[String]]): List[(String, Boolean)] = {
-
-    verifyPreconditionsForMethods(testNames, tags)
-
-    val testNamesAsList = testNames.toList // to preserve the order
-    val filtered =
-      for {
-        testName <- includedTestNames(testNamesAsList, tags)
-        if !tags.contains(testName) ||
-                (tags(testName).contains(IgnoreTag) && (tags(testName) intersect (tagsToExclude + "org.scalatest.Ignore")).size == 1) ||
-                (tags(testName) intersect tagsToExclude).isEmpty
-      } yield (testName, tags.contains(testName) && tags(testName).contains(IgnoreTag))
-
-    filtered
-  }
-  
   def apply(testNames: Set[String], tags: Map[String, Set[String]], suiteId: String): List[(String, Boolean)] = {
     val testTags: Map[String, Set[String]] = mergeTestDynamicTags(tags, suiteId, testNames)
     verifyPreconditionsForMethods(testNames, testTags)
@@ -209,7 +189,25 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
    */
   def apply(testName: String, tags: Map[String, Set[String]], suiteId: String): (Boolean, Boolean) = {
     val testTags: Map[String, Set[String]] = mergeTestDynamicTags(tags, suiteId, Set(testName))
-    val list = apply(Set(testName), testTags)
+
+    def impl(testNames: Set[String], tags: Map[String, Set[String]]): List[(String, Boolean)] = {
+
+      verifyPreconditionsForMethods(testNames, tags)
+
+      val testNamesAsList = testNames.toList // to preserve the order
+      val filtered =
+        for {
+          testName <- includedTestNames(testNamesAsList, tags)
+          if !tags.contains(testName) ||
+                (tags(testName).contains(IgnoreTag) && (tags(testName) intersect (tagsToExclude + "org.scalatest.Ignore")).size == 1) ||
+                (tags(testName) intersect tagsToExclude).isEmpty
+        } yield (testName, tags.contains(testName) && tags(testName).contains(IgnoreTag))
+
+        filtered
+     }
+
+    val list = impl(Set(testName), testTags)
+
     if (list.isEmpty)
       (true, false)
     else
@@ -248,6 +246,9 @@ final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToEx
   }
 }
 
+/**
+ * Companion object to `Filter` offering a default `Filter` and a factory method for `Filter`s.
+ */
 object Filter {
   private final val IgnoreTag = "org.scalatest.Ignore"
 
@@ -273,7 +274,4 @@ object Filter {
    * @return a default <code>Filter</code>
    */
   def default: Filter = apply()
-
-  @deprecated("This implicit conversion was added in ScalaTest 3.0.0 because the inheritance relationship between Filter and Function2[Set[String], Map[String, Set[String]], List[(String, Boolean)]] was dropped. Please use the apply method that takes a suiteId instead, the one with this signature: def apply(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): List[(String, Boolean)].")
-  implicit def convertFilterToFunction2(filter: Filter): (Set[String], Map[String, Set[String]]) => List[(String, Boolean)] = (set, map) => filter.apply(set, map)
 }

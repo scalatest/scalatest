@@ -17,10 +17,10 @@ package org.scalatest.deprecated
 import org.scalatest._
 // SKIP-SCALATESTJS,NATIVE-START
 import org.junit.Test
-import org.scalatest.junit.JUnit3Suite
-import org.scalatest.junit.JUnitSuite
+import org.scalatestplus.junit.JUnit3Suite
+import org.scalatestplus.junit.JUnitSuite
 import org.scalatest.refspec.RefSpec
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 import org.testng.annotations.{Test => TestNG }
 // SKIP-SCALATESTJS,NATIVE-END
 import SharedHelpers._
@@ -32,7 +32,6 @@ class DeprecatedTestDataProp extends AllSuiteProp {
 
   // SKIP-SCALATESTJS,NATIVE-START
   def spec = new ExampleTestDataSpec
-  def fixtureSpec = new ExampleTestDataFixtureSpec
   def junit3Suite = new ExampleTestDataJUnit3Suite
   def junitSuite = new ExampleTestDataJUnitSuite
   def testngSuite = new ExampleTestDataTestNGSuite
@@ -98,30 +97,6 @@ class ExampleTestDataSpec extends RefSpec with TestDataFixtureServices {
     object `Scope 2` {
       @SlowAsMolasses
       def `test 1`: Unit = {}
-    }
-  }
-}
-
-@DoNotDiscover
-class ExampleTestDataFixtureSpec extends fixture.Spec with TestDataFixtureServices with StringFixture {
-  val expectedTestData = new TestData {
-    val configMap = ConfigMap("key1" -> "value1") 
-    val name = "Scope 1 Scope 2 test 1"
-    val scopes = Vector("Scope 1", "Scope 2")
-    val text = "test 1"
-    val tags = Set("org.scalatest.DoNotDiscover", "org.scalatest.SlowAsMolasses")
-    val pos = Some(source.Position.here)
-  }
-  var testData: TestData = null
-  override def withFixture(test: OneArgTest): Outcome = {
-    testData = test
-    super.withFixture(test)
-  }
-  
-  object `Scope 1` {
-    object `Scope 2` {
-      @SlowAsMolasses
-      def `test 1`(fixture: String): Unit = { }
     }
   }
 }

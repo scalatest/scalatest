@@ -29,7 +29,6 @@ object DeprecatedParallelTestExecutionOrderExamples extends Tables {
 
   // SKIP-SCALATESTJS,NATIVE-START
   def orderSpec = new DeprecatedExampleParallelTestExecutionOrderSpec
-  def orderFixtureSpec = new DeprecatedExampleParallelTestExecutionOrderFixtureSpec
   // SKIP-SCALATESTJS,NATIVE-END
   def orderFunSuite = new DeprecatedExampleParallelTestExecutionOrderFunSuite
   def orderFixtureFunSuite = new DeprecatedExampleParallelTestExecutionOrderFixtureFunSuite
@@ -51,7 +50,6 @@ object DeprecatedParallelTestExecutionOrderExamples extends Tables {
       "suite1",
       // SKIP-SCALATESTJS,NATIVE-START
       orderSpec,
-      orderFixtureSpec,
       // SKIP-SCALATESTJS,NATIVE-END
       orderFunSuite, 
       orderFixtureFunSuite, 
@@ -76,23 +74,6 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderSpec exten
   def `test 1`: Unit = {}
   def `test 2`: Unit = {}
   def `test 3`: Unit = {}
-  
-  def assertOrderTest(events: List[Event]): Unit = {
-    assert(events.size === 6)
-    checkTestStarting(events(0), "test 1")
-    checkTestSucceeded(events(1), "test 1")
-    checkTestStarting(events(2), "test 2")
-    checkTestSucceeded(events(3), "test 2")
-    checkTestStarting(events(4), "test 3")
-    checkTestSucceeded(events(5), "test 3")
-  }
-}
-
-@DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureSpec extends fixture.Spec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
-  def `test 1`(fixture: String): Unit = {}
-  def `test 2`(fixture: String): Unit = {}
-  def `test 3`(fixture: String): Unit = {}
   
   def assertOrderTest(events: List[Event]): Unit = {
     assert(events.size === 6)

@@ -1,32 +1,15 @@
-package org.scalatest
-package prop
+package org.scalatest.prop
+
+import org.scalatest._
 
 trait GetImplicitConfig { self: Configuration =>
-  def getImplicitConfig()(implicit config: PropertyCheckConfigurable): PropertyCheckConfiguration = config.asPropertyCheckConfiguration
-}
-
-class ConfigImplicitOverrideInClassTest extends FunSuite with Matchers with Configuration with GetImplicitConfig {
-  implicit val classImplicit = PropertyCheckConfig(minSuccessful = 42)
-  test("config implicit override in class") {
-    assert(getImplicitConfig().minSuccessful.value == 42)
-  }
-}
-
-class ConfigImplicitOverrideInTestTest extends FunSuite with Matchers with Configuration with GetImplicitConfig {
-  /*
-  // Fails to compile:
-  //  could not find implicit value for parameter config: ConfigImplicitOverrideInTestTest.this.PropertyCheckConfiguration
-  test("config implicit override in test") {
-    implicit val generatorDrivenConfig = PropertyCheckConfig(minSuccessful = 42)
-    assert(getImplicitConfig().minSuccessful.value == 42)
-  }
-  */
+  def getImplicitConfig()(implicit config: PropertyCheckConfiguration): PropertyCheckConfiguration = config
 }
 
 class ConfigExplicitOverrideInClass extends FunSuite with Matchers with Configuration with GetImplicitConfig {
   // Note: Needs PropertyCheckConfiguration type ascription to compile, otherwise compile failure:
   //    could not find implicit value for parameter config: ConfigExplicitOverrideInClass.this.PropertyCheckConfiguration
-  override implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfig(minSuccessful = 42)
+  override implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration(minSuccessful = 42)
   test("config explicit override in class") {
     assert(getImplicitConfig().minSuccessful.value == 42)
   }

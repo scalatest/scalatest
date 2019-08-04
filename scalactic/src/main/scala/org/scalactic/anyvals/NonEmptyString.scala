@@ -25,6 +25,7 @@ import scala.reflect.ClassTag
 import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
 import org.scalactic.Every
+import org.scalactic.Resources
 
 
 // Can't be a LinearSeq[T] because Builder would be able to create an empty one.
@@ -179,54 +180,6 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     */
   def ++(other: GenTraversableOnce[Char]): NonEmptyString =
     if (other.isEmpty) this else new NonEmptyString(theString ++ other.mkString)
-
-  /**
-    * Fold left: applies a binary operator to a start value, <code>z</code>, and all elements of this <code>NonEmptyString</code>, going left to right.
-    *
-    * <p>
-    * Note: <code>/:</code> is alternate syntax for the <code>foldLeft</code> method; <code>z</code> <code>/:</code> <code>non-empty string</code> is the
-    * same as <code>non-empty string</code> <code>foldLeft</code> <code>z</code>.
-    * </p>
-    *
-    * @tparam B the result of the binary operator
-    * @param z the start value
-    * @param op the binary operator
-    * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyString</code>, going left to right, with the start value,
-    *     <code>z</code>, on the left:
-    *
-    * <pre>
-    * op(...op(op(z, x_1), x_2), ..., x_n)
-    * </pre>
-    *
-    * <p>
-    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyString</code>. 
-    * </p>
-    */
-  final def /:[B](z: B)(op: (B, Char) => B): B = theString./:(z)(op)
-
-  /**
-    * Fold right: applies a binary operator to all elements of this <code>NonEmptyString</code> and a start value, going right to left.
-    *
-    * <p>
-    * Note: <code>:\</code> is alternate syntax for the <code>foldRight</code> method; <code>non-empty string</code> <code>:\</code> <code>z</code> is the same
-    * as <code>non-empty string</code> <code>foldRight</code> <code>z</code>.
-    * </p>
-    *
-    * @tparam B the result of the binary operator
-    * @param z the start value
-    * @param op the binary operator
-    * @return the result of inserting <code>op</code> between consecutive elements of this <code>NonEmptyString</code>, going right to left, with the start value,
-    *     <code>z</code>, on the right:
-    *
-    * <pre>
-    * op(x_1, op(x_2, ... op(x_n, z)...))
-    * </pre>
-    *
-    * <p>
-    * where x<sub>1</sub>, ..., x<sub>n</sub> are the elements of this <code>NonEmptyString</code>. 
-    * </p>
-    */
-  final def :\[B](z: B)(op: (Char, B) => B): B = theString.:\(z)(op)
 
   /**
     * Returns a new <code>NonEmptyString</code> with the given character prepended.
@@ -580,8 +533,12 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     * @return An iterator producing <code>NonEmptyString</code>s of size <code>size</code>, except the last will be truncated if the characters don't divide evenly.
     */
   final def grouped(size: Int): Iterator[NonEmptyString] = {
-    val itOfString = theString.grouped(size)
-    itOfString.map { list => new NonEmptyString(list) }
+    if (size > 0) {
+      val itOfString = theString.grouped(size)
+      itOfString.map { list => new NonEmptyString(list) }
+    }
+    else
+      throw new IllegalArgumentException(Resources.invalidSize(size))
   }
 
   /**
@@ -720,7 +677,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
   final def isDefinedAt(idx: Int): Boolean = theString.isDefinedAt(idx)
 
   /**
-    * Returns <code>false</code> to indicate this <code>NonEmptyString</code>, like all <code>NonEmptyString<code>s, is non-empty.
+    * Returns <code>false</code> to indicate this <code>NonEmptyString</code>, like all <code>NonEmptyString</code>s, is non-empty.
     *
     * @return false
     */
@@ -1526,7 +1483,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     *
     * @param idx the position of the replacement
     * @param c the replacing character
-    * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyString<code>
+    * @throws IndexOutOfBoundsException if the passed index is greater than or equal to the length of this <code>NonEmptyString</code>
     * @return a copy of this <code>NonEmptyString</code> with the character at position <code>idx</code> replaced by <code>c</code>.
     */
   final def updated(idx: Int, c: Char): NonEmptyString =

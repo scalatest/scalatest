@@ -66,16 +66,14 @@ class ArgsParserSpec extends FunSpec {
       memberOfList,
       // SKIP-SCALATESTJS,NATIVE-START
       beginsWithList,
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY beginsWithList
-      // SKIP-SCALATESTJS,NATIVE-START
       testNGList,
       suffixes,
       chosenStyleList,
       spanScaleFactorList,
       testSortingReporterTimeoutList,
-      slowpokeList
+      slowpokeList,
       // SKIP-SCALATESTJS,NATIVE-END
+      seedList
       ) = ArgsParser.parseArgs(args)
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -94,8 +92,8 @@ class ArgsParserSpec extends FunSpec {
       assert(concurrentList === expectedConcurrentList)
       // SKIP-SCALATESTJS,NATIVE-END
       assert(memberOfList === expectedMemberOfList)
-      assert(beginsWithList === expectedBeginsWithList)
       // SKIP-SCALATESTJS,NATIVE-START
+      assert(beginsWithList === expectedBeginsWithList)
       assert(testNGList === expectedTestNGList)
       assert(chosenStyleList === expectedChosenStyleList)
       assert(spanScaleFactorList == expectedScaleFactorList)
@@ -525,7 +523,8 @@ class ArgsParserSpec extends FunSpec {
                 expectedSuffixes: Option[Pattern],
                 expectedChosenStyleList: List[String],
                 expectedSpanScaleFactorList: List[String],
-                expectedTestSortingReporterTimeoutList: List[String]
+                expectedTestSortingReporterTimeoutList: List[String],
+                expectedSeedList: List[String]
                 ) = {
 
       val ParsedArgs(
@@ -547,16 +546,14 @@ class ArgsParserSpec extends FunSpec {
       memberOfList,
       // SKIP-SCALATESTJS,NATIVE-START
       beginsWithList,
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY beginsWithList
-      // SKIP-SCALATESTJS,NATIVE-START
       testNGList,
       suffixes,
       chosenStyleList,
       spanScaleFactorList,
       testSortingReporterTimeoutList,
-      slowpokeList
+      slowpokeList,
       // SKIP-SCALATESTJS,NATIVE-END
+      seedList
       ) = ArgsParser.parseArgs(args)
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -575,8 +572,8 @@ class ArgsParserSpec extends FunSpec {
       assert(concurrentList === expectedConcurrentList)
       // SKIP-SCALATESTJS,NATIVE-END
       assert(memberOfList === expectedMemberOfList)
-      assert(beginsWithList === expectedBeginsWithList)
       // SKIP-SCALATESTJS,NATIVE-START
+      assert(beginsWithList === expectedBeginsWithList)
       assert(testNGList === expectedTestNGList)
       assert(chosenStyleList === expectedChosenStyleList)
       assert(spanScaleFactorList == expectedSpanScaleFactorList)
@@ -588,6 +585,7 @@ class ArgsParserSpec extends FunSpec {
         assert(suffixes.get.toString === expectedSuffixes.get.toString)
       }
       // SKIP-SCALATESTJS,NATIVE-END
+      assert(seedList === expectedSeedList)
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
@@ -607,6 +605,7 @@ class ArgsParserSpec extends FunSpec {
       Nil,
       Nil,
       None,
+      Nil,
       Nil,
       Nil,
       Nil
@@ -631,6 +630,7 @@ class ArgsParserSpec extends FunSpec {
       None,
       Nil,
       Nil,
+      Nil,
       Nil
     )
 
@@ -649,6 +649,7 @@ class ArgsParserSpec extends FunSpec {
       Nil,
       Nil,
       None,
+      Nil,
       Nil,
       Nil,
       Nil
@@ -673,6 +674,7 @@ class ArgsParserSpec extends FunSpec {
       None,
       Nil,
       Nil,
+      Nil,
       Nil
     )
 
@@ -695,6 +697,7 @@ class ArgsParserSpec extends FunSpec {
       None,
       Nil,
       Nil,
+      Nil,
       Nil
     )
 
@@ -715,6 +718,7 @@ class ArgsParserSpec extends FunSpec {
       Nil,
       Nil,
       None,
+      Nil,
       Nil,
       Nil,
       Nil
@@ -740,6 +744,7 @@ class ArgsParserSpec extends FunSpec {
       None,
       Nil,
       Nil,
+      Nil,
       Nil
     )
     // Try a TestNGSuite
@@ -761,6 +766,7 @@ class ArgsParserSpec extends FunSpec {
       List("-w", "com.example.root"),
       List("-b", "some/path/file.xml"),
       None,
+      Nil,
       Nil,
       Nil,
       Nil
@@ -786,6 +792,7 @@ class ArgsParserSpec extends FunSpec {
       None,
       Nil,
       Nil,
+      Nil,
       Nil
     )
     // Test -u option
@@ -807,6 +814,7 @@ class ArgsParserSpec extends FunSpec {
       List("-w", "com.example.root"),
       List("-b", "some/path/file.xml"),
       None,
+      Nil,
       Nil,
       Nil,
       Nil
@@ -832,6 +840,7 @@ class ArgsParserSpec extends FunSpec {
       Some(Pattern.compile(".*(Spec|Suite)$")),
       Nil,
       Nil,
+      Nil,
       Nil
     )
     // Test -q option
@@ -853,6 +862,7 @@ class ArgsParserSpec extends FunSpec {
       List("-w", "com.example.root"),
       List("-b", "some/path/file.xml"),
       Some(Pattern.compile(".*(Spec|Suite)$")),
+      Nil,
       Nil,
       Nil,
       Nil
@@ -878,6 +888,7 @@ class ArgsParserSpec extends FunSpec {
       Some(Pattern.compile(".*(Spec|Suite|foo)$")),
       Nil,
       Nil,
+      Nil,
       Nil
     )
     // Test -F option
@@ -901,6 +912,7 @@ class ArgsParserSpec extends FunSpec {
       Some(Pattern.compile(".*(Spec|Suite|foo)$")),
       Nil,
       List("-F", "200"),
+      Nil,
       Nil
     )
     // Test -T option
@@ -924,7 +936,8 @@ class ArgsParserSpec extends FunSpec {
       Some(Pattern.compile(".*(Spec|Suite|foo)$")),
       Nil,
       Nil,
-      List("-T", "20")
+      List("-T", "20"),
+      Nil
     )
     // Test -h option
     verify(
@@ -945,6 +958,7 @@ class ArgsParserSpec extends FunSpec {
       List("-w", "com.example.root"),
       List("-b", "some/path/file.xml"),
       None,
+      Nil,
       Nil,
       Nil,
       Nil
@@ -970,6 +984,7 @@ class ArgsParserSpec extends FunSpec {
       None,
       Nil,
       Nil,
+      Nil,
       Nil
     )
 
@@ -989,6 +1004,7 @@ class ArgsParserSpec extends FunSpec {
       Nil,
       Nil,
       None,
+      Nil,
       Nil,
       Nil,
       Nil
@@ -1017,6 +1033,7 @@ class ArgsParserSpec extends FunSpec {
       None,
       Nil,
       Nil,
+      Nil,
       Nil
     )
 
@@ -1036,6 +1053,7 @@ class ArgsParserSpec extends FunSpec {
       Nil,
       Nil,
       None,
+      Nil,
       Nil,
       Nil,
       Nil
@@ -1064,9 +1082,32 @@ class ArgsParserSpec extends FunSpec {
       None,
       Nil,
       Nil,
+      Nil,
       Nil
     )
     // SKIP-SCALATESTJS,NATIVE-END
+
+    // Test to parse -S
+    verify(
+      Array("-S", "123456789"),
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      Nil,
+      None,
+      Nil,
+      Nil,
+      Nil,
+      List("-S", "123456789")
+    )
   }
 
   describe("parseCompoundArgIntoSet should") {
@@ -1808,6 +1849,44 @@ class ArgsParserSpec extends FunSpec {
     assert(multipDashPSThreadNum.enableSuiteSortingReporter === true)
   }
   // SKIP-SCALATESTJS,NATIVE-END
+
+  it("parseLongArgument should work correctly") {
+    intercept[IllegalArgumentException] {
+      ArgsParser.parseLongArgument(List("-a", "123"), "-S")
+    }
+    intercept[IllegalArgumentException] {
+      ArgsParser.parseLongArgument(List("-S", "abc"), "-S")
+    }
+    intercept[IllegalArgumentException] {
+      ArgsParser.parseLongArgument(List("-S"), "-S")
+    }
+    intercept[IllegalArgumentException] {
+      ArgsParser.parseLongArgument(List("-S", "123", "-S"), "-S")
+    }
+    intercept[IllegalArgumentException] {
+      ArgsParser.parseLongArgument(List("-S", "123", "-S", "456"), "-S")
+    }
+    val spanScaleFactor = ArgsParser.parseLongArgument(List("-S", "888"), "-S")
+    assert(spanScaleFactor === Some(888))
+
+    intercept[IllegalArgumentException] {
+      ArgsParser.parseLongArgument(List("-a", "123"), "-S")
+    }
+    intercept[IllegalArgumentException] {
+      ArgsParser.parseLongArgument(List("-T", "abc"), "-S")
+    }
+    intercept[IllegalArgumentException] {
+      ArgsParser.parseLongArgument(List("-T"), "-T")
+    }
+    intercept[IllegalArgumentException] {
+      ArgsParser.parseLongArgument(List("-T", "123", "-T"), "-T")
+    }
+    intercept[IllegalArgumentException] {
+      ArgsParser.parseLongArgument(List("-T", "123", "-T", "456"), "-T")
+    }
+    val testSortingReporterTimeout = ArgsParser.parseLongArgument(List("-T", "888"), "-T")
+    assert(testSortingReporterTimeout === Some(888))
+  }
 
   it("""parseArgs should disallow -t"something""") {
     val e = intercept[IllegalArgumentException] {
