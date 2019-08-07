@@ -7,8 +7,6 @@ import com.typesafe.sbt.osgi.OsgiKeys
 import com.typesafe.sbt.osgi.SbtOsgi
 import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
 import com.typesafe.sbt.SbtPgp.autoImport._
-/*import org.scalajs.sbtplugin.ScalaJSPlugin.
-  autoImport.{scalaJSOptimizerOptions, scalaJSStage, FastOptStage, jsEnv, RhinoJSEnv}*/
 
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLinkerConfig, jsEnv}
@@ -16,10 +14,7 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLinkerConfig, jsEn
 import sbtcrossproject.CrossPlugin.autoImport._
 
 import scalanative.sbtplugin.ScalaNativePlugin
-//import scalanative.tools
-//import scalanative.optimizer.{inject, pass}
 import scalanative.sbtplugin.ScalaNativePluginInternal.NativeTest
-//import scalanative.sbtplugin.ScalaNativePluginInternal.{nativeConfig, nativeOptimizerDriver, nativeLinkerReporter, nativeOptimizerReporter, NativeTest}
 import ScalaNativePlugin.autoImport._
 
 import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurrentClassfiles, mimaBinaryIssueFilters}
