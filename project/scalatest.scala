@@ -11,7 +11,11 @@ import com.typesafe.sbt.SbtPgp.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLinkerConfig, jsEnv}
 
-import sbtcrossproject.CrossPlugin.autoImport._
+//import sbtcrossproject.CrossPlugin.autoImport._
+import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
+import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType, _}
+import scalajscrossproject.ScalaJSCrossPlugin.autoImport._
+import scalanativecrossproject.ScalaNativeCrossPlugin.autoImport._
 
 import scalanative.sbtplugin.ScalaNativePlugin
 import scalanative.sbtplugin.ScalaNativePluginInternal.NativeTest
@@ -1148,7 +1152,7 @@ object ScalatestBuild {
       initialCommands in console := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies += "org.scala-native" %% "test-interface_native0.4.0-M2" % "0.4.0-M2",
+      libraryDependencies += "org.scala-native" %%% "test-interface" % "0.4.0-M2",
       //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
@@ -1444,7 +1448,7 @@ object ScalatestBuild {
         organization := "org.scalatest",
         moduleName := "scalatest-app",
         libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-        libraryDependencies += "org.scala-native" %% "test-interface_native0.4.0-M2" % "0.4.0-M2",
+        libraryDependencies += "org.scala-native" %%% "test-interface" % "0.4.0-M2",
         // include the scalactic classes and resources in the jar
         mappings in (Compile, packageBin) ++= mappings.in(scalacticNative, Compile, packageBin).value,
         // include the scalactic sources in the source jar
