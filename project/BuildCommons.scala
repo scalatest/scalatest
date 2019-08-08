@@ -17,6 +17,10 @@ trait BuildCommons {
 
   def scalacticDocSettings: Seq[Setting[_]]
 
+  def scalatestDocSettings: Seq[Setting[_]]
+
+  def scalatestJSDocTaskSetting: Setting[_]
+
   def crossBuildTestLibraryDependencies: sbt.Def.Initialize[Seq[sbt.ModuleID]]
 
   def scalatestTestOptions: Seq[sbt.TestOption]
