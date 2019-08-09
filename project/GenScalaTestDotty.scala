@@ -87,7 +87,7 @@ object GenScalaTestDotty {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
     val sourceDir = new File(sourceDirName)
-    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && f.getName.endsWith(".scala")).map { sourceFile =>
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
       if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
         copyFile(sourceFile, destFile)
@@ -116,7 +116,8 @@ object GenScalaTestDotty {
         "WrapWith.java",
         "DoNotDiscover.java",
         "Ignore.java"
-      ))
+      )) ++ 
+    copyDir("scalatest/src/main/java/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty)  
   }
 
   def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
@@ -142,7 +143,6 @@ object GenScalaTestDotty {
         "StreamlinedXmlNormMethods.scala"   // Hmm, not sure what to do with XML support, let's ask.
       )
     ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, 
       List(
