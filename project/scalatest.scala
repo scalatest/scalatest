@@ -7,18 +7,18 @@ import com.typesafe.sbt.osgi.OsgiKeys
 import com.typesafe.sbt.osgi.SbtOsgi
 import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
 import com.typesafe.sbt.SbtPgp.autoImport._
-/*import org.scalajs.sbtplugin.ScalaJSPlugin.
-  autoImport.{scalaJSOptimizerOptions, scalaJSStage, FastOptStage, jsEnv, RhinoJSEnv}*/
 
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLinkerConfig, jsEnv}
 
-import sbtcrossproject.CrossPlugin.autoImport._
+//import sbtcrossproject.CrossPlugin.autoImport._
+import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
+import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType, _}
+import scalajscrossproject.ScalaJSCrossPlugin.autoImport._
+import scalanativecrossproject.ScalaNativeCrossPlugin.autoImport._
 
 import scalanative.sbtplugin.ScalaNativePlugin
-import scalanative.tools
-import scalanative.optimizer.{inject, pass}
-import scalanative.sbtplugin.ScalaNativePluginInternal.{nativeConfig, nativeOptimizerDriver, nativeLinkerReporter, nativeOptimizerReporter, NativeTest}
+import scalanative.sbtplugin.ScalaNativePluginInternal.NativeTest
 import ScalaNativePlugin.autoImport._
 
 import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurrentClassfiles, mimaBinaryIssueFilters}
@@ -751,10 +751,10 @@ object ScalatestBuild {
       organization := "org.scalactic",
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
-      nativeOptimizerDriver in NativeTest := {
+      /*nativeOptimizerDriver in NativeTest := {
         val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
         orig.withPasses(orig.passes.filterNot(p => p == pass.DeadBlockElimination || p == pass.GlobalBoxingElimination))
-      },
+      },*/
       nativeLinkStubs in NativeTest := true,
       sourceGenerators in Test += {
         Def.task {
@@ -1152,7 +1152,7 @@ object ScalatestBuild {
       initialCommands in console := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies += "org.scala-native" %%% "test-interface" % "0.3.6",
+      libraryDependencies += "org.scala-native" %%% "test-interface" % "0.4.0-M2",
       //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
@@ -1243,7 +1243,7 @@ object ScalatestBuild {
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
       fork in test := false,
-      nativeOptimizerDriver in NativeTest := {
+      /*nativeOptimizerDriver in NativeTest := {
         val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
         orig.withPasses(orig.passes.filterNot(p => p == pass.DeadBlockElimination || p == pass.GlobalBoxingElimination))
       },
@@ -1257,7 +1257,7 @@ object ScalatestBuild {
         override def onComplete(batchId: Int, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
           println(s"end $batchId")
         }
-      },
+      },*/
       nativeLinkStubs in NativeTest := true,
       testOptions in Test := scalatestTestNativeOptions,
       publishArtifact := false,
@@ -1448,7 +1448,7 @@ object ScalatestBuild {
         organization := "org.scalatest",
         moduleName := "scalatest-app",
         libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-        libraryDependencies += "org.scala-native" %%% "test-interface" % "0.3.6",
+        libraryDependencies += "org.scala-native" %%% "test-interface" % "0.4.0-M2",
         // include the scalactic classes and resources in the jar
         mappings in (Compile, packageBin) ++= mappings.in(scalacticNative, Compile, packageBin).value,
         // include the scalactic sources in the source jar
