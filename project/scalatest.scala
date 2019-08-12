@@ -551,6 +551,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       name := "scalatest-compatible",
       organization := "org.scalatest",
       javaSourceManaged := target.value / "java",
+      autoScalaLibrary := false, 
+      crossPaths := false, // disable using the Scala version in output paths and artifacts
       sourceGenerators in Compile += {
         // Little trick to get rid of bnd error when publish.
         Def.task{
