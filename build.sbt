@@ -47,3 +47,5 @@ lazy val genEmptyTests = ScalatestBuild.genEmptyTests
 lazy val gentests = ScalatestBuild.gentests
 lazy val examples = ScalatestBuild.examples
 lazy val examplesJS = ScalatestBuild.examplesJS
+lazy val scalatestCompatible = ScalatestBuild.scalatestCompatible
+lazy val scalatestCore = ScalatestBuild.scalatestCore

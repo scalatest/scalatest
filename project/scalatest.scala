@@ -542,6 +542,109 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   lazy val rootProject = scalatestApp
 
+  lazy val scalatestCompatible = Project("scalatestCompatible", file("modules/scalatest-compatible"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Compatible",
+      name := "scalatest-compatible",
+      organization := "org.scalatest",
+      javaSourceManaged := target.value / "java",
+      sourceGenerators in Compile += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          (new File(crossTarget.value, "classes")).mkdirs()
+          Seq.empty[File]
+        }.taskValue
+      },
+      sourceGenerators in Compile += {
+        Def.task{
+          GenModules.genScalaTestCompatible((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
+      scalatestDocSettings,
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.compatible"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalactic.*",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest Compatible",
+        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
+    ).dependsOn(scalacticMacro, scalactic)
+
+  lazy val scalatestCore = Project("scalatestCore", file("modules/scalatest-core"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Core",
+      name := "scalatest-core",
+      organization := "org.scalatest",
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+      libraryDependencies ++= scalatestLibraryDependencies,
+      javaSourceManaged := target.value / "java",
+      sourceGenerators in Compile += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          (new File(crossTarget.value, "classes")).mkdirs()
+          Seq.empty[File]
+        }.taskValue
+      },
+      sourceGenerators in Compile += {
+        Def.task{
+          GenModules.genScalaTestCoreJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
+      sourceGenerators in Compile += {
+       Def.task{
+         GenModules.genScalaTestCore((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
+         GenConfigMap.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
+         ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+         ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+         GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+         GenCompatibleClasses.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
+       }.taskValue
+      },
+      scalatestDocSettings,
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest", 
+        "org.scalatest.concurrent",  
+        "org.scalatest.enablers",  
+        "org.scalatest.exceptions",  
+        "org.scalatest.events", 
+        "org.scalatest.fixture",  
+        "org.scalatest.prop", 
+        "org.scalatest.tags", 
+        "org.scalatest.tagobjects", 
+        "org.scalatest.time", 
+        "org.scalatest.tools",  
+        "org.scalatest.verbs"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest Core",
+        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
+    ).dependsOn(scalatestCompatible)  
+
   def gentestsLibraryDependencies =
     Seq(
       flexmarkAll,
