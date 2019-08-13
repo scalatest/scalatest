@@ -582,7 +582,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalacticMacro, scalactic)
+    )
 
   lazy val scalatestCore = Project("scalatestCore", file("modules/scalatest-core"))
     .enablePlugins(SbtOsgi)
@@ -645,7 +645,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCompatible)  
+    ).dependsOn(scalatestCompatible, scalacticMacro, scalactic)  
 
   lazy val scalatestFeatureSpec = Project("scalatestFeatureSpec", file("modules/scalatest-featurespec"))
     .enablePlugins(SbtOsgi)
