@@ -91,5 +91,8 @@ object GenModules {
 
   def genScalaTestMatchersCore(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++ 
-    copyDir("scalatest/src/main/scala/org/scalatest/matchers/dsl", "org/scalatest/matchers/dsl", targetDir, List.empty)           
+    copyDir("scalatest/src/main/scala/org/scalatest/matchers/dsl", "org/scalatest/matchers/dsl", targetDir, List.empty)
+
+  def genScalaTestShouldMatchers(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("scalatest/src/main/scala/org/scalatest/matchers/should", "org/scalatest/matchers/should", targetDir, List.empty)             
 }
