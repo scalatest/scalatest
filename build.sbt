@@ -50,3 +50,4 @@ lazy val examplesJS = ScalatestBuild.examplesJS
 lazy val scalatestCompatible = ScalatestBuild.scalatestCompatible
 lazy val scalatestCore = ScalatestBuild.scalatestCore
 lazy val scalatestFeatureSpec = ScalatestBuild.scalatestFeatureSpec
+lazy val scalatestFlatSpec = ScalatestBuild.scalatestFlatSpec

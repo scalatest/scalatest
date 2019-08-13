@@ -65,8 +65,10 @@ object GenModules {
     copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, List.empty)
   }
 
-  def genScalaTestFeatureSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+  def genScalaTestFeatureSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)
-  }
+
+  def genScalaTestFlatSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("scalatest/src/main/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, List.empty)  
 
 }
