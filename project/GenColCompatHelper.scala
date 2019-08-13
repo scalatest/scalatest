@@ -21,7 +21,7 @@ object GenColCompatHelper {
 
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     val content =
-      if (scalaVersion startsWith "2.13")
+      if (ScalaVersionHelper.isStdLibCompat_213(scalaVersion))
         """/*
           | * Copyright 2001-2018 Artima, Inc.
           | *
@@ -53,7 +53,9 @@ object GenColCompatHelper {
           |
           |  type Factory[-A, +C] = scala.collection.Factory[A, C]
           |
-          |  object Factory {}
+          |  object Factory {
+          |    $$DOTTY_CONVERSION_METHODS$$
+          |  }
           |
           |  def className(col: scala.collection.Iterable[_]): String = {
           |    val colToString = col.toString
@@ -69,7 +71,10 @@ object GenColCompatHelper {
           |  type StringOps = scala.collection.StringOps
           |}
           |
-        """.stripMargin
+        """.replaceAllLiterally(
+              "$$DOTTY_CONVERSION_METHODS$$",
+              if (ScalaVersionHelper.isDotty(scalaVersion)) dottyColCompatHelperFactoryMethods else "")
+           .stripMargin
       else
         """/*
           | * Copyright 2001-2018 Artima, Inc.
@@ -137,9 +142,23 @@ object GenColCompatHelper {
     )
   }
 
+  private def dottyColCompatHelperFactoryMethods: String = """
+  |    implicit def mkFactoryFromList[A]: Conversion[scala.collection.immutable.List.type, scala.collection.Factory[A, scala.collection.immutable.List[A]]] =
+  |      scala.collection.IterableFactory.toFactory(_)
+  |
+  |    implicit def mkFactoryFromVector[A]: Conversion[scala.collection.immutable.Vector.type, scala.collection.Factory[A, scala.collection.immutable.Vector[A]]] =
+  |      scala.collection.IterableFactory.toFactory(_)
+  |
+  |    implicit def mkFactoryFromSet[A]: Conversion[scala.collection.immutable.Set.type, scala.collection.Factory[A, scala.collection.immutable.Set[A]]] =
+  |      scala.collection.IterableFactory.toFactory(_)
+  |
+  |    implicit def mkFactoryFromListBuffer[A]: Conversion[scala.collection.mutable.ListBuffer.type, scala.collection.Factory[A, scala.collection.mutable.ListBuffer[A]]] =
+  |      scala.collection.IterableFactory.toFactory(_)
+  """.stripMargin
+
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     val chainSpec =
-      if (scalaVersion startsWith "2.13")
+      if (ScalaVersionHelper.isStdLibCompat_213(scalaVersion))
         """/*
           | * Copyright 2001-2018 Artima, Inc.
           | *
@@ -213,7 +232,7 @@ object GenColCompatHelper {
         """.stripMargin
 
     val everySpec =
-      if (scalaVersion startsWith "2.13")
+      if (ScalaVersionHelper.isStdLibCompat_213(scalaVersion))
         """/*
           | * Copyright 2001-2018 Artima, Inc.
           | *

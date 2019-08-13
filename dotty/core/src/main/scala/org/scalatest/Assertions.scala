@@ -28,6 +28,7 @@ import org.scalatest.exceptions.TestPendingException
 import org.scalactic.anyvals.NonEmptyArray
 import scala.quoted._
 import org.scalatest.compatible.Assertion
+import ArrayHelper.deep
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -1356,21 +1357,21 @@ object Assertions extends Assertions {
     left match {
       case leftArray: Array[_] =>
         right match {
-          case rightArray: Array[_] => leftArray.deep == rightArray.deep
-          case rightNonEmptyArray: NonEmptyArray[_] => leftArray.deep == rightNonEmptyArray.toArray.deep
-          case _ => leftArray.deep == right
+          case rightArray: Array[_] => deep(leftArray) == deep(rightArray)
+          case rightNonEmptyArray: NonEmptyArray[_] => deep(leftArray) == deep(rightNonEmptyArray.toArray)
+          case _ => deep(leftArray) == right
         }
       case leftNonEmptyArray: NonEmptyArray[_] =>
         right match {
-          case rightArray: Array[_] => leftNonEmptyArray.toArray.deep == rightArray.deep
-          case rightNonEmptyArray: NonEmptyArray[_] => leftNonEmptyArray.toArray.deep == rightNonEmptyArray.toArray.deep
-          case _ => leftNonEmptyArray.toArray.deep == right
+          case rightArray: Array[_] => deep(leftNonEmptyArray.toArray) == deep(rightArray)
+          case rightNonEmptyArray: NonEmptyArray[_] => deep(leftNonEmptyArray.toArray) == deep(rightNonEmptyArray.toArray)
+          case _ => deep(leftNonEmptyArray.toArray) == right
         }
 
       case other => {
         right match {
-          case rightArray: Array[_] => left == rightArray.deep
-          case rightNonEmptyArray: NonEmptyArray[_] => left == rightNonEmptyArray.toArray.deep
+          case rightArray: Array[_] => left == deep(rightArray)
+          case rightNonEmptyArray: NonEmptyArray[_] => left == deep(rightNonEmptyArray.toArray)
           case _ => left == right
         }
       }
