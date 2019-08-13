@@ -84,5 +84,8 @@ object GenModules {
     copyDir("scalatest/src/main/scala/org/scalatest/refspec", "org/scalatest/refspec", targetDir, List.empty)
 
   def genScalaTestWordSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("scalatest/src/main/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)        
+    copyDir("scalatest/src/main/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)
+
+  def genScalaTestDiagrams(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("scalatest/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)          
 }
