@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.compatible
+package org.scalatest.compatible;
 
 /**
  * Marker trait for ScalaTest-compatible assertion types.
@@ -24,4 +24,4 @@ package org.scalatest.compatible
  * worries. It allows third party libraries to define assertions that can appear
  * last in a ScalaTest test body that requires type `compatible.Assertion`.
  */
-trait Assertion
+public interface Assertion {}

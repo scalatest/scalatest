@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2016 Artima, Inc.
+ * Copyright 2001-2018 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.compatible
+package org.scalatest
 
 /**
- * Marker trait for ScalaTest-compatible assertion types.
+ * Classes and traits supporting ScalaTest's "fixture" style traits, which
+ * allow you to pass fixture objects into tests.
  *
- * This will eventually be released as a module, so that third-party libraries
- * can depend just on a module that has just this one trait in it. Since it
- * compiles down to a simple Java interface, there should be no binary compatibility
- * worries. It allows third party libraries to define assertions that can appear
- * last in a ScalaTest test body that requires type `compatible.Assertion`.
+ * This package is released as part of the `scalatest-core` module.
  */
-trait Assertion
+package object fixture
