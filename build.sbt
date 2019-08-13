@@ -51,3 +51,4 @@ lazy val scalatestCompatible = ScalatestBuild.scalatestCompatible
 lazy val scalatestCore = ScalatestBuild.scalatestCore
 lazy val scalatestFeatureSpec = ScalatestBuild.scalatestFeatureSpec
 lazy val scalatestFlatSpec = ScalatestBuild.scalatestFlatSpec
+lazy val scalatestFreeSpec = ScalatestBuild.scalatestFreeSpec
