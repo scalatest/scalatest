@@ -57,3 +57,4 @@ lazy val scalatestPropSpec = ScalatestBuild.scalatestPropSpec
 lazy val scalatestRefSpec = ScalatestBuild.scalatestRefSpec
 lazy val scalatestWordSpec = ScalatestBuild.scalatestWordSpec
 lazy val scalatestDiagrams = ScalatestBuild.scalatestDiagrams
+lazy val scalatestMatchersCore = ScalatestBuild.scalatestMatchersCore
