@@ -879,7 +879,46 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCore)     
+    ).dependsOn(scalatestCore) 
+
+  lazy val scalatestWordSpec = Project("scalatestWordSpec", file("modules/scalatest-wordspec"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest WordSpec",
+      name := "scalatest-wordspec",
+      organization := "org.scalatest",
+      sourceGenerators in Compile += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          (new File(crossTarget.value, "classes")).mkdirs()
+          Seq.empty[File]
+        }.taskValue
+      },
+      sourceGenerators in Compile += {
+       Def.task{
+         GenModules.genScalaTestWordSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
+       }.taskValue
+      },
+      scalatestDocSettings,
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.wordspec"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest WordSpec",
+        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
+    ).dependsOn(scalatestCore)      
 
   def gentestsLibraryDependencies =
     Seq(

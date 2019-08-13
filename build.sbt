@@ -55,3 +55,4 @@ lazy val scalatestFreeSpec = ScalatestBuild.scalatestFreeSpec
 lazy val scalatestFunSuite = ScalatestBuild.scalatestFunSuite
 lazy val scalatestPropSpec = ScalatestBuild.scalatestPropSpec
 lazy val scalatestRefSpec = ScalatestBuild.scalatestRefSpec
+lazy val scalatestWordSpec = ScalatestBuild.scalatestWordSpec
