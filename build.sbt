@@ -60,3 +60,4 @@ lazy val scalatestDiagrams = ScalatestBuild.scalatestDiagrams
 lazy val scalatestMatchersCore = ScalatestBuild.scalatestMatchersCore
 lazy val scalatestShouldMatchers = ScalatestBuild.scalatestShouldMatchers
 lazy val scalatestMustMatchers = ScalatestBuild.scalatestMustMatchers
+lazy val scalatestCoreJS = ScalatestBuild.scalatestCoreJS
