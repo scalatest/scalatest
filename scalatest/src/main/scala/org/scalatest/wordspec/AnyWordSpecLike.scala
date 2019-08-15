@@ -15,7 +15,7 @@
  */
 package org.scalatest.wordspec
 
-import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _, _}
+import org.scalactic._
 import org.scalatest._
 import org.scalatest.exceptions._
 import Suite.autoTagClassAnnotations

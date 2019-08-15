@@ -15,7 +15,7 @@
  */
 package org.scalatest.wordspec
 
-import org.scalactic.{Resources => _, FailureMessages => _, UnquotedString => _, _}
+import org.scalactic._
 import org.scalatest._
 import scala.concurrent.Future
 import Suite.autoTagClassAnnotations
