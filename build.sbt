@@ -63,3 +63,4 @@ lazy val scalatestMustMatchers = ScalatestBuild.scalatestMustMatchers
 lazy val scalatestCoreJS = ScalatestBuild.scalatestCoreJS
 lazy val scalatestFeatureSpecJS = ScalatestBuild.scalatestFeatureSpecJS
 lazy val scalatestFlatSpecJS = ScalatestBuild.scalatestFlatSpecJS
+lazy val scalatestFreeSpecJS = ScalatestBuild.scalatestFreeSpecJS
