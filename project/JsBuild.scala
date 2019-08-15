@@ -412,9 +412,9 @@ trait JsBuild { this: BuildCommons =>
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
     .settings(
-      projectTitle := "ScalaTest",
+      projectTitle := "ScalaTest Core JS",
       organization := "org.scalatest",
-      moduleName := "scalatest",
+      moduleName := "scalatest-core",
       initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
@@ -423,7 +423,6 @@ trait JsBuild { this: BuildCommons =>
       //jsDependencies += RuntimeDOM % "test",
       Compile / sourceGenerators += {
         Def.task {
-          //GenScalaTestJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
           GenModulesJS.genScalaTestCore((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
           GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
           ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
@@ -476,12 +475,50 @@ trait JsBuild { this: BuildCommons =>
         "*;resolution:=optional"
       ),
       OsgiKeys.additionalHeaders:= Map(
-        "Bundle-Name" -> "ScalaTest",
+        "Bundle-Name" -> "ScalaTest Core JS",
         "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).enablePlugins(ScalaJSPlugin)  
+    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestFeatureSpecJS = Project("scalatestFeatureSpecJS", file("modules/js/scalatest-featurespec.js"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FeatureSpec JS",
+      organization := "org.scalatest",
+      name := "scalatest-featurespec",
+      initialCommands in console := """|import org.scalatest._
+                                      |import org.scalactic._
+                                      |import Matchers._""".stripMargin,
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      libraryDependencies ++= scalatestJSLibraryDependencies,
+      //jsDependencies += RuntimeDOM % "test",
+      Compile / sourceGenerators += {
+        Def.task {
+          GenModulesJS.genScalaTestFeatureSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }
+      },
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.featurespec"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest FeatureSpec JS",
+        "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc.",
+        "Main-Class" -> "org.scalatest.tools.Runner"
+      )
+    ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)  
 
 }

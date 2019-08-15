@@ -15,7 +15,8 @@
  */
 package org.scalatest.featurespec
 
-import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _, _}
+//import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _, _}
+import org.scalactic._
 import org.scalatest._
 import Suite.autoTagClassAnnotations
 import org.scalatest.exceptions._
