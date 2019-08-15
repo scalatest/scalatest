@@ -86,12 +86,14 @@ object GenModulesJS {
   def genScalaTestFeatureSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)
 
+  def genScalaTestFlatSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("scalatest/src/main/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, List.empty)
+
   /*
 
   
 
-  def genScalaTestFlatSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("scalatest/src/main/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, List.empty)  
+    
 
   def genScalaTestFreeSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("scalatest/src/main/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, List.empty)

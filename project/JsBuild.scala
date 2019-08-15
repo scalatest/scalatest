@@ -519,6 +519,44 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)  
+    ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestFlatSpecJS = Project("scalatestFlatSpecJS", file("modules/js/scalatest-flatspec.js"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FlatSpec JS",
+      organization := "org.scalatest",
+      name := "scalatest-flatspec",
+      initialCommands in console := """|import org.scalatest._
+                                      |import org.scalactic._
+                                      |import Matchers._""".stripMargin,
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      libraryDependencies ++= scalatestJSLibraryDependencies,
+      //jsDependencies += RuntimeDOM % "test",
+      Compile / sourceGenerators += {
+        Def.task {
+          GenModulesJS.genScalaTestFlatSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }
+      },
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.flatspec"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest FlatSpec JS",
+        "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc.",
+        "Main-Class" -> "org.scalatest.tools.Runner"
+      )
+    ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)    
 
 }
