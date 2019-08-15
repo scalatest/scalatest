@@ -53,9 +53,7 @@ object GenColCompatHelper {
           |
           |  type Factory[-A, +C] = scala.collection.Factory[A, C]
           |
-          |  object Factory {
-          |    $$DOTTY_CONVERSION_METHODS$$
-          |  }
+          |  object Factory {}
           |
           |  def className(col: scala.collection.Iterable[_]): String = {
           |    val colToString = col.toString
@@ -71,10 +69,7 @@ object GenColCompatHelper {
           |  type StringOps = scala.collection.StringOps
           |}
           |
-        """.replaceAllLiterally(
-              "$$DOTTY_CONVERSION_METHODS$$",
-              if (ScalaVersionHelper.isDotty(scalaVersion)) dottyColCompatHelperFactoryMethods else "")
-           .stripMargin
+        """.stripMargin
       else
         """/*
           | * Copyright 2001-2018 Artima, Inc.
@@ -141,20 +136,6 @@ object GenColCompatHelper {
       writeFile(new File(targetDir,"ColCompatHelper.scala"), content)
     )
   }
-
-  private def dottyColCompatHelperFactoryMethods: String = """
-  |    implicit def mkFactoryFromList[A]: Conversion[scala.collection.immutable.List.type, scala.collection.Factory[A, scala.collection.immutable.List[A]]] =
-  |      scala.collection.IterableFactory.toFactory(_)
-  |
-  |    implicit def mkFactoryFromVector[A]: Conversion[scala.collection.immutable.Vector.type, scala.collection.Factory[A, scala.collection.immutable.Vector[A]]] =
-  |      scala.collection.IterableFactory.toFactory(_)
-  |
-  |    implicit def mkFactoryFromSet[A]: Conversion[scala.collection.immutable.Set.type, scala.collection.Factory[A, scala.collection.immutable.Set[A]]] =
-  |      scala.collection.IterableFactory.toFactory(_)
-  |
-  |    implicit def mkFactoryFromListBuffer[A]: Conversion[scala.collection.mutable.ListBuffer.type, scala.collection.Factory[A, scala.collection.mutable.ListBuffer[A]]] =
-  |      scala.collection.IterableFactory.toFactory(_)
-  """.stripMargin
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     val chainSpec =
