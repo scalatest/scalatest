@@ -23,7 +23,7 @@ import org.scalatest.Suite
 import org.scalatest.UnquotedString
 import org.scalatest.CompileMacro
 
-import org.scalactic.{FailureMessages => _, UnquotedString => _, Resources => _, _}
+import org.scalactic._
 import org.scalatest.enablers._
 import org.scalatest.matchers._
  

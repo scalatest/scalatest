@@ -15,7 +15,7 @@
  */
 package org.scalatest.freespec
 
-import org.scalactic.{Resources => _, FailureMessages => _, UnquotedString => _, _}
+import org.scalactic._
 import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalatest.exceptions._

@@ -542,7 +542,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   lazy val rootProject = scalatestApp
 
-  lazy val scalatestCompatible = Project("scalatestCompatible", file("modules/scalatest-compatible"))
+  lazy val scalatestCompatible = Project("scalatestCompatible", file("modules/jvm/scalatest-compatible"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -584,7 +584,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     )
 
-  lazy val scalatestCore = Project("scalatestCore", file("modules/scalatest-core"))
+  lazy val scalatestCore = Project("scalatestCore", file("modules/jvm/scalatest-core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -647,7 +647,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCompatible, scalacticMacro, scalactic)  
 
-  lazy val scalatestFeatureSpec = Project("scalatestFeatureSpec", file("modules/scalatest-featurespec"))
+  lazy val scalatestFeatureSpec = Project("scalatestFeatureSpec", file("modules/jvm/scalatest-featurespec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -686,7 +686,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore)
 
-  lazy val scalatestFlatSpec = Project("scalatestFlatSpec", file("modules/scalatest-flatspec"))
+  lazy val scalatestFlatSpec = Project("scalatestFlatSpec", file("modules/jvm/scalatest-flatspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -725,7 +725,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore)
 
-  lazy val scalatestFreeSpec = Project("scalatestFreeSpec", file("modules/scalatest-freespec"))
+  lazy val scalatestFreeSpec = Project("scalatestFreeSpec", file("modules/jvm/scalatest-freespec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -764,7 +764,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore)
 
-  lazy val scalatestFunSuite = Project("scalatestFunSuite", file("modules/scalatest-funsuite"))
+  lazy val scalatestFunSuite = Project("scalatestFunSuite", file("modules/jvm/scalatest-funsuite"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -803,7 +803,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore)   
 
-  lazy val scalatestPropSpec = Project("scalatestPropSpec", file("modules/scalatest-propspec"))
+  lazy val scalatestPropSpec = Project("scalatestPropSpec", file("modules/jvm/scalatest-propspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -842,7 +842,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore)
 
-  lazy val scalatestRefSpec = Project("scalatestRefSpec", file("modules/scalatest-refspec"))
+  lazy val scalatestRefSpec = Project("scalatestRefSpec", file("modules/jvm/scalatest-refspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -881,7 +881,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore) 
 
-  lazy val scalatestWordSpec = Project("scalatestWordSpec", file("modules/scalatest-wordspec"))
+  lazy val scalatestWordSpec = Project("scalatestWordSpec", file("modules/jvm/scalatest-wordspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -920,7 +920,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore)
 
-  lazy val scalatestDiagrams = Project("scalatestDiagrams", file("modules/scalatest-diagrams"))
+  lazy val scalatestDiagrams = Project("scalatestDiagrams", file("modules/jvm/scalatest-diagrams"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -959,7 +959,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore)
 
-  lazy val scalatestMatchersCore = Project("scalatestMatchersCore", file("modules/scalatest-matchers-core"))
+  lazy val scalatestMatchersCore = Project("scalatestMatchersCore", file("modules/jvm/scalatest-matchers-core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -1000,7 +1000,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore) 
 
-  lazy val scalatestShouldMatchers = Project("scalatestShouldMatchers", file("modules/scalatest-shouldmatchers"))
+  lazy val scalatestShouldMatchers = Project("scalatestShouldMatchers", file("modules/jvm/scalatest-shouldmatchers"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -1039,7 +1039,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestMatchersCore)
 
-  lazy val scalatestMustMatchers = Project("scalatestMustMatchers", file("modules/scalatest-mustmatchers"))
+  lazy val scalatestMustMatchers = Project("scalatestMustMatchers", file("modules/jvm/scalatest-mustmatchers"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
