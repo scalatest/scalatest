@@ -815,4 +815,25 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestMatchersCoreJS).enablePlugins(ScalaJSPlugin)              
 
+  lazy val scalatestModulesJS = (project in file("modules/js/modules-aggregation"))
+    .settings(sharedSettings: _*)
+    .settings(
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {},
+      scalacOptions in (Compile, doc) := List.empty
+    ).aggregate(
+      scalatestCoreJS, 
+      scalatestFeatureSpecJS, 
+      scalatestFlatSpecJS, 
+      scalatestFreeSpecJS, 
+      scalatestFunSuiteJS, 
+      scalatestPropSpecJS, 
+      scalatestWordSpecJS, 
+      scalatestDiagramsJS, 
+      scalatestMatchersCoreJS, 
+      scalatestShouldMatchersJS, 
+      scalatestMustMatchersJS
+    )
+
 }

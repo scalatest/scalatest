@@ -84,25 +84,67 @@ object GenModulesJS {
   }
 
   def genScalaTestFeatureSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)
+    GenScalaTestJS.genScalaPackages.filter { case (packagePath, skipList) =>
+      List(
+        "org/scalatest/featurespec"
+      ).contains(packagePath)
+    }.flatMap { case (packagePath, skipList) =>
+      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList
 
   def genScalaTestFlatSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("scalatest/src/main/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, List.empty)
+    GenScalaTestJS.genScalaPackages.filter { case (packagePath, skipList) =>
+      List(
+        "org/scalatest/flatspec"
+      ).contains(packagePath)
+    }.flatMap { case (packagePath, skipList) =>
+      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList
 
   def genScalaTestFreeSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("scalatest/src/main/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, List.empty)
+    GenScalaTestJS.genScalaPackages.filter { case (packagePath, skipList) =>
+      List(
+        "org/scalatest/freespec"
+      ).contains(packagePath)
+    }.flatMap { case (packagePath, skipList) =>
+      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList
 
   def genScalaTestFunSuite(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty)
+    GenScalaTestJS.genScalaPackages.filter { case (packagePath, skipList) =>
+      List(
+        "org/scalatest/funsuite"
+      ).contains(packagePath)
+    }.flatMap { case (packagePath, skipList) =>
+      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList
 
   def genScalaTestPropSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("scalatest/src/main/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, List.empty)
+    GenScalaTestJS.genScalaPackages.filter { case (packagePath, skipList) =>
+      List(
+        "org/scalatest/propspec"
+      ).contains(packagePath)
+    }.flatMap { case (packagePath, skipList) =>
+      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList
 
   def genScalaTestWordSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("scalatest/src/main/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)
+    GenScalaTestJS.genScalaPackages.filter { case (packagePath, skipList) =>
+      List(
+        "org/scalatest/wordspec"
+      ).contains(packagePath)
+    }.flatMap { case (packagePath, skipList) =>
+      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList
 
   def genScalaTestDiagrams(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("scalatest/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
+    GenScalaTestJS.genScalaPackages.filter { case (packagePath, skipList) =>
+      List(
+        "org/scalatest/diagrams"
+      ).contains(packagePath)
+    }.flatMap { case (packagePath, skipList) =>
+      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList 
 
   def genScalaTestMatchersCore(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     GenScalaTestJS.genScalaPackages.filter { case (packagePath, skipList) =>
