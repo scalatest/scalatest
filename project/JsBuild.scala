@@ -780,6 +780,39 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestMatchersCoreJS).enablePlugins(ScalaJSPlugin)            
+    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestMatchersCoreJS).enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestMustMatchersJS = Project("scalatestMustMatchersJS", file("modules/js/scalatest-mustmatchers.js"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Must Matchers JS",
+      organization := "org.scalatest",
+      name := "scalatest-mustmatchers",
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      Compile / sourceGenerators += {
+        Def.task {
+          GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
+        }
+      },
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.matchers.must"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest Must Matchers",
+        "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc.",
+        "Main-Class" -> "org.scalatest.tools.Runner"
+      )
+    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestMatchersCoreJS).enablePlugins(ScalaJSPlugin)              
 
 }
