@@ -68,3 +68,4 @@ lazy val scalatestFunSuiteJS = ScalatestBuild.scalatestFunSuiteJS
 lazy val scalatestPropSpecJS = ScalatestBuild.scalatestPropSpecJS
 lazy val scalatestWordSpecJS = ScalatestBuild.scalatestWordSpecJS
 lazy val scalatestDiagramsJS = ScalatestBuild.scalatestDiagramsJS
+lazy val scalatestMatchersCoreJS = ScalatestBuild.scalatestMatchersCoreJS
