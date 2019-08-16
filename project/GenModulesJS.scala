@@ -111,13 +111,15 @@ object GenModulesJS {
         "org/scalatest/matchers/dsl"
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
-      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, 
-              if (packagePath == "org/scalatest" || packagePath == "org/scalatest/fixture") skipList ++ List("package.scala") else skipList)
+      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList
-    
-    //copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++ 
-    //copyDir("scalatest/src/main/scala/org/scalatest/matchers/dsl", "org/scalatest/matchers/dsl", targetDir, List.empty)
 
   def genScalaTestShouldMatchers(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("scalatest/src/main/scala/org/scalatest/matchers/should", "org/scalatest/matchers/should", targetDir, List.empty)             
+    GenScalaTestJS.genScalaPackages.filter { case (packagePath, skipList) =>
+      List(
+        "org/scalatest/matchers/should"
+      ).contains(packagePath)
+    }.flatMap { case (packagePath, skipList) =>
+      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList             
 }
