@@ -16,7 +16,7 @@
 
 package org.scalatest.featurespec
 
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
 import org.scalatest._
 import scala.concurrent.Future
 import Suite.anExceptionThatShouldCauseAnAbort

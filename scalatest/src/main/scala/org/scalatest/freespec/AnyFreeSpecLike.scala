@@ -15,7 +15,7 @@
  */
 package org.scalatest.freespec
 
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
 import org.scalatest._
 import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalatest.verbs.BehaveWord

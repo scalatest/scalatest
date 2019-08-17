@@ -15,7 +15,7 @@
  */
 package org.scalatest.flatspec
 
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
 import org.scalatest._
 import scala.concurrent.Future
 import Suite.autoTagClassAnnotations

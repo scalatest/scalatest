@@ -15,7 +15,7 @@
  */
 package org.scalatest.wordspec
 
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
 import org.scalatest._
 import org.scalatest.exceptions._
 import Suite.autoTagClassAnnotations
