@@ -643,7 +643,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-Name" -> "ScalaTest Core",
         "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc."
+        "Bundle-Vendor" -> "Artima, Inc.",
+        "Main-Class" -> "org.scalatest.tools.Runner"
       )
     ).dependsOn(scalatestCompatible, scalacticMacro, scalactic)  
 
