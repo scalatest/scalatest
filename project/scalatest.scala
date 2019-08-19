@@ -1077,7 +1077,30 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestMatchersCore)             
+    ).dependsOn(scalatestMatchersCore)     
+
+  lazy val scalatestModules = (project in file("modules/jvm/modules-aggregation"))
+    .settings(sharedSettings: _*)
+    .settings(
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {},
+      scalacOptions in (Compile, doc) := List.empty
+    ).aggregate(
+      scalatestCompatible, 
+      scalatestCore, 
+      scalatestFeatureSpec, 
+      scalatestFlatSpec, 
+      scalatestFreeSpec, 
+      scalatestFunSuite, 
+      scalatestPropSpec, 
+      scalatestRefSpec, 
+      scalatestWordSpec, 
+      scalatestDiagrams, 
+      scalatestMatchersCore, 
+      scalatestShouldMatchers, 
+      scalatestMustMatchers
+    )              
 
   def gentestsLibraryDependencies =
     Seq(
