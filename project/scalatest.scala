@@ -643,7 +643,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-Name" -> "ScalaTest Core",
         "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc."
+        "Bundle-Vendor" -> "Artima, Inc.",
+        "Main-Class" -> "org.scalatest.tools.Runner"
       )
     ).dependsOn(scalatestCompatible, scalacticMacro, scalactic)  
 
@@ -1076,7 +1077,30 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestMatchersCore)             
+    ).dependsOn(scalatestMatchersCore)     
+
+  lazy val scalatestModules = (project in file("modules/jvm/modules-aggregation"))
+    .settings(sharedSettings: _*)
+    .settings(
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {},
+      scalacOptions in (Compile, doc) := List.empty
+    ).aggregate(
+      scalatestCompatible, 
+      scalatestCore, 
+      scalatestFeatureSpec, 
+      scalatestFlatSpec, 
+      scalatestFreeSpec, 
+      scalatestFunSuite, 
+      scalatestPropSpec, 
+      scalatestRefSpec, 
+      scalatestWordSpec, 
+      scalatestDiagrams, 
+      scalatestMatchersCore, 
+      scalatestShouldMatchers, 
+      scalatestMustMatchers
+    )              
 
   def gentestsLibraryDependencies =
     Seq(
