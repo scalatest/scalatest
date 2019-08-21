@@ -22,7 +22,7 @@ import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
 import org.scalatest.UnquotedString
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
