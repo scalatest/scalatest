@@ -117,7 +117,8 @@ object GenScalaTestDotty {
         "DoNotDiscover.java",
         "Ignore.java"
       )) ++ 
-    copyDir("scalatest/src/main/java/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty)  
+    copyDir("scalatest/src/main/java/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++ 
+    copyDir("scalatest/src/main/java/org/scalatest/tags", "org/scalatest/tags", targetDir, List.empty)  
   }
 
   def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
@@ -126,9 +127,9 @@ object GenScalaTestDotty {
     copyResourceDir("scalatest/src/main/resources/org/scalatest", "org/scalatest", targetDir, List.empty)
   }
 
-  def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyDir("scalatest/src/main/scala/org/scalatest", "org/scalatest", targetDir,
-      List(
+  val genScalaPackages: Map[String, List[String]] = 
+    Map(
+      "org/scalatest" -> List(
         "Assertions.scala",                 // Re-implemented
         "AssertionsMacro.scala",            // Re-implemented
         "CompileMacro.scala",               // Re-implemented
@@ -141,52 +142,51 @@ object GenScalaTestDotty {
         "StreamlinedXml.scala",             // Hmm, not sure what to do with XML support, let's ask.
         "StreamlinedXmlEquality.scala",     // Hmm, not sure what to do with XML support, let's ask.
         "StreamlinedXmlNormMethods.scala"   // Hmm, not sure what to do with XML support, let's ask.
-      )
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, 
-      List(
+      ), 
+      "org/scalatest/concurrent" -> List.empty, 
+      "org/scalatest/diagrams" -> List(
         "Diagrams.scala", 
         "DiagramsMacro.scala"
-      )
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir,
-      List(
+      ), 
+      "org/scalatest/exceptions" -> List.empty, 
+      "org/scalatest/enablers" -> List.empty, 
+      "org/scalatest/events" -> List.empty, 
+      "org/scalatest/fixture" -> List.empty, 
+      "org/scalatest/featurespec" -> List.empty, 
+      "org/scalatest/funspec" -> List.empty, 
+      "org/scalatest/funsuite" -> List.empty, 
+      "org/scalatest/freespec" -> List.empty, 
+      "org/scalatest/flatspec" -> List.empty, 
+      "org/scalatest/matchers" -> List(
         "Matcher.scala",           // Re-implemented with new macro
         "MatchPatternMacro.scala", // Re-implemented with new macro
         "TypeMatcherMacro.scala"   // Re-implemented with new macro
-      )
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/matchers/dsl", "org/scalatest/matchers/dsl", targetDir, 
-      List(
+      ), 
+      "org/scalatest/matchers/dsl" -> List(
         "BeWord.scala", 
         "JavaCollectionWrapper.scala",
         "JavaMapWrapper.scala", 
         "MatchPatternWord.scala",
         "NotWord.scala", 
         "ResultOfNotWordForAny.scala"
-      )
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/matchers/should", "org/scalatest/matchers/should", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/refspec", "org/scalatest/refspec", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty) ++ 
-    copyDir("scalatest/src/main/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)
-  }
+      ), 
+      "org/scalatest/matchers/should" -> List.empty, 
+      "org/scalatest/path" -> List.empty, 
+      "org/scalatest/prop" -> List.empty, 
+      "org/scalatest/propspec" -> List.empty, 
+      "org/scalatest/tagobjects" -> List.empty, 
+      "org/scalatest/time" -> List.empty, 
+      "org/scalatest/verbs" -> List.empty, 
+      "org/scalatest/tools" -> List.empty, 
+      "org/scalatest/refspec" -> List.empty, 
+      "org/scalatest/words" -> List.empty, 
+      "org/scalatest/wordspec" -> List.empty
+    )
+
+  def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    genScalaPackages.flatMap { case (packagePath, skipList) =>
+      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,

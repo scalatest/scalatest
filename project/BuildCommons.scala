@@ -13,6 +13,8 @@ trait BuildCommons {
 
   def rootProject: Project
 
+  def scalatestCompatible: Project
+
   def scalaXmlDependency(theScalaVersion: String): Seq[ModuleID]
 
   def scalatestLibraryDependencies: Seq[ModuleID]
