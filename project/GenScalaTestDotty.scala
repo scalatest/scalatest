@@ -117,7 +117,8 @@ object GenScalaTestDotty {
         "DoNotDiscover.java",
         "Ignore.java"
       )) ++ 
-    copyDir("scalatest/src/main/java/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty)  
+    copyDir("scalatest/src/main/java/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++ 
+    copyDir("scalatest/src/main/java/org/scalatest/tags", "org/scalatest/tags", targetDir, List.empty)  
   }
 
   def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
@@ -173,6 +174,7 @@ object GenScalaTestDotty {
       "org/scalatest/path" -> List.empty, 
       "org/scalatest/prop" -> List.empty, 
       "org/scalatest/propspec" -> List.empty, 
+      "org/scalatest/tagobjects" -> List.empty, 
       "org/scalatest/time" -> List.empty, 
       "org/scalatest/verbs" -> List.empty, 
       "org/scalatest/tools" -> List.empty, 
