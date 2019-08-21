@@ -607,9 +607,15 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           GenModules.genScalaTestCoreJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
+      resourceGenerators in Compile += {
+        Def.task {
+          GenScalaTestDotty.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
       sourceGenerators in Compile += {
        Def.task{
          GenModules.genScalaTestCore((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
+         GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
          GenConfigMap.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
          ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
          ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
