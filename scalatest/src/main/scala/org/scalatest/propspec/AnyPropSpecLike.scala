@@ -15,7 +15,7 @@
  */
 package org.scalatest.propspec
 
-import org.scalactic._
+import org.scalactic.source
 import org.scalatest._
 import Suite.autoTagClassAnnotations
 

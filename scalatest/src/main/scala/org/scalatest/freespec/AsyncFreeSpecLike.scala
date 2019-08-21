@@ -15,7 +15,7 @@
  */
 package org.scalatest.freespec
 
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
 import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalatest.exceptions._
