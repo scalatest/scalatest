@@ -442,7 +442,7 @@ trait JsBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task{
           GenScalaTestJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
-          Seq.empty[File]
+          GenTable.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
           //GenSafeStyles.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
         }
       },
@@ -511,8 +511,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Name" -> "ScalaTest FeatureSpec JS",
         "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc.",
-        "Main-Class" -> "org.scalatest.tools.Runner"
+        "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)
 
@@ -544,8 +543,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Name" -> "ScalaTest FlatSpec JS",
         "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc.",
-        "Main-Class" -> "org.scalatest.tools.Runner"
+        "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)
 
@@ -577,8 +575,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Name" -> "ScalaTest FreeSpec JS",
         "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc.",
-        "Main-Class" -> "org.scalatest.tools.Runner"
+        "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)      
 
@@ -610,8 +607,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Name" -> "ScalaTest FunSuite JS",
         "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc.",
-        "Main-Class" -> "org.scalatest.tools.Runner"
+        "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)
 
@@ -643,8 +639,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Name" -> "ScalaTest PropSpec JS",
         "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc.",
-        "Main-Class" -> "org.scalatest.tools.Runner"
+        "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)
 
@@ -676,8 +671,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Name" -> "ScalaTest WordSpec JS",
         "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc.",
-        "Main-Class" -> "org.scalatest.tools.Runner"
+        "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)
 
@@ -709,8 +703,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Name" -> "ScalaTest Diagrams JS",
         "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc.",
-        "Main-Class" -> "org.scalatest.tools.Runner"
+        "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestCoreJS).enablePlugins(ScalaJSPlugin)
 
@@ -744,8 +737,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Name" -> "ScalaTest Matchers Core JS",
         "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc.",
-        "Main-Class" -> "org.scalatest.tools.Runner"
+        "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestCoreJS).enablePlugins(ScalaJSPlugin)
 
@@ -777,8 +769,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Name" -> "ScalaTest Should Matchers",
         "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc.",
-        "Main-Class" -> "org.scalatest.tools.Runner"
+        "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestMatchersCoreJS).enablePlugins(ScalaJSPlugin)
 
@@ -810,8 +801,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Name" -> "ScalaTest Must Matchers",
         "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc.",
-        "Main-Class" -> "org.scalatest.tools.Runner"
+        "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestMatchersCoreJS).enablePlugins(ScalaJSPlugin)              
 

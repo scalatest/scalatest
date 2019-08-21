@@ -263,6 +263,370 @@ trait NativeBuild { this: BuildCommons =>
         )
       ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalacticNative % "compile-internal", scalatestNative % "compile-internal").aggregate(scalacticMacroNative, scalacticNative, scalatestNative, commonTestNative, scalacticTestNative, scalatestTestNative).enablePlugins(ScalaNativePlugin)
 
+  lazy val scalatestCoreNative = Project("scalatestCoreNative", file("modules/native/scalatest-core.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Core Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest-core",
+      libraryDependencies += "org.scala-native" %%% "test-interface" % "0.4.0-M2",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenScalaTestNative.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
+
+          GenModulesNative.genScalaTestCore((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      javaSourceManaged := target.value / "java",
+      managedSourceDirectories in Compile += javaSourceManaged.value,
+      sourceGenerators in Compile += {
+        Def.task{
+          GenScalaTestNative.genJava((javaSourceManaged in Compile).value / "java", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      resourceGenerators in Compile += {
+        Def.task {
+          GenScalaTestNative.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
+      sourceGenerators in Compile += {
+        Def.task{
+          GenTable.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+          //GenSafeStyles.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      scalatestJSDocTaskSetting
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest",
+      "org.scalatest.compatible",
+      "org.scalatest.concurrent",
+      "org.scalatest.enablers",
+      "org.scalatest.events",
+      "org.scalatest.exceptions",
+      "org.scalatest.fixture",
+      "org.scalatest.verbs",
+      "org.scalatest.prop",
+      "org.scalatest.tags",
+      "org.scalatest.tagobjects",
+      "org.scalatest.time",
+      "org.scalatest.tools"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "org.scalactic.*",
+      "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest Core Native",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc.",
+      "Main-Class" -> "org.scalatest.tools.Runner"
+    )
+  ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalacticNative).enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestFeatureSpecNative = Project("scalatestFeatureSpecNative", file("modules/native/scalatest-featurespec.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FeatureSpec Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest-featurespec",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenModulesNative.genScalaTestFeatureSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest.featurespec"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest FeatureSpec Native",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestFlatSpecNative = Project("scalatestFlatSpecNative", file("modules/native/scalatest-flatspec.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FlatSpec Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest-flatspec",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenModulesNative.genScalaTestFlatSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest.flatspec"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest FlatSpec Native",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestFreeSpecNative = Project("scalatestFreeSpecNative", file("modules/native/scalatest-freespec.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FreeSpec Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest-freespec",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenModulesNative.genScalaTestFreeSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest.freespec"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest FreeSpec Native",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestFunSuiteNative = Project("scalatestFunSuiteNative", file("modules/native/scalatest-funsuite.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FunSuite Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest-funsuite",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenModulesNative.genScalaTestFunSuite((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest.funsuite"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest FunSuite Native",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestPropSpecNative = Project("scalatestPropSpecNative", file("modules/native/scalatest-propspec.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest PropSpec Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest-propspec",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenModulesNative.genScalaTestPropSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest.propspec"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest PropSpec Native",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestWordSpecNative = Project("scalatestWordSpecNative", file("modules/native/scalatest-wordspec.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest WordSpec Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest-wordspec",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenModulesNative.genScalaTestWordSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest.wordspec"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest WordSpec Native",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestDiagramsNative = Project("scalatestDiagramsNative", file("modules/native/scalatest-diagrams.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Diagrams Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest-diagrams",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenModulesNative.genScalaTestDiagrams((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest.diagrams"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest Diagrams Native",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestMatchersCoreNative = Project("scalatestMatchersCoreNative", file("modules/native/scalatest-matchers-core.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Matchers Core Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest-matchers-core",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenModulesNative.genScalaTestMatchersCore((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
+          GenFactories.genMainJS((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest.matchers", 
+      "org.scalatest.matchers.dsl"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest Matchers Core Native",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestShouldMatchersNative = Project("scalatestShouldMatchersNative", file("modules/native/scalatest-shouldmatchers.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Should Matchers Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest-shouldmatchers",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenModulesNative.genScalaTestShouldMatchers((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest.matchers.should"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest Should Matchers Native",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalatestMatchersCoreNative).enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestMustMatchersNative = Project("scalatestMustMatchersNative", file("modules/native/scalatest-mustmatchers.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Must Matchers Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest-mustmatchers",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest.matchers.must"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest Must Matchers Native",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalatestMatchersCoreNative).enablePlugins(ScalaNativePlugin)
+
   def scalatestTestNativeOptions =
     Seq(Tests.Argument(TestFrameworks.ScalaTest,
       "-l", "org.scalatest.tags.Slow",
@@ -372,6 +736,27 @@ trait NativeBuild { this: BuildCommons =>
         Def.task {
           GenMustMatchersTests.genTestForScalaNative((sourceManaged in Test).value, version.value, scalaVersion.value)
         }*/
-    ).dependsOn(scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)      
+    ).dependsOn(scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestModulesNative = (project in file("modules/native/modules-aggregation"))
+    .settings(sharedSettings: _*)
+    .settings(
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {},
+      scalacOptions in (Compile, doc) := List.empty
+    ).aggregate(
+      scalatestCoreNative, 
+      scalatestFeatureSpecNative, 
+      scalatestFlatSpecNative, 
+      scalatestFreeSpecNative, 
+      scalatestFunSuiteNative, 
+      scalatestPropSpecNative, 
+      scalatestWordSpecNative, 
+      scalatestDiagramsNative, 
+      scalatestMatchersCoreNative, 
+      scalatestShouldMatchersNative, 
+      scalatestMustMatchersNative
+    )        
 
 }
