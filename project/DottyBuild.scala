@@ -17,7 +17,6 @@ trait DottyBuild { this: BuildCommons =>
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
-    libraryDependencies --= scalaLibraries(scalaVersion.value),
     scalacOptions := List("-language:implicitConversions")
   )
 

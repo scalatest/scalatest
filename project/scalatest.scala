@@ -142,7 +142,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     commonSharedSettings ++ Seq(
       scalaVersion := "2.13.0",
       crossScalaVersions := supportedScalaVersions,
-      libraryDependencies ++= scalaLibraries(scalaVersion.value)  
+      libraryDependencies ++= {
+        if (isDotty.value)
+          Seq()
+        else
+          scalaLibraries(scalaVersion.value),
+      }
     )
   
   /*Seq(
@@ -152,7 +157,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     version := releaseVersion,
     scalacOptions ++= Seq("-feature"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-    libraryDependencies ++= scalaLibraries(scalaVersion.value),
+    libraryDependencies ++= {
+      if (isDotty.value)
+        Seq()
+      else
+        scalaLibraries(scalaVersion.value),
+    },
     /*publishTo <<= version { v: String =>
       val nexus = "https://oss.sonatype.org/"
       if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
