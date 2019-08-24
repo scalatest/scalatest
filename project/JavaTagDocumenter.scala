@@ -49,7 +49,7 @@ object JavaTagDocumenter {
 
     topDocMat.find()
 
-    val bodyPat = Pattern.compile("""(?sm)(.*? @interface """ + className +
+    val bodyPat = Pattern.compile("""(?sm)(.*? @?interface """ + className +
                                   """) *(\{.*\})""")
     val bodyMat = bodyPat.matcher(topDocMat.group(2))
 
@@ -137,10 +137,14 @@ object JavaTagDocumenter {
       fileContents.contains(
         "Note: This is actually an annotation defined in Java")
 
+    def isMarkerAssertion(fileContents: String): Boolean =
+      fileContents.contains(
+        "Marker trait for ScalaTest-compatible assertion types")  
+
     for {
       srcFile <- javaSources
       val contents = Source.fromFile(srcFile).mkString
-      if isAnnotation(contents)
+      if isAnnotation(contents) || isMarkerAssertion(contents)
     } yield {
       val filename = srcFile.getName
       val className = filename.replaceFirst("""\.java$""", "")
@@ -155,11 +159,14 @@ object JavaTagDocumenter {
       val newTop = genNewTop(top)
       val newBody = genNewBody(body)
       val newContents =
-        newTop
-          .replaceFirst(className + "$",
-                        "trait "+ className +
-                        " extends java.lang.annotation.Annotation "+ newBody +
-                        "\n")
+        if (isMarkerAssertion(contents))
+          newTop.replaceAllLiterally("public interface ", "trait ")
+        else
+          newTop
+            .replaceFirst(className + "$",
+                          "trait "+ className +
+                          " extends java.lang.annotation.Annotation "+ newBody +
+                          "\n")
 
       if (!destFile.exists || (srcFile.lastModified > destFile.lastModified)) {
         createDirectory(file(destFile.getParent))
