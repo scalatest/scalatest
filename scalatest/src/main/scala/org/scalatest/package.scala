@@ -83,7 +83,7 @@ package object scalatest {
    * trait <code>Assertions</code>, which return its only instance, the <code>Succeeded</code> singleton, or throw
    * an exception that indicates a failed, canceled, or pending test.
    */
-  type Assertion = compatible.Assertion
+  type Assertion = org.scalatest.compatible.Assertion
 
   /**
    * <strong>The name <code>org.scalatest.FunSuiteLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use

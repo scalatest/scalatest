@@ -1093,7 +1093,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       publishLocal := {},
       scalacOptions in (Compile, doc) := List.empty
     ).aggregate(
-      scalatestCompatible, 
       scalatestCore, 
       scalatestFeatureSpec, 
       scalatestFlatSpec, 
