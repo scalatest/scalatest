@@ -1,8 +1,6 @@
 package org.scalactic.source
 
-
-//import scala.reflect.macros.blackbox.Context
-import scala.reflect.macros.Context
+import org.scalactic.MacroContext.Context
 import org.scalactic.Resources
 
 /**
@@ -14,16 +12,16 @@ object PositionMacro {
   }
   import sourceCompatHack._
 
+  private[scalactic] lazy val showScalacticFillFilePathnames: Boolean = {
+    val value = System.getenv("SCALACTIC_FILL_FILE_PATHNAMES")
+    value != null && value == "yes"
+  }
+
   private class PositionMacroImpl(val universe: scala.reflect.api.Universe) {
 
     private val PositionModule = universe.rootMirror.staticModule("org.scalactic.source.Position")
     private val PositionClass = universe.rootMirror.staticClass("org.scalactic.source.Position")
     private val Position_apply = PositionModule.typeSignature.declaration(universe.newTermName("apply"))
-
-    private[scalactic] lazy val showScalacticFillFilePathnames: Boolean = {
-      val value = System.getenv("SCALACTIC_FILL_FILE_PATHNAMES")
-      value != null && value == "yes"
-    }
 
     def apply(context: Context): context.Tree = {
       import context.universe._
@@ -50,7 +48,6 @@ object PositionMacro {
       val args = List(
         strLit(context.enclosingPosition.source.file.name),
         if (showScalacticFillFilePathnames) strLit(context.enclosingPosition.source.path) else strLit(Resources.pleaseDefineScalacticFillFilePathnameEnvVar), 
-        //strLit(""),
         intLit(context.enclosingPosition.line)
       )
 
