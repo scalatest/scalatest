@@ -163,11 +163,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       else
         scalaLibraries(scalaVersion.value),
     },
-    /*publishTo <<= version { v: String =>
-      val nexus = "https://oss.sonatype.org/"
-      if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
-      else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
-    },*/
     publishTo := {
       val nexus = "https://oss.sonatype.org/"
       if (version.value.trim.endsWith("SNAPSHOT"))
@@ -485,7 +480,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
-        "org.scalatest.words", 
+        "org.scalatest.words",
         "org.scalatest.wordspec"
       ),
       OsgiKeys.importPackage := Seq(
