@@ -36,7 +36,7 @@ object PositionMacro {
 
       import treeBuild.{mkAttributedIdent, mkAttributedSelect}
 
-      // Because this macro is called so frequently, we use assign types to the trees as we build them, rather
+      // Because this macro is called so frequently, we assign types as we build them, rather
       // than returning an untyped tree and letting the typechecker fill in the types.
       // (`setType` and `mkAttributedXxx` assign Tree.tpe.)
       def strLit(s: String) = {
