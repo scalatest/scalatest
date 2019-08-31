@@ -611,6 +611,38 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)
 
+  lazy val scalatestFunSpecJS = Project("scalatestFunSpecJS", file("modules/js/scalatest-funspec.js"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FunSpec JS",
+      organization := "org.scalatest",
+      name := "scalatest-funspec",
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      Compile / sourceGenerators += {
+        Def.task {
+          GenModulesJS.genScalaTestFunSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }
+      },
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.funspec"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest FunSpec JS",
+        "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
+    ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)  
+
   lazy val scalatestPropSpecJS = Project("scalatestPropSpecJS", file("modules/js/scalatest-propspec.js"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
@@ -818,6 +850,7 @@ trait JsBuild { this: BuildCommons =>
       scalatestFlatSpecJS, 
       scalatestFreeSpecJS, 
       scalatestFunSuiteJS, 
+      scalatestFunSpecJS, 
       scalatestPropSpecJS, 
       scalatestWordSpecJS, 
       scalatestDiagramsJS, 

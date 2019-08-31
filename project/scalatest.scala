@@ -652,7 +652,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalatestCompatible, scalacticMacro, scalactic)  
+    ).dependsOn(scalatestCompatible, scalacticMacro % "compile-internal, test-internal", scalactic)  
 
   lazy val scalatestFeatureSpec = Project("scalatestFeatureSpec", file("modules/jvm/scalatest-featurespec"))
     .enablePlugins(SbtOsgi)
@@ -808,7 +808,46 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCore)   
+    ).dependsOn(scalatestCore) 
+
+  lazy val scalatestFunSpec = Project("scalatestFunSpec", file("modules/jvm/scalatest-funspec"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FunSpec",
+      name := "scalatest-funspec",
+      organization := "org.scalatest",
+      sourceGenerators in Compile += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          (new File(crossTarget.value, "classes")).mkdirs()
+          Seq.empty[File]
+        }.taskValue
+      },
+      sourceGenerators in Compile += {
+       Def.task{
+         GenModules.genScalaTestFunSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
+       }.taskValue
+      },
+      scalatestDocSettings,
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.funspec"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest FunSpec",
+        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
+    ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")     
 
   lazy val scalatestPropSpec = Project("scalatestPropSpec", file("modules/jvm/scalatest-propspec"))
     .enablePlugins(SbtOsgi)
@@ -886,7 +925,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCore) 
+    ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal") 
 
   lazy val scalatestWordSpec = Project("scalatestWordSpec", file("modules/jvm/scalatest-wordspec"))
     .enablePlugins(SbtOsgi)
@@ -964,7 +1003,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCore)
+    ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
   lazy val scalatestMatchersCore = Project("scalatestMatchersCore", file("modules/jvm/scalatest-matchers-core"))
     .enablePlugins(SbtOsgi)
@@ -1005,7 +1044,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCore) 
+    ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal") 
 
   lazy val scalatestShouldMatchers = Project("scalatestShouldMatchers", file("modules/jvm/scalatest-shouldmatchers"))
     .enablePlugins(SbtOsgi)
@@ -1044,7 +1083,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestMatchersCore)
+    ).dependsOn(scalatestMatchersCore, scalacticMacro % "compile-internal, test-internal")
 
   lazy val scalatestMustMatchers = Project("scalatestMustMatchers", file("modules/jvm/scalatest-mustmatchers"))
     .enablePlugins(SbtOsgi)
@@ -1083,7 +1122,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestMatchersCore)     
+    ).dependsOn(scalatestMatchersCore, scalacticMacro % "compile-internal, test-internal")     
 
   lazy val scalatestModules = (project in file("modules/jvm/modules-aggregation"))
     .settings(sharedSettings: _*)
@@ -1098,6 +1137,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalatestFlatSpec, 
       scalatestFreeSpec, 
       scalatestFunSuite, 
+      scalatestFunSpec, 
       scalatestPropSpec, 
       scalatestRefSpec, 
       scalatestWordSpec, 
