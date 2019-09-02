@@ -121,7 +121,8 @@ object GenScalacticDotty {
     copyDir("scalactic-macro/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir,
       List(
         "PositionMacro.scala",  // Already reimplemented in Position.scala
-        "TypeInfoMacro.scala"   // Already reimplemented
+        "TypeInfoMacro.scala",  // Already reimplemented
+        "Position.scala"        // Already exists for scalactic-dotty
       )
     )
 
