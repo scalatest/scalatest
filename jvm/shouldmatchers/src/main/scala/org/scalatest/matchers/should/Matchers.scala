@@ -26,7 +26,7 @@ import org.scalatest.CompileMacro
 import org.scalactic._
 import org.scalatest.enablers._
 import org.scalatest.matchers._
- 
+
 import org.scalatest.matchers.dsl._
 import org.scalatest.verbs.CompileWord
 import org.scalatest.verbs.TypeCheckWord
@@ -7615,7 +7615,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldCompileImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ${ org.scalatest.matchers.should.MatchersCompileMacro.shouldCompileImpl('{this}, '{compileWord})('{pos}) }
+    // FIXME //DOTTY-ONLY inline def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ${ CompileMacro.shouldCompileImpl('{this}, '{compileWord})('{pos}) }
 
     /**
      * This method enables syntax such as the following:
@@ -7628,7 +7628,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotCompileImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ${ org.scalatest.matchers.should.MatchersCompileMacro.shouldNotCompileImpl('{this}, '{compileWord})('{pos}) }
+    // FIXME //DOTTY-ONLY inline def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ${ CompileMacro.shouldNotCompileImpl('{this}, '{compileWord})('{pos}) }
 
     /**
      * This method enables syntax such as the following:
@@ -7641,7 +7641,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotTypeCheckImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = ${ org.scalatest.matchers.should.MatchersCompileMacro.shouldNotTypeCheckImpl('{this}, '{typeCheckWord})('{pos}) }
+    // FIXME //DOTTY-ONLY inline def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = ${ CompileMacro.shouldNotTypeCheckImpl('{this}, '{typeCheckWord})('{pos}) }
 
 /*
     /**
