@@ -363,7 +363,7 @@ trait NativeBuild { this: BuildCommons =>
       "Bundle-DocURL" -> "http://www.scalatest.org/",
       "Bundle-Vendor" -> "Artima, Inc."
     )
-  ).dependsOn(scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+  ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestFlatSpecNative = Project("scalatestFlatSpecNative", file("modules/native/scalatest-flatspec.native"))
     .enablePlugins(SbtOsgi)
@@ -392,7 +392,7 @@ trait NativeBuild { this: BuildCommons =>
       "Bundle-DocURL" -> "http://www.scalatest.org/",
       "Bundle-Vendor" -> "Artima, Inc."
     )
-  ).dependsOn(scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+  ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestFreeSpecNative = Project("scalatestFreeSpecNative", file("modules/native/scalatest-freespec.native"))
     .enablePlugins(SbtOsgi)
@@ -421,7 +421,7 @@ trait NativeBuild { this: BuildCommons =>
       "Bundle-DocURL" -> "http://www.scalatest.org/",
       "Bundle-Vendor" -> "Artima, Inc."
     )
-  ).dependsOn(scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+  ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestFunSuiteNative = Project("scalatestFunSuiteNative", file("modules/native/scalatest-funsuite.native"))
     .enablePlugins(SbtOsgi)
@@ -450,7 +450,7 @@ trait NativeBuild { this: BuildCommons =>
       "Bundle-DocURL" -> "http://www.scalatest.org/",
       "Bundle-Vendor" -> "Artima, Inc."
     )
-  ).dependsOn(scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+  ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestFunSpecNative = Project("scalatestFunSpecNative", file("modules/native/scalatest-funspec.native"))
     .enablePlugins(SbtOsgi)
@@ -508,7 +508,7 @@ trait NativeBuild { this: BuildCommons =>
       "Bundle-DocURL" -> "http://www.scalatest.org/",
       "Bundle-Vendor" -> "Artima, Inc."
     )
-  ).dependsOn(scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+  ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestWordSpecNative = Project("scalatestWordSpecNative", file("modules/native/scalatest-wordspec.native"))
     .enablePlugins(SbtOsgi)
@@ -537,7 +537,7 @@ trait NativeBuild { this: BuildCommons =>
       "Bundle-DocURL" -> "http://www.scalatest.org/",
       "Bundle-Vendor" -> "Artima, Inc."
     )
-  ).dependsOn(scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+  ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestDiagramsNative = Project("scalatestDiagramsNative", file("modules/native/scalatest-diagrams.native"))
     .enablePlugins(SbtOsgi)

@@ -692,7 +692,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCore)
+    ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
   lazy val scalatestFlatSpec = Project("scalatestFlatSpec", file("modules/jvm/scalatest-flatspec"))
     .enablePlugins(SbtOsgi)
@@ -731,7 +731,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCore)
+    ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
   lazy val scalatestFreeSpec = Project("scalatestFreeSpec", file("modules/jvm/scalatest-freespec"))
     .enablePlugins(SbtOsgi)
@@ -770,7 +770,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCore)
+    ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
   lazy val scalatestFunSuite = Project("scalatestFunSuite", file("modules/jvm/scalatest-funsuite"))
     .enablePlugins(SbtOsgi)
@@ -809,7 +809,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCore) 
+    ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal") 
 
   lazy val scalatestFunSpec = Project("scalatestFunSpec", file("modules/jvm/scalatest-funspec"))
     .enablePlugins(SbtOsgi)
@@ -887,7 +887,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCore)
+    ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
   lazy val scalatestRefSpec = Project("scalatestRefSpec", file("modules/jvm/scalatest-refspec"))
     .enablePlugins(SbtOsgi)
@@ -965,7 +965,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCore)
+    ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
   lazy val scalatestDiagrams = Project("scalatestDiagrams", file("modules/jvm/scalatest-diagrams"))
     .enablePlugins(SbtOsgi)

@@ -514,7 +514,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFlatSpecJS = Project("scalatestFlatSpecJS", file("modules/js/scalatest-flatspec.js"))
     .enablePlugins(SbtOsgi)
@@ -546,7 +546,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFreeSpecJS = Project("scalatestFreeSpecJS", file("modules/js/scalatest-freespec.js"))
     .enablePlugins(SbtOsgi)
@@ -578,7 +578,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)      
+    ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)      
 
   lazy val scalatestFunSuiteJS = Project("scalatestFunSuiteJS", file("modules/js/scalatest-funsuite.js"))
     .enablePlugins(SbtOsgi)
@@ -610,7 +610,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFunSpecJS = Project("scalatestFunSpecJS", file("modules/js/scalatest-funspec.js"))
     .enablePlugins(SbtOsgi)
@@ -674,7 +674,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestWordSpecJS = Project("scalatestWordSpecJS", file("modules/js/scalatest-wordspec.js"))
     .enablePlugins(SbtOsgi)
@@ -706,7 +706,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCoreJS).enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestDiagramsJS = Project("scalatestDiagramsJS", file("modules/js/scalatest-diagrams.js"))
     .enablePlugins(SbtOsgi)

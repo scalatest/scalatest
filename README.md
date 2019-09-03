@@ -168,6 +168,8 @@ To publish scalactic, scalatest and scalatest-app use the following command:
     $ sbt ++2.12.6 "project scalatestAppJS" clean publishSigned
     $ export SCALAJS_VERSION=1.0.0-M8
     $ sbt ++2.13.0 "project scalatestAppJS" clean publishSigned
+    $ sbt scalacticDotty/clean scalacticDotty/publishSigned
+    $ sbt scalatestDotty/clean scalatestDotty/publishSigned
 
 To publish scalatest modules for jvm, use the following commands: 
 
