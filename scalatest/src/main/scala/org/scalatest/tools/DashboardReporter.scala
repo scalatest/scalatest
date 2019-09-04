@@ -165,12 +165,12 @@ private[scalatest] class DashboardReporter(directory: String,
       if (summaryFile.exists)
         summaryFile.renameTo(
           new File(
-            summariesDir + "/summary-" + previousRunTimestamp.get + ".xml"))
+            summariesDir.toString + "/summary-" + previousRunTimestamp.get + ".xml"))
 
       if (durationsFile.exists)
         durationsFile.renameTo(
           new File(
-            durationsDir + "/duration-" + previousRunTimestamp.get + ".xml"))
+            durationsDir.toString + "/duration-" + previousRunTimestamp.get + ".xml"))
 
       purgeDir(summariesDir, "summary-")
       purgeDir(durationsDir, "duration-")

@@ -192,17 +192,17 @@ private[scalactic] class GenMapDiffer[K, V] extends Differ {
             val leftValue = aMap(k)
             val rightValue = bMap(k)
             if (leftValue != rightValue)
-              Some(k + ": " + leftValue + " -> " + rightValue)
+              Some(k.toString + ": " + leftValue + " -> " + rightValue)
             else
               None
           }.toSet ++
             missingKeyInLeft.flatMap { k =>
               val rightValue = bMap(k)
-              Option(k + ": -> " + rightValue)
+              Option(k.toString + ": -> " + rightValue)
             }.toSet ++
             missingKeyInRight.flatMap { k =>
               val leftValue = aMap(k)
-              Option(k + ": " + leftValue + " -> ")
+              Option(k.toString + ": " + leftValue + " -> ")
             }.toSet
 
         val shortName = Differ.simpleClassName(aMap)
