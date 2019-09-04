@@ -538,8 +538,8 @@ class NonEmptySetSpec extends UnitSpec {
   it should "have a scan method" in {
     NonEmptySet(1).scan(0)(_ + _) shouldBe NonEmptySet(0, 1)
     NonEmptySet(1, 2, 3).scan(0)(_ + _) shouldBe NonEmptySet(0, 2, 5, 6)
-    NonEmptySet(1, 2, 3).scan("z")(_ + _.toString) shouldBe NonEmptySet("z", "z2", "z23", "z231")
-    NonEmptySet(0).scan("z")(_ + _.toString) shouldBe NonEmptySet("z", "z0")
+    NonEmptySet(1, 2, 3).scan("z")(_.toString + _.toString) shouldBe NonEmptySet("z", "z2", "z23", "z231")
+    NonEmptySet(0).scan("z")(_.toString + _.toString) shouldBe NonEmptySet("z", "z0")
   }
   it should "have a scanLeft method" in {
     NonEmptySet(1).scanLeft(0)(_ + _) shouldBe NonEmptySet(0, 1)

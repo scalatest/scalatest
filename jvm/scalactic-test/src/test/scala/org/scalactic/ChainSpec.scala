@@ -1024,8 +1024,8 @@ class ChainSpec extends UnitSpec {
   it should "have a scan method" in {
     Chain(1).scan(0)(_ + _) shouldBe Chain(0, 1)
     Chain(1, 2, 3).scan(0)(_ + _) shouldBe Chain(0, 1, 3, 6)
-    Chain(1, 2, 3).scan("z")(_ + _.toString) shouldBe Chain("z", "z1", "z12", "z123")
-    Chain(0).scan("z")(_ + _.toString) shouldBe Chain("z", "z0")
+    Chain(1, 2, 3).scan("z")(_.toString + _.toString) shouldBe Chain("z", "z1", "z12", "z123")
+    Chain(0).scan("z")(_.toString + _.toString) shouldBe Chain("z", "z0")
   }
   it should "have a scanLeft method" in {
     Chain(1).scanLeft(0)(_ + _) shouldBe Chain(0, 1)
