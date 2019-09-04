@@ -17,7 +17,6 @@ package org.scalatest.matchers
 
 import org.scalactic._
 import org.scalatest.enablers._
-import org.scalatest.words._
 import org.scalatest.matchers.dsl._
 import org.scalatest.FailureMessages
 import org.scalatest.matchers.MatchersHelper.andMatchersAndApply
