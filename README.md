@@ -157,6 +157,7 @@ Before publishing any patch release, binary compatibility with previous version 
 
 To publish scalactic, scalatest and scalatest-app use the following command:
 
+    $ sbt scalatestCompatible/clean scalatestCompatible/publishSigned
     $ export SCALAJS_VERSION=0.6.28
     $ sbt ++2.10.7 clean publishSigned "project scalatestAppJS" clean publishSigned
     $ sbt ++2.11.12 clean publishSigned "project scalatestAppJS" clean publishSigned
@@ -173,7 +174,6 @@ To publish scalactic, scalatest and scalatest-app use the following command:
 
 To publish scalatest modules for jvm, use the following commands: 
 
-    $ sbt scalatestCompatible/clean scalatestCompatible/publishSigned
     $ sbt scalatestModules/clean
     $ sbt +scalatestModules/publishSigned
 

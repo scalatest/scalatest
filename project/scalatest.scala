@@ -89,7 +89,67 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     }
   }
 
-  def sharedSettings: Seq[Setting[_]] = Seq(
+  def commonSharedSettings: Seq[Setting[_]] = Seq(
+    javaHome := getJavaHome(scalaBinaryVersion.value),
+    version := releaseVersion,
+    resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
+    publishTo := {
+      val nexus = "https://oss.sonatype.org/"
+      if (version.value.trim.endsWith("SNAPSHOT"))
+        Some("publish-snapshots" at nexus + "content/repositories/snapshots")
+      else
+        Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
+    },
+    publishMavenStyle := true,
+    publishArtifact in Test := false,
+    pomIncludeRepository := { _ => false },
+    pomExtra := (
+      <url>http://www.scalatest.org</url>
+        <licenses>
+          <license>
+            <name>the Apache License, ASL Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+          </license>
+        </licenses>
+        <scm>
+          <url>https://github.com/scalatest/scalatest</url>
+          <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
+          <developerConnection>
+            scm:git:git@github.com:scalatest/scalatest.git
+          </developerConnection>
+        </scm>
+        <developers>
+          <developer>
+            <id>bvenners</id>
+            <name>Bill Venners</name>
+            <email>bill@artima.com</email>
+          </developer>
+          <developer>
+            <id>gcberger</id>
+            <name>George Berger</name>
+            <email>george.berger@gmail.com</email>
+          </developer>
+          <developer>
+            <id>cheeseng</id>
+            <name>Chua Chee Seng</name>
+            <email>cheeseng@amaseng.com</email>
+          </developer>
+        </developers>
+      ),
+    credentials += getNexusCredentials,
+    pgpSecretRing := file(getGPGFilePath),
+    pgpPassphrase := getGPGPassphase
+  )
+
+  def sharedSettings: Seq[Setting[_]] = 
+    commonSharedSettings ++ Seq(
+      scalaVersion := "2.13.0",
+      crossScalaVersions := supportedScalaVersions,
+      libraryDependencies ++= scalaLibraries(scalaVersion.value)  
+    )
+  
+  /*Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
     scalaVersion := "2.13.0",
     crossScalaVersions := supportedScalaVersions,
@@ -149,7 +209,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     credentials += getNexusCredentials,
     pgpSecretRing := file(getGPGFilePath),
     pgpPassphrase := getGPGPassphase
-  )
+  )*/
 
   lazy val scalatestDocSettings = Seq(
     docsrcDirSetting,
@@ -392,7 +452,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
-        "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.check",
         "org.scalatest.diagrams",
@@ -438,7 +497,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic)
+   ).dependsOn(scalatestCompatible, scalacticMacro % "compile-internal, test-internal", scalactic)
 
   lazy val scalatestTest = Project("scalatest-test", file("scalatest-test"))
     .settings(sharedSettings: _*)
@@ -543,9 +602,9 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   lazy val rootProject = scalatestApp
 
-  lazy val scalatestCompatible = Project("scalatestCompatible", file("modules/jvm/scalatest-compatible"))
+  lazy val scalatestCompatible = Project("scalatestCompatible", file("scalatest-compatible"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(commonSharedSettings: _*)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest Compatible",
@@ -559,11 +618,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         Def.task{
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
-        }.taskValue
-      },
-      sourceGenerators in Compile += {
-        Def.task{
-          GenModules.genScalaTestCompatible((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
       scalatestDocSettings,

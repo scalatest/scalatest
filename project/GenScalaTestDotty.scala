@@ -117,7 +117,6 @@ object GenScalaTestDotty {
         "DoNotDiscover.java",
         "Ignore.java"
       )) ++ 
-    copyDir("scalatest/src/main/java/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++ 
     copyDir("scalatest/src/main/java/org/scalatest/tags", "org/scalatest/tags", targetDir, List.empty)  
   }
 

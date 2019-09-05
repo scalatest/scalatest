@@ -181,7 +181,7 @@ trait DottyBuild { this: BuildCommons =>
       "Bundle-Vendor" -> "Artima, Inc.",
       "Main-Class" -> "org.scalatest.tools.Runner"
     )
-  ).dependsOn(scalacticDotty)
+  ).dependsOn(scalatestCompatible, scalacticDotty)
 
   lazy val scalatestCoreDotty = Project("scalatestCoreDotty", file("modules/dotty/scalatest-core"))
     .enablePlugins(SbtOsgi)
