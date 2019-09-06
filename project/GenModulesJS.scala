@@ -119,6 +119,15 @@ object GenModulesJS {
       copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList
 
+  def genScalaTestFunSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    GenScalaTestJS.genScalaPackages.filter { case (packagePath, skipList) =>
+      List(
+        "org/scalatest/funspec"
+      ).contains(packagePath)
+    }.flatMap { case (packagePath, skipList) =>
+      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList  
+
   def genScalaTestPropSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     GenScalaTestJS.genScalaPackages.filter { case (packagePath, skipList) =>
       List(

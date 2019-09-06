@@ -34,10 +34,6 @@ object GenModules {
     }
   }
 
-  def genScalaTestCompatible(targetDir: File, version: String, scalaVersion: String): Seq[File] = { 
-    copyDir("scalatest/src/main/java/org/scalatest/compatible", "org/scalatest/compatible", targetDir,List.empty)
-  }
-
   def genScalaTestCore(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("scalatest/src/main/scala/org/scalatest", "org/scalatest", targetDir, 
       List("package.scala")
@@ -76,6 +72,9 @@ object GenModules {
 
   def genScalaTestFunSuite(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty)
+
+  def genScalaTestFunSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty)  
 
   def genScalaTestPropSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("scalatest/src/main/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, List.empty)

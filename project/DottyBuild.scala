@@ -181,7 +181,7 @@ trait DottyBuild { this: BuildCommons =>
       "Bundle-Vendor" -> "Artima, Inc.",
       "Main-Class" -> "org.scalatest.tools.Runner"
     )
-  ).dependsOn(scalacticDotty)
+  ).dependsOn(scalatestCompatible, scalacticDotty)
 
   lazy val scalatestCoreDotty = Project("scalatestCoreDotty", file("modules/dotty/scalatest-core"))
     .enablePlugins(SbtOsgi)
@@ -380,6 +380,36 @@ trait DottyBuild { this: BuildCommons =>
     ),
     OsgiKeys.additionalHeaders:= Map(
       "Bundle-Name" -> "ScalaTest FunSuite Dotty",
+      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalatestCoreDotty)
+
+  lazy val scalatestFunSpecDotty = Project("scalatestFunSpecDotty", file("modules/dotty/scalatest-funspec"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FunSpec Dotty",
+      organization := "org.scalatest",
+      moduleName := "scalatest-funspec",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenModulesDotty.genScalaTestFunSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue
+      },
+      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest.funspec"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest FunSpec Dotty",
       "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
       "Bundle-DocURL" -> "http://www.scalatest.org/",
       "Bundle-Vendor" -> "Artima, Inc."
@@ -612,6 +642,7 @@ trait DottyBuild { this: BuildCommons =>
       scalatestFlatSpecDotty, 
       scalatestFreeSpecDotty, 
       scalatestFunSuiteDotty, 
+      scalatestFunSpecDotty, 
       scalatestPropSpecDotty, 
       scalatestRefSpecDotty, 
       scalatestWordSpecDotty, 

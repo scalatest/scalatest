@@ -16,7 +16,7 @@
 package org.scalatest.funspec
 
 import org.scalatest._
-import org.scalactic.{Resources => _, FailureMessages => _, UnquotedString => _, _}
+import org.scalactic.{source, Prettifier}
 import scala.concurrent.Future
 import Suite.autoTagClassAnnotations
 import verbs.BehaveWord
