@@ -17,6 +17,6 @@ package org.scalatest.events.examples
 
 import org.scalatest._
 
-class ExampleCancelInNestedSuite extends Suites (
+class ExampleCancelInNestedSuite extends NestedSuites (
   new ExampleCancelSpec    
 )

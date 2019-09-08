@@ -83,9 +83,9 @@ protected[scalatest] class MandarinOrangeFixturePropSpec(ns: Suite*) extends fix
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 
-protected[scalatest] class MandarinOrangeSuites(suites: Suite*) extends Suites(suites: _*)
-protected[scalatest] class MandarinOrangeSequential(suites: Suite*) extends Sequential(suites: _*)
-protected[scalatest] class MandarinOrangeStepwise(suites: Suite*) extends Stepwise(suites: _*)
+protected[scalatest] class MandarinOrangeSuites(suites: Suite*) extends NestedSuites(suites: _*)
+protected[scalatest] class MandarinOrangeSequential(suites: Suite*) extends SequentialNestedSuites(suites: _*)
+protected[scalatest] class MandarinOrangeStepwise(suites: Suite*) extends StepwiseNestedSuites(suites: _*)
 
 // SKIP-SCALATESTJS,NATIVE-START
 import PrivateMethodTester._
@@ -135,9 +135,9 @@ class SuiteSpec extends FunSpec {
             // ( new path.FunSpec, "path.FunSpec"),
             // ( new path.FreeSpec, "path.FreeSpec"),
 
-            ( new Suites, "Suites"),
-            ( new Sequential, "Sequential"),
-            ( new Stepwise, "Stepwise"),
+            ( new NestedSuites, "NestedSuites"),
+            ( new SequentialNestedSuites, "SequentialNestedSuites"),
+            ( new StepwiseNestedSuites, "StepwiseNestedSuites"),
 
             ( new MandarinOrangeSuites, "MandarinOrangeSuites"),
             ( new MandarinOrangeSequential, "MandarinOrangeSequential"),
@@ -178,9 +178,9 @@ class SuiteSpec extends FunSpec {
             // ( new path.FunSpec(new FunSuite), "path.FunSpec(FunSuite)"),
             // ( new path.FreeSpec(new FunSuite), "path.FreeSpec(FunSuite)"),
 
-            ( new Suites(new FunSuite), "Suites(AnyFunSuite)"),
-            ( new Sequential(new FunSuite), "Sequential(AnyFunSuite)"),
-            ( new Stepwise(new FunSuite), "Stepwise(AnyFunSuite)"),
+            ( new NestedSuites(new FunSuite), "NestedSuites(AnyFunSuite)"),
+            ( new SequentialNestedSuites(new FunSuite), "SequentialNestedSuites(AnyFunSuite)"),
+            ( new StepwiseNestedSuites(new FunSuite), "StepwiseNestedSuites(AnyFunSuite)"),
 
             ( new MandarinOrangeSuites(new FunSuite), "MandarinOrangeSuites(AnyFunSuite)"),
             ( new MandarinOrangeSequential(new FunSuite), "MandarinOrangeSequential(AnyFunSuite)"),
@@ -221,9 +221,9 @@ class SuiteSpec extends FunSpec {
             // ( new path.FunSpec(new PropSpec, new FeatureSpec, new FunSuite), "path.FunSpec(PropSpec, FeatureSpec, FunSuite)"),
             // ( new path.FreeSpec(new PropSpec, new FeatureSpec, new FunSuite), "path.FreeSpec(PropSpec, FeatureSpec, FunSuite)"),
 
-            ( new Suites(new PropSpec, new FeatureSpec, new FunSuite), "Suites(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new Sequential(new PropSpec, new FeatureSpec, new FunSuite), "Sequential(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new Stepwise(new PropSpec, new FeatureSpec, new FunSuite), "Stepwise(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new NestedSuites(new PropSpec, new FeatureSpec, new FunSuite), "NestedSuites(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new SequentialNestedSuites(new PropSpec, new FeatureSpec, new FunSuite), "SequentialNestedSuites(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new StepwiseNestedSuites(new PropSpec, new FeatureSpec, new FunSuite), "StepwiseNestedSuites(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
 
             ( new MandarinOrangeSuites(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeSuites(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
             ( new MandarinOrangeSequential(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeSequential(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
@@ -334,7 +334,7 @@ class SuiteSpec extends FunSpec {
         def reset(): Unit = {}
       }
 
-      val x = Suites(a, b, c, d, e, f, g)
+      val x = NestedSuites(a, b, c, d, e, f, g)
       x.run(None, Args(SilentReporter, new IgnoreStopRequestStopper))
 
       assert(a.executed)
@@ -353,7 +353,7 @@ class SuiteSpec extends FunSpec {
       val m = new SuiteF
       val n = new SuiteG
 
-      val y = Suites(h, i, j, k, l, m, n)
+      val y = NestedSuites(h, i, j, k, l, m, n)
       y.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
 
       assert(k.executed)

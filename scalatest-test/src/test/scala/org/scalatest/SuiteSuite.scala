@@ -335,12 +335,12 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
     val emptySuite = new RefSpec {}
 
     val emptySuiteContainingNestedSuites =
-      new Suites(emptySuite, new NormalSuite)
+      new NestedSuites(emptySuite, new NormalSuite)
 
     val nonEmptySuite = new RefSpec { def `test foo`: Unit = {} }
 
     val nonEmptySuiteContainingNestedSuites =
-      new Suites(emptySuite, new NormalSuite) with RefSpecLike
+      new NestedSuites(emptySuite, new NormalSuite) with RefSpecLike
       {
         def `test foo`: Unit = {}
       }

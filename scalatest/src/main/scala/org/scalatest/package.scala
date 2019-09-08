@@ -384,4 +384,75 @@ package object scalatest {
    */
   @deprecated("The org.scalatest.DiagrammedAssertions object has been moved and renamed. Please use org.scalatest.diagrams.Diagrams instead.", "3.1.0")
   val DiagrammedAssertions = diagrams.Diagrams
+
+  /**
+   * <strong>The name <code>org.scalatest.Suites</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.NestedSuites</code>, instead.</strong>
+   *
+   * <p>
+   * This type has been renamed so that its name, <code>Suites</code>, can be used for a different purpose in the future.
+   * </p>
+   */
+  @deprecated("The org.scalatest.Suites class has been renamed. Please use org.scalatest.NestedSuites instead.", "3.1.0")
+  type Suites = NestedSuites
+
+  /**
+   * <strong>The name <code>org.scalatest.Suites</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.NestedSuites</code>, instead.</strong>
+   *
+   * <p>
+   * This type has been renamed so that its name, <code>Suites</code>, can be used for a different purpose in the future.
+   * </p>
+   */
+  @deprecated("The org.scalatest.Suites class has been renamed. Please use org.scalatest.NestedSuites instead.", "3.1.0")
+  val Suites = NestedSuites
+
+  /**
+   * <strong>The name <code>org.scalatest.Sequental</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.SequentialNestedSuites</code>, instead.</strong>
+   *
+   * <p>
+   * This type has been renamed to be consistent with the rename of <code>Suites</code> to <code>NestedSuites</code>, which was done so that Suites
+   * can be used for a different purpose in the future.
+   * </p>
+   */
+  @deprecated("The org.scalatest.Sequential class has been renamed. Please use org.scalatest.SequentialNestedSuites instead.", "3.1.0")
+  type Sequential = SequentialNestedSuites
+
+  /**
+   * <strong>The name <code>org.scalatest.Sequental</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.SequentialNestedSuites</code>, instead.</strong>
+   *
+   * <p>
+   * This type has been renamed to be consistent with the rename of <code>Suites</code> to <code>NestedSuites</code>, which was done so that Suites
+   * can be used for a different purpose in the future.
+   * </p>
+   */
+  @deprecated("The org.scalatest.Sequential class has been renamed. Please use org.scalatest.SequentialNestedSuites instead.", "3.1.0")
+  val Sequential = SequentialNestedSuites
+
+  /**
+   * <strong>The name <code>org.scalatest.Stepwise</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.StepwiseNestedSuites</code>, instead.</strong>
+   *
+   * <p>
+   * This type has been renamed to be consistent with the rename of <code>Suites</code> to <code>NestedSuites</code>, which was done so that Suites
+   * can be used for a different purpose in the future.
+   * </p>
+   */
+  @deprecated("The org.scalatest.Stepwise class has been renamed. Please use org.scalatest.StepwiseNestedSuites instead.", "3.1.0")
+  type Stepwise = StepwiseNestedSuites
+
+  /**
+   * <strong>The name <code>org.scalatest.Stepwise</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.StepwiseNestedSuites</code>, instead.</strong>
+   *
+   * <p>
+   * This type has been renamed to be consistent with the rename of <code>Suites</code> to <code>NestedSuites</code>, which was done so that Suites
+   * can be used for a different purpose in the future.
+   * </p>
+   */
+  @deprecated("The org.scalatest.Stepwise class has been renamed. Please use org.scalatest.StepwiseNestedSuites instead.", "3.1.0")
+  val Stepwise = StepwiseNestedSuites
 }
+

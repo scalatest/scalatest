@@ -1089,7 +1089,7 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
       assert(e.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) == 0)
       assert(e.expectedTestCount(Filter()) == 2)
 
-      val f = new Suites(a, b, c, d, e)
+      val f = new NestedSuites(a, b, c, d, e)
       assert(f.expectedTestCount(Filter()) == 10)
     }
 
@@ -1144,7 +1144,7 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
       assert(e.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) == 0)
       assert(e.expectedTestCount(Filter()) == 2)
 
-      val f = new Suites(a, b, c, d, e)
+      val f = new NestedSuites(a, b, c, d, e)
       assert(f.expectedTestCount(Filter()) == 10)
     }
 

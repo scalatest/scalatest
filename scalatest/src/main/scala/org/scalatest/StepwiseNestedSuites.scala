@@ -29,7 +29,7 @@ import org.scalactic.exceptions.NullArgumentException
  * </p>
  *
  * <pre class="stHighlight">
- * class StepsSuite extends Stepwise(
+ * class StepsSuite extends StepwiseNestedSuites(
  *   new Step1Suite,
  *   new Step2Suite,
  *   new Step3Suite,
@@ -46,8 +46,8 @@ import org.scalactic.exceptions.NullArgumentException
  * </p>
  *
  * <p>
- * The difference between <code>Stepwise</code> and <a href="Sequential.html"><code>Sequential</code></a>
- * is that although <code>Stepwise</code> executes its own nested suites sequentially, it passes
+ * The difference between <code>StepwiseNestedSuites</code> and <a href="Sequential.html"><code>Sequential</code></a>
+ * is that although <code>StepwiseNestedSuites</code> executes its own nested suites sequentially, it passes
  * whatever distributor was passed to it to those nested suites. Thus the nested suites could run their own nested
  * suites and tests in parallel if that distributor is defined. By contrast, <code>Sequential</code> always
  * passes <code>None</code> for the distributor to the nested suites, so any and every test and nested suite 
@@ -61,7 +61,7 @@ import org.scalactic.exceptions.NullArgumentException
  *
  * @author Bill Venners
  */
-class Stepwise(suitesToNest: Suite*) extends Suite with StepwiseNestedSuiteExecution { thisSuite => 
+class StepwiseNestedSuites(suitesToNest: Suite*) extends Suite with StepwiseNestedSuiteExecution { thisSuite => 
 
   requireNonNull(suitesToNest)
 
@@ -88,22 +88,22 @@ class Stepwise(suitesToNest: Suite*) extends Suite with StepwiseNestedSuiteExecu
 }
 
 /**
- * Companion object to class <code>Stepwise</code> that offers an <code>apply</code> factory method
- * for creating a <code>Stepwise</code> instance.
+ * Companion object to class <code>StepwiseNestedSuites</code> that offers an <code>apply</code> factory method
+ * for creating a <code>StepwiseNestedSuites</code> instance.
  *
  * <p>
  * One use case for this object is to run multiple specification-style suites in the Scala interpreter, like this:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; Stepwise(new MyFirstSuite, new MyNextSuite).execute()
+ * scala&gt; StepwiseNestedSuites(new MyFirstSuite, new MyNextSuite).execute()
  * </pre>
  */
-object Stepwise {
+object StepwiseNestedSuites {
 
   /**
-   * Factory method for creating a <code>Stepwise</code> instance.
+   * Factory method for creating a <code>StepwiseNestedSuites</code> instance.
    */
-  def apply(suitesToNest: Suite*): Stepwise = new Stepwise(suitesToNest: _*)
+  def apply(suitesToNest: Suite*): StepwiseNestedSuites = new StepwiseNestedSuites(suitesToNest: _*)
 }
 

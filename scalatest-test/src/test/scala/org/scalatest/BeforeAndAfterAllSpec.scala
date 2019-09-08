@@ -58,7 +58,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     override def newInstance: Suite with ParallelTestExecution = new ExampleNestedSuite
   }
   
-  class ExampleSuites extends Suites(
+  class ExampleSuites extends NestedSuites(
     new ExampleNestedSuite
   ) with BeforeAndAfterAll { 
     @volatile var beforeAllTime: Long = 0

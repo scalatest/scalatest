@@ -20,7 +20,7 @@ import Suite.CHOSEN_STYLES
 import org.scalatest.exceptions.NotAllowedException
 import org.scalactic.exceptions.NullArgumentException
 
-class SuitesSpec extends FunSpec {
+class NestedSuitesSpec extends FunSpec {
 
   val a = new Suite {}
   val b = new FunSuite {}
@@ -28,22 +28,22 @@ class SuitesSpec extends FunSpec {
   val d = new WordSpec {}
   val e = new FeatureSpec {}
 
-  describe("Suites") {
+  describe("NestedSuites") {
     it("should return the passed suites from nestedSuites") {
-      val f = new Suites(a, b, c, d, e)
+      val f = new NestedSuites(a, b, c, d, e)
       assert(f.nestedSuites == List(a, b, c, d, e))
-      val g = new Suites(Array(a, b, c, d, e): _*)
+      val g = new NestedSuites(Array(a, b, c, d, e): _*)
       assert(g.nestedSuites == List(a, b, c, d, e))
       intercept[NullArgumentException] {
-        new Suites(a, b, null, d, e)
+        new NestedSuites(a, b, null, d, e)
       }
       intercept[NullArgumentException] {
         val aNull: Array[Suite] = null
-        new Suites(aNull: _*)
+        new NestedSuites(aNull: _*)
       }
     }
     it("should not care about chosenStyles if it contains no tests directly and only contains nested suites with no tests") {
-      val f = new Suites(a, b, c, d, e)
+      val f = new NestedSuites(a, b, c, d, e)
       f.run(None, Args(SilentReporter))
       f.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("FunSuite")), None, new Tracker, Set.empty))
       // TODO: Is this test really testing anything?
@@ -51,18 +51,18 @@ class SuitesSpec extends FunSpec {
 
     it("should care about chosenStyles if it contains tests directly") {
 
-      class SuitesWithSpecStyleTests(suitesToNest: Suite*) extends Suites(suitesToNest.toList: _*) with FunSpecLike {
+      class NestedSuitesWithSpecStyleTests(suitesToNest: Suite*) extends NestedSuites(suitesToNest.toList: _*) with FunSpecLike {
         it("test method 1") {}
         it("test method 2") {}
       }
 
-      val g = new SuitesWithSpecStyleTests(a, b, c, d, e)
+      val g = new NestedSuitesWithSpecStyleTests(a, b, c, d, e)
       // OK if no chosen styles specified
       g.run(None, Args(SilentReporter))
-      // OK if chosen styles is Suite, because that's the style of *tests* written in this Suites
+      // OK if chosen styles is Suite, because that's the style of *tests* written in this NestedSuites
       g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.funspec.AnyFunSpec")), None, new Tracker, Set.empty))
       intercept[NotAllowedException] {
-        // Should not allow if chosen styles is FunSuite, because Suite is the style of *tests* written in this Suites
+        // Should not allow if chosen styles is FunSuite, because Suite is the style of *tests* written in this NestedSuites
         g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.funsuite.AnyFunSuite")), None, new Tracker, Set.empty))
       }
     }

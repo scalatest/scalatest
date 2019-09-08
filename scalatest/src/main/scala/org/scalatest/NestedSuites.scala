@@ -19,8 +19,8 @@ import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 
 /**
- * A <code>Suite</code> class mixing in <a href="SequentialNestedSuiteExecution.html"><code>SequentialNestedSuiteExecution</code></a> that takes
- * zero to many <code>Suite</code>s, which will be returned from its <code>nestedSuites</code> method.
+ * A <code>Suite</code> class that takes zero to many <code>Suite</code>s in its constructor,
+ *  which will be returned from its <code>nestedSuites</code> method.
  *
  * <p>
  * For example, you can define a suite that always executes a list of
@@ -28,7 +28,7 @@ import org.scalactic.exceptions.NullArgumentException
  * </p>
  *
  * <pre class="stHighlight">
- * class StepsSuite extends Sequential(
+ * class StepsSuite extends NestedSuites(
  *   new Step1Suite,
  *   new Step2Suite,
  *   new Step3Suite,
@@ -38,32 +38,22 @@ import org.scalactic.exceptions.NullArgumentException
  * </pre>
  *
  * <p>
- * When <code>StepsSuite</code> is executed, it will execute its
+ * If <code>StepsSuite</code> is executed sequentially, it will execute its
  * nested suites in the passed order: <code>Step1Suite</code>, <code>Step2Suite</code>,
  * <code>Step3Suite</code>, <code>Step4Suite</code>, and <code>Step5Suite</code>.
- * Because <code>Sequential</code> extends <code>SequentialNestedSuiteExecution</code>,
- * the distributor passed to <code>runNestedSuites</code> will always be <code>None</code>.
- * So not only will the suites passed to the constructor be executed sequentially, any
- * tests and nested suites of the passed suites will also be executed sequentually.
+ * If <code>StepsSuite</code> is executed in parallel, the nested suites will
+ * be executed concurrently.
  * </p>
  *
- * <p>
- * The difference between <code>Sequential</code> and <a href="Stepwise.html"><code>Stepwise</code></a>
- * is that although <code>Stepwise</code> executes its own nested suites sequentially, it passes
- * whatever distributor was passed to it to those nested suites. Thus the nested suites could run their own nested
- * suites and tests in parallel if that distributor is defined. By contrast, <code>Sequential</code> always
- * passes <code>None</code> for the distributor to the nested suites, so any and every test and nested suite 
- * contained within the nested suites passed to the <code>Sequential</code> construtor will be executed sequentially.
- * </p>
- * 
  * @param suitesToNest a sequence of <code>Suite</code>s to nest.
  *
- * @throws NullArgumentException if <code>suitesToNest</code>, or any suite
+ * @throws NullPointerException if <code>suitesToNest</code>, or any suite
  * it contains, is <code>null</code>.
  *
  * @author Bill Venners
  */
-class Sequential(suitesToNest: Suite*) extends Suite with SequentialNestedSuiteExecution { thisSuite => 
+//SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
+class NestedSuites(suitesToNest: Suite*) extends Suite { thisSuite =>
 
   requireNonNull(suitesToNest)
 
@@ -90,22 +80,22 @@ class Sequential(suitesToNest: Suite*) extends Suite with SequentialNestedSuiteE
 }
 
 /**
- * Companion object to class <code>Sequential</code> that offers an <code>apply</code> factory method
- * for creating a <code>Sequential</code> instance.
+ * Companion object to class <code>NestedSuites</code> that offers an <code>apply</code> factory method
+ * for creating a <code>NestedSuites</code> instance.
  *
  * <p>
  * One use case for this object is to run multiple specification-style suites in the Scala interpreter, like this:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; Sequential(new MyFirstSuite, new MyNextSuite).execute()
+ * scala&gt; NestedSuites(new MyFirstSuite, new MyNextSuite).execute()
  * </pre>
  */
-object Sequential {
+object NestedSuites {
 
   /**
-   * Factory method for creating a <code>Sequential</code> instance.
+   * Factory method for creating a <code>NestedSuites</code> instance.
    */
-  def apply(suitesToNest: Suite*): Sequential = new Sequential(suitesToNest: _*)
+  def apply(suitesToNest: Suite*): NestedSuites = new NestedSuites(suitesToNest: _*)
 }
 

@@ -796,7 +796,7 @@ class FunSuiteSpec extends org.scalatest.FunSpec /*with PrivateMethodTester*/ {
       assert(e.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) == 0)
       assert(e.expectedTestCount(Filter()) == 2)
 
-      val f = Suites(a, b, c, d, e)
+      val f = NestedSuites(a, b, c, d, e)
       assert(f.expectedTestCount(Filter()) === 10)
     }
     it("should return the correct test count from its expectedTestCount method when uses registerTest and registerIgnoredTest to register tests") {
@@ -850,7 +850,7 @@ class FunSuiteSpec extends org.scalatest.FunSpec /*with PrivateMethodTester*/ {
       assert(e.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) == 0)
       assert(e.expectedTestCount(Filter()) === 2)
 
-      val f = Suites(a, b, c, d, e)
+      val f = NestedSuites(a, b, c, d, e)
       assert(f.expectedTestCount(Filter()) == 10)
     }
     it("should generate a TestPending message when the test body is (pending)") {
