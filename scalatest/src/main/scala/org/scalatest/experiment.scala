@@ -61,11 +61,6 @@ import org.scalatest.tools.StandardOutReporter
 import tools.SuiteDiscoveryHelper
 // SKIP-SCALATESTJS,NATIVE-END
 
-// Could I pass the decorated to the constructor?
-trait RunTestFunction {
-  def apply(outermost: PureSuite, testName: String, args: Args): Status
-}
-
 trait SuiteNameFunction {
   def apply(outermost: PureSuite): String
 }
@@ -136,7 +131,7 @@ trait PureSuite extends RunnableSuite { thisSuite =>
 
   def runTestsFun(outermost: PureSuite, testName: Option[String], args: Args): Status
 
-  val runTestFun: RunTestFunction
+  def runTestFun(outermost: PureSuite, testName: String, args: Args): Status
 
   val testDataForFun: TestDataForFunction
 
@@ -347,13 +342,10 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
     SucceededStatus
   }
 
-  final val runTestFun: RunTestFunction =
-    new RunTestFunction {
-      def apply(outermost: PureSuite, testName: String, args: Args): Status = {
-        println("running " + testName)
-        SucceededStatus
-      }
-    }
+  final def runTestFun(outermost: PureSuite, testName: String, args: Args): Status = {
+    println("running " + testName)
+    SucceededStatus
+  }
 
   final val testDataForFun: TestDataForFunction =
     new TestDataForFunction {
@@ -468,7 +460,7 @@ class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
 
   override def runTestsFun(outermost: PureSuite, testName: Option[String], args: Args): Status = decorated.runTestsFun(outermost, testName, args)
 
-  override val runTestFun: RunTestFunction = decorated.runTestFun
+  override def runTestFun(outermost: PureSuite, testName: String, args: Args): Status = decorated.runTestFun(outermost, testName, args)
 
   override val testDataForFun: TestDataForFunction = decorated.testDataForFun
 
