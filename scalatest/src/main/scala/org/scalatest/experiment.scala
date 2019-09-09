@@ -62,52 +62,52 @@ import tools.SuiteDiscoveryHelper
 // SKIP-SCALATESTJS,NATIVE-END
 
 trait RunFunction {
-  def apply(thisPureSuite: PureSuite, testName: Option[String], args: Args): Status
+  def apply(outermost: PureSuite, testName: Option[String], args: Args): Status
 }
 
 trait NestedSuitesFunction {
-  def apply(thisPureSuites: PureSuite): collection.immutable.IndexedSeq[PureSuite]
+  def apply(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite]
 }
 
 trait RunNestedSuitesFunction {
-  def apply(thisPureSuites: PureSuite, args: Args): Status
+  def apply(outermost: PureSuite, args: Args): Status
 }
 
 trait RunTestsFunction {
-  def apply(thisPureSuite: PureSuite, testName: Option[String], args: Args): Status
+  def apply(outermost: PureSuite, testName: Option[String], args: Args): Status
 }
 
 // Could I pass the decorated to the constructor?
 trait RunTestFunction {
-  def apply(thisPureSuite: PureSuite, testName: String, args: Args): Status
+  def apply(outermost: PureSuite, testName: String, args: Args): Status
 }
 
 trait SuiteNameFunction {
-  def apply(thisPureSuite: PureSuite): String
+  def apply(outermost: PureSuite): String
 }
 
 trait SuiteIdFunction {
-  def apply(thisPureSuite: PureSuite): String
+  def apply(outermost: PureSuite): String
 }
 
 trait TestDataForFunction {
-  def apply(thisPureSuite: PureSuite, testName: String, theConfigMap: ConfigMap): TestData
+  def apply(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData
 }
 
 trait TestNamesFunction {
-  def apply(thisPureSuite: PureSuite) : Set[String]
+  def apply(outermost: PureSuite) : Set[String]
 }
 
 trait TagsFunction {
-  def apply(thisPureSuite: PureSuite) : Map[String, Set[String]]
+  def apply(outermost: PureSuite) : Map[String, Set[String]]
 }
 
 trait ExpectedTestCountFunction {
-  def apply(thisPureSuite: PureSuite, filter: Filter): Int
+  def apply(outermost: PureSuite, filter: Filter): Int
 }
 
 trait RerunnerFunction {
-  def apply(thisPureSuite: PureSuite) : Option[String]
+  def apply(outermost: PureSuite) : Option[String]
 }
 
 trait PureSuite extends RunnableSuite { thisSuite =>
@@ -265,12 +265,12 @@ trait PureSuites extends PureSuite
 trait PureTests extends PureSuite {
   final val nestedSuitesFun: NestedSuitesFunction =
     new NestedSuitesFunction {
-      def apply(thisPureSuites: PureSuite): collection.immutable.IndexedSeq[PureSuite] = Vector.empty
+      def apply(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite] = Vector.empty
     }
 
   final val runNestedSuitesFun: RunNestedSuitesFunction =
     new RunNestedSuitesFunction {
-      def apply(thisPureSuites: PureSuite, args: Args): Status = SucceededStatus
+      def apply(outermost: PureSuite, args: Args): Status = SucceededStatus
     }
 }
 
@@ -354,17 +354,17 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
   
   final val suiteNameFun: SuiteNameFunction =
     new SuiteNameFunction {
-      def apply(thisPureSuite: PureSuite): String = getSimpleNameOfAnObjectsClass(thisSuite)
+      def apply(outermost: PureSuite): String = getSimpleNameOfAnObjectsClass(thisSuite)
     }
 
   final val suiteIdFun: SuiteIdFunction =
     new SuiteIdFunction {
-      def apply(thisPureSuite: PureSuite): String = thisSuite.getClass.getName
+      def apply(outermost: PureSuite): String = thisSuite.getClass.getName
     }
 
   final val runTestsFun: RunTestsFunction = 
     new RunTestsFunction {
-      def apply(thisPureSuite: PureSuite, testName: Option[String], args: Args): Status = {
+      def apply(outermost: PureSuite, testName: Option[String], args: Args): Status = {
         for (t <- tests)
            runTestFun(thisSuite, t.testText, args)
         SucceededStatus
@@ -373,7 +373,7 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
 
   final val runTestFun: RunTestFunction =
     new RunTestFunction {
-      def apply(thisPureSuite: PureSuite, testName: String, args: Args): Status = {
+      def apply(outermost: PureSuite, testName: String, args: Args): Status = {
         println("running " + testName)
         SucceededStatus
       }
@@ -381,27 +381,27 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
 
   final val testDataForFun: TestDataForFunction =
     new TestDataForFunction {
-      def apply(thisPureSuite: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = throw new IllegalArgumentException
+      def apply(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = throw new IllegalArgumentException
     }
 
   final val testNamesFun: TestNamesFunction =
     new TestNamesFunction {
-      def apply(thisPureSuite: PureSuite) : Set[String] = tests.map(_.testText).toSet
+      def apply(outermost: PureSuite) : Set[String] = tests.map(_.testText).toSet
     }
 
   final val tagsFun: TagsFunction =
     new TagsFunction {
-      def apply(thisPureSuite: PureSuite) : Map[String, Set[String]] = Map.empty
+      def apply(outermost: PureSuite) : Map[String, Set[String]] = Map.empty
     }
 
   final val expectedTestCountFun: ExpectedTestCountFunction = 
     new ExpectedTestCountFunction {
-      def apply(thisPureSuite: PureSuite, filter: Filter): Int = tests.size
+      def apply(outermost: PureSuite, filter: Filter): Int = tests.size
     }
 
   final val runFun: RunFunction =
     new RunFunction {
-      def apply(thisPureSuite: PureSuite, testName: Option[String], args: Args): Status = {
+      def apply(outermost: PureSuite, testName: Option[String], args: Args): Status = {
 
         requireNonNull(testName, args)
 
@@ -428,7 +428,7 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
 
   final val rerunnerFun: RerunnerFunction =
     new RerunnerFunction {
-      def apply(thisPureSuite: PureSuite) : Option[String] = {
+      def apply(outermost: PureSuite) : Option[String] = {
         val suiteClass = thisSuite.getClass
         // SKIP-SCALATESTJS,NATIVE-START
         val isAccessible = SuiteDiscoveryHelper.isAccessibleSuite(suiteClass)
@@ -513,7 +513,7 @@ final class BeforeAndAfterAllWrapper(
  
   override val runFun: RunFunction = {
     new RunFunction {
-      def apply(thisPureSuite: PureSuite, testName: Option[String], args: Args): Status = {
+      def apply(outermost: PureSuite, testName: Option[String], args: Args): Status = {
         val (runStatus, thrownException) =
           try {
             if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
