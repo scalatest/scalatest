@@ -61,10 +61,6 @@ import org.scalatest.tools.StandardOutReporter
 import tools.SuiteDiscoveryHelper
 // SKIP-SCALATESTJS,NATIVE-END
 
-trait RunTestsFunction {
-  def apply(outermost: PureSuite, testName: Option[String], args: Args): Status
-}
-
 // Could I pass the decorated to the constructor?
 trait RunTestFunction {
   def apply(outermost: PureSuite, testName: String, args: Args): Status
@@ -138,7 +134,7 @@ trait PureSuite extends RunnableSuite { thisSuite =>
 
   def runNestedSuitesFun(outermost: PureSuite, args: Args): Status
 
-  val runTestsFun: RunTestsFunction
+  def runTestsFun(outermost: PureSuite, testName: Option[String], args: Args): Status
 
   val runTestFun: RunTestFunction
 
@@ -345,14 +341,11 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
       def apply(outermost: PureSuite): String = thisSuite.getClass.getName
     }
 
-  final val runTestsFun: RunTestsFunction = 
-    new RunTestsFunction {
-      def apply(outermost: PureSuite, testName: Option[String], args: Args): Status = {
-        for (t <- tests)
-           runTestFun(thisSuite, t.testText, args)
-        SucceededStatus
-      }
-    }
+  final def runTestsFun(outermost: PureSuite, testName: Option[String], args: Args): Status = {
+    for (t <- tests)
+       runTestFun(thisSuite, t.testText, args)
+    SucceededStatus
+  }
 
   final val runTestFun: RunTestFunction =
     new RunTestFunction {
@@ -473,7 +466,7 @@ class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
 
   override def runNestedSuitesFun(outermost: PureSuite, args: Args): Status = decorated.runNestedSuitesFun(outermost, args)
 
-  override val runTestsFun: RunTestsFunction = decorated.runTestsFun
+  override def runTestsFun(outermost: PureSuite, testName: Option[String], args: Args): Status = decorated.runTestsFun(outermost, testName, args)
 
   override val runTestFun: RunTestFunction = decorated.runTestFun
 
