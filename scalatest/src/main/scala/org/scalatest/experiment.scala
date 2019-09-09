@@ -61,10 +61,6 @@ import org.scalatest.tools.StandardOutReporter
 import tools.SuiteDiscoveryHelper
 // SKIP-SCALATESTJS,NATIVE-END
 
-trait TestDataForFunction {
-  def apply(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData
-}
-
 trait TestNamesFunction {
   def apply(outermost: PureSuite) : Set[String]
 }
@@ -125,7 +121,7 @@ trait PureSuite extends RunnableSuite { thisSuite =>
 
   def runTestFun(outermost: PureSuite, testName: String, args: Args): Status
 
-  val testDataForFun: TestDataForFunction
+  def testDataForFun(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData
 
   val testNamesFun: TestNamesFunction
 
@@ -333,10 +329,7 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
     SucceededStatus
   }
 
-  final val testDataForFun: TestDataForFunction =
-    new TestDataForFunction {
-      def apply(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = throw new IllegalArgumentException
-    }
+  final def testDataForFun(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = throw new IllegalArgumentException
 
   final val testNamesFun: TestNamesFunction =
     new TestNamesFunction {
@@ -448,7 +441,7 @@ class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
 
   override def runTestFun(outermost: PureSuite, testName: String, args: Args): Status = decorated.runTestFun(outermost, testName, args)
 
-  override val testDataForFun: TestDataForFunction = decorated.testDataForFun
+  override def testDataForFun(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = decorated.testDataForFun(outermost, testName, theConfigMap)
 
   override val testNamesFun: TestNamesFunction = decorated.testNamesFun
 
