@@ -61,14 +61,6 @@ import org.scalatest.tools.StandardOutReporter
 import tools.SuiteDiscoveryHelper
 // SKIP-SCALATESTJS,NATIVE-END
 
-trait ExpectedTestCountFunction {
-  def apply(outermost: PureSuite, filter: Filter): Int
-}
-
-trait RerunnerFunction {
-  def apply(outermost: PureSuite) : Option[String]
-}
-
 trait PureSuite extends RunnableSuite { thisSuite =>
 
   final def run(testName: Option[String], args: Args): Status = runFun(this, testName, args)
@@ -89,9 +81,9 @@ trait PureSuite extends RunnableSuite { thisSuite =>
 
   def suiteIdFun(outermost: PureSuite): String
 
-  val expectedTestCountFun: ExpectedTestCountFunction
+  def expectedTestCountFun(outermost: PureSuite, filter: Filter): Int
   
-  val rerunnerFun: RerunnerFunction
+  def rerunnerFun(outermost: PureSuite) : Option[String]
 
   def withBeforeAndAfterAll(
     beforeAll: => Unit,
@@ -327,10 +319,7 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
 
   final def tagsFun(outermost: PureSuite) : Map[String, Set[String]] = Map.empty
 
-  final val expectedTestCountFun: ExpectedTestCountFunction = 
-    new ExpectedTestCountFunction {
-      def apply(outermost: PureSuite, filter: Filter): Int = tests.size
-    }
+  final def expectedTestCountFun(outermost: PureSuite, filter: Filter): Int = tests.size
 
   final def runFun(outermost: PureSuite, testName: Option[String], args: Args): Status = {
 
@@ -356,21 +345,18 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
     finally Thread.currentThread.setName(originalThreadName)
   }
 
-  final val rerunnerFun: RerunnerFunction =
-    new RerunnerFunction {
-      def apply(outermost: PureSuite) : Option[String] = {
-        val suiteClass = thisSuite.getClass
-        // SKIP-SCALATESTJS,NATIVE-START
-        val isAccessible = SuiteDiscoveryHelper.isAccessibleSuite(suiteClass)
-        val hasWrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith]) != null
-        if (isAccessible || hasWrapWithAnnotation)
-          Some(suiteClass.getName)
-        else
-          None
-        // SKIP-SCALATESTJS,NATIVE-END
-        //SCALATESTJS,NATIVE-ONLY Some(suiteClass.getName)
-      }
-    }
+  final def rerunnerFun(outermost: PureSuite) : Option[String] = {
+    val suiteClass = thisSuite.getClass
+    // SKIP-SCALATESTJS,NATIVE-START
+    val isAccessible = SuiteDiscoveryHelper.isAccessibleSuite(suiteClass)
+    val hasWrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith]) != null
+    if (isAccessible || hasWrapWithAnnotation)
+      Some(suiteClass.getName)
+    else
+      None
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY Some(suiteClass.getName)
+  }
 }
 
 case class Test[T](
@@ -415,9 +401,9 @@ class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
 
   override def suiteIdFun(outermost: PureSuite): String = decorated.suiteIdFun(outermost)
 
-  override val expectedTestCountFun: ExpectedTestCountFunction = decorated.expectedTestCountFun
+  override def expectedTestCountFun(outermost: PureSuite, filter: Filter): Int = decorated.expectedTestCountFun(outermost, filter)
 
-  override val rerunnerFun: RerunnerFunction = decorated.rerunnerFun
+  override def rerunnerFun(outermost: PureSuite) : Option[String] = decorated.rerunnerFun(outermost)
 
   override def nestedSuitesFun(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite] = decorated.nestedSuitesFun(outermost)
 
