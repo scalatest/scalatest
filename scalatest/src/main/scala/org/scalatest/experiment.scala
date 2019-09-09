@@ -124,7 +124,7 @@ trait PureSuite extends RunnableSuite { thisSuite =>
 
   final def nestedSuites: collection.immutable.IndexedSeq[RunnableSuite] = nestedSuitesFun(this)
 
-  val runFun: RunFunction
+  def runFun(outermost: PureSuite, testName: Option[String], args: Args): Status
 
   val suiteNameFun: SuiteNameFunction
 
@@ -399,32 +399,29 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
       def apply(outermost: PureSuite, filter: Filter): Int = tests.size
     }
 
-  final val runFun: RunFunction =
-    new RunFunction {
-      def apply(outermost: PureSuite, testName: Option[String], args: Args): Status = {
+  final def runFun(outermost: PureSuite, testName: Option[String], args: Args): Status = {
 
-        requireNonNull(testName, args)
+    requireNonNull(testName, args)
 
-        import args._
+    import args._
 
-        val originalThreadName = Thread.currentThread.getName
-        try {
-          Thread.currentThread.setName(SuiteHelpers.augmentedThreadName(originalThreadName, suiteName))
+    val originalThreadName = Thread.currentThread.getName
+    try {
+      Thread.currentThread.setName(SuiteHelpers.augmentedThreadName(originalThreadName, suiteName))
 
-          val report = reporter // wrapReporterIfNecessary(thisSuite, reporter)
-          val newArgs = args.copy(reporter = report)
+      val report = reporter // wrapReporterIfNecessary(thisSuite, reporter)
+      val newArgs = args.copy(reporter = report)
 
-          val testsStatus = runTestsFun(thisSuite, testName, newArgs)
+      val testsStatus = runTestsFun(thisSuite, testName, newArgs)
 
-          if (stopper.stopRequested) {
-            val rawString = Resources.executeStopping
-            report(InfoProvided(tracker.nextOrdinal(), rawString, Some(NameInfo(thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), testName))))
-          }
-          testsStatus
-        }
-        finally Thread.currentThread.setName(originalThreadName)
+      if (stopper.stopRequested) {
+        val rawString = Resources.executeStopping
+        report(InfoProvided(tracker.nextOrdinal(), rawString, Some(NameInfo(thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), testName))))
       }
+      testsStatus
     }
+    finally Thread.currentThread.setName(originalThreadName)
+  }
 
   final val rerunnerFun: RerunnerFunction =
     new RerunnerFunction {
@@ -479,7 +476,7 @@ class MySuite extends PureFunSuite(
 
 class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
 
-  override val runFun: RunFunction = decorated.runFun
+  override def runFun(outermost: PureSuite, testName: Option[String], args: Args): Status = decorated.runFun(outermost, testName, args)
 
   override val suiteNameFun: SuiteNameFunction = decorated.suiteNameFun
 
@@ -511,48 +508,44 @@ final class BeforeAndAfterAllWrapper(
   invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected: Boolean = false
 ) extends PureSuiteWrapper(decorated) { thisSuite =>
  
-  override val runFun: RunFunction = {
-    new RunFunction {
-      def apply(outermost: PureSuite, testName: Option[String], args: Args): Status = {
-        val (runStatus, thrownException) =
-          try {
-            if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
-              beforeAll
-            (decorated.runFun(thisSuite, testName, args), None)
-          }
-          catch {
-            case e: Exception => (FailedStatus, Some(e))
-          }
-
-        try {
-          val statusToReturn =
-            if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected)) {
-              // runStatus may not be completed, call afterAll only after it is completed
-              runStatus withAfterEffect {
-                try {
-                 afterAll
-                }
-                catch {
-                  case laterException: Exception if !Suite.anExceptionThatShouldCauseAnAbort(laterException) && thrownException.isDefined =>
-                  // We will swallow the exception thrown from after if it is not test-aborting and exception was already thrown by before or test itself.
-                }
-              }
-            }
-            else runStatus
-          thrownException match {
-            case Some(e) => throw e
-            case None =>
-          }
-          statusToReturn
-        }
-        catch {
-          case laterException: Exception =>
-            thrownException match { // If both before/run and after throw an exception, report the earlier exception
-              case Some(earlierException) => throw earlierException
-              case None => throw laterException
-            }
-        }
+  override def runFun(outermost: PureSuite, testName: Option[String], args: Args): Status = {
+    val (runStatus, thrownException) =
+      try {
+        if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
+          beforeAll
+        (decorated.runFun(thisSuite, testName, args), None)
       }
+      catch {
+        case e: Exception => (FailedStatus, Some(e))
+      }
+
+    try {
+      val statusToReturn =
+        if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected)) {
+          // runStatus may not be completed, call afterAll only after it is completed
+          runStatus withAfterEffect {
+            try {
+             afterAll
+            }
+            catch {
+              case laterException: Exception if !Suite.anExceptionThatShouldCauseAnAbort(laterException) && thrownException.isDefined =>
+              // We will swallow the exception thrown from after if it is not test-aborting and exception was already thrown by before or test itself.
+            }
+          }
+        }
+        else runStatus
+      thrownException match {
+        case Some(e) => throw e
+        case None =>
+      }
+      statusToReturn
+    }
+    catch {
+      case laterException: Exception =>
+        thrownException match { // If both before/run and after throw an exception, report the earlier exception
+          case Some(earlierException) => throw earlierException
+          case None => throw laterException
+        }
     }
   }
 }
