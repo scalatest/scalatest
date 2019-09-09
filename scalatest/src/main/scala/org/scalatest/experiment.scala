@@ -61,10 +61,6 @@ import org.scalatest.tools.StandardOutReporter
 import tools.SuiteDiscoveryHelper
 // SKIP-SCALATESTJS,NATIVE-END
 
-trait TestNamesFunction {
-  def apply(outermost: PureSuite) : Set[String]
-}
-
 trait TagsFunction {
   def apply(outermost: PureSuite) : Map[String, Set[String]]
 }
@@ -123,7 +119,7 @@ trait PureSuite extends RunnableSuite { thisSuite =>
 
   def testDataForFun(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData
 
-  val testNamesFun: TestNamesFunction
+  def testNamesFun(outermost: PureSuite) : Set[String]
 
   val tagsFun: TagsFunction
 
@@ -331,10 +327,7 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
 
   final def testDataForFun(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = throw new IllegalArgumentException
 
-  final val testNamesFun: TestNamesFunction =
-    new TestNamesFunction {
-      def apply(outermost: PureSuite) : Set[String] = tests.map(_.testText).toSet
-    }
+  final def testNamesFun(outermost: PureSuite) : Set[String] = tests.map(_.testText).toSet
 
   final val tagsFun: TagsFunction =
     new TagsFunction {
@@ -443,7 +436,7 @@ class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
 
   override def testDataForFun(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = decorated.testDataForFun(outermost, testName, theConfigMap)
 
-  override val testNamesFun: TestNamesFunction = decorated.testNamesFun
+  override def testNamesFun(outermost: PureSuite) : Set[String] = decorated.testNamesFun(outermost)
 
   override val tagsFun: TagsFunction = decorated.tagsFun
 }
