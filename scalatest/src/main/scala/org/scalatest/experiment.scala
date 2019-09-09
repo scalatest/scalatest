@@ -61,10 +61,6 @@ import org.scalatest.tools.StandardOutReporter
 import tools.SuiteDiscoveryHelper
 // SKIP-SCALATESTJS,NATIVE-END
 
-trait SuiteIdFunction {
-  def apply(outermost: PureSuite): String
-}
-
 trait TestDataForFunction {
   def apply(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData
 }
@@ -103,7 +99,7 @@ trait PureSuite extends RunnableSuite { thisSuite =>
 
   def suiteNameFun(outermost: PureSuite): String
 
-  val suiteIdFun: SuiteIdFunction
+  def suiteIdFun(outermost: PureSuite): String
 
   val expectedTestCountFun: ExpectedTestCountFunction
   
@@ -324,10 +320,7 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
   
   final def suiteNameFun(outermost: PureSuite): String = getSimpleNameOfAnObjectsClass(thisSuite)
 
-  final val suiteIdFun: SuiteIdFunction =
-    new SuiteIdFunction {
-      def apply(outermost: PureSuite): String = thisSuite.getClass.getName
-    }
+  final def suiteIdFun(outermost: PureSuite): String = thisSuite.getClass.getName
 
   final def runTestsFun(outermost: PureSuite, testName: Option[String], args: Args): Status = {
     for (t <- tests)
@@ -441,10 +434,10 @@ class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
 
   override def suiteNameFun(outermost: PureSuite): String = decorated.suiteNameFun(outermost)
 
-  override val suiteIdFun: SuiteIdFunction = decorated.suiteIdFun
-    
+  override def suiteIdFun(outermost: PureSuite): String = decorated.suiteIdFun(outermost)
+
   override val expectedTestCountFun: ExpectedTestCountFunction = decorated.expectedTestCountFun
-  
+
   override val rerunnerFun: RerunnerFunction = decorated.rerunnerFun
 
   override def nestedSuitesFun(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite] = decorated.nestedSuitesFun(outermost)
