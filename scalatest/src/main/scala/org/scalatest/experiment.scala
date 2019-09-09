@@ -63,27 +63,27 @@ import tools.SuiteDiscoveryHelper
 
 trait PureSuite extends RunnableSuite { thisSuite =>
 
-  final def run(testName: Option[String], args: Args): Status = runFun(this, testName, args)
+  final def run(testName: Option[String], args: Args): Status = run(this, testName, args)
 
-  final def suiteName: String = suiteNameFun(this)
+  final def suiteName: String = suiteName(this)
 
-  final def suiteId: String = suiteIdFun(this)
+  final def suiteId: String = suiteId(this)
 
-  final def expectedTestCount(filter: Filter): Int = expectedTestCountFun(this, filter)
+  final def expectedTestCount(filter: Filter): Int = expectedTestCount(this, filter)
   
-  final def rerunner: Option[String] = rerunnerFun(this)
+  final def rerunner: Option[String] = rerunner(this)
 
-  final def nestedSuites: collection.immutable.IndexedSeq[RunnableSuite] = nestedSuitesFun(this)
+  final def nestedSuites: collection.immutable.IndexedSeq[RunnableSuite] = nestedSuites(this)
 
-  def runFun(outermost: PureSuite, testName: Option[String], args: Args): Status
+  def run(outermost: PureSuite, testName: Option[String], args: Args): Status
 
-  def suiteNameFun(outermost: PureSuite): String
+  def suiteName(outermost: PureSuite): String
 
-  def suiteIdFun(outermost: PureSuite): String
+  def suiteId(outermost: PureSuite): String
 
-  def expectedTestCountFun(outermost: PureSuite, filter: Filter): Int
+  def expectedTestCount(outermost: PureSuite, filter: Filter): Int
   
-  def rerunnerFun(outermost: PureSuite): Option[String]
+  def rerunner(outermost: PureSuite): Option[String]
 
   def withBeforeAndAfterAll(
     beforeAll: => Unit,
@@ -97,19 +97,19 @@ trait PureSuite extends RunnableSuite { thisSuite =>
       invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected
     )
 
-  def nestedSuitesFun(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite]
+  def nestedSuites(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite]
 
-  def runNestedSuitesFun(outermost: PureSuite, args: Args): Status
+  def runNestedSuites(outermost: PureSuite, args: Args): Status
 
-  def runTestsFun(outermost: PureSuite, testName: Option[String], args: Args): Status
+  def runTests(outermost: PureSuite, testName: Option[String], args: Args): Status
 
-  def runTestFun(outermost: PureSuite, testName: String, args: Args): Status
+  def runTest(outermost: PureSuite, testName: String, args: Args): Status
 
-  def testDataForFun(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData
+  def testDataFor(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData
 
-  def testNamesFun(outermost: PureSuite): Set[String]
+  def testNames(outermost: PureSuite): Set[String]
 
-  def tagsFun(outermost: PureSuite): Map[String, Set[String]]
+  def tags(outermost: PureSuite): Map[String, Set[String]]
 
   final def execute(
     testName: String = null,
@@ -126,7 +126,7 @@ trait PureSuite extends RunnableSuite { thisSuite =>
     val desiredTests: Set[String] =
       if (testName == null) Set.empty
       else {
-        testNamesFun(thisSuite).filter { s =>
+        testNames(thisSuite).filter { s =>
           s.indexOf(testName) >= 0 || NameTransformer.decode(s).indexOf(testName) >= 0
         }
       }
@@ -212,26 +212,26 @@ trait PureSuite extends RunnableSuite { thisSuite =>
 // This hard codes lifecycle functions to no tests
 trait PureSuites extends PureSuite {
 
-  def expectedTestCountFun(outermost: PureSuite, filter: Filter): Int = 0
+  def expectedTestCount(outermost: PureSuite, filter: Filter): Int = 0
   
-  def runTestsFun(outermost: PureSuite, testName: Option[String], args: Args): Status = SucceededStatus
+  def runTests(outermost: PureSuite, testName: Option[String], args: Args): Status = SucceededStatus
 
   // Should see if I can get the hierarcy such that this is excluded at this point
-  def runTestFun(outermost: PureSuite, testName: String, args: Args): Status = throw new IllegalArgumentException
+  def runTest(outermost: PureSuite, testName: String, args: Args): Status = throw new IllegalArgumentException
 
-  def testDataForFun(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = throw new IllegalArgumentException
+  def testDataFor(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = throw new IllegalArgumentException
 
-  def testNamesFun(outermost: PureSuite): Set[String] = Set.empty
+  def testNames(outermost: PureSuite): Set[String] = Set.empty
 
-  def tagsFun(outermost: PureSuite): Map[String, Set[String]] = Map.empty
+  def tags(outermost: PureSuite): Map[String, Set[String]] = Map.empty
 }
 
 // This hard codes lifecycle functions to no nested suites
 trait PureTests extends PureSuite {
 
-  final def nestedSuitesFun(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite] = Vector.empty
+  final def nestedSuites(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite] = Vector.empty
 
-  final def runNestedSuitesFun(outermost: PureSuite, args: Args): Status = SucceededStatus
+  final def runNestedSuites(outermost: PureSuite, args: Args): Status = SucceededStatus
 }
 
 trait PureTestSuite extends PureTests { thisSuite =>
@@ -312,30 +312,30 @@ object PureTests {
 
 class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuite =>
   
-  final def suiteNameFun(outermost: PureSuite): String = getSimpleNameOfAnObjectsClass(thisSuite)
+  final def suiteName(outermost: PureSuite): String = getSimpleNameOfAnObjectsClass(thisSuite)
 
-  final def suiteIdFun(outermost: PureSuite): String = thisSuite.getClass.getName
+  final def suiteId(outermost: PureSuite): String = thisSuite.getClass.getName
 
-  final def runTestsFun(outermost: PureSuite, testName: Option[String], args: Args): Status = {
+  final def runTests(outermost: PureSuite, testName: Option[String], args: Args): Status = {
     for (t <- tests)
-       runTestFun(thisSuite, t.testText, args)
+       runTest(thisSuite, t.testText, args)
     SucceededStatus
   }
 
-  final def runTestFun(outermost: PureSuite, testName: String, args: Args): Status = {
+  final def runTest(outermost: PureSuite, testName: String, args: Args): Status = {
     println("running " + testName)
     SucceededStatus
   }
 
-  final def testDataForFun(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = throw new IllegalArgumentException
+  final def testDataFor(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = throw new IllegalArgumentException
 
-  final def testNamesFun(outermost: PureSuite): Set[String] = tests.map(_.testText).toSet
+  final def testNames(outermost: PureSuite): Set[String] = tests.map(_.testText).toSet
 
-  final def tagsFun(outermost: PureSuite): Map[String, Set[String]] = Map.empty
+  final def tags(outermost: PureSuite): Map[String, Set[String]] = Map.empty
 
-  final def expectedTestCountFun(outermost: PureSuite, filter: Filter): Int = tests.size
+  final def expectedTestCount(outermost: PureSuite, filter: Filter): Int = tests.size
 
-  final def runFun(outermost: PureSuite, testName: Option[String], args: Args): Status = {
+  final def run(outermost: PureSuite, testName: Option[String], args: Args): Status = {
 
     requireNonNull(testName, args)
 
@@ -348,7 +348,7 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
       val report = reporter // wrapReporterIfNecessary(thisSuite, reporter)
       val newArgs = args.copy(reporter = report)
 
-      val testsStatus = runTestsFun(thisSuite, testName, newArgs)
+      val testsStatus = runTests(thisSuite, testName, newArgs)
 
       if (stopper.stopRequested) {
         val rawString = Resources.executeStopping
@@ -359,7 +359,7 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
     finally Thread.currentThread.setName(originalThreadName)
   }
 
-  final def rerunnerFun(outermost: PureSuite): Option[String] = {
+  final def rerunner(outermost: PureSuite): Option[String] = {
     val suiteClass = thisSuite.getClass
     // SKIP-SCALATESTJS,NATIVE-START
     val isAccessible = SuiteDiscoveryHelper.isAccessibleSuite(suiteClass)
@@ -409,29 +409,29 @@ class MySuite extends PureFunSuite(
 
 class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
 
-  override def runFun(outermost: PureSuite, testName: Option[String], args: Args): Status = decorated.runFun(outermost, testName, args)
+  override def run(outermost: PureSuite, testName: Option[String], args: Args): Status = decorated.run(outermost, testName, args)
 
-  override def suiteNameFun(outermost: PureSuite): String = decorated.suiteNameFun(outermost)
+  override def suiteName(outermost: PureSuite): String = decorated.suiteName(outermost)
 
-  override def suiteIdFun(outermost: PureSuite): String = decorated.suiteIdFun(outermost)
+  override def suiteId(outermost: PureSuite): String = decorated.suiteId(outermost)
 
-  override def expectedTestCountFun(outermost: PureSuite, filter: Filter): Int = decorated.expectedTestCountFun(outermost, filter)
+  override def expectedTestCount(outermost: PureSuite, filter: Filter): Int = decorated.expectedTestCount(outermost, filter)
 
-  override def rerunnerFun(outermost: PureSuite): Option[String] = decorated.rerunnerFun(outermost)
+  override def rerunner(outermost: PureSuite): Option[String] = decorated.rerunner(outermost)
 
-  override def nestedSuitesFun(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite] = decorated.nestedSuitesFun(outermost)
+  override def nestedSuites(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite] = decorated.nestedSuites(outermost)
 
-  override def runNestedSuitesFun(outermost: PureSuite, args: Args): Status = decorated.runNestedSuitesFun(outermost, args)
+  override def runNestedSuites(outermost: PureSuite, args: Args): Status = decorated.runNestedSuites(outermost, args)
 
-  override def runTestsFun(outermost: PureSuite, testName: Option[String], args: Args): Status = decorated.runTestsFun(outermost, testName, args)
+  override def runTests(outermost: PureSuite, testName: Option[String], args: Args): Status = decorated.runTests(outermost, testName, args)
 
-  override def runTestFun(outermost: PureSuite, testName: String, args: Args): Status = decorated.runTestFun(outermost, testName, args)
+  override def runTest(outermost: PureSuite, testName: String, args: Args): Status = decorated.runTest(outermost, testName, args)
 
-  override def testDataForFun(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = decorated.testDataForFun(outermost, testName, theConfigMap)
+  override def testDataFor(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = decorated.testDataFor(outermost, testName, theConfigMap)
 
-  override def testNamesFun(outermost: PureSuite): Set[String] = decorated.testNamesFun(outermost)
+  override def testNames(outermost: PureSuite): Set[String] = decorated.testNames(outermost)
 
-  override def tagsFun(outermost: PureSuite): Map[String, Set[String]] = decorated.tagsFun(outermost)
+  override def tags(outermost: PureSuite): Map[String, Set[String]] = decorated.tags(outermost)
 }
 
 final class BeforeAndAfterAllWrapper(
@@ -441,12 +441,12 @@ final class BeforeAndAfterAllWrapper(
   invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected: Boolean = false
 ) extends PureSuiteWrapper(decorated) { thisSuite =>
  
-  override def runFun(outermost: PureSuite, testName: Option[String], args: Args): Status = {
+  override def run(outermost: PureSuite, testName: Option[String], args: Args): Status = {
     val (runStatus, thrownException) =
       try {
         if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
           beforeAll
-        (decorated.runFun(thisSuite, testName, args), None)
+        (decorated.run(thisSuite, testName, args), None)
       }
       catch {
         case e: Exception => (FailedStatus, Some(e))
