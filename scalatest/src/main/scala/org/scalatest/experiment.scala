@@ -61,10 +61,6 @@ import org.scalatest.tools.StandardOutReporter
 import tools.SuiteDiscoveryHelper
 // SKIP-SCALATESTJS,NATIVE-END
 
-trait TagsFunction {
-  def apply(outermost: PureSuite) : Map[String, Set[String]]
-}
-
 trait ExpectedTestCountFunction {
   def apply(outermost: PureSuite, filter: Filter): Int
 }
@@ -121,7 +117,7 @@ trait PureSuite extends RunnableSuite { thisSuite =>
 
   def testNamesFun(outermost: PureSuite) : Set[String]
 
-  val tagsFun: TagsFunction
+  def tagsFun(outermost: PureSuite) : Map[String, Set[String]]
 
   final def execute(
     testName: String = null,
@@ -329,10 +325,7 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
 
   final def testNamesFun(outermost: PureSuite) : Set[String] = tests.map(_.testText).toSet
 
-  final val tagsFun: TagsFunction =
-    new TagsFunction {
-      def apply(outermost: PureSuite) : Map[String, Set[String]] = Map.empty
-    }
+  final def tagsFun(outermost: PureSuite) : Map[String, Set[String]] = Map.empty
 
   final val expectedTestCountFun: ExpectedTestCountFunction = 
     new ExpectedTestCountFunction {
@@ -438,7 +431,7 @@ class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
 
   override def testNamesFun(outermost: PureSuite) : Set[String] = decorated.testNamesFun(outermost)
 
-  override val tagsFun: TagsFunction = decorated.tagsFun
+  override def tagsFun(outermost: PureSuite) : Map[String, Set[String]] = decorated.tagsFun(outermost)
 }
 
 final class BeforeAndAfterAllWrapper(
