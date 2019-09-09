@@ -43,7 +43,7 @@ package org.scalatest
  *
  * @author Bill Venners
  */
-trait SuiteMixin { this: Suite =>
+trait SuiteMixin extends RunnableSuiteMixin { this: Suite =>
 
   /**
    * Runs this suite of tests.
