@@ -61,10 +61,6 @@ import org.scalatest.tools.StandardOutReporter
 import tools.SuiteDiscoveryHelper
 // SKIP-SCALATESTJS,NATIVE-END
 
-trait SuiteNameFunction {
-  def apply(outermost: PureSuite): String
-}
-
 trait SuiteIdFunction {
   def apply(outermost: PureSuite): String
 }
@@ -105,7 +101,7 @@ trait PureSuite extends RunnableSuite { thisSuite =>
 
   def runFun(outermost: PureSuite, testName: Option[String], args: Args): Status
 
-  val suiteNameFun: SuiteNameFunction
+  def suiteNameFun(outermost: PureSuite): String
 
   val suiteIdFun: SuiteIdFunction
 
@@ -326,10 +322,7 @@ object PureTests {
 
 class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuite =>
   
-  final val suiteNameFun: SuiteNameFunction =
-    new SuiteNameFunction {
-      def apply(outermost: PureSuite): String = getSimpleNameOfAnObjectsClass(thisSuite)
-    }
+  final def suiteNameFun(outermost: PureSuite): String = getSimpleNameOfAnObjectsClass(thisSuite)
 
   final val suiteIdFun: SuiteIdFunction =
     new SuiteIdFunction {
@@ -446,7 +439,7 @@ class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
 
   override def runFun(outermost: PureSuite, testName: Option[String], args: Args): Status = decorated.runFun(outermost, testName, args)
 
-  override val suiteNameFun: SuiteNameFunction = decorated.suiteNameFun
+  override def suiteNameFun(outermost: PureSuite): String = decorated.suiteNameFun(outermost)
 
   override val suiteIdFun: SuiteIdFunction = decorated.suiteIdFun
     
