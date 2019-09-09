@@ -61,10 +61,6 @@ import org.scalatest.tools.StandardOutReporter
 import tools.SuiteDiscoveryHelper
 // SKIP-SCALATESTJS,NATIVE-END
 
-trait RunNestedSuitesFunction {
-  def apply(outermost: PureSuite, args: Args): Status
-}
-
 trait RunTestsFunction {
   def apply(outermost: PureSuite, testName: Option[String], args: Args): Status
 }
@@ -140,7 +136,7 @@ trait PureSuite extends RunnableSuite { thisSuite =>
 
   def nestedSuitesFun(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite]
 
-  val runNestedSuitesFun: RunNestedSuitesFunction
+  def runNestedSuitesFun(outermost: PureSuite, args: Args): Status
 
   val runTestsFun: RunTestsFunction
 
@@ -258,10 +254,7 @@ trait PureTests extends PureSuite {
 
   final def nestedSuitesFun(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite] = Vector.empty
 
-  final val runNestedSuitesFun: RunNestedSuitesFunction =
-    new RunNestedSuitesFunction {
-      def apply(outermost: PureSuite, args: Args): Status = SucceededStatus
-    }
+  final def runNestedSuitesFun(outermost: PureSuite, args: Args): Status = SucceededStatus
 }
 
 trait PureTestSuite extends PureTests { thisSuite =>
@@ -478,7 +471,7 @@ class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
 
   override def nestedSuitesFun(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite] = decorated.nestedSuitesFun(outermost)
 
-  override val runNestedSuitesFun: RunNestedSuitesFunction = decorated.runNestedSuitesFun
+  override def runNestedSuitesFun(outermost: PureSuite, args: Args): Status = decorated.runNestedSuitesFun(outermost, args)
 
   override val runTestsFun: RunTestsFunction = decorated.runTestsFun
 
