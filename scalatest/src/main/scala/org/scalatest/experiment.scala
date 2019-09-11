@@ -97,13 +97,9 @@ trait PureSuite extends RunnableSuite { thisSuite =>
       invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected
     )
 
-  def nestedSuites(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite]
-
-  def runNestedSuites(outermost: PureSuite, args: Args): Status
-
-  def runTests(outermost: PureSuite, testName: Option[String], args: Args): Status
-
-  def runTest(outermost: PureSuite, testName: String, args: Args): Status
+  def nestedSuites(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite] = Vector.empty
+ 
+  def runNestedSuites(outermost: PureSuite, args: Args): Status = SucceededStatus
 
   def testDataFor(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData
 
@@ -227,37 +223,20 @@ trait PureSuites extends PureSuite {
 }
 
 // This hard codes lifecycle functions to no nested suites
-trait PureTests extends PureSuite {
+trait PureTests { thisSuite: PureSuite =>
 
-  final def nestedSuites(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite] = Vector.empty
+  final abstract override def nestedSuites(outermost: PureSuite): collection.immutable.IndexedSeq[PureSuite] = Vector.empty
 
-  final def runNestedSuites(outermost: PureSuite, args: Args): Status = SucceededStatus
+  final abstract override def runNestedSuites(outermost: PureSuite, args: Args): Status = SucceededStatus
 }
 
-trait PureTestSuite extends PureTests { thisSuite =>
+trait PureTestSuite extends PureSuite with PureTests { thisSuite =>
 
-  protected trait NoArgTest extends (() => Outcome) with TestData {
+  import PureTestSuite.NoArgTest
 
-    /**
-     * Runs the body of the test, returning an <code>Outcome</code>.
-     */
-    def apply(): Outcome
-  }
+  def runTests(outermost: PureTestSuite, testName: Option[String], args: Args): Status
 
-  // Keep this out of the public until there's a use case demonstrating its need
-  private[scalatest] object NoArgTest {
-    def apply(test: NoArgTest)(f: => Outcome): NoArgTest = {
-      new NoArgTest {
-        def apply(): Outcome = { f }
-        val text: String = test.text
-        val configMap: ConfigMap = test.configMap
-        val scopes: collection.immutable.IndexedSeq[String] = test.scopes
-        val name: String = test.name
-        val tags: Set[String] = test.tags
-        val pos: Option[source.Position] = test.pos
-      }
-    }
-  }
+  def runTest(outermost: PureTestSuite, testName: String, args: Args): Status
 
   /**
    * Run the passed test function in the context of a fixture established by this method.
@@ -283,9 +262,56 @@ trait PureTestSuite extends PureTests { thisSuite =>
    *
    * @param test the no-arg test function to run with a fixture
    */
-  val aroundEachFun: (PureTestSuite, NoArgTest) => Outcome = {
-    (thisSuite: PureTestSuite, test: NoArgTest) => test()
+  def aroundEachMethod(outermost: PureTestSuite, test: NoArgTest): Outcome = { 
+    // println("PureTestSuite.aroundEachMethod invoked for class: " + thisSuite.getClass.getName + "; outermost was: " + outermost)
+    test()
   }
+
+  def withAroundEach(
+    aroundEach: (PureTestSuite, NoArgTest) => Outcome,
+  ): PureTestSuite = {
+    class ImThisThing extends PureTestSuiteWrapper(thisSuite) with PureTestSuite {
+      override def aroundEachMethod(outermost: PureTestSuite, test: NoArgTest): Outcome = {
+    // println("ImThisThing.aroundEachMethod invoked for class: " + thisSuite.getClass.getName + "; outermost was: " + outermost)
+        val decorated = thisSuite
+        aroundEach(decorated, test)
+      }
+      override def runTests(outermost: PureTestSuite, testName: Option[String], args: Args): Status = {
+    // println("ImThisThing.runTests invoked, outermost was: " + outermost)
+        decorated.runTests(outermost, testName, args)
+      }
+      override def runTest(outermost: PureTestSuite, testName: String, args: Args): Status = {
+    // println("ImThisThing.runTest invoked, outermost was: " + outermost)
+        decorated.runTest(outermost, testName, args)
+      }
+    }
+    new ImThisThing
+  }
+}
+
+object PureTestSuite {
+  trait NoArgTest extends (() => Outcome) with TestData {
+
+    /**
+     * Runs the body of the test, returning an <code>Outcome</code>.
+     */
+    def apply(): Outcome
+  }
+  // Keep this out of the public until there's a use case demonstrating its need
+  private[scalatest] object NoArgTest {
+    def apply(test: NoArgTest)(f: => Outcome): NoArgTest = {
+      new NoArgTest {
+        def apply(): Outcome = { f }
+        val text: String = test.text
+        val configMap: ConfigMap = test.configMap
+        val scopes: collection.immutable.IndexedSeq[String] = test.scopes
+        val name: String = test.name
+        val tags: Set[String] = test.tags
+        val pos: Option[source.Position] = test.pos
+      }
+    }
+  }
+
 }
 
 object PureTests {
@@ -316,15 +342,29 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
 
   final def suiteId(outermost: PureSuite): String = thisSuite.getClass.getName
 
-  final def runTests(outermost: PureSuite, testName: Option[String], args: Args): Status = {
+  final def runTests(outermost: PureTestSuite, testName: Option[String], args: Args): Status = {
+    // println("PureFunSuite.runTests invoked; outermost was: " + outermost)
     for (t <- tests)
-       runTest(thisSuite, t.testText, args)
+       outermost.runTest(outermost, t.testText, args)
     SucceededStatus
   }
 
-  final def runTest(outermost: PureSuite, testName: String, args: Args): Status = {
-    println("running " + testName)
-    SucceededStatus
+  final def runTest(outermost: PureTestSuite, testName: String, args: Args): Status = {
+    // println("PureFunSuite.runTest invoked for testName: " + testName + "; outermost was " + outermost)
+    import PureTestSuite.NoArgTest
+    outermost.aroundEachMethod(
+      outermost,
+      new NoArgTest {
+        def apply(): Outcome = { println("running " + testName + "!"); Succeeded }
+        val text: String = testName
+        val configMap: ConfigMap = args.configMap
+        val scopes: collection.immutable.IndexedSeq[String] = Vector.empty
+        val name: String = testName
+        val tags: Set[String] = Set.empty
+        val pos: Option[source.Position] = None
+      }
+    )
+    SucceededStatus 
   }
 
   final def testDataFor(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = throw new IllegalArgumentException
@@ -337,6 +377,7 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
 
   final def run(outermost: PureSuite, testName: Option[String], args: Args): Status = {
 
+    println("PureFunSuite.run invoked; outermost was: " + outermost)
     requireNonNull(testName, args)
 
     import args._
@@ -348,7 +389,12 @@ class PureFunSuite(tests: Test[() => Outcome]*) extends PureTestSuite { thisSuit
       val report = reporter // wrapReporterIfNecessary(thisSuite, reporter)
       val newArgs = args.copy(reporter = report)
 
-      val testsStatus = runTests(thisSuite, testName, newArgs)
+      val testsStatus =
+        outermost match {
+          case pts: PureTestSuite =>
+            pts.runTests(pts, testName, newArgs)
+          case _ => SucceededStatus
+        }
 
       if (stopper.stopRequested) {
         val rawString = Resources.executeStopping
@@ -407,9 +453,12 @@ class MySuite extends PureFunSuite(
   test("blue fish") { val x = 1; assert(x == 4) }
 )
 
-class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
+class PureSuiteWrapper(val decorated: PureSuite) extends PureSuite {
 
-  override def run(outermost: PureSuite, testName: Option[String], args: Args): Status = decorated.run(outermost, testName, args)
+  override def run(outermost: PureSuite, testName: Option[String], args: Args): Status = {
+    // println("PureSuiteWrapper.run invoked; outermost was: " + outermost)
+    decorated.run(outermost, testName, args)
+  }
 
   override def suiteName(outermost: PureSuite): String = decorated.suiteName(outermost)
 
@@ -423,15 +472,22 @@ class PureSuiteWrapper(decorated: PureSuite) extends PureSuite {
 
   override def runNestedSuites(outermost: PureSuite, args: Args): Status = decorated.runNestedSuites(outermost, args)
 
-  override def runTests(outermost: PureSuite, testName: Option[String], args: Args): Status = decorated.runTests(outermost, testName, args)
-
-  override def runTest(outermost: PureSuite, testName: String, args: Args): Status = decorated.runTest(outermost, testName, args)
-
   override def testDataFor(outermost: PureSuite, testName: String, theConfigMap: ConfigMap): TestData = decorated.testDataFor(outermost, testName, theConfigMap)
 
   override def testNames(outermost: PureSuite): Set[String] = decorated.testNames(outermost)
 
   override def tags(outermost: PureSuite): Map[String, Set[String]] = decorated.tags(outermost)
+}
+class PureTestSuiteWrapper(override val decorated: PureTestSuite) extends PureSuiteWrapper(decorated) with PureTestSuite {
+  override def runTests(outermost: PureTestSuite, testName: Option[String], args: Args): Status = {
+    // println("PureTestSuiteWrapper.runTests invoked; outermost was: " + outermost)
+    decorated.runTests(outermost, testName, args)
+  }
+
+  override def runTest(outermost: PureTestSuite, testName: String, args: Args): Status = {
+    // println("PureTestSuiteWrapper.runTest invoked; outermost was: " + outermost)
+    decorated.runTest(outermost, testName, args)
+  }
 }
 
 final class BeforeAndAfterAllWrapper(
@@ -442,11 +498,12 @@ final class BeforeAndAfterAllWrapper(
 ) extends PureSuiteWrapper(decorated) { thisSuite =>
  
   override def run(outermost: PureSuite, testName: Option[String], args: Args): Status = {
+    println("BeforeAndAfterAllWrapper.run invoked; outermost was: " + outermost)
     val (runStatus, thrownException) =
       try {
         if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
           beforeAll
-        (decorated.run(thisSuite, testName, args), None)
+        (decorated.run(outermost, testName, args), None)
       }
       catch {
         case e: Exception => (FailedStatus, Some(e))
