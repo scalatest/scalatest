@@ -59,7 +59,6 @@ import org.scalatest.time.{Seconds, Span}
 import scala.collection.immutable.TreeSet
 import scala.util.control.NonFatal
 import org.scalatest.exceptions.StackDepthExceptionHelper._
-import Suite.checkChosenStyles
 import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
@@ -1006,8 +1005,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     import args._
 
     val theTestNames = testNames
-    if (theTestNames.size > 0)
-      checkChosenStyles(configMap, styleName)
 
     // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
     // so that exceptions are caught and transformed
@@ -1970,41 +1967,6 @@ used for test events like succeeded/failed, etc.
     }
     else
       None
-  }
-
-  def checkChosenStyles(configMap: ConfigMap, styleName: String): Unit = {
-
-    val chosenStyleSet =
-      if (configMap.isDefinedAt(Suite.CHOSEN_STYLES))
-        configMap(Suite.CHOSEN_STYLES).asInstanceOf[Set[String]]
-      else
-        Set.empty[String]
-    if (chosenStyleSet.size > 0 && !chosenStyleSet.contains(styleName)) {
-      val e =
-        if (chosenStyleSet.size == 1)
-          new NotAllowedException(Resources.notTheChosenStyle(styleName, chosenStyleSet.head), getStackDepthFun("Suite.scala", "checkChosenStyles"))
-        else
-          new NotAllowedException(Resources.notOneOfTheChosenStyles(styleName, Suite.makeListForHumans(Vector.empty ++ chosenStyleSet)), getStackDepthFun("Scala.scala", "checkChosenStyles"))
-      throw e
-    }
-  }
-
-  // If it contains a space, or is an empty string, put quotes around it. OTherwise people might
-  // get confused by the chosenStyles error message.
-  def makeListForHumans(words: Vector[String]): String = {
-    val quotedWords = words map { w =>
-      if (w.length == 0 || w.indexOf(' ') >= 0) "\"" + w + "\""
-      else w
-    }
-    quotedWords.length match {
-      case 0 => "<empty list>"
-      //case 1 if quotedWords(0).isEmpty => "\"\""
-      case 1 => quotedWords(0)
-      case 2 => Resources.leftAndRight(quotedWords(0), quotedWords(1))
-      case _ =>
-        val (leading, trailing) = quotedWords.splitAt(quotedWords.length - 2)
-        leading.mkString(", ") + ", " + Resources.leftCommaAndRight(trailing(0), trailing(1))
-    }
   }
 
   def autoTagClassAnnotations(tags: Map[String, Set[String]], theSuite: Suite) = {
