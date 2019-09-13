@@ -342,7 +342,7 @@ trait FixtureSuite extends org.scalatest.Suite { thisSuite =>
    * will replace chosen styles as the tool to encourage consistency across a project. We do not plan a replacement for <code>styleName</code>.</p>
    */
   @deprecated("The styleName lifecycle method has been deprecated and will be removed in a future version of ScalaTest with no replacement.", "3.1.0")
-  override val styleName: String = "org.scalatest.FixtureSuite"
+  override val styleName: String = "org.scalatest.fixture.Suite"
 }
 
 /*
