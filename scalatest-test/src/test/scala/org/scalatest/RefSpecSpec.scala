@@ -2367,35 +2367,6 @@ class RefSpecSpec extends FunSpec with PrivateMethodTester {
     }
   }
 
-  it("should run only chosen styles, if specified, and throw an exception from run if a non-chosen style is attempted to be run") {
-
-    class SimpleSpec extends RefSpec {
-      def `test method 1`: Unit = {}
-      def `test method 2`: Unit = {}
-      def `test method 3`: Unit = {}
-    }
-
-    val simpleSpec = new SimpleSpec()
-    simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
-    simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.refspec.RefSpec")), None, new Tracker, Set.empty))
-    val caught =
-      intercept[NotAllowedException] {
-        simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec")), None, new Tracker, Set.empty))
-      }
-    import OptionValues._
-    assert(caught.message.value === Resources.notTheChosenStyle("org.scalatest.refspec.RefSpec", "org.scalatest.FunSpec"))
-    val caught2 =
-      intercept[NotAllowedException] {
-        simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec", "org.scalatest.FreeSpec")), None, new Tracker, Set.empty))
-      }
-    assert(caught2.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.refspec.RefSpec", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec"))))
-    val caught3 =
-      intercept[NotAllowedException] {
-        simpleSpec.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec", "org.scalatest.FreeSpec", "org.scalatest.FlatSpec")), None, new Tracker, Set.empty))
-      }
-    assert(caught3.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.refspec.RefSpec", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec", "org.scalatest.FlatSpec"))))
-  }
-
   describe("when a test fails") {
     it("should send proper stack depth information") {
       class TestSpec extends RefSpec {
