@@ -264,7 +264,7 @@ trait DottyBuild { this: BuildCommons =>
       "Bundle-Vendor" -> "Artima, Inc.",
       "Main-Class" -> "org.scalatest.tools.Runner"
     )
-  ).dependsOn(scalacticDotty)
+  ).dependsOn(scalacticDotty, scalatestCompatible)
 
   lazy val scalatestFeatureSpecDotty = Project("scalatestFeatureSpecDotty", file("modules/dotty/scalatest-featurespec"))
     .enablePlugins(SbtOsgi)
@@ -651,6 +651,46 @@ trait DottyBuild { this: BuildCommons =>
       scalatestShouldMatchersDotty, 
       scalatestMustMatchersDotty
     )
+
+  lazy val scalatestPomDotty = Project("scalatestPomDotty", file("modules/dotty/scalatest-pom"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Dotty",
+      organization := "org.scalatest",
+      moduleName := "scalatest",
+      sourceGenerators in Compile += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          (new File(crossTarget.value, "classes")).mkdirs()
+          Seq.empty[File]
+        }.taskValue
+      }, 
+      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.privatePackage := Seq.empty, 
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest FeatureSpec Dotty",
+        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
+    ).dependsOn(
+      scalatestCoreDotty, 
+      scalatestFeatureSpecDotty, 
+      scalatestFlatSpecDotty, 
+      scalatestFreeSpecDotty, 
+      scalatestFunSuiteDotty, 
+      scalatestFunSpecDotty, 
+      scalatestPropSpecDotty, 
+      scalatestRefSpecDotty, 
+      scalatestWordSpecDotty, 
+      scalatestDiagramsDotty, 
+      scalatestMatchersCoreDotty, 
+      scalatestShouldMatchersDotty, 
+      scalatestMustMatchersDotty
+    )  
 
   lazy val commonTestDotty = Project("commonTestDotty", file("common-test.dotty"))
     .settings(sharedSettings: _*)

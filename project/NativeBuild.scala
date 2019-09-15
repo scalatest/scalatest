@@ -788,6 +788,43 @@ trait NativeBuild { this: BuildCommons =>
       scalatestMatchersCoreNative, 
       scalatestShouldMatchersNative, 
       scalatestMustMatchersNative
-    )        
+    )
+
+  lazy val scalatestPomNative = Project("scalatestPomNative", file("modules/native/scalatest-pom.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest", 
+      sourceGenerators in Compile += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          (new File(crossTarget.value, "classes")).mkdirs()
+          Seq.empty[File]
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest FlatSpec Native",
+        "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
+    ).dependsOn(
+      scalatestCoreNative, 
+      scalatestFeatureSpecNative, 
+      scalatestFlatSpecNative, 
+      scalatestFreeSpecNative, 
+      scalatestFunSuiteNative, 
+      scalatestFunSpecNative, 
+      scalatestPropSpecNative, 
+      scalatestWordSpecNative, 
+      scalatestDiagramsNative, 
+      scalatestMatchersCoreNative, 
+      scalatestShouldMatchersNative, 
+      scalatestMustMatchersNative
+    ).enablePlugins(ScalaNativePlugin)          
 
 }
