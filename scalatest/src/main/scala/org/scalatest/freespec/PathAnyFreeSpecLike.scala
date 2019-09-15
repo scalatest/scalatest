@@ -660,7 +660,7 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
    * will replace chosen styles as the tool to encourage consistency across a project. We do not plan a replacement for <code>styleName</code>.</p>
    */
   @deprecated("The styleName lifecycle method has been deprecated and will be removed in a future version of ScalaTest with no replacement.", "3.1.0")
-  final override val styleName: String = "org.scalatest.freespec.PathAnyFreeSpec"
+  final override val styleName: String = "org.scalatest.path.FreeSpec"
     
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
     ensureTestResultsRegistered(thisSuite)
