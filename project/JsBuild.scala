@@ -860,4 +860,45 @@ trait JsBuild { this: BuildCommons =>
       scalatestMustMatchersJS
     )
 
+  lazy val scalatestPomJS = Project("scalatestPomJS", file("modules/js/scalatest-pom.js"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest JS",
+      organization := "org.scalatest",
+      name := "scalatest",
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
+      sourceGenerators in Compile += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          (new File(crossTarget.value, "classes")).mkdirs()
+          Seq.empty[File]
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.privatePackage := Seq.empty, 
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest JS",
+        "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
+    ).dependsOn(
+      scalatestCoreJS, 
+      scalatestFeatureSpecJS, 
+      scalatestFlatSpecJS, 
+      scalatestFreeSpecJS, 
+      scalatestFunSuiteJS, 
+      scalatestFunSpecJS, 
+      scalatestPropSpecJS, 
+      scalatestWordSpecJS, 
+      scalatestDiagramsJS, 
+      scalatestMatchersCoreJS, 
+      scalatestShouldMatchersJS, 
+      scalatestMustMatchersJS
+    ).enablePlugins(ScalaJSPlugin)  
+
 }
