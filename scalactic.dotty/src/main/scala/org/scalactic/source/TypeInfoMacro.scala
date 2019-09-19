@@ -28,7 +28,7 @@ object TypeInfoMacro {
   def genTypeInfo[T](tp: Type[T])(implicit qctx: QuoteContext): Expr[TypeInfo[T]] = {
     import qctx.tasty._
 
-    val name = tp.show.toExpr
+    val name = Expr(tp.show)
     '{ TypeInfo[$tp]($name) }
   }
 }

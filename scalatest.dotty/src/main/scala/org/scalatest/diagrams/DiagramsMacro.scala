@@ -45,17 +45,17 @@ object DiagramsMacro {
 
     def getAnchorForSelect(sel: Select): Expr[Int] = {
       if (sel.name == "unary_!")
-        (sel.pos.startColumn - rootPosition.startColumn).toExpr
+        Expr(sel.pos.startColumn - rootPosition.startColumn)
       else {
         val selOffset = sel.pos.endColumn - sel.qualifier.pos.endColumn - sel.name.length
-        (sel.qualifier.pos.endColumn + selOffset - rootPosition.startColumn).toExpr
+        Expr(sel.qualifier.pos.endColumn + selOffset - rootPosition.startColumn)
       }
     }
 
     def getAnchor(expr: Term): Expr[Int] = {
       // -1 to match scala2 position
-      // ((expr.unseal.pos.endColumn + expr.unseal.pos.startColumn - 1) / 2 - rootPosition.startColumn).toExpr
-      (expr.pos.startColumn - rootPosition.startColumn).toExpr
+      // Expr((expr.unseal.pos.endColumn + expr.unseal.pos.startColumn - 1) / 2 - rootPosition.startColumn)
+      Expr(expr.pos.startColumn - rootPosition.startColumn)
     }
 
     def handleArgs(argTps: List[Type], args: List[Term]): (List[Term], List[Term]) =
@@ -225,6 +225,6 @@ object DiagramsMacro {
   )(implicit qctx: QuoteContext): Expr[Assertion] = {
     import qctx.tasty._
     val diagExpr = parse(qctx)(condition.unseal.underlyingArgument).seal.cast[DiagrammedExpr[Boolean]]
-    '{ $helper($diagExpr, $clue, ${sourceText.toExpr}, $pos) }
+    '{ $helper($diagExpr, $clue, ${Expr(sourceText)}, $pos) }
   }
 }
