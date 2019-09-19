@@ -231,7 +231,7 @@ object SnapshotsMacro {
     val snapshots: List[Expr[Snapshot]] = expressions.unseal.underlyingArgument match {
       case Typed(Repeated(args, _), _) => // only sequence literal
         args.map { arg =>
-          val str = arg.seal.cast[Any].show.toExpr
+          val str = Expr(arg.seal.cast[Any].show)
           '{ Snapshot($str, ${ arg.seal.cast[Any] }) }
         }
       case arg =>

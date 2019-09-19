@@ -73,7 +73,7 @@ object Position {
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = if (showScalacticFillFilePathnames) file.toString else Resources.pleaseDefineScalacticFillFilePathnameEnvVar
     val lineNo: Int = rootPosition.startLine
-    '{ Position(${fileName.toExpr}, ${filePath.toExpr}, ${lineNo.toExpr}) }
+    '{ Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}) }
   }
 
 }

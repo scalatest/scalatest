@@ -42,7 +42,7 @@ object BooleanMacro {
     import util._
 
     def exprStr: String = condition.show
-    def defaultCase = '{ Bool.simpleMacroBool($condition, ${exprStr.toExpr}, $prettifier) }
+    def defaultCase = '{ Bool.simpleMacroBool($condition, ${Expr(exprStr)}, $prettifier) }
     def isImplicitMethodType(tp: Type): Boolean =
       Type.IsMethodType.unapply(tp).flatMap(tp => if tp.isImplicit then Some(true) else None).nonEmpty
 
@@ -87,7 +87,7 @@ object BooleanMacro {
               val l = left.seal
               val r = right.seal
               val b = result.seal.cast[Boolean]
-              val code = '{ Bool.binaryMacroBool($l, ${ op.toExpr }, $r, $b, $prettifier) }
+              val code = '{ Bool.binaryMacroBool($l, ${ Expr(op) }, $r, $b, $prettifier) }
               code.unseal
             }
           }
@@ -104,7 +104,7 @@ object BooleanMacro {
                   val l = left.seal
                   val r = right.seal
                   val b = result.seal.cast[Boolean]
-                  val code = '{ Bool.binaryMacroBool($l, ${op.toExpr}, $r, $b, $prettifier) }
+                  val code = '{ Bool.binaryMacroBool($l, ${Expr(op)}, $r, $b, $prettifier) }
                   code.unseal
                 }
               }
@@ -138,7 +138,7 @@ object BooleanMacro {
                       val l = left.seal
                       val r = right.seal
                       val res = result.seal
-                      val code = '{ Bool.lengthSizeMacroBool($l, ${op.toExpr}, $res, $r, $prettifier) }
+                      val code = '{ Bool.lengthSizeMacroBool($l, ${Expr(op)}, $res, $r, $prettifier) }
                       code.unseal
                     }
                   }
@@ -152,7 +152,7 @@ object BooleanMacro {
                       val l = left.seal
                       val r = right.seal
                       val res = result.seal
-                      val code = '{ Bool.lengthSizeMacroBool($l, ${op.toExpr}, $res, $r, $prettifier) }
+                      val code = '{ Bool.lengthSizeMacroBool($l, ${Expr(op)}, $res, $r, $prettifier) }
                       code.unseal
                     }
                   }
@@ -189,7 +189,7 @@ object BooleanMacro {
               val l = left.seal
               val r = right.seal
               val b = result.seal.cast[Boolean]
-              val code = '{ Bool.binaryMacroBool($l, ${ op.toExpr }, $r, $b, $prettifier) }
+              val code = '{ Bool.binaryMacroBool($l, ${ Expr(op) }, $r, $b, $prettifier) }
               code.unseal
             }
           }
@@ -203,7 +203,7 @@ object BooleanMacro {
               val l = left.seal
               val r = right.seal
               val b = result.seal.cast[Boolean]
-              val code = '{ Bool.binaryMacroBool($l, ${op.toExpr}, $r, $b, $prettifier) }
+              val code = '{ Bool.binaryMacroBool($l, ${Expr(op)}, $r, $b, $prettifier) }
               code.unseal
             }
           }
@@ -212,7 +212,7 @@ object BooleanMacro {
       case Apply(sel @ Select(lhs, op @ ("isEmpty" | "nonEmpty")), Nil) =>
         let(lhs) { l =>
           val res = l.select(sel.symbol).appliedToArgs(Nil).seal.cast[Boolean]
-          '{ Bool.unaryMacroBool(${l.seal}, ${ op.toExpr }, $res, $prettifier) }.unseal
+          '{ Bool.unaryMacroBool(${l.seal}, ${ Expr(op) }, $res, $prettifier) }.unseal
         }.seal.cast[Bool]
 
       case Select(left, "unary_!") =>
@@ -222,13 +222,13 @@ object BooleanMacro {
       case sel @ Select(left, op @ ("isEmpty" | "nonEmpty")) =>
         let(left) { l =>
           val res = l.select(sel.symbol).seal.cast[Boolean]
-          '{ Bool.unaryMacroBool(${l.seal}, ${ op.toExpr }, $res, $prettifier) }.unseal
+          '{ Bool.unaryMacroBool(${l.seal}, ${ Expr(op) }, $res, $prettifier) }.unseal
         }.seal.cast[Bool]
 
       case TypeApply(sel @ Select(lhs, "isInstanceOf"), targs) =>
         let(lhs) { l =>
           val res = l.select(sel.symbol).appliedToTypeTrees(targs).seal.cast[Boolean]
-          val name = targs.head.tpe.show.toExpr
+          val name = Expr(targs.head.tpe.show)
           '{ Bool.isInstanceOfMacroBool(${l.seal}, "isInstanceOf", $name, $res, $prettifier) }.unseal
         }.seal.cast[Bool]
 
