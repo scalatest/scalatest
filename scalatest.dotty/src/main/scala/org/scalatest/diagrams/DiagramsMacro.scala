@@ -135,7 +135,7 @@ object DiagramsMacro {
                 val left = l.seal.cast[DiagrammedExpr[T]]
                 val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
                 val res = Select.unique(l, "value").select(sel.symbol).appliedToArgs(diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
-                '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
+                '{ DiagrammedExpr.applyExpr[R]($left, ${Expr.ofList(rights)}, $res, $anchor) }.unseal
               }
             }
         }
@@ -155,7 +155,7 @@ object DiagramsMacro {
             val left = l.seal.cast[DiagrammedExpr[T]]
             val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
             val res = Select.unique(l, "value").select(sel.symbol).appliedToArgs(diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
-            '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
+            '{ DiagrammedExpr.applyExpr[R]($left, ${Expr.ofList(rights)}, $res, $anchor) }.unseal
           }
         }
 
@@ -197,7 +197,7 @@ object DiagramsMacro {
             val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
             val res = Select.unique(l, "value").select(sel.symbol).appliedToTypes(targs.map(_.tpe))
                             .appliedToArgs(diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
-            '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
+            '{ DiagrammedExpr.applyExpr[R]($left, ${Expr.ofList(rights)}, $res, $anchor) }.unseal
           }
         }
 
