@@ -145,15 +145,15 @@ Before publishing any patch release, binary compatibility with previous version 
     $ sbt ++2.10.7 scalacticJS/package scalacticJS/mimaReportBinaryIssues
     $ sbt ++2.10.7 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
-    $ sbt ++2.12.9 scalactic/package scalactic/mimaReportBinaryIssues
-    $ sbt ++2.12.9 scalatest/package scalatest/mimaReportBinaryIssues
-    $ sbt ++2.12.9 scalacticJS/package scalacticJS/mimaReportBinaryIssues
-    $ sbt ++2.12.9 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+    $ sbt ++2.12.10 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.12.10 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.12.10 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.12.10 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
-    $ sbt ++2.13.0 scalactic/package scalactic/mimaReportBinaryIssues
-    $ sbt ++2.13.0 scalatest/package scalatest/mimaReportBinaryIssues
-    $ sbt ++2.13.0 scalacticJS/package scalacticJS/mimaReportBinaryIssues
-    $ sbt ++2.13.0 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+    $ sbt ++2.13.1 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.13.1 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.13.1 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.13.1 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
 To publish scalactic, scalatest and scalatest-app use the following command:
 
@@ -161,14 +161,14 @@ To publish scalactic, scalatest and scalatest-app use the following command:
     $ export SCALAJS_VERSION=0.6.28
     $ sbt ++2.10.7 clean publishSigned "project scalatestAppJS" clean publishSigned
     $ sbt ++2.11.12 clean publishSigned "project scalatestAppJS" clean publishSigned
-    $ sbt ++2.12.9 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
-    $ sbt ++2.13.0 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned    
+    $ sbt ++2.12.10 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
+    $ sbt ++2.13.1 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned    
     $ sbt ++2.11.12 "project scalatestAppNative" clean publishSigned
     $ export SCALAJS_VERSION=1.0.0-M3
     $ sbt ++2.11.12 "project scalatestAppJS" clean publishSigned
-    $ sbt ++2.12.6 "project scalatestAppJS" clean publishSigned
+    $ sbt ++2.12.10 "project scalatestAppJS" clean publishSigned
     $ export SCALAJS_VERSION=1.0.0-M8
-    $ sbt ++2.13.0 "project scalatestAppJS" clean publishSigned
+    $ sbt ++2.13.1 "project scalatestAppJS" clean publishSigned
     $ sbt scalacticDotty/clean scalacticDotty/publishSigned
     $ sbt scalatestDotty/clean scalatestDotty/publishSigned
 
@@ -184,9 +184,9 @@ To publish scalatest modules for js, use the following commands:
     $ sbt +scalatestModulesJS/publishSigned
     $ export SCALAJS_VERSION=1.0.0-M3
     $ sbt ++2.11.12 "project scalatestModulesJS" clean publishSigned
-    $ sbt ++2.12.6 "project scalatestModulesJS" clean publishSigned
+    $ sbt ++2.12.10 "project scalatestModulesJS" clean publishSigned
     $ export SCALAJS_VERSION=1.0.0-M8
-    $ sbt ++2.13.0 "project scalatestModulesJS" clean publishSigned
+    $ sbt ++2.13.1 "project scalatestModulesJS" clean publishSigned
 
 To publish scalatest modules for native, use the following commands: 
 
