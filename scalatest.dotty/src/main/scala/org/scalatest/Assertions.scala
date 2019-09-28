@@ -1293,8 +1293,8 @@ trait Assertions extends TripleEquals  {
    */
   final val succeed: Assertion = Succeeded
 
-  inline def (inline x: String) stripMargin : String =
-    ${ org.scalatest.Assertions.stripMarginImpl(x) }
+  inline def (x: String) stripMargin : String =
+    ${ org.scalatest.Assertions.stripMarginImpl('x) }
 }
 
 /**
@@ -1341,9 +1341,12 @@ trait Assertions extends TripleEquals  {
  */
 object Assertions extends Assertions {
   import scala.quoted._
+  import scala.quoted.matching.Const
 
-  def stripMarginImpl(x: String)(implicit qctx: QuoteContext): Expr[String] =
-    Expr(new scala.collection.immutable.StringOps(x).stripMargin)
+  def stripMarginImpl(x: Expr[String])(implicit qctx: QuoteContext): Expr[String] = x match {
+    case Const(str) => Expr(new scala.collection.immutable.StringOps(str).stripMargin)
+    case _ => '{ new scala.collection.immutable.StringOps($x).stripMargin }
+  }
 
   @deprecated("The trap method is no longer needed for demos in the REPL, which now abreviates stack traces, so NormalResult will be removed in a future version of ScalaTest")
   case class NormalResult(result: Any) extends Throwable {
