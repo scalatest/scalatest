@@ -141,7 +141,7 @@ trait EitherValues {
 
     /**
      * Returns the <code>Right</code> value contained in the wrapped <code>RightProjection</code>, if defined as a <code>Right</code>, else throws <code>TestFailedException</code> with
-     * a detail message indicating the <code>Either</code> was defined as a <code>Right</code>, not a <code>Left</code>.
+     * a detail message indicating the <code>Either</code> was defined as a <code>Left</code>, not a <code>Right</code>.
      */
     def value: R = {
       try {
