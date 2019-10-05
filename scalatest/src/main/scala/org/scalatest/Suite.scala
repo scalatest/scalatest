@@ -59,7 +59,6 @@ import org.scalatest.time.{Seconds, Span}
 import scala.collection.immutable.TreeSet
 import scala.util.control.NonFatal
 import org.scalatest.exceptions.StackDepthExceptionHelper._
-import Suite.checkChosenStyles
 import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
@@ -1006,8 +1005,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     import args._
 
     val theTestNames = testNames
-    if (theTestNames.size > 0)
-      checkChosenStyles(configMap, styleName)
 
     // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
     // so that exceptions are caught and transformed
@@ -1325,12 +1322,14 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   }
   
   /**
-   * Suite style name.
+   * <strong>The <code>styleName</code> lifecycle method has been deprecated and will be removed in a future version of ScalaTest.</strong>
    *
-   * @return `org.scalatest.Suite`
+   * <p>This method was used to support the chosen styles feature, which was deactivated in 3.1.0. The internal modularization of ScalaTest in 3.2.0
+   * will replace chosen styles as the tool to encourage consistency across a project. We do not plan a replacement for <code>styleName</code>.</p>
    */
+  @deprecated("The styleName lifecycle method has been deprecated and will be removed in a future version of ScalaTest with no replacement.", "3.1.0")
   val styleName: String = "org.scalatest.Suite"
-  
+
   /**
    * Provides a <code>TestData</code> instance for the passed test name, given the passed config map.
    *
@@ -1970,41 +1969,6 @@ used for test events like succeeded/failed, etc.
     }
     else
       None
-  }
-
-  def checkChosenStyles(configMap: ConfigMap, styleName: String): Unit = {
-
-    val chosenStyleSet =
-      if (configMap.isDefinedAt(Suite.CHOSEN_STYLES))
-        configMap(Suite.CHOSEN_STYLES).asInstanceOf[Set[String]]
-      else
-        Set.empty[String]
-    if (chosenStyleSet.size > 0 && !chosenStyleSet.contains(styleName)) {
-      val e =
-        if (chosenStyleSet.size == 1)
-          new NotAllowedException(Resources.notTheChosenStyle(styleName, chosenStyleSet.head), getStackDepthFun("Suite.scala", "checkChosenStyles"))
-        else
-          new NotAllowedException(Resources.notOneOfTheChosenStyles(styleName, Suite.makeListForHumans(Vector.empty ++ chosenStyleSet)), getStackDepthFun("Scala.scala", "checkChosenStyles"))
-      throw e
-    }
-  }
-
-  // If it contains a space, or is an empty string, put quotes around it. OTherwise people might
-  // get confused by the chosenStyles error message.
-  def makeListForHumans(words: Vector[String]): String = {
-    val quotedWords = words map { w =>
-      if (w.length == 0 || w.indexOf(' ') >= 0) "\"" + w + "\""
-      else w
-    }
-    quotedWords.length match {
-      case 0 => "<empty list>"
-      //case 1 if quotedWords(0).isEmpty => "\"\""
-      case 1 => quotedWords(0)
-      case 2 => Resources.leftAndRight(quotedWords(0), quotedWords(1))
-      case _ =>
-        val (leading, trailing) = quotedWords.splitAt(quotedWords.length - 2)
-        leading.mkString(", ") + ", " + Resources.leftCommaAndRight(trailing(0), trailing(1))
-    }
   }
 
   def autoTagClassAnnotations(tags: Map[String, Set[String]], theSuite: Suite) = {

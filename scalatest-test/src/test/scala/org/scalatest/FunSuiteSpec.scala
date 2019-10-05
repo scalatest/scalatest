@@ -1250,35 +1250,6 @@ class FunSuiteSpec extends FunSpec {
       }
     }
 
-    it("should throw a NotAllowedException if chosenStyles is defined and does not include FunSuite") {
-
-      class SimpleSuite extends FunSuite {
-        test("one") {/* ASSERTION_SUCCEED */}
-        test("two") {/* ASSERTION_SUCCEED */}
-        test("three") {/* ASSERTION_SUCCEED */}
-      }
-
-      val simpleSuite = new SimpleSuite()
-      simpleSuite.run(None, Args(SilentReporter))
-      simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.funsuite.AnyFunSuite")), None, new Tracker, Set.empty))
-      val caught =
-        intercept[NotAllowedException] {
-          simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.funspec.AnyFunSpec")), None, new Tracker, Set.empty))
-        }
-      import OptionValues._
-      assert(caught.message.value === Resources.notTheChosenStyle("org.scalatest.funsuite.AnyFunSuite", "org.scalatest.funspec.AnyFunSpec"))
-      val caught2 =
-        intercept[NotAllowedException] {
-          simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.funspec.AnyFunSpec", "org.scalatest.freespec.AnyFreeSpec")), None, new Tracker, Set.empty))
-        }
-      assert(caught2.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.funsuite.AnyFunSuite", Suite.makeListForHumans(Vector("org.scalatest.funspec.AnyFunSpec", "org.scalatest.freespec.AnyFreeSpec"))))
-      val caught3 =
-        intercept[NotAllowedException] {
-          simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.funspec.AnyFunSpec", "org.scalatest.freespec.AnyFreeSpec", "org.scalatest.flatspec.AnyFlatSpec")), None, new Tracker, Set.empty))
-        }
-      assert(caught3.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.funsuite.AnyFunSuite", Suite.makeListForHumans(Vector("org.scalatest.funspec.AnyFunSpec", "org.scalatest.freespec.AnyFreeSpec", "org.scalatest.flatspec.AnyFlatSpec"))))
-    }
-
     describe("registerTest and registerIgnoredTest method") {
 
       it("should allow test registration and ignored test registration") {

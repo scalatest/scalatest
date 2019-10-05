@@ -19,9 +19,13 @@ import org.scalactic._
 import org.scalatest.Tag
 
 /**
+ * <strong>The <code>org.scalatest.FixtureTestRegistration</code> has been deprecated and will be removed in a future version of ScalaTest. We do
+ * not plan a replacement.</strong>
+ *
  * Trait declaring methods that can be used to register test functions that accept
  * a fixture parameter and have any result type.
  */
+@deprecated("The org.scalatest.FixtureTestRegistration trait has been deprecated and will be removed in a future version of ScalaTest. No replacement is planned.", "3.1.0")
 trait FixtureTestRegistration { theSuite: org.scalatest.FixtureSuite =>
 
   /**
