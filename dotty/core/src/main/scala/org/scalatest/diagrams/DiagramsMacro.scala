@@ -24,7 +24,7 @@ object DiagramsMacro {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def parse(qctx: QuoteContext)(expr: qctx.tasty.Term): qctx.tasty.Term = {
     implicit val qctx2: QuoteContext = qctx
-    import qctx.tasty._
+    import qctx.tasty.{_, given}
     import util._
 
     type R
@@ -223,7 +223,7 @@ object DiagramsMacro {
     helper: Expr[(DiagrammedExpr[Boolean], Any, String, source.Position) => Assertion],
     condition: Expr[Boolean], pos: Expr[source.Position], clue: Expr[Any], sourceText: String
   )(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty._
+    import qctx.tasty.{_, given}
     val diagExpr = parse(qctx)(condition.unseal.underlyingArgument).seal.cast[DiagrammedExpr[Boolean]]
     '{ $helper($diagExpr, $clue, ${Expr(sourceText)}, $pos) }
   }
