@@ -60,7 +60,8 @@ trait Configuration {
     * Describes the configuration to use when evaluating a property.
     *
     * @param minSuccessful      the minimum number of successful property evaluations required for
-    *                           the property to pass; see [[MinSuccessful]]
+    *                           the property to pass; see [[MinSuccessful]], note that the default
+    *                           is 10 instead of 100 in ScalaCheck
     * @param maxDiscardedFactor how many generated values may be discarded,
     *                           as a multiple of the successful attempts, before the property check is considered to be
     *                           [[org.scalatest.prop.PropertyCheckResult.Exhausted]]; see [[MaxDiscardedFactor]]
@@ -349,7 +350,8 @@ object Configuration extends Configuration {
     * those in, and the system will resolve those to a coherent [[Parameter]].
     *
     * @param minSuccessful      the minimum number of successful property evaluations required for
-    *                           the property to pass; see [[MinSuccessful]]
+    *                           the property to pass; see [[MinSuccessful]], note that the default
+    *                           is 10 instead of 100 in ScalaCheck
     * @param maxDiscardedFactor how many generated values may be discarded,
     *                           as a multiple of the successful attempts, before the property check is considered to be
     *                           [[org.scalatest.prop.PropertyCheckResult.Exhausted]]; see [[MaxDiscardedFactor]]
