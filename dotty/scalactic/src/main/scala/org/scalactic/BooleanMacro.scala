@@ -44,10 +44,10 @@ object BooleanMacro {
     def exprStr: String = condition.show
     def defaultCase = '{ Bool.simpleMacroBool($condition, ${Expr(exprStr)}, $prettifier) }
     def isImplicitMethodType(tp: Type): Boolean =
-      Type.IsMethodType.unapply(tp).flatMap(tp => if tp.isImplicit then Some(true) else None).nonEmpty
+      IsMethodType.unapply(tp).flatMap(tp => if tp.isImplicit then Some(true) else None).nonEmpty
 
     def isByNameMethodType(tp: Type): Boolean =  tp.widen match {
-      case Type.MethodType(_, Type.ByNameType(_) :: Nil, _) => true
+      case MethodType(_, ByNameType(_) :: Nil, _) => true
       case _ => false
     }
 
