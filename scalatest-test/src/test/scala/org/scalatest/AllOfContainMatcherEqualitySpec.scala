@@ -19,11 +19,11 @@ import org.scalactic.Equality
 import org.scalactic.Prettifier
 import collection.GenTraversable
 import SharedHelpers._
-import Matchers._
+import matchers.should.Matchers._
 
 import org.scalactic.ArrayHelper.deep
 
-class AllOfContainMatcherEqualitySpec extends FunSpec {
+class AllOfContainMatcherEqualitySpec extends funspec.AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

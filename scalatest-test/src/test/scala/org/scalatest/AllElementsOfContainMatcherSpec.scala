@@ -19,9 +19,9 @@ import org.scalactic.{Prettifier}
 
 import collection.GenTraversable
 import SharedHelpers._
-import Matchers._
+import matchers.should.Matchers._
 
-class AllElementsOfContainMatcherSpec extends FunSpec {
+class AllElementsOfContainMatcherSpec extends funspec.AnyFunSpec {
 
   describe("allElementsOf ") {
 

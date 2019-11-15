@@ -17,11 +17,11 @@ package org.scalatest
 
 import collection.GenTraversable
 import SharedHelpers._
-import Matchers._
+import matchers.should.Matchers._
 import FailureMessages.decorateToStringValue
 import org.scalactic.Prettifier
 
-class OneElementOfContainMatcherSpec extends FunSpec {
+class OneElementOfContainMatcherSpec extends funspec.AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

@@ -18,10 +18,10 @@ package org.scalatest
 import matchers._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import Matchers._
+import should.Matchers._
 import org.scalactic.Prettifier
 
-class AMatcherSpec extends FunSpec {
+class AMatcherSpec extends funspec.AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

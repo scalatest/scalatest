@@ -15,14 +15,14 @@
  */
 package org.scalatest
 
-import Matchers._
+import matchers.should.Matchers._
 import enablers.Length
 import enablers.Size
 
 class Lengthiness(val length: Int) extends AnyVal
 class Siziness(val size: Int) extends AnyVal
 
-class AnyValMatchersSpec extends FunSpec {
+class AnyValMatchersSpec extends funspec.AnyFunSpec {
 
   describe("Matchers ") {
     it("should allow me to check for length on a custom AnyVal that has a Length type class available") {

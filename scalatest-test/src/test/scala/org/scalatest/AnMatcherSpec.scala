@@ -21,7 +21,7 @@ import FailureMessages.decorateToStringValue
 import Matchers._
 import org.scalactic.Prettifier
 
-class AnMatcherSpec extends FunSpec {
+class AnMatcherSpec extends funspec.AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

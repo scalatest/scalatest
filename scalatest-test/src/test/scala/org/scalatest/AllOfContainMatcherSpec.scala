@@ -17,12 +17,12 @@ package org.scalatest
 
 import collection.GenTraversable
 import SharedHelpers._
-import Matchers._
+import matchers.should.Matchers._
 import org.scalactic.Prettifier
 
 import org.scalactic.ArrayHelper.deep
 
-class AllOfContainMatcherSpec extends FunSpec {
+class AllOfContainMatcherSpec extends funspec.AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

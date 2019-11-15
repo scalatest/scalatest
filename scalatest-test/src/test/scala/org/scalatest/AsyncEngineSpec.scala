@@ -26,7 +26,7 @@ import concurrent.Eventually._
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalactic._
 
-class AsyncEngineSpec extends FlatSpec with Matchers {
+class AsyncEngineSpec extends flatspec.AnyFlatSpec with matchers.should.Matchers {
 
   "AsyncEngine.getTestNamePrefix" should "return empty string for Trunk" in {
     val engine = new AsyncEngine("concurrentFunSuiteBundleMod", "FunSuite")

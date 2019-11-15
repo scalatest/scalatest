@@ -17,7 +17,7 @@ package org.scalatest
 
 import SharedHelpers._
 
-class NotifierSpec extends FunSpec {
+class NotifierSpec extends funspec.AnyFunSpec {
   describe("A Notifier") {
     it("should fire NoteProvided event with correct message and None in payload when using apply(message)") {
       class MySuite extends FunSuite {

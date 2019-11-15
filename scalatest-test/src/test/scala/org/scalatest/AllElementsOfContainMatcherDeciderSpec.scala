@@ -19,9 +19,9 @@ import org.scalactic.{Prettifier, Equality, Explicitly, Uniformity}
 import org.scalactic.StringNormalizations._
 import collection.GenTraversable
 import SharedHelpers._
-import Matchers._
+import matchers.should.Matchers._
 
-class AllElementsOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
+class AllElementsOfContainMatcherDeciderSpec extends funspec.AnyFunSpec with Explicitly {
 
   val mapTrimmed: Uniformity[(Int, String)] =
     new Uniformity[(Int, String)] {

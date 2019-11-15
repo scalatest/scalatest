@@ -19,9 +19,9 @@ import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.Doc.stripMargin
 import org.scalatest.Doc.trimMarkup
-import Matchers._
+import matchers.should.Matchers._
 
-class OldDocSpec extends FreeSpec {
+class OldDocSpec extends freespec.AnyFreeSpec {
 
   class DocSpecASuite extends Suite
   class DocSpecBSuite extends Suite

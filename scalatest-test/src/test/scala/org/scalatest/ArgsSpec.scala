@@ -18,10 +18,10 @@ package org.scalatest
 import prop.TableDrivenPropertyChecks
 import SharedHelpers._
 import TableDrivenPropertyChecks._
-import Matchers._
+import matchers.should.Matchers._
 import org.scalactic.exceptions.NullArgumentException
 
-class ArgsSpec extends WordSpec {
+class ArgsSpec extends wordspec.AnyWordSpec {
   "The Args constructor" should {
     "throw NullArgumentException when passed a null" in {
 

@@ -17,10 +17,10 @@ package org.scalatest
 
 import SharedHelpers._
 
-class AlerterSpec extends FunSpec {
+class AlerterSpec extends funspec.AnyFunSpec {
   describe("An Alerter") {
     it("should fire AlertProvided event with correct message and None in payload when using apply(message)") {
-      class MySuite extends FunSuite {
+      class MySuite extends funsuite.AnyFunSuite {
         alert("alert message")
       }
       val suite = new MySuite()
@@ -32,7 +32,7 @@ class AlerterSpec extends FunSpec {
       assert(alertProvidedEvents(0).payload === None)
     }
     it("should fire AlertProvided event with correct message and payload when using apply(message, payload)") {
-      class MySuite extends FunSuite {
+      class MySuite extends funsuite.AnyFunSuite {
         alert("alert message", Some("a payload"))
       }
       val suite = new MySuite()

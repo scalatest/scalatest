@@ -18,9 +18,9 @@ package org.scalatest
 import org.scalactic.{Prettifier, Equality}
 import collection.GenTraversable
 import SharedHelpers._
-import Matchers._
+import matchers.should.Matchers._
 
-class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
+class AllElementsOfContainMatcherEqualitySpec extends funspec.AnyFunSpec {
 
   class TrimEquality extends Equality[String] {
     def areEqual(left: String, right: Any) =

@@ -22,7 +22,7 @@ import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
 
-class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
+class AsyncFeatureSpecSpec2 extends funspec.AsyncFunSpec {
 
   describe("AsyncFeatureSpec") {
 

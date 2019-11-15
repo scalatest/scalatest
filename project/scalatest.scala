@@ -577,7 +577,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     )
 
-  lazy val scalatestCore = Project("scalatestCore", file("modules/jvm/scalatest-core"))
+  lazy val scalatestCore = Project("scalatestCore", file("jvm/core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -587,7 +587,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       organization := "org.scalatest",
       libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
-      javaSourceManaged := target.value / "java",
       sourceGenerators in Compile += {
         // Little trick to get rid of bnd error when publish.
         Def.task{
@@ -596,18 +595,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         }.taskValue
       },
       sourceGenerators in Compile += {
-        Def.task{
-          GenModules.genScalaTestCoreJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      resourceGenerators in Compile += {
-        Def.task {
-          GenScalaTestDotty.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      sourceGenerators in Compile += {
        Def.task{
-         GenModules.genScalaTestCore((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
          GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
          GenConfigMap.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
          ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
@@ -647,7 +635,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCompatible, scalacticMacro % "compile-internal, test-internal", scalactic)  
 
-  lazy val scalatestFeatureSpec = Project("scalatestFeatureSpec", file("modules/jvm/scalatest-featurespec"))
+  lazy val scalatestFeatureSpec = Project("scalatestFeatureSpec", file("jvm/featurespec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -661,11 +649,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      },
-      sourceGenerators in Compile += {
-       Def.task{
-         GenModules.genScalaTestFeatureSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-       }.taskValue
       },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
@@ -686,7 +669,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestFlatSpec = Project("scalatestFlatSpec", file("modules/jvm/scalatest-flatspec"))
+  lazy val scalatestFlatSpec = Project("scalatestFlatSpec", file("jvm/flatspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -700,11 +683,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      },
-      sourceGenerators in Compile += {
-       Def.task{
-         GenModules.genScalaTestFlatSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-       }.taskValue
       },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
@@ -725,7 +703,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestFreeSpec = Project("scalatestFreeSpec", file("modules/jvm/scalatest-freespec"))
+  lazy val scalatestFreeSpec = Project("scalatestFreeSpec", file("jvm/freespec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -739,11 +717,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      },
-      sourceGenerators in Compile += {
-       Def.task{
-         GenModules.genScalaTestFreeSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-       }.taskValue
       },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
@@ -764,7 +737,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestFunSuite = Project("scalatestFunSuite", file("modules/jvm/scalatest-funsuite"))
+  lazy val scalatestFunSuite = Project("scalatestFunSuite", file("jvm/funsuite"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -778,11 +751,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      },
-      sourceGenerators in Compile += {
-       Def.task{
-         GenModules.genScalaTestFunSuite((sourceManaged in Compile).value, version.value, scalaVersion.value)
-       }.taskValue
       },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
@@ -803,7 +771,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal") 
 
-  lazy val scalatestFunSpec = Project("scalatestFunSpec", file("modules/jvm/scalatest-funspec"))
+  lazy val scalatestFunSpec = Project("scalatestFunSpec", file("jvm/funspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -817,11 +785,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      },
-      sourceGenerators in Compile += {
-       Def.task{
-         GenModules.genScalaTestFunSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-       }.taskValue
       },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
@@ -842,7 +805,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")     
 
-  lazy val scalatestPropSpec = Project("scalatestPropSpec", file("modules/jvm/scalatest-propspec"))
+  lazy val scalatestPropSpec = Project("scalatestPropSpec", file("jvm/propspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -856,11 +819,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      },
-      sourceGenerators in Compile += {
-       Def.task{
-         GenModules.genScalaTestPropSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-       }.taskValue
       },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
@@ -881,7 +839,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestRefSpec = Project("scalatestRefSpec", file("modules/jvm/scalatest-refspec"))
+  lazy val scalatestRefSpec = Project("scalatestRefSpec", file("jvm/refspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -895,11 +853,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      },
-      sourceGenerators in Compile += {
-       Def.task{
-         GenModules.genScalaTestRefSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-       }.taskValue
       },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
@@ -920,7 +873,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal") 
 
-  lazy val scalatestWordSpec = Project("scalatestWordSpec", file("modules/jvm/scalatest-wordspec"))
+  lazy val scalatestWordSpec = Project("scalatestWordSpec", file("jvm/wordspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -934,11 +887,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      },
-      sourceGenerators in Compile += {
-       Def.task{
-         GenModules.genScalaTestWordSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-       }.taskValue
       },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
@@ -959,7 +907,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestDiagrams = Project("scalatestDiagrams", file("modules/jvm/scalatest-diagrams"))
+  lazy val scalatestDiagrams = Project("scalatestDiagrams", file("jvm/diagrams"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -973,11 +921,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      },
-      sourceGenerators in Compile += {
-       Def.task{
-         GenModules.genScalaTestDiagrams((sourceManaged in Compile).value, version.value, scalaVersion.value)
-       }.taskValue
       },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
@@ -998,7 +941,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestMatchersCore = Project("scalatestMatchersCore", file("modules/jvm/scalatest-matchers-core"))
+  lazy val scalatestMatchersCore = Project("scalatestMatchersCore", file("jvm/matchers-core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -1015,7 +958,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       },
       sourceGenerators in Compile += {
        Def.task{
-         GenModules.genScalaTestMatchersCore((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
          GenFactories.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "matchers" / "dsl", version.value, scalaVersion.value)
        }.taskValue
       },
@@ -1039,7 +981,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal") 
 
-  lazy val scalatestShouldMatchers = Project("scalatestShouldMatchers", file("modules/jvm/scalatest-shouldmatchers"))
+  lazy val scalatestShouldMatchers = Project("scalatestShouldMatchers", file("jvm/shouldmatchers"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -1053,11 +995,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      },
-      sourceGenerators in Compile += {
-       Def.task{
-         GenModules.genScalaTestShouldMatchers((sourceManaged in Compile).value, version.value, scalaVersion.value)
-       }.taskValue
       },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
@@ -1078,7 +1015,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestMatchersCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestMustMatchers = Project("scalatestMustMatchers", file("modules/jvm/scalatest-mustmatchers"))
+  lazy val scalatestMustMatchers = Project("scalatestMustMatchers", file("jvm/scalatest-mustmatchers"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)

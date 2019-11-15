@@ -23,7 +23,7 @@ import org.scalatest.exceptions.DuplicateTestNameException
 
 import scala.util.Success
 
-class AsyncFlatSpecSpec extends FunSpec {
+class AsyncFlatSpecSpec extends funspec.AnyFunSpec {
 
   describe("AsyncFlatSpec") {
 

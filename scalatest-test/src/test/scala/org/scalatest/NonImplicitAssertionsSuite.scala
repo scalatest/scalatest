@@ -18,7 +18,7 @@ package org.scalatest
 import org.scalactic._
 import org.scalatest.exceptions.TestFailedException
 
-class NonImplicitAssertionsSuite extends FunSuite with NonImplicitAssertions {
+class NonImplicitAssertionsSuite extends funsuite.AnyFunSuite with NonImplicitAssertions {
   test("make sure all the non-implicit assertions work") {
     assert(1 + 1 == 2)
     val thrown =

@@ -17,7 +17,7 @@ package org.scalatest
 
 
 /*
-class AsyncFixturesSpec extends FunSpec {
+class AsyncFixturesSpec extends funspec.AnyFunSpec {
 
   describe("AsyncFixtures") {
 

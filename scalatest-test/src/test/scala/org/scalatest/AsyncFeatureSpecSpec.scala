@@ -24,7 +24,7 @@ import org.scalactic.Prettifier
 
 import scala.util.Success
 
-class AsyncFeatureSpecSpec extends FunSpec {
+class AsyncFeatureSpecSpec extends funspec.AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

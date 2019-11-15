@@ -22,7 +22,7 @@ import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
 
-class AsyncFreeSpecLikeSpec2 extends AsyncFunSpec {
+class AsyncFreeSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
   describe("AsyncFreeSpecLike") {
 

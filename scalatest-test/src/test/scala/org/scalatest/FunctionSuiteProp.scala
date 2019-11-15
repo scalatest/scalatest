@@ -17,6 +17,6 @@ package org.scalatest
 
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-trait FunctionSuiteProp extends FunSuite with FunctionSuiteExamples with TableDrivenPropertyChecks with Matchers {
+trait FunctionSuiteProp extends FunSuite with FunctionSuiteExamples with TableDrivenPropertyChecks with matchers.should.Matchers {
 
 }

@@ -17,10 +17,10 @@ package org.scalatest
 
 import collection.GenTraversable
 import SharedHelpers._
-import Matchers._
+import matchers.should.Matchers._
 import org.scalactic.Prettifier
 
-class NoElementsOfContainMatcherSpec extends FunSpec {
+class NoElementsOfContainMatcherSpec extends funspec.AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

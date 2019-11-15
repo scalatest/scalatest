@@ -22,9 +22,9 @@ import org.scalactic.Uniformity
 import org.scalactic.Prettifier
 import collection.GenTraversable
 import SharedHelpers._
-import Matchers._
+import matchers.should.Matchers._
 
-class OneElementOfContainMatcherDeciderSpec extends FunSpec with Explicitly {
+class OneElementOfContainMatcherDeciderSpec extends funspec.AnyFunSpec with Explicitly {
 
   private val prettifier = Prettifier.default
 
