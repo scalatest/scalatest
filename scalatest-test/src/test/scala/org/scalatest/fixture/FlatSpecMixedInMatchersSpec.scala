@@ -15,9 +15,11 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest.{ Matchers, StringFixture }
+import org.scalatest.StringFixture
+import org.scalatest.flatspec.FixtureAnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class FlatSpecMixedInMatchersSpec extends FlatSpec with Matchers with StringFixture {
+class FlatSpecMixedInMatchersSpec extends FixtureAnyFlatSpec with Matchers with StringFixture {
   "This spec" should "work OK" in { _ =>
     "hello" should startWith ("he")
     "hello" should endWith ("lo")

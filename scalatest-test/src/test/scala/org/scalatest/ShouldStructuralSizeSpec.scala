@@ -18,11 +18,12 @@ package org.scalatest
 
 import org.scalatest.prop.PropertyChecks
 import Integer.MIN_VALUE
-import Matchers._
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldStructuralSizeSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldStructuralSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
   private val prettifier = Prettifier.default
   

@@ -20,6 +20,7 @@ import scala.collection.mutable
 import java.io.File
 import java.util.regex.Pattern
 import SuiteDiscoveryHelper.discoverTests
+import org.scalatest.funspec.AnyFunSpec
 
 class SuiteDiscoveryHelperFriend(sdt: SuiteDiscoveryHelper.type) {
 
@@ -76,7 +77,7 @@ class SuiteDiscoveryHelperFriend(sdt: SuiteDiscoveryHelper.type) {
   }
 }
 
-class SuiteDiscoveryHelperSpec extends FunSpec {
+class SuiteDiscoveryHelperSpec extends AnyFunSpec {
 
   val sdtf = new SuiteDiscoveryHelperFriend(SuiteDiscoveryHelper)
   val loader = getClass.getClassLoader
@@ -374,7 +375,7 @@ class SuiteDiscoveryHelperSpec extends FunSpec {
 // This class is just used by tests in SuiteDiscoveryHelperSpec
 // for testing Suite discovery by test name.
 //
-class SuiteDiscoveryHelperSpec2 extends FunSpec {
+class SuiteDiscoveryHelperSpec2 extends AnyFunSpec {
 
   def `test discover tests 4`: Unit = {
   }

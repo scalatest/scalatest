@@ -16,10 +16,11 @@
 package org.scalatest
 
 import time._
-import Matchers._
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class SlowpokeDetectorSpec extends FunSpec with Now {
+class SlowpokeDetectorSpec extends AnyFunSpec with Now {
 
   describe("The Slowpoke detector") {
     it("should allow a timeout to be specified at construction") {

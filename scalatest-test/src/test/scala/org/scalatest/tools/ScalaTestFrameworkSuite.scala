@@ -17,12 +17,12 @@ package org.scalatest.tools
 
 import org.scalatools.testing._
 import org.junit.runner.RunWith
-import org.scalatest.FunSuite
 import org.scalatestplus.junit.JUnitRunner
 import org.scalatest.SharedHelpers.EventRecordingReporter
+import org.scalatest.funsuite.AnyFunSuite
 
 @RunWith(classOf[JUnitRunner])
-class ScalaTestFrameworkSuite extends FunSuite{
+class ScalaTestFrameworkSuite extends AnyFunSuite{
 
   test("framework name"){
     assert(new ScalaTestFramework().name === "ScalaTest")

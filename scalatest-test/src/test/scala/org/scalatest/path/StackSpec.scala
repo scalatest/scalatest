@@ -93,7 +93,7 @@ trait StackBehaviors { this: FunSpec =>
   }
 }
 
-class StackSpec extends org.scalatest.path.FunSpec with StackBehaviors {
+class StackSpec extends org.scalatest.funspec.PathAnyFunSpec with StackBehaviors {
 
   //SCALATESTJS,NATIVE-ONLY override def newInstance = new StackSpec
 

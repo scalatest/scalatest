@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.scalatest.tools.scalasbt
-import org.scalatest.FunSuite
 import org.scalatest.Tag
+import org.scalatest.funsuite.AnyFunSuite
 
-class SampleSuite extends FunSuite {
+class SampleSuite extends AnyFunSuite {
 
   object SlowTest extends Tag("org.scalatest.tools.scalasbt.SampleSuite.SlowTest")
   

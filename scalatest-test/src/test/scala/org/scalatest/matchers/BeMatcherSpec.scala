@@ -16,9 +16,10 @@
 package org.scalatest.matchers
 
 import org.scalatest._
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class BeMatcherSpec extends FunSpec {
+class BeMatcherSpec extends AnyFunSpec {
   
   describe("BeMatcher ") {
     

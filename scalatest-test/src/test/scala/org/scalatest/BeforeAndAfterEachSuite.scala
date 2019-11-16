@@ -20,10 +20,12 @@ import org.scalatest.events.Event
 import org.scalatest.events.InfoProvided
 import org.scalatest.events.Ordinal
 import scala.collection.mutable.ListBuffer
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
 
-class BeforeAndAfterEachSuite extends FunSuite {
+class BeforeAndAfterEachSuite extends AnyFunSuite {
 
-  class TheSuper extends FunSuite {
+  class TheSuper extends AnyFunSuite {
     var runTestWasCalled = false
     var runWasCalled = false
     protected override def runTest(testName: String, args: Args): Status = {
@@ -135,7 +137,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
   test("If super.runTest returns normally, but afterEach completes abruptly with an " +
     "exception, the status returned by runTest will contain that exception as its unreportedException.") {
        
-    class MySuite extends FunSuite with BeforeAndAfterEach {
+    class MySuite extends AnyFunSuite with BeforeAndAfterEach {
       override def afterEach(): Unit = { throw new NumberFormatException }
       test("test July") {}
     }
@@ -149,7 +151,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
   // SKIP-SCALATESTJS,NATIVE-START
   test("Should propagate and not run afterEach if super.runTest throw java.lang.annotation.AnnotationFormatError") {
 
-    class ExampleSpec extends FunSuite with BeforeAndAfterEach {
+    class ExampleSpec extends AnyFunSuite with BeforeAndAfterEach {
       var afterAllCalled = false
       test("test 1") {
         throw new java.lang.annotation.AnnotationFormatError("test")
@@ -168,7 +170,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
 
   test("Should propagate and not run afterEach if super.runTest throw java.nio.charset.CoderMalfunctionError") {
 
-    class ExampleSpec extends FunSuite with BeforeAndAfterEach {
+    class ExampleSpec extends AnyFunSuite with BeforeAndAfterEach {
       var afterAllCalled = false
       test("test 1") {
         throw new java.nio.charset.CoderMalfunctionError(new RuntimeException("test"))
@@ -188,7 +190,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
   // SKIP-SCALATESTJS,NATIVE-START
   test("Should propagate and not run afterEach if super.runTest throw javax.xml.parsers.FactoryConfigurationError") {
 
-    class ExampleSpec extends FunSuite with BeforeAndAfterEach {
+    class ExampleSpec extends AnyFunSuite with BeforeAndAfterEach {
       var afterAllCalled = false
       test("test 1") {
         throw new javax.xml.parsers.FactoryConfigurationError()
@@ -207,7 +209,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
 
   test("Should propagate and not run afterEach if super.runTest throw java.lang.LinkageError") {
 
-    class ExampleSpec extends FunSuite with BeforeAndAfterEach {
+    class ExampleSpec extends AnyFunSuite with BeforeAndAfterEach {
       var afterAllCalled = false
       test("test 1") {
         throw new java.lang.LinkageError()
@@ -226,7 +228,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
 
   test("Should propagate and not run afterEach if super.runTest throw javax.xml.transform.TransformerFactoryConfigurationError") {
 
-    class ExampleSpec extends FunSuite with BeforeAndAfterEach {
+    class ExampleSpec extends AnyFunSuite with BeforeAndAfterEach {
       var afterAllCalled = false
       test("test 1") {
         throw new javax.xml.transform.TransformerFactoryConfigurationError()
@@ -245,7 +247,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
 
   test("Should propagate and not run afterEach if super.runTest throw java.lang.VirtualMachineError") {
 
-    class ExampleSpec extends FunSuite with BeforeAndAfterEach {
+    class ExampleSpec extends AnyFunSuite with BeforeAndAfterEach {
       var afterAllCalled = false
       test("test 1") {
         throw new java.lang.VirtualMachineError() {}
@@ -265,7 +267,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
 
   test("Should run afterEach, but not tests if beforeEach completes abruptly") {
 
-    class MySuite extends FunSpec with BeforeAndAfterEach {
+    class MySuite extends AnyFunSpec with BeforeAndAfterEach {
       var afterIsCalled = false
       var testIsCalled = false
       override def beforeEach(): Unit = { throw new NumberFormatException }

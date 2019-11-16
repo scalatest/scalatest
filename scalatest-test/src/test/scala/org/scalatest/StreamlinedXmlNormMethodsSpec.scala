@@ -16,8 +16,10 @@
 package org.scalatest
 
 import scala.xml.{Node, Text, NodeSeq}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class StreamlinedXmlNormMethodsSpec extends FunSpec with Matchers with StreamlinedXmlNormMethods {
+class StreamlinedXmlNormMethodsSpec extends AnyFunSpec with Matchers with StreamlinedXmlNormMethods {
 
   describe("Xml Normalization of Elems") {
 

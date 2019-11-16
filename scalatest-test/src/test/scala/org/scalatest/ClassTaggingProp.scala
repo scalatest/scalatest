@@ -19,6 +19,15 @@ import org.scalatestplus.junit._
 import org.junit.Test
 import org.scalatest.refspec.RefSpec
 import org.scalatestplus.testng.TestNGSuite
+import org.scalatest
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 
 class ClassTaggingProp extends AllSuiteProp {
 
@@ -77,7 +86,7 @@ class ExampleClassTaggingSuite extends Suite with ClassTaggingFixtureServices {
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFixtureSuite extends fixture.TestSuite with ClassTaggingFixtureServices with StringFixture {
+class ExampleClassTaggingFixtureSuite extends scalatest.FixtureTestSuite with ClassTaggingFixtureServices with StringFixture {
   def testMethod1(): Unit = {}
   def testMethod2(): Unit = {}
   def testMethod3(): Unit = {}
@@ -121,7 +130,7 @@ class ExampleClassTaggingTestNGSuite extends TestNGSuite with ClassTaggingFixtur
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFunSuite extends FunSuite with ClassTaggingFixtureServices {
+class ExampleClassTaggingFunSuite extends AnyFunSuite with ClassTaggingFixtureServices {
   test("Test 1") {}
   test("Test 2") {}
   test("Test 3") {}
@@ -129,7 +138,7 @@ class ExampleClassTaggingFunSuite extends FunSuite with ClassTaggingFixtureServi
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFixtureFunSuite extends fixture.FunSuite with ClassTaggingFixtureServices with StringFixture {
+class ExampleClassTaggingFixtureFunSuite extends funsuite.FixtureAnyFunSuite with ClassTaggingFixtureServices with StringFixture {
   test("Test 1") {s =>}
   test("Test 2") {s =>}
   test("Test 3") {s =>}
@@ -137,7 +146,7 @@ class ExampleClassTaggingFixtureFunSuite extends fixture.FunSuite with ClassTagg
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFunSpec extends FunSpec with ClassTaggingFixtureServices {
+class ExampleClassTaggingFunSpec extends AnyFunSpec with ClassTaggingFixtureServices {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}
@@ -147,7 +156,7 @@ class ExampleClassTaggingFunSpec extends FunSpec with ClassTaggingFixtureService
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFixtureFunSpec extends fixture.FunSpec with ClassTaggingFixtureServices with StringFixture {
+class ExampleClassTaggingFixtureFunSpec extends funspec.FixtureAnyFunSpec with ClassTaggingFixtureServices with StringFixture {
   describe("Scope 1") {
     it("Test 1") {s =>}
     it("Test 2") {s =>}
@@ -157,7 +166,7 @@ class ExampleClassTaggingFixtureFunSpec extends fixture.FunSpec with ClassTaggin
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFeatureSpec extends FeatureSpec with ClassTaggingFixtureServices {
+class ExampleClassTaggingFeatureSpec extends AnyFeatureSpec with ClassTaggingFixtureServices {
   Feature("Feature 1") {
     Scenario("Scenario 1") {}
     Scenario("Scenario 2") {}
@@ -167,7 +176,7 @@ class ExampleClassTaggingFeatureSpec extends FeatureSpec with ClassTaggingFixtur
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFixtureFeatureSpec extends fixture.FeatureSpec with ClassTaggingFixtureServices with StringFixture {
+class ExampleClassTaggingFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with ClassTaggingFixtureServices with StringFixture {
   Feature("Feature 1") {
     Scenario("Scenario 1") {s =>}
     Scenario("Scenario 2") {s =>}
@@ -177,7 +186,7 @@ class ExampleClassTaggingFixtureFeatureSpec extends fixture.FeatureSpec with Cla
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFlatSpec extends FlatSpec with ClassTaggingFixtureServices {
+class ExampleClassTaggingFlatSpec extends AnyFlatSpec with ClassTaggingFixtureServices {
   "Scope 1" should "do thing 1" in {}
   it should "do thing 2" in {}
   it should "do thing 3" in {}
@@ -185,7 +194,7 @@ class ExampleClassTaggingFlatSpec extends FlatSpec with ClassTaggingFixtureServi
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFixtureFlatSpec extends fixture.FlatSpec with ClassTaggingFixtureServices with StringFixture {
+class ExampleClassTaggingFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with ClassTaggingFixtureServices with StringFixture {
   "Scope 1" should "do thing 1" in {s =>}
   it should "do thing 2" in {s =>}
   it should "do thing 3" in {s =>}
@@ -193,7 +202,7 @@ class ExampleClassTaggingFixtureFlatSpec extends fixture.FlatSpec with ClassTagg
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFreeSpec extends FreeSpec with ClassTaggingFixtureServices {
+class ExampleClassTaggingFreeSpec extends AnyFreeSpec with ClassTaggingFixtureServices {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -203,7 +212,7 @@ class ExampleClassTaggingFreeSpec extends FreeSpec with ClassTaggingFixtureServi
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFixtureFreeSpec extends fixture.FreeSpec with ClassTaggingFixtureServices with StringFixture {
+class ExampleClassTaggingFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with ClassTaggingFixtureServices with StringFixture {
   "Scope 1" - {
     "Test 1" in {s =>}
     "Test 2" in {s =>}
@@ -213,7 +222,7 @@ class ExampleClassTaggingFixtureFreeSpec extends fixture.FreeSpec with ClassTagg
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingPropSpec extends PropSpec with ClassTaggingFixtureServices {
+class ExampleClassTaggingPropSpec extends AnyPropSpec with ClassTaggingFixtureServices {
   property("Test 1") {}
   property("Test 2") {}
   property("Test 3") {}
@@ -221,7 +230,7 @@ class ExampleClassTaggingPropSpec extends PropSpec with ClassTaggingFixtureServi
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFixturePropSpec extends fixture.PropSpec with ClassTaggingFixtureServices with StringFixture {
+class ExampleClassTaggingFixturePropSpec extends propspec.FixtureAnyPropSpec with ClassTaggingFixtureServices with StringFixture {
   property("Test 1") {s =>}
   property("Test 2") {s =>}
   property("Test 3") {s =>}
@@ -229,7 +238,7 @@ class ExampleClassTaggingFixturePropSpec extends fixture.PropSpec with ClassTagg
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingWordSpec extends WordSpec with ClassTaggingFixtureServices {
+class ExampleClassTaggingWordSpec extends AnyWordSpec with ClassTaggingFixtureServices {
   "Scope 1" should {
     "Test 1" in {}
     "Test 2" in {}
@@ -239,7 +248,7 @@ class ExampleClassTaggingWordSpec extends WordSpec with ClassTaggingFixtureServi
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFixtureWordSpec extends fixture.WordSpec with ClassTaggingFixtureServices with StringFixture {
+class ExampleClassTaggingFixtureWordSpec extends wordspec.FixtureAnyWordSpec with ClassTaggingFixtureServices with StringFixture {
   "Scope 1" should {
     "Test 1" in {s =>}
     "Test 2" in {s =>}
@@ -249,7 +258,7 @@ class ExampleClassTaggingFixtureWordSpec extends fixture.WordSpec with ClassTagg
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingPathFreeSpec extends path.FreeSpec with ClassTaggingFixtureServices {
+class ExampleClassTaggingPathFreeSpec extends freespec.PathAnyFreeSpec with ClassTaggingFixtureServices {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -259,7 +268,7 @@ class ExampleClassTaggingPathFreeSpec extends path.FreeSpec with ClassTaggingFix
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingPathFunSpec extends path.FunSpec with ClassTaggingFixtureServices {
+class ExampleClassTaggingPathFunSpec extends funspec.PathAnyFunSpec with ClassTaggingFixtureServices {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}

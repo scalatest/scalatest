@@ -21,9 +21,10 @@ import org.scalactic.StringNormalizations._
 import org.scalactic.Uniformity
 import org.scalactic.Prettifier
 import SharedHelpers._
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class TheSameElementsAsContainMatcherDeciderSpec extends FunSpec with Explicitly {
+class TheSameElementsAsContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
 
   private val prettifier = Prettifier.default
   

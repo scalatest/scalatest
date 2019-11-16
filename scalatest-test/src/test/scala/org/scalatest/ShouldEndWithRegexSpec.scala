@@ -17,9 +17,10 @@ package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
 import SharedHelpers._
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldEndWithRegexSpec extends FunSpec with ReturnsNormallyThrowsAssertion {
+class ShouldEndWithRegexSpec extends AnyFunSpec with ReturnsNormallyThrowsAssertion {
 
 /*
 s should include substring t

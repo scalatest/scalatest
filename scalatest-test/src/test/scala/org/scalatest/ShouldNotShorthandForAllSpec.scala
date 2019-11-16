@@ -19,10 +19,11 @@ import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResul
 import exceptions.TestFailedException
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import Matchers._
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookPropertyMatchers {
+class ShouldNotShorthandForAllSpec extends AnyFunSpec with EmptyMocks with BookPropertyMatchers {
 
   private val prettifier = Prettifier.default
   

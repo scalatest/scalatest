@@ -19,10 +19,11 @@ import Integer.MIN_VALUE
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.enablers.Length
 import org.scalatest.enablers.Size
-import Matchers._
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldLengthSizeSpec extends FunSpec with ReturnsNormallyThrowsAssertion {
+class ShouldLengthSizeSpec extends AnyFunSpec with ReturnsNormallyThrowsAssertion {
 
   private val prettifier = Prettifier.default
 

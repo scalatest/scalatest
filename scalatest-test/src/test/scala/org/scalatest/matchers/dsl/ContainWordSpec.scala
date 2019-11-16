@@ -16,13 +16,14 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
-import Matchers._
 import matchers.{AMatcher, 
                  AnMatcher}
 import FailureMessages.decorateToStringValue
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ContainWordSpec extends FunSpec {
+class ContainWordSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
   

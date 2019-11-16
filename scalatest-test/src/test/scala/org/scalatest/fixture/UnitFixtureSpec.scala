@@ -17,11 +17,13 @@ package org.scalatest.fixture
 
 import org.scalatest._
 import SharedHelpers._
+import org.scalatest
+import org.scalatest.funsuite
 
-class UnitFixtureSpec extends org.scalatest.FunSpec {
+class UnitFixtureSpec extends scalatest.funspec.AnyFunSpec {
   describe("A UnitFixture") {
     it("should pass the unit value to each test") {
-      class MySuite extends fixture.FunSuite with UnitFixture {
+      class MySuite extends funsuite.FixtureAnyFunSuite with UnitFixture {
         var unitPassed = false
         test("something") { (un: Unit) =>
           if (un == ())

@@ -22,8 +22,10 @@ import prop.GeneratorDrivenPropertyChecks
 import org.scalactic.anyvals.PosZInt
 import exceptions.TestFailedException
 import OptionValues._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class PropCheckerAssertingSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with LineNumberHelper {
+class PropCheckerAssertingSpec extends AnyFunSpec with Matchers with GeneratorDrivenPropertyChecks with LineNumberHelper {
 
   describe("PropCheckerAsserting") {
     it("The exception thrown by forAll should include the exception thrown by the property function evaluation as its cause") {

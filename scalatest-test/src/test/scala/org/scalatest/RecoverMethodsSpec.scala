@@ -26,8 +26,9 @@ import org.scalactic.exceptions.NullArgumentException
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.funspec.AnyFunSpec
 
-class RecoverMethodsSpec extends FunSpec with RecoverMethods with ScalaFutures {
+class RecoverMethodsSpec extends AnyFunSpec with RecoverMethods with ScalaFutures {
 
   // SKIP-SCALATESTJS-START
   implicit val execCtx = scala.concurrent.ExecutionContext.Implicits.global

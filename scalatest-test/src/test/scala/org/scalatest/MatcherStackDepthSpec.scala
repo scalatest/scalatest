@@ -24,8 +24,10 @@ import org.scalactic.StringNormalizations._
 import org.scalatest.Inspectors._
 import collection.JavaConverters._
 import LoneElement._
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class MatcherStackDepthSpec extends FunSuite with Matchers {
+class MatcherStackDepthSpec extends AnyFunSuite with Matchers {
 
   // Checking equality
 

@@ -19,9 +19,10 @@ import org.scalatest.exceptions._
 import org.scalatest.exceptions.TestFailedException
 import org.scalactic.Explicitly
 import org.scalactic.Equality
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldEqualExplicitlySpec extends FunSpec with Explicitly {
+class ShouldEqualExplicitlySpec extends AnyFunSpec with Explicitly {
 
   implicit val e = new Equality[Int] {
     def areEqual(a: Int, b: Any): Boolean = a != b

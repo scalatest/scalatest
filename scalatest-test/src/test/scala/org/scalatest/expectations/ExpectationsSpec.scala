@@ -19,8 +19,9 @@ package expectations
 import exceptions.TestFailedException
 import OptionValues._
 import org.scalatest.Fact.Unary_!
+import org.scalatest.funspec.AnyFunSpec
 
-class ExpectationsSpec extends FunSpec with Expectations {
+class ExpectationsSpec extends AnyFunSpec with Expectations {
 
   val NEWLINE = scala.compat.Platform.EOL
 

@@ -16,12 +16,13 @@
 package org.scalatest
 
 import FailureMessages._
-import Matchers._
 import org.scalactic.Prettifier
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.CompatParColls.Converters._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldContainKeySpec extends FunSpec with ReturnsNormallyThrowsAssertion {
+class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertion {
 
   private val prettifier = Prettifier.default
 

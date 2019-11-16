@@ -15,10 +15,11 @@
  */
 package org.scalatest
 
-import Matchers._
 import org.scalatest.exceptions.{StackDepthExceptionHelper, TestFailedException}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class SeveredStackTracesFailureSpec extends FunSpec with SeveredStackTraces {
+class SeveredStackTracesFailureSpec extends AnyFunSpec with SeveredStackTraces {
 
   override def withFixture(test: NoArgTest): Outcome = {
     super.withFixture(test) match {

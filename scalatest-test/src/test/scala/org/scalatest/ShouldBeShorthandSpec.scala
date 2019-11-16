@@ -17,10 +17,11 @@ package org.scalatest
 
 import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResult}
 import SharedHelpers._
-import Matchers._
 import exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMatchers {
+class ShouldBeShorthandSpec extends AnyFunSpec with EmptyMocks with BookPropertyMatchers {
 
   describe("The shouldBe syntax") {
 

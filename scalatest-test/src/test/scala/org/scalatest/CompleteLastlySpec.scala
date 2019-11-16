@@ -25,6 +25,7 @@ import scala.util.Success
 // SKIP-SCALATESTJS,NATIVE-START
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.OutcomeOf.outcomeOf
+import org.scalatest.funspec.AsyncFunSpec
 
 class CompleteLastlySpec extends AsyncFunSpec {
 

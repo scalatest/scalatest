@@ -16,8 +16,10 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class FullyMatchWordSpec extends FreeSpec with Matchers {
+class FullyMatchWordSpec extends AnyFreeSpec with Matchers {
   
   "FullyMatchWord " - {
     

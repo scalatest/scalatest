@@ -15,15 +15,17 @@
  */
 package org.scalatest
 
-import Matchers._
 import SharedHelpers._
 import java.util.concurrent.atomic.AtomicInteger
 import scala.compat.Platform
 import concurrent.SleepHelper
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers._
 
-class BeforeAndAfterAllSpec extends FunSpec {
+class BeforeAndAfterAllSpec extends AnyFunSpec {
   
-  class ExampleSuite extends FunSuite with BeforeAndAfterAll with ParallelTestExecution {
+  class ExampleSuite extends AnyFunSuite with BeforeAndAfterAll with ParallelTestExecution {
     
     @volatile var beforeAllTime: Long = 0
     @volatile var afterAllTime: Long = 0
@@ -43,7 +45,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     }
   }
   
-  class ExampleNestedSuite extends FunSuite with ParallelTestExecution {
+  class ExampleNestedSuite extends AnyFunSuite with ParallelTestExecution {
     test("test 1") { SleepHelper.sleep(100) }
     test("test 2") { SleepHelper.sleep(100) }
     test("test 3") { SleepHelper.sleep(100) }
@@ -51,7 +53,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
   }
   
   @Ignore
-  class ExampleIgnoreNestedSuite extends FunSuite with ParallelTestExecution {
+  class ExampleIgnoreNestedSuite extends AnyFunSuite with ParallelTestExecution {
     test("test 1") { SleepHelper.sleep(100) }
     test("test 2") { SleepHelper.sleep(100) }
     test("test 3") { SleepHelper.sleep(100) }
@@ -88,7 +90,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     def afterAllCount = afterAll.get
   }
   
-  class ExampleBeforeAndAfterAllWithParallelTestExecutionSuite(counter: BeforeAfterAllCounter) extends FunSuite with BeforeAndAfterAll 
+  class ExampleBeforeAndAfterAllWithParallelTestExecutionSuite(counter: BeforeAfterAllCounter) extends AnyFunSuite with BeforeAndAfterAll 
     with OneInstancePerTest {
     
     override protected def beforeAll(): Unit = {
@@ -162,12 +164,12 @@ class BeforeAndAfterAllSpec extends FunSpec {
       counter.afterAllCount should be (1)
     }
     it ("should have default invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected value false") {
-      class ExampleSpec extends FunSpec with BeforeAndAfterAll {}
+      class ExampleSpec extends AnyFunSpec with BeforeAndAfterAll {}
       val spec = new ExampleSpec
       spec.invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected should be (false)
     }
     it ("should invoke beforeAll and afterAll in Suite with no nested suites and some tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is true") {
-      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+      class ExampleSpec extends AnyFunSpec with BeforeAndAfterAll {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
@@ -188,7 +190,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
       spec.afterAllCount.get should be (1)
     }
     it ("should invoke beforeAll and afterAll in Suite with no nested suites and some tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
-      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+      class ExampleSpec extends AnyFunSpec with BeforeAndAfterAll {
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
         override protected def beforeAll(): Unit = {
@@ -208,7 +210,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
       spec.afterAllCount.get should be (1)
     }
     it ("should invoke beforeAll and afterAll in Suite with nested suites and no test, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is true") {
-      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+      class ExampleSpec extends AnyFunSpec with BeforeAndAfterAll {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
@@ -232,7 +234,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
       spec.afterAllCount.get should be (1)
     }
     it ("should invoke beforeAll and afterAll in Suite with nested suites and no tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
-      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+      class ExampleSpec extends AnyFunSpec with BeforeAndAfterAll {
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
         override protected def beforeAll(): Unit = {
@@ -256,7 +258,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     }
     it("should invoke beforeAll and afterAll in Suite annotated with Ignore, has no nested suites and has tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is true") {
       @Ignore
-      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+      class ExampleSpec extends AnyFunSpec with BeforeAndAfterAll {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
@@ -280,7 +282,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     // SKIP-SCALATESTJS,NATIVE-START
     it("should not invoke beforeAll and afterAll in Suite annotated with Ignore, has no nested suites and has tests, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
       @Ignore
-      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+      class ExampleSpec extends AnyFunSpec with BeforeAndAfterAll {
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
         override protected def beforeAll(): Unit = {
@@ -302,7 +304,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     // SKIP-SCALATESTJS,NATIVE-END
 
     it("should not invoke beforeAll and afterAll in Suite that has no test but has nested suites annotated with Ignore, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is true") {
-      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+      class ExampleSpec extends AnyFunSpec with BeforeAndAfterAll {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
@@ -328,7 +330,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
 
     // SKIP-SCALATESTJS,NATIVE-START
     it("should not invoke beforeAll and afterAll in Suite that has no test but has nested suites annotated with Ignore, when invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected is false") {
-      class ExampleSpec extends FunSpec with BeforeAndAfterAll {
+      class ExampleSpec extends AnyFunSpec with BeforeAndAfterAll {
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
         override protected def beforeAll(): Unit = {
@@ -356,7 +358,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     it("should, if any invocation of beforeAll completes abruptly with an exception, run " +
       "will complete abruptly with the same exception.") {
       var testIsCalled = false
-      class MySuite extends FunSuite with BeforeAndAfterAll {
+      class MySuite extends AnyFunSuite with BeforeAndAfterAll {
         override def beforeAll(): Unit = {
           throw new NumberFormatException
         }
@@ -372,7 +374,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     it("should, if any call to super.run completes abruptly with an exception, run " +
       "will complete abruptly with the same exception, however, before doing so, it will invoke afterAll") {
       var afterAllIsCalled = false
-      class MySuite extends FunSuite with BeforeAndAfterAll {
+      class MySuite extends AnyFunSuite with BeforeAndAfterAll {
         override def afterAll(): Unit = {
           afterAllIsCalled = true
         }
@@ -391,7 +393,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     
     it("should, if both super.run and afterAll complete abruptly with an exception, run " +
       "will complete abruptly with the exception thrown by super.run.") {
-      class MySuite extends FunSuite with BeforeAndAfterAll {
+      class MySuite extends AnyFunSuite with BeforeAndAfterAll {
         override def afterAll(): Unit = { throw new NumberFormatException }
         override def run(testName: Option[String], args: Args): Status = {
           throw new IllegalArgumentException
@@ -405,7 +407,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     
     it("should, if super.run returns normally, but afterEach completes abruptly with an " +
       "exception, the status returned by run will contain that exception as its unreportedException.") {
-      class MySuite extends FunSuite with BeforeAndAfterAll {
+      class MySuite extends AnyFunSuite with BeforeAndAfterAll {
         override def afterAll(): Unit = { throw new NumberFormatException }
         test("test July") {}
       }

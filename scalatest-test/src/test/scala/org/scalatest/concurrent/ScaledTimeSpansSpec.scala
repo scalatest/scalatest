@@ -15,13 +15,13 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.tools.Runner
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 // SKIP-SCALATESTJS,NATIVE-END
 
-class ScaledTimeSpansSpec extends FunSpec with Matchers with ScaledTimeSpans {
+class ScaledTimeSpansSpec extends AnyFunSpec with Matchers with ScaledTimeSpans {
 
     describe("ScaledTimeSpans") {
       

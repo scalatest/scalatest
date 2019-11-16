@@ -16,14 +16,15 @@
 package org.scalatest.matchers
 
 import org.scalatest._
-import Matchers._
 import matchers.{MatchResult, 
                  FailureMessage, 
                  NegatedFailureMessage, 
                  MidSentenceNegatedFailureMessage, 
                  MidSentenceFailureMessage}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class MatcherFactorySpec extends FunSpec {
+class MatcherFactorySpec extends AnyFunSpec {
   
   describe("MatcherFactory1 ") {
     

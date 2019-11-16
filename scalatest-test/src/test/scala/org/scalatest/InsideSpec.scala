@@ -17,13 +17,14 @@ package org.scalatest
 
 import org.scalatest.Inside._
 import org.scalatest.SharedHelpers.thisLineNumber
-import Matchers._
 import OptionValues._
 import org.scalatest.exceptions.TestFailedException
 import org.scalactic.{Resources => _, _}
 import org.scalatest.exceptions.StackDepthException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class InsideSpec extends FunSpec {
+class InsideSpec extends AnyFunSpec {
 
   case class Address(street: String, city: String, state: String, zip: String)
   case class Name(first: String, middle: String, last: String)

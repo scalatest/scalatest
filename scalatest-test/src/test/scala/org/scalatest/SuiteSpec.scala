@@ -25,11 +25,19 @@ import collection.immutable.TreeSet
 import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalactic._
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 
-protected[scalatest] class MandarinOrangeFunSuite(ns: Suite*) extends FunSuite {
+protected[scalatest] class MandarinOrangeFunSuite(ns: Suite*) extends AnyFunSuite {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-protected[scalatest] class MandarinOrangeFunSpec(ns: Suite*) extends FunSpec {
+protected[scalatest] class MandarinOrangeFunSpec(ns: Suite*) extends AnyFunSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 // SKIP-SCALATESTJS,NATIVE-START
@@ -37,49 +45,49 @@ protected[scalatest] class MandarinOrangeSpec(ns: Suite*) extends RefSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 // SKIP-SCALATESTJS,NATIVE-END
-protected[scalatest] class MandarinOrangeWordSpec(ns: Suite*) extends WordSpec {
+protected[scalatest] class MandarinOrangeWordSpec(ns: Suite*) extends AnyWordSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-protected[scalatest] class MandarinOrangeFlatSpec(ns: Suite*) extends FlatSpec {
+protected[scalatest] class MandarinOrangeFlatSpec(ns: Suite*) extends AnyFlatSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-protected[scalatest] class MandarinOrangeFreeSpec(ns: Suite*) extends FreeSpec {
+protected[scalatest] class MandarinOrangeFreeSpec(ns: Suite*) extends AnyFreeSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-protected[scalatest] class MandarinOrangeFeatureSpec(ns: Suite*) extends FeatureSpec {
+protected[scalatest] class MandarinOrangeFeatureSpec(ns: Suite*) extends AnyFeatureSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-protected[scalatest] class MandarinOrangePropSpec(ns: Suite*) extends PropSpec {
+protected[scalatest] class MandarinOrangePropSpec(ns: Suite*) extends AnyPropSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 
 // Named these with a MandarinOrange prefix so they wouldn't confict
 // with anything else in the test suite. These need to be top level
 // else they end up with dollar signs in the names.
-trait MandarinOrangeFixture { this: fixture.TestSuite =>
+trait MandarinOrangeFixture { this: FixtureTestSuite =>
   type FixtureParam = String
   def withFixture(test: OneArgTest): Outcome = { test("hi") }
 }
 
-protected[scalatest] class MandarinOrangeFixtureFunSuite(ns: Suite*) extends fixture.FunSuite with MandarinOrangeFixture {
+protected[scalatest] class MandarinOrangeFixtureFunSuite(ns: Suite*) extends funsuite.FixtureAnyFunSuite with MandarinOrangeFixture {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-protected[scalatest] class MandarinOrangeFixtureFunSpec(ns: Suite*) extends fixture.FunSpec with MandarinOrangeFixture {
+protected[scalatest] class MandarinOrangeFixtureFunSpec(ns: Suite*) extends funspec.FixtureAnyFunSpec with MandarinOrangeFixture {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-protected[scalatest] class MandarinOrangeFixtureWordSpec(ns: Suite*) extends fixture.WordSpec with MandarinOrangeFixture {
+protected[scalatest] class MandarinOrangeFixtureWordSpec(ns: Suite*) extends wordspec.FixtureAnyWordSpec with MandarinOrangeFixture {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-protected[scalatest] class MandarinOrangeFixtureFlatSpec(ns: Suite*) extends fixture.FlatSpec with MandarinOrangeFixture {
+protected[scalatest] class MandarinOrangeFixtureFlatSpec(ns: Suite*) extends flatspec.FixtureAnyFlatSpec with MandarinOrangeFixture {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-protected[scalatest] class MandarinOrangeFixtureFreeSpec(ns: Suite*) extends fixture.FreeSpec with MandarinOrangeFixture {
+protected[scalatest] class MandarinOrangeFixtureFreeSpec(ns: Suite*) extends freespec.FixtureAnyFreeSpec with MandarinOrangeFixture {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-protected[scalatest] class MandarinOrangeFixtureFeatureSpec(ns: Suite*) extends fixture.FeatureSpec with MandarinOrangeFixture {
+protected[scalatest] class MandarinOrangeFixtureFeatureSpec(ns: Suite*) extends featurespec.FixtureAnyFeatureSpec with MandarinOrangeFixture {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
-protected[scalatest] class MandarinOrangeFixturePropSpec(ns: Suite*) extends fixture.PropSpec with MandarinOrangeFixture {
+protected[scalatest] class MandarinOrangeFixturePropSpec(ns: Suite*) extends propspec.FixtureAnyPropSpec with MandarinOrangeFixture {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 
@@ -91,7 +99,7 @@ protected[scalatest] class MandarinOrangeStepwise(suites: Suite*) extends Stepwi
 import PrivateMethodTester._
 // SKIP-SCALATESTJS,NATIVE-END
 
-class SuiteSpec extends FunSpec {
+class SuiteSpec extends AnyFunSpec {
 
   describe("the toString method on Suites and SuiteLike traits other than TestNGSuiteLike") {
     describe("when the suite contains no nested suites") {
@@ -102,16 +110,16 @@ class SuiteSpec extends FunSpec {
 
             ( "suite", "simple name"),
 
-            ( new FunSuite, "AnyFunSuite"),
-            ( new FunSpec, "AnyFunSpec"),
+            ( new AnyFunSuite, "AnyFunSuite"),
+            ( new AnyFunSpec, "AnyFunSpec"),
             // SKIP-SCALATESTJS,NATIVE-START
             ( new RefSpec, "RefSpec"),
             // SKIP-SCALATESTJS,NATIVE-END
-            ( new WordSpec, "AnyWordSpec"),
-            ( new FlatSpec, "AnyFlatSpec"),
-            ( new FreeSpec, "AnyFreeSpec"),
-            ( new FeatureSpec, "AnyFeatureSpec"),
-            ( new PropSpec, "AnyPropSpec"),
+            ( new AnyWordSpec, "AnyWordSpec"),
+            ( new AnyFlatSpec, "AnyFlatSpec"),
+            ( new AnyFreeSpec, "AnyFreeSpec"),
+            ( new AnyFeatureSpec, "AnyFeatureSpec"),
+            ( new AnyPropSpec, "AnyPropSpec"),
 
             ( new MandarinOrangeFunSuite, "MandarinOrangeFunSuite"),
             ( new MandarinOrangeFunSpec, "MandarinOrangeFunSpec"),
@@ -156,35 +164,35 @@ class SuiteSpec extends FunSpec {
 
             ( "suite", "simple name"),
 
-            ( new MandarinOrangeFunSuite(new FunSuite), "MandarinOrangeFunSuite(AnyFunSuite)"),
-            ( new MandarinOrangeFunSpec(new FunSuite), "MandarinOrangeFunSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFunSuite(new AnyFunSuite), "MandarinOrangeFunSuite(AnyFunSuite)"),
+            ( new MandarinOrangeFunSpec(new AnyFunSuite), "MandarinOrangeFunSpec(AnyFunSuite)"),
             // SKIP-SCALATESTJS,NATIVE-START
-            ( new MandarinOrangeSpec(new FunSuite), "MandarinOrangeSpec(AnyFunSuite)"),
+            ( new MandarinOrangeSpec(new AnyFunSuite), "MandarinOrangeSpec(AnyFunSuite)"),
             // SKIP-SCALATESTJS,NATIVE-END
-            ( new MandarinOrangeWordSpec(new FunSuite), "MandarinOrangeWordSpec(AnyFunSuite)"),
-            ( new MandarinOrangeFlatSpec(new FunSuite), "MandarinOrangeFlatSpec(AnyFunSuite)"),
-            ( new MandarinOrangeFreeSpec(new FunSuite), "MandarinOrangeFreeSpec(AnyFunSuite)"),
-            ( new MandarinOrangeFeatureSpec(new FunSuite), "MandarinOrangeFeatureSpec(AnyFunSuite)"),
-            ( new MandarinOrangePropSpec(new FunSuite), "MandarinOrangePropSpec(AnyFunSuite)"),
+            ( new MandarinOrangeWordSpec(new AnyFunSuite), "MandarinOrangeWordSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFlatSpec(new AnyFunSuite), "MandarinOrangeFlatSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFreeSpec(new AnyFunSuite), "MandarinOrangeFreeSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFeatureSpec(new AnyFunSuite), "MandarinOrangeFeatureSpec(AnyFunSuite)"),
+            ( new MandarinOrangePropSpec(new AnyFunSuite), "MandarinOrangePropSpec(AnyFunSuite)"),
 
-            ( new MandarinOrangeFixtureFunSuite(new FunSuite), "MandarinOrangeFixtureFunSuite(AnyFunSuite)"),
-            ( new MandarinOrangeFixtureFunSpec(new FunSuite), "MandarinOrangeFixtureFunSpec(AnyFunSuite)"),
-            ( new MandarinOrangeFixtureWordSpec(new FunSuite), "MandarinOrangeFixtureWordSpec(AnyFunSuite)"),
-            ( new MandarinOrangeFixtureFlatSpec(new FunSuite), "MandarinOrangeFixtureFlatSpec(AnyFunSuite)"),
-            ( new MandarinOrangeFixtureFreeSpec(new FunSuite), "MandarinOrangeFixtureFreeSpec(AnyFunSuite)"),
-            ( new MandarinOrangeFixtureFeatureSpec(new FunSuite), "MandarinOrangeFixtureFeatureSpec(AnyFunSuite)"),
-            ( new MandarinOrangeFixturePropSpec(new FunSuite), "MandarinOrangeFixturePropSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFunSuite(new AnyFunSuite), "MandarinOrangeFixtureFunSuite(AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFunSpec(new AnyFunSuite), "MandarinOrangeFixtureFunSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFixtureWordSpec(new AnyFunSuite), "MandarinOrangeFixtureWordSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFlatSpec(new AnyFunSuite), "MandarinOrangeFixtureFlatSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFreeSpec(new AnyFunSuite), "MandarinOrangeFixtureFreeSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFeatureSpec(new AnyFunSuite), "MandarinOrangeFixtureFeatureSpec(AnyFunSuite)"),
+            ( new MandarinOrangeFixturePropSpec(new AnyFunSuite), "MandarinOrangeFixturePropSpec(AnyFunSuite)"),
 
             // ( new path.FunSpec(new FunSuite), "path.FunSpec(FunSuite)"),
             // ( new path.FreeSpec(new FunSuite), "path.FreeSpec(FunSuite)"),
 
-            ( new Suites(new FunSuite), "Suites(AnyFunSuite)"),
-            ( new Sequential(new FunSuite), "Sequential(AnyFunSuite)"),
-            ( new Stepwise(new FunSuite), "Stepwise(AnyFunSuite)"),
+            ( new Suites(new AnyFunSuite), "Suites(AnyFunSuite)"),
+            ( new Sequential(new AnyFunSuite), "Sequential(AnyFunSuite)"),
+            ( new Stepwise(new AnyFunSuite), "Stepwise(AnyFunSuite)"),
 
-            ( new MandarinOrangeSuites(new FunSuite), "MandarinOrangeSuites(AnyFunSuite)"),
-            ( new MandarinOrangeSequential(new FunSuite), "MandarinOrangeSequential(AnyFunSuite)"),
-            ( new MandarinOrangeStepwise(new FunSuite), "MandarinOrangeStepwise(AnyFunSuite)")
+            ( new MandarinOrangeSuites(new AnyFunSuite), "MandarinOrangeSuites(AnyFunSuite)"),
+            ( new MandarinOrangeSequential(new AnyFunSuite), "MandarinOrangeSequential(AnyFunSuite)"),
+            ( new MandarinOrangeStepwise(new AnyFunSuite), "MandarinOrangeStepwise(AnyFunSuite)")
           )
         forAll (examples) { (suite, simpleName) =>
           assert(suite.toString === simpleName)
@@ -199,35 +207,35 @@ class SuiteSpec extends FunSpec {
 
             ( "suite", "simple name"),
 
-            ( new MandarinOrangeFunSuite(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFunSuite(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangeFunSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFunSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFunSuite(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeFunSuite(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFunSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeFunSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
             // SKIP-SCALATESTJS,NATIVE-START
-            ( new MandarinOrangeSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
             // SKIP-SCALATESTJS,NATIVE-END
-            ( new MandarinOrangeWordSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeWordSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangeFlatSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFlatSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangeFreeSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFreeSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangeFeatureSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFeatureSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangePropSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangePropSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeWordSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeWordSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFlatSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeFlatSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFreeSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeFreeSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFeatureSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeFeatureSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangePropSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangePropSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
 
-            ( new MandarinOrangeFixtureFunSuite(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFunSuite(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangeFixtureFunSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFunSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangeFixtureWordSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureWordSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangeFixtureFlatSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFlatSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangeFixtureFreeSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFreeSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangeFixtureFeatureSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixtureFeatureSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangeFixturePropSpec(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeFixturePropSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFunSuite(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeFixtureFunSuite(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFunSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeFixtureFunSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFixtureWordSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeFixtureWordSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFlatSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeFixtureFlatSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFreeSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeFixtureFreeSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFixtureFeatureSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeFixtureFeatureSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeFixturePropSpec(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeFixturePropSpec(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
 
             // ( new path.FunSpec(new PropSpec, new FeatureSpec, new FunSuite), "path.FunSpec(PropSpec, FeatureSpec, FunSuite)"),
             // ( new path.FreeSpec(new PropSpec, new FeatureSpec, new FunSuite), "path.FreeSpec(PropSpec, FeatureSpec, FunSuite)"),
 
-            ( new Suites(new PropSpec, new FeatureSpec, new FunSuite), "Suites(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new Sequential(new PropSpec, new FeatureSpec, new FunSuite), "Sequential(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new Stepwise(new PropSpec, new FeatureSpec, new FunSuite), "Stepwise(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new Suites(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "Suites(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new Sequential(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "Sequential(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new Stepwise(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "Stepwise(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
 
-            ( new MandarinOrangeSuites(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeSuites(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangeSequential(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeSequential(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
-            ( new MandarinOrangeStepwise(new PropSpec, new FeatureSpec, new FunSuite), "MandarinOrangeStepwise(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)")
+            ( new MandarinOrangeSuites(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeSuites(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeSequential(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeSequential(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)"),
+            ( new MandarinOrangeStepwise(new AnyPropSpec, new AnyFeatureSpec, new AnyFunSuite), "MandarinOrangeStepwise(AnyPropSpec, AnyFeatureSpec, AnyFunSuite)")
           )
         forAll (examples) { (suite, simpleName) =>
           assert(suite.toString === simpleName)
@@ -383,7 +391,7 @@ class SuiteSpec extends FunSpec {
   // SKIP-SCALATESTJS,NATIVE-END
   describe("NoArgTest") {
     it("should offer a factory method that takes another NoArgTest and a function that implements apply") {
-      class SideEffectedFixtureWasSpec extends FunSpec {
+      class SideEffectedFixtureWasSpec extends AnyFunSpec {
         type FixtureParam = String
         var theFixture = ""
         var sideEffectedFixtureWas = ""
@@ -452,7 +460,7 @@ class SuiteSpec extends FunSpec {
 
     it("should fire SuiteAborted event when after function in BeforeAndAfter nested suite throws RuntimeException") {
 
-      class NestedSuite extends FunSuite with BeforeAndAfter {
+      class NestedSuite extends AnyFunSuite with BeforeAndAfter {
 
         test("test 1") {}
 
@@ -477,7 +485,7 @@ class SuiteSpec extends FunSpec {
 
     it("should fire SuiteAborted event when afterAll function in BeforeAndAfterAll nested suite throws RuntimeException") {
 
-      class NestedSuite extends FunSuite with BeforeAndAfterAll {
+      class NestedSuite extends AnyFunSuite with BeforeAndAfterAll {
 
         test("test 1") {}
 
@@ -502,7 +510,7 @@ class SuiteSpec extends FunSpec {
 
     it("should fire SuiteAborted event when afterAll function in BeforeAndAfterAllConfigMap nested suite throws RuntimeException") {
 
-      class NestedSuite extends FunSuite with BeforeAndAfterAllConfigMap {
+      class NestedSuite extends AnyFunSuite with BeforeAndAfterAllConfigMap {
 
         test("test 1") {}
 
@@ -527,7 +535,7 @@ class SuiteSpec extends FunSpec {
 
     it("should fire SuiteAborted event when afterAll function in BeforeAndAfterEach nested suite throws RuntimeException") {
 
-      class NestedSuite extends FunSuite with BeforeAndAfterEach {
+      class NestedSuite extends AnyFunSuite with BeforeAndAfterEach {
 
         test("test 1") {}
 
@@ -552,7 +560,7 @@ class SuiteSpec extends FunSpec {
 
     it("should fire SuiteAborted event when afterAll function in BeforeAndAfterEachTestData nested suite throws RuntimeException") {
 
-      class NestedSuite extends FunSuite with BeforeAndAfterEachTestData {
+      class NestedSuite extends AnyFunSuite with BeforeAndAfterEachTestData {
 
         test("test 1") {}
 

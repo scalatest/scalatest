@@ -16,7 +16,9 @@
 package org.scalatest
 package prop
 
-class ConfigurationSuite extends FunSuite with Matchers {
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
+class ConfigurationSuite extends AnyFunSuite with Matchers {
 
   import Configuration._
 

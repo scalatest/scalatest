@@ -16,8 +16,10 @@
 package org.scalatest.prop
 
 import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class FactWheneverSpec extends FunSpec with Matchers with Whenever {
+class FactWheneverSpec extends AnyFunSpec with Matchers with Whenever {
 
 /*
   describe("The whenever construct") {

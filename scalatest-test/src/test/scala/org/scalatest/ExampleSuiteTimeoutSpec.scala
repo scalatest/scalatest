@@ -16,9 +16,10 @@
 package org.scalatest
 
 import org.scalatest.concurrent.SleepHelper
+import org.scalatest.funspec.AnyFunSpec
 
 @DoNotDiscover
-protected[scalatest] class ExampleSuiteTimeoutSpec extends FunSpec with ParallelTestExecution {
+protected[scalatest] class ExampleSuiteTimeoutSpec extends AnyFunSpec with ParallelTestExecution {
 
   describe("Thing 1") {
     it ("do thing 1a") {}
@@ -35,7 +36,7 @@ protected[scalatest] class ExampleSuiteTimeoutSpec extends FunSpec with Parallel
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleSuiteTimeoutSpec2 extends FunSpec with ParallelTestExecution {
+protected[scalatest] class ExampleSuiteTimeoutSpec2 extends AnyFunSpec with ParallelTestExecution {
   describe("Subject 1") {
     it ("content 1a") {}
     it ("content 1b") {}

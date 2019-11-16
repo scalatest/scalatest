@@ -25,6 +25,14 @@ import org.scalatest.events.TestSucceeded
 import org.scalatest.time.Millis
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
 trait DeprecatedSuiteTimeoutSetting { s: ParallelTestExecution =>
@@ -152,7 +160,7 @@ class DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSuitePair extends Dep
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSuite extends FunSuite with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSuite extends AnyFunSuite with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
   test("Test 1") {}
   test("Test 2") {}
   test("Test 3") {}
@@ -160,7 +168,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFun
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFunSuite extends fixture.FunSuite with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFunSuite extends funsuite.FixtureAnyFunSuite with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
   test("Fixture Test 1") { fixture => }
   test("Fixture Test 2") { fixture => }
   test("Fixture Test 3") { fixture => }
@@ -211,7 +219,7 @@ class DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSpecPair extends Depr
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSpec extends FunSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFunSpec extends AnyFunSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}
@@ -224,7 +232,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFun
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFunSpec extends fixture.FunSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFunSpec extends funspec.FixtureAnyFunSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
   describe("Fixture Scope 1") {
     it("Fixture Test 1") { fixture => }
     it("Fixture Test 2") { fixture => }
@@ -280,27 +288,27 @@ class DeprecatedExampleParallelTestExecutionSuiteTimeoutFeatureSpecPair extends 
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFeatureSpec extends FeatureSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
-  feature("Scope 1") {
-    scenario("Test 1") {}
-    scenario("Test 2") {}
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFeatureSpec extends AnyFeatureSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
+  Feature("Scope 1") {
+    Scenario("Test 1") {}
+    Scenario("Test 2") {}
   }
-  feature("Scope 2") {
-    scenario("Test 3") {}
-    scenario("Test 4") {}
+  Feature("Scope 2") {
+    Scenario("Test 3") {}
+    Scenario("Test 4") {}
   }
   //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFeatureSpec
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFeatureSpec extends fixture.FeatureSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
-  feature("Fixture Scope 1") {
-    scenario("Fixture Test 1") { fixture => }
-    scenario("Fixture Test 2") { fixture =>}
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
+  Feature("Fixture Scope 1") {
+    Scenario("Fixture Test 1") { fixture => }
+    Scenario("Fixture Test 2") { fixture =>}
   }
-  feature("Fixture Scope 2") {
-    scenario("Fixture Test 3") { fixture => }
-    scenario("Fixture Test 4") { fixture => }
+  Feature("Fixture Scope 2") {
+    Scenario("Fixture Test 3") { fixture => }
+    Scenario("Fixture Test 4") { fixture => }
   }
   //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFeatureSpec
 }
@@ -349,7 +357,7 @@ class DeprecatedExampleParallelTestExecutionSuiteTimeoutFlatSpecPair extends Dep
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFlatSpec extends FlatSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFlatSpec extends AnyFlatSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
   behavior of "Scope 1"
   it should "Test 1" in {}
   it should "Test 2" in {}
@@ -361,7 +369,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFla
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFlatSpec extends fixture.FlatSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
   behavior of "Fixture Scope 1"
   it should "Fixture Test 1" in { fixture => }
   it should "Fixture Test 2" in { fixture => }
@@ -416,7 +424,7 @@ class DeprecatedExampleParallelTestExecutionSuiteTimeoutFreeSpecPair extends Dep
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFreeSpec extends FreeSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFreeSpec extends AnyFreeSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -430,7 +438,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFre
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFreeSpec extends fixture.FreeSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
   "Fixture Scope 1" - {
     "Fixture Test 1" in { fixture => }
     "Fixture Test 2" in { fixture => }
@@ -475,7 +483,7 @@ class DeprecatedExampleParallelTestExecutionSuiteTimeoutPropSpecPair extends Dep
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutPropSpec extends PropSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutPropSpec extends AnyPropSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
   property("Test 1") {}
   property("Test 2") {}
   property("Test 3") {}
@@ -483,7 +491,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutPro
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixturePropSpec extends fixture.PropSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixturePropSpec extends propspec.FixtureAnyPropSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
   property("Fixture Test 1") { fixture => }
   property("Fixture Test 2") { fixture => }
   property("Fixture Test 3") { fixture => }
@@ -534,7 +542,7 @@ class DeprecatedExampleParallelTestExecutionSuiteTimeoutWordSpecPair extends Dep
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutWordSpec extends WordSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutWordSpec extends AnyWordSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting {
   "Scope 1" should {
     "Test 1" in {}
     "Test 2" in {}
@@ -548,7 +556,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutWor
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureWordSpec extends fixture.WordSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionSuiteTimeoutFixtureWordSpec extends wordspec.FixtureAnyWordSpec with ParallelTestExecution with DeprecatedSuiteTimeoutSetting with StringFixture {
   "Fixture Scope 1" should {
     "Fixture Test 1" in { fixture => }
     "Fixture Test 2" in { fixture => }

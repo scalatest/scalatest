@@ -16,17 +16,18 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
-import Matchers._
 import org.scalactic._
 
 import scala.reflect.ClassTag
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ResultOfTheTypeInvocationSpec extends FunSpec {
+class ResultOfTheTypeInvocationSpec extends AnyFunSpec {
   
   describe("ResultOfTheTypeInvocation ") {
     
     it("should have pretty toString") {
-      val result = new ResultOfTheTypeInvocation(ClassTag[FunSpec](classOf[FunSpec]), source.Position.here)
+      val result = new ResultOfTheTypeInvocation(ClassTag[AnyFunSpec](classOf[AnyFunSpec]), source.Position.here)
       result.toString should be ("the [org.scalatest.funspec.AnyFunSpec]")
     }
   }

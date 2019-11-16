@@ -16,11 +16,12 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
-import Matchers._
 import matchers.{BePropertyMatcher, BePropertyMatchResult}
 import java.io.File
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ResultOfAnWordToBePropertyMatcherApplicationSpec extends FunSpec {
+class ResultOfAnWordToBePropertyMatcherApplicationSpec extends AnyFunSpec {
   
   describe("ResultOfAnWordToBePropertyMatcherApplication ") {
     

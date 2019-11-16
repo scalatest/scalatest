@@ -15,11 +15,12 @@
  */
 package org.scalatest
 
-import Matchers._
 import SharedHelpers.thisLineNumber
 import exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldCompileSpec extends FunSpec {
+class ShouldCompileSpec extends AnyFunSpec {
 
   val fileName = "ShouldCompileSpec.scala"
 

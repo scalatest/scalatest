@@ -16,10 +16,11 @@
 package org.scalatest
 package exceptions
 
-import Matchers._
 import SharedHelpers.thisLineNumber
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class TestFailedExceptionWithImportSpec extends FunSpec {
+class TestFailedExceptionWithImportSpec extends AnyFunSpec {
 
   describe("The TestFailedException") {
 

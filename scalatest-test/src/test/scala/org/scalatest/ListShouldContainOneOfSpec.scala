@@ -22,8 +22,10 @@ import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class ListShouldContainOneOfSpec extends FunSpec with Matchers {
+class ListShouldContainOneOfSpec extends AnyFunSpec with Matchers {
 
   private val prettifier = Prettifier.default
 

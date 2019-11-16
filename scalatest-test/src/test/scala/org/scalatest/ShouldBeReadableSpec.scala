@@ -22,8 +22,10 @@ import java.io.File
 // SKIP-SCALATESTJS,NATIVE-END
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class ShouldBeReadableSpec extends FunSpec with Matchers {
+class ShouldBeReadableSpec extends AnyFunSpec with Matchers {
 
   private val prettifier = Prettifier.default
 

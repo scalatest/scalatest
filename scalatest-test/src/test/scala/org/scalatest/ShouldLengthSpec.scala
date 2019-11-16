@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import Matchers._
 import org.scalactic.Prettifier
 import org.scalatest.prop.PropertyChecks
 import Integer.MIN_VALUE
@@ -23,8 +22,10 @@ import org.scalatest.enablers.Length
 import org.scalatest.enablers.Size
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.CompatParColls.Converters._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldLengthSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldLengthSpec extends AnyFunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
   private val prettifier = Prettifier.default
 

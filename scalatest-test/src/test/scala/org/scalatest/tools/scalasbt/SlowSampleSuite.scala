@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.scalatest.tools.scalasbt
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class SlowSampleSuite extends FunSuite {
+class SlowSampleSuite extends AnyFunSuite {
 
   test("test 1") {
     Thread.sleep(3000)

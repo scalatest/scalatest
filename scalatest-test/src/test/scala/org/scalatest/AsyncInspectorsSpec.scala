@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import Matchers._
 import SharedHelpers._
 import collection._
 import java.lang.annotation.AnnotationFormatError
@@ -29,6 +28,8 @@ import scala.collection.GenTraversable
 import FailureMessages.decorateToStringValue
 import scala.concurrent.Future
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AsyncFunSpec
+import org.scalatest.matchers.should.Matchers._
 
 class AsyncInspectorsSpec extends AsyncFunSpec with Inspectors with TableDrivenPropertyChecks {
 

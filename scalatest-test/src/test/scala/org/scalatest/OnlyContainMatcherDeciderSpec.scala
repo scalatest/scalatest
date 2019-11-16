@@ -22,11 +22,12 @@ import org.scalactic.Uniformity
 import org.scalactic.Prettifier
 import collection.GenTraversable
 import SharedHelpers._
-import Matchers._
 
 import org.scalactic.ArrayHelper.deep
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class OnlyContainMatcherDeciderSpec extends FunSpec with Explicitly {
+class OnlyContainMatcherDeciderSpec extends AnyFunSpec with Explicitly {
 
   private val prettifier = Prettifier.default
 

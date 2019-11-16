@@ -24,12 +24,15 @@ import time.{Span, Second}
 import org.scalatestplus.junit.JUnitTestFailedError
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalactic.source
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
 */
 
-class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks with Payloads {
+class PayloadSpec extends AnyFlatSpec with Matchers with TableDrivenPropertyChecks with Payloads {
 
   def examples =  // TODO, also support payloads in JUnit errors
     Table(
@@ -93,7 +96,7 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
   it should "forward the payload to be carried in TestFailed event" in {
     forAll (examples) { e =>
       val a = 
-        new FunSpec {
+        new AnyFunSpec {
           it("should do something") {
             withPayload("a payload") {
               throw e
@@ -126,7 +129,7 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
   it should "work with withFixture" in {
     forAll(examples) { e => 
       val a = 
-        new org.scalatest.fixture.FunSpec {
+        new org.scalatest.funspec.FixtureAnyFunSpec {
           type FixtureParam = String
         
           override def withFixture(test: OneArgTest) = {

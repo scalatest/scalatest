@@ -17,8 +17,10 @@ package org.scalatest.fixture
 
 import org.scalatest._
 import NoArgSpec.invokedCount
+import org.scalatest
+import org.scalatest.matchers.should.Matchers
 
-class NoArgSpec extends org.scalatest.FunSpec with Matchers {
+class NoArgSpec extends scalatest.funspec.AnyFunSpec with Matchers {
   describe("A NoArg") {
     it("should use the init function as the implementation of its apply method") {
       invokedCount = 0

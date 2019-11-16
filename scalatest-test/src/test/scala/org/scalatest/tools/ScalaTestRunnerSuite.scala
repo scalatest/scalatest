@@ -19,12 +19,14 @@ import java.io.File
 import org.scalatest.SharedHelpers.{EventRecordingReporter, createTempDirectory}
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.tagobjects.Retryable
-import org.scalatest.{FunSuite, Outcome, DispatchReporter, Resources, Retries}
+import org.scalatest.{Outcome, DispatchReporter, Resources, Retries}
 import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => TestingRunner}
+import org.scalatest.funsuite
+import org.scalatest.funsuite.AnyFunSuite
 
   // testing runner.run:
   // def run(testClassName: String, fingerprint: TestFingerprint, args: Array[String]): Array[Event]
-  class ScalaTestRunnerSuite extends FunSuite with Retries {
+  class ScalaTestRunnerSuite extends AnyFunSuite with Retries {
   
     override def withFixture(test: NoArgTest) = {
       if (isRetryable(test))
@@ -319,18 +321,18 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
 
   package test{
 
-    private class SimpleTest extends FunSuite {
+    private class SimpleTest extends AnyFunSuite {
       test("hello, world") {"hello, world"}
     }
 
-    private class ThreeTestsTest extends FunSuite {
+    private class ThreeTestsTest extends AnyFunSuite {
       test("hello, world") {"hello, world"}
       test("throw") {throw new Exception("baah")}
       test("assert bad") {assert(1 === 3)}
     }
 
     import org.scalatest.fixture
-    private class TestWithConfigMap extends fixture.FunSuite {
+    private class TestWithConfigMap extends funsuite.FixtureAnyFunSuite {
       type FixtureParam = String
       override def withFixture(test: OneArgTest): Outcome = {
         test(test.configMap("josh").toString)
@@ -339,7 +341,7 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
     }
 
 
-    private class TestWithConfigMap2 extends fixture.FunSuite {
+    private class TestWithConfigMap2 extends funsuite.FixtureAnyFunSuite {
       type FixtureParam = Map[String,Any]
       override def withFixture(test: OneArgTest): Outcome = {
         test(test.configMap)
@@ -347,7 +349,7 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       test("get config"){ conf => assert(conf === Map("a" -> "z", "b" -> "y", "c" -> "x")) }
     }
 
-    private class TagsTest extends FunSuite {
+    private class TagsTest extends AnyFunSuite {
       test("hello, world", org.scalatest.Tag("hello")) {"hello, world"}
       test("hello, world again", org.scalatest.Tag("helloAgain")) {"hello, world again"}
       test("tag3", org.scalatest.Tag("tag3")) {"tag3"}
@@ -355,15 +357,15 @@ import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => Te
       test("assert bad") {assert(1 === 3)}
     }
 
-    private class PrivateConstructor private() extends FunSuite
+    private class PrivateConstructor private() extends AnyFunSuite
     
     import org.scalatest.DoNotDiscover
     @DoNotDiscover
-    private class DoNotDiscoverSuite extends FunSuite {
+    private class DoNotDiscoverSuite extends AnyFunSuite {
       test("do not test me") {}
     }
 
-    private class PendingTest extends FunSuite {
+    private class PendingTest extends AnyFunSuite {
       test("i am pending")(pending)
     }
 

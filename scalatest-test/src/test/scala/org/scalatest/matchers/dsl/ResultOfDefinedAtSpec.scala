@@ -16,9 +16,10 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ResultOfDefinedAtSpec extends FunSpec {
+class ResultOfDefinedAtSpec extends AnyFunSpec {
   
   describe("ResultOfDefinedAt ") {
     

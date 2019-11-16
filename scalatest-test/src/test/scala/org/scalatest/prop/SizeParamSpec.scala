@@ -17,11 +17,13 @@ package org.scalatest.prop
 
 import org.scalatest._
 import org.scalactic.anyvals._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /*
 It looks like sizeRange = maxSize - minSize
 */
-class SizeParamSpec extends WordSpec with Matchers with PropertyChecks {
+class SizeParamSpec extends AnyWordSpec with Matchers with PropertyChecks {
   "A SizeParam" should {
     "have a minimum, range, and size" in {
       val sp = SizeParam(33, 20, 35)

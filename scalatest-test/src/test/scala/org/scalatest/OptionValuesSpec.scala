@@ -17,10 +17,11 @@ package org.scalatest
 
 import org.scalatest.OptionValues._
 import org.scalatest.SharedHelpers.thisLineNumber
-import Matchers._
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class OptionValuesSpec extends FunSpec {
+class OptionValuesSpec extends AnyFunSpec {
 
   describe("value on Option") {
 

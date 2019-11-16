@@ -17,11 +17,12 @@ package org.scalatest
 
 import time.Span
 import time.SpanSugar._
-import Matchers._
 import Retries._
 import org.scalactic.{Resources => _, _}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class RetriesSpec extends FunSpec {
+class RetriesSpec extends AnyFunSpec {
 
   describe("The Retries trait") {
     

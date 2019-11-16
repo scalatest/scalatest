@@ -18,8 +18,9 @@ package org.scalatest.tools
 import org.scalatest._
 import SharedHelpers._
 import events._
+import org.scalatest.funspec.AnyFunSpec
 
-class DashboardReporterSpec extends FunSpec {
+class DashboardReporterSpec extends AnyFunSpec {
 
   describe("DashboardReporter ") {
     

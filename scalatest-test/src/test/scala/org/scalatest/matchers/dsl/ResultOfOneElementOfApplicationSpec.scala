@@ -15,10 +15,11 @@
  */
 package org.scalatest.matchers.dsl
 
-import org.scalatest.Matchers._
 import org.scalatest._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class ResultOfOneElementOfApplicationSpec extends FunSpec {
+class ResultOfOneElementOfApplicationSpec extends AnyFunSpec {
 
   describe("ResultOfOneElementOfApplication ") {
 

@@ -16,8 +16,6 @@
 package org.scalatest.prop
 
 import org.scalactic.anyvals._
-import org.scalatest.WordSpec
-import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
 
 import scala.annotation.tailrec
@@ -28,8 +26,10 @@ import org.scalatest.prop.Generator.booleanGenerator
 
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.SortedMap
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class CommonGeneratorsSpec extends WordSpec with Matchers {
+class CommonGeneratorsSpec extends AnyWordSpec with Matchers {
   import CommonGenerators._
   "The CommonGenerators object" should {
     "offer a first1000Primes method" that {

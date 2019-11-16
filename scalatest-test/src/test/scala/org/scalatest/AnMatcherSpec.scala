@@ -16,9 +16,9 @@
 package org.scalatest
 
 import SharedHelpers._
-import matchers._
+import matchers.should.Matchers._
+import matchers.AnMatcher
 import FailureMessages.decorateToStringValue
-import Matchers._
 import org.scalactic.Prettifier
 
 class AnMatcherSpec extends funspec.AnyFunSpec {

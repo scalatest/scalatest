@@ -16,8 +16,9 @@
 package org.scalatest
 
 import SharedHelpers._
+import org.scalatest.funspec.AnyFunSpec
 
-class SequentialNestedSuiteExecutionSpec extends FunSpec {
+class SequentialNestedSuiteExecutionSpec extends AnyFunSpec {
   describe("the SequentialNestedSuiteExecution trait") {
     describe("when mixed into a Suite") {
       it("should override runNestedSuites such that it calls super.runNestedSuites with the distributor set to None") {

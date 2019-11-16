@@ -17,10 +17,11 @@ package org.scalatest
 
 import collection.mutable.LinkedHashMap
 import SharedHelpers._
-import Matchers._
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class TheSameElementsInOrderAsContainMatcherSpec extends FunSpec {
+class TheSameElementsInOrderAsContainMatcherSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

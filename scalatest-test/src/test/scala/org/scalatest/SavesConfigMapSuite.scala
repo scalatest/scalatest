@@ -17,9 +17,10 @@ package org.scalatest
 
 import SavesConfigMapSuite.theConfigMap
 import java.util.UUID
+import org.scalatest.funsuite.AnyFunSuite
 
 @WrapWith(classOf[ConfigMapWrapperSuite])
-class SavesConfigMapSuite(configMap: Map[String, Any]) extends FunSuite {
+class SavesConfigMapSuite(configMap: Map[String, Any]) extends AnyFunSuite {
   theConfigMap = Some(configMap)
   test("one test") {}
   test("two test") {}

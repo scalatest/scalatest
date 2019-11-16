@@ -16,11 +16,11 @@
 package org.scalatest.prop
 
 import org.scalactic.anyvals._
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class HavingLengthsBetweenSpec extends FunSpec with Matchers {
+class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
   describe("A HavingLengthsBetween Generator for Lists") {
     describe("where from is 0") {
       it("should offer a List[T] generator that returns a List[T] whose length equals the passed size") {

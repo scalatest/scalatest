@@ -21,8 +21,10 @@ import Fragment.{countTrailingEOLs, countLeadingEOLs}
 import SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class StringReporterSuite extends FunSuite with Matchers {
+class StringReporterSuite extends AnyFunSuite with Matchers {
 
   test("Empty string should just come back as an empty string.") {
     assert(Fragment("", AnsiCyan).toPossiblyColoredText(true) === "")
@@ -432,7 +434,7 @@ import StringReporter.withPossibleLineNumber
   case class Person(name: String, age: Int)
 
   test("StringReporter should include difference analysis in the content it display") {
-    class ExampleSpec extends FunSuite with Matchers {
+    class ExampleSpec extends AnyFunSuite with Matchers {
       test("test") {
         Person("Student 1", 22) shouldEqual Person("Student 2", 23)
       }

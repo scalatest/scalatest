@@ -21,11 +21,12 @@ import scala.annotation.tailrec
 import collection._
 import SharedHelpers._
 import FailureMessages._
-import Matchers._
 import org.scalactic.Prettifier
 import org.scalatest.CompatParColls.Converters._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class InspectorsForMapSpec extends FunSpec with Inspectors with TableDrivenPropertyChecks {
+class InspectorsForMapSpec extends AnyFunSpec with Inspectors with TableDrivenPropertyChecks {
 
   private val prettifier = Prettifier.default
 

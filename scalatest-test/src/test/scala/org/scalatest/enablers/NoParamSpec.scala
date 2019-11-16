@@ -19,8 +19,10 @@ import org.scalatest._
 import org.scalactic.Equality
 import scala.collection.immutable
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class NoParamSpec extends FunSpec with Matchers with LoneElement {
+class NoParamSpec extends AnyFunSpec with Matchers with LoneElement {
 
   describe("The implicit Containing providers") {
     it("should work with no-param collection types and default equality") {

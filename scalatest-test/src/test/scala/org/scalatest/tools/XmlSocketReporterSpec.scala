@@ -44,8 +44,9 @@ import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 import org.scalatest._
 import SharedHelpers._
+import org.scalatest.funspec.AnyFunSpec
 
-class XmlSocketReporterSpec extends FunSpec with Eventually {
+class XmlSocketReporterSpec extends AnyFunSpec with Eventually {
   
   class SocketEventRecorder(socket: ServerSocket) extends Runnable {
     @volatile
@@ -331,7 +332,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     it("should send TestStarting, TestSucceeded, TestFailed, TestIgnored, TestPending, " +
        "TestCanceled, ScopeOpened, ScopeClosed and ScopePending event using socket") {
       
-      class TestSpec extends FunSpec {
+      class TestSpec extends AnyFunSpec {
         describe("A Feature") {
           it("should succeed") {}
           it("should failed") { assert(1 === 2) }

@@ -16,9 +16,10 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ResultOfRegexWordApplicationSpec extends FunSpec {
+class ResultOfRegexWordApplicationSpec extends AnyFunSpec {
   
   describe("ResultOfRegexWordApplication ") {
     

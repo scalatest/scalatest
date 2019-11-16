@@ -18,9 +18,10 @@ package org.scalatest
 import matchers.AMatcher
 import matchers.AnMatcher
 import SharedHelpers._
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeAnMatcherAndOrSpec extends FunSpec {
+class ShouldBeAnMatcherAndOrSpec extends AnyFunSpec {
 
   describe("AnMatcher ") {
     

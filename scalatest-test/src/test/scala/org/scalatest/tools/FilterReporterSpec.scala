@@ -15,8 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest.FunSpec
-import org.scalatest.FunSuite
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.Args
 import org.scalatest.Stopper
@@ -24,10 +22,12 @@ import org.scalatest.Filter
 import org.scalatest.Tracker
 import org.scalatest.events.InfoProvided
 import org.scalatest.events.MarkupProvided
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
 
-class FilterReporterSpec extends FunSpec {
+class FilterReporterSpec extends AnyFunSpec {
 
-  class ExampleSpec extends FunSuite {
+  class ExampleSpec extends AnyFunSuite {
     test("succeeded test") {
       info("succeeded info")
       markup("succeeded markup")

@@ -16,10 +16,11 @@
 package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
-import Matchers._
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeNullSpec extends FunSpec with ReturnsNormallyThrowsAssertion {
+class ShouldBeNullSpec extends AnyFunSpec with ReturnsNormallyThrowsAssertion {
 
   val nullMap: Map[Int, String] = null
   val map = Map(1 -> "one", 2 -> "two")

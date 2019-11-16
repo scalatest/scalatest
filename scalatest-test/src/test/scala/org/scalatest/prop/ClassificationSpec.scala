@@ -17,8 +17,10 @@ package org.scalatest.prop
 
 import org.scalatest._
 import org.scalactic.anyvals._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ClassificationSpec extends WordSpec with Matchers {
+class ClassificationSpec extends AnyWordSpec with Matchers {
   "A Classification" should {
     "round to the nearest Int in its percentages method" in {
       val c =

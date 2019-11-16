@@ -21,6 +21,7 @@ import org.scalatest.events.InfoProvided
 import org.scalatest.events.Ordinal
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Promise
+import org.scalatest.funsuite.AsyncFunSuite
 
 // This tests that BeforeAndAfterEachTestData works correctly when mixed into an AsyncSuite
 class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {

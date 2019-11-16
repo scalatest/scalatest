@@ -17,9 +17,11 @@ package org.scalatest
 
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import Matchers._
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers._
 
-class FixtureContextSpec extends FunSuite {
+class FixtureContextSpec extends AnyFunSuite {
 
   class MyFixtureContext extends FixtureContext
 

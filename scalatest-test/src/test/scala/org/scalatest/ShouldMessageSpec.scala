@@ -19,8 +19,10 @@ import SharedHelpers.thisLineNumber
 import enablers.Messaging
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class ShouldMessageSpec extends FunSpec with Matchers {
+class ShouldMessageSpec extends AnyFunSpec with Matchers {
 
   private val prettifier = Prettifier.default
   

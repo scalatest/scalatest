@@ -18,8 +18,10 @@ package exceptions
 
 import SharedHelpers.thisLineNumber
 import org.scalactic.source
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class TestFailedExceptionSpec extends FunSpec with Matchers {
+class TestFailedExceptionSpec extends AnyFunSpec with Matchers {
 
   describe("The TestFailedException") {
 

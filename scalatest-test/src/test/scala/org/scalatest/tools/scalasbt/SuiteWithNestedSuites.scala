@@ -16,15 +16,16 @@
 package org.scalatest.tools.scalasbt
 
 import org.scalatest._
+import org.scalatest.funsuite.AnyFunSuite
 
-class SuiteWithNestedSuites extends FunSuite {
+class SuiteWithNestedSuites extends AnyFunSuite {
   
   test("test 1") {}
   test("test 2") {}
   test("test 3") {}
   
   @DoNotDiscover
-  class NestedDoNotDiscoverSuite extends FunSuite {
+  class NestedDoNotDiscoverSuite extends AnyFunSuite {
     override def suiteId = "nested 2"
           
     test("nested 2 test 1") {}
@@ -34,7 +35,7 @@ class SuiteWithNestedSuites extends FunSuite {
   
   override def nestedSuites = 
     collection.immutable.IndexedSeq(
-      new FunSuite() {
+      new AnyFunSuite() {
         override def suiteId = "nested 1"
           
         test("nested 1 test 1") {}

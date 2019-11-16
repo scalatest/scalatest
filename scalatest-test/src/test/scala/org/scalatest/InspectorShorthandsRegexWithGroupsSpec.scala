@@ -19,8 +19,10 @@ import SharedHelpers._
 import FailureMessages._
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class InspectorShorthandsRegexWithGroupsSpec extends FunSpec with Matchers {
+class InspectorShorthandsRegexWithGroupsSpec extends AnyFunSpec with Matchers {
 
   private val prettifier = Prettifier.default
 

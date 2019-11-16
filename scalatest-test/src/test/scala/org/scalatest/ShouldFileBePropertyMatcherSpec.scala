@@ -17,6 +17,8 @@ package org.scalatest
 
 import matchers.BePropertyMatchResult
 import matchers.BePropertyMatcher
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 trait CustomFileBePropertyMatchers {
 
@@ -34,7 +36,7 @@ trait CustomFileBePropertyMatchers {
 
 import Matchers._
 
-class ShouldFileBePropertyMatcherSpec extends FunSpec with CustomFileBePropertyMatchers {
+class ShouldFileBePropertyMatcherSpec extends AnyFunSpec with CustomFileBePropertyMatchers {
  
   describe("A temp file") {
  

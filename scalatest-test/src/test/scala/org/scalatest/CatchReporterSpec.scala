@@ -18,8 +18,9 @@ package org.scalatest
 import java.io.PrintStream
 import java.io.ByteArrayOutputStream
 import org.scalatest.events._
+import org.scalatest.funspec.AnyFunSpec
 
-class CatchReporterSpec extends FunSpec {
+class CatchReporterSpec extends AnyFunSpec {
 
   it("the CatchReporter should catch exceptions") {
 

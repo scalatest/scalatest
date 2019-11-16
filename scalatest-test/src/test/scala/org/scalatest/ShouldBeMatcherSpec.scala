@@ -19,9 +19,10 @@ import org.scalatest.exceptions.TestFailedException
 
 import matchers.BeMatcher
 import matchers.MatchResult
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeMatcherSpec extends FunSpec with ReturnsNormallyThrowsAssertion {
+class ShouldBeMatcherSpec extends AnyFunSpec with ReturnsNormallyThrowsAssertion {
 
   class OddMatcher extends BeMatcher[Int] {
     def apply(left: Int): MatchResult = {

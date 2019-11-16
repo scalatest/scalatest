@@ -15,8 +15,9 @@
  */
 package org.scalatest
 
+import org.scalatest.funspec.AnyFunSpec
 @DoNotDiscover
-protected[scalatest] class ExampleBeforeAfterParallelSpec extends FunSpec with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAfterParallelSpec extends AnyFunSpec with BeforeAndAfter with ParallelTestExecution {
 
   before {
    info("In Before")

@@ -16,8 +16,10 @@
 package org.scalatest.matchers
 
 import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class LazyArgSpec extends FunSpec with Matchers {
+class LazyArgSpec extends AnyFunSpec with Matchers {
 
   describe("A LazyArg") {
     it("should offer a nested args IndexedSeq") {

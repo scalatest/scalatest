@@ -16,13 +16,13 @@
 package org.scalatest.prop
 
 import org.scalactic.anyvals._
-import org.scalatest.WordSpec
-import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
 import scala.annotation.tailrec
 import org.scalatest.Resources
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class OrgScalaTestPropSpec extends WordSpec with Matchers with GeneratorDrivenPropertyChecks {
+class OrgScalaTestPropSpec extends AnyWordSpec with Matchers with GeneratorDrivenPropertyChecks {
 
   ///////////////////////////////
   //

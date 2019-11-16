@@ -19,12 +19,13 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalactic.Equality
 import org.scalactic.Explicitly
 import SharedHelpers.thisLineNumber
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
 // Calling this ShouldContainElementNewSpec so that it is easy to 
 // keep track of the new tests that we'll need to port over to
 // inspector shorthands.
-class ShouldContainElementNewSpec extends FunSpec with Explicitly {
+class ShouldContainElementNewSpec extends AnyFunSpec with Explicitly {
 
   // Checking for a specific size
   describe("The 'contain (<value>)' syntax") {

@@ -26,8 +26,10 @@ import org.scalatest.time.Second
 import org.scalatest.time.Seconds
 import java.io.PrintStream
 import java.io.ByteArrayOutputStream
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class SuiteSortingReporterSpec extends FunSpec with Matchers with EventHelpers {
+class SuiteSortingReporterSpec extends AnyFunSpec with Matchers with EventHelpers {
 
   def stringFor(event: Event): String = {
     event match {

@@ -454,7 +454,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       publish := {},
       publishLocal := {},
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
-    ).dependsOn(scalatest % "test", commonTest % "test")
+    ).dependsOn(scalatestPom % "test", commonTest % "test")
 
   lazy val scalatestApp = Project("scalatestApp", file("."))
     .enablePlugins(SbtOsgi)

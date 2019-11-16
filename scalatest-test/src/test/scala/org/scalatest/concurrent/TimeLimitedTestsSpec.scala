@@ -19,14 +19,17 @@ import org.scalatest._
 import SharedHelpers._
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import org.scalatest.time.{Span, Millis}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class TimeLimitedTestsSpec extends FunSpec with Matchers {
+class TimeLimitedTestsSpec extends AnyFunSpec with Matchers {
   describe("A time-limited test") {
     describe("when it does not timeout") {
       describe("when it succeeds") {
         it("should succeed") {
           val a =
-            new FunSuite with TimeLimitedTests {
+            new AnyFunSuite with TimeLimitedTests {
               val timeLimit = Span(500L, Millis)
               test("plain old success") { assert(1 + 1 === 2) }
             }
@@ -39,7 +42,7 @@ class TimeLimitedTestsSpec extends FunSpec with Matchers {
       describe("when it fails") {
         it("should fail") {
           val a =
-            new FunSuite with TimeLimitedTests {
+            new AnyFunSuite with TimeLimitedTests {
               val timeLimit = Span(500L, Millis)
               test("plain old failure") { assert(1 + 1 === 3) }
             }
@@ -53,7 +56,7 @@ class TimeLimitedTestsSpec extends FunSpec with Matchers {
     describe("when it times out") {
       it("should fail with a timeout exception with the proper error message") {
         val a =
-          new FunSuite with TimeLimitedTests {
+          new AnyFunSuite with TimeLimitedTests {
             val timeLimit = Span(100L, Millis)
             test("time out failure") { SleepHelper.sleep(500) }
           }
@@ -66,7 +69,7 @@ class TimeLimitedTestsSpec extends FunSpec with Matchers {
       }
       it("should fail with a timeout exception with the proper cause, if the test timed out after it completed abruptly") {
         val a =
-          new FunSuite with TimeLimitedTests {
+          new AnyFunSuite with TimeLimitedTests {
             val timeLimit = Span(10L, Millis)
             override val defaultTestSignaler = DoNotSignal
             test("time out failure") {

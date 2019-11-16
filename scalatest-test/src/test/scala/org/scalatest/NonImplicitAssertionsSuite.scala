@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalactic._
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
 
 class NonImplicitAssertionsSuite extends funsuite.AnyFunSuite with NonImplicitAssertions {
   test("make sure all the non-implicit assertions work") {
@@ -28,7 +29,7 @@ class NonImplicitAssertionsSuite extends funsuite.AnyFunSuite with NonImplicitAs
     assertResult("Expected 2, but got 3") { thrown.getMessage }
   }
   test("TypeCheckedTripleEquals should work still if mixed in after NonImplicitAssertions") {
-    class MySpec extends FunSpec with NonImplicitAssertions with TypeCheckedTripleEquals {
+    class MySpec extends AnyFunSpec with NonImplicitAssertions with TypeCheckedTripleEquals {
       assert(1 === 1)
     }
   }

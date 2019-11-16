@@ -24,9 +24,17 @@ import collection.mutable.ListBuffer
 
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
-class RandomTestOrderSpec extends FunSpec {
+class RandomTestOrderSpec extends AnyFunSpec {
 
   // SKIP-SCALATESTJS,NATIVE-START
   class ExampleSpec(listBuffer: ListBuffer[Int]) extends RefSpec with RandomTestOrder {
@@ -44,7 +52,7 @@ class RandomTestOrderSpec extends FunSpec {
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
-  class ExampleFunSuite(listBuffer: ListBuffer[Int]) extends FunSuite with RandomTestOrder {
+  class ExampleFunSuite(listBuffer: ListBuffer[Int]) extends AnyFunSuite with RandomTestOrder {
     test("test 1") {
       listBuffer += 0
     }
@@ -57,7 +65,7 @@ class RandomTestOrderSpec extends FunSpec {
     override def newInstance = new ExampleFunSuite(listBuffer)
   }
 
-  class ExampleFixtureFunSuite(listBuffer: ListBuffer[Int]) extends fixture.FunSuite with StringFixture with RandomTestOrder {
+  class ExampleFixtureFunSuite(listBuffer: ListBuffer[Int]) extends funsuite.FixtureAnyFunSuite with StringFixture with RandomTestOrder {
     test("test 1") { fixture =>
       listBuffer += 0
     }
@@ -70,7 +78,7 @@ class RandomTestOrderSpec extends FunSpec {
     override def newInstance = new ExampleFixtureFunSuite(listBuffer)
   }
 
-  class ExampleFunSpec(listBuffer: ListBuffer[Int]) extends FunSpec with RandomTestOrder {
+  class ExampleFunSpec(listBuffer: ListBuffer[Int]) extends AnyFunSpec with RandomTestOrder {
 
     it("test 1") {
       listBuffer += 0
@@ -88,7 +96,7 @@ class RandomTestOrderSpec extends FunSpec {
 
   }
 
-  class ExampleFixtureFunSpec(listBuffer: ListBuffer[Int]) extends fixture.FunSpec with StringFixture with RandomTestOrder {
+  class ExampleFixtureFunSpec(listBuffer: ListBuffer[Int]) extends funspec.FixtureAnyFunSpec with StringFixture with RandomTestOrder {
 
     it("test 1") { fixture =>
       listBuffer += 0
@@ -106,7 +114,7 @@ class RandomTestOrderSpec extends FunSpec {
 
   }
 
-  class ExampleFeatureSpec(listBuffer: ListBuffer[Int]) extends FeatureSpec with RandomTestOrder {
+  class ExampleFeatureSpec(listBuffer: ListBuffer[Int]) extends AnyFeatureSpec with RandomTestOrder {
     Feature("Scope 1") {
       Scenario("test 1") {
         listBuffer += 0
@@ -122,7 +130,7 @@ class RandomTestOrderSpec extends FunSpec {
     override def newInstance = new ExampleFeatureSpec(listBuffer)
   }
 
-  class ExampleFixtureFeatureSpec(listBuffer: ListBuffer[Int]) extends fixture.FeatureSpec with StringFixture with RandomTestOrder {
+  class ExampleFixtureFeatureSpec(listBuffer: ListBuffer[Int]) extends featurespec.FixtureAnyFeatureSpec with StringFixture with RandomTestOrder {
     Feature("Scope 1") {
       Scenario("test 1") { fixture =>
         listBuffer += 0
@@ -138,7 +146,7 @@ class RandomTestOrderSpec extends FunSpec {
     override def newInstance = new ExampleFixtureFeatureSpec(listBuffer)
   }
 
-  class ExampleFlatSpec(listBuffer: ListBuffer[Int]) extends FlatSpec with RandomTestOrder  {
+  class ExampleFlatSpec(listBuffer: ListBuffer[Int]) extends AnyFlatSpec with RandomTestOrder  {
     behavior of "Scope 1"
     it should "test 1" in {
       listBuffer += 0
@@ -153,7 +161,7 @@ class RandomTestOrderSpec extends FunSpec {
     override def newInstance = new ExampleFlatSpec(listBuffer)
   }
 
-  class ExampleFixtureFlatSpec(listBuffer: ListBuffer[Int]) extends fixture.FlatSpec with StringFixture with RandomTestOrder  {
+  class ExampleFixtureFlatSpec(listBuffer: ListBuffer[Int]) extends flatspec.FixtureAnyFlatSpec with StringFixture with RandomTestOrder  {
     behavior of "Scope 1"
     it should "test 1" in { fixture =>
       listBuffer += 0
@@ -168,7 +176,7 @@ class RandomTestOrderSpec extends FunSpec {
     override def newInstance = new ExampleFixtureFlatSpec(listBuffer)
   }
 
-  class ExampleFreeSpec(listBuffer: ListBuffer[Int]) extends FreeSpec with RandomTestOrder {
+  class ExampleFreeSpec(listBuffer: ListBuffer[Int]) extends AnyFreeSpec with RandomTestOrder {
     "Scope 1" - {
       "test 1" in {
         listBuffer += 0
@@ -184,7 +192,7 @@ class RandomTestOrderSpec extends FunSpec {
     override def newInstance = new ExampleFreeSpec(listBuffer)
   }
 
-  class ExampleFixtureFreeSpec(listBuffer: ListBuffer[Int]) extends fixture.FreeSpec with StringFixture with RandomTestOrder {
+  class ExampleFixtureFreeSpec(listBuffer: ListBuffer[Int]) extends freespec.FixtureAnyFreeSpec with StringFixture with RandomTestOrder {
     "Scope 1" - {
       "test 1" in { fixture =>
         listBuffer += 0
@@ -200,7 +208,7 @@ class RandomTestOrderSpec extends FunSpec {
     override def newInstance = new ExampleFixtureFreeSpec(listBuffer)
   }
 
-  class ExamplePropSpec(listBuffer: ListBuffer[Int]) extends PropSpec with RandomTestOrder {
+  class ExamplePropSpec(listBuffer: ListBuffer[Int]) extends AnyPropSpec with RandomTestOrder {
     property("test 1") {
       listBuffer += 0
     }
@@ -213,7 +221,7 @@ class RandomTestOrderSpec extends FunSpec {
     override def newInstance = new ExamplePropSpec(listBuffer)
   }
 
-  class ExampleFixturePropSpec(listBuffer: ListBuffer[Int]) extends fixture.PropSpec with StringFixture with RandomTestOrder {
+  class ExampleFixturePropSpec(listBuffer: ListBuffer[Int]) extends propspec.FixtureAnyPropSpec with StringFixture with RandomTestOrder {
     property("test 1") { fixture =>
       listBuffer += 0
     }
@@ -226,7 +234,7 @@ class RandomTestOrderSpec extends FunSpec {
     override def newInstance = new ExampleFixturePropSpec(listBuffer)
   }
 
-  class ExampleWordSpec(listBuffer: ListBuffer[Int]) extends WordSpec with RandomTestOrder {
+  class ExampleWordSpec(listBuffer: ListBuffer[Int]) extends AnyWordSpec with RandomTestOrder {
     "Scope 1" should {
       "test 1" in {
         listBuffer += 0
@@ -241,7 +249,7 @@ class RandomTestOrderSpec extends FunSpec {
     override def newInstance = new ExampleWordSpec(listBuffer)
   }
 
-  class ExampleFixtureWordSpec(listBuffer: ListBuffer[Int]) extends fixture.WordSpec with StringFixture with RandomTestOrder {
+  class ExampleFixtureWordSpec(listBuffer: ListBuffer[Int]) extends wordspec.FixtureAnyWordSpec with StringFixture with RandomTestOrder {
     "Scope 1" should {
       "test 1" in { fixture =>
         listBuffer += 0

@@ -19,8 +19,10 @@ import org.scalatest._
 import SharedHelpers.createTempDirectory
 
 import org.scalatest.enablers.Existence
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class ExistWordSpec extends FunSpec with Matchers with FileMocks {
+class ExistWordSpec extends AnyFunSpec with Matchers with FileMocks {
   
   describe("ExistWord ") {
     

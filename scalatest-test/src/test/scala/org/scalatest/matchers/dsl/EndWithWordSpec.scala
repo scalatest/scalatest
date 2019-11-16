@@ -16,9 +16,10 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
-import Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
-class EndWithWordSpec extends FreeSpec with FileMocks {
+class EndWithWordSpec extends AnyFreeSpec with FileMocks {
   
   "EndWithWord " - {
     

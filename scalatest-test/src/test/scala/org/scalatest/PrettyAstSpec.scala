@@ -15,9 +15,10 @@
  */
 package org.scalatest
 
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class PrettyAstSpec extends FunSpec {
+class PrettyAstSpec extends AnyFunSpec {
 
   describe("SharedHelpers.prettifyAst ") {
     it("should print pretty AST") {

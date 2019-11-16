@@ -16,9 +16,10 @@
 package org.scalatest.events.examples
 
 import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
 
 @DoNotDiscover
-class ExampleCancelSpec extends FunSpec {
+class ExampleCancelSpec extends AnyFunSpec {
   
   it("should be canceled") {
     cancel

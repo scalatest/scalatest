@@ -19,14 +19,18 @@ import SharedHelpers._
 import Suite.CHOSEN_STYLES
 import org.scalatest.exceptions.NotAllowedException
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.wordspec.AnyWordSpec
 
-class SuitesSpec extends FunSpec {
+class SuitesSpec extends AnyFunSpec {
 
   val a = new Suite {}
-  val b = new FunSuite {}
-  val c = new FunSpec {}
-  val d = new WordSpec {}
-  val e = new FeatureSpec {}
+  val b = new AnyFunSuite {}
+  val c = new AnyFunSpec {}
+  val d = new AnyWordSpec {}
+  val e = new AnyFeatureSpec {}
 
   describe("Suites") {
     it("should return the passed suites from nestedSuites") {

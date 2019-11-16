@@ -16,8 +16,9 @@
 package org.scalatest
 
 import SharedHelpers._
+import org.scalatest.funsuite.AnyFunSuite
 
-class ConfigMapWrapperSuiteSpec extends FunSuite with SeveredStackTraces {
+class ConfigMapWrapperSuiteSpec extends AnyFunSuite with SeveredStackTraces {
 
   // Need a test that ensures the passed config map gets in there.
   test("configMap should get passed into the wrapped Suite") {

@@ -15,11 +15,12 @@
  */
 package org.scalatest
 
-import Matchers._
 import SharedHelpers._
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeSymbolSpec extends FunSpec with EmptyMocks {
+class ShouldBeSymbolSpec extends AnyFunSpec with EmptyMocks {
 
   describe("The be ('symbol) syntax") {
 

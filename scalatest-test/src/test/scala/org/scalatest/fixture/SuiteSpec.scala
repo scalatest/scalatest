@@ -23,8 +23,11 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.events.InfoProvided
 import SharedHelpers._
 import org.scalactic._
+import org.scalatest
+import org.scalatest.funspec.FixtureAnyFunSpec
+import org.scalatest.funsuite.FixtureAnyFunSuite
 
-class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
+class SuiteSpec extends scalatest.funspec.AnyFunSpec with PrivateMethodTester {
 
   describe("The private testMethodTakesInformer method") {
     val testMethodTakesAFixtureAndInformer = PrivateMethod[Boolean]('testMethodTakesAFixtureAndInformer)
@@ -128,7 +131,7 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
   describe("A fixture.Suite") {
     it("should pass in the fixture to every test method") {
-      val a = new FunSuite {
+      val a = new FixtureAnyFunSuite {
         type FixtureParam = String
         val hello = "Hello, world!"
         def withFixture(test: OneArgTest): Outcome = {
@@ -148,7 +151,7 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should not pass a NoArgTest to withFixture for test methods that take a Fixture") {
-      class MySuite extends FunSuite { // Also should no longer work. Why is it not failing?
+      class MySuite extends FixtureAnyFunSuite { // Also should no longer work. Why is it not failing?
         type FixtureParam = String
         var aNoArgTestWasPassed = false
         var oneArgTestCalled = false
@@ -258,7 +261,7 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   
   describe("OneArgTest") {
     it("should offer a factory method that takes another OneArgTest and a function that implements apply") {
-      class PassedFixtureWasSpec extends FunSpec {
+      class PassedFixtureWasSpec extends FixtureAnyFunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { 
           // These will fail the test if the wrapped tests's TestData is not passed through

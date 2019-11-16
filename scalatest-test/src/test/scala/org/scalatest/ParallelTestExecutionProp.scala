@@ -29,8 +29,9 @@ import org.scalatest.Retries._
 import SharedHelpers._
 import org.scalatest.tagobjects.Retryable
 import org.scalatest.tools.DistributedTestRunnerSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class ParallelTestExecutionProp extends FunSuite {
+class ParallelTestExecutionProp extends AnyFunSuite {
 
   override def withFixture(test: NoArgTest) = {
     if (isRetryable(test))

@@ -22,9 +22,11 @@ import org.scalatest.time.Second
 import org.scalatest.time.Span
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatestplus.junit.JUnitTestFailedError
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 // SKIP-SCALATESTJS,NATIVE-END
 
-class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenPropertyChecks {
+class StackDepthExceptionSpec extends AnyFunSpec with Matchers with TableDrivenPropertyChecks {
 
   class FunException(
     messageFun: StackDepthException => Option[String],

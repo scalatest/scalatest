@@ -15,11 +15,11 @@
  */
 package org.scalatest.tools.scalasbt
 
-import org.scalatest.FunSuite
 import org.scalatest.tags.CPU
+import org.scalatest.funsuite.AnyFunSuite
 
 @CPU
-class CPUTaggedSuite extends FunSuite {
+class CPUTaggedSuite extends AnyFunSuite {
 
   test("test 1") {
     

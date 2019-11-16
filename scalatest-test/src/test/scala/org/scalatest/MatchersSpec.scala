@@ -15,12 +15,13 @@
  */
 package org.scalatest
 
-import Matchers._
 import FailureMessages.decorateToStringValue
 import org.scalatest.matchers.MatchResult
 import org.scalactic._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class MatchersSpec extends FunSpec {
+class MatchersSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
   

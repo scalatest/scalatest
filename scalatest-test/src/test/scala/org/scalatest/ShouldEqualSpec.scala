@@ -18,10 +18,11 @@ package org.scalatest
 import org.scalatest.prop.PropertyChecks
 import org.scalatest.exceptions._
 import org.scalatest.exceptions.TestFailedException
-import Matchers._
 import org.scalactic.Good
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldEqualSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldEqualSpec extends AnyFunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
   // Checking for equality with "equal"
   describe("The equal token") {

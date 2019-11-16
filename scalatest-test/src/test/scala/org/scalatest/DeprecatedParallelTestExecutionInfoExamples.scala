@@ -19,6 +19,14 @@ import org.scalatest.events.Event
 import org.scalatest.prop.Tables
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
 trait DeprecatedInfoExpectedResults extends EventHelpers {
@@ -90,7 +98,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoSpec extend
 // SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFunSuite extends FunSuite with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFunSuite extends AnyFunSuite with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   test("Test 1") {}
@@ -116,7 +124,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFunSuite ex
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFunSuite extends fixture.FunSuite with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFunSuite extends funsuite.FixtureAnyFunSuite with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   test("Test 1") { fixture => }
@@ -142,7 +150,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFunS
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFunSpec extends FunSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFunSpec extends AnyFunSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   describe("Scope 1") {
@@ -181,7 +189,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFunSpec ext
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFunSpec extends fixture.FunSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFunSpec extends funspec.FixtureAnyFunSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   describe("Scope 1") {
@@ -220,16 +228,16 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFunS
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFeatureSpec extends FeatureSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFeatureSpec extends AnyFeatureSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
-  feature("Scope 1") {
-    scenario("Test 1") {}
-    scenario("Test 2") {}
+  Feature("Scope 1") {
+    Scenario("Test 1") {}
+    Scenario("Test 2") {}
   }
-  feature("Scope 2") {
-    scenario("Test 3") {}
-    scenario("Test 4") {}
+  Feature("Scope 2") {
+    Scenario("Test 3") {}
+    Scenario("Test 4") {}
   }
   
   def assertBeforeAfterInfo(events: List[Event]): Unit = {
@@ -259,16 +267,16 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFeatureSpec
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFeatureSpec extends fixture.FeatureSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
-  feature("Scope 1") {
-    scenario("Test 1") { fixture => }
-    scenario("Test 2") { fixture =>}
+  Feature("Scope 1") {
+    Scenario("Test 1") { fixture => }
+    Scenario("Test 2") { fixture =>}
   }
-  feature("Scope 2") {
-    scenario("Test 3") { fixture => }
-    scenario("Test 4") { fixture =>}
+  Feature("Scope 2") {
+    Scenario("Test 3") { fixture => }
+    Scenario("Test 4") { fixture =>}
   }
   
   def assertBeforeAfterInfo(events: List[Event]): Unit = {
@@ -298,7 +306,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFeat
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFlatSpec extends FlatSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFlatSpec extends AnyFlatSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   behavior of "Scope 1"
@@ -336,7 +344,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFlatSpec ex
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFlatSpec extends fixture.FlatSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   behavior of "Scope 1"
@@ -374,7 +382,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFlat
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFreeSpec extends FreeSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFreeSpec extends AnyFreeSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   "Scope 1" - {
@@ -414,7 +422,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFreeSpec ex
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFreeSpec extends fixture.FreeSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   "Scope 1" - {
@@ -454,7 +462,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureFree
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoPropSpec extends PropSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoPropSpec extends AnyPropSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   property("Test 1") {}
@@ -480,7 +488,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoPropSpec ex
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixturePropSpec extends fixture.PropSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixturePropSpec extends propspec.FixtureAnyPropSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   property("Test 1") { fixture => }
@@ -506,7 +514,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureProp
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoWordSpec extends WordSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoWordSpec extends AnyWordSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   "Scope 1" should {
@@ -545,7 +553,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoWordSpec ex
   //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new DeprecatedExampleParallelTestExecutionInfoWordSpec
 }
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureWordSpec extends fixture.WordSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionInfoFixtureWordSpec extends wordspec.FixtureAnyWordSpec with DeprecatedInfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   "Scope 1" should {

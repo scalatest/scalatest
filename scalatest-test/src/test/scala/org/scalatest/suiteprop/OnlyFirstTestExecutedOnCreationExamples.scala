@@ -17,6 +17,7 @@ package org.scalatest.suiteprop
 
 import org.scalatest._
 import prop.TableDrivenPropertyChecks
+import org.scalatest.{ freespec, funspec }
 
 class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
 
@@ -35,7 +36,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
 
   type FixtureServices = Services
 
-  class EmptyPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services {
+  class EmptyPathFunSpecExample(val counts: Counts) extends funspec.PathAnyFunSpec with Services {
     import counts._
     instanceCount += 1
     override def newInstance = new EmptyPathFunSpecExample(counts)
@@ -43,7 +44,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override val expectedTotalTestsCount = 0
   }
 
-  class EmptyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services {
+  class EmptyNestedPathFunSpecExample(val counts: Counts) extends funspec.PathAnyFunSpec with Services {
     import counts._
     instanceCount += 1
     describe("A subject") {
@@ -53,7 +54,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override val expectedTotalTestsCount = 0
   }
 
-  class SiblingEmptyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services {
+  class SiblingEmptyNestedPathFunSpecExample(val counts: Counts) extends funspec.PathAnyFunSpec with Services {
     import counts._
     instanceCount += 1
     describe("A subject") {
@@ -64,7 +65,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override val expectedTotalTestsCount = 0
   }
 
-  class OneTestSiblingEmptyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services {
+  class OneTestSiblingEmptyNestedPathFunSpecExample(val counts: Counts) extends funspec.PathAnyFunSpec with Services {
     import counts._
     instanceCount += 1
     describe("A subject") {
@@ -77,7 +78,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override val expectFirstTestToRunInInitialInstance = false
   }
   
-  class OneTestSiblingEmptyDeeplyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services {
+  class OneTestSiblingEmptyDeeplyNestedPathFunSpecExample(val counts: Counts) extends funspec.PathAnyFunSpec with Services {
     import counts._
     instanceCount += 1
     describe("A subject") {
@@ -92,7 +93,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override val expectFirstTestToRunInInitialInstance = false
   }
 
-  class PathFunSpecExample(val counts: Counts) extends path.FunSpec with Services {
+  class PathFunSpecExample(val counts: Counts) extends funspec.PathAnyFunSpec with Services {
     import counts._
     instanceCount += 1
     it("first test") { firstTestCount += 1 }
@@ -100,7 +101,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override def newInstance = new PathFunSpecExample(counts)
   }
 
-  class NestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services {
+  class NestedPathFunSpecExample(val counts: Counts) extends funspec.PathAnyFunSpec with Services {
     import counts._
     instanceCount += 1
     describe("A subject") {
@@ -110,7 +111,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override def newInstance = new NestedPathFunSpecExample(counts)
   }
 
-  class SiblingNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services {
+  class SiblingNestedPathFunSpecExample(val counts: Counts) extends funspec.PathAnyFunSpec with Services {
     import counts._
     instanceCount += 1
     describe("A subject") {
@@ -122,7 +123,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override def newInstance = new SiblingNestedPathFunSpecExample(counts)
   }
 
-  class DeeplyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services {
+  class DeeplyNestedPathFunSpecExample(val counts: Counts) extends funspec.PathAnyFunSpec with Services {
     import counts._
     instanceCount += 1
     describe("A subject") {
@@ -134,7 +135,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override def newInstance = new DeeplyNestedPathFunSpecExample(counts)
   }
 
-  class SiblingDeeplyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services {
+  class SiblingDeeplyNestedPathFunSpecExample(val counts: Counts) extends funspec.PathAnyFunSpec with Services {
     import counts._
     instanceCount += 1
     describe("A subject") {
@@ -150,7 +151,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override def newInstance = new SiblingDeeplyNestedPathFunSpecExample(counts)
   }
 
-  class AsymetricalDeeplyNestedPathFunSpecExample(val counts: Counts) extends path.FunSpec with Services {
+  class AsymetricalDeeplyNestedPathFunSpecExample(val counts: Counts) extends funspec.PathAnyFunSpec with Services {
     import counts._
     instanceCount += 1
     describe("A subject") {
@@ -162,7 +163,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override def newInstance = new AsymetricalDeeplyNestedPathFunSpecExample(counts)
   }
 
-  class EmptyPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services {
+  class EmptyPathFreeSpecExample(val counts: Counts) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     instanceCount += 1
     override def newInstance = new EmptyPathFreeSpecExample(counts)
@@ -170,7 +171,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override val expectedTotalTestsCount = 0
   }
 
-  class EmptyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services {
+  class EmptyNestedPathFreeSpecExample(val counts: Counts) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     instanceCount += 1
     "A subject" - {
@@ -180,7 +181,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override val expectedTotalTestsCount = 0
   }
 
-  class SiblingEmptyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services {
+  class SiblingEmptyNestedPathFreeSpecExample(val counts: Counts) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     instanceCount += 1
     "A subject" - {
@@ -191,7 +192,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override val expectedTotalTestsCount = 0
   }
 
-  class OneTestSiblingEmptyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services {
+  class OneTestSiblingEmptyNestedPathFreeSpecExample(val counts: Counts) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     instanceCount += 1
     "A subject" - {
@@ -204,7 +205,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override val expectFirstTestToRunInInitialInstance = false
   }
   
-  class OneTestSiblingEmptyDeeplyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services {
+  class OneTestSiblingEmptyDeeplyNestedPathFreeSpecExample(val counts: Counts) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     instanceCount += 1
     "A subject" - {
@@ -219,7 +220,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override val expectFirstTestToRunInInitialInstance = false
   }
 
-  class PathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services {
+  class PathFreeSpecExample(val counts: Counts) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     instanceCount += 1
     "first test" in { firstTestCount += 1 }
@@ -227,7 +228,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override def newInstance = new PathFreeSpecExample(counts)
   }
 
-  class NestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services {
+  class NestedPathFreeSpecExample(val counts: Counts) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     instanceCount += 1
     "A subject" - {
@@ -237,7 +238,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override def newInstance = new NestedPathFreeSpecExample(counts)
   }
 
-  class SiblingNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services {
+  class SiblingNestedPathFreeSpecExample(val counts: Counts) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     instanceCount += 1
     "A subject" - {
@@ -249,7 +250,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override def newInstance = new SiblingNestedPathFreeSpecExample(counts)
   }
 
-  class DeeplyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services {
+  class DeeplyNestedPathFreeSpecExample(val counts: Counts) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     instanceCount += 1
     "A subject" - {
@@ -261,7 +262,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override def newInstance = new DeeplyNestedPathFreeSpecExample(counts)
   }
 
-  class SiblingDeeplyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services {
+  class SiblingDeeplyNestedPathFreeSpecExample(val counts: Counts) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     instanceCount += 1
     "A subject" - {
@@ -277,7 +278,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     override def newInstance = new SiblingDeeplyNestedPathFreeSpecExample(counts)
   }
 
-  class AsymetricalDeeplyNestedPathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services {
+  class AsymetricalDeeplyNestedPathFreeSpecExample(val counts: Counts) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     instanceCount += 1
     "A subject" - {

@@ -18,13 +18,14 @@ package org.scalatest
 import collection.GenTraversable
 import collection.mutable.LinkedHashMap
 import SharedHelpers._
-import Matchers._
 import org.scalatest.exceptions.TestFailedException
 import org.scalactic.Prettifier
 
 import org.scalactic.ArrayHelper.deep
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class InOrderOnlyContainMatcherSpec extends FunSpec {
+class InOrderOnlyContainMatcherSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

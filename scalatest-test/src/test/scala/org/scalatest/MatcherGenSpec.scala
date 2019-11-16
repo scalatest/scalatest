@@ -15,7 +15,8 @@
  */
 package org.scalatest
 
-class MatcherGenSpec extends FunSpec {
+import org.scalatest.funspec.AnyFunSpec
+class MatcherGenSpec extends AnyFunSpec {
 
   describe("A MatcherGen2") {
     it("can be constructed by anding two MatcherGen1s") { pending }

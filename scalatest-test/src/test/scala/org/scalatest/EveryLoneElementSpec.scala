@@ -18,10 +18,11 @@ package org.scalatest
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import org.scalactic.{Every, One, Many, Prettifier}
-import Matchers._
 import LoneElement._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class EveryLoneElementSpec extends FunSpec {
+class EveryLoneElementSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

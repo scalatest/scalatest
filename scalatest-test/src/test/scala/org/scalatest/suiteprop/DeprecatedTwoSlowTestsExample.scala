@@ -18,6 +18,14 @@ package org.scalatest.suiteprop
 import org.scalatest._
 // SKIP-SCALATESTJS,NATIVE-START
 import refspec.RefSpec
+import org.scalatest.{ freespec, funspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
 class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExamples {
@@ -60,7 +68,7 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
-  class FunSuiteExample extends FunSuite with Services {
+  class FunSuiteExample extends AnyFunSuite with Services {
     test("first test", mytags.SlowAsMolasses) {}
     ignore("second test", mytags.SlowAsMolasses) {}
   }
@@ -70,19 +78,19 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     ignore("second test", mytags.SlowAsMolasses) { s => }
   }
 
-  class FunSpecExample extends FunSpec with Services {
+  class FunSpecExample extends AnyFunSpec with Services {
     it("first test", mytags.SlowAsMolasses) {}
     ignore("second test", mytags.SlowAsMolasses) {}
   }
 
-  class NestedFunSpecExample extends FunSpec with NestedTestNames {
+  class NestedFunSpecExample extends AnyFunSpec with NestedTestNames {
     describe("A subject") {
       it("should first test", mytags.SlowAsMolasses) {}
       ignore("should second test", mytags.SlowAsMolasses) {}
     }
   }
 
-  class DeeplyNestedFunSpecExample extends FunSpec with DeeplyNestedTestNames {
+  class DeeplyNestedFunSpecExample extends AnyFunSpec with DeeplyNestedTestNames {
     describe("A subject") {
       describe("when created") {
         it("should first test", mytags.SlowAsMolasses) {}
@@ -112,13 +120,13 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     }
   }
 
-  class PathFunSpecExample extends path.FunSpec with Services {
+  class PathFunSpecExample extends funspec.PathAnyFunSpec with Services {
     it("first test", mytags.SlowAsMolasses) {}
     ignore("second test", mytags.SlowAsMolasses) {}
     override def newInstance = new PathFunSpecExample
   }
 
-  class NestedPathFunSpecExample extends path.FunSpec with NestedTestNames {
+  class NestedPathFunSpecExample extends funspec.PathAnyFunSpec with NestedTestNames {
     describe("A subject") {
       it("should first test", mytags.SlowAsMolasses) {}
       ignore("should second test", mytags.SlowAsMolasses) {}
@@ -126,7 +134,7 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     override def newInstance = new NestedPathFunSpecExample
   }
 
-  class DeeplyNestedPathFunSpecExample extends path.FunSpec with DeeplyNestedTestNames {
+  class DeeplyNestedPathFunSpecExample extends funspec.PathAnyFunSpec with DeeplyNestedTestNames {
     describe("A subject") {
       describe("when created") {
         it("should first test", mytags.SlowAsMolasses) {}
@@ -136,19 +144,19 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     override def newInstance = new DeeplyNestedPathFunSpecExample
   }
 
-  class WordSpecExample extends WordSpec with Services {
+  class WordSpecExample extends AnyWordSpec with Services {
     "first test" taggedAs (mytags.SlowAsMolasses) in {}
     "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
   }
 
-  class NestedWordSpecExample extends WordSpec with NestedTestNames {
+  class NestedWordSpecExample extends AnyWordSpec with NestedTestNames {
     "A subject" should {
       "first test" taggedAs (mytags.SlowAsMolasses) in {}
       "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
     }
   }
 
-  class DeeplyNestedWordSpecExample extends WordSpec with DeeplyNestedTestNames {
+  class DeeplyNestedWordSpecExample extends AnyWordSpec with DeeplyNestedTestNames {
     "A subject" when {
       "created" should {
         "first test" taggedAs (mytags.SlowAsMolasses) in {}
@@ -178,14 +186,14 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     }
   }
 
-  class NestedWordSpecWithMustExample extends WordSpec with NestedTestNamesWithMust {
+  class NestedWordSpecWithMustExample extends AnyWordSpec with NestedTestNamesWithMust {
     "A subject" must {
       "first test" taggedAs (mytags.SlowAsMolasses) in {}
       "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
     }
   }
 
-  class DeeplyNestedWordSpecWithMustExample extends WordSpec with DeeplyNestedTestNamesWithMust {
+  class DeeplyNestedWordSpecWithMustExample extends AnyWordSpec with DeeplyNestedTestNamesWithMust {
     "A subject" when {
       "created" must {
         "first test" taggedAs (mytags.SlowAsMolasses) in {}
@@ -210,14 +218,14 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     }
   }
 
-  class NestedWordSpecWithCanExample extends WordSpec with NestedTestNamesWithCan {
+  class NestedWordSpecWithCanExample extends AnyWordSpec with NestedTestNamesWithCan {
     "A subject" can {
       "first test" taggedAs (mytags.SlowAsMolasses) in {}
       "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
     }
   }
 
-  class DeeplyNestedWordSpecWithCanExample extends WordSpec with DeeplyNestedTestNamesWithCan {
+  class DeeplyNestedWordSpecWithCanExample extends AnyWordSpec with DeeplyNestedTestNamesWithCan {
     "A subject" when {
       "created" can {
         "first test" taggedAs (mytags.SlowAsMolasses) in {}
@@ -242,19 +250,19 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     }
   }
 
-  class FlatSpecExample extends FlatSpec with Services {
+  class FlatSpecExample extends AnyFlatSpec with Services {
     it should "first test" taggedAs (mytags.SlowAsMolasses) in {}
     it should "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
     override val theTestNames = Vector("should first test", "should second test")
    }
 
-  class SubjectFlatSpecExample extends FlatSpec with NestedTestNames {
+  class SubjectFlatSpecExample extends AnyFlatSpec with NestedTestNames {
     behavior of "A subject"
     it should "first test" taggedAs (mytags.SlowAsMolasses) in {}
     it should "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
    }
 
-  class ShorthandSubjectFlatSpecExample extends FlatSpec with NestedTestNames {
+  class ShorthandSubjectFlatSpecExample extends AnyFlatSpec with NestedTestNames {
     "A subject" should "first test" taggedAs (mytags.SlowAsMolasses) in {}
     it should "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
    }
@@ -276,19 +284,19 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     it should "second test" taggedAs (mytags.SlowAsMolasses) ignore { s => }
    }
 
-  class FlatSpecWithMustExample extends FlatSpec with Services {
+  class FlatSpecWithMustExample extends AnyFlatSpec with Services {
     it must "first test" taggedAs (mytags.SlowAsMolasses) in {}
     it must "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
     override val theTestNames = Vector("must first test", "must second test")
    }
 
-  class SubjectFlatSpecWithMustExample extends FlatSpec with NestedTestNamesWithMust {
+  class SubjectFlatSpecWithMustExample extends AnyFlatSpec with NestedTestNamesWithMust {
     behavior of "A subject"
     it must "first test" taggedAs (mytags.SlowAsMolasses) in {}
     it must "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
    }
 
-  class ShorthandSubjectFlatSpecWithMustExample extends FlatSpec with NestedTestNamesWithMust {
+  class ShorthandSubjectFlatSpecWithMustExample extends AnyFlatSpec with NestedTestNamesWithMust {
     "A subject" must "first test" taggedAs (mytags.SlowAsMolasses) in {}
     it must "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
    }
@@ -310,19 +318,19 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     it must "second test" taggedAs (mytags.SlowAsMolasses) ignore { s => }
    }
 
-  class FlatSpecWithCanExample extends FlatSpec with Services {
+  class FlatSpecWithCanExample extends AnyFlatSpec with Services {
     it can "first test" taggedAs (mytags.SlowAsMolasses) in {}
     it can "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
     override val theTestNames = Vector("can first test", "can second test")
    }
 
-  class SubjectFlatSpecWithCanExample extends FlatSpec with NestedTestNamesWithCan {
+  class SubjectFlatSpecWithCanExample extends AnyFlatSpec with NestedTestNamesWithCan {
     behavior of "A subject"
     it can "first test" taggedAs (mytags.SlowAsMolasses) in {}
     it can "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
    }
 
-  class ShorthandSubjectFlatSpecWithCanExample extends FlatSpec with NestedTestNamesWithCan {
+  class ShorthandSubjectFlatSpecWithCanExample extends AnyFlatSpec with NestedTestNamesWithCan {
     "A subject" can "first test" taggedAs (mytags.SlowAsMolasses) in {}
     it can "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
    }
@@ -344,19 +352,19 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     it can "second test" taggedAs (mytags.SlowAsMolasses) ignore { s => }
    }
 
-  class FreeSpecExample extends FreeSpec with Services {
+  class FreeSpecExample extends AnyFreeSpec with Services {
     "first test" taggedAs (mytags.SlowAsMolasses) in {}
     "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
   }
 
-  class NestedFreeSpecExample extends FreeSpec with NestedTestNames {
+  class NestedFreeSpecExample extends AnyFreeSpec with NestedTestNames {
     "A subject" - {
       "should first test" taggedAs (mytags.SlowAsMolasses) in {}
       "should second test" taggedAs (mytags.SlowAsMolasses) ignore {}
     }
   }
 
-  class DeeplyNestedFreeSpecExample extends FreeSpec with DeeplyNestedTestNames {
+  class DeeplyNestedFreeSpecExample extends AnyFreeSpec with DeeplyNestedTestNames {
     "A subject" - {
       "when created" - {
         "should first test" taggedAs (mytags.SlowAsMolasses) in {}
@@ -386,13 +394,13 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     }
   }
 
-  class PathFreeSpecExample extends path.FreeSpec with Services {
+  class PathFreeSpecExample extends freespec.PathAnyFreeSpec with Services {
     "first test" taggedAs (mytags.SlowAsMolasses) in {}
     "second test" taggedAs (mytags.SlowAsMolasses) ignore {}
     override def newInstance = new PathFreeSpecExample
   }
 
-  class NestedPathFreeSpecExample extends path.FreeSpec with NestedTestNames {
+  class NestedPathFreeSpecExample extends freespec.PathAnyFreeSpec with NestedTestNames {
     "A subject" - {
       "should first test" taggedAs (mytags.SlowAsMolasses) in {}
       "should second test" taggedAs (mytags.SlowAsMolasses) ignore {}
@@ -400,7 +408,7 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     override def newInstance = new NestedPathFreeSpecExample
   }
 
-  class DeeplyNestedPathFreeSpecExample extends path.FreeSpec with DeeplyNestedTestNames {
+  class DeeplyNestedPathFreeSpecExample extends freespec.PathAnyFreeSpec with DeeplyNestedTestNames {
     "A subject" - {
       "when created" - {
         "should first test" taggedAs (mytags.SlowAsMolasses) in {}
@@ -410,35 +418,35 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     override def newInstance = new DeeplyNestedPathFreeSpecExample
   }
 
-  class FeatureSpecExample extends FeatureSpec with Services {
-    scenario("first test", mytags.SlowAsMolasses) {}
+  class FeatureSpecExample extends AnyFeatureSpec with Services {
+    Scenario("first test", mytags.SlowAsMolasses) {}
     ignore("second test", mytags.SlowAsMolasses) {}
     override val theTestNames = Vector("Scenario: first test", "Scenario: second test")
   }
 
-  class NestedFeatureSpecExample extends FeatureSpec with Services {
-    feature("A feature") {
-      scenario("first test", mytags.SlowAsMolasses) {}
+  class NestedFeatureSpecExample extends AnyFeatureSpec with Services {
+    Feature("A feature") {
+      Scenario("first test", mytags.SlowAsMolasses) {}
       ignore("second test", mytags.SlowAsMolasses) {}
     }
     override val theTestNames = Vector("Feature: A feature Scenario: first test", "Feature: A feature Scenario: second test")
   }
 
   class FixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    scenario("first test", mytags.SlowAsMolasses) { s => }
+    Scenario("first test", mytags.SlowAsMolasses) { s => }
     ignore("second test", mytags.SlowAsMolasses) { s => }
     override val theTestNames = Vector("Scenario: first test", "Scenario: second test")
   }
 
   class NestedFixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    feature("A feature") {
-      scenario("first test", mytags.SlowAsMolasses) { s => }
+    Feature("A feature") {
+      Scenario("first test", mytags.SlowAsMolasses) { s => }
       ignore("second test", mytags.SlowAsMolasses) { s => }
     }
     override val theTestNames = Vector("Feature: A feature Scenario: first test", "Feature: A feature Scenario: second test")
   }
 
-  class PropSpecExample extends PropSpec with Services {
+  class PropSpecExample extends AnyPropSpec with Services {
     property("first test", mytags.SlowAsMolasses) {}
     ignore("second test", mytags.SlowAsMolasses) {}
   }
@@ -528,7 +536,7 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
       new FixtureFlatSpecWithCanExample2
     )
 
-  class FlatSpecExample2 extends FlatSpec with Services {
+  class FlatSpecExample2 extends AnyFlatSpec with Services {
     it should "first test" taggedAs (mytags.SlowAsMolasses) in {}
     ignore should "second test" taggedAs (mytags.SlowAsMolasses) in {}
     override val theTestNames = Vector("should first test", "should second test")
@@ -540,7 +548,7 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     override val theTestNames = Vector("should first test", "should second test")
   }
 
-  class FlatSpecWithMustExample2 extends FlatSpec with Services {
+  class FlatSpecWithMustExample2 extends AnyFlatSpec with Services {
     it must "first test" taggedAs (mytags.SlowAsMolasses) in {}
     ignore must "second test" taggedAs (mytags.SlowAsMolasses) in {}
     override val theTestNames = Vector("must first test", "must second test")
@@ -552,7 +560,7 @@ class DeprecatedTwoSlowTestsExample extends org.scalatest.suiteprop.SuiteExample
     override val theTestNames = Vector("must first test", "must second test")
   }
 
-  class FlatSpecWithCanExample2 extends FlatSpec with Services {
+  class FlatSpecWithCanExample2 extends AnyFlatSpec with Services {
     it can "first test" taggedAs (mytags.SlowAsMolasses) in {}
     ignore can "second test" taggedAs (mytags.SlowAsMolasses) in {}
     override val theTestNames = Vector("can first test", "can second test")

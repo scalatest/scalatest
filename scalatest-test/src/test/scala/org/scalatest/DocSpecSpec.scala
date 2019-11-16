@@ -17,11 +17,12 @@ package org.scalatest
 
 import org.scalatest.DocSpec.stripMargin
 import org.scalatest.DocSpec.trimMarkup
-import Matchers._
 import prop.TableDrivenPropertyChecks._
 import org.scalatest.SharedHelpers.EventRecordingReporter
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class DocSpecSpec extends FunSpec {
+class DocSpecSpec extends AnyFunSpec {
   
   describe("A DocSpec") {
     describe("with no suites inside") {
@@ -140,7 +141,7 @@ This is a paragraph later...
       }
     }
     describe("with just suites") {
-      class NestedSpec extends FunSpec {
+      class NestedSpec extends AnyFunSpec {
         var wasRun = false
         it("a test") {
           wasRun = true

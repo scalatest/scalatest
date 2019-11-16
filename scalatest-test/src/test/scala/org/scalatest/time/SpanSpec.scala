@@ -15,9 +15,10 @@
  */
 package org.scalatest.time
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class SpanSpec extends FunSpec with Matchers with SpanMatchers {
+class SpanSpec extends AnyFunSpec with Matchers with SpanMatchers {
 
   describe("A Span") {
 

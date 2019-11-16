@@ -17,11 +17,12 @@ package org.scalatest
 
 import SharedHelpers.{thisLineNumber, createTempDirectory}
 import enablers.Writability
-import Matchers._
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeWritableLogicalOrImplicitSpec extends FunSpec {
+class ShouldBeWritableLogicalOrImplicitSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
   

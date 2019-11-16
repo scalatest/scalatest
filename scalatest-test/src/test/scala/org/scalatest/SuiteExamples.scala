@@ -21,6 +21,14 @@ import org.scalatestplus.junit.JUnit3Suite
 import org.scalatestplus.junit.JUnitSuite
 import org.scalatestplus.testng.TestNGSuite
 import org.scalatest.refspec.RefSpec
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
 trait SuiteExamples extends Tables {
@@ -33,20 +41,20 @@ trait SuiteExamples extends Tables {
   def testngSuite: TestNGSuite with FixtureServices
   def spec: RefSpec with FixtureServices
   // SKIP-SCALATESTJS,NATIVE-END
-  def funSuite: FunSuite with FixtureServices
-  def fixtureFunSuite: fixture.FunSuite with FixtureServices
-  def funSpec: FunSpec with FixtureServices
-  def fixtureFunSpec: fixture.FunSpec with FixtureServices
-  def featureSpec: FeatureSpec with FixtureServices
-  def fixtureFeatureSpec: fixture.FeatureSpec with FixtureServices
-  def flatSpec: FlatSpec with FixtureServices
-  def fixtureFlatSpec: fixture.FlatSpec with FixtureServices
-  def freeSpec: FreeSpec with FixtureServices
-  def fixtureFreeSpec: fixture.FreeSpec with FixtureServices
-  def propSpec: PropSpec with FixtureServices
-  def fixturePropSpec: fixture.PropSpec with FixtureServices
-  def wordSpec: WordSpec with FixtureServices
-  def fixtureWordSpec: fixture.WordSpec with FixtureServices
+  def funSuite: AnyFunSuite with FixtureServices
+  def fixtureFunSuite: funsuite.FixtureAnyFunSuite with FixtureServices
+  def funSpec: AnyFunSpec with FixtureServices
+  def fixtureFunSpec: funspec.FixtureAnyFunSpec with FixtureServices
+  def featureSpec: AnyFeatureSpec with FixtureServices
+  def fixtureFeatureSpec: featurespec.FixtureAnyFeatureSpec with FixtureServices
+  def flatSpec: AnyFlatSpec with FixtureServices
+  def fixtureFlatSpec: flatspec.FixtureAnyFlatSpec with FixtureServices
+  def freeSpec: AnyFreeSpec with FixtureServices
+  def fixtureFreeSpec: freespec.FixtureAnyFreeSpec with FixtureServices
+  def propSpec: AnyPropSpec with FixtureServices
+  def fixturePropSpec: propspec.FixtureAnyPropSpec with FixtureServices
+  def wordSpec: AnyWordSpec with FixtureServices
+  def fixtureWordSpec: wordspec.FixtureAnyWordSpec with FixtureServices
 
   def examples =
     Table(

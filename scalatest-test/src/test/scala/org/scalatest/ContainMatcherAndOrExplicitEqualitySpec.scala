@@ -20,9 +20,10 @@ import org.scalactic.Explicitly
 import org.scalactic.Prettifier
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ContainMatcherAndOrExplicitEqualitySpec extends FunSpec with Explicitly {
+class ContainMatcherAndOrExplicitEqualitySpec extends AnyFunSpec with Explicitly {
 
   private val prettifier = Prettifier.default
 

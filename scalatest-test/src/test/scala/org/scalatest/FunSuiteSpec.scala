@@ -23,14 +23,16 @@ import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
 
-class FunSuiteSpec extends FunSpec {
+class FunSuiteSpec extends AnyFunSpec {
 
   describe("A FunSuite") {
 
     it("should return the test names in registration order from testNames") {
       
-      val a = new FunSuite {
+      val a = new AnyFunSuite {
         test("test this") { /* ASSERTION_SUCCEED */ }
         test("test that") { /* ASSERTION_SUCCEED */ }
       }
@@ -39,13 +41,13 @@ class FunSuiteSpec extends FunSpec {
         a.testNames.iterator.toList
       }
 
-      val b = new FunSuite {}
+      val b = new AnyFunSuite {}
 
       assertResult(List[String]()) {
         b.testNames.iterator.toList
       }
 
-      val c = new FunSuite {
+      val c = new AnyFunSuite {
         test("test that") { /* ASSERTION_SUCCEED */ }
         test("test this") { /* ASSERTION_SUCCEED */ }
       }
@@ -58,25 +60,25 @@ class FunSuiteSpec extends FunSpec {
     it("should throw NotAllowedException if a duplicate test name registration is attempted") {
 
       intercept[DuplicateTestNameException] {
-        new FunSuite {
+        new AnyFunSuite {
           test("test this") { /* ASSERTION_SUCCEED */ }
           test("test this") { /* ASSERTION_SUCCEED */ }
         }
       }
       intercept[DuplicateTestNameException] {
-        new FunSuite {
+        new AnyFunSuite {
           test("test this") { /* ASSERTION_SUCCEED */ }
           ignore("test this") { /* ASSERTION_SUCCEED */ }
         }
       }
       intercept[DuplicateTestNameException] {
-        new FunSuite {
+        new AnyFunSuite {
           ignore("test this") { /* ASSERTION_SUCCEED */ }
           ignore("test this") { /* ASSERTION_SUCCEED */ }
         }
       }
       intercept[DuplicateTestNameException] {
-        new FunSuite {
+        new AnyFunSuite {
           ignore("test this") { /* ASSERTION_SUCCEED */ }
           test("test this") { /* ASSERTION_SUCCEED */ }
         }
@@ -84,7 +86,7 @@ class FunSuiteSpec extends FunSpec {
     }
 
     it("should throw NotAllowedException if test registration is attempted after run has been invoked on a suite") {
-      class InvokedWhenNotRunningSuite extends FunSuite {
+      class InvokedWhenNotRunningSuite extends AnyFunSuite {
         var fromMethodTestExecuted = false
         var fromConstructorTestExecuted = false
         test("from constructor") {
@@ -129,7 +131,7 @@ class FunSuiteSpec extends FunSpec {
     }
 
     it("should invoke withFixture from runTest") {
-      val a = new FunSuite {
+      val a = new AnyFunSuite {
         var withFixtureWasInvoked = false
         var testWasInvoked = false
         override def withFixture(test: NoArgTest): Outcome = {
@@ -149,7 +151,7 @@ class FunSuiteSpec extends FunSpec {
       assert(a.testWasInvoked)
     }
     it("should pass the correct test name in the NoArgTest passed to withFixture") {
-      val a = new FunSuite {
+      val a = new AnyFunSuite {
         var correctTestNameWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctTestNameWasPassed = test.name == "something"
@@ -164,7 +166,7 @@ class FunSuiteSpec extends FunSpec {
       assert(a.correctTestNameWasPassed)
     }
     it("should pass the correct config map in the NoArgTest passed to withFixture") {
-      val a = new FunSuite {
+      val a = new AnyFunSuite {
         var correctConfigMapWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
@@ -183,7 +185,7 @@ class FunSuiteSpec extends FunSpec {
       it("should, when the info appears in the body before a test, report the info before the test") {
         val msg = "hi there, dude"
         val testName = "test name"
-        class MySuite extends FunSuite {
+        class MySuite extends AnyFunSuite {
           info(msg)
           test(testName) { /* ASSERTION_SUCCEED */ }
         }
@@ -195,7 +197,7 @@ class FunSuiteSpec extends FunSpec {
       it("should, when the info appears in the body after a test, report the info after the test runs") {
         val msg = "hi there, dude"
         val testName = "test name"
-        class MySuite extends FunSuite {
+        class MySuite extends AnyFunSuite {
           test(testName) { /* ASSERTION_SUCCEED */ }
           info(msg)
         }
@@ -205,7 +207,7 @@ class FunSuiteSpec extends FunSpec {
         assert(testSucceededIndex < infoProvidedIndex)
       }
       it("should print to stdout when info is called by a method invoked after the suite has been executed") {
-        class MySuite extends FunSuite {
+        class MySuite extends AnyFunSuite {
           callInfo() // This should work fine
           def callInfo(): Unit = {
             info("howdy")
@@ -222,12 +224,12 @@ class FunSuiteSpec extends FunSpec {
       }
     }
     it("should run tests registered via the testsFor syntax") {
-      trait SharedFunSuiteTests { this: FunSuite =>
+      trait SharedFunSuiteTests { this: AnyFunSuite =>
         def nonEmptyStack(s: String)(i: Int): Unit = {
           test("I am shared") { /* ASSERTION_SUCCEED */ }
         }
       }
-      class MySuite extends FunSuite with SharedFunSuiteTests {
+      class MySuite extends AnyFunSuite with SharedFunSuiteTests {
         testsFor(nonEmptyStack("hi")(1))
       }
       val suite = new MySuite
@@ -243,78 +245,78 @@ class FunSuiteSpec extends FunSpec {
     it("should throw NullArgumentException if a null test tag is provided") {
       // test
       intercept[NullArgumentException] {
-        new FunSuite {
+        new AnyFunSuite {
           test("hi", null) { /* ASSERTION_SUCCEED */ }
         }
       }
       val caught = intercept[NullArgumentException] {
-        new FunSuite {
+        new AnyFunSuite {
           test("hi", mytags.SlowAsMolasses, null) { /* ASSERTION_SUCCEED */ }
         }
       }
       assert(caught.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
-        new FunSuite {
+        new AnyFunSuite {
           test("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { /* ASSERTION_SUCCEED */ }
         }
       }
 
       // ignore
       intercept[NullArgumentException] {
-        new FunSuite {
+        new AnyFunSuite {
           ignore("hi", null) { /* ASSERTION_SUCCEED */ }
         }
       }
       val caught2 = intercept[NullArgumentException] {
-        new FunSuite {
+        new AnyFunSuite {
           ignore("hi", mytags.SlowAsMolasses, null) { /* ASSERTION_SUCCEED */ }
         }
       }
       assert(caught2.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
-        new FunSuite {
+        new AnyFunSuite {
           ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { /* ASSERTION_SUCCEED */ }
         }
       }
 
       // registerTest
       intercept[NullArgumentException] {
-        new FunSuite {
+        new AnyFunSuite {
           registerTest("hi", null) { /* ASSERTION_SUCCEED */ }
         }
       }
       val caught3 = intercept[NullArgumentException] {
-        new FunSuite {
+        new AnyFunSuite {
           registerTest("hi", mytags.SlowAsMolasses, null) { /* ASSERTION_SUCCEED */ }
         }
       }
       assert(caught3.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
-        new FunSuite {
+        new AnyFunSuite {
           registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { /* ASSERTION_SUCCEED */ }
         }
       }
 
       // registerIgnoredTest
       intercept[NullArgumentException] {
-        new FunSuite {
+        new AnyFunSuite {
           registerIgnoredTest("hi", null) { /* ASSERTION_SUCCEED */ }
         }
       }
       val caught4 = intercept[NullArgumentException] {
-        new FunSuite {
+        new AnyFunSuite {
           registerIgnoredTest("hi", mytags.SlowAsMolasses, null) { /* ASSERTION_SUCCEED */ }
         }
       }
       assert(caught4.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
-        new FunSuite {
+        new AnyFunSuite {
           registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { /* ASSERTION_SUCCEED */ }
         }
       }
     }
 
-    class TestWasCalledSuite extends FunSuite {
+    class TestWasCalledSuite extends AnyFunSuite {
       var theTestThisCalled = false
       var theTestThatCalled = false
       test("this") {
@@ -345,7 +347,7 @@ class FunSuiteSpec extends FunSpec {
 
     it("should report as ignored, and not run, tests marked ignored") {
 
-      val a = new FunSuite {
+      val a = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         test("test this") {
@@ -366,7 +368,7 @@ class FunSuiteSpec extends FunSpec {
       assert(a.theTestThisCalled)
       assert(a.theTestThatCalled)
 
-      val b = new FunSuite {
+      val b = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         ignore("test this") {
@@ -387,7 +389,7 @@ class FunSuiteSpec extends FunSpec {
       assert(!b.theTestThisCalled)
       assert(b.theTestThatCalled)
 
-      val c = new FunSuite {
+      val c = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         test("test this") {
@@ -410,7 +412,7 @@ class FunSuiteSpec extends FunSpec {
 
       // The order I want is order of appearance in the file.
       // Will try and implement that tomorrow. Subtypes will be able to change the order.
-      val d = new FunSuite {
+      val d = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         ignore("test this") {
@@ -433,7 +435,7 @@ class FunSuiteSpec extends FunSpec {
     }
 
     it("should ignore a test marked as ignored if run is invoked with that testName") {
-      val e = new FunSuite {
+      val e = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         ignore("test this") {
@@ -456,7 +458,7 @@ class FunSuiteSpec extends FunSpec {
     }
 
     it("should exclude a test with a tag included in the tagsToExclude set even if run is invoked with that testName") {
-      val e = new FunSuite {
+      val e = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         test("test this", mytags.SlowAsMolasses) {
@@ -479,7 +481,7 @@ class FunSuiteSpec extends FunSpec {
     }
 
     it("should exclude a registered test with a tag included in the tagsToExclude set even if run is invoked with that testName") {
-      val e = new FunSuite {
+      val e = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) {
@@ -504,7 +506,7 @@ class FunSuiteSpec extends FunSpec {
     it("should run only those tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new FunSuite {
+      val a = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         test("test this", mytags.SlowAsMolasses) {
@@ -526,7 +528,7 @@ class FunSuiteSpec extends FunSpec {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new FunSuite {
+      val b = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         test("test this", mytags.SlowAsMolasses) {
@@ -545,7 +547,7 @@ class FunSuiteSpec extends FunSpec {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new FunSuite {
+      val c = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         test("test this", mytags.SlowAsMolasses) {
@@ -564,7 +566,7 @@ class FunSuiteSpec extends FunSpec {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new FunSuite {
+      val d = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         ignore("test this", mytags.SlowAsMolasses) {
@@ -583,7 +585,7 @@ class FunSuiteSpec extends FunSpec {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new FunSuite {
+      val e = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -609,7 +611,7 @@ class FunSuiteSpec extends FunSpec {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new FunSuite {
+      val f = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -635,7 +637,7 @@ class FunSuiteSpec extends FunSpec {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new FunSuite {
+      val g = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -661,7 +663,7 @@ class FunSuiteSpec extends FunSpec {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new FunSuite {
+      val h = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -686,7 +688,7 @@ class FunSuiteSpec extends FunSpec {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new FunSuite {
+      val i = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -711,7 +713,7 @@ class FunSuiteSpec extends FunSpec {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new FunSuite {
+      val j = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -736,7 +738,7 @@ class FunSuiteSpec extends FunSpec {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new FunSuite {
+      val k = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -764,7 +766,7 @@ class FunSuiteSpec extends FunSpec {
     it("should run only those registered tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new FunSuite {
+      val a = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) {
@@ -786,7 +788,7 @@ class FunSuiteSpec extends FunSpec {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new FunSuite {
+      val b = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) {
@@ -805,7 +807,7 @@ class FunSuiteSpec extends FunSpec {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new FunSuite {
+      val c = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) {
@@ -824,7 +826,7 @@ class FunSuiteSpec extends FunSpec {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new FunSuite {
+      val d = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerIgnoredTest("test this", mytags.SlowAsMolasses) {
@@ -843,7 +845,7 @@ class FunSuiteSpec extends FunSpec {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new FunSuite {
+      val e = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -869,7 +871,7 @@ class FunSuiteSpec extends FunSpec {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new FunSuite {
+      val f = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -895,7 +897,7 @@ class FunSuiteSpec extends FunSpec {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new FunSuite {
+      val g = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -921,7 +923,7 @@ class FunSuiteSpec extends FunSpec {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new FunSuite {
+      val h = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -946,7 +948,7 @@ class FunSuiteSpec extends FunSpec {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new FunSuite {
+      val i = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -971,7 +973,7 @@ class FunSuiteSpec extends FunSpec {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new FunSuite {
+      val j = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -996,7 +998,7 @@ class FunSuiteSpec extends FunSpec {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new FunSuite {
+      val k = new AnyFunSuite {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -1023,26 +1025,26 @@ class FunSuiteSpec extends FunSpec {
     
     it("should return the correct test count from its expectedTestCount method") {
 
-      val a = new FunSuite {
+      val a = new AnyFunSuite {
         test("test this") {/* ASSERTION_SUCCEED */}
         test("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(a.expectedTestCount(Filter()) == 2)
 
-      val b = new FunSuite {
+      val b = new AnyFunSuite {
         ignore("test this") {/* ASSERTION_SUCCEED */}
         test("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(b.expectedTestCount(Filter()) == 1)
 
-      val c = new FunSuite {
+      val c = new AnyFunSuite {
         test("test this", mytags.FastAsLight) {/* ASSERTION_SUCCEED */}
         test("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) == 1)
 
-      val d = new FunSuite {
+      val d = new AnyFunSuite {
         test("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         test("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         test("test the other thing") {/* ASSERTION_SUCCEED */}
@@ -1052,7 +1054,7 @@ class FunSuiteSpec extends FunSpec {
       assert(d.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) == 1)
       assert(d.expectedTestCount(Filter()) == 3)
 
-      val e = new FunSuite {
+      val e = new AnyFunSuite {
         test("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         test("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         ignore("test the other thing") {/* ASSERTION_SUCCEED */}
@@ -1067,26 +1069,26 @@ class FunSuiteSpec extends FunSpec {
     }
     it("should return the correct test count from its expectedTestCount method when uses registerTest and registerIgnoredTest to register test") {
 
-      val a = new FunSuite {
+      val a = new AnyFunSuite {
         registerTest("test this") {/* ASSERTION_SUCCEED */}
         registerTest("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(a.expectedTestCount(Filter()) == 2)
 
-      val b = new FunSuite {
+      val b = new AnyFunSuite {
         registerIgnoredTest("test this") {/* ASSERTION_SUCCEED */}
         registerTest("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(b.expectedTestCount(Filter()) == 1)
 
-      val c = new FunSuite {
+      val c = new AnyFunSuite {
         registerTest("test this", mytags.FastAsLight) {/* ASSERTION_SUCCEED */}
         registerTest("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) == 1)
 
-      val d = new FunSuite {
+      val d = new AnyFunSuite {
         registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         registerTest("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         registerTest("test the other thing") {/* ASSERTION_SUCCEED */}
@@ -1096,7 +1098,7 @@ class FunSuiteSpec extends FunSpec {
       assert(d.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) == 1)
       assert(d.expectedTestCount(Filter()) == 3)
 
-      val e = new FunSuite {
+      val e = new AnyFunSuite {
         registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         registerTest("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         registerIgnoredTest("test the other thing") {/* ASSERTION_SUCCEED */}
@@ -1110,7 +1112,7 @@ class FunSuiteSpec extends FunSpec {
       assert(f.expectedTestCount(Filter()) == 10)
     }
     it("should generate a TestPending message when the test body is (pending)") {
-      val a = new FunSuite {
+      val a = new AnyFunSuite {
 
         test("should do this") (pending)
 
@@ -1130,7 +1132,7 @@ class FunSuiteSpec extends FunSpec {
     }
     it("should generate a test failure if a Throwable, or an Error other than direct Error subtypes " +
             "known in JDK 1.5, excluding AssertionError") {
-      val a = new FunSuite {
+      val a = new AnyFunSuite {
         test("throws AssertionError") { throw new AssertionError }
         test("throws plain old Error") { throw new Error }
         test("throws Throwable") { throw new Throwable }
@@ -1143,7 +1145,7 @@ class FunSuiteSpec extends FunSpec {
     // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
-      val a = new FunSuite {
+      val a = new AnyFunSuite {
         test("throws AssertionError") { throw new OutOfMemoryError }
       }
       intercept[OutOfMemoryError] {
@@ -1155,7 +1157,7 @@ class FunSuiteSpec extends FunSpec {
 
       it("should, if they call a nested it from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySuite extends FunSuite {
+        class MySuite extends AnyFunSuite {
           test("should blow up") {
             test("should never run") {
               assert(1 === 1)
@@ -1169,7 +1171,7 @@ class FunSuiteSpec extends FunSpec {
       }
       it("should, if they call a nested it with tags from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySuite extends FunSuite {
+        class MySuite extends AnyFunSuite {
           test("should blow up") {
             test("should never run", mytags.SlowAsMolasses) {
               assert(1 == 1)
@@ -1183,7 +1185,7 @@ class FunSuiteSpec extends FunSpec {
       }
       it("should, if they call a nested registerTest with tags from within a registerTest clause, result in a TestFailedException when running the test") {
 
-        class MySuite extends FunSuite {
+        class MySuite extends AnyFunSuite {
           registerTest("should blow up") {
             registerTest("should never run", mytags.SlowAsMolasses) {
               assert(1 == 1)
@@ -1197,7 +1199,7 @@ class FunSuiteSpec extends FunSpec {
       }
       it("should, if they call a nested ignore from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySuite extends FunSuite {
+        class MySuite extends AnyFunSuite {
           test("should blow up") {
             ignore("should never run") {
               assert(1 === 1)
@@ -1211,7 +1213,7 @@ class FunSuiteSpec extends FunSpec {
       }
       it("should, if they call a nested ignore with tags from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySuite extends FunSuite {
+        class MySuite extends AnyFunSuite {
           test("should blow up") {
             ignore("should never run", mytags.SlowAsMolasses) {
               assert(1 == 1)
@@ -1225,7 +1227,7 @@ class FunSuiteSpec extends FunSpec {
       }
       it("should, if they call a nested registerIgnoredTest with tags from within a registerTest clause, result in a TestFailedException when running the test") {
 
-        class MySuite extends FunSuite {
+        class MySuite extends AnyFunSuite {
           registerTest("should blow up") {
             registerIgnoredTest("should never run", mytags.SlowAsMolasses) {
               assert(1 == 1)
@@ -1240,7 +1242,7 @@ class FunSuiteSpec extends FunSpec {
     }
 
     it("should throw IllegalArgumentException if passed a testName that doesn't exist") {
-      class MySuite extends FunSuite {
+      class MySuite extends AnyFunSuite {
         test("one") {/* ASSERTION_SUCCEED */}
         test("two") {/* ASSERTION_SUCCEED */}
       }
@@ -1253,7 +1255,7 @@ class FunSuiteSpec extends FunSpec {
     describe("registerTest and registerIgnoredTest method") {
 
       it("should allow test registration and ignored test registration") {
-        class TestSpec extends FunSuite {
+        class TestSpec extends AnyFunSuite {
           val a = 1
           registerTest("test 1") {
             val e = intercept[TestFailedException] {
@@ -1295,7 +1297,7 @@ class FunSuiteSpec extends FunSpec {
       }
 
       it("should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest") {
-        class TestSpec extends FunSuite {
+        class TestSpec extends AnyFunSuite {
           var registrationClosedThrown = false
           registerTest("a scenario") {
             registerTest("nested scenario") {
@@ -1326,7 +1328,7 @@ class FunSuiteSpec extends FunSpec {
       }
 
       it("should generate TestRegistrationClosedException with correct stack depth info when has an registerIgnoredTest nested inside a registerTest") {
-        class TestSpec extends FunSuite {
+        class TestSpec extends AnyFunSuite {
           var registrationClosedThrown = false
           registerTest("a scenario") {
             registerIgnoredTest("nested scenario") {
@@ -1358,7 +1360,7 @@ class FunSuiteSpec extends FunSpec {
     }
 
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends FunSuite with expectations.Expectations {
+      class TestSpec extends AnyFunSuite with expectations.Expectations {
         test("fail scenario") {
           expect(1 === 2); /* ASSERTION_SUCCEED */
         }
@@ -1379,7 +1381,7 @@ class FunSuiteSpec extends FunSpec {
   
   describe("when failure happens") {
     it("should fire TestFailed event with correct stack depth info when test failed") {
-      class TestSpec extends FunSuite {
+      class TestSpec extends AnyFunSuite {
         test("fail scenario") {
           assert(1 === 2); /* ASSERTION_SUCCEED */
         }
@@ -1393,7 +1395,7 @@ class FunSuiteSpec extends FunSpec {
     }
     
     it("should generate TestRegistrationClosedException with correct stack depth info when has a test nested inside a test") {
-      class TestSpec extends FunSuite {
+      class TestSpec extends AnyFunSuite {
         var registrationClosedThrown = false
         test("a scenario") {
           test("nested scenario") {
@@ -1424,7 +1426,7 @@ class FunSuiteSpec extends FunSpec {
     }
 
     it("should generate TestRegistrationClosedException with correct stack depth info when has an ignore nested inside a test") {
-      class TestSpec extends FunSuite {
+      class TestSpec extends AnyFunSuite {
         var registrationClosedThrown = false
         test("a scenario") {
           ignore("nested scenario") {
@@ -1455,7 +1457,7 @@ class FunSuiteSpec extends FunSpec {
     }
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected") {
-      class TestSpec extends FunSuite {
+      class TestSpec extends AnyFunSuite {
         test("test 1") {}
         test("test 1") {}
       }
@@ -1468,7 +1470,7 @@ class FunSuiteSpec extends FunSpec {
     }
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected using ignore") {
-      class TestSpec extends FunSuite {
+      class TestSpec extends AnyFunSuite {
         test("test 1") {}
         ignore("test 1") {}
       }

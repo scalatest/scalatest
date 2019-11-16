@@ -31,8 +31,10 @@ import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestFailedException
 import prop.TableFor1
 import time.{Second, Span}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class ClueSpec extends FlatSpec with Matchers {
+class ClueSpec extends AnyFlatSpec with Matchers {
 
   def examples: TableFor1[Throwable with ModifiableMessage[_ <: StackDepth]] =
     Table(
@@ -185,7 +187,7 @@ class ClueSpec extends FlatSpec with Matchers {
   it should "work when used in withFixture" in {
     forAll(examples) { e => 
       val a = 
-        new org.scalatest.fixture.FunSpec {
+        new org.scalatest.funspec.FixtureAnyFunSpec {
           type FixtureParam = String
         
           override def withFixture(test: OneArgTest) = {

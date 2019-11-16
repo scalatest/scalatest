@@ -30,8 +30,10 @@ import org.scalatest.time.Second
 import org.scalatest.time.Seconds
 import java.io.PrintStream
 import java.io.ByteArrayOutputStream
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
 
-class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
+class ParallelTestExecutionSpec extends AnyFunSpec with EventHelpers {
   /*
   Need 3 tests at least
   1. should have the events reported in correct order when tests are executed in parallel
@@ -448,11 +450,11 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
     
     it("should only execute nested suites in outer instance") {
       
-      class InnerSuite extends FunSuite {
+      class InnerSuite extends AnyFunSuite {
         test("hi") { info("hi info") }
       }
       
-      class OuterSuite extends FunSuite with ParallelTestExecution {
+      class OuterSuite extends AnyFunSuite with ParallelTestExecution {
         override def nestedSuites = Vector(new InnerSuite)
         test("outer 1") { info("outer 1 info") }
         test("outer 2") { info("outer 2 info") }

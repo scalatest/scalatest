@@ -21,14 +21,16 @@ import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.propspec.AnyPropSpec
 
-class PropSpecSpec extends FunSpec {
+class PropSpecSpec extends AnyFunSpec {
 
   describe("A PropSpec") {
 
     it("should return the test names in registration order from testNames") {
       
-      val a = new PropSpec {
+      val a = new AnyPropSpec {
         property("test this") {/* ASSERTION_SUCCEED */}
         property("test that") {/* ASSERTION_SUCCEED */}
       }
@@ -37,13 +39,13 @@ class PropSpecSpec extends FunSpec {
         a.testNames.iterator.toList
       }
 
-      val b = new PropSpec {}
+      val b = new AnyPropSpec {}
 
       assertResult(List[String]()) {
         b.testNames.iterator.toList
       }
 
-      val c = new PropSpec {
+      val c = new AnyPropSpec {
         property("test that") {/* ASSERTION_SUCCEED */}
         property("test this") {/* ASSERTION_SUCCEED */}
       }
@@ -56,25 +58,25 @@ class PropSpecSpec extends FunSpec {
     it("should throw NotAllowedException if a duplicate test name registration is attempted") {
 
       intercept[DuplicateTestNameException] {
-        new PropSpec {
+        new AnyPropSpec {
           property("test this") {/* ASSERTION_SUCCEED */}
           property("test this") {/* ASSERTION_SUCCEED */}
         }
       }
       intercept[DuplicateTestNameException] {
-        new PropSpec {
+        new AnyPropSpec {
           property("test this") {/* ASSERTION_SUCCEED */}
           ignore("test this") {/* ASSERTION_SUCCEED */}
         }
       }
       intercept[DuplicateTestNameException] {
-        new PropSpec {
+        new AnyPropSpec {
           ignore("test this") {/* ASSERTION_SUCCEED */}
           ignore("test this") {/* ASSERTION_SUCCEED */}
         }
       }
       intercept[DuplicateTestNameException] {
-        new PropSpec {
+        new AnyPropSpec {
           ignore("test this") {/* ASSERTION_SUCCEED */}
           property("test this") {/* ASSERTION_SUCCEED */}
         }
@@ -82,7 +84,7 @@ class PropSpecSpec extends FunSpec {
     }
 
     it("should throw NotAllowedException if test registration is attempted after run has been invoked on a suite") {
-      class InvokedWhenNotRunningSuite extends PropSpec {
+      class InvokedWhenNotRunningSuite extends AnyPropSpec {
         var fromMethodTestExecuted = false
         var fromConstructorTestExecuted = false
         property("from constructor") {
@@ -127,7 +129,7 @@ class PropSpecSpec extends FunSpec {
     }
 
     it("should invoke withFixture from runTest") {
-      val a = new PropSpec {
+      val a = new AnyPropSpec {
         var withFixtureWasInvoked = false
         var testWasInvoked = false
         override def withFixture(test: NoArgTest): Outcome = {
@@ -147,7 +149,7 @@ class PropSpecSpec extends FunSpec {
       assert(a.testWasInvoked)
     }
     it("should pass the correct test name in the NoArgTest passed to withFixture") {
-      val a = new PropSpec {
+      val a = new AnyPropSpec {
         var correctTestNameWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctTestNameWasPassed = test.name == "something"
@@ -162,7 +164,7 @@ class PropSpecSpec extends FunSpec {
       assert(a.correctTestNameWasPassed)
     }
     it("should pass the correct config map in the NoArgTest passed to withFixture") {
-      val a = new PropSpec {
+      val a = new AnyPropSpec {
         var correctConfigMapWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
@@ -181,7 +183,7 @@ class PropSpecSpec extends FunSpec {
       it("should, when the info appears in the body before a test, report the info before the test") {
         val msg = "hi there, dude"
         val testName = "test name"
-        class MySuite extends PropSpec {
+        class MySuite extends AnyPropSpec {
           info(msg)
           property(testName) {/* ASSERTION_SUCCEED */}
         }
@@ -193,7 +195,7 @@ class PropSpecSpec extends FunSpec {
       it("should, when the info appears in the body after a test, report the info after the test runs") {
         val msg = "hi there, dude"
         val testName = "test name"
-        class MySuite extends PropSpec {
+        class MySuite extends AnyPropSpec {
           property(testName) {/* ASSERTION_SUCCEED */}
           info(msg)
         }
@@ -203,7 +205,7 @@ class PropSpecSpec extends FunSpec {
         assert(testSucceededIndex < infoProvidedIndex)
       }
       it("should print to stdout when info is called by a method invoked after the suite has been executed") {
-        class MySuite extends PropSpec {
+        class MySuite extends AnyPropSpec {
           callInfo() // This should work fine
           def callInfo(): Unit = {
             info("howdy")
@@ -220,12 +222,12 @@ class PropSpecSpec extends FunSpec {
       }
     }
     it("should run tests registered via the propertiesFor syntax") {
-      trait SharedPropSpecTests { this: PropSpec =>
+      trait SharedPropSpecTests { this: AnyPropSpec =>
         def nonEmptyStack(s: String)(i: Int): Unit = {
           property("I am shared") {/* ASSERTION_SUCCEED */}
         }
       }
-      class MySuite extends PropSpec with SharedPropSpecTests {
+      class MySuite extends AnyPropSpec with SharedPropSpecTests {
         propertiesFor(nonEmptyStack("hi")(1))
       }
       val suite = new MySuite
@@ -241,78 +243,78 @@ class PropSpecSpec extends FunSpec {
     it("should throw NullArgumentException if a null test tag is provided") {
       // test
       intercept[NullArgumentException] {
-        new PropSpec {
+        new AnyPropSpec {
           property("hi", null) {/* ASSERTION_SUCCEED */}
         }
       }
       val caught = intercept[NullArgumentException] {
-        new PropSpec {
+        new AnyPropSpec {
           property("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
         }
       }
       assert(caught.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
-        new PropSpec {
+        new AnyPropSpec {
           property("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
         }
       }
 
       // ignore
       intercept[NullArgumentException] {
-        new PropSpec {
+        new AnyPropSpec {
           ignore("hi", null) {/* ASSERTION_SUCCEED */}
         }
       }
       val caught2 = intercept[NullArgumentException] {
-        new PropSpec {
+        new AnyPropSpec {
           ignore("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
         }
       }
       assert(caught2.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
-        new PropSpec {
+        new AnyPropSpec {
           ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
         }
       }
 
       // registerTest
       intercept[NullArgumentException] {
-        new PropSpec {
+        new AnyPropSpec {
           registerTest("hi", null) {/* ASSERTION_SUCCEED */}
         }
       }
       val caught3 = intercept[NullArgumentException] {
-        new PropSpec {
+        new AnyPropSpec {
           registerTest("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
         }
       }
       assert(caught3.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
-        new PropSpec {
+        new AnyPropSpec {
           property("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
         }
       }
 
       // registerIgnoredTest
       intercept[NullArgumentException] {
-        new PropSpec {
+        new AnyPropSpec {
           registerIgnoredTest("hi", null) {/* ASSERTION_SUCCEED */}
         }
       }
       val caught4 = intercept[NullArgumentException] {
-        new PropSpec {
+        new AnyPropSpec {
           registerIgnoredTest("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
         }
       }
       assert(caught4.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
-        new PropSpec {
+        new AnyPropSpec {
           registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
         }
       }
     }
 
-    class TestWasCalledSuite extends PropSpec {
+    class TestWasCalledSuite extends AnyPropSpec {
       var theTestThisCalled = false
       var theTestThatCalled = false
       property("this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -337,7 +339,7 @@ class PropSpecSpec extends FunSpec {
 
     it("should report as ignored, and not run, tests marked ignored") {
 
-      val a = new PropSpec {
+      val a = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         property("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -352,7 +354,7 @@ class PropSpecSpec extends FunSpec {
       assert(a.theTestThisCalled)
       assert(a.theTestThatCalled)
 
-      val b = new PropSpec {
+      val b = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         ignore("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -367,7 +369,7 @@ class PropSpecSpec extends FunSpec {
       assert(!b.theTestThisCalled)
       assert(b.theTestThatCalled)
 
-      val c = new PropSpec {
+      val c = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         property("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -384,7 +386,7 @@ class PropSpecSpec extends FunSpec {
 
       // The order I want is order of appearance in the file.
       // Will try and implement that tomorrow. Subtypes will be able to change the order.
-      val d = new PropSpec {
+      val d = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         ignore("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -403,7 +405,7 @@ class PropSpecSpec extends FunSpec {
     it("should ignore a test marked as ignored if run is invoked with that testName") {
       // If I provide a specific testName to run, then it should ignore an Ignore on that test
       // method and actually invoke it.
-      val e = new PropSpec {
+      val e = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         ignore("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -422,7 +424,7 @@ class PropSpecSpec extends FunSpec {
     it("should run only those tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new PropSpec {
+      val a = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         property("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -438,7 +440,7 @@ class PropSpecSpec extends FunSpec {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new PropSpec {
+      val b = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         property("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -451,7 +453,7 @@ class PropSpecSpec extends FunSpec {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new PropSpec {
+      val c = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         property("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -464,7 +466,7 @@ class PropSpecSpec extends FunSpec {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new PropSpec {
+      val d = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         ignore("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -477,7 +479,7 @@ class PropSpecSpec extends FunSpec {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new PropSpec {
+      val e = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -494,7 +496,7 @@ class PropSpecSpec extends FunSpec {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new PropSpec {
+      val f = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -511,7 +513,7 @@ class PropSpecSpec extends FunSpec {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new PropSpec {
+      val g = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -528,7 +530,7 @@ class PropSpecSpec extends FunSpec {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new PropSpec {
+      val h = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -544,7 +546,7 @@ class PropSpecSpec extends FunSpec {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new PropSpec {
+      val i = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -560,7 +562,7 @@ class PropSpecSpec extends FunSpec {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new PropSpec {
+      val j = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -576,7 +578,7 @@ class PropSpecSpec extends FunSpec {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new PropSpec {
+      val k = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -595,7 +597,7 @@ class PropSpecSpec extends FunSpec {
     it("should run only those registered tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new PropSpec {
+      val a = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -611,7 +613,7 @@ class PropSpecSpec extends FunSpec {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new PropSpec {
+      val b = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -624,7 +626,7 @@ class PropSpecSpec extends FunSpec {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new PropSpec {
+      val c = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -637,7 +639,7 @@ class PropSpecSpec extends FunSpec {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new PropSpec {
+      val d = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerIgnoredTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -650,7 +652,7 @@ class PropSpecSpec extends FunSpec {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new PropSpec {
+      val e = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -667,7 +669,7 @@ class PropSpecSpec extends FunSpec {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new PropSpec {
+      val f = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -684,7 +686,7 @@ class PropSpecSpec extends FunSpec {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new PropSpec {
+      val g = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -701,7 +703,7 @@ class PropSpecSpec extends FunSpec {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new PropSpec {
+      val h = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -717,7 +719,7 @@ class PropSpecSpec extends FunSpec {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new PropSpec {
+      val i = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -733,7 +735,7 @@ class PropSpecSpec extends FunSpec {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new PropSpec {
+      val j = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -749,7 +751,7 @@ class PropSpecSpec extends FunSpec {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new PropSpec {
+      val k = new AnyPropSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -767,26 +769,26 @@ class PropSpecSpec extends FunSpec {
     
     it("should return the correct test count from its expectedTestCount method") {
 
-      val a = new PropSpec {
+      val a = new AnyPropSpec {
         property("test this") {/* ASSERTION_SUCCEED */}
         property("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(a.expectedTestCount(Filter()) == 2)
 
-      val b = new PropSpec {
+      val b = new AnyPropSpec {
         ignore("test this") {/* ASSERTION_SUCCEED */}
         property("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(b.expectedTestCount(Filter()) == 1)
 
-      val c = new PropSpec {
+      val c = new AnyPropSpec {
         property("test this", mytags.FastAsLight) {/* ASSERTION_SUCCEED */}
         property("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) == 1)
 
-      val d = new PropSpec {
+      val d = new AnyPropSpec {
         property("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         property("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         property("test the other thing") {/* ASSERTION_SUCCEED */}
@@ -796,7 +798,7 @@ class PropSpecSpec extends FunSpec {
       assert(d.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) == 1)
       assert(d.expectedTestCount(Filter()) === 3)
 
-      val e = new PropSpec {
+      val e = new AnyPropSpec {
         property("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         property("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         ignore("test the other thing") {/* ASSERTION_SUCCEED */}
@@ -811,26 +813,26 @@ class PropSpecSpec extends FunSpec {
     }
     it("should return the correct test count from its expectedTestCount method when uses registerTest and registerIgnoredTest to register tests") {
 
-      val a = new PropSpec {
+      val a = new AnyPropSpec {
         registerTest("test this") {/* ASSERTION_SUCCEED */}
         registerTest("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(a.expectedTestCount(Filter()) == 2)
 
-      val b = new PropSpec {
+      val b = new AnyPropSpec {
         registerIgnoredTest("test this") {/* ASSERTION_SUCCEED */}
         registerTest("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(b.expectedTestCount(Filter()) == 1)
 
-      val c = new PropSpec {
+      val c = new AnyPropSpec {
         registerTest("test this", mytags.FastAsLight) {/* ASSERTION_SUCCEED */}
         registerTest("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) == 1)
 
-      val d = new PropSpec {
+      val d = new AnyPropSpec {
         registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         registerTest("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         registerTest("test the other thing") {/* ASSERTION_SUCCEED */}
@@ -840,7 +842,7 @@ class PropSpecSpec extends FunSpec {
       assert(d.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) == 1)
       assert(d.expectedTestCount(Filter()) == 3)
 
-      val e = new PropSpec {
+      val e = new AnyPropSpec {
         registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         registerTest("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         registerIgnoredTest("test the other thing") {/* ASSERTION_SUCCEED */}
@@ -854,7 +856,7 @@ class PropSpecSpec extends FunSpec {
       assert(f.expectedTestCount(Filter()) == 10)
     }
     it("should generate a TestPending message when the test body is (pending)") {
-      val a = new PropSpec {
+      val a = new AnyPropSpec {
 
         property("should do this") (pending)
 
@@ -874,7 +876,7 @@ class PropSpecSpec extends FunSpec {
     }
     it("should generate a test failure if a Throwable, or an Error other than direct Error subtypes " +
             "known in JDK 1.5, excluding AssertionError") {
-      val a = new PropSpec {
+      val a = new AnyPropSpec {
         property("throws AssertionError") { throw new AssertionError }
         property("throws plain old Error") { throw new Error }
         property("throws Throwable") { throw new Throwable }
@@ -887,7 +889,7 @@ class PropSpecSpec extends FunSpec {
     // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
-      val a = new PropSpec {
+      val a = new AnyPropSpec {
         property("throws AssertionError") { throw new OutOfMemoryError }
       }
       intercept[OutOfMemoryError] {
@@ -899,7 +901,7 @@ class PropSpecSpec extends FunSpec {
 
       it("should, if they call a nested it from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySuite extends PropSpec {
+        class MySuite extends AnyPropSpec {
           property("should blow up") {
             property("should never run") {
               assert(1 === 1)
@@ -913,7 +915,7 @@ class PropSpecSpec extends FunSpec {
       }
       it("should, if they call a nested it with tags from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySuite extends PropSpec {
+        class MySuite extends AnyPropSpec {
           property("should blow up") {
             property("should never run", mytags.SlowAsMolasses) {
               assert(1 == 1)
@@ -927,7 +929,7 @@ class PropSpecSpec extends FunSpec {
       }
       it("should, if they call a nested registerTest with tags from within a registerTest clause, result in a TestFailedException when running the test") {
 
-        class MySuite extends PropSpec {
+        class MySuite extends AnyPropSpec {
           registerTest("should blow up") {
             registerTest("should never run", mytags.SlowAsMolasses) {
               assert(1 == 1)
@@ -941,7 +943,7 @@ class PropSpecSpec extends FunSpec {
       }
       it("should, if they call a nested ignore from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySuite extends PropSpec {
+        class MySuite extends AnyPropSpec {
           property("should blow up") {
             ignore("should never run") {
               assert(1 === 1)
@@ -955,7 +957,7 @@ class PropSpecSpec extends FunSpec {
       }
       it("should, if they call a nested ignore with tags from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySuite extends PropSpec {
+        class MySuite extends AnyPropSpec {
           property("should blow up") {
             ignore("should never run", mytags.SlowAsMolasses) {
               assert(1 === 1)
@@ -969,7 +971,7 @@ class PropSpecSpec extends FunSpec {
       }
       it("should, if they call a nested registerIgnoredTest with tags from within a registerTest clause, result in a TestFailedException when running the test") {
 
-        class MySuite extends PropSpec {
+        class MySuite extends AnyPropSpec {
           registerTest("should blow up") {
             registerIgnoredTest("should never run", mytags.SlowAsMolasses) {
               assert(1 === 1)
@@ -984,7 +986,7 @@ class PropSpecSpec extends FunSpec {
     }
 
     it("should throw IllegalArgumentException if passed a testName that doesn't exist") {
-      class MySuite extends PropSpec {
+      class MySuite extends AnyPropSpec {
         property("one") {/* ASSERTION_SUCCEED */}
         property("two") {/* ASSERTION_SUCCEED */}
       }
@@ -995,7 +997,7 @@ class PropSpecSpec extends FunSpec {
     }
 
     it("should allow test registration with registerTest and registerIgnoredTest") {
-      class TestSpec extends PropSpec {
+      class TestSpec extends AnyPropSpec {
         val a = 1
         registerTest("test 1") {
           val e = intercept[TestFailedException] {
@@ -1036,7 +1038,7 @@ class PropSpecSpec extends FunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends PropSpec with expectations.Expectations {
+      class TestSpec extends AnyPropSpec with expectations.Expectations {
         property("fail scenario") {
           expect(1 === 2); /* ASSERTION_SUCCEED */
         }
@@ -1058,7 +1060,7 @@ class PropSpecSpec extends FunSpec {
   describe("when failure happens") {
     
     it("should fire TestFailed event with correct stack depth info when test failed") {
-      class TestSpec extends PropSpec {
+      class TestSpec extends AnyPropSpec {
         property("fail scenario") {
           assert(1 === 2)
         }
@@ -1072,7 +1074,7 @@ class PropSpecSpec extends FunSpec {
     }
     
     it("should generate TestRegistrationClosedException with correct stack depth info when has a property nested inside a property") {
-      class TestSpec extends PropSpec {
+      class TestSpec extends AnyPropSpec {
         var registrationClosedThrown = false
         property("a scenario") {
           property("nested scenario") {
@@ -1103,7 +1105,7 @@ class PropSpecSpec extends FunSpec {
     }
 
     it("should generate TestRegistrationClosedException with correct stack depth info when has an ignore nested inside a property") {
-      class TestSpec extends PropSpec {
+      class TestSpec extends AnyPropSpec {
         var registrationClosedThrown = false
         property("a scenario") {
           ignore("nested scenario") {
@@ -1134,7 +1136,7 @@ class PropSpecSpec extends FunSpec {
     }
 
     it("should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest") {
-      class TestSpec extends PropSpec {
+      class TestSpec extends AnyPropSpec {
         var registrationClosedThrown = false
         registerTest("a scenario") {
           registerTest("nested scenario") {
@@ -1165,7 +1167,7 @@ class PropSpecSpec extends FunSpec {
     }
 
     it("should generate TestRegistrationClosedException with correct stack depth info when has a registerIgnoredTest nested inside a registerTest") {
-      class TestSpec extends PropSpec {
+      class TestSpec extends AnyPropSpec {
         var registrationClosedThrown = false
         registerTest("a scenario") {
           registerIgnoredTest("nested scenario") {
@@ -1196,7 +1198,7 @@ class PropSpecSpec extends FunSpec {
     }
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected") {
-      class TestSpec extends PropSpec {
+      class TestSpec extends AnyPropSpec {
         property("test 1") {}
         property("test 1") {}
       }
@@ -1209,7 +1211,7 @@ class PropSpecSpec extends FunSpec {
     }
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected using ignore") {
-      class TestSpec extends PropSpec {
+      class TestSpec extends AnyPropSpec {
         property("test 1") {}
         ignore("test 1") {}
       }

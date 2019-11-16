@@ -23,8 +23,11 @@ import java.util.concurrent.atomic.AtomicBoolean
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.NotAllowedException
 import time.{Millis, Span}
+import org.scalatest.funsuite
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class ConductorSuite extends FunSuite with Matchers with Conductors with SeveredStackTraces {
+class ConductorSuite extends AnyFunSuite with Matchers with Conductors with SeveredStackTraces {
 
   test("if conduct is called twice, the second time it throws an NotAllowedException") {
     val conductor = new Conductor
@@ -143,7 +146,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
 
   test("first exception thrown is reported") {
     val e = new RuntimeException("howdy")
-    class MySuite extends FunSuite {
+    class MySuite extends AnyFunSuite {
       test("this will fail") {
         val conductor = new Conductor
         import conductor._
@@ -297,7 +300,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
 
   test("ConductorFixture is a stackable trait that delegates test function execution to withFixture(NoArgTest)") {
     var calledSuperWithFixtureNoArgTest = false
-    class MySpec extends fixture.FunSuite with ConductorFixture {
+    class MySpec extends funsuite.FixtureAnyFunSuite with ConductorFixture {
       override def withFixture(test: NoArgTest): Outcome = {
         calledSuperWithFixtureNoArgTest = true
         super.withFixture(test)
@@ -318,7 +321,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
         super.withFixture(test)
       }
     }
-    class MySpec extends FunSuite with SuperTrait with ConductorMethods {
+    class MySpec extends AnyFunSuite with SuperTrait with ConductorMethods {
       test("one") {}
     }
 
@@ -330,7 +333,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
   // The next 3 tests just make sure things work when calling the other overloaded conduct methods
   test("first exception thrown is reported when calling conduct(timeout, interval)") {
     val e = new RuntimeException("howdy")
-    class MySuite extends FunSuite {
+    class MySuite extends AnyFunSuite {
       test("this will fail") {
         val conductor = new Conductor
         import conductor._
@@ -355,7 +358,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
 
   test("first exception thrown is reported when calling conduct(interval)") {
     val e = new RuntimeException("howdy")
-    class MySuite extends FunSuite {
+    class MySuite extends AnyFunSuite {
       test("this will fail") {
         val conductor = new Conductor
         import conductor._
@@ -380,7 +383,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
 
   test("first exception thrown is reported when calling conduct(timeout)") {
     val e = new RuntimeException("howdy")
-    class MySuite extends FunSuite {
+    class MySuite extends AnyFunSuite {
       test("this will fail") {
         val conductor = new Conductor
         import conductor._

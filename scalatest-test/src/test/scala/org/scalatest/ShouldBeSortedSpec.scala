@@ -15,14 +15,15 @@
  */
 package org.scalatest
 
-import Matchers._
 import org.scalactic.Prettifier
 import FailureMessages.decorateToStringValue
 import SharedHelpers.thisLineNumber
 import enablers.Sortable
 import exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeSortedSpec extends FunSpec {
+class ShouldBeSortedSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
   

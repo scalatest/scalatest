@@ -23,6 +23,15 @@ import org.scalatest.refspec.RefSpec
 import org.scalatestplus.testng.TestNGSuite
 // SKIP-SCALATESTJS,NATIVE-END
 import SharedHelpers._
+import org.scalatest
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 
 class FilterProp extends SuiteProp {
   
@@ -46,7 +55,7 @@ class FilterProp extends SuiteProp {
   def suite = new Suite {
     override def nestedSuites = Vector(new Suite {})
   }
-  def fixtureSuite = new fixture.TestSuite with StringFixture {
+  def fixtureSuite = new scalatest.FixtureTestSuite with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
   def junit3Suite = new JUnit3Suite {
@@ -62,46 +71,46 @@ class FilterProp extends SuiteProp {
     override def nestedSuites = Vector(new Suite {})
   }
   // SKIP-SCALATESTJS,NATIVE-END
-  def funSuite = new FunSuite {
+  def funSuite = new AnyFunSuite {
     override def nestedSuites = Vector(new Suite {})
   }
-  def fixtureFunSuite = new fixture.FunSuite with StringFixture {
+  def fixtureFunSuite = new funsuite.FixtureAnyFunSuite with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
-  def funSpec = new FunSpec {
+  def funSpec = new AnyFunSpec {
     override def nestedSuites = Vector(new Suite {})
   }
-  def fixtureFunSpec = new fixture.FunSpec with StringFixture {
+  def fixtureFunSpec = new funspec.FixtureAnyFunSpec with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
-  def featureSpec = new FeatureSpec {
+  def featureSpec = new AnyFeatureSpec {
     override def nestedSuites = Vector(new Suite {})
   }
-  def fixtureFeatureSpec = new fixture.FeatureSpec with StringFixture {
+  def fixtureFeatureSpec = new featurespec.FixtureAnyFeatureSpec with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
-  def flatSpec = new FlatSpec {
+  def flatSpec = new AnyFlatSpec {
     override def nestedSuites = Vector(new Suite {})
   }
-  def fixtureFlatSpec = new fixture.FlatSpec with StringFixture {
+  def fixtureFlatSpec = new flatspec.FixtureAnyFlatSpec with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
-  def freeSpec = new FreeSpec {
+  def freeSpec = new AnyFreeSpec {
     override def nestedSuites = Vector(new Suite {})
   }
-  def fixtureFreeSpec = new fixture.FreeSpec with StringFixture {
+  def fixtureFreeSpec = new freespec.FixtureAnyFreeSpec with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
-  def propSpec = new PropSpec {
+  def propSpec = new AnyPropSpec {
     override def nestedSuites = Vector(new Suite {})
   }
-  def fixturePropSpec = new fixture.PropSpec with StringFixture {
+  def fixturePropSpec = new propspec.FixtureAnyPropSpec with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
-  def wordSpec = new WordSpec {
+  def wordSpec = new AnyWordSpec {
     override def nestedSuites = Vector(new Suite {})
   }
-  def fixtureWordSpec = new fixture.WordSpec with StringFixture {
+  def fixtureWordSpec = new wordspec.FixtureAnyWordSpec with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
 }

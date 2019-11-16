@@ -16,10 +16,11 @@
 package org.scalatest
 
 import scala.collection.immutable.TreeSet
-import Matchers._
 import org.scalactic.Prettifier
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers._
 
-class FailureMessagesSuite extends FunSuite {
+class FailureMessagesSuite extends AnyFunSuite {
 
   private val prettifier = Prettifier.default
 

@@ -18,6 +18,7 @@ package org.scalatest.tools
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest._
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.funspec.AnyFunSpec
 
 /*
 I can't get this to work and have no more time. Will make nestedSuiteNames package access.
@@ -33,7 +34,7 @@ object DiscoverySuiteCompanionFriend {
 }
 */
 
-class DiscoverySuiteSuite extends FunSpec {
+class DiscoverySuiteSuite extends AnyFunSpec {
   
   val loader = DiscoverySuite.getClass.getClassLoader
 

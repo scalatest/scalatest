@@ -15,9 +15,11 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest.{ Matchers, StringFixture }
+import org.scalatest.StringFixture
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.FixtureAnyWordSpec
 
-class WordSpecMixedInMatchersSpec extends WordSpec with Matchers with StringFixture {
+class WordSpecMixedInMatchersSpec extends FixtureAnyWordSpec with Matchers with StringFixture {
   "This spec" should {
     "work OK" in { _ =>
       "hello" should startWith ("he")

@@ -19,8 +19,9 @@ import org.scalatest._
 import java.util.regex.Pattern
 import java.net.URL
 import java.io.File
+import org.scalatest.funspec.AnyFunSpec
 
-class ScalaTestAntTaskSpec extends FunSpec {
+class ScalaTestAntTaskSpec extends AnyFunSpec {
 
   it("command line args should get generated for <test> elements") {
     val task = new ScalaTestAntTask

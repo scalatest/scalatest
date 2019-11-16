@@ -15,11 +15,12 @@
  */
 package org.scalatest
 
-import Matchers._
 import java.util.{HashMap => JHashMap}
 import java.util.{Map => JMap}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._ 
 
-class EntrySpec extends FunSpec {
+class EntrySpec extends AnyFunSpec {
 
   describe("An org.scalatest.Entry") {
     it("can be compared against an Entry coming from a java.util.Map") {

@@ -16,8 +16,9 @@
 package org.scalatest
 
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalatest.funspec.AnyFunSpec
 
-class ShouldBehaveLikeSpec extends FunSpec {
+class ShouldBehaveLikeSpec extends AnyFunSpec {
 
   def myFirstBehavior(i: Int): Unit = {
     it("This one is should blow up") {}

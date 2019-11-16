@@ -24,13 +24,15 @@ import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest._
 import Inside._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
 
 // SKIP-SCALATESTJS,NATIVE-START
 @RunWith(classOf[JUnitRunner])
 // SKIP-SCALATESTJS,NATIVE-END
-class LocationSpec extends FunSpec {
+class LocationSpec extends AnyFunSpec {
   
-  class TestLocationFunSuite extends FunSuite {
+  class TestLocationFunSuite extends AnyFunSuite {
     test("succeed") {
       
     }

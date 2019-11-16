@@ -16,10 +16,11 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
-import Matchers._
 import exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeDefinedAtForAllSpec extends FunSpec {
+class ShouldBeDefinedAtForAllSpec extends AnyFunSpec {
   
   def wasDefinedAt(left: Any, right: Any): String = 
     left + " was defined at " + right

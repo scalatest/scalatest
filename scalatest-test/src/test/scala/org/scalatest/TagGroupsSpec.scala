@@ -17,7 +17,9 @@ package org.scalatest
 
 import tagobjects._
 import SharedHelpers._
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers._
 
 /*
 This just tests a trait, TagGroups, that I created to answer a user query about
@@ -25,7 +27,7 @@ grouping tags. I probably won't put this into ScalaTest proper to keep tagging
 simple, but I'll leave this in the repo as an example for folks who want to do
 something like this. - bv
 */
-class TagGroupsSpec extends FunSpec {
+class TagGroupsSpec extends AnyFunSpec {
 
   trait TagGroups extends SuiteMixin { this: Suite =>
 
@@ -57,7 +59,7 @@ class TagGroupsSpec extends FunSpec {
     }
   }
 
-  class ExampleSpec extends FunSuite with TagGroups {
+  class ExampleSpec extends AnyFunSuite with TagGroups {
     test("slow", Slow) {
       1 + 1 shouldEqual 2
     }

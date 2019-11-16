@@ -23,10 +23,11 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import org.scalactic.TripleEquals
 import org.scalactic.TypeCheckedTripleEquals
-import Matchers._
 import exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
+class ShouldTripleEqualsSpec extends AnyFunSpec with NonImplicitAssertions {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)

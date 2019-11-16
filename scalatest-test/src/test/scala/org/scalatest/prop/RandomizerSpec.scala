@@ -15,10 +15,10 @@
  */
 package org.scalatest.prop
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class RandomizerSpec extends FunSpec with Matchers {
+class RandomizerSpec extends AnyFunSpec with Matchers {
 
   describe("A Randomizer") {
     it("should offer a nextInt method that produces the same values as java.util.Random given the same seed") {

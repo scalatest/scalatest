@@ -16,8 +16,10 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class LengthWordSpec extends FunSpec with Matchers {
+class LengthWordSpec extends AnyFunSpec with Matchers {
   
   describe("LengthWord ") {
     

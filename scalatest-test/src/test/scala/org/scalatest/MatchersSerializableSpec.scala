@@ -19,8 +19,10 @@ import matchers.{AMatcher, AnMatcher}
 import exceptions.TestFailedException
 import SharedHelpers.serializeRoundtrip
 import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class MatchersSerializableSpec extends FunSpec {
+class MatchersSerializableSpec extends AnyFunSpec {
 
   import Matchers._
 

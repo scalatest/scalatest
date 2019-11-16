@@ -19,9 +19,10 @@ import org.scalactic.Equality
 import org.scalactic.Explicitly
 import org.scalactic.Prettifier
 import SharedHelpers._
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class TheSameElementsInOrderAsContainMatcherEqualitySpec extends FunSpec with Explicitly {
+class TheSameElementsInOrderAsContainMatcherEqualitySpec extends AnyFunSpec with Explicitly {
 
   private val prettifier = Prettifier.default
 

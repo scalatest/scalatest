@@ -17,8 +17,10 @@ package org.scalatest
 package prop
 
 import org.scalatest.prop.Configuration._
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class PropertyCheckConfigurationSuite extends FunSuite with Matchers {
+class PropertyCheckConfigurationSuite extends AnyFunSuite with Matchers {
 
   test("minSuccessful will not compile if less than 1") {
     "PropertyCheckConfiguration(minSuccessful = 0)"  shouldNot compile

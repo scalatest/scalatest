@@ -18,11 +18,12 @@ package org.scalatest
 import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResult}
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import Matchers._
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldNotShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMatchers {
+class ShouldNotShorthandSpec extends AnyFunSpec with EmptyMocks with BookPropertyMatchers {
 
   private val prettifier = Prettifier.default
 

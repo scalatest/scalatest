@@ -28,6 +28,14 @@ import org.scalatest.tools.TestSortingReporter
 import org.testng.annotations.{Test => TestNG }
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
 class CatchReporterProp extends AllSuiteProp {
@@ -422,7 +430,7 @@ class ExampleCatchReporterTestNGSuite extends TestNGSuite with CatchReporterFixt
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFunSuite extends FunSuite with CatchReporterFixtureServices {
+class ExampleCatchReporterFunSuite extends AnyFunSuite with CatchReporterFixtureServices {
   test("Test 1") {}
   test("Test 2") {}
   test("Test 3") {}
@@ -430,7 +438,7 @@ class ExampleCatchReporterFunSuite extends FunSuite with CatchReporterFixtureSer
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFixtureFunSuite extends fixture.FunSuite with CatchReporterFixtureServices with StringFixture {
+class ExampleCatchReporterFixtureFunSuite extends funsuite.FixtureAnyFunSuite with CatchReporterFixtureServices with StringFixture {
   test("Test 1") {s =>}
   test("Test 2") {s =>}
   test("Test 3") {s =>}
@@ -438,7 +446,7 @@ class ExampleCatchReporterFixtureFunSuite extends fixture.FunSuite with CatchRep
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFunSpec extends FunSpec with CatchReporterFixtureServices {
+class ExampleCatchReporterFunSpec extends AnyFunSpec with CatchReporterFixtureServices {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}
@@ -448,7 +456,7 @@ class ExampleCatchReporterFunSpec extends FunSpec with CatchReporterFixtureServi
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFixtureFunSpec extends fixture.FunSpec with CatchReporterFixtureServices with StringFixture {
+class ExampleCatchReporterFixtureFunSpec extends funspec.FixtureAnyFunSpec with CatchReporterFixtureServices with StringFixture {
   describe("Scope 1") {
     it("Test 1") {s =>}
     it("Test 2") {s =>}
@@ -458,7 +466,7 @@ class ExampleCatchReporterFixtureFunSpec extends fixture.FunSpec with CatchRepor
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFeatureSpec extends FeatureSpec with CatchReporterFixtureServices {
+class ExampleCatchReporterFeatureSpec extends AnyFeatureSpec with CatchReporterFixtureServices {
   Feature("Feature 1") {
     Scenario("Scenario 1") {}
     Scenario("Scenario 2") {}
@@ -468,7 +476,7 @@ class ExampleCatchReporterFeatureSpec extends FeatureSpec with CatchReporterFixt
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFixtureFeatureSpec extends fixture.FeatureSpec with CatchReporterFixtureServices with StringFixture {
+class ExampleCatchReporterFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with CatchReporterFixtureServices with StringFixture {
   Feature("Feature 1") {
     Scenario("Scenario 1") {s =>}
     Scenario("Scenario 2") {s =>}
@@ -478,7 +486,7 @@ class ExampleCatchReporterFixtureFeatureSpec extends fixture.FeatureSpec with Ca
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFlatSpec extends FlatSpec with CatchReporterFixtureServices {
+class ExampleCatchReporterFlatSpec extends AnyFlatSpec with CatchReporterFixtureServices {
   "Scope 1" should "do thing 1" in {}
   it should "do thing 2" in {}
   it should "do thing 3" in {}
@@ -486,7 +494,7 @@ class ExampleCatchReporterFlatSpec extends FlatSpec with CatchReporterFixtureSer
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFixtureFlatSpec extends fixture.FlatSpec with CatchReporterFixtureServices with StringFixture {
+class ExampleCatchReporterFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with CatchReporterFixtureServices with StringFixture {
   "Scope 1" should "do thing 1" in {s =>}
   it should "do thing 2" in {s =>}
   it should "do thing 3" in {s =>}
@@ -494,7 +502,7 @@ class ExampleCatchReporterFixtureFlatSpec extends fixture.FlatSpec with CatchRep
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFreeSpec extends FreeSpec with CatchReporterFixtureServices {
+class ExampleCatchReporterFreeSpec extends AnyFreeSpec with CatchReporterFixtureServices {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -504,7 +512,7 @@ class ExampleCatchReporterFreeSpec extends FreeSpec with CatchReporterFixtureSer
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFixtureFreeSpec extends fixture.FreeSpec with CatchReporterFixtureServices with StringFixture {
+class ExampleCatchReporterFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with CatchReporterFixtureServices with StringFixture {
   "Scope 1" - {
     "Test 1" in {s =>}
     "Test 2" in {s =>}
@@ -514,7 +522,7 @@ class ExampleCatchReporterFixtureFreeSpec extends fixture.FreeSpec with CatchRep
 }
 
 @DoNotDiscover
-class ExampleCatchReporterPropSpec extends PropSpec with CatchReporterFixtureServices {
+class ExampleCatchReporterPropSpec extends AnyPropSpec with CatchReporterFixtureServices {
   property("Test 1") {}
   property("Test 2") {}
   property("Test 3") {}
@@ -522,7 +530,7 @@ class ExampleCatchReporterPropSpec extends PropSpec with CatchReporterFixtureSer
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFixturePropSpec extends fixture.PropSpec with CatchReporterFixtureServices with StringFixture {
+class ExampleCatchReporterFixturePropSpec extends propspec.FixtureAnyPropSpec with CatchReporterFixtureServices with StringFixture {
   property("Test 1") {s =>}
   property("Test 2") {s =>}
   property("Test 3") {s =>}
@@ -530,7 +538,7 @@ class ExampleCatchReporterFixturePropSpec extends fixture.PropSpec with CatchRep
 }
 
 @DoNotDiscover
-class ExampleCatchReporterWordSpec extends WordSpec with CatchReporterFixtureServices {
+class ExampleCatchReporterWordSpec extends AnyWordSpec with CatchReporterFixtureServices {
   "Scope 1" should {
     "Test 1" in {}
     "Test 2" in {}
@@ -540,7 +548,7 @@ class ExampleCatchReporterWordSpec extends WordSpec with CatchReporterFixtureSer
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFixtureWordSpec extends fixture.WordSpec with CatchReporterFixtureServices with StringFixture {
+class ExampleCatchReporterFixtureWordSpec extends wordspec.FixtureAnyWordSpec with CatchReporterFixtureServices with StringFixture {
   "Scope 1" should {
     "Test 1" in {s =>}
     "Test 2" in {s =>}
@@ -550,7 +558,7 @@ class ExampleCatchReporterFixtureWordSpec extends fixture.WordSpec with CatchRep
 }
 
 @DoNotDiscover
-class ExampleCatchReporterPathFreeSpec extends path.FreeSpec with CatchReporterFixtureServices {
+class ExampleCatchReporterPathFreeSpec extends freespec.PathAnyFreeSpec with CatchReporterFixtureServices {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -560,7 +568,7 @@ class ExampleCatchReporterPathFreeSpec extends path.FreeSpec with CatchReporterF
 }
 
 @DoNotDiscover
-class ExampleCatchReporterPathFunSpec extends path.FunSpec with CatchReporterFixtureServices {
+class ExampleCatchReporterPathFunSpec extends funspec.PathAnyFunSpec with CatchReporterFixtureServices {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}

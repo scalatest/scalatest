@@ -16,8 +16,10 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class NoExceptionWordSpec extends FunSpec with Matchers {
+class NoExceptionWordSpec extends AnyFunSpec with Matchers {
   
   describe("NoExceptionWord ") {
     

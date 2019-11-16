@@ -22,10 +22,11 @@ import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import scala.collection.mutable.ListBuffer
-import Matchers._
 import exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ListShouldContainTheSameElementsInOrderAsSpec extends FunSpec {
+class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

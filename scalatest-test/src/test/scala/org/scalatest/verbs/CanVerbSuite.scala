@@ -18,10 +18,13 @@ package org.scalatest.verbs
 import org.scalatest._
 import SharedHelpers._
 import events.TestSucceeded
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.wordspec.AnyWordSpec
 
-class CanVerbSuite extends FunSuite {
+class CanVerbSuite extends AnyFunSuite {
   test("can use can in WordSpec (which might be very convenient at times)") {
-    class MySpec extends WordSpec {
+    class MySpec extends AnyWordSpec {
       "A thingy" can {
         "do this thing" in {}
         "do that thing" in {}
@@ -36,7 +39,7 @@ class CanVerbSuite extends FunSuite {
     assert(rep.testSucceededEventsReceived.tail.head.testName === "A thingy can do that thing")
   }
   test("can use can in a FlatSpec that mixes in CanVerb") {
-    class MySpec extends FlatSpec with CanVerb {
+    class MySpec extends AnyFlatSpec with CanVerb {
       "A thingy" can "do this thing" in {}
       it can "do that thing" in {}
     }
@@ -49,7 +52,7 @@ class CanVerbSuite extends FunSuite {
     assert(rep.testSucceededEventsReceived.tail.head.testName === "A thingy can do that thing")
   }
   test("can use 'can behave like' in a FlatSpec that mixes in CanVerb") {
-    class MySpec extends FlatSpec with CanVerb {
+    class MySpec extends AnyFlatSpec with CanVerb {
       "A thingy" can "do this thing" in {}
       it can "do that thing" in {}
     }

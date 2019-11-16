@@ -17,7 +17,7 @@ package org.scalatest.tools.scalasbt
 
 import org.scalatest._
 
-class SuiteWithFailedCanceledTests extends FunSuite {
+class SuiteWithFailedCanceledTests extends funsuite.AnyFunSuite {
   test("success") {}
   ignore("ignored") {}
   test("pending") { pending }

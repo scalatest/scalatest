@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.scalatest.tools.scalasbt
-import org.scalatest.FunSuite
 import org.scalatest.DoNotDiscover
+import org.scalatest.funsuite.AnyFunSuite
 
 @DoNotDiscover
-class DoNotDiscoverSuite extends FunSuite {
+class DoNotDiscoverSuite extends AnyFunSuite {
 
   test("test 1") {
     

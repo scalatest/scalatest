@@ -22,8 +22,10 @@ import org.scalatest.events.{InfoProvided, MarkupProvided}
 import org.scalatest.exceptions.DuplicateTestNameException
 
 import scala.util.Success
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AsyncFunSuite
 
-class AsyncFunSuiteSpec extends FunSpec {
+class AsyncFunSuiteSpec extends AnyFunSpec {
 
   describe("AsyncFunSuite") {
 

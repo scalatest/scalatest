@@ -29,6 +29,7 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.refspec.{RefSpec, RefSpecLike}
 import scala.collection.immutable.TreeSet
 import Suite.CHOSEN_STYLES
+import org.scalatest.funspec.AnyFunSpec
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.NotAllowedException
@@ -322,7 +323,7 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
   }
 
   def `Suite.execute should propagate fatal error` = {
-    class ExampleSpec extends FunSpec {
+    class ExampleSpec extends AnyFunSpec {
       override def run(testName: Option[String], args: Args): Status =
         throw new VirtualMachineError("purposely") {}
     }

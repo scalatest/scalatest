@@ -15,11 +15,11 @@
  */
 package org.scalatest.tools.scalasbt
 
-import org.scalatest.FunSuite
 import org.scalatest.TagAnnotation
+import org.scalatest.funsuite.AnyFunSuite
 
 @TagAnnotation("custom")
-class CustomTaggedSuite extends FunSuite {
+class CustomTaggedSuite extends AnyFunSuite {
 
   test("test 1") {
     

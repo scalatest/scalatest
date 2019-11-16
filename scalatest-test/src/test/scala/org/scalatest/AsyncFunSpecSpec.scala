@@ -23,6 +23,7 @@ import org.scalatest.exceptions.{DuplicateTestNameException, NotAllowedException
 import org.scalactic.Prettifier
 
 import scala.util.Success
+import org.scalatest.funspec.AsyncFunSpec
 
 class AsyncFunSpecSpec extends funspec.AnyFunSpec {
 

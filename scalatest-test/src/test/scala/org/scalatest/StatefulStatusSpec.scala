@@ -17,8 +17,9 @@ package org.scalatest
 
 import OptionValues._
 import scala.util.{Try, Success}
+import org.scalatest.funspec
 
-class StatefulStatusSpec extends fixture.FunSpec {
+class StatefulStatusSpec extends funspec.FixtureAnyFunSpec {
 
   protected type FixtureParam = {
     def setCompleted()

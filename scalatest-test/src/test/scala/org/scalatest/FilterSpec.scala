@@ -19,9 +19,10 @@ import org.scalactic.exceptions.NullArgumentException
 import scala.collection.immutable.TreeSet
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
+import org.scalatest.funspec.AnyFunSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
-class FilterSpec extends FunSpec {
+class FilterSpec extends AnyFunSpec {
   
   val suite = new Suite() { override def suiteId = "testSuiteId" }
   

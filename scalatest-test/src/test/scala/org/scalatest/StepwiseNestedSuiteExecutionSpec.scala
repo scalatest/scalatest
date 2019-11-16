@@ -16,8 +16,9 @@
 package org.scalatest
 
 import SharedHelpers._
+import org.scalatest.funspec.AnyFunSpec
 
-class StepwiseNestedSuiteExecutionSpec extends FunSpec {
+class StepwiseNestedSuiteExecutionSpec extends AnyFunSpec {
   describe("the StepwiseNestedSuiteExecution trait") {
     describe("when mixed into a Suite") {
       it("should override runNestedSuites such that it calls run on nested suites in stepwise order, but with the distributor passed as is") {

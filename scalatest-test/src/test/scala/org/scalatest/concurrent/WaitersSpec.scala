@@ -25,9 +25,11 @@ import org.scalatest.tagobjects.Retryable
 import scala.concurrent.Future
 import SharedHelpers.thisLineNumber
 import time.{Span, Millis}
+import org.scalatest.funspec
+import org.scalatest.matchers.should.Matchers
 
 
-class WaitersSpec extends fixture.FunSpec with Matchers with ConductorFixture with
+class WaitersSpec extends funspec.FixtureAnyFunSpec with Matchers with ConductorFixture with
     OptionValues with Waiters {
 
   override def withFixture(test: NoArgTest) = {

@@ -18,8 +18,10 @@ package org.scalatest.matchers
 import org.scalatest._
 import org.scalactic.PrettyMethods
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class MatcherProducersSpec extends FunSpec with Matchers {
+class MatcherProducersSpec extends AnyFunSpec with Matchers {
 
   val f = be > (_: Int)
   val g = (_: String).toInt

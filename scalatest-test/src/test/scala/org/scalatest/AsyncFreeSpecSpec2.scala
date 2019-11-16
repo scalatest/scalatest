@@ -21,6 +21,7 @@ import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
+import org.scalatest.freespec.AsyncFreeSpec
 
 class AsyncFreeSpecSpec2 extends funspec.AsyncFunSpec {
 

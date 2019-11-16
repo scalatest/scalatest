@@ -17,11 +17,12 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import java.io.FileNotFoundException
-import Matchers._
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeThrownBySpec extends FunSpec {
+class ShouldBeThrownBySpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
   

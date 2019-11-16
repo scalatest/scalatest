@@ -15,10 +15,10 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.FeatureSpec
 import org.scalatest.time.{Millis, Seconds, Span}
+import org.scalatest.featurespec.AnyFeatureSpec
 
-class IntegrationPatienceSpec extends FeatureSpec with Eventually with IntegrationPatience {
+class IntegrationPatienceSpec extends AnyFeatureSpec with Eventually with IntegrationPatience {
   Feature("IntegrationPatience") {
     Scenario("User mixes in after Eventually") {
       // It should compile (had a bug where it didn't)

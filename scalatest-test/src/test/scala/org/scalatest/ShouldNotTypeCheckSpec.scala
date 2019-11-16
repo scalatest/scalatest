@@ -15,12 +15,13 @@
  */
 package org.scalatest
 
-import Matchers._
 import SharedHelpers.thisLineNumber
 import org.scalactic.Prettifier.lineSeparator
 import exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldNotTypeCheckSpec extends FunSpec {
+class ShouldNotTypeCheckSpec extends AnyFunSpec {
 
   val fileName = "ShouldNotTypeCheckSpec.scala"
 

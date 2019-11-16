@@ -25,6 +25,14 @@ import scala.collection.mutable.ListBuffer
 import org.scalatest.tools.SuiteRunner
 import SharedHelpers._
 import org.scalatest.refspec.RefSpec
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 
 class DeprecatedStatusProp extends AllSuiteProp {
   
@@ -179,7 +187,7 @@ class ExampleStatusTestNGSuite extends TestNGSuite with StatusFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleStatusFunSuite extends FunSuite with StatusFixtureServices with ParallelTestExecution {
+class ExampleStatusFunSuite extends AnyFunSuite with StatusFixtureServices with ParallelTestExecution {
   test("Test 1") {}
   test("Test 2") { throw new VirtualMachineError {} }
   test("Test 3") {}
@@ -187,7 +195,7 @@ class ExampleStatusFunSuite extends FunSuite with StatusFixtureServices with Par
 }
 
 @DoNotDiscover
-class ExampleStatusFixtureFunSuite extends fixture.FunSuite with StatusFixtureServices with StringFixture with ParallelTestExecution {
+class ExampleStatusFixtureFunSuite extends funsuite.FixtureAnyFunSuite with StatusFixtureServices with StringFixture with ParallelTestExecution {
   test("Test 1") {s =>}
   test("Test 2") {s => throw new VirtualMachineError {} }
   test("Test 3") {s =>}
@@ -195,7 +203,7 @@ class ExampleStatusFixtureFunSuite extends fixture.FunSuite with StatusFixtureSe
 }
 
 @DoNotDiscover
-class ExampleStatusFunSpec extends FunSpec with StatusFixtureServices with ParallelTestExecution {
+class ExampleStatusFunSpec extends AnyFunSpec with StatusFixtureServices with ParallelTestExecution {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") { throw new VirtualMachineError {} }
@@ -205,7 +213,7 @@ class ExampleStatusFunSpec extends FunSpec with StatusFixtureServices with Paral
 }
 
 @DoNotDiscover
-class ExampleStatusFixtureFunSpec extends fixture.FunSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
+class ExampleStatusFixtureFunSpec extends funspec.FixtureAnyFunSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
   describe("Scope 1") {
     it("Test 1") {s =>}
     it("Test 2") {s => throw new VirtualMachineError {}}
@@ -215,27 +223,27 @@ class ExampleStatusFixtureFunSpec extends fixture.FunSpec with StatusFixtureServ
 }
 
 @DoNotDiscover
-class ExampleStatusFeatureSpec extends FeatureSpec with StatusFixtureServices with ParallelTestExecution {
-  feature("Feature 1") {
-    scenario("Scenario 1") {}
-    scenario("Scenario 2") { throw new VirtualMachineError {} }
-    scenario("Scenario 3") {}
+class ExampleStatusFeatureSpec extends AnyFeatureSpec with StatusFixtureServices with ParallelTestExecution {
+  Feature("Feature 1") {
+    Scenario("Scenario 1") {}
+    Scenario("Scenario 2") { throw new VirtualMachineError {} }
+    Scenario("Scenario 3") {}
   }
   val testNameToRun = "Feature: Feature 1 Scenario: Scenario 2"
 }
 
 @DoNotDiscover
-class ExampleStatusFixtureFeatureSpec extends fixture.FeatureSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
-  feature("Feature 1") {
-    scenario("Scenario 1") {s =>}
-    scenario("Scenario 2") {s => throw new VirtualMachineError {}}
-    scenario("Scenario 3") {s =>}
+class ExampleStatusFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
+  Feature("Feature 1") {
+    Scenario("Scenario 1") {s =>}
+    Scenario("Scenario 2") {s => throw new VirtualMachineError {}}
+    Scenario("Scenario 3") {s =>}
   }
   val testNameToRun = "Feature: Feature 1 Scenario: Scenario 2"
 }
 
 @DoNotDiscover
-class ExampleStatusFlatSpec extends FlatSpec with StatusFixtureServices with ParallelTestExecution {
+class ExampleStatusFlatSpec extends AnyFlatSpec with StatusFixtureServices with ParallelTestExecution {
   "Scope 1" should "do thing 1" in {}
   it should "do thing 2" in {throw new VirtualMachineError {}}
   it should "do thing 3" in {}
@@ -243,7 +251,7 @@ class ExampleStatusFlatSpec extends FlatSpec with StatusFixtureServices with Par
 }
 
 @DoNotDiscover
-class ExampleStatusFixtureFlatSpec extends fixture.FlatSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
+class ExampleStatusFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" should "do thing 1" in {s =>}
   it should "do thing 2" in {s =>throw new VirtualMachineError {}}
   it should "do thing 3" in {s =>}
@@ -251,7 +259,7 @@ class ExampleStatusFixtureFlatSpec extends fixture.FlatSpec with StatusFixtureSe
 }
 
 @DoNotDiscover
-class ExampleStatusFreeSpec extends FreeSpec with StatusFixtureServices with ParallelTestExecution {
+class ExampleStatusFreeSpec extends AnyFreeSpec with StatusFixtureServices with ParallelTestExecution {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {throw new VirtualMachineError {}}
@@ -261,7 +269,7 @@ class ExampleStatusFreeSpec extends FreeSpec with StatusFixtureServices with Par
 }
 
 @DoNotDiscover
-class ExampleStatusFixtureFreeSpec extends fixture.FreeSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
+class ExampleStatusFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" - {
     "Test 1" in {s =>}
     "Test 2" in {s =>throw new VirtualMachineError {}}
@@ -271,7 +279,7 @@ class ExampleStatusFixtureFreeSpec extends fixture.FreeSpec with StatusFixtureSe
 }
 
 @DoNotDiscover
-class ExampleStatusPropSpec extends PropSpec with StatusFixtureServices with ParallelTestExecution {
+class ExampleStatusPropSpec extends AnyPropSpec with StatusFixtureServices with ParallelTestExecution {
   property("Test 1") {}
   property("Test 2") {throw new VirtualMachineError {}}
   property("Test 3") {}
@@ -279,7 +287,7 @@ class ExampleStatusPropSpec extends PropSpec with StatusFixtureServices with Par
 }
 
 @DoNotDiscover
-class ExampleStatusFixturePropSpec extends fixture.PropSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
+class ExampleStatusFixturePropSpec extends propspec.FixtureAnyPropSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
   property("Test 1") {s =>}
   property("Test 2") {s =>throw new VirtualMachineError {}}
   property("Test 3") {s =>}
@@ -287,7 +295,7 @@ class ExampleStatusFixturePropSpec extends fixture.PropSpec with StatusFixtureSe
 }
 
 @DoNotDiscover
-class ExampleStatusWordSpec extends WordSpec with StatusFixtureServices with ParallelTestExecution {
+class ExampleStatusWordSpec extends AnyWordSpec with StatusFixtureServices with ParallelTestExecution {
   "Scope 1" should {
     "Test 1" in {}
     "Test 2" in {throw new VirtualMachineError {}}
@@ -297,7 +305,7 @@ class ExampleStatusWordSpec extends WordSpec with StatusFixtureServices with Par
 }
 
 @DoNotDiscover
-class ExampleStatusFixtureWordSpec extends fixture.WordSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
+class ExampleStatusFixtureWordSpec extends wordspec.FixtureAnyWordSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" should {
     "Test 1" in {s =>}
     "Test 2" in {s =>throw new VirtualMachineError {}}
@@ -307,7 +315,7 @@ class ExampleStatusFixtureWordSpec extends fixture.WordSpec with StatusFixtureSe
 }
 
 @DoNotDiscover
-class ExampleStatusPathFreeSpec extends path.FreeSpec with StatusFixtureServices {
+class ExampleStatusPathFreeSpec extends freespec.PathAnyFreeSpec with StatusFixtureServices {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {throw new VirtualMachineError {}}
@@ -318,7 +326,7 @@ class ExampleStatusPathFreeSpec extends path.FreeSpec with StatusFixtureServices
 }
 
 @DoNotDiscover
-class ExampleStatusPathFunSpec extends path.FunSpec with StatusFixtureServices {
+class ExampleStatusPathFunSpec extends funspec.PathAnyFunSpec with StatusFixtureServices {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {throw new VirtualMachineError {}}

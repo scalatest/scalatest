@@ -16,8 +16,10 @@
 package org.scalatest
 
 import SharedHelpers.EventRecordingReporter
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
 
-class TestsBeforeNestedSuitesSpec extends FunSpec {
+class TestsBeforeNestedSuitesSpec extends AnyFunSpec {
 
   var testHasBeenRun: Boolean = false
   var nestedSuiteWasRunLater: Boolean = false
@@ -25,13 +27,13 @@ class TestsBeforeNestedSuitesSpec extends FunSpec {
   describe("TestBeforeNestedSuiteSpec") {
 
     it("should run test first before nested suite(s)") {
-      class TestSpec extends FunSuite with TestsBeforeNestedSuites {
+      class TestSpec extends AnyFunSuite with TestsBeforeNestedSuites {
         test("this is a test") {
           testHasBeenRun = true
         }
         
         override val nestedSuites = Vector(
-          new FunSuite {
+          new AnyFunSuite {
             test("this is nested test") {
               if (testHasBeenRun)
                 nestedSuiteWasRunLater = true

@@ -20,10 +20,12 @@ import org.scalatest.SharedHelpers.SilentReporter
 import org.scalatest.events.Event
 import org.scalatest.events.Ordinal
 import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
 
-class BeforeAndAfterSuite extends FunSuite {
+class BeforeAndAfterSuite extends AnyFunSuite {
 
-  class TheSuper extends FunSpec {
+  class TheSuper extends AnyFunSpec {
     var runTestWasCalled = false
     var runWasCalled = false
     protected override def runTest(testName: String, args: Args): Status = {
@@ -133,7 +135,7 @@ class BeforeAndAfterSuite extends FunSuite {
   test("If super.runTest returns normally, but after completes abruptly with an " +
     "exception, runTest will return a status that contains that exception as an unreportedException.") {
 
-    class MySuite extends FunSpec with BeforeAndAfter {
+    class MySuite extends AnyFunSpec with BeforeAndAfter {
       after { throw new NumberFormatException }
       it("test July") {}
     }
@@ -146,7 +148,7 @@ class BeforeAndAfterSuite extends FunSuite {
 
   test("If before completes abruptly super.runTest returns will not be executed, but after will be executed") {
 
-    class MySuite extends FunSpec with BeforeAndAfter {
+    class MySuite extends AnyFunSpec with BeforeAndAfter {
       var afterIsCalled = false
       var testIsCalled = false
       before { throw new NumberFormatException }
@@ -190,7 +192,7 @@ class BeforeAndAfterSuite extends FunSuite {
   test("If before is called after run is invoked, the test should fail with NotAllowedException") {
     var beforeRegisteredFirstTime = false
     var beforeRegisteredSecondTime = false
-    class MySuite extends FunSuite with BeforeAndAfter {
+    class MySuite extends AnyFunSuite with BeforeAndAfter {
       var s = "zero"
       var notAllowedExceptionThrown = false
       test("this one should fail") {
@@ -234,7 +236,7 @@ class BeforeAndAfterSuite extends FunSuite {
   test("If after is called after run is invoked, the test should fail with NotAllowedException") {
     var afterRegisteredFirstTime = false
     var afterRegisteredSecondTime = false
-    class MySuite extends FunSuite with BeforeAndAfter {
+    class MySuite extends AnyFunSuite with BeforeAndAfter {
       var s = "zero"
       var notAllowedExceptionThrown = false
       test("this one should fail") {
@@ -255,7 +257,7 @@ class BeforeAndAfterSuite extends FunSuite {
   }
 }
 
-class BeforeAndAfterExtendingSuite extends FunSpec with BeforeAndAfter {
+class BeforeAndAfterExtendingSuite extends AnyFunSpec with BeforeAndAfter {
 
   var sb: StringBuilder = _
   val lb = new ListBuffer[String]
@@ -279,7 +281,7 @@ class BeforeAndAfterExtendingSuite extends FunSpec with BeforeAndAfter {
   }
 }
 
-class BeforeAndAfterExtendingFunSuite extends FunSuite with BeforeAndAfter {
+class BeforeAndAfterExtendingFunSuite extends AnyFunSuite with BeforeAndAfter {
 
   var sb: StringBuilder = _
   val lb = new ListBuffer[String]

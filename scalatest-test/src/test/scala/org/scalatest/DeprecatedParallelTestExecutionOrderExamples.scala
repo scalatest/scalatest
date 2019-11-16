@@ -19,6 +19,14 @@ import org.scalatest.events.Event
 import org.scalatest.prop.Tables
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
 trait DeprecatedOrderExpectedResults extends EventHelpers {
@@ -88,7 +96,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderSpec exten
 // SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFunSuite extends FunSuite with DeprecatedOrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFunSuite extends AnyFunSuite with DeprecatedOrderExpectedResults with ParallelTestExecution {
   test("Test 1") {}
   test("Test 2") {}
   test("Test 3") {}
@@ -105,7 +113,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFunSuite e
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFunSuite extends fixture.FunSuite with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFunSuite extends funsuite.FixtureAnyFunSuite with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
   test("Fixture Test 1") { fixture => }
   test("Fixture Test 2") { fixture => }
   test("Fixture Test 3") { fixture => }
@@ -122,7 +130,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFun
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFunSpec extends FunSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFunSpec extends AnyFunSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}
@@ -150,7 +158,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFunSpec ex
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFunSpec extends fixture.FunSpec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFunSpec extends funspec.FixtureAnyFunSpec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
   describe("Fixture Scope 1") {
     it("Fixture Test 1") { fixture => }
     it("Fixture Test 2") { fixture =>}
@@ -178,14 +186,14 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFun
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFeatureSpec extends FeatureSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
-  feature("Scope 1") {
-    scenario("Test 1") {}
-    scenario("Test 2") {}
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFeatureSpec extends AnyFeatureSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
+  Feature("Scope 1") {
+    Scenario("Test 1") {}
+    Scenario("Test 2") {}
   }
-  feature("Scope 2") {
-    scenario("Test 3") {}
-    scenario("Test 4") {}
+  Feature("Scope 2") {
+    Scenario("Test 3") {}
+    Scenario("Test 4") {}
   }
   def assertOrderTest(events: List[Event]): Unit = {
     assert(events.size === 12)
@@ -206,14 +214,14 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFeatureSpe
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFeatureSpec extends fixture.FeatureSpec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
-  feature("Fixture Scope 1") {
-    scenario("Fixture Test 1") { fixture => }
-    scenario("Fixture Test 2") { fixture =>}
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
+  Feature("Fixture Scope 1") {
+    Scenario("Fixture Test 1") { fixture => }
+    Scenario("Fixture Test 2") { fixture =>}
   }
-  feature("Fixture Scope 2") {
-    scenario("Fixture Test 3") { fixture => }
-    scenario("Fixture Test 4") { fixture =>}
+  Feature("Fixture Scope 2") {
+    Scenario("Fixture Test 3") { fixture => }
+    Scenario("Fixture Test 4") { fixture =>}
   }
   def assertOrderTest(events: List[Event]): Unit = {
     assert(events.size === 12)
@@ -234,7 +242,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFea
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFlatSpec extends FlatSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFlatSpec extends AnyFlatSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
   behavior of "Scope 1"
   it should "Test 1" in {}
   it should "Test 2" in {}
@@ -262,7 +270,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFlatSpec e
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFlatSpec extends fixture.FlatSpec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
   behavior of "Fixture Scope 1"
   it should "Fixture Test 1" in { fixture => }
   it should "Fixture Test 2" in { fixture => }
@@ -290,7 +298,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFla
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFreeSpec extends FreeSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFreeSpec extends AnyFreeSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -320,7 +328,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFreeSpec e
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFreeSpec extends fixture.FreeSpec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
   "Fixture Scope 1" - {
     "Fixture Test 1" in { fixture => }
     "Fixture Test 2" in { fixture => }
@@ -350,7 +358,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureFre
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderPropSpec extends PropSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderPropSpec extends AnyPropSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
   property("Test 1") {}
   property("Test 2") {}
   property("Test 3") {}
@@ -368,7 +376,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderPropSpec e
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixturePropSpec extends fixture.PropSpec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixturePropSpec extends propspec.FixtureAnyPropSpec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
   property("Fixture Test 1") { fixture => }
   property("Fixture Test 2") { fixture => }
   property("Fixture Test 3") { fixture => }
@@ -386,7 +394,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixturePro
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderWordSpec extends WordSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderWordSpec extends AnyWordSpec with DeprecatedOrderExpectedResults with ParallelTestExecution {
   "Scope 1" should {
     "Test 1" in {}
     "Test 2" in {}
@@ -416,7 +424,7 @@ protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderWordSpec e
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureWordSpec extends fixture.WordSpec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class DeprecatedExampleParallelTestExecutionOrderFixtureWordSpec extends wordspec.FixtureAnyWordSpec with DeprecatedOrderExpectedResults with ParallelTestExecution with StringFixture {
   "Fixture Scope 1" should {
     "Fixture Test 1" in { fixture => }
     "Fixture Test 2" in { fixture => }

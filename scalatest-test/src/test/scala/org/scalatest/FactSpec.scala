@@ -25,6 +25,8 @@ import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
 import prop.TableFor1
 import expectations._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
 /*
 No(
@@ -34,7 +36,7 @@ No(
 
 No(4 did not equal 3)
 */
-class FactSpec extends FreeSpec with Matchers with PrettyMethods with ExpectationHavePropertyMatchers {
+class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with ExpectationHavePropertyMatchers {
 
   val NEWLINE = scala.compat.Platform.EOL
 

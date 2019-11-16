@@ -22,8 +22,9 @@ import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
+import org.scalatest
 
-class AsyncFunSuiteSpec2 extends org.scalatest.AsyncFunSpec {
+class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
 
   describe("AsyncFunSuite") {
 

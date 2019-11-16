@@ -28,12 +28,13 @@ import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.DuplicateTestNameException
-import Matchers._
 
 import org.scalactic.source
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
 // SKIP-SCALATESTJS,NATIVE-START
-class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
+class CheckpointsSpec extends AnyFunSpec with AssertionsForJUnit {
 // SKIP-SCALATESTJS,NATIVE-END
   //SCALATESTJS,NATIVE-ONLY class CheckpointsSpec extends FunSpec {
 

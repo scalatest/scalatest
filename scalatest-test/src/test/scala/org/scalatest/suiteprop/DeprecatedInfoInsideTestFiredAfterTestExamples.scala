@@ -19,6 +19,14 @@ import org.scalatest._
 import prop.TableDrivenPropertyChecks
 // SKIP-SCALATESTJS,NATIVE-START
 import refspec.RefSpec
+import org.scalatest.{ freespec, funspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
 class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suiteprop.SuiteExamples {
@@ -63,7 +71,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
-  class FunSuiteExample extends FunSuite with Services {
+  class FunSuiteExample extends AnyFunSuite with Services {
     test(theTestName) {
       info(msg)
     }
@@ -75,13 +83,13 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class FunSpecExample extends FunSpec with Services {
+  class FunSpecExample extends AnyFunSpec with Services {
     it(theTestName) {
       info(msg)
     }
   }
 
-  class NestedFunSpecExample extends FunSpec with NestedTestName {
+  class NestedFunSpecExample extends AnyFunSpec with NestedTestName {
     describe("A subject") {
       it("should test name") {
         info(msg)
@@ -89,7 +97,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class DeeplyNestedFunSpecExample extends FunSpec with DeeplyNestedTestName {
+  class DeeplyNestedFunSpecExample extends AnyFunSpec with DeeplyNestedTestName {
     describe("A subject") {
       describe("when created") {
         it("should test name") {
@@ -123,14 +131,14 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class PathFunSpecExample extends path.FunSpec with Services {
+  class PathFunSpecExample extends funspec.PathAnyFunSpec with Services {
     it(theTestName) {
       info(msg)
     }
     //SCALATESTJS,NATIVE-ONLY override def newInstance = new PathFunSpecExample
   }
     
-  class NestedPathFunSpecExample extends path.FunSpec with NestedTestName {
+  class NestedPathFunSpecExample extends funspec.PathAnyFunSpec with NestedTestName {
     describe("A subject") {
       it("should test name") {
         info(msg)
@@ -139,7 +147,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     //SCALATESTJS,NATIVE-ONLY override def newInstance = new NestedPathFunSpecExample
   }
 
-  class DeeplyNestedPathFunSpecExample extends path.FunSpec with DeeplyNestedTestName {
+  class DeeplyNestedPathFunSpecExample extends funspec.PathAnyFunSpec with DeeplyNestedTestName {
     describe("A subject") {
       describe("when created") {
         it("should test name") {
@@ -150,13 +158,13 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     //SCALATESTJS,NATIVE-ONLY override def newInstance = new DeeplyNestedPathFunSpecExample
   }
 
-  class WordSpecExample extends WordSpec with Services {
+  class WordSpecExample extends AnyWordSpec with Services {
     theTestName in {
       info(msg)
     }
   }
 
-  class NestedWordSpecExample extends WordSpec with NestedTestName {
+  class NestedWordSpecExample extends AnyWordSpec with NestedTestName {
     "A subject" should {
       "test name" in {
         info(msg)
@@ -164,7 +172,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class DeeplyNestedWordSpecExample extends WordSpec with DeeplyNestedTestName {
+  class DeeplyNestedWordSpecExample extends AnyWordSpec with DeeplyNestedTestName {
     "A subject" when {
       "created" should {
         "test name" in {
@@ -198,7 +206,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class NestedWordSpecWithMustExample extends WordSpec with NestedTestNameWithMust {
+  class NestedWordSpecWithMustExample extends AnyWordSpec with NestedTestNameWithMust {
     "A subject" must {
       "test name" in {
         info(msg)
@@ -206,7 +214,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class DeeplyNestedWordSpecWithMustExample extends WordSpec with DeeplyNestedTestNameWithMust {
+  class DeeplyNestedWordSpecWithMustExample extends AnyWordSpec with DeeplyNestedTestNameWithMust {
     "A subject" when {
       "created" must {
         "test name" in {
@@ -234,7 +242,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class NestedWordSpecWithCanExample extends WordSpec with NestedTestNameWithCan {
+  class NestedWordSpecWithCanExample extends AnyWordSpec with NestedTestNameWithCan {
     "A subject" can {
       "test name" in {
         info(msg)
@@ -242,7 +250,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class DeeplyNestedWordSpecWithCanExample extends WordSpec with DeeplyNestedTestNameWithCan {
+  class DeeplyNestedWordSpecWithCanExample extends AnyWordSpec with DeeplyNestedTestNameWithCan {
     "A subject" when {
       "created" can {
         "test name" in {
@@ -270,20 +278,20 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class FlatSpecExample extends FlatSpec with Services {
+  class FlatSpecExample extends AnyFlatSpec with Services {
     it should "test name" in {
       info(msg)
     }
     override val theTestName = "should test name"
   }
 
-  class SubjectFlatSpecExample extends FlatSpec with NestedTestName {
+  class SubjectFlatSpecExample extends AnyFlatSpec with NestedTestName {
     behavior of "A subject"
     it should "test name" in {
       info(msg)
     }
   }
-  class ShorthandSubjectFlatSpecExample extends FlatSpec with NestedTestName {
+  class ShorthandSubjectFlatSpecExample extends AnyFlatSpec with NestedTestName {
     "A subject" should "test name" in {
       info(msg)
     }
@@ -309,20 +317,20 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class FlatSpecWithMustExample extends FlatSpec with Services {
+  class FlatSpecWithMustExample extends AnyFlatSpec with Services {
     it must "test name" in {
       info(msg)
     }
     override val theTestName = "must test name"
   }
 
-  class SubjectFlatSpecWithMustExample extends FlatSpec with NestedTestNameWithMust {
+  class SubjectFlatSpecWithMustExample extends AnyFlatSpec with NestedTestNameWithMust {
     behavior of "A subject"
     it must "test name" in {
       info(msg)
     }
   }
-  class ShorthandSubjectFlatSpecWithMustExample extends FlatSpec with NestedTestNameWithMust {
+  class ShorthandSubjectFlatSpecWithMustExample extends AnyFlatSpec with NestedTestNameWithMust {
     "A subject" must "test name" in {
       info(msg)
     }
@@ -348,20 +356,20 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class FlatSpecWithCanExample extends FlatSpec with Services {
+  class FlatSpecWithCanExample extends AnyFlatSpec with Services {
     it can "test name" in {
       info(msg)
     }
     override val theTestName = "can test name"
   }
 
-  class SubjectFlatSpecWithCanExample extends FlatSpec with NestedTestNameWithCan {
+  class SubjectFlatSpecWithCanExample extends AnyFlatSpec with NestedTestNameWithCan {
     behavior of "A subject"
     it can "test name" in {
       info(msg)
     }
   }
-  class ShorthandSubjectFlatSpecWithCanExample extends FlatSpec with NestedTestNameWithCan {
+  class ShorthandSubjectFlatSpecWithCanExample extends AnyFlatSpec with NestedTestNameWithCan {
     "A subject" can "test name" in {
       info(msg)
     }
@@ -387,13 +395,13 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class FreeSpecExample extends FreeSpec with Services {
+  class FreeSpecExample extends AnyFreeSpec with Services {
     "test name" in {
       info(msg)
     }
   }
 
-  class NestedFreeSpecExample extends FreeSpec with NestedTestName {
+  class NestedFreeSpecExample extends AnyFreeSpec with NestedTestName {
     "A subject" - {
       "should test name" in {
         info(msg)
@@ -401,7 +409,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class DeeplyNestedFreeSpecExample extends FreeSpec with DeeplyNestedTestName {
+  class DeeplyNestedFreeSpecExample extends AnyFreeSpec with DeeplyNestedTestName {
     "A subject" - {
       "when created" - {
         "should test name" in {
@@ -435,14 +443,14 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     }
   }
 
-  class PathFreeSpecExample extends path.FreeSpec with Services {
+  class PathFreeSpecExample extends freespec.PathAnyFreeSpec with Services {
     "test name" in {
       info(msg)
     }
     //SCALATESTJS,NATIVE-ONLY override def newInstance = new PathFreeSpecExample
   }
     
-  class NestedPathFreeSpecExample extends path.FreeSpec with NestedTestName {
+  class NestedPathFreeSpecExample extends freespec.PathAnyFreeSpec with NestedTestName {
     "A subject" - {
       "should test name" in {
         info(msg)
@@ -451,7 +459,7 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     //SCALATESTJS,NATIVE-ONLY override def newInstance = new NestedPathFreeSpecExample
   }
 
-  class DeeplyNestedPathFreeSpecExample extends path.FreeSpec with DeeplyNestedTestName {
+  class DeeplyNestedPathFreeSpecExample extends freespec.PathAnyFreeSpec with DeeplyNestedTestName {
     "A subject" - {
       "when created" - {
         "should test name" in {
@@ -462,16 +470,16 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
     //SCALATESTJS,NATIVE-ONLY override def newInstance = new DeeplyNestedPathFreeSpecExample
   }
 
-  class FeatureSpecExample extends FeatureSpec with Services {
-    scenario("test name") {
+  class FeatureSpecExample extends AnyFeatureSpec with Services {
+    Scenario("test name") {
       info(msg)
     }
     override val theTestName = "Scenario: test name"
   }
 
-  class NestedFeatureSpecExample extends FeatureSpec with Services {
-    feature("A feature") {
-      scenario("test name") {
+  class NestedFeatureSpecExample extends AnyFeatureSpec with Services {
+    Feature("A feature") {
+      Scenario("test name") {
         info(msg)
       }
     }
@@ -479,22 +487,22 @@ class DeprecatedInfoInsideTestFiredAfterTestExamples extends org.scalatest.suite
   }
 
   class FixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    scenario("test name") { s =>
+    Scenario("test name") { s =>
       info(msg)
     }
     override val theTestName = "Scenario: test name"
   }
 
   class NestedFixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    feature("A feature") {
-      scenario("test name") { s =>
+    Feature("A feature") {
+      Scenario("test name") { s =>
         info(msg)
       }
     }
     override val theTestName = "Feature: A feature Scenario: test name"
   }
 
-  class PropSpecExample extends PropSpec with Services {
+  class PropSpecExample extends AnyPropSpec with Services {
     property(theTestName) {
       info(msg)
     }

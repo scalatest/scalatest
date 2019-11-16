@@ -22,15 +22,17 @@ import org.scalatest.events.Event
 import org.scalatest.events.InfoProvided
 import org.scalatest.events.Ordinal
 import scala.concurrent.Promise
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
 
-class BeforeAndAfterEachAllSuite extends FunSuite {
+class BeforeAndAfterEachAllSuite extends AnyFunSuite {
 
   // SKIP-SCALATESTJS-START
   implicit def executionContext: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY implicit def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
-  class TheSuper extends FunSpec {
+  class TheSuper extends AnyFunSpec {
     var runTestWasCalled = false
     var runWasCalled = false
     protected override def runTest(testName: String, args: Args): Status = {
@@ -108,7 +110,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
   test("If any invocation of beforeEach completes abruptly with an exception, runTest " +
     "will complete abruptly with the same exception.") {
 
-    class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
+    class MySuite extends AnyFunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def beforeEach(): Unit = { throw new NumberFormatException }
     }
     assertThrows[NumberFormatException] {
@@ -119,7 +121,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
 
   test("If any call to super.runTest completes abruptly with an exception, runTest " +
     "will complete abruptly with the same exception, however, before doing so, it will invoke afterEach") {
-    trait FunkySuite extends FunSpec {
+    trait FunkySuite extends AnyFunSpec {
       protected override def runTest(testName: String, args: Args): Status = {
         throw new NumberFormatException
       }
@@ -139,7 +141,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
 
   test("If both super.runTest and afterEach complete abruptly with an exception, runTest " +
     "will complete abruptly with the exception thrown by super.runTest.") {
-    trait FunkySuite extends FunSpec {
+    trait FunkySuite extends AnyFunSpec {
       protected override def runTest(testName: String, args: Args): Status = {
         throw new NumberFormatException
       }
@@ -161,7 +163,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
   test("if super.runTest returns normally, but afterEach completes abruptly with an " +
     "exception, runTest will return a status that contains that exception as an unreportedException.") {
 
-    class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
+    class MySuite extends AnyFunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def afterEach(): Unit = { throw new NumberFormatException }
       it("test July") {}
     }
@@ -175,7 +177,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
   test("if super.runTest returns normally, but afterEach completes abruptly with an " +
     "exception, runTest will return a status that contains that exception as an unreportedException (using BeforeAndAfterAllConfigMap).") {
 
-    class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAllConfigMap {
+    class MySuite extends AnyFunSpec with BeforeAndAfterEach with BeforeAndAfterAllConfigMap {
       override def afterEach(): Unit = { throw new NumberFormatException }
       it("test July") {}
     }
@@ -190,7 +192,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
   test("If any invocation of beforeAll completes abruptly with an exception, run " +
     "will complete abruptly with the same exception.") {
 
-    class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
+    class MySuite extends AnyFunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def beforeAll(): Unit = { throw new NumberFormatException }
       it("test July") {}
     }
@@ -202,7 +204,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
 
   test("If any call to super.run completes abruptly with an exception, run " +
     "will complete abruptly with the same exception, however, before doing so, it will invoke afterAll") {
-    trait FunkySuite extends FunSpec {
+    trait FunkySuite extends AnyFunSpec {
       override def run(testName: Option[String], args: Args): Status = {
         throw new NumberFormatException
       }
@@ -225,7 +227,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
 
   test("If both super.run and afterAll complete abruptly with an exception, run " +
     "will complete abruptly with the exception thrown by super.run.") {
-    trait FunkySuite extends FunSpec {
+    trait FunkySuite extends AnyFunSpec {
       override def run(testName: Option[String], args: Args): Status = {
         throw new NumberFormatException
       }
@@ -250,7 +252,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
   test("If super.run returns normally, but afterAll completes abruptly with an " +
     "exception, the status returned by run will contain that exception as its unreportedException.") {
 
-    class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
+    class MySuite extends AnyFunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def afterAll(): Unit = { throw new NumberFormatException }
       it("test July") {}
     }
@@ -264,7 +266,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
   test("If super.run returns normally, but afterAll completes abruptly with an " +
     "exception, the status returned by run will contain that exception as its unreportedException (using BeforeAndAfterAllConfigMap).") {
 
-    class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAllConfigMap {
+    class MySuite extends AnyFunSpec with BeforeAndAfterEach with BeforeAndAfterAllConfigMap {
       override def afterAll(cm: ConfigMap): Unit = { throw new NumberFormatException }
       it("test July") {}
     }
@@ -277,7 +279,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
 
   test("If beforeAll completes abruptly, no test will be executed, but afterAll will be executed") {
 
-    class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
+    class MySuite extends AnyFunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       var afterAllIsCalled = false
       var test1IsCalled = false
       var test2IsCalled = false
@@ -301,7 +303,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
   }
 }
 
-class BeforeAndAfterEachAllExtendingSuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
+class BeforeAndAfterEachAllExtendingSuite extends AnyFunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
 
   var sb: StringBuilder = _
   val lb = new ListBuffer[String]
@@ -325,7 +327,7 @@ class BeforeAndAfterEachAllExtendingSuite extends FunSpec with BeforeAndAfterEac
   }
 }
 
-class BeforeAndAfterEachAllExtendingFunSuite extends FunSuite with BeforeAndAfterEach with BeforeAndAfterAll {
+class BeforeAndAfterEachAllExtendingFunSuite extends AnyFunSuite with BeforeAndAfterEach with BeforeAndAfterAll {
 
   var sb: StringBuilder = _
   val lb = new ListBuffer[String]
@@ -352,10 +354,10 @@ class BeforeAndAfterEachAllExtendingFunSuite extends FunSuite with BeforeAndAfte
   // class IWantThisToFailToCompile extends Examples with BeforeAndAfter
 }
 
-class BeforeAndAfterEachAllInfoSuite extends FunSuite {
+class BeforeAndAfterEachAllInfoSuite extends AnyFunSuite {
 
   test("InfoProvided in the before should be fired") {
-    class ExampleSpec extends FunSuite with BeforeAndAfter {
+    class ExampleSpec extends AnyFunSuite with BeforeAndAfter {
       before {
         info("In Before")
       }
@@ -382,7 +384,7 @@ class BeforeAndAfterEachAllInfoSuite extends FunSuite {
   }
 
   test("InfoProvided in the after should be fired") {
-    class ExampleSpec extends FunSuite with BeforeAndAfter {
+    class ExampleSpec extends AnyFunSuite with BeforeAndAfter {
       test("test 1") {
         info("info 1")
       }

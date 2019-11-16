@@ -23,8 +23,10 @@ import org.scalatest.exceptions.{DuplicateTestNameException, NotAllowedException
 import org.scalactic.Prettifier
 
 import scala.util.Success
+import org.scalatest.featurespec.{ AsyncFeatureSpec, AsyncFeatureSpecLike }
+import org.scalatest.funspec.AnyFunSpec
 
-class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
+class DeprecatedAsyncFeatureSpecLikeSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 
@@ -39,25 +41,25 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
 
         val a = 1
 
-        scenario("test 1") {
+        Scenario("test 1") {
           Future {
             assert(a == 1)
           }
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           Future {
             assert(a == 2)
           }
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           Future {
             pending
           }
         }
 
-        scenario("test 4") {
+        Scenario("test 4") {
           Future {
             cancel
           }
@@ -101,19 +103,19 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
 
         val a = 1
 
-        scenario("test 1") {
+        Scenario("test 1") {
           assert(a == 1)
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           assert(a == 2)
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           pending
         }
 
-        scenario("test 4") {
+        Scenario("test 4") {
           cancel
         }
 
@@ -153,7 +155,7 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        scenario("test 1") {
+        Scenario("test 1") {
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -162,7 +164,7 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
           }
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -171,7 +173,7 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
           }
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           Future {
             assert(count == 2)
           }
@@ -200,21 +202,21 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        scenario("test 1") {
+        Scenario("test 1") {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
           succeed
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
           succeed
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           assert(count == 2)
         }
 
@@ -242,14 +244,14 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        scenario("test 1") {
+        Scenario("test 1") {
           Future {
             test1Thread = Some(Thread.currentThread)
             succeed
           }
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           Future {
             test2Thread = Some(Thread.currentThread)
             succeed
@@ -282,7 +284,7 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        scenario("test 1") {
+        Scenario("test 1") {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -299,7 +301,7 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
           }
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -345,7 +347,7 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
       // to runNow will be complete, and runNow will return.
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        scenario("test 1") {
+        Scenario("test 1") {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -381,7 +383,7 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
             case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
           }
 
-        scenario("test 1") {
+        Scenario("test 1") {
           val fut: Future[Int] = sum((1 to 50000).toList)
           fut.map(total => assert(total == 1250025000))
         }
@@ -402,21 +404,21 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        scenario("test 1") {
+        Scenario("test 1") {
           Future {
             SleepHelper.sleep(60)
             succeed
           }
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           Future {
             SleepHelper.sleep(30)
             succeed
           }
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           Future {
             succeed
           }
@@ -448,17 +450,17 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        scenario("test 1") {
+        Scenario("test 1") {
           SleepHelper.sleep(60)
           succeed
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           SleepHelper.sleep(30)
           succeed
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           succeed
         }
 
@@ -503,12 +505,12 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
     it("should send an InfoProvided event for an info in feature body") {
       class MySuite extends AsyncFeatureSpecLike  {
 
-        feature("test feature") {
+        Feature("test feature") {
           info(
             "hi there"
           )
 
-          scenario("test 1") { succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
@@ -530,8 +532,8 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        feature("test feature") {
-          scenario("test 1") {
+        Feature("test feature") {
+          Scenario("test 1") {
             info("hi there")
             succeed
           }
@@ -562,8 +564,8 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        feature("test feature") {
-          scenario("test 1") {
+        Feature("test feature") {
+          Scenario("test 1") {
             Future {
               info("hi there")
               succeed
@@ -615,12 +617,12 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        feature("test feature") {
+        Feature("test feature") {
           note(
             "hi there"
           )
 
-          scenario("test 1") {
+          Scenario("test 1") {
             succeed
           }
         }
@@ -646,15 +648,15 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        scenario("test 1") {
+        Scenario("test 1") {
           succeed
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           throw new IllegalStateException("oops!")
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           succeed
         }
 
@@ -681,8 +683,8 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        feature("test feature") {
-          scenario("test 1") {
+        Feature("test feature") {
+          Scenario("test 1") {
             note("hi there")
             succeed
           }
@@ -706,8 +708,8 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        feature("test feature") {
-          scenario("test 1") {
+        Feature("test feature") {
+          Scenario("test 1") {
             Future {
               note("hi there")
               succeed
@@ -752,12 +754,12 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        feature("test feature") {
+        Feature("test feature") {
           alert(
             "hi there"
           )
 
-          scenario("test 1") { succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
@@ -781,17 +783,17 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        scenario("test 1") {
+        Scenario("test 1") {
           succeed
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           Future {
             throw new IllegalStateException("oops!")
           }
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           succeed
         }
 
@@ -818,8 +820,8 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        feature("test feature") {
-          scenario("test 1") {
+        Feature("test feature") {
+          Scenario("test 1") {
             alert("hi there")
             succeed
           }
@@ -843,8 +845,8 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        feature("test feature") {
-          scenario("test 1") {
+        Feature("test feature") {
+          Scenario("test 1") {
             Future {
               alert("hi there")
               succeed
@@ -889,12 +891,12 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        feature("test feature") {
+        Feature("test feature") {
           markup(
             "hi there"
           )
 
-          scenario("test 1") { succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
@@ -916,8 +918,8 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        feature("test feature") {
-          scenario("test 1") {
+        Feature("test feature") {
+          Scenario("test 1") {
             markup("hi there")
             succeed
           }
@@ -948,8 +950,8 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        feature("test feature") {
-          scenario("test 1") {
+        Feature("test feature") {
+          Scenario("test 1") {
             Future {
               markup("hi there")
               succeed
@@ -986,15 +988,15 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        scenario("test 1") {
+        Scenario("test 1") {
           succeed
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           throw new VirtualMachineError("oops!") {}
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           succeed
         }
 
@@ -1014,17 +1016,17 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        scenario("test 1") {
+        Scenario("test 1") {
           succeed
         }
 
-        scenario("test 2") {
+        Scenario("test 2") {
           Future {
             throw new VirtualMachineError("oops!") {}
           }
         }
 
-        scenario("test 3") {
+        Scenario("test 3") {
           succeed
         }
 
@@ -1040,9 +1042,9 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
 
     it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
       class TestSpec extends AsyncFeatureSpec {
-        feature("a feature") {
-          scenario("test 1") { succeed }
-          scenario("test 1") { succeed }
+        Feature("a feature") {
+          Scenario("test 1") { succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val e = intercept[NotAllowedException] {
@@ -1066,18 +1068,18 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends FunSpec {
         // SKIP-SCALATESTJS,NATIVE-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
         val a = 1
-        feature("feature 1") {
-          scenario("scenario A") {
+        Feature("feature 1") {
+          Scenario("scenario A") {
             Future { assert(a == 1) }
           }
         }
-        feature("feature 2")  {
-          scenario("scenario B") {
+        Feature("feature 2")  {
+          Scenario("scenario B") {
             Future { assert(a == 1) }
           }
         }
-        feature("group3") {
-          scenario("test C") {
+        Feature("group3") {
+          Scenario("test C") {
             Future { assert(a == 1) }
           }
         }

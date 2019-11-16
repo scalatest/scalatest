@@ -17,6 +17,7 @@ package org.scalatest.suiteprop
 
 import org.scalatest._
 import prop.TableDrivenPropertyChecks
+import org.scalatest.{ freespec, funspec }
 
 class PathBeforeAndAfterExamples extends PathSuiteExamples {
 
@@ -47,7 +48,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
 
   type FixtureServices = Services
 
-  class EmptyPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FunSpec with Services {
+  class EmptyPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends funspec.PathAnyFunSpec with Services {
     import counts._
     middle += 1
     override def newInstance = new EmptyPathFunSpecExample(counts, Some(this))
@@ -56,7 +57,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(middle = 1)
   }
 
-  class EmptyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FunSpec with Services {
+  class EmptyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends funspec.PathAnyFunSpec with Services {
     import counts._
     before0 += 1
     describe("A subject") {
@@ -69,7 +70,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 1, middle = 1, after0 = 1)
   }
 
-  class SiblingEmptyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FunSpec with Services {
+  class SiblingEmptyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends funspec.PathAnyFunSpec with Services {
     import counts._
     before0 += 1
     describe("A subject") {
@@ -86,7 +87,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 1, middle = 2, before01 = 1, after0 = 2)
   }
 
-  class OneTestSiblingEmptyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FunSpec with Services {
+  class OneTestSiblingEmptyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends funspec.PathAnyFunSpec with Services {
     import counts._
     before0 += 1
     describe("A subject") {
@@ -105,7 +106,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 1, middle = 2, before01 = 1, after01 = 1, after0 = 2)
   }
 
-  class OneTestSiblingEmptyDeeplyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FunSpec with Services {
+  class OneTestSiblingEmptyDeeplyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends funspec.PathAnyFunSpec with Services {
     import counts._
     before0 += 1
     describe("A subject") {
@@ -128,7 +129,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 1, middle = 2, before01 = 1, before010 = 1, after010 = 1, after01 = 1, after0 = 2)
   }
 
-  class PathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FunSpec with Services {
+  class PathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends funspec.PathAnyFunSpec with Services {
     import counts._
     before0 += 1
     it("first test") { firstTestCounts = counts.copy() }
@@ -141,7 +142,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, middle = 2, after0 = 2)
   }
 
-  class NestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FunSpec with Services {
+  class NestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends funspec.PathAnyFunSpec with Services {
     import counts._
     before0 += 1
     describe("A subject") {
@@ -158,7 +159,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 2, middle = 2, after00 = 2, after0 = 2)
   }
 
-  class SiblingNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FunSpec with Services {
+  class SiblingNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends funspec.PathAnyFunSpec with Services {
     import counts._
     before0 += 1
     describe("A subject") {
@@ -179,7 +180,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 1, after01 = 1, middle = 2, before01 = 1, after00 = 1, after0 = 2)
   }
 
-  class DeeplyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FunSpec with Services {
+  class DeeplyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends funspec.PathAnyFunSpec with Services {
     import counts._
     before0 += 1
     describe("A subject") {
@@ -200,7 +201,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 2, before000 = 2, middle = 2, after000 = 2, after00 = 2, after0 = 2)
   }
 
-  class SiblingDeeplyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FunSpec with Services {
+  class SiblingDeeplyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends funspec.PathAnyFunSpec with Services {
     import counts._
     before0 += 1
     describe("A subject") {
@@ -229,7 +230,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 1, before000 = 1, after000 = 1, after00 = 1, middle = 2, before01 = 1, before010 = 1, after010 = 1, after01 = 1,  after0 = 2)
   }
 
-  class AsymetricalDeeplyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FunSpec with Services {
+  class AsymetricalDeeplyNestedPathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends funspec.PathAnyFunSpec with Services {
     import counts._
     before0 += 1
     describe("A subject") {
@@ -250,7 +251,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 2, before000 = 1, after000 = 1, middle = 2, after00 = 2, after0 = 2)
   }
 
-  class EmptyPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FreeSpec with Services {
+  class EmptyPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     middle += 1
     override def newInstance = new EmptyPathFreeSpecExample(counts, Some(this))
@@ -259,7 +260,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(middle = 1)
   }
   
-  class EmptyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FreeSpec with Services {
+  class EmptyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     before0 += 1
     "A subject" - {
@@ -272,7 +273,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 1, middle = 1, after0 = 1)
   }
 
-  class SiblingEmptyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FreeSpec with Services {
+  class SiblingEmptyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     before0 += 1
     "A subject" - {
@@ -289,7 +290,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 1, middle = 2, before01 = 1, after0 = 2)
   }
 
-  class OneTestSiblingEmptyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FreeSpec with Services {
+  class OneTestSiblingEmptyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     before0 += 1
     "A subject" - {
@@ -308,7 +309,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 1, middle = 2, before01 = 1, after01 = 1, after0 = 2)
   }
 
-  class OneTestSiblingEmptyDeeplyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FreeSpec with Services {
+  class OneTestSiblingEmptyDeeplyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     before0 += 1
     "A subject" - {
@@ -331,7 +332,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 1, middle = 2, before01 = 1, before010 = 1, after010 = 1, after01 = 1, after0 = 2)
   }
 
-  class PathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FreeSpec with Services {
+  class PathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     before0 += 1
     "first test" in { firstTestCounts = counts.copy() }
@@ -344,7 +345,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, middle = 2, after0 = 2)
   }
 
-  class NestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FreeSpec with Services {
+  class NestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     before0 += 1
     "A subject" - {
@@ -361,7 +362,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 2, middle = 2, after00 = 2, after0 = 2)
   }
 
-  class SiblingNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FreeSpec with Services {
+  class SiblingNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     before0 += 1
     "A subject" - {
@@ -382,7 +383,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 1, after01 = 1, middle = 2, before01 = 1, after00 = 1, after0 = 2)
   }
 
-  class DeeplyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FreeSpec with Services {
+  class DeeplyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     before0 += 1
     "A subject" - {
@@ -403,7 +404,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 2, before000 = 2, middle = 2, after000 = 2, after00 = 2, after0 = 2)
   }
 
-  class SiblingDeeplyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FreeSpec with Services {
+  class SiblingDeeplyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     before0 += 1
     "A subject" - {
@@ -432,7 +433,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     val expectedCounts = Counts(before0 = 2, before00 = 1, before000 = 1, after000 = 1, after00 = 1, middle = 2, before01 = 1, before010 = 1, after010 = 1, after01 = 1,  after0 = 2)
   }
 
-  class AsymetricalDeeplyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FreeSpec with Services {
+  class AsymetricalDeeplyNestedPathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends freespec.PathAnyFreeSpec with Services {
     import counts._
     before0 += 1
     "A subject" - {

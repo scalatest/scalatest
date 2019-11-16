@@ -16,11 +16,13 @@
 package org.scalatest
 
 import SharedHelpers._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.funsuite.AnyFunSuite
 
-class CancelAfterFailureSpec extends FlatSpec {
+class CancelAfterFailureSpec extends AnyFlatSpec {
 
   "CancelAfterFailure" should "not interfere if no tests fail" in {
-    class MySuite extends FunSuite with CancelAfterFailure {
+    class MySuite extends AnyFunSuite with CancelAfterFailure {
       test("this test succeeds") {
         assert(1 + 1 === 2)
       }
@@ -42,7 +44,7 @@ class CancelAfterFailureSpec extends FlatSpec {
   }
 
   it should "cancel remaining tests if a test fails" in {
-    class MySuite extends FunSuite with CancelAfterFailure {
+    class MySuite extends AnyFunSuite with CancelAfterFailure {
       test("this test succeeds") {
         assert(1 + 1 === 2)
       }

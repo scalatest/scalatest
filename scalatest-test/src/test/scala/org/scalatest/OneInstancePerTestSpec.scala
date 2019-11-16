@@ -19,8 +19,11 @@ import SharedHelpers._
 import events._
 import java.util.concurrent.atomic.AtomicInteger
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.wordspec.AnyWordSpec
 
-class TopLevelSpec extends FunSpec with OneInstancePerTest {
+class TopLevelSpec extends AnyFunSpec with OneInstancePerTest {
   import TopLevelSpec.sideEffectWasNotSeen
   var sideEffectWasIsolated = true
   it("test one") {
@@ -41,11 +44,11 @@ object TopLevelSpec {
   var sideEffectWasNotSeen = true
 }
 
-class OneInstancePerTestSpec extends FunSpec {
+class OneInstancePerTestSpec extends AnyFunSpec {
   describe("The OneInstancePerTest trait") {
     it("should isolate side effects from one test to the next in a top level Suite class that does not override newInstance") {
       var sideEffectWasNotSeen = true
-      class MySpec extends FunSpec with OneInstancePerTest {
+      class MySpec extends AnyFunSpec with OneInstancePerTest {
         var sideEffectWasIsolated = true
         it("test one") {
           sideEffectWasNotSeen = sideEffectWasNotSeen && sideEffectWasIsolated
@@ -74,7 +77,7 @@ class OneInstancePerTestSpec extends FunSpec {
 
       var aTheTestThisCalled = false
       var aTheTestThatCalled = false
-      class ASpec extends WordSpec with OneInstancePerTest {
+      class ASpec extends AnyWordSpec with OneInstancePerTest {
         "test this" in { aTheTestThisCalled = true }
         "test that" in { aTheTestThatCalled = true }
         override def newInstance = new ASpec
@@ -89,7 +92,7 @@ class OneInstancePerTestSpec extends FunSpec {
 
       var bTheTestThisCalled = false
       var bTheTestThatCalled = false
-      class BSpec extends WordSpec with OneInstancePerTest {
+      class BSpec extends AnyWordSpec with OneInstancePerTest {
         "test this" ignore { bTheTestThisCalled = true }
         "test that" in { bTheTestThatCalled = true }
         override def newInstance = new BSpec
@@ -106,7 +109,7 @@ class OneInstancePerTestSpec extends FunSpec {
 
       var cTheTestThisCalled = false
       var cTheTestThatCalled = false
-      class CSpec extends WordSpec with OneInstancePerTest {
+      class CSpec extends AnyWordSpec with OneInstancePerTest {
         "test this" in { cTheTestThisCalled = true }
         "test that" ignore { cTheTestThatCalled = true }
         override def newInstance = new CSpec
@@ -125,7 +128,7 @@ class OneInstancePerTestSpec extends FunSpec {
       // Will try and implement that tomorrow. Subtypes will be able to change the order.
       var dTheTestThisCalled = false
       var dTheTestThatCalled = false
-      class DSpec extends WordSpec with OneInstancePerTest {
+      class DSpec extends AnyWordSpec with OneInstancePerTest {
         "test this" ignore { dTheTestThisCalled = true }
         "test that" ignore { dTheTestThatCalled = true }
         override def newInstance = new DSpec
@@ -143,7 +146,7 @@ class OneInstancePerTestSpec extends FunSpec {
     it("should ignore a test marked as ignored if it is passed in a Some as testName") {
       var bTheTestThisCalled = false
       var bTheTestThatCalled = false
-      class BSpec extends WordSpec with OneInstancePerTest {
+      class BSpec extends AnyWordSpec with OneInstancePerTest {
         "test this" ignore { bTheTestThisCalled = true }
         "test that" in { bTheTestThatCalled = true }
         override def newInstance = new BSpec
@@ -159,7 +162,7 @@ class OneInstancePerTestSpec extends FunSpec {
 
     it("should throw IllegalArgumentException from runTests if runTestInNewInstance is set but testName is empty") {
 
-      class ASpec extends WordSpec with OneInstancePerTest {
+      class ASpec extends AnyWordSpec with OneInstancePerTest {
         "test this" ignore { }
         "test that" in { }
         override def newInstance = new ASpec
@@ -175,7 +178,7 @@ class OneInstancePerTestSpec extends FunSpec {
     }
     
     it("should throw NullArgumentException from runTests if either passed-in argument is null") {
-      class ASpec extends WordSpec with OneInstancePerTest {
+      class ASpec extends AnyWordSpec with OneInstancePerTest {
         "test this" ignore { }
         "test that" in { }
         override def newInstance = new ASpec
@@ -195,11 +198,11 @@ class OneInstancePerTestSpec extends FunSpec {
     
     it("should only execute nested suites in outer instance") {
       
-      class InnerSuite extends FunSuite {
+      class InnerSuite extends AnyFunSuite {
         test("hi") { info("hi info") }
       }
       
-      class OuterSuite extends FunSuite with OneInstancePerTest {
+      class OuterSuite extends AnyFunSuite with OneInstancePerTest {
         override def nestedSuites = Vector(new InnerSuite)
         test("outer 1") { info("outer 1 info") }
         test("outer 2") { info("outer 2 info") }
@@ -236,7 +239,7 @@ class OneInstancePerTestSpec extends FunSpec {
       val testCountFoo = new AtomicInteger(0)
       val afterCountFoo = new AtomicInteger(0)
 
-      class FooSuite extends FunSuite with BeforeAndAfter with OneInstancePerTest {
+      class FooSuite extends AnyFunSuite with BeforeAndAfter with OneInstancePerTest {
         before {
           beforeCountFoo.incrementAndGet()
         }
@@ -264,7 +267,7 @@ class OneInstancePerTestSpec extends FunSpec {
       val testCountBar = new AtomicInteger(0)
       val afterCountBar = new AtomicInteger(0)
 
-      class BarSuite extends FunSuite with OneInstancePerTest with BeforeAndAfter {
+      class BarSuite extends AnyFunSuite with OneInstancePerTest with BeforeAndAfter {
         before {
           beforeCountBar.incrementAndGet()
         }
@@ -291,7 +294,7 @@ class OneInstancePerTestSpec extends FunSpec {
       val testCountFoo = new AtomicInteger(0)
       val afterCountFoo = new AtomicInteger(0)
 
-      class FooSuite extends FunSuite with BeforeAndAfterEach with OneInstancePerTest {
+      class FooSuite extends AnyFunSuite with BeforeAndAfterEach with OneInstancePerTest {
         override def beforeEach(): Unit = {
           beforeCountFoo.incrementAndGet()
         }
@@ -319,7 +322,7 @@ class OneInstancePerTestSpec extends FunSpec {
       val testCountBar = new AtomicInteger(0)
       val afterCountBar = new AtomicInteger(0)
 
-      class BarSuite extends FunSuite with OneInstancePerTest with BeforeAndAfterEach {
+      class BarSuite extends AnyFunSuite with OneInstancePerTest with BeforeAndAfterEach {
         override def beforeEach(): Unit = {
           beforeCountBar.incrementAndGet()
         }
@@ -346,7 +349,7 @@ class OneInstancePerTestSpec extends FunSpec {
       val testCountFoo = new AtomicInteger(0)
       val afterCountFoo = new AtomicInteger(0)
 
-      class FooSuite extends FunSuite with BeforeAndAfterEachTestData with OneInstancePerTest {
+      class FooSuite extends AnyFunSuite with BeforeAndAfterEachTestData with OneInstancePerTest {
         override def beforeEach(td: TestData): Unit = {
           beforeCountFoo.incrementAndGet()
         }
@@ -374,7 +377,7 @@ class OneInstancePerTestSpec extends FunSpec {
       val testCountBar = new AtomicInteger(0)
       val afterCountBar = new AtomicInteger(0)
 
-      class BarSuite extends FunSuite with OneInstancePerTest with BeforeAndAfterEachTestData {
+      class BarSuite extends AnyFunSuite with OneInstancePerTest with BeforeAndAfterEachTestData {
         override def beforeEach(td: TestData): Unit = {
           beforeCountBar.incrementAndGet()
         }
@@ -401,7 +404,7 @@ class OneInstancePerTestSpec extends FunSpec {
       val testCountFoo = new AtomicInteger(0)
       val afterCountFoo = new AtomicInteger(0)
 
-      class FooSuite extends FunSuite with BeforeAndAfterAll with OneInstancePerTest {
+      class FooSuite extends AnyFunSuite with BeforeAndAfterAll with OneInstancePerTest {
         override def beforeAll(): Unit = {
           beforeCountFoo.incrementAndGet()
         }
@@ -429,7 +432,7 @@ class OneInstancePerTestSpec extends FunSpec {
       val testCountBar = new AtomicInteger(0)
       val afterCountBar = new AtomicInteger(0)
 
-      class BarSuite extends FunSuite with OneInstancePerTest with BeforeAndAfterAll {
+      class BarSuite extends AnyFunSuite with OneInstancePerTest with BeforeAndAfterAll {
         override def beforeAll(): Unit = {
           beforeCountBar.incrementAndGet()
         }
@@ -456,7 +459,7 @@ class OneInstancePerTestSpec extends FunSpec {
       val testCountFoo = new AtomicInteger(0)
       val afterCountFoo = new AtomicInteger(0)
 
-      class FooSuite extends FunSuite with BeforeAndAfterAllConfigMap with OneInstancePerTest {
+      class FooSuite extends AnyFunSuite with BeforeAndAfterAllConfigMap with OneInstancePerTest {
         override def beforeAll(cm: ConfigMap): Unit = {
           beforeCountFoo.incrementAndGet()
         }
@@ -484,7 +487,7 @@ class OneInstancePerTestSpec extends FunSpec {
       val testCountBar = new AtomicInteger(0)
       val afterCountBar = new AtomicInteger(0)
 
-      class BarSuite extends FunSuite with OneInstancePerTest with BeforeAndAfterAllConfigMap {
+      class BarSuite extends AnyFunSuite with OneInstancePerTest with BeforeAndAfterAllConfigMap {
         override def beforeAll(cm: ConfigMap): Unit = {
           beforeCountBar.incrementAndGet()
         }

@@ -16,9 +16,10 @@
 package org.scalatest
 
 import org.scalatest.concurrent.SleepHelper
+import org.scalatest.wordspec.AnyWordSpec
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelSpec extends WordSpec with ParallelTestExecution {
+protected[scalatest] class ExampleParallelSpec extends AnyWordSpec with ParallelTestExecution {
 
   "Subject 1" should {
     "have behavior 1a" in {

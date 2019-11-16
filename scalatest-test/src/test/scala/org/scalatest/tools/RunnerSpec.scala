@@ -24,8 +24,9 @@ import java.util.regex.Pattern
 import java.net.URL
 import java.io.File
 import org.scalatest.tools.Runner.deglobSuiteParams
+import org.scalatest.funspec.AnyFunSpec
 
-class RunnerSpec extends FunSpec with PrivateMethodTester {
+class RunnerSpec extends AnyFunSpec with PrivateMethodTester {
 
   it("deglobSuiteParams should work correctly") {
     val suiteParam =

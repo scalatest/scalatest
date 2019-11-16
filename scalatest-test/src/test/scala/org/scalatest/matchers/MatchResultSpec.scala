@@ -18,8 +18,10 @@ package org.scalatest.matchers
 import org.scalatest._
 import Inside._
 import org.scalactic.{PrettyMethods, Prettifier}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
+class MatchResultSpec extends AnyFreeSpec with Matchers with PrettyMethods {
 
   "A MatchResult" - {
     val mr = MatchResult(false, "1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")

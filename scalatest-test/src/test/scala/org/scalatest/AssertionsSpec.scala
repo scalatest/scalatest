@@ -1731,7 +1731,7 @@ class AssertionsSpec extends AnyFunSpec {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          class TestSpec extends AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
             it("testing here") {
               val org = "test"
               assert(org === "test")
@@ -3198,7 +3198,7 @@ class AssertionsSpec extends AnyFunSpec {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          class TestSpec extends AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
             it("testing here") {
               val org = "test"
               assert(org === "test", ", dude")
@@ -4655,7 +4655,7 @@ class AssertionsSpec extends AnyFunSpec {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    assume(org === "test")
@@ -6118,7 +6118,7 @@ class AssertionsSpec extends AnyFunSpec {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    assume(org === "test", ", dude")

@@ -23,8 +23,10 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import scala.collection.mutable.ListBuffer
 import exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class ListShouldContainInOrderElementsOfSpec extends FunSpec with Matchers {
+class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
 
   private val prettifier = Prettifier.default
 

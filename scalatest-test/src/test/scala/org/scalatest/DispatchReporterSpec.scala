@@ -21,13 +21,14 @@ import org.scalatest.events._
 import org.scalactic.exceptions.NullArgumentException
 import SharedHelpers._
 import concurrent.Eventually._
-import Matchers._
 import OptionValues._
 import Inside._
 import tagobjects.Retryable
 import Retries._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class DispatchReporterSpec extends FunSpec {
+class DispatchReporterSpec extends AnyFunSpec {
 
   override def withFixture(test: NoArgTest) = {
     if (isRetryable(test))

@@ -15,9 +15,10 @@
  */
 package org.scalatest
 
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShellSpec extends FunSpec {
+class ShellSpec extends AnyFunSpec {
 
   it("test defaults") {
 

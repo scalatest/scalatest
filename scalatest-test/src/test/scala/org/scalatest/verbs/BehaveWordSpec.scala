@@ -16,9 +16,10 @@
 package org.scalatest.verbs
 
 import org.scalatest._
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class BehaveWordSpec extends FunSpec {
+class BehaveWordSpec extends AnyFunSpec {
   
   describe("BehaveWord ") {
     

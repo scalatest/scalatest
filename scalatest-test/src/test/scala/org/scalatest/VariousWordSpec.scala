@@ -15,9 +15,11 @@
  */
 package org.scalatest
 
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 private class VariousWordSpec {} // prevents unnecessary recompilation
 
-class AmpersandWordSpec extends WordSpec with Matchers {
+class AmpersandWordSpec extends AnyWordSpec with Matchers {
 
   "The Scala language" should {
     "provide an && operator" which {
@@ -41,7 +43,7 @@ class AmpersandWordSpec extends WordSpec with Matchers {
   }
 }
 
-class LoginUiWordSpec extends WordSpec {
+class LoginUiWordSpec extends AnyWordSpec {
 
   def theUser = afterWord("the user")
   def have = afterWord("have")

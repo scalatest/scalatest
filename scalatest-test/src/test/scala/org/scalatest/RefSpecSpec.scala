@@ -31,8 +31,10 @@ import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestCanceledException
 import scala.reflect.NameTransformer.encode
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class RefSpecSpec extends FunSpec with PrivateMethodTester {
+class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
   private val prettifier = Prettifier.default
 

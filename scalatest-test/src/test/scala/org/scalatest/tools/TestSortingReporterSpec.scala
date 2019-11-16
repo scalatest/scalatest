@@ -15,8 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.SharedHelpers.SilentReporter
 import org.scalatest.events._
@@ -33,8 +31,10 @@ import java.io.ByteArrayOutputStream
 import org.scalatest.DistributedSuiteSorter
 import scala.collection.mutable.ListBuffer
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class TestSortingReporterSpec extends FunSpec with Matchers {
+class TestSortingReporterSpec extends AnyFunSpec with Matchers {
 
   describe("TestSortingReporter") {
     

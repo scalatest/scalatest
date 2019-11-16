@@ -15,10 +15,10 @@
  */
 package org.scalatest.prop
 
-import org.scalatest.AsyncFunSpec
 import org.scalatest.exceptions.TestFailedException
 
 import scala.concurrent.Future
+import org.scalatest.funspec.AsyncFunSpec
 
 class AsyncGeneratorDrivenPropertyChecksSpec extends AsyncFunSpec with GeneratorDrivenPropertyChecks {
 

@@ -16,10 +16,11 @@
 package org.scalatest
 
 import org.scalactic._
-import Matchers._
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldEqualToleranceSpec extends FunSpec with Tolerance {
+class ShouldEqualToleranceSpec extends AnyFunSpec with Tolerance {
 
   val sevenDotOh = 7.0
   val minusSevenDotOh = -7.0

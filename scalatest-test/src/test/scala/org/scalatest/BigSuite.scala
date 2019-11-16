@@ -18,6 +18,7 @@ package org.scalatest
 import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
+import org.scalatest.funspec.AnyFunSpec
 
 /*
 java -Dorg.scalatest.BigSuite.size=5 -Dorg.scalatest.SuiteCompletedStatusReporter.max=100 -classpath scalatest-1.0-CLICKDEMO.jar:/usr/artima/scala/lib/scala-library.jar org.scalatest.tools.Runner -c4 -p "scalatest-1.0-CLICKDEMO-tests.jar" -oNCXEHLO -r org.scalatest.SuiteCompletedStatusReporter -s org.scalatest.BigSuite -s org.scalatest.BigSuite -s org.scalatest.BigSuite -s org.scalatest.BigSuite -s org.scalatest.BigSuite
@@ -45,7 +46,7 @@ So the knobs we can turn are:
 -s org.scalatest.BigSuite..., repeating this gets you more instances of these trees sized by M
 -Dorg.scalatest.SuiteCompletedStatusReporter.max=X, where X is the number of SuiteCompleted events between duration notes
 */
-protected[scalatest] class BigSuite(nestedSuiteCount: Option[Int], propMap: Map[String, String]) extends FunSpec { thisSuite =>
+protected[scalatest] class BigSuite(nestedSuiteCount: Option[Int], propMap: Map[String, String]) extends AnyFunSpec { thisSuite =>
 
   override def nestedSuites: collection.immutable.IndexedSeq[Suite] = {
 

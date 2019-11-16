@@ -16,16 +16,16 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
-import Matchers._
-
 import scala.reflect.ClassTag
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ResultOfATypeInvocationSpec extends FunSpec {
+class ResultOfATypeInvocationSpec extends AnyFunSpec {
   
   describe("ResultOfATypeInvocation ") {
     
     it("should have pretty toString") {
-      val result = new ResultOfATypeInvocation(ClassTag[FunSpec](classOf[FunSpec]))
+      val result = new ResultOfATypeInvocation(ClassTag[AnyFunSpec](classOf[AnyFunSpec]))
       result.toString should be ("a [org.scalatest.funspec.AnyFunSpec]")
     }
   }

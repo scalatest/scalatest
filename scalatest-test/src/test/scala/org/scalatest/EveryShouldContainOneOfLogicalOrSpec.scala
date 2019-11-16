@@ -19,10 +19,11 @@ import org.scalactic.{Equality, Every, One, Many, Prettifier}
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import Matchers._
 import exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class EveryShouldContainOneOfLogicalOrSpec extends FunSpec {
+class EveryShouldContainOneOfLogicalOrSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

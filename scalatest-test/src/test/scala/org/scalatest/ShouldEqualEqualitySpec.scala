@@ -25,11 +25,12 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import org.scalactic.Equality
 import org.scalactic.TripleEquals
-import Matchers._
 
 import org.scalactic.ArrayHelper.deep
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldEqualEqualitySpec extends FunSpec {
+class ShouldEqualEqualitySpec extends AnyFunSpec {
 
   describe("the should equal syntax should use the appropriate Equality type class") {
     it("for Any") {

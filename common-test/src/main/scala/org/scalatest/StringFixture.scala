@@ -22,10 +22,10 @@ trait StringFixture { this: FixtureTestSuite =>
   }
 }
 
-trait StringFixtureFunSuite extends fixture.FunSuite with StringFixture
-trait StringFixtureFunSpec extends fixture.FunSpec with StringFixture
-trait StringFixtureWordSpec extends fixture.WordSpec with StringFixture
-trait StringFixtureFlatSpec extends fixture.FlatSpec with StringFixture
-trait StringFixtureFreeSpec extends fixture.FreeSpec with StringFixture
-trait StringFixtureFeatureSpec extends fixture.FeatureSpec with StringFixture
-trait StringFixturePropSpec extends fixture.PropSpec with StringFixture
+trait StringFixtureFunSuite extends funsuite.FixtureAnyFunSuite with StringFixture
+trait StringFixtureFunSpec extends funspec.FixtureAnyFunSpec with StringFixture
+trait StringFixtureWordSpec extends wordspec.FixtureAnyWordSpec with StringFixture
+trait StringFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with StringFixture
+trait StringFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with StringFixture
+trait StringFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with StringFixture
+trait StringFixturePropSpec extends propspec.FixtureAnyPropSpec with StringFixture

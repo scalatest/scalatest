@@ -17,10 +17,11 @@ package org.scalatest
 
 import java.io.File
 import SharedHelpers.{createTempDirectory, thisLineNumber}
-import Matchers._
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldExistLogicalAndSpec extends FunSpec {
+class ShouldExistLogicalAndSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

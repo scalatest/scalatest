@@ -18,10 +18,11 @@ package org.scalatest
 import org.scalatest.EitherValues._
 import org.scalatest.OptionValues._
 import org.scalatest.SharedHelpers.thisLineNumber
-import Matchers._
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class EitherValuesSpec extends FunSpec {
+class EitherValuesSpec extends AnyFunSpec {
   describe("values on Either") {
 
     it("should return the left value inside an either if left.value is defined") {

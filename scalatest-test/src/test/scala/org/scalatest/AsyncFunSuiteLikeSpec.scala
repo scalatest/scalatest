@@ -21,8 +21,10 @@ import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AsyncFunSuiteLike
 
-class AsyncFunSuiteLikeSpec extends FunSpec {
+class AsyncFunSuiteLikeSpec extends AnyFunSpec {
 
   describe("AsyncFunSuiteLike") {
 

@@ -17,12 +17,14 @@ package org.scalatest.fixture
 
 import org.scalatest._
 import SharedHelpers._
+import org.scalatest
+import org.scalatest.funsuite
 
-class TestDataFixtureSpec extends org.scalatest.FunSpec {
+class TestDataFixtureSpec extends scalatest.funspec.AnyFunSpec {
   describe("A TestDataFixture") {
     it("should pass the test data to each test") {
       val myConfigMap = ConfigMap("hello" -> "world", "salt" -> "pepper")
-      class MySuite extends fixture.FunSuite with TestDataFixture {
+      class MySuite extends funsuite.FixtureAnyFunSuite with TestDataFixture {
         var testDataPassed = false
         test("something") { (td: TestData) =>
           if (td.configMap == myConfigMap && td.name == "something")

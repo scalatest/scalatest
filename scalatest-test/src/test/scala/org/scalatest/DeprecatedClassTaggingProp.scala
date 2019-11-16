@@ -19,6 +19,15 @@ import org.scalatestplus.junit._
 import org.junit.Test
 import org.scalatest.refspec.RefSpec
 import org.scalatestplus.testng.TestNGSuite
+import org.scalatest
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 
 class DeprecatedClassTaggingProp extends AllSuiteProp {
 
@@ -77,7 +86,7 @@ class DeprecatedExampleClassTaggingSuite extends Suite with DeprecatedClassTaggi
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFixtureSuite extends fixture.TestSuite with DeprecatedClassTaggingFixtureServices with StringFixture {
+class DeprecatedExampleClassTaggingFixtureSuite extends scalatest.FixtureTestSuite with DeprecatedClassTaggingFixtureServices with StringFixture {
   def testMethod1(): Unit = {}
   def testMethod2(): Unit = {}
   def testMethod3(): Unit = {}
@@ -121,7 +130,7 @@ class DeprecatedExampleClassTaggingTestNGSuite extends TestNGSuite with Deprecat
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFunSuite extends FunSuite with DeprecatedClassTaggingFixtureServices {
+class DeprecatedExampleClassTaggingFunSuite extends AnyFunSuite with DeprecatedClassTaggingFixtureServices {
   test("Test 1") {}
   test("Test 2") {}
   test("Test 3") {}
@@ -129,7 +138,7 @@ class DeprecatedExampleClassTaggingFunSuite extends FunSuite with DeprecatedClas
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFixtureFunSuite extends fixture.FunSuite with DeprecatedClassTaggingFixtureServices with StringFixture {
+class DeprecatedExampleClassTaggingFixtureFunSuite extends funsuite.FixtureAnyFunSuite with DeprecatedClassTaggingFixtureServices with StringFixture {
   test("Test 1") {s =>}
   test("Test 2") {s =>}
   test("Test 3") {s =>}
@@ -137,7 +146,7 @@ class DeprecatedExampleClassTaggingFixtureFunSuite extends fixture.FunSuite with
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFunSpec extends FunSpec with DeprecatedClassTaggingFixtureServices {
+class DeprecatedExampleClassTaggingFunSpec extends AnyFunSpec with DeprecatedClassTaggingFixtureServices {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}
@@ -147,7 +156,7 @@ class DeprecatedExampleClassTaggingFunSpec extends FunSpec with DeprecatedClassT
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFixtureFunSpec extends fixture.FunSpec with DeprecatedClassTaggingFixtureServices with StringFixture {
+class DeprecatedExampleClassTaggingFixtureFunSpec extends funspec.FixtureAnyFunSpec with DeprecatedClassTaggingFixtureServices with StringFixture {
   describe("Scope 1") {
     it("Test 1") {s =>}
     it("Test 2") {s =>}
@@ -157,27 +166,27 @@ class DeprecatedExampleClassTaggingFixtureFunSpec extends fixture.FunSpec with D
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFeatureSpec extends FeatureSpec with DeprecatedClassTaggingFixtureServices {
-  feature("Feature 1") {
-    scenario("Scenario 1") {}
-    scenario("Scenario 2") {}
-    scenario("Scenario 3") {}
+class DeprecatedExampleClassTaggingFeatureSpec extends AnyFeatureSpec with DeprecatedClassTaggingFixtureServices {
+  Feature("Feature 1") {
+    Scenario("Scenario 1") {}
+    Scenario("Scenario 2") {}
+    Scenario("Scenario 3") {}
   }
 }
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFixtureFeatureSpec extends fixture.FeatureSpec with DeprecatedClassTaggingFixtureServices with StringFixture {
-  feature("Feature 1") {
-    scenario("Scenario 1") {s =>}
-    scenario("Scenario 2") {s =>}
-    scenario("Scenario 3") {s =>}
+class DeprecatedExampleClassTaggingFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with DeprecatedClassTaggingFixtureServices with StringFixture {
+  Feature("Feature 1") {
+    Scenario("Scenario 1") {s =>}
+    Scenario("Scenario 2") {s =>}
+    Scenario("Scenario 3") {s =>}
   }
 }
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFlatSpec extends FlatSpec with DeprecatedClassTaggingFixtureServices {
+class DeprecatedExampleClassTaggingFlatSpec extends AnyFlatSpec with DeprecatedClassTaggingFixtureServices {
   "Scope 1" should "do thing 1" in {}
   it should "do thing 2" in {}
   it should "do thing 3" in {}
@@ -185,7 +194,7 @@ class DeprecatedExampleClassTaggingFlatSpec extends FlatSpec with DeprecatedClas
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFixtureFlatSpec extends fixture.FlatSpec with DeprecatedClassTaggingFixtureServices with StringFixture {
+class DeprecatedExampleClassTaggingFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with DeprecatedClassTaggingFixtureServices with StringFixture {
   "Scope 1" should "do thing 1" in {s =>}
   it should "do thing 2" in {s =>}
   it should "do thing 3" in {s =>}
@@ -193,7 +202,7 @@ class DeprecatedExampleClassTaggingFixtureFlatSpec extends fixture.FlatSpec with
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFreeSpec extends FreeSpec with DeprecatedClassTaggingFixtureServices {
+class DeprecatedExampleClassTaggingFreeSpec extends AnyFreeSpec with DeprecatedClassTaggingFixtureServices {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -203,7 +212,7 @@ class DeprecatedExampleClassTaggingFreeSpec extends FreeSpec with DeprecatedClas
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFixtureFreeSpec extends fixture.FreeSpec with DeprecatedClassTaggingFixtureServices with StringFixture {
+class DeprecatedExampleClassTaggingFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with DeprecatedClassTaggingFixtureServices with StringFixture {
   "Scope 1" - {
     "Test 1" in {s =>}
     "Test 2" in {s =>}
@@ -213,7 +222,7 @@ class DeprecatedExampleClassTaggingFixtureFreeSpec extends fixture.FreeSpec with
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingPropSpec extends PropSpec with DeprecatedClassTaggingFixtureServices {
+class DeprecatedExampleClassTaggingPropSpec extends AnyPropSpec with DeprecatedClassTaggingFixtureServices {
   property("Test 1") {}
   property("Test 2") {}
   property("Test 3") {}
@@ -221,7 +230,7 @@ class DeprecatedExampleClassTaggingPropSpec extends PropSpec with DeprecatedClas
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFixturePropSpec extends fixture.PropSpec with DeprecatedClassTaggingFixtureServices with StringFixture {
+class DeprecatedExampleClassTaggingFixturePropSpec extends propspec.FixtureAnyPropSpec with DeprecatedClassTaggingFixtureServices with StringFixture {
   property("Test 1") {s =>}
   property("Test 2") {s =>}
   property("Test 3") {s =>}
@@ -229,7 +238,7 @@ class DeprecatedExampleClassTaggingFixturePropSpec extends fixture.PropSpec with
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingWordSpec extends WordSpec with DeprecatedClassTaggingFixtureServices {
+class DeprecatedExampleClassTaggingWordSpec extends AnyWordSpec with DeprecatedClassTaggingFixtureServices {
   "Scope 1" should {
     "Test 1" in {}
     "Test 2" in {}
@@ -239,7 +248,7 @@ class DeprecatedExampleClassTaggingWordSpec extends WordSpec with DeprecatedClas
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingFixtureWordSpec extends fixture.WordSpec with DeprecatedClassTaggingFixtureServices with StringFixture {
+class DeprecatedExampleClassTaggingFixtureWordSpec extends wordspec.FixtureAnyWordSpec with DeprecatedClassTaggingFixtureServices with StringFixture {
   "Scope 1" should {
     "Test 1" in {s =>}
     "Test 2" in {s =>}
@@ -249,7 +258,7 @@ class DeprecatedExampleClassTaggingFixtureWordSpec extends fixture.WordSpec with
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingPathFreeSpec extends path.FreeSpec with DeprecatedClassTaggingFixtureServices {
+class DeprecatedExampleClassTaggingPathFreeSpec extends freespec.PathAnyFreeSpec with DeprecatedClassTaggingFixtureServices {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -259,7 +268,7 @@ class DeprecatedExampleClassTaggingPathFreeSpec extends path.FreeSpec with Depre
 
 @DoNotDiscover
 @Ignore
-class DeprecatedExampleClassTaggingPathFunSpec extends path.FunSpec with DeprecatedClassTaggingFixtureServices {
+class DeprecatedExampleClassTaggingPathFunSpec extends funspec.PathAnyFunSpec with DeprecatedClassTaggingFixtureServices {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}

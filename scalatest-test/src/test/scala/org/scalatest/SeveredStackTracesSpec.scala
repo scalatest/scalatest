@@ -17,8 +17,10 @@ package org.scalatest
 
 import org.scalatest.exceptions.{StackDepthExceptionHelper, TestFailedException, StackDepthException}
 import org.scalactic.source
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class SeveredStackTracesSpec extends FunSpec with Matchers with SeveredStackTraces {
+class SeveredStackTracesSpec extends AnyFunSpec with Matchers with SeveredStackTraces {
 
   import SharedHelpers.thisLineNumber
 

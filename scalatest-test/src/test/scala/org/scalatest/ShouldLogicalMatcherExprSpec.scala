@@ -18,9 +18,10 @@ package org.scalatest
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.scalatest.exceptions.TestFailedException
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldLogicalMatcherExprSpec extends FunSpec with ReturnsNormallyThrowsAssertion {
+class ShouldLogicalMatcherExprSpec extends AnyFunSpec with ReturnsNormallyThrowsAssertion {
 
   sealed abstract class Clown {
     def hasBigRedNose = true

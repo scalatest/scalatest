@@ -17,11 +17,12 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import enablers.Emptiness
-import Matchers._
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeEmptyImplicitSpec extends FunSpec {
+class ShouldBeEmptyImplicitSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
   

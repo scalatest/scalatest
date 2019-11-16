@@ -32,8 +32,9 @@ import org.scalatest.events.NoteProvided
 import org.scalatest.events.NameInfo
 
 import java.io.File
+import org.scalatest.funsuite.AnyFunSuite
 
-class JUnitXmlReporterSuite extends FunSuite {
+class JUnitXmlReporterSuite extends AnyFunSuite {
 
   val ord0 = new Ordinal(23)
   val ord0a = ord0.next

@@ -15,14 +15,15 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest.Matchers._
 import org.scalatest.StringFixture
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.flatspec.FixtureAnyFlatSpec
 
 /*
 This tests that matchers works with FlatSpec when matchers are imported,
 something that broke in 2.1.RC1.
 */
-class FlatSpecImportedMatchersSpec extends FlatSpec with StringFixture {
+class FlatSpecImportedMatchersSpec extends FixtureAnyFlatSpec with StringFixture {
   "This spec" should "work OK" in { _ =>
     "hello" should startWith ("he")
     "hello" should endWith ("lo")

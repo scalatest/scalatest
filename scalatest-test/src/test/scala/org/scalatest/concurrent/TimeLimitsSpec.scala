@@ -35,6 +35,8 @@ import org.scalatest.tagobjects.Retryable
 import scala.concurrent.Future
 
 import scala.util.{Try, Success, Failure}
+import org.scalatest.funspec.AsyncFunSpec
+import org.scalatest.matchers.should.Matchers
 
 class TimeLimitsSpec extends AsyncFunSpec with Matchers {
 

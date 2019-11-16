@@ -15,8 +15,9 @@
  */
 package org.scalatest
 
+import org.scalatest.funspec.AnyFunSpec
 @DoNotDiscover
-protected[scalatest] class RunInSpurtsSpec1 extends FunSpec with BeforeAndAfter {
+protected[scalatest] class RunInSpurtsSpec1 extends AnyFunSpec with BeforeAndAfter {
 
   before {
     info("In Before")

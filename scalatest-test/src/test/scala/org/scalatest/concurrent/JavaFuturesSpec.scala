@@ -25,8 +25,10 @@ import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.StackDepthException
 import org.scalactic.source
 import scala.compat.Platform.EOL
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaFutures with SeveredStackTraces {
+class JavaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with JavaFutures with SeveredStackTraces {
 
   // This one tests the real JavaFutures trait, so it doesn't poll, which means some of the tests I used
   // to test the polling code in the default implementation of awaitResult in FutureConcept don't work.

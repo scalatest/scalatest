@@ -18,9 +18,12 @@ package org.scalatest.events
 import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 import examples._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
 // SKIP-SCALATESTJS-START
-class EventSpec extends FunSpec {
+class EventSpec extends AnyFunSpec {
 /*
   describe("An TestStarting Event") {
     describe("(with different runStamps)") {
@@ -318,7 +321,7 @@ class EventSpec extends FunSpec {
     }
 
     it("should carry correct differences value when used with s1 shouldEqual s2 syntax") {
-      class ExampleSpec extends FunSuite with Matchers {
+      class ExampleSpec extends AnyFunSuite with Matchers {
         test("test") {
           "s1" shouldEqual "s2"
         }
@@ -334,7 +337,7 @@ class EventSpec extends FunSpec {
     }
 
     it("should carry correct differences value when used with s1 should equal s2 syntax") {
-      class ExampleSpec extends FunSuite with Matchers {
+      class ExampleSpec extends AnyFunSuite with Matchers {
         test("test") {
           "s1" should equal ("s2")
         }
@@ -350,7 +353,7 @@ class EventSpec extends FunSpec {
     }
 
     it("should carry correct differences value when used with all(s1) shouldEqual s2 syntax") {
-      class ExampleSpec extends FunSuite with Matchers {
+      class ExampleSpec extends AnyFunSuite with Matchers {
         test("test") {
           all(List("s1")) shouldEqual "s2"
         }
@@ -366,7 +369,7 @@ class EventSpec extends FunSpec {
     }
 
     it("should carry correct differences value when used with all(s1) should equal s2 syntax") {
-      class ExampleSpec extends FunSuite with Matchers {
+      class ExampleSpec extends AnyFunSuite with Matchers {
         test("test") {
           all(List("s1")) should equal ("s2")
         }

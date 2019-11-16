@@ -17,14 +17,15 @@ package org.scalatest.matchers.dsl
 
 import org.scalatest._
 import org.scalatest.exceptions.NotAllowedException
-import Matchers._
 import matchers.{AMatcher, AnMatcher, BeMatcher, BePropertyMatchResult, BePropertyMatcher, MatchResult}
 import org.scalactic._
 import org.scalatest.UnquotedString
 
 import scala.reflect.ClassTag
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class BeWordSpec extends FunSpec with FileMocks {
+class BeWordSpec extends AnyFunSpec with FileMocks {
   
   describe("BeWord ") {
     

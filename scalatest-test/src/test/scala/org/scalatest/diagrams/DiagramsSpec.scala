@@ -21,8 +21,10 @@ import java.util.Date
 import org.scalactic.Prettifier
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class DiagramsSpec extends FunSpec with Matchers with Diagrams {
+class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
 
   val fileName: String = "DiagramsSpec.scala"
 
@@ -2458,7 +2460,7 @@ class DiagramsSpec extends FunSpec with Matchers with Diagrams {
       it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
         assertCompiles(
           """
-            |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+            |class TestSpec extends AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
             |  it("testing here") {
             |    val org = "test"
             |    assert(org === "test")
@@ -4922,7 +4924,7 @@ class DiagramsSpec extends FunSpec with Matchers with Diagrams {
       it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
         assertCompiles(
           """
-            |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+            |class TestSpec extends AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
             |  it("testing here") {
             |    val org = "test"
             |    assert(org === "test", "this is a clue")
@@ -7388,7 +7390,7 @@ class DiagramsSpec extends FunSpec with Matchers with Diagrams {
       it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
         assertCompiles(
           """
-            |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+            |class TestSpec extends AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
             |  it("testing here") {
             |    val org = "test"
             |    assume(org === "test")
@@ -9853,7 +9855,7 @@ class DiagramsSpec extends FunSpec with Matchers with Diagrams {
       it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
         assertCompiles(
           """
-            |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+            |class TestSpec extends AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
             |  it("testing here") {
             |    val org = "test"
             |    assume(org === "test", "this is a clue")

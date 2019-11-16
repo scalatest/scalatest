@@ -32,14 +32,16 @@ import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalatest
+import org.scalatest.featurespec
 
-class FeatureSpecSpec extends org.scalatest.FunSpec {
+class FeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
 
   private val prettifier = Prettifier.default
 
   describe("A fixture.FeatureSpec") {
     it("should return the test names in order of registration from testNames") {
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = Succeeded
         Scenario("should do that") { fixture =>
@@ -54,7 +56,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         a.testNames.iterator.toList
       }
 
-      val b = new fixture.FeatureSpec {
+      val b = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = Succeeded
       }
@@ -63,7 +65,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         b.testNames.iterator.toList
       }
 
-      val c = new fixture.FeatureSpec {
+      val c = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = Succeeded
         Scenario("should do this") { fixture =>
@@ -82,7 +84,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     it("should throw NotAllowedException if a duplicate scenario name registration is attempted") {
 
       intercept[DuplicateTestNameException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           Scenario("test this") { fixture =>
@@ -94,7 +96,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         }
       }
       intercept[DuplicateTestNameException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           Scenario("test this") { fixture =>
@@ -106,7 +108,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         }
       }
       intercept[DuplicateTestNameException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           ignore("test this") { fixture =>
@@ -118,7 +120,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         }
       }
       intercept[DuplicateTestNameException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           ignore("test this") { fixture =>
@@ -132,7 +134,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should pass in the fixture to every test method") {
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         val hello = "Hello, world!"
         def withFixture(test: OneArgTest): Outcome = {
@@ -152,14 +154,14 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     it("should throw NullArgumentException if a null test tag is provided") {
       // scenario
       intercept[NullArgumentException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           Scenario("hi", null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val caught = intercept[NullArgumentException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           Scenario("hi", mytags.SlowAsMolasses, null) { fixture => /* ASSERTION_SUCCEED */ }
@@ -167,7 +169,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       assert(caught.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           Scenario("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => /* ASSERTION_SUCCEED */ }
@@ -176,14 +178,14 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
 
       // ignore
       intercept[NullArgumentException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           ignore("hi", null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val caught2 = intercept[NullArgumentException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           ignore("hi", mytags.SlowAsMolasses, null) { fixture => /* ASSERTION_SUCCEED */ }
@@ -191,7 +193,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       assert(caught2.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => /* ASSERTION_SUCCEED */ }
@@ -200,14 +202,14 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
 
       // registerTest
       intercept[NullArgumentException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           registerTest("hi", null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val caught3 = intercept[NullArgumentException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           registerTest("hi", mytags.SlowAsMolasses, null) { fixture => /* ASSERTION_SUCCEED */ }
@@ -215,7 +217,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       assert(caught3.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => /* ASSERTION_SUCCEED */ }
@@ -224,14 +226,14 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
 
       // registerIgnoredTest
       intercept[NullArgumentException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           registerIgnoredTest("hi", null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val caught4 = intercept[NullArgumentException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           registerIgnoredTest("hi", mytags.SlowAsMolasses, null) { fixture => /* ASSERTION_SUCCEED */ }
@@ -239,7 +241,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       assert(caught4.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
-        new fixture.FeatureSpec {
+        new featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => /* ASSERTION_SUCCEED */ }
@@ -247,7 +249,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
     }
 
-    class TestWasCalledSuite extends fixture.FeatureSpec {
+    class TestWasCalledSuite extends featurespec.FixtureAnyFeatureSpec {
       type FixtureParam = String
       def withFixture(test: OneArgTest): Outcome = { test("hi") }
       var theTestThisCalled = false
@@ -274,7 +276,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
 
     it("should report as ignored, and not run, tests marked ignored") {
 
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -291,7 +293,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(a.theTestThisCalled)
       assert(a.theTestThatCalled)
 
-      val b = new fixture.FeatureSpec {
+      val b = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -308,7 +310,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(!b.theTestThisCalled)
       assert(b.theTestThatCalled)
 
-      val c = new fixture.FeatureSpec {
+      val c = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -327,7 +329,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
 
       // The order I want is order of appearance in the file.
       // Will try and implement that tomorrow. Subtypes will be able to change the order.
-      val d = new fixture.FeatureSpec {
+      val d = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -348,7 +350,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     it("should ignore a test marked as ignored if run is invoked with that testName") {
       // If I provide a specific testName to run, then it should ignore an Ignore on that test
       // method and actually invoke it.
-      val e = new fixture.FeatureSpec {
+      val e = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -369,7 +371,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     it("should run only those tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -387,7 +389,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new fixture.FeatureSpec {
+      val b = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -402,7 +404,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new fixture.FeatureSpec {
+      val c = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -417,7 +419,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new fixture.FeatureSpec {
+      val d = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -432,7 +434,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new fixture.FeatureSpec {
+      val e = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -451,7 +453,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new fixture.FeatureSpec {
+      val f = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -470,7 +472,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new fixture.FeatureSpec {
+      val g = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -489,7 +491,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new fixture.FeatureSpec {
+      val h = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -507,7 +509,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new fixture.FeatureSpec {
+      val i = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -525,7 +527,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new fixture.FeatureSpec {
+      val j = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -543,7 +545,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new fixture.FeatureSpec {
+      val k = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -564,7 +566,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     it("should run only those registered tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -582,7 +584,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new fixture.FeatureSpec {
+      val b = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -597,7 +599,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new fixture.FeatureSpec {
+      val c = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -612,7 +614,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new fixture.FeatureSpec {
+      val d = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -627,7 +629,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new fixture.FeatureSpec {
+      val e = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -646,7 +648,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new fixture.FeatureSpec {
+      val f = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -665,7 +667,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new fixture.FeatureSpec {
+      val g = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -684,7 +686,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new fixture.FeatureSpec {
+      val h = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -702,7 +704,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new fixture.FeatureSpec {
+      val i = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -720,7 +722,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new fixture.FeatureSpec {
+      val j = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -738,7 +740,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new fixture.FeatureSpec {
+      val k = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -758,7 +760,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
 
     it("should return the correct test count from its expectedTestCount method") {
 
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         Scenario("test this") { fixture => /* ASSERTION_SUCCEED */ }
@@ -766,7 +768,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
-      val b = new fixture.FeatureSpec {
+      val b = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         ignore("test this") { fixture => /* ASSERTION_SUCCEED */ }
@@ -774,7 +776,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
-      val c = new fixture.FeatureSpec {
+      val c = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         Scenario("test this", mytags.FastAsLight) { fixture => /* ASSERTION_SUCCEED */ }
@@ -783,7 +785,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
-      val d = new fixture.FeatureSpec {
+      val d = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         Scenario("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
@@ -795,7 +797,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(d.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) === 1)
       assert(d.expectedTestCount(Filter()) === 3)
 
-      val e = new fixture.FeatureSpec {
+      val e = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         Scenario("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
@@ -813,7 +815,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
 
     it("should return the correct test count from its expectedTestCount method when uses registerTest and registerIgnoredTest to register tests") {
 
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         registerTest("test this") { fixture => /* ASSERTION_SUCCEED */ }
@@ -821,7 +823,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
-      val b = new fixture.FeatureSpec {
+      val b = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         registerIgnoredTest("test this") { fixture => /* ASSERTION_SUCCEED */ }
@@ -829,7 +831,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
-      val c = new fixture.FeatureSpec {
+      val c = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         registerTest("test this", mytags.FastAsLight) { fixture => /* ASSERTION_SUCCEED */ }
@@ -838,7 +840,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
-      val d = new fixture.FeatureSpec {
+      val d = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
@@ -850,7 +852,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(d.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) === 1)
       assert(d.expectedTestCount(Filter()) === 3)
 
-      val e = new fixture.FeatureSpec {
+      val e = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
@@ -867,7 +869,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should generate a TestPending message when the test body is (pending)") {
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         val hello = "Hello, world!"
         def withFixture(test: OneArgTest): Outcome = {
@@ -891,7 +893,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
     it("should generate a test failure if a Throwable, or an Error other than direct Error subtypes " +
             "known in JDK 1.5, excluding AssertionError") {
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         val hello = "Hello, world!"
         def withFixture(test: OneArgTest): Outcome = {
@@ -909,7 +911,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         val hello = "Hello, world!"
         def withFixture(test: OneArgTest): Outcome = {
@@ -977,7 +979,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 */
     it("should allow both tests that take fixtures and tests that don't") {
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
 
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = {
@@ -1002,7 +1004,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(a.takesAFixtureInvoked)
     }
     it("should work with test functions whose inferred result type is not Unit") {
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
 
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = {
@@ -1028,7 +1030,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(a.takesAFixtureInvoked)
     }
     it("should work with ignored tests whose inferred result type is not Unit") {
-      val a = new fixture.FeatureSpec {
+      val a = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -1050,7 +1052,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(!a.theTestThatCalled)
     }
     it("should pass a NoArgTest to withFixture for tests that take no fixture") {
-      class MySpec extends fixture.FeatureSpec {
+      class MySpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         var aNoArgTestWasPassed = false
         var aOneArgTestWasPassed = false
@@ -1073,7 +1075,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(!s.aOneArgTestWasPassed)
     }
     it("should not pass a NoArgTest to withFixture for tests that take a Fixture") {
-      class MySpec extends fixture.FeatureSpec {
+      class MySpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         var aNoArgTestWasPassed = false
         var aOneArgTestWasPassed = false
@@ -1098,7 +1100,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     it("should pass a NoArgTest that invokes the no-arg test when the " +
             "NoArgTest's no-arg apply method is invoked") {
 
-      class MySuite extends fixture.FeatureSpec {
+      class MySuite extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         var theNoArgTestWasInvoked = false
         def withFixture(test: OneArgTest): Outcome = {
@@ -1119,7 +1121,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
 
       it("should, if they call a feature from within an scenario clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends fixture.FeatureSpec {
+        class MySpec extends featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           Scenario("should blow up") { fixture =>
@@ -1134,7 +1136,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       it("should, if they call a feature with a nested it from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends fixture.FeatureSpec {
+        class MySpec extends featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           Scenario("should blow up") { fixture =>
@@ -1152,7 +1154,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       it("should, if they call a nested it from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends fixture.FeatureSpec {
+        class MySpec extends featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           Scenario("should blow up") { fixture =>
@@ -1168,7 +1170,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       it("should, if they call a nested it with tags from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends fixture.FeatureSpec {
+        class MySpec extends featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           Scenario("should blow up") { fixture =>
@@ -1184,7 +1186,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       it("should, if they call a nested registerTest with tags from within an registerTest clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends fixture.FeatureSpec {
+        class MySpec extends featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           registerTest("should blow up") { fixture =>
@@ -1200,7 +1202,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       it("should, if they call a feature with a nested ignore from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends fixture.FeatureSpec {
+        class MySpec extends featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           Scenario("should blow up") { fixture =>
@@ -1218,7 +1220,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       it("should, if they call a nested ignore from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends fixture.FeatureSpec {
+        class MySpec extends featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           Scenario("should blow up") { fixture =>
@@ -1234,7 +1236,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       it("should, if they call a nested ignore with tags from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends fixture.FeatureSpec {
+        class MySpec extends featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           Scenario("should blow up") { fixture =>
@@ -1250,7 +1252,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       it("should, if they call a nested registerIgnoredTest with tags from within a registerTest clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends fixture.FeatureSpec {
+        class MySpec extends featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           registerTest("should blow up") { fixture =>
@@ -1266,7 +1268,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
       it("should, if they call a nested feature from within a feature clause, result in a SuiteAborted event when constructing the FeatureSpec") {
 
-        class MySpec extends fixture.FeatureSpec {
+        class MySpec extends featurespec.FixtureAnyFeatureSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           Feature("should blow up") {
@@ -1283,7 +1285,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       }
     }
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends fixture.FeatureSpec with expectations.Expectations {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec with expectations.Expectations {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         Scenario("fail scenario") { fixture =>
@@ -1306,7 +1308,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
   }
   it("should pass the correct test name in the OneArgTest passed to withFixture") {
-    val a = new fixture.FeatureSpec {
+    val a = new featurespec.FixtureAnyFeatureSpec {
       type FixtureParam = String
       var correctTestNameWasPassed = false
       def withFixture(test: OneArgTest): Outcome = {
@@ -1322,7 +1324,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     assert(a.correctTestNameWasPassed)
   }
   it("should pass the correct config map in the OneArgTest passed to withFixture") {
-    val a = new fixture.FeatureSpec {
+    val a = new featurespec.FixtureAnyFeatureSpec {
       type FixtureParam = String
       var correctConfigMapWasPassed = false
       def withFixture(test: OneArgTest): Outcome = {
@@ -1338,7 +1340,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     assert(a.correctConfigMapWasPassed)
   }
   
-  class ExamplePrefixSpec extends fixture.FeatureSpec {
+  class ExamplePrefixSpec extends featurespec.FixtureAnyFeatureSpec {
     type FixtureParam = String
     def withFixture(test: OneArgTest): Outcome = {
       test("hi")
@@ -1373,7 +1375,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
   }
 
   it("should allow test registration with registerTest and registerIgnoredTest") {
-    class TestSpec extends fixture.FeatureSpec {
+    class TestSpec extends featurespec.FixtureAnyFeatureSpec {
       type FixtureParam = String
       def withFixture(test: OneArgTest): Outcome = { test("a string") }
       val a = 1
@@ -1419,7 +1421,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
   describe("when failure happens") {
       
     it("should fire TestFailed event with correct stack depth info when test failed") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Scenario("fail scenario") { fixture =>
@@ -1442,7 +1444,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
       
     it("should generate NotAllowedException with correct stack depth info when has a feature nested inside a feature") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
@@ -1462,7 +1464,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
     
     it("should generate TestRegistrationClosedException with correct stack depth info when has a scenario nested inside a scenario") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
         Feature("a feature") {
@@ -1496,7 +1498,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should generate TestRegistrationClosedException with correct stack depth info when has an ignore nested inside a scenario") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
         Feature("a feature") {
@@ -1530,7 +1532,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
         Feature("a feature") {
@@ -1564,7 +1566,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should generate TestRegistrationClosedException with correct stack depth info when has a registerIgnoredTest nested inside a registerTest") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         var registrationClosedThrown = false
         Feature("a feature") {
@@ -1598,7 +1600,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should generate NotAllowedException wrapping a TestFailedException when assert fails in scope") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
@@ -1623,7 +1625,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
@@ -1648,7 +1650,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
@@ -1670,7 +1672,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
@@ -1694,7 +1696,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
 
     // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate AnnotationFormatError when it is thrown inside scope") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
@@ -1708,7 +1710,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should propagate AWTError when it is thrown inside scope") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
@@ -1722,7 +1724,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should propagate CoderMalfunctionError when it is thrown inside scope") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
@@ -1736,7 +1738,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should propagate FactoryConfigurationError when it is thrown inside scope") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
@@ -1750,7 +1752,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should propagate LinkageError when it is thrown inside scope") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
@@ -1764,7 +1766,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should propagate ThreadDeath when it is thrown inside scope") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
@@ -1778,7 +1780,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should propagate TransformerFactoryConfigurationError when it is thrown inside scope") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {
@@ -1792,7 +1794,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
     }
 
     it("should propagate VirtualMachineError when it is thrown inside scope") {
-      class TestSpec extends fixture.FeatureSpec {
+      class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("a string") }
         Feature("a feature") {

@@ -19,9 +19,10 @@ import org.scalatest.exceptions.TestFailedException
 
 import matchers.BePropertyMatcher
 import matchers.BePropertyMatchResult
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBePropertyMatcherSpec extends FunSpec with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
+class ShouldBePropertyMatcherSpec extends AnyFunSpec with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
 
   // Checking for a specific size
   describe("The be (BePropertyMatcher) syntax") {

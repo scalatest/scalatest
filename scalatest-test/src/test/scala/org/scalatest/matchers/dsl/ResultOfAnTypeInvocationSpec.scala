@@ -16,11 +16,11 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
-import Matchers._
-
 import scala.reflect.ClassTag
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ResultOfAnTypeInvocationSpec extends FunSpec {
+class ResultOfAnTypeInvocationSpec extends AnyFunSpec {
   
   describe("ResultOfAnTypeInvocation ") {
     

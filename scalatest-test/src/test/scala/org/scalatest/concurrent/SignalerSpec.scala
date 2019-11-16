@@ -15,9 +15,9 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.FunSpec
+import org.scalatest.funspec.AnyFunSpec
 
-class SignalerSpec extends FunSpec {
+class SignalerSpec extends AnyFunSpec {
   describe("Signaler") {
     it("should offer a default implicit DoNotSignal") {
       assert(implicitly[Signaler] eq DoNotSignal)

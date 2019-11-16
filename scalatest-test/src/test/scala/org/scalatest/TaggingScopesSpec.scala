@@ -17,7 +17,9 @@ package org.scalatest
 
 import tagobjects._
 import SharedHelpers._
-import Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
 /*
 This just tests a trait, TagGroups, that I created to answer a user query about
@@ -25,9 +27,9 @@ tagging scopes. I probably won't put this into ScalaTest proper to keep tagging
 simple, but I'll leave this in the repo as an example for folks who want to do
 something like this. - bv
 */
-class TaggingScopesSpec extends FunSpec {
+class TaggingScopesSpec extends AnyFunSpec {
 
-  class ExampleSpec extends FreeSpec {
+  class ExampleSpec extends AnyFreeSpec {
 
     override lazy val tags: Map[String, Set[String]] =
       super.tags.transform {

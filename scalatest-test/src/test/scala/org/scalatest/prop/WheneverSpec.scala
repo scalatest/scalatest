@@ -21,8 +21,10 @@ import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class WheneverSpec extends FunSpec with Matchers with Whenever {
+class WheneverSpec extends AnyFunSpec with Matchers with Whenever {
 
   describe("The whenever construct") {
     describe("when the result type of the block is Expectation") {

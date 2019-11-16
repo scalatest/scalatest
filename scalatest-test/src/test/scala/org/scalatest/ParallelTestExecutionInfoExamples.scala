@@ -19,6 +19,14 @@ import org.scalatest.events.Event
 import org.scalatest.prop.Tables
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
 trait InfoExpectedResults extends EventHelpers {
@@ -90,7 +98,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoSpec extends RefSpec 
 // SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFunSuite extends FunSuite with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionInfoFunSuite extends AnyFunSuite with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   test("Test 1") {}
@@ -116,7 +124,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFunSuite extends FunS
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFunSuite extends fixture.FunSuite with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFunSuite extends funsuite.FixtureAnyFunSuite with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   test("Test 1") { fixture => }
@@ -142,7 +150,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFunSuite exten
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFunSpec extends FunSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionInfoFunSpec extends AnyFunSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   describe("Scope 1") {
@@ -181,7 +189,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFunSpec extends FunSp
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFunSpec extends fixture.FunSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFunSpec extends funspec.FixtureAnyFunSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   describe("Scope 1") {
@@ -220,7 +228,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFunSpec extend
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFeatureSpec extends FeatureSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionInfoFeatureSpec extends AnyFeatureSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   Feature("Scope 1") {
@@ -259,7 +267,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFeatureSpec extends F
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFeatureSpec extends fixture.FeatureSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   Feature("Scope 1") {
@@ -298,7 +306,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFeatureSpec ex
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFlatSpec extends FlatSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionInfoFlatSpec extends AnyFlatSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   behavior of "Scope 1"
@@ -336,7 +344,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFlatSpec extends Flat
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFlatSpec extends fixture.FlatSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   behavior of "Scope 1"
@@ -374,7 +382,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFlatSpec exten
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFreeSpec extends FreeSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionInfoFreeSpec extends AnyFreeSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   "Scope 1" - {
@@ -414,7 +422,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFreeSpec extends Free
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFreeSpec extends fixture.FreeSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   "Scope 1" - {
@@ -454,7 +462,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFreeSpec exten
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoPropSpec extends PropSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionInfoPropSpec extends AnyPropSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   property("Test 1") {}
@@ -480,7 +488,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoPropSpec extends Prop
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFixturePropSpec extends fixture.PropSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionInfoFixturePropSpec extends propspec.FixtureAnyPropSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   property("Test 1") { fixture => }
@@ -506,7 +514,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixturePropSpec exten
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoWordSpec extends WordSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionInfoWordSpec extends AnyWordSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
   "Scope 1" should {
@@ -545,7 +553,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoWordSpec extends Word
   //SCALATESTJS,NATIVE-ONLY override def newInstance: Suite with ParallelTestExecution = new ExampleParallelTestExecutionInfoWordSpec
 }
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFixtureWordSpec extends fixture.WordSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionInfoFixtureWordSpec extends wordspec.FixtureAnyWordSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
   "Scope 1" should {

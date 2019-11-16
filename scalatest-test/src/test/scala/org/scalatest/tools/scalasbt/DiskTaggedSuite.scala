@@ -15,11 +15,11 @@
  */
 package org.scalatest.tools.scalasbt
 
-import org.scalatest.FunSuite
 import org.scalatest.tags.Disk
+import org.scalatest.funsuite.AnyFunSuite
 
 @Disk
-class DiskTaggedSuite extends FunSuite {
+class DiskTaggedSuite extends AnyFunSuite {
 
   test("test 1") {
     

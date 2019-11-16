@@ -15,14 +15,15 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest.Matchers._
 import org.scalatest.StringFixture
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.wordspec.FixtureAnyWordSpec
 
 /*
 This tests that matchers works with WordSpec when matchers are imported,
 something that broke in 2.1.RC1.
 */
-class WordSpecImportedMatchersSpec extends WordSpec with StringFixture {
+class WordSpecImportedMatchersSpec extends FixtureAnyWordSpec with StringFixture {
   "This spec" should {
     "work OK" in { _ =>
       "hello" should startWith ("he")

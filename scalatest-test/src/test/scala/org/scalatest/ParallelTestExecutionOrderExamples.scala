@@ -19,6 +19,14 @@ import org.scalatest.events.Event
 import org.scalatest.prop.Tables
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
 trait OrderExpectedResults extends EventHelpers {
@@ -107,7 +115,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderOtherSpec extends Re
 // SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFunSuite extends FunSuite with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderFunSuite extends AnyFunSuite with OrderExpectedResults with ParallelTestExecution {
   test("Test 1") {}
   test("Test 2") {}
   test("Test 3") {}
@@ -124,7 +132,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFunSuite extends Fun
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFunSuite extends fixture.FunSuite with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFunSuite extends funsuite.FixtureAnyFunSuite with OrderExpectedResults with ParallelTestExecution with StringFixture {
   test("Fixture Test 1") { fixture => }
   test("Fixture Test 2") { fixture => }
   test("Fixture Test 3") { fixture => }
@@ -141,7 +149,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFunSuite exte
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFunSpec extends FunSpec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderFunSpec extends AnyFunSpec with OrderExpectedResults with ParallelTestExecution {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}
@@ -169,7 +177,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFunSpec extends FunS
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFunSpec extends fixture.FunSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFunSpec extends funspec.FixtureAnyFunSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   describe("Fixture Scope 1") {
     it("Fixture Test 1") { fixture => }
     it("Fixture Test 2") { fixture =>}
@@ -197,7 +205,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFunSpec exten
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFeatureSpec extends FeatureSpec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderFeatureSpec extends AnyFeatureSpec with OrderExpectedResults with ParallelTestExecution {
   Feature("Scope 1") {
     Scenario("Test 1") {}
     Scenario("Test 2") {}
@@ -225,7 +233,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFeatureSpec extends 
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFeatureSpec extends fixture.FeatureSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   Feature("Fixture Scope 1") {
     Scenario("Fixture Test 1") { fixture => }
     Scenario("Fixture Test 2") { fixture =>}
@@ -253,7 +261,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFeatureSpec e
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFlatSpec extends FlatSpec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderFlatSpec extends AnyFlatSpec with OrderExpectedResults with ParallelTestExecution {
   behavior of "Scope 1"
   it should "Test 1" in {}
   it should "Test 2" in {}
@@ -281,7 +289,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFlatSpec extends Fla
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFlatSpec extends fixture.FlatSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   behavior of "Fixture Scope 1"
   it should "Fixture Test 1" in { fixture => }
   it should "Fixture Test 2" in { fixture => }
@@ -309,7 +317,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFlatSpec exte
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFreeSpec extends FreeSpec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderFreeSpec extends AnyFreeSpec with OrderExpectedResults with ParallelTestExecution {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -339,7 +347,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFreeSpec extends Fre
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFreeSpec extends fixture.FreeSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   "Fixture Scope 1" - {
     "Fixture Test 1" in { fixture => }
     "Fixture Test 2" in { fixture => }
@@ -369,7 +377,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFreeSpec exte
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderPropSpec extends PropSpec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderPropSpec extends AnyPropSpec with OrderExpectedResults with ParallelTestExecution {
   property("Test 1") {}
   property("Test 2") {}
   property("Test 3") {}
@@ -387,7 +395,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderPropSpec extends Pro
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFixturePropSpec extends fixture.PropSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixturePropSpec extends propspec.FixtureAnyPropSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   property("Fixture Test 1") { fixture => }
   property("Fixture Test 2") { fixture => }
   property("Fixture Test 3") { fixture => }
@@ -405,7 +413,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixturePropSpec exte
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderWordSpec extends WordSpec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderWordSpec extends AnyWordSpec with OrderExpectedResults with ParallelTestExecution {
   "Scope 1" should {
     "Test 1" in {}
     "Test 2" in {}
@@ -435,7 +443,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderWordSpec extends Wor
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFixtureWordSpec extends fixture.WordSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureWordSpec extends wordspec.FixtureAnyWordSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   "Fixture Scope 1" should {
     "Fixture Test 1" in { fixture => }
     "Fixture Test 2" in { fixture => }

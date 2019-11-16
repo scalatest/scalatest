@@ -17,12 +17,14 @@ package org.scalatest
 
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
 
-class ExamplesSuite extends FunSuite {
+class ExamplesSuite extends AnyFunSuite {
 
   test("that duplicate specTexts result in a thrown exception at construction time") {
 
-    class MySpec extends FunSpec {
+    class MySpec extends AnyFunSpec {
 
       def myOtherExamples(): Unit = {
         it("should lead the whole game") {}
@@ -45,7 +47,7 @@ class ExamplesSuite extends FunSuite {
   }
 
   test("duplicate testNames should result in an exception when one is in the Examples and the other in the Spec") {
-    class MySpec extends FunSpec {
+    class MySpec extends AnyFunSpec {
       def myOtherExamples(): Unit = {
         it("should lead the whole game") {}
         it("should lead just part of the game") {}
@@ -56,7 +58,7 @@ class ExamplesSuite extends FunSuite {
     intercept[DuplicateTestNameException] {
       new MySpec  
     }
-    class MyOtherSpec extends FunSpec {
+    class MyOtherSpec extends AnyFunSpec {
       def myOtherExamples(): Unit = {
         it("should lead the whole game") {}
         it("should lead just part of the game") {}
@@ -71,7 +73,7 @@ class ExamplesSuite extends FunSuite {
 
   test("that a null specText results in a thrown NPE at construction time") {
 
-    class MySpec extends FunSpec {
+    class MySpec extends AnyFunSpec {
 
       def examples(): Unit = {
         it(null) {}
@@ -85,7 +87,7 @@ class ExamplesSuite extends FunSuite {
 
   test("tags work correctly in Examples") {
 
-    val a = new FunSpec {
+    val a = new AnyFunSpec {
       def aExamples(): Unit = {
         it("test this", mytags.SlowAsMolasses) {}
         ignore("test that", mytags.SlowAsMolasses) {}
@@ -96,7 +98,7 @@ class ExamplesSuite extends FunSuite {
       a.tags
     }
 
-    val b = new FunSpec {
+    val b = new AnyFunSpec {
       def bExamples(): Unit = {}
       bExamples()
     }
@@ -104,7 +106,7 @@ class ExamplesSuite extends FunSuite {
       b.tags
     }
 
-    val c = new FunSpec {
+    val c = new AnyFunSpec {
       def cExamples(): Unit = {
         it("test this", mytags.SlowAsMolasses, mytags.WeakAsAKitten) {}
         it("test that", mytags.SlowAsMolasses) {}

@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-class InsertionOrderSetSpec extends FunSpec with Matchers {
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
+class InsertionOrderSetSpec extends AnyFunSpec with Matchers {
   describe("An InsertionOrderSet") {
     it("should offer an apply method in the companion object") {
       InsertionOrderSet(List(1, 2, 3)) shouldBe (InsertionOrderSet(List(1, 2, 3)))

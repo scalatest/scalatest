@@ -20,8 +20,11 @@ import SharedHelpers._
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import org.scalatest.time.{Span, Millis}
 import scala.concurrent.Future
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AsyncFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers {
+class AsyncTimeLimitedTestsSpec extends AnyFunSpec with Matchers {
   describe("A time-limited test") {
     describe("when it does not timeout ") {
       describe("when it succeeds") {

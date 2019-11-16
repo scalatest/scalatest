@@ -22,6 +22,8 @@ import org.scalactic.{Or, Good, Bad, source}
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.util.{Try, Success, Failure}
+import org.scalatest.diagrams.Diagrams
+import org.scalatest.freespec.AsyncFreeSpec
 
 /*
 class SuiteAbortingException(underlying: Throwable) {
@@ -29,7 +31,7 @@ class SuiteAbortingException(underlying: Throwable) {
 }
 */
 
-class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
+class FutureOutcomeSpec extends AsyncFreeSpec with Diagrams {
   "A FutureOutcome" - {
     "when representing a future outcome that completes with Succeeded" - {
       "should execute appropriate callbacks" in {

@@ -17,8 +17,10 @@ package org.scalatest.fixture
 
 import org.scalatest._
 import NoArgAlternativeSpec.invokedCount
+import org.scalatest
+import org.scalatest.matchers.should.Matchers
 
-class NoArgAlternativeSpec extends org.scalatest.FunSpec with Matchers {
+class NoArgAlternativeSpec extends scalatest.funspec.AnyFunSpec with Matchers {
 
   trait NoArgAlt extends (() => Unit) {
     def body(): Unit

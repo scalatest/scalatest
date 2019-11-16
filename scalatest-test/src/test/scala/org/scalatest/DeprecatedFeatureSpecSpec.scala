@@ -31,8 +31,10 @@ import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.funspec.AnyFunSpec
 
-class DeprecatedFeatureSpecSpec extends FunSpec {
+class DeprecatedFeatureSpecSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 
@@ -40,24 +42,24 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
 
     it("should return the scenario names in registration order from testNames") {
 
-      val a = new FeatureSpec {
-        scenario("test this") {/* ASSERTION_SUCCEED */}
-        scenario("test that") {/* ASSERTION_SUCCEED */}
+      val a = new AnyFeatureSpec {
+        Scenario("test this") {/* ASSERTION_SUCCEED */}
+        Scenario("test that") {/* ASSERTION_SUCCEED */}
       }
 
       assertResult(List("Scenario: test this", "Scenario: test that")) {
         a.testNames.iterator.toList
       }
 
-      val b = new FeatureSpec {}
+      val b = new AnyFeatureSpec {}
 
       assertResult(List[String]()) {
         b.testNames.iterator.toList
       }
 
-      val c = new FeatureSpec {
-        scenario("test that") {/* ASSERTION_SUCCEED */}
-        scenario("test this") {/* ASSERTION_SUCCEED */}
+      val c = new AnyFeatureSpec {
+        Scenario("test that") {/* ASSERTION_SUCCEED */}
+        Scenario("test this") {/* ASSERTION_SUCCEED */}
       }
 
       assertResult(List("Scenario: test that", "Scenario: test this")) {
@@ -68,39 +70,39 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
     it("should throw NotAllowedException if a duplicate scenario name registration is attempted") {
 
       intercept[DuplicateTestNameException] {
-        new FeatureSpec {
-          scenario("test this") {/* ASSERTION_SUCCEED */}
-          scenario("test this") {/* ASSERTION_SUCCEED */}
+        new AnyFeatureSpec {
+          Scenario("test this") {/* ASSERTION_SUCCEED */}
+          Scenario("test this") {/* ASSERTION_SUCCEED */}
         }
       }
       intercept[DuplicateTestNameException] {
-        new FeatureSpec {
-          scenario("test this") {/* ASSERTION_SUCCEED */}
-          ignore("test this") {/* ASSERTION_SUCCEED */}
-        }
-      }
-      intercept[DuplicateTestNameException] {
-        new FeatureSpec {
-          ignore("test this") {/* ASSERTION_SUCCEED */}
+        new AnyFeatureSpec {
+          Scenario("test this") {/* ASSERTION_SUCCEED */}
           ignore("test this") {/* ASSERTION_SUCCEED */}
         }
       }
       intercept[DuplicateTestNameException] {
-        new FeatureSpec {
+        new AnyFeatureSpec {
           ignore("test this") {/* ASSERTION_SUCCEED */}
-          scenario("test this") {/* ASSERTION_SUCCEED */}
+          ignore("test this") {/* ASSERTION_SUCCEED */}
+        }
+      }
+      intercept[DuplicateTestNameException] {
+        new AnyFeatureSpec {
+          ignore("test this") {/* ASSERTION_SUCCEED */}
+          Scenario("test this") {/* ASSERTION_SUCCEED */}
         }
       }
     }
 
     it("should run tests registered via the scenariosFor syntax") {
-      trait SharedFeatureSpecTests { this: FeatureSpec =>
+      trait SharedFeatureSpecTests { this: AnyFeatureSpec =>
         def nonEmptyStack(s: String)(i: Int): Unit = {
-          scenario("I am shared") {/* ASSERTION_SUCCEED */}
+          Scenario("I am shared") {/* ASSERTION_SUCCEED */}
         }
       }
-      class MySuite extends FeatureSpec with SharedFeatureSpecTests {
-        scenariosFor(nonEmptyStack("hi")(1))
+      class MySuite extends AnyFeatureSpec with SharedFeatureSpecTests {
+        ScenariosFor(nonEmptyStack("hi")(1))
       }
       val suite = new MySuite
       val reporter = new EventRecordingReporter
@@ -116,82 +118,82 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
     it("should throw NullArgumentException if a null test tag is provided") {
       // scenario
       intercept[NullArgumentException] {
-        new FeatureSpec {
-          scenario("hi", null) {/* ASSERTION_SUCCEED */}
+        new AnyFeatureSpec {
+          Scenario("hi", null) {/* ASSERTION_SUCCEED */}
         }
       }
       val caught = intercept[NullArgumentException] {
-        new FeatureSpec {
-          scenario("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
+        new AnyFeatureSpec {
+          Scenario("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
         }
       }
       assert(caught.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
-        new FeatureSpec {
-          scenario("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
+        new AnyFeatureSpec {
+          Scenario("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
         }
       }
 
       // ignore
       intercept[NullArgumentException] {
-        new FeatureSpec {
+        new AnyFeatureSpec {
           ignore("hi", null) {/* ASSERTION_SUCCEED */}
         }
       }
       val caught2 = intercept[NullArgumentException] {
-        new FeatureSpec {
+        new AnyFeatureSpec {
           ignore("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
         }
       }
       assert(caught2.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
-        new FeatureSpec {
+        new AnyFeatureSpec {
           ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
         }
       }
 
       // registerTest
       intercept[NullArgumentException] {
-        new FeatureSpec {
+        new AnyFeatureSpec {
           registerTest("hi", null) {/* ASSERTION_SUCCEED */}
         }
       }
       val caught3 = intercept[NullArgumentException] {
-        new FeatureSpec {
+        new AnyFeatureSpec {
           registerTest("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
         }
       }
       assert(caught3.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
-        new FeatureSpec {
+        new AnyFeatureSpec {
           registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
         }
       }
 
       // registerIgnoredTest
       intercept[NullArgumentException] {
-        new FeatureSpec {
+        new AnyFeatureSpec {
           registerIgnoredTest("hi", null) {/* ASSERTION_SUCCEED */}
         }
       }
       val caught4 = intercept[NullArgumentException] {
-        new FeatureSpec {
+        new AnyFeatureSpec {
           registerIgnoredTest("hi", mytags.SlowAsMolasses, null) {/* ASSERTION_SUCCEED */}
         }
       }
       assert(caught4.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
-        new FeatureSpec {
+        new AnyFeatureSpec {
           registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {/* ASSERTION_SUCCEED */}
         }
       }
     }
 
-    class TestWasCalledSuite extends FeatureSpec {
+    class TestWasCalledSuite extends AnyFeatureSpec {
       var theTestThisCalled = false
       var theTestThatCalled = false
-      scenario("this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-      scenario("that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+      Scenario("this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+      Scenario("that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
     }
 
     it("should execute all tests when run is called with testName None") {
@@ -212,11 +214,11 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
 
     it("should report as ignored, and not run, tests marked ignored") {
 
-      val a = new FeatureSpec {
+      val a = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        scenario("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -227,11 +229,11 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(a.theTestThisCalled)
       assert(a.theTestThatCalled)
 
-      val b = new FeatureSpec {
+      val b = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         ignore("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       val repB = new TestIgnoredTrackingReporter
@@ -242,10 +244,10 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(!b.theTestThisCalled)
       assert(b.theTestThatCalled)
 
-      val c = new FeatureSpec {
+      val c = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        scenario("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         ignore("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
@@ -259,7 +261,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
 
       // The order I want is order of appearance in the file.
       // Will try and implement that tomorrow. Subtypes will be able to change the order.
-      val d = new FeatureSpec {
+      val d = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         ignore("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -278,11 +280,11 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
     it("should ignore a test marked as ignored if run is invoked with that testName") {
       // If I provide a specific testName to run, then it should ignore an Ignore on that test
       // method and actually invoke it.
-      val e = new FeatureSpec {
+      val e = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         ignore("test this") { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -297,11 +299,11 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
     it("should run only those tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new FeatureSpec {
+      val a = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        scenario("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -313,11 +315,11 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new FeatureSpec {
+      val b = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        scenario("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -326,11 +328,11 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new FeatureSpec {
+      val c = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        scenario("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -339,11 +341,11 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new FeatureSpec {
+      val d = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         ignore("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -352,13 +354,13 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new FeatureSpec {
+      val e = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        scenario("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -369,13 +371,13 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new FeatureSpec {
+      val f = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
         ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -386,12 +388,12 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new FeatureSpec {
+      val g = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        scenario("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         ignore("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repG = new TestIgnoredTrackingReporter
@@ -403,13 +405,13 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new FeatureSpec {
+      val h = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        scenario("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -419,13 +421,13 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new FeatureSpec {
+      val i = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        scenario("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -435,13 +437,13 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new FeatureSpec {
+      val j = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
         ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         ignore("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
-        scenario("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
+        Scenario("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -451,7 +453,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new FeatureSpec {
+      val k = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -470,7 +472,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
     it("should run only those registered tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new FeatureSpec {
+      val a = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -486,7 +488,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new FeatureSpec {
+      val b = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -499,7 +501,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new FeatureSpec {
+      val c = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -512,7 +514,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new FeatureSpec {
+      val d = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerIgnoredTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
@@ -525,7 +527,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new FeatureSpec {
+      val e = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -542,7 +544,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new FeatureSpec {
+      val f = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -559,7 +561,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new FeatureSpec {
+      val g = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -576,7 +578,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new FeatureSpec {
+      val h = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -592,7 +594,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new FeatureSpec {
+      val i = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -608,7 +610,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new FeatureSpec {
+      val j = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -624,7 +626,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new FeatureSpec {
+      val k = new AnyFeatureSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -642,38 +644,38 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
     
     it("should return the correct test count from its expectedTestCount method") {
 
-      val a = new FeatureSpec {
-        scenario("test this") {/* ASSERTION_SUCCEED */}
-        scenario("test that") {/* ASSERTION_SUCCEED */}
+      val a = new AnyFeatureSpec {
+        Scenario("test this") {/* ASSERTION_SUCCEED */}
+        Scenario("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
-      val b = new FeatureSpec {
+      val b = new AnyFeatureSpec {
         ignore("test this") {/* ASSERTION_SUCCEED */}
-        scenario("test that") {/* ASSERTION_SUCCEED */}
+        Scenario("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
-      val c = new FeatureSpec {
-        scenario("test this", mytags.FastAsLight) {/* ASSERTION_SUCCEED */}
-        scenario("test that") {/* ASSERTION_SUCCEED */}
+      val c = new AnyFeatureSpec {
+        Scenario("test this", mytags.FastAsLight) {/* ASSERTION_SUCCEED */}
+        Scenario("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
-      val d = new FeatureSpec {
-        scenario("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
-        scenario("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
-        scenario("test the other thing") {/* ASSERTION_SUCCEED */}
+      val d = new AnyFeatureSpec {
+        Scenario("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
+        Scenario("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
+        Scenario("test the other thing") {/* ASSERTION_SUCCEED */}
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
       assert(d.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) === 1)
       assert(d.expectedTestCount(Filter()) === 3)
 
-      val e = new FeatureSpec {
-        scenario("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
-        scenario("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
+      val e = new AnyFeatureSpec {
+        Scenario("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
+        Scenario("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         ignore("test the other thing") {/* ASSERTION_SUCCEED */}
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
@@ -687,26 +689,26 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
 
     it("should return the correct test count from its expectedTestCount method when uses registerTest and registerIgnoredTest to register tests") {
 
-      val a = new FeatureSpec {
+      val a = new AnyFeatureSpec {
         registerTest("test this") {/* ASSERTION_SUCCEED */}
         registerTest("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
-      val b = new FeatureSpec {
+      val b = new AnyFeatureSpec {
         registerIgnoredTest("test this") {/* ASSERTION_SUCCEED */}
         registerTest("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
-      val c = new FeatureSpec {
+      val c = new AnyFeatureSpec {
         registerTest("test this", mytags.FastAsLight) {/* ASSERTION_SUCCEED */}
         registerTest("test that") {/* ASSERTION_SUCCEED */}
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
-      val d = new FeatureSpec {
+      val d = new AnyFeatureSpec {
         registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         registerTest("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         registerTest("test the other thing") {/* ASSERTION_SUCCEED */}
@@ -716,7 +718,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(d.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) === 1)
       assert(d.expectedTestCount(Filter()) === 3)
 
-      val e = new FeatureSpec {
+      val e = new AnyFeatureSpec {
         registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         registerTest("test that", mytags.SlowAsMolasses) {/* ASSERTION_SUCCEED */}
         registerIgnoredTest("test the other thing") {/* ASSERTION_SUCCEED */}
@@ -731,7 +733,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
     }
     
     it("should send an InfoProvided event for an info") {
-      class MySuite extends FeatureSpec  {
+      class MySuite extends AnyFeatureSpec  {
         info(
           "hi there"
         )
@@ -746,15 +748,15 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(infoList(0).message === "hi there")
     }
     it("should generate a TestPending message when the test body is (pending)") {
-      val a = new FeatureSpec {
+      val a = new AnyFeatureSpec {
 
-        scenario("should do this") (pending)
+        Scenario("should do this") (pending)
 
-        scenario("should do that") {
+        Scenario("should do that") {
           assert(2 + 2 === 4)
         }
         
-        scenario("should do something else") {
+        Scenario("should do something else") {
           assert(2 + 2 === 4)
           pending
         }
@@ -766,10 +768,10 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
     }
     it("should generate a test failure if a Throwable, or an Error other than direct Error subtypes " +
             "known in JDK 1.5, excluding AssertionError") {
-      val a = new FeatureSpec {
-        scenario("throws AssertionError") { throw new AssertionError }
-        scenario("throws plain old Error") { throw new Error }
-        scenario("throws Throwable") { throw new Throwable }
+      val a = new AnyFeatureSpec {
+        Scenario("throws AssertionError") { throw new AssertionError }
+        Scenario("throws plain old Error") { throw new Error }
+        Scenario("throws Throwable") { throw new Throwable }
       }
       val rep = new EventRecordingReporter
       a.run(None, Args(rep))
@@ -779,8 +781,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
     // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
-      val a = new FeatureSpec {
-        scenario("throws AssertionError") { throw new OutOfMemoryError }
+      val a = new AnyFeatureSpec {
+        Scenario("throws AssertionError") { throw new OutOfMemoryError }
       }
       intercept[OutOfMemoryError] {
         a.run(None, Args(SilentReporter))
@@ -922,14 +924,14 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
     }
 */
     it("should invoke withFixture from runTest") {
-      val a = new FeatureSpec {
+      val a = new AnyFeatureSpec {
         var withFixtureWasInvoked = false
         var testWasInvoked = false
         override def withFixture(test: NoArgTest): Outcome = {
           withFixtureWasInvoked = true
           super.withFixture(test)
         }
-        scenario("something") {
+        Scenario("something") {
           testWasInvoked = true
           /* ASSERTION_SUCCEED */
         }
@@ -942,13 +944,13 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(a.testWasInvoked)
     }
     it("should pass the correct test name in the NoArgTest passed to withFixture") {
-      val a = new FeatureSpec {
+      val a = new AnyFeatureSpec {
         var correctTestNameWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctTestNameWasPassed = test.name == "Scenario: should do something"
           super.withFixture(test)
         }
-        scenario("should do something") {/* ASSERTION_SUCCEED */}
+        Scenario("should do something") {/* ASSERTION_SUCCEED */}
       }
 
       import scala.language.reflectiveCalls
@@ -957,13 +959,13 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       assert(a.correctTestNameWasPassed)
     }
     it("should pass the correct config map in the NoArgTest passed to withFixture") {
-      val a = new FeatureSpec {
+      val a = new AnyFeatureSpec {
         var correctConfigMapWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
           super.withFixture(test)
         }
-        scenario("should do something") {/* ASSERTION_SUCCEED */}
+        Scenario("should do something") {/* ASSERTION_SUCCEED */}
       }
 
       import scala.language.reflectiveCalls
@@ -975,9 +977,9 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
 
       it("should, if they call a feature from within an scenario clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends FeatureSpec {
-          scenario("should blow up") {
-            feature("in the wrong place, at the wrong time") {
+        class MySpec extends AnyFeatureSpec {
+          Scenario("should blow up") {
+            Feature("in the wrong place, at the wrong time") {
             }
             /* ASSERTION_SUCCEED */
           }
@@ -988,10 +990,10 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
       it("should, if they call a feature with a nested it from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends FeatureSpec {
-          scenario("should blow up") {
-            feature("in the wrong place, at the wrong time") {
-              scenario("should never run") {
+        class MySpec extends AnyFeatureSpec {
+          Scenario("should blow up") {
+            Feature("in the wrong place, at the wrong time") {
+              Scenario("should never run") {
                 assert(1 === 1)
               }
             }
@@ -1004,9 +1006,9 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
       it("should, if they call a nested it from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends FeatureSpec {
-          scenario("should blow up") {
-            scenario("should never run") {
+        class MySpec extends AnyFeatureSpec {
+          Scenario("should blow up") {
+            Scenario("should never run") {
               assert(1 === 1)
             }
             /* ASSERTION_SUCCEED */
@@ -1018,9 +1020,9 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
       it("should, if they call a nested it with tags from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends FeatureSpec {
-          scenario("should blow up") {
-            scenario("should never run", mytags.SlowAsMolasses) {
+        class MySpec extends AnyFeatureSpec {
+          Scenario("should blow up") {
+            Scenario("should never run", mytags.SlowAsMolasses) {
               assert(1 === 1)
             }
             /* ASSERTION_SUCCEED */
@@ -1032,7 +1034,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
       it("should, if they call a nested registerTest with tags from within a registerTest clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends FeatureSpec {
+        class MySpec extends AnyFeatureSpec {
           registerTest("should blow up") {
             registerTest("should never run", mytags.SlowAsMolasses) {
               assert(1 === 1)
@@ -1046,9 +1048,9 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
       it("should, if they call a feature with a nested ignore from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends FeatureSpec {
-          scenario("should blow up") {
-            feature("in the wrong place, at the wrong time") {
+        class MySpec extends AnyFeatureSpec {
+          Scenario("should blow up") {
+            Feature("in the wrong place, at the wrong time") {
               ignore("should never run") {
                 assert(1 === 1)
               }
@@ -1062,8 +1064,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
       it("should, if they call a nested ignore from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends FeatureSpec {
-          scenario("should blow up") {
+        class MySpec extends AnyFeatureSpec {
+          Scenario("should blow up") {
             ignore("should never run") {
               assert(1 === 1)
             }
@@ -1076,8 +1078,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
       it("should, if they call a nested ignore with tags from within an it clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends FeatureSpec {
-          scenario("should blow up") {
+        class MySpec extends AnyFeatureSpec {
+          Scenario("should blow up") {
             ignore("should never run", mytags.SlowAsMolasses) {
               assert(1 === 1)
             }
@@ -1090,7 +1092,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
       it("should, if they call a nested registerIgnoredTest with tags from within a registerTest clause, result in a TestFailedException when running the test") {
 
-        class MySpec extends FeatureSpec {
+        class MySpec extends AnyFeatureSpec {
           registerTest("should blow up") {
             registerIgnoredTest("should never run", mytags.SlowAsMolasses) {
               assert(1 === 1)
@@ -1104,9 +1106,9 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
       it("should, if they call a nested feature from within a feature clause, result in a SuiteAborted event when constructing the FeatureSpec") {
 
-        class MySpec extends FeatureSpec {
-          feature("should blow up") {
-            feature("should never run") {
+        class MySpec extends AnyFeatureSpec {
+          Feature("should blow up") {
+            Feature("should never run") {
             }
           }
         }
@@ -1119,9 +1121,9 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
     }
     
-    class ExamplePrefixSpec extends FeatureSpec {
-      feature("A Feature") {
-        scenario("A Scenario") {
+    class ExamplePrefixSpec extends AnyFeatureSpec {
+      Feature("A Feature") {
+        Scenario("A Scenario") {
           /* ASSERTION_SUCCEED */
         }
       }
@@ -1150,7 +1152,7 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
     }
 
     it("should allow test registration with registerTest and registerIgnoredTest") {
-      class TestSpec extends FeatureSpec {
+      class TestSpec extends AnyFeatureSpec {
         val a = 1
         registerTest("test 1") {
           val e = intercept[TestFailedException] {
@@ -1194,12 +1196,12 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
     describe("when failure happens") {
       
       it("should fire TestFailed event with correct stack depth info when test failed") {
-        class TestSpec extends FeatureSpec {
-          scenario("fail scenario") {
+        class TestSpec extends AnyFeatureSpec {
+          Scenario("fail scenario") {
             assert(1 === 2)
           }
-          feature("a feature") {
-            scenario("nested fail scenario") {
+          Feature("a feature") {
+            Scenario("nested fail scenario") {
               assert(1 === 2)
             }
           }
@@ -1215,9 +1217,9 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
       
       it("should generate NotAllowedException with correct stack depth info when has a feature nested inside a feature") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
-            feature("inner feature") {
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
+            Feature("inner feature") {
               ignore("nested fail scenario") {
                 assert(1 === 1)
               }
@@ -1233,11 +1235,11 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
       
       it("should generate TestRegistrationClosedException with correct stack depth info when has a scenario nested inside a scenario") {
-        class TestSpec extends FeatureSpec {
+        class TestSpec extends AnyFeatureSpec {
           var registrationClosedThrown = false
-          feature("a feature") {
-            scenario("a scenario") {
-              scenario("nested scenario") {
+          Feature("a feature") {
+            Scenario("a scenario") {
+              Scenario("nested scenario") {
                 assert(1 === 2)
               }; /* ASSERTION_SUCCEED */
             }
@@ -1266,10 +1268,10 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should generate TestRegistrationClosedException with correct stack depth info when has a ignore nested inside a scenario") {
-        class TestSpec extends FeatureSpec {
+        class TestSpec extends AnyFeatureSpec {
           var registrationClosedThrown = false
-          feature("a feature") {
-            scenario("a scenario") {
+          Feature("a feature") {
+            Scenario("a scenario") {
               ignore("nested scenario") {
                 assert(1 === 2)
               }; /* ASSERTION_SUCCEED */
@@ -1299,9 +1301,9 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest") {
-        class TestSpec extends FeatureSpec {
+        class TestSpec extends AnyFeatureSpec {
           var registrationClosedThrown = false
-          feature("a feature") {
+          Feature("a feature") {
             registerTest("a scenario") {
               registerTest("nested scenario") {
                 assert(1 === 2)
@@ -1332,9 +1334,9 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should generate TestRegistrationClosedException with correct stack depth info when has a registerIgnoredTest nested inside a registerTest") {
-        class TestSpec extends FeatureSpec {
+        class TestSpec extends AnyFeatureSpec {
           var registrationClosedThrown = false
-          feature("a feature") {
+          Feature("a feature") {
             registerTest("a scenario") {
               registerIgnoredTest("nested scenario") {
                 assert(1 === 2)
@@ -1365,8 +1367,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should generate NotAllowedException wrapping a TestFailedException when assert fails in scope") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
             val a = 1
             assert(a == 2)
           }
@@ -1388,8 +1390,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
             val a = 1
             assume(a == 2)
           }
@@ -1411,8 +1413,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
             throw new RuntimeException("on purpose")
           }
         }
@@ -1431,10 +1433,10 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
-            scenario("test 1") {}
-            scenario("test 1") {}
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
+            Scenario("test 1") {}
+            Scenario("test 1") {}
           }
         }
         val e = intercept[NotAllowedException] {
@@ -1453,8 +1455,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
 
       // SKIP-SCALATESTJS,NATIVE-START
       it("should propagate AnnotationFormatError when it is thrown inside scope") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
             throw new AnnotationFormatError("on purpose")
           }
         }
@@ -1465,8 +1467,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should propagate AWTError when it is thrown inside scope") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
             throw new AWTError("on purpose")
           }
         }
@@ -1477,8 +1479,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should propagate CoderMalfunctionError when it is thrown inside scope") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
             throw new CoderMalfunctionError(new RuntimeException("on purpose"))
           }
         }
@@ -1489,8 +1491,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should propagate FactoryConfigurationError when it is thrown inside scope") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
             throw new FactoryConfigurationError("on purpose")
           }
         }
@@ -1501,8 +1503,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should propagate LinkageError when it is thrown inside scope") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
             throw new LinkageError("on purpose")
           }
         }
@@ -1513,8 +1515,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should propagate ThreadDeath when it is thrown inside scope") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
             throw new ThreadDeath
           }
         }
@@ -1525,8 +1527,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should propagate TransformerFactoryConfigurationError when it is thrown inside scope") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
             throw new TransformerFactoryConfigurationError("on purpose")
           }
         }
@@ -1537,8 +1539,8 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
       }
 
       it("should propagate VirtualMachineError when it is thrown inside scope") {
-        class TestSpec extends FeatureSpec {
-          feature("a feature") {
+        class TestSpec extends AnyFeatureSpec {
+          Feature("a feature") {
             throw new VirtualMachineError("on purpose") {}
           }
         }
@@ -1552,12 +1554,12 @@ class DeprecatedFeatureSpecSpec extends FunSpec {
 
     }
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends FeatureSpec with expectations.Expectations {
-        scenario("fail scenario") {
+      class TestSpec extends AnyFeatureSpec with expectations.Expectations {
+        Scenario("fail scenario") {
           expect(1 === 2); /* ASSERTION_SUCCEED */
         }
-        feature("a feature") {
-          scenario("nested fail scenario") {
+        Feature("a feature") {
+          Scenario("nested fail scenario") {
             expect(1 === 2); /* ASSERTION_SUCCEED */
           }
         }

@@ -17,9 +17,10 @@ package org.scalatest
 
 import exceptions.TestCanceledException
 import exceptions.TestFailedException
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ConfigMapSpec extends FunSpec {
+class ConfigMapSpec extends AnyFunSpec {
 
     class Fruit {
       override def toString = "a Fruit"

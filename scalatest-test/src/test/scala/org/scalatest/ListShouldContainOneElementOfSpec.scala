@@ -23,8 +23,10 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import exceptions.TestFailedException
 import exceptions.NotAllowedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class ListShouldContainOneElementOfSpec extends FunSpec with Matchers {
+class ListShouldContainOneElementOfSpec extends AnyFunSpec with Matchers {
 
   private val prettifier = Prettifier.default
 

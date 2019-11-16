@@ -23,8 +23,10 @@ import org.scalatest.exceptions.{NotAllowedException, DuplicateTestNameException
 import org.scalactic.Prettifier
 
 import scala.util.Success
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.wordspec.AsyncWordSpec
 
-class AsyncWordSpecSpec extends FunSpec {
+class AsyncWordSpecSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

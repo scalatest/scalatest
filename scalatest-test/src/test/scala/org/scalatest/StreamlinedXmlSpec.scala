@@ -22,8 +22,10 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.xml.{Elem, Node, Text, NodeSeq}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class StreamlinedXmlSpec extends FunSpec with Matchers with StreamlinedXml {
+class StreamlinedXmlSpec extends AnyFunSpec with Matchers with StreamlinedXml {
 
   describe("Xml Equality of Elems (after being streamlined)") {
 

@@ -19,6 +19,8 @@ import matchers.MatchResult
 import matchers.Matcher
 import org.scalatest.exceptions.TestFailedException
 import scala.collection.mutable.ListBuffer
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 trait CustomMatchers {
 
@@ -55,7 +57,7 @@ trait CustomMatchers {
 
 import Matchers._
 
-class CustomMatcherSpec extends FunSpec with CustomMatchers {
+class CustomMatcherSpec extends AnyFunSpec with CustomMatchers {
 
   describe("A customer matcher") {
 

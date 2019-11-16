@@ -16,11 +16,13 @@
 package org.scalatest
 
 import SharedHelpers._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.funsuite.AnyFunSuite
 
-class StopOnFailureSpec extends FlatSpec {
+class StopOnFailureSpec extends AnyFlatSpec {
 
   "StopOnFailure" should "not invoke stop on the stopper if a test succeeds" in {
-    class MySuite extends FunSuite with StopOnFailure {
+    class MySuite extends AnyFunSuite with StopOnFailure {
       test("this test succeeds") {
         assert(1 + 1 === 2)
       }
@@ -32,7 +34,7 @@ class StopOnFailureSpec extends FlatSpec {
   }
 
   it should "invoke stop on the stopper if a test fails" in { pending
-    class MySuite extends FunSuite with StopOnFailure {
+    class MySuite extends AnyFunSuite with StopOnFailure {
       test("this test fails") {
         assert(1 + 1 === 3)
       }

@@ -21,10 +21,11 @@ import matchers.HavePropertyMatchResult
 import enablers.Length
 import enablers.Size
 import enablers.Messaging
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
 // TODO: check not not and not not not to make sure those negative failure messages make sense.
-class ShouldHavePropertiesSpec extends FunSpec with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
+class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
 
   // Checking for a specific size
   describe("The 'have (' syntax") {

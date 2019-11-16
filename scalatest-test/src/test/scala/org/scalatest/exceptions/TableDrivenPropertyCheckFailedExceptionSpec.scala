@@ -15,16 +15,16 @@
  */
 package org.scalatest.exceptions
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.prop._
 import org.scalactic.source
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 /* Uncomment this after removing the deprecated type aliases in the org.scalatest.prop package object
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 */
 
-class TableDrivenPropertyCheckFailedExceptionSpec extends FunSpec with Matchers with TableDrivenPropertyChecks {
+class TableDrivenPropertyCheckFailedExceptionSpec extends AnyFunSpec with Matchers with TableDrivenPropertyChecks {
 
   describe("The TableDrivenPropertyCheckFailedException") {
 

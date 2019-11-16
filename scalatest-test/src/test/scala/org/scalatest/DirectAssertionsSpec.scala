@@ -24,8 +24,9 @@ import OptionValues._
 import java.util.Date
 import org.scalactic.Prettifier
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.funspec.AnyFunSpec
 
-class DirectAssertionsSpec extends FunSpec {
+class DirectAssertionsSpec extends AnyFunSpec {
 
   val fileName: String = "DirectAssertionsSpec.scala"
 
@@ -1709,7 +1710,7 @@ class DirectAssertionsSpec extends FunSpec {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    _root_.org.scalatest.Assertions.assert(org === "test")
@@ -3152,7 +3153,7 @@ class DirectAssertionsSpec extends FunSpec {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    _root_.org.scalatest.Assertions.assert(org === "test", ", dude")
@@ -4588,7 +4589,7 @@ class DirectAssertionsSpec extends FunSpec {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    _root_.org.scalatest.Assertions.assume(org === "test")
@@ -6031,7 +6032,7 @@ class DirectAssertionsSpec extends FunSpec {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    _root_.org.scalatest.Assertions.assume(org === "test", ", dude")

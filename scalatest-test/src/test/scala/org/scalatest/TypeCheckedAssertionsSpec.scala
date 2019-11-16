@@ -18,9 +18,10 @@ package org.scalatest
 import org.scalactic.{FailureMessages => _, _}
 import SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
 
 // TODO: Shouldn't this actually use TypeCheckedTripleEquals?
-class TypeCheckedAssertionsSpec extends FunSpec {
+class TypeCheckedAssertionsSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

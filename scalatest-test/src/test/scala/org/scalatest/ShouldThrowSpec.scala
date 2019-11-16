@@ -17,10 +17,11 @@ package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
 import SharedHelpers.thisLineNumber
-import Matchers._
 import OptionValues._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldThrowSpec extends FunSpec {
+class ShouldThrowSpec extends AnyFunSpec {
 
   describe("The a [ExceptionType] should be thrownBy { ... } syntax") {
 

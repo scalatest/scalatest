@@ -15,10 +15,11 @@
  */
 package org.scalatest
 
-import Matchers._
 import exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldEqualNullSpec extends FunSpec {
+class ShouldEqualNullSpec extends AnyFunSpec {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)

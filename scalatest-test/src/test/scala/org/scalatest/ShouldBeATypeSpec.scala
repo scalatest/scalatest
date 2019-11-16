@@ -17,8 +17,10 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class ShouldBeATypeSpec extends FunSpec with Matchers {
+class ShouldBeATypeSpec extends AnyFunSpec with Matchers {
 
   private val prettifier = Prettifier.default
 

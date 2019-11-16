@@ -16,10 +16,11 @@
 package org.scalatest.matchers
 
 import org.scalatest._
-import Matchers._
 import java.io.File
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class HavePropertyMatcherSpec extends FunSpec {
+class HavePropertyMatcherSpec extends AnyFunSpec {
 
   describe("HavePropertyMatcher ") {
 

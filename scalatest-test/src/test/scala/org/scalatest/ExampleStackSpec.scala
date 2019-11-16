@@ -16,6 +16,7 @@
 package org.scalatest
 
 import scala.collection.mutable.ListBuffer
+import org.scalatest.funspec.AnyFunSpec
 
 class Stack[T] {
 
@@ -50,7 +51,7 @@ class Stack[T] {
   override def toString = buf.mkString("Stack(", ", ", ")")
 }
 
-trait ExampleStackBehaviors { this: FunSpec =>
+trait ExampleStackBehaviors { this: AnyFunSpec =>
 
   def nonEmptyStack(newStack: => Stack[Int], lastItemAdded: Int): Unit = {
 
@@ -93,7 +94,7 @@ trait ExampleStackBehaviors { this: FunSpec =>
   }
 }
 
-class ExampleStackSpec extends FunSpec with ExampleStackBehaviors {
+class ExampleStackSpec extends AnyFunSpec with ExampleStackBehaviors {
 
   // Stack fixture creation methods
   def emptyStack = new Stack[Int]

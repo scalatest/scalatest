@@ -16,9 +16,10 @@
 package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldSameInstanceAsSpec extends FunSpec {
+class ShouldSameInstanceAsSpec extends AnyFunSpec {
 
   describe("The be a ('symbol) syntax") {
 

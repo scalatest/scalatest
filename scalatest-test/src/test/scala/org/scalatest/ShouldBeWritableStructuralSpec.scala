@@ -16,11 +16,12 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
-import Matchers._
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeWritableStructuralSpec extends FunSpec {
+class ShouldBeWritableStructuralSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
   

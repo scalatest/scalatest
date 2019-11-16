@@ -16,11 +16,11 @@
 package org.scalatest.prop
 
 import org.scalactic.anyvals._
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class PrettyFunction0Spec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class PrettyFunction0Spec extends AnyFunSpec with Matchers with GeneratorDrivenPropertyChecks {
   describe("A PrettyFunction0") {
     it("should return the constant passed to its constructor") {
       forAll { (i: Int) =>

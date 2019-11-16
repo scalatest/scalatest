@@ -218,7 +218,7 @@ class AppendedCluesSpec extends flatspec.AnyFlatSpec with matchers.should.Matche
   it should "work when used in withFixture" in {
     forAll(examples) { e => 
       val a = 
-        new org.scalatest.fixture.FunSpec {
+        new org.scalatest.funspec.FixtureAnyFunSpec {
           type FixtureParam = String
         
           override def withFixture(test: OneArgTest) = {

@@ -18,11 +18,12 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import org.scalatest.enablers.Sortable
 import FailureMessages.decorateToStringValue
-import Matchers._
 import exceptions.TestFailedException
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeSortedLogicalAndSpec extends FunSpec {
+class ShouldBeSortedLogicalAndSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
   

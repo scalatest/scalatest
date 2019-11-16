@@ -16,8 +16,9 @@
 package org.scalatest.tools.scalasbt
 
 import org.scalatest._
+import org.scalatest.funsuite.AnyFunSuite
 
-class FaulthyBeforeAndAfterAllConfigMapSuite extends FunSuite with BeforeAndAfterAllConfigMap {
+class FaulthyBeforeAndAfterAllConfigMapSuite extends AnyFunSuite with BeforeAndAfterAllConfigMap {
 
   test("test 1") {}
 

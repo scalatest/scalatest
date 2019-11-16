@@ -16,9 +16,10 @@
 package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldPlusOrMinusSpec extends FunSpec {
+class ShouldPlusOrMinusSpec extends AnyFunSpec {
 
   describe("The be (X +- Y) syntax") {
 

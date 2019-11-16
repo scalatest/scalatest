@@ -17,9 +17,10 @@ package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
 import SharedHelpers._
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeAnSymbolSpec extends FunSpec with FruitMocks {
+class ShouldBeAnSymbolSpec extends AnyFunSpec with FruitMocks {
 
   describe("The be an ('symbol) syntax") {
 

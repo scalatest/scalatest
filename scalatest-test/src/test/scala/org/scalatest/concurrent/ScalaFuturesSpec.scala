@@ -15,10 +15,8 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.Matchers
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.OptionValues
-import org.scalatest.FunSpec
 import scala.concurrent.{Future => FutureOfScala}
 import scala.concurrent.Promise
 import scala.concurrent.Await
@@ -35,8 +33,10 @@ import util.Try
 import util.Success
 import util.Failure
 import org.scalactic.source
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with ScalaFutures {
+class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with ScalaFutures {
 
   describe("A FutureConcept") {
 

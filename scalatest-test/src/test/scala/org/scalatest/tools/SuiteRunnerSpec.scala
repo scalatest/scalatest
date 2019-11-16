@@ -17,14 +17,16 @@ package org.scalatest.tools
 
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
 
-class SuiteRunnerSpec extends FunSpec {
+class SuiteRunnerSpec extends AnyFunSpec {
 
   describe("SuiteRunner") {
 
     it("should fire SuiteAborted event when after function in BeforeAndAfter throws RuntimeException") {
 
-      class ExampleSuite extends FunSuite with BeforeAndAfter {
+      class ExampleSuite extends AnyFunSuite with BeforeAndAfter {
 
         test("test 1") {}
 
@@ -45,7 +47,7 @@ class SuiteRunnerSpec extends FunSpec {
 
     it("should fire SuiteAborted event when afterAll function in BeforeAndAfterAll throws RuntimeException") {
 
-      class ExampleSuite extends FunSuite with BeforeAndAfterAll {
+      class ExampleSuite extends AnyFunSuite with BeforeAndAfterAll {
 
         test("test 1") {}
 
@@ -66,7 +68,7 @@ class SuiteRunnerSpec extends FunSpec {
 
     it("should fire SuiteAborted event when afterAll function in BeforeAndAfterAllConfigMap throws RuntimeException") {
 
-      class ExampleSuite extends FunSuite with BeforeAndAfterAllConfigMap {
+      class ExampleSuite extends AnyFunSuite with BeforeAndAfterAllConfigMap {
 
         test("test 1") {}
 
@@ -87,7 +89,7 @@ class SuiteRunnerSpec extends FunSpec {
 
     it("should fire SuiteAborted event when afterEach function in BeforeAndAfterEach throws RuntimeException") {
 
-      class ExampleSuite extends FunSuite with BeforeAndAfterEach {
+      class ExampleSuite extends AnyFunSuite with BeforeAndAfterEach {
 
         test("test 1") {}
 
@@ -108,7 +110,7 @@ class SuiteRunnerSpec extends FunSpec {
 
     it("should fire SuiteAborted event when afterEach function in BeforeAndAfterEachTestData throws RuntimeException") {
 
-      class ExampleSuite extends FunSuite with BeforeAndAfterEachTestData {
+      class ExampleSuite extends AnyFunSuite with BeforeAndAfterEachTestData {
 
         test("test 1") {}
 

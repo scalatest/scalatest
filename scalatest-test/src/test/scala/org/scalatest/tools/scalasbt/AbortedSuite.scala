@@ -16,6 +16,7 @@
 package org.scalatest.tools.scalasbt
 
 import org.scalatest._
+import org.scalatest.wordspec.AnyWordSpec
 
 trait ConfiguredApp extends SuiteMixin { this: Suite =>
 
@@ -24,9 +25,9 @@ trait ConfiguredApp extends SuiteMixin { this: Suite =>
   }
 }
 
-class AbortedSuite extends WordSpec {
+class AbortedSuite extends AnyWordSpec {
 
-  class NestedSuite extends WordSpec with ConfiguredApp {
+  class NestedSuite extends AnyWordSpec with ConfiguredApp {
     "ConfiguredApp trait" should {
 
       "do something " in {
@@ -40,6 +41,6 @@ class AbortedSuite extends WordSpec {
 
 }
 
-class AbortedSuite2 extends WordSpec {
+class AbortedSuite2 extends AnyWordSpec {
   throw new VirtualMachineError("Fails during construction time.") {}
 }

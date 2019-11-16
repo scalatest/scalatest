@@ -28,8 +28,9 @@ import org.scalatest.events.RunStarting
 import org.scalatest.ConfigMap
 
 import java.io.File
+import org.scalatest.funsuite.AnyFunSuite
 
-class MemoryReporterSuite extends FunSuite {
+class MemoryReporterSuite extends AnyFunSuite {
   val OutputFileName = "target/MemoryReporterSuite.out"
 
   val runComplete =

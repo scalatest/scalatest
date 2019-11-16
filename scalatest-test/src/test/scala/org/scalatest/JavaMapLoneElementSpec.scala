@@ -17,11 +17,12 @@ package org.scalatest
 
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import Matchers._
 import LoneElement._
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class JavaMapLoneElementSpec extends FunSpec {
+class JavaMapLoneElementSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
   

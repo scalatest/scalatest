@@ -21,8 +21,10 @@ import Thread.State._
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.Retries._
 import org.scalatest.tagobjects.Retryable
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class ConductorMethodsSuite extends FunSuite with ConductorMethods with Matchers {
+class ConductorMethodsSuite extends AnyFunSuite with ConductorMethods with Matchers {
 
   override def withFixture(test: NoArgTest) = {
     if (isRetryable(test))

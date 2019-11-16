@@ -16,9 +16,10 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ReadableWordSpec extends FunSpec {
+class ReadableWordSpec extends AnyFunSpec {
   
   describe("ReadableWord ") {
     

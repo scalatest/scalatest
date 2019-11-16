@@ -17,12 +17,14 @@ package org.scalatest.fixture
 
 import org.scalatest._
 import SharedHelpers._
+import org.scalatest
+import org.scalatest.funsuite
 
-class AsyncConfigMapFixtureSpec extends org.scalatest.FunSpec {
+class AsyncConfigMapFixtureSpec extends scalatest.funspec.AnyFunSpec {
   describe("A AsyncConfigMapFixture") {
     it("should pass the config map to each test") {
       val myConfigMap = ConfigMap("hello" -> "world", "salt" -> "pepper")
-      class MySpec extends fixture.AsyncFunSuite with AsyncConfigMapFixture {
+      class MySpec extends funsuite.FixtureAsyncFunSuite with AsyncConfigMapFixture {
         var configMapPassed = false
         test("test something") { configMap =>
           if (configMap == myConfigMap)

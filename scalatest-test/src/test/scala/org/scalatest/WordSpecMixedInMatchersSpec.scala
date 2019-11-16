@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-class WordSpecMixedInMatchersSpec extends WordSpec with Matchers {
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+class WordSpecMixedInMatchersSpec extends AnyWordSpec with Matchers {
   "This spec" should {
     "work OK" in {
       "hello" should startWith ("he")

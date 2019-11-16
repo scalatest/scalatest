@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import Matchers._
 import SharedHelpers._
 import org.scalactic.Equality
 import org.scalactic.Prettifier
@@ -31,8 +30,10 @@ import matchers.BePropertyMatcher
 import matchers.HavePropertyMatchResult
 import matchers.HavePropertyMatcher
 import org.scalatest.CompatParColls.Converters._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
+class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks {
 
   private val prettifier = Prettifier.default
 

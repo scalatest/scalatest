@@ -20,6 +20,14 @@ import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest._
 import SharedHelpers._
+import org.scalatest.{ featurespec, flatspec, freespec, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 
 class DeprecatedLocationSuiteProp extends SuiteProp
 {
@@ -44,7 +52,7 @@ class DeprecatedLocationSuiteProp extends SuiteProp
   // SKIP-SCALATESTJS,NATIVE-END
   
   def funSuite = new TestLocationFunSuite
-  class TestLocationFunSuite extends FunSuite with FixtureServices {
+  class TestLocationFunSuite extends AnyFunSuite with FixtureServices {
     val suiteTypeName = "org.scalatest.events.DeprecatedLocationSuiteProp$TestLocationFunSuite"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 
                                          TopOfClassPair(suiteTypeName + "$AbortNestedSuite"),
@@ -56,17 +64,17 @@ class DeprecatedLocationSuiteProp extends SuiteProp
     val expectedTestFailedList = List(SeeStackDepthExceptionPair("fail"))
     val expectedInfoProvidedList = List(LineInFilePair("test info", "DeprecatedLocationSuiteProp.scala", thisLineNumber + 4))
     
-    class NestedSuite extends FunSuite {
+    class NestedSuite extends AnyFunSuite {
       test("info") {
         info("test info")
       }
     }
-    class AbortNestedSuite extends FunSuite {
+    class AbortNestedSuite extends AnyFunSuite {
       override protected def runNestedSuites(args: Args): Status = {
         throw new RuntimeException
       }
     }
-    class FailNestedSuite extends FunSuite {
+    class FailNestedSuite extends AnyFunSuite {
       test("fail") { fail }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
@@ -102,7 +110,7 @@ class DeprecatedLocationSuiteProp extends SuiteProp
   } 
   
   def funSpec = new LocationTestSpec
-  class LocationTestSpec extends FunSpec with FixtureServices {
+  class LocationTestSpec extends AnyFunSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.DeprecatedLocationSuiteProp$LocationTestSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 
                                          TopOfClassPair(suiteTypeName + "$AbortNestedSuite"),
@@ -114,17 +122,17 @@ class DeprecatedLocationSuiteProp extends SuiteProp
     val expectedTestFailedList = List(SeeStackDepthExceptionPair("fail"))
     val expectedInfoProvidedList = List(LineInFilePair("test info", "DeprecatedLocationSuiteProp.scala", thisLineNumber + 4))
     
-    class NestedSuite extends FunSpec {
+    class NestedSuite extends AnyFunSpec {
       it("info") {
         info("test info")
       }
     }
-    class AbortNestedSuite extends FunSpec {
+    class AbortNestedSuite extends AnyFunSpec {
       override protected def runNestedSuites(args: Args): Status = {
         throw new RuntimeException
       }
     }
-    class FailNestedSuite extends FunSpec {
+    class FailNestedSuite extends AnyFunSpec {
       it("fail") { fail }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
@@ -153,14 +161,14 @@ class DeprecatedLocationSuiteProp extends SuiteProp
         throw new RuntimeException
       }
     }
-    class FailNestedSuite extends FunSpec {
+    class FailNestedSuite extends AnyFunSpec {
       it("fail") { fail }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
   }
   
   def featureSpec = new TestLocationFeatureSpec
-  class TestLocationFeatureSpec extends FeatureSpec with FixtureServices {
+  class TestLocationFeatureSpec extends AnyFeatureSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.DeprecatedLocationSuiteProp$TestLocationFeatureSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 
                                          TopOfClassPair(suiteTypeName + "$AbortNestedSuite"),
@@ -172,21 +180,21 @@ class DeprecatedLocationSuiteProp extends SuiteProp
     val expectedTestFailedList = List(SeeStackDepthExceptionPair("Feature: feature Scenario: fail"))
     val expectedInfoProvidedList = List(LineInFilePair("test info", "DeprecatedLocationSuiteProp.scala", thisLineNumber + 5))
     
-    class NestedSuite extends FeatureSpec {
-      feature("feature") {
-        scenario("info") {
+    class NestedSuite extends AnyFeatureSpec {
+      Feature("feature") {
+        Scenario("info") {
           info("test info")
         }
       }
     }
-    class AbortNestedSuite extends FeatureSpec {
+    class AbortNestedSuite extends AnyFeatureSpec {
       override protected def runNestedSuites(args: Args): Status = {
         throw new RuntimeException
       }
     }
-    class FailNestedSuite extends FeatureSpec {
-      feature("feature") { 
-        scenario("fail") {
+    class FailNestedSuite extends AnyFeatureSpec {
+      Feature("feature") { 
+        Scenario("fail") {
           fail
         }
       }
@@ -195,7 +203,7 @@ class DeprecatedLocationSuiteProp extends SuiteProp
   }
   
   def fixtureFeatureSpec = new TestLocationFixtureFeatureSpec
-  class StringFixtureFeatureSpec extends fixture.FeatureSpec with StringFixture
+  class StringFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with StringFixture
   class TestLocationFixtureFeatureSpec extends StringFixtureFeatureSpec with FixtureServices { 
     val suiteTypeName = "org.scalatest.events.DeprecatedLocationSuiteProp$TestLocationFixtureFeatureSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 
@@ -209,8 +217,8 @@ class DeprecatedLocationSuiteProp extends SuiteProp
     val expectedInfoProvidedList = List(LineInFilePair("test info", "DeprecatedLocationSuiteProp.scala", thisLineNumber + 5))
     
     class NestedSuite extends StringFixtureFeatureSpec {
-      feature("feature") { 
-        scenario("info") { param =>
+      Feature("feature") { 
+        Scenario("info") { param =>
           info("test info")
         }
       }
@@ -221,8 +229,8 @@ class DeprecatedLocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSuite extends StringFixtureFeatureSpec {
-      feature("feature") { 
-        scenario("fail") {
+      Feature("feature") { 
+        Scenario("fail") {
           () => fail
         }
       }
@@ -231,7 +239,7 @@ class DeprecatedLocationSuiteProp extends SuiteProp
   }
   
   def flatSpec = new TestLocationFlatSpec
-  class TestLocationFlatSpec extends FlatSpec with FixtureServices {
+  class TestLocationFlatSpec extends AnyFlatSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.DeprecatedLocationSuiteProp$TestLocationFlatSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 
                                          TopOfClassPair(suiteTypeName + "$AbortNestedSuite"),
@@ -243,17 +251,17 @@ class DeprecatedLocationSuiteProp extends SuiteProp
     val expectedTestFailedList = List(SeeStackDepthExceptionPair("Test should fail"))
     val expectedInfoProvidedList = List(LineInFilePair("test info", "DeprecatedLocationSuiteProp.scala", thisLineNumber + 4))
     
-    class NestedSuite extends FlatSpec {
+    class NestedSuite extends AnyFlatSpec {
       "Test" should "info" in {
         info("test info")
       }
     }
-    class AbortNestedSuite extends FlatSpec {
+    class AbortNestedSuite extends AnyFlatSpec {
       override protected def runNestedSuites(args: Args): Status = {
         throw new RuntimeException
       }
     }
-    class FailNestedSuite extends FlatSpec {
+    class FailNestedSuite extends AnyFlatSpec {
       "Test" should "fail" in {
         fail
       }
@@ -262,7 +270,7 @@ class DeprecatedLocationSuiteProp extends SuiteProp
   }
   
   def fixtureFlatSpec = new TestLocationFixtureFlatSpec
-  class StringFixtureFlatSpec extends fixture.FlatSpec with StringFixture
+  class StringFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with StringFixture
   class TestLocationFixtureFlatSpec extends StringFixtureFlatSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.DeprecatedLocationSuiteProp$TestLocationFixtureFlatSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 
@@ -294,7 +302,7 @@ class DeprecatedLocationSuiteProp extends SuiteProp
   }
   
   def freeSpec = new TestLocationFreeSpec
-  class TestLocationFreeSpec extends FreeSpec with FixtureServices {
+  class TestLocationFreeSpec extends AnyFreeSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.DeprecatedLocationSuiteProp$TestLocationFreeSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 
                                          TopOfClassPair(suiteTypeName + "$AbortNestedSuite"),
@@ -306,19 +314,19 @@ class DeprecatedLocationSuiteProp extends SuiteProp
     val expectedTestFailedList = List(SeeStackDepthExceptionPair("Test should fail"))
     val expectedInfoProvidedList = List(LineInFilePair("test info", "DeprecatedLocationSuiteProp.scala", thisLineNumber + 5))
     
-    class NestedSuite extends FreeSpec {
+    class NestedSuite extends AnyFreeSpec {
       "Test" - {
         "should info" in {
           info("test info")
         }
       }
     }
-    class AbortNestedSuite extends FreeSpec {
+    class AbortNestedSuite extends AnyFreeSpec {
       override protected def runNestedSuites(args: Args): Status = {
         throw new RuntimeException
       }
     }
-    class FailNestedSuite extends FreeSpec { 
+    class FailNestedSuite extends AnyFreeSpec { 
       "Test" - {
         "should fail" in {
           fail
@@ -329,7 +337,7 @@ class DeprecatedLocationSuiteProp extends SuiteProp
   }
   
   def fixtureFreeSpec = new TestLocationFixtureFreeSpec
-  class StringFixtureFreeSpec extends fixture.FreeSpec with StringFixture
+  class StringFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with StringFixture
   class TestLocationFixtureFreeSpec extends StringFixtureFreeSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.DeprecatedLocationSuiteProp$TestLocationFixtureFreeSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 
@@ -365,7 +373,7 @@ class DeprecatedLocationSuiteProp extends SuiteProp
   }
   
   def propSpec = new TestLocationPropSpec
-  class TestLocationPropSpec extends PropSpec with FixtureServices {
+  class TestLocationPropSpec extends AnyPropSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.DeprecatedLocationSuiteProp$TestLocationPropSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 
                                          TopOfClassPair(suiteTypeName + "$AbortNestedSuite"),
@@ -377,17 +385,17 @@ class DeprecatedLocationSuiteProp extends SuiteProp
     val expectedTestFailedList = List(SeeStackDepthExceptionPair("Test should fail"))
     val expectedInfoProvidedList = List(LineInFilePair("test info", "DeprecatedLocationSuiteProp.scala", thisLineNumber + 4))
     
-    class NestedSuite extends PropSpec {
+    class NestedSuite extends AnyPropSpec {
       property("Test should info") {
         info("test info")
       }
     }
-    class AbortNestedSuite extends PropSpec {
+    class AbortNestedSuite extends AnyPropSpec {
       override protected def runNestedSuites(args: Args): Status = {
         throw new RuntimeException
       }
     }
-    class FailNestedSuite extends PropSpec { 
+    class FailNestedSuite extends AnyPropSpec { 
       property("Test should fail") {
         fail
       }
@@ -396,7 +404,7 @@ class DeprecatedLocationSuiteProp extends SuiteProp
   }
   
   def fixturePropSpec = new TestLocationFixturePropSpec
-  class StringFixturePropSpec extends fixture.PropSpec with StringFixture
+  class StringFixturePropSpec extends propspec.FixtureAnyPropSpec with StringFixture
   class TestLocationFixturePropSpec extends StringFixturePropSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.DeprecatedLocationSuiteProp$TestLocationFixturePropSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 
@@ -428,7 +436,7 @@ class DeprecatedLocationSuiteProp extends SuiteProp
   }
   
   def wordSpec = new TestLocationWordSpec
-  class TestLocationWordSpec extends WordSpec with FixtureServices {
+  class TestLocationWordSpec extends AnyWordSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.DeprecatedLocationSuiteProp$TestLocationWordSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 
                                          TopOfClassPair(suiteTypeName + "$AbortNestedSuite"),
@@ -440,19 +448,19 @@ class DeprecatedLocationSuiteProp extends SuiteProp
     val expectedTestFailedList = List(SeeStackDepthExceptionPair("Test should fail"))
     val expectedInfoProvidedList = List(LineInFilePair("test info", "DeprecatedLocationSuiteProp.scala", thisLineNumber + 5))
     
-    class NestedSuite extends WordSpec {
+    class NestedSuite extends AnyWordSpec {
       "Test" should {
         "info" in {
           info("test info")
         }
       }
     }
-    class AbortNestedSuite extends WordSpec {
+    class AbortNestedSuite extends AnyWordSpec {
       override protected def runNestedSuites(args: Args): Status = {
         throw new RuntimeException
       }
     }
-    class FailNestedSuite extends WordSpec { 
+    class FailNestedSuite extends AnyWordSpec { 
       "Test" should {
         "fail" in {
           fail
@@ -463,7 +471,7 @@ class DeprecatedLocationSuiteProp extends SuiteProp
   }
   
   def fixtureWordSpec = new TestLocationFixtureWordSpec
-  class StringFixtureWordSpec extends fixture.WordSpec with StringFixture
+  class StringFixtureWordSpec extends wordspec.FixtureAnyWordSpec with StringFixture
   class TestLocationFixtureWordSpec extends StringFixtureWordSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.DeprecatedLocationSuiteProp$TestLocationFixtureWordSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSuite"), 

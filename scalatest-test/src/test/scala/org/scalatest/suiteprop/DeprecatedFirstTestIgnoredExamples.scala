@@ -18,6 +18,14 @@ package org.scalatest.suiteprop
 import org.scalatest._
 // SKIP-SCALATESTJS,NATIVE-START
 import refspec.RefSpec
+import org.scalatest.{ freespec, funspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
 class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteExamples {
@@ -60,7 +68,7 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
-  class FunSuiteExample extends FunSuite with Services {
+  class FunSuiteExample extends AnyFunSuite with Services {
     ignore("first test") {}
     test("second test") {}
   }
@@ -70,19 +78,19 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     test("second test") { s => }
   }
 
-  class FunSpecExample extends FunSpec with Services {
+  class FunSpecExample extends AnyFunSpec with Services {
     ignore("first test") {}
     it("second test") {}
   }
 
-  class NestedFunSpecExample extends FunSpec with NestedTestNames {
+  class NestedFunSpecExample extends AnyFunSpec with NestedTestNames {
     describe("A subject") {
       ignore("should first test") {}
       it("should second test") {}
     }
   }
 
-  class DeeplyNestedFunSpecExample extends FunSpec with DeeplyNestedTestNames {
+  class DeeplyNestedFunSpecExample extends AnyFunSpec with DeeplyNestedTestNames {
     describe("A subject") {
       describe("when created") {
         ignore("should first test") {}
@@ -112,13 +120,13 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     }
   }
 
-  class PathFunSpecExample extends path.FunSpec with Services {
+  class PathFunSpecExample extends funspec.PathAnyFunSpec with Services {
     ignore("first test") {}
     it("second test") {}
     override def newInstance = new PathFunSpecExample
   }
 
-  class NestedPathFunSpecExample extends path.FunSpec with NestedTestNames {
+  class NestedPathFunSpecExample extends funspec.PathAnyFunSpec with NestedTestNames {
     describe("A subject") {
       ignore("should first test") {}
       it("should second test") {}
@@ -126,7 +134,7 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     override def newInstance = new NestedPathFunSpecExample
   }
 
-  class DeeplyNestedPathFunSpecExample extends path.FunSpec with DeeplyNestedTestNames {
+  class DeeplyNestedPathFunSpecExample extends funspec.PathAnyFunSpec with DeeplyNestedTestNames {
     describe("A subject") {
       describe("when created") {
         ignore("should first test") {}
@@ -136,19 +144,19 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     override def newInstance = new DeeplyNestedPathFunSpecExample
   }
 
-  class WordSpecExample extends WordSpec with Services {
+  class WordSpecExample extends AnyWordSpec with Services {
     "first test" ignore {}
     "second test" in {}
   }
 
-  class NestedWordSpecExample extends WordSpec with NestedTestNames {
+  class NestedWordSpecExample extends AnyWordSpec with NestedTestNames {
     "A subject" should {
       "first test" ignore {}
       "second test" in {}
     }
   }
 
-  class DeeplyNestedWordSpecExample extends WordSpec with DeeplyNestedTestNames {
+  class DeeplyNestedWordSpecExample extends AnyWordSpec with DeeplyNestedTestNames {
     "A subject" when {
       "created" should {
         "first test" ignore {}
@@ -178,14 +186,14 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     }
   }
 
-  class NestedWordSpecWithMustExample extends WordSpec with NestedTestNamesWithMust {
+  class NestedWordSpecWithMustExample extends AnyWordSpec with NestedTestNamesWithMust {
     "A subject" must {
       "first test" ignore {}
       "second test" in {}
     }
   }
 
-  class DeeplyNestedWordSpecWithMustExample extends WordSpec with DeeplyNestedTestNamesWithMust {
+  class DeeplyNestedWordSpecWithMustExample extends AnyWordSpec with DeeplyNestedTestNamesWithMust {
     "A subject" when {
       "created" must {
         "first test" ignore {}
@@ -210,14 +218,14 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     }
   }
 
-  class NestedWordSpecWithCanExample extends WordSpec with NestedTestNamesWithCan {
+  class NestedWordSpecWithCanExample extends AnyWordSpec with NestedTestNamesWithCan {
     "A subject" can {
       "first test" ignore {}
       "second test" in {}
     }
   }
 
-  class DeeplyNestedWordSpecWithCanExample extends WordSpec with DeeplyNestedTestNamesWithCan {
+  class DeeplyNestedWordSpecWithCanExample extends AnyWordSpec with DeeplyNestedTestNamesWithCan {
     "A subject" when {
       "created" can {
         "first test" ignore {}
@@ -242,19 +250,19 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     }
   }
 
-  class FlatSpecExample extends FlatSpec with Services {
+  class FlatSpecExample extends AnyFlatSpec with Services {
     it should "first test" ignore {}
     it should "second test" in {}
     override val theTestNames = Vector("should first test", "should second test")
    }
 
-  class SubjectFlatSpecExample extends FlatSpec with NestedTestNames {
+  class SubjectFlatSpecExample extends AnyFlatSpec with NestedTestNames {
     behavior of "A subject"
     it should "first test" ignore {}
     it should "second test" in {}
    }
 
-  class ShorthandSubjectFlatSpecExample extends FlatSpec with NestedTestNames {
+  class ShorthandSubjectFlatSpecExample extends AnyFlatSpec with NestedTestNames {
     "A subject" should "first test" ignore {}
     it should "second test" in {}
    }
@@ -276,19 +284,19 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     it should "second test" in { s => }
    }
 
-  class FlatSpecWithMustExample extends FlatSpec with Services {
+  class FlatSpecWithMustExample extends AnyFlatSpec with Services {
     it must "first test" ignore {}
     it must "second test" in {}
     override val theTestNames = Vector("must first test", "must second test")
    }
 
-  class SubjectFlatSpecWithMustExample extends FlatSpec with NestedTestNamesWithMust {
+  class SubjectFlatSpecWithMustExample extends AnyFlatSpec with NestedTestNamesWithMust {
     behavior of "A subject"
     it must "first test" ignore {}
     it must "second test" in {}
    }
 
-  class ShorthandSubjectFlatSpecWithMustExample extends FlatSpec with NestedTestNamesWithMust {
+  class ShorthandSubjectFlatSpecWithMustExample extends AnyFlatSpec with NestedTestNamesWithMust {
     "A subject" must "first test" ignore {}
     it must "second test" in {}
    }
@@ -310,19 +318,19 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     it must "second test" in { s => }
    }
 
-  class FlatSpecWithCanExample extends FlatSpec with Services {
+  class FlatSpecWithCanExample extends AnyFlatSpec with Services {
     it can "first test" ignore {}
     it can "second test" in {}
     override val theTestNames = Vector("can first test", "can second test")
    }
 
-  class SubjectFlatSpecWithCanExample extends FlatSpec with NestedTestNamesWithCan {
+  class SubjectFlatSpecWithCanExample extends AnyFlatSpec with NestedTestNamesWithCan {
     behavior of "A subject"
     it can "first test" ignore {}
     it can "second test" in {}
    }
 
-  class ShorthandSubjectFlatSpecWithCanExample extends FlatSpec with NestedTestNamesWithCan {
+  class ShorthandSubjectFlatSpecWithCanExample extends AnyFlatSpec with NestedTestNamesWithCan {
     "A subject" can "first test" ignore {}
     it can "second test" in {}
    }
@@ -344,19 +352,19 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     it can "second test" in { s => }
    }
 
-  class FreeSpecExample extends FreeSpec with Services {
+  class FreeSpecExample extends AnyFreeSpec with Services {
     "first test" ignore {}
     "second test" in {}
   }
 
-  class NestedFreeSpecExample extends FreeSpec with NestedTestNames {
+  class NestedFreeSpecExample extends AnyFreeSpec with NestedTestNames {
     "A subject" - {
       "should first test" ignore {}
       "should second test" in {}
     }
   }
 
-  class DeeplyNestedFreeSpecExample extends FreeSpec with DeeplyNestedTestNames {
+  class DeeplyNestedFreeSpecExample extends AnyFreeSpec with DeeplyNestedTestNames {
     "A subject" - {
       "when created" - {
         "should first test" ignore {}
@@ -386,13 +394,13 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     }
   }
 
-  class PathFreeSpecExample extends path.FreeSpec with Services {
+  class PathFreeSpecExample extends freespec.PathAnyFreeSpec with Services {
     "first test" ignore {}
     "second test" in {}
     override def newInstance = new PathFreeSpecExample
   }
 
-  class NestedPathFreeSpecExample extends path.FreeSpec with NestedTestNames {
+  class NestedPathFreeSpecExample extends freespec.PathAnyFreeSpec with NestedTestNames {
     "A subject" - {
       "should first test" ignore {}
       "should second test" in {}
@@ -400,7 +408,7 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     override def newInstance = new NestedPathFreeSpecExample
   }
 
-  class DeeplyNestedPathFreeSpecExample extends path.FreeSpec with DeeplyNestedTestNames {
+  class DeeplyNestedPathFreeSpecExample extends freespec.PathAnyFreeSpec with DeeplyNestedTestNames {
     "A subject" - {
       "when created" - {
         "should first test" ignore {}
@@ -410,35 +418,35 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     override def newInstance = new DeeplyNestedPathFreeSpecExample
   }
 
-  class FeatureSpecExample extends FeatureSpec with Services {
+  class FeatureSpecExample extends AnyFeatureSpec with Services {
     ignore("first test") {}
-    scenario("second test") {}
+    Scenario("second test") {}
     override val theTestNames = Vector("Scenario: first test", "Scenario: second test")
   }
 
-  class NestedFeatureSpecExample extends FeatureSpec with Services {
-    feature("A feature") {
+  class NestedFeatureSpecExample extends AnyFeatureSpec with Services {
+    Feature("A feature") {
       ignore("first test") {}
-      scenario("second test") {}
+      Scenario("second test") {}
     }
     override val theTestNames = Vector("Feature: A feature Scenario: first test", "A feature Scenario: second test")
   }
 
   class FixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
     ignore("first test") { s => }
-    scenario("second test") { s => }
+    Scenario("second test") { s => }
     override val theTestNames = Vector("Scenario: first test", "Scenario: second test")
   }
 
   class NestedFixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    feature("A feature") {
+    Feature("A feature") {
       ignore("first test") { s => }
-      scenario("second test") { s => }
+      Scenario("second test") { s => }
     }
     override val theTestNames = Vector("Feature: A feature Scenario: first test", "A feature Scenario: second test")
   }
 
-  class PropSpecExample extends PropSpec with Services {
+  class PropSpecExample extends AnyPropSpec with Services {
     ignore("first test") {}
     property("second test") {}
   }
@@ -527,7 +535,7 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
       new FixtureFlatSpecWithCanExample2
     )
 
-  class FlatSpecExample2 extends FlatSpec with Services {
+  class FlatSpecExample2 extends AnyFlatSpec with Services {
     ignore should "first test" in {}
     it should "second test" in {}
     override val theTestNames = Vector("should first test", "should second test")
@@ -539,7 +547,7 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     override val theTestNames = Vector("should first test", "should second test")
   }
 
-  class FlatSpecWithMustExample2 extends FlatSpec with Services {
+  class FlatSpecWithMustExample2 extends AnyFlatSpec with Services {
     ignore must "first test" in {}
     it must "second test" in {}
     override val theTestNames = Vector("must first test", "must second test")
@@ -551,7 +559,7 @@ class DeprecatedFirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteEx
     override val theTestNames = Vector("must first test", "must second test")
   }
 
-  class FlatSpecWithCanExample2 extends FlatSpec with Services {
+  class FlatSpecWithCanExample2 extends AnyFlatSpec with Services {
     ignore can "first test" in {}
     it can "second test" in {}
     override val theTestNames = Vector("can first test", "can second test")

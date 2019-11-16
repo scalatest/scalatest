@@ -17,9 +17,10 @@ package org.scalatest
 
 import org.scalatest.prop.PropertyChecks
 import org.scalatest.exceptions.TestFailedException
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldEndWithSubstringSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldEndWithSubstringSpec extends AnyFunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
   describe("The endWith substring syntax") {
 

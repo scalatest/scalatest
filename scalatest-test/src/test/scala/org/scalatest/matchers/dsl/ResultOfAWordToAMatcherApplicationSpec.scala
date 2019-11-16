@@ -16,10 +16,11 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
-import Matchers._
 import matchers.AMatcher
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ResultOfAWordToAMatcherApplicationSpec extends FunSpec with FileMocks {
+class ResultOfAWordToAMatcherApplicationSpec extends AnyFunSpec with FileMocks {
   
   describe("ResultOfAWordToAMatcherApplication ") {
     

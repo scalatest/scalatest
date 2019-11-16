@@ -19,10 +19,11 @@ import org.scalactic.Equality
 import org.scalactic.Prettifier
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import Matchers._
 import exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class OptionShouldContainOneElementOfLogicalOrSpec extends FunSpec {
+class OptionShouldContainOneElementOfLogicalOrSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

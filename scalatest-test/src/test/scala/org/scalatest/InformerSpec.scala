@@ -16,10 +16,12 @@
 package org.scalatest
 
 import SharedHelpers._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.funsuite.AnyFunSuite
 
-class InformerSpec extends FlatSpec {
+class InformerSpec extends AnyFlatSpec {
   "An Informer" should "fire InfoProvided event with correct message and None in payload when using apply(message)" in {
-    class MySuite extends FunSuite {
+    class MySuite extends AnyFunSuite {
       info("info message")
     }
     val suite = new MySuite()
@@ -32,7 +34,7 @@ class InformerSpec extends FlatSpec {
   }
   
   it should "fire InfoProvided event with correct message and payload when using apply(message, payload)" in {
-    class MySuite extends FunSuite {
+    class MySuite extends AnyFunSuite {
       info("info message", Some("a payload"))
     }
     val suite = new MySuite()

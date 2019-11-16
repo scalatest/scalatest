@@ -17,9 +17,10 @@ package org.scalatest
 
 import scala.concurrent.ExecutionException
 import scala.util.{Failure, Success}
+import org.scalatest.funspec
 
 
-class StatusSpec extends fixture.FunSpec {
+class StatusSpec extends funspec.FixtureAnyFunSpec {
   
   protected type FixtureParam = { 
     def setCompleted()

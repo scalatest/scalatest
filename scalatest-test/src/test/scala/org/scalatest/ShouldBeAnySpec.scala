@@ -17,10 +17,11 @@ package org.scalatest
 
 import org.scalatest.prop.PropertyChecks
 import org.scalatest.exceptions.TestFailedException
-import Matchers._
 import org.scalactic.Prettifier
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldBeAnySpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldBeAnySpec extends AnyFunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
   // Checking for equality with "be"
   describe("The be token") {

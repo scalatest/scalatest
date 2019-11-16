@@ -20,8 +20,9 @@ import OptionValues._
 import OutcomeOf._
 import org.scalactic.source
 import org.scalatest.exceptions.StackDepthException
+import org.scalatest.funspec.AnyFunSpec
 
-class OutcomeSpec extends FunSpec {
+class OutcomeSpec extends AnyFunSpec {
 
   val fileName = "OutcomeSpec.scala"
 

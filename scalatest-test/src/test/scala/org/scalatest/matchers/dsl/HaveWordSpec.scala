@@ -17,8 +17,10 @@ package org.scalatest.matchers.dsl
 
 import org.scalatest._
 import matchers.{HavePropertyMatcher, HavePropertyMatchResult}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class HaveWordSpec extends FunSpec with Matchers {
+class HaveWordSpec extends AnyFunSpec with Matchers {
   
   describe("HaveWord ") {
     

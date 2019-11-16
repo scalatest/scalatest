@@ -17,8 +17,10 @@ package org.scalatest.matchers
 
 import org.scalatest._
 import org.scalactic.PrettyMethods
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class MatcherToStringSpec extends FunSpec with Matchers with PrettyMethods {
+class MatcherToStringSpec extends AnyFunSpec with Matchers with PrettyMethods {
 
   describe("The MatchResult obtained from ScalaTest matcher syntax") {
     it("should have pretty toStrings") {

@@ -26,6 +26,14 @@ import org.testng.annotations.{Test => TestNG }
 import SharedHelpers._
 import scala.compat.Platform
 import org.scalatest.concurrent.SleepHelper
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 
 class DeprecatedBeforeAndAfterAllProp extends AllSuiteProp {
 
@@ -89,8 +97,8 @@ trait DeprecatedBeforeAndAfterAllPropFixtureServices {
     case _: JUnitSuite => false
     case _: TestNGSuite => false
     // SKIP-SCALATESTJS,NATIVE-END
-    case _: path.FreeSpec => false
-    case _: path.FunSpec => false
+    case _: freespec.PathAnyFreeSpec => false
+    case _: funspec.PathAnyFunSpec => false
     case _ => true
   }
   @volatile var beforeAllTime: Long = 0
@@ -128,7 +136,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropTestNGSuite ext
 // SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFunSuite extends FunSuite with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFunSuite extends AnyFunSuite with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   test("Test 1") { SleepHelper.sleep(10) }
   test("Test 2") { SleepHelper.sleep(10) }
   test("Test 3") { SleepHelper.sleep(10) }
@@ -144,7 +152,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFunSuite extend
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFunSuite extends fixture.FunSuite with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFunSuite extends funsuite.FixtureAnyFunSuite with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   test("Test 1") { s => SleepHelper.sleep(10) }
   test("Test 2") { s => SleepHelper.sleep(10) }
   test("Test 3") { s => SleepHelper.sleep(10) }
@@ -160,7 +168,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFunSuite
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFunSpec extends FunSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFunSpec extends AnyFunSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   describe("Scope 1") {
     it("Test 1") { SleepHelper.sleep(10) }
     it("Test 2") { SleepHelper.sleep(10) }
@@ -178,7 +186,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFunSpec extends
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFunSpec extends fixture.FunSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFunSpec extends funspec.FixtureAnyFunSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   describe("Scope 1") {
     it("Test 1") { s => SleepHelper.sleep(10) }
     it("Test 2") { s => SleepHelper.sleep(10) }
@@ -196,11 +204,11 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFunSpec 
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFeatureSpec extends FeatureSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
-  feature("Feature 1") {
-    scenario("Scenario 1") { SleepHelper.sleep(10) }
-    scenario("Scenario 2") { SleepHelper.sleep(10) }
-    scenario("Scenario 3") { SleepHelper.sleep(10) }
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFeatureSpec extends AnyFeatureSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+  Feature("Feature 1") {
+    Scenario("Scenario 1") { SleepHelper.sleep(10) }
+    Scenario("Scenario 2") { SleepHelper.sleep(10) }
+    Scenario("Scenario 3") { SleepHelper.sleep(10) }
   }
   
   override protected def beforeAll(): Unit = {
@@ -214,11 +222,11 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFeatureSpec ext
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFeatureSpec extends fixture.FeatureSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
-  feature("Feature 1") {
-    scenario("Scenario 1") { s => SleepHelper.sleep(10) }
-    scenario("Scenario 2") { s => SleepHelper.sleep(10) }
-    scenario("Scenario 3") { s => SleepHelper.sleep(10) }
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+  Feature("Feature 1") {
+    Scenario("Scenario 1") { s => SleepHelper.sleep(10) }
+    Scenario("Scenario 2") { s => SleepHelper.sleep(10) }
+    Scenario("Scenario 3") { s => SleepHelper.sleep(10) }
   }
   
   override protected def beforeAll(): Unit = {
@@ -232,7 +240,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFeatureS
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFlatSpec extends FlatSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFlatSpec extends AnyFlatSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   "Scope 1" should "do thing 1" in { SleepHelper.sleep(10) }
   it should "do thing 2" in { SleepHelper.sleep(10) }
   it should "do thing 3" in { SleepHelper.sleep(10) }
@@ -248,7 +256,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFlatSpec extend
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFlatSpec extends fixture.FlatSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" should "do thing 1" in { s => SleepHelper.sleep(10) }
   it should "do thing 2" in { s => SleepHelper.sleep(10) }
   it should "do thing 3" in { s => SleepHelper.sleep(10) }
@@ -264,7 +272,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFlatSpec
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFreeSpec extends FreeSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFreeSpec extends AnyFreeSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   "Scope 1" - {
     "Test 1" in { SleepHelper.sleep(10) }
     "Test 2" in { SleepHelper.sleep(10) }
@@ -282,7 +290,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFreeSpec extend
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFreeSpec extends fixture.FreeSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" - {
     "Test 1" in { s => SleepHelper.sleep(10) }
     "Test 2" in { s => SleepHelper.sleep(10) }
@@ -300,7 +308,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureFreeSpec
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropPropSpec extends PropSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropPropSpec extends AnyPropSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   property("Test 1") { SleepHelper.sleep(10) }
   property("Test 2") { SleepHelper.sleep(10) }
   property("Test 3") { SleepHelper.sleep(10) }
@@ -316,7 +324,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropPropSpec extend
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixturePropSpec extends fixture.PropSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixturePropSpec extends propspec.FixtureAnyPropSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   property("Test 1") { s => SleepHelper.sleep(10) }
   property("Test 2") { s => SleepHelper.sleep(10) }
   property("Test 3") { s => SleepHelper.sleep(10) }
@@ -332,7 +340,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixturePropSpec
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropWordSpec extends WordSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropWordSpec extends AnyWordSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   "Scope 1" should {
     "Test 1" in { SleepHelper.sleep(10) }
     "Test 2" in { SleepHelper.sleep(10) }
@@ -350,7 +358,7 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropWordSpec extend
 }
 
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureWordSpec extends fixture.WordSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureWordSpec extends wordspec.FixtureAnyWordSpec with BeforeAndAfterAll with DeprecatedBeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" should {
     "Test 1" in { s => SleepHelper.sleep(10) }
     "Test 2" in { s => SleepHelper.sleep(10) }
@@ -369,12 +377,12 @@ protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropFixtureWordSpec
 
 // Not supported as path.FreeSpec cannot use ParallelTestExecution
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropPathFreeSpec extends path.FreeSpec with DeprecatedBeforeAndAfterAllPropFixtureServices {
-  override def newInstance: path.FreeSpecLike = new DeprecatedExampleBeforeAndAfterAllPropPathFreeSpec
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropPathFreeSpec extends freespec.PathAnyFreeSpec with DeprecatedBeforeAndAfterAllPropFixtureServices {
+  override def newInstance: freespec.PathAnyFreeSpecLike = new DeprecatedExampleBeforeAndAfterAllPropPathFreeSpec
 }
 
 // Not supported as path.FunSpec cannot use ParallelTestExecution
 @DoNotDiscover
-protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropPathFunSpec extends path.FunSpec with DeprecatedBeforeAndAfterAllPropFixtureServices {
-  override def newInstance: path.FunSpecLike = new DeprecatedExampleBeforeAndAfterAllPropPathFunSpec
+protected[scalatest] class DeprecatedExampleBeforeAndAfterAllPropPathFunSpec extends funspec.PathAnyFunSpec with DeprecatedBeforeAndAfterAllPropFixtureServices {
+  override def newInstance: funspec.PathAnyFunSpecLike = new DeprecatedExampleBeforeAndAfterAllPropPathFunSpec
 }

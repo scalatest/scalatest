@@ -25,6 +25,12 @@ import org.scalatest.propspec._
 import org.scalatest.refspec._
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.wordspec._
+import org.scalatest.featurespec.{ AsyncFeatureSpec, AsyncFeatureSpecLike }
+import org.scalatest.flatspec.{ AsyncFlatSpec, AsyncFlatSpecLike }
+import org.scalatest.freespec.{ AsyncFreeSpec, AsyncFreeSpecLike }
+import org.scalatest.funspec.{ AsyncFunSpec, AsyncFunSpecLike }
+import org.scalatest.funsuite.{ AsyncFunSuite, AsyncFunSuiteLike }
+import org.scalatest.wordspec.{ AsyncWordSpec, AsyncWordSpecLike }
 
 // SKIP-SCALATESTJS,NATIVE-START
 trait AsyncStringFixture { this: FixtureAsyncTestSuite =>

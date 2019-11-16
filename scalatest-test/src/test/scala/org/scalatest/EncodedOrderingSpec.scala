@@ -17,8 +17,9 @@ package org.scalatest
 
 import collection.immutable.TreeSet
 import reflect.NameTransformer.encode
+import org.scalatest.wordspec.AnyWordSpec
 
-class EncodedOrderingSpec extends WordSpec {
+class EncodedOrderingSpec extends AnyWordSpec {
   "EncodedOrdering" should {
     "sort unencoded strings the same as the default string ordering" in {
       val default = TreeSet("testHi", "testHo", "testPlus", "testMinus")

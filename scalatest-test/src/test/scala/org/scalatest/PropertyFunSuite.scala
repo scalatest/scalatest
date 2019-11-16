@@ -15,10 +15,11 @@
  */
 package org.scalatest
 
-import Matchers._
 import matchers.MatchersHelper
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers._
 
-class PropertyFunSuite extends FunSuite {
+class PropertyFunSuite extends AnyFunSuite {
 
   test("object has no appropriately named field, method, or get method (0, 0, 0)") {
     class DontGotNuthin

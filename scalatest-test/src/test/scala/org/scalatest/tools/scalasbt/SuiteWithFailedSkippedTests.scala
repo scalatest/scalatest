@@ -16,8 +16,9 @@
 package org.scalatest.tools.scalasbt
 
 import org.scalatest._
+import org.scalatest.funsuite.AnyFunSuite
 
-class SuiteWithFailedSkippedTests extends FunSuite {
+class SuiteWithFailedSkippedTests extends AnyFunSuite {
   test("success") {}
   ignore("ignored") {}
   test("pending") { pending }
@@ -26,7 +27,7 @@ class SuiteWithFailedSkippedTests extends FunSuite {
   
   override def nestedSuites = 
     collection.immutable.IndexedSeq(
-      new FunSuite() {
+      new AnyFunSuite() {
         override def suiteId = "nested 1"
           
         test("nested 1 success") {}
@@ -35,7 +36,7 @@ class SuiteWithFailedSkippedTests extends FunSuite {
         test("nested 1 failed") { fail }
         test("nested 1 canceled") { cancel }
       }, 
-      new FunSuite() {
+      new AnyFunSuite() {
         override def suiteId = "nested 2"
           
         test("nested 2 success") {}
@@ -44,7 +45,7 @@ class SuiteWithFailedSkippedTests extends FunSuite {
         test("nested 2 failed") { fail }
         test("nested 2 canceled") { cancel }
       },
-      new FunSuite() {
+      new AnyFunSuite() {
         override def suiteId = "nested 3"
         
         override def run(testName: Option[String], args: Args): Status = 

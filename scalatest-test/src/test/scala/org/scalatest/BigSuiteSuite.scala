@@ -16,8 +16,9 @@
 package org.scalatest
 
 import SharedHelpers._
+import org.scalatest.funsuite.AnyFunSuite
 
-class BigSuiteSuite extends FunSuite {
+class BigSuiteSuite extends AnyFunSuite {
   test("a BigSuite(Some(0)) has 100 tests") {
     val bs = new BigSuite(Some(0), Map.empty)
     assert(bs.expectedTestCount(Filter()) === 100)

@@ -17,11 +17,13 @@ package org.scalatest
 package exceptions
 
 import org.scalactic.source
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 /* Uncomment this after removing the deprecated type aliases in the org.scalatest.prop package object
 import org.scalatest.exceptions.PropertyCheckFailedException
 */
 
-class GeneratorDrivenPropertyCheckFailedExceptionSuite extends FunSuite with Matchers {
+class GeneratorDrivenPropertyCheckFailedExceptionSuite extends AnyFunSuite with Matchers {
 
   test("PropertyCheckFailedException's argNames method should return argN if no argument names are passed to the constructor") {
 

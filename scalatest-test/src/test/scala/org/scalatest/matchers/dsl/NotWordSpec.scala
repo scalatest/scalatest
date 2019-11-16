@@ -16,7 +16,6 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest._
-import Matchers._
 import SharedHelpers.createTempDirectory
 import matchers.{AMatcher, AnMatcher, BeMatcher, BePropertyMatchResult, BePropertyMatcher, MatchResult}
 import matchers.{MidSentenceFailureMessage, MidSentenceNegatedFailureMessage, NegatedFailureMessage}
@@ -32,8 +31,10 @@ import org.scalactic._
 import org.scalatest.UnquotedString
 import org.scalatest.Resources
 import org.scalatest.FailureMessages
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class NotWordSpec extends FunSpec with FileMocks {
+class NotWordSpec extends AnyFunSpec with FileMocks {
 
   private val prettifier = Prettifier.default
   

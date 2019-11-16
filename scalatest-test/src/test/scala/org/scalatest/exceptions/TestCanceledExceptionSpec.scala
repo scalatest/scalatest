@@ -15,12 +15,12 @@
  */
 package org.scalatest.exceptions
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
 import org.scalactic.source
 import org.scalatest.SharedHelpers.thisLineNumber
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class TestCanceledExceptionSpec extends FunSpec with Matchers {
+class TestCanceledExceptionSpec extends AnyFunSpec with Matchers {
 
   val baseLineNumber = thisLineNumber
 

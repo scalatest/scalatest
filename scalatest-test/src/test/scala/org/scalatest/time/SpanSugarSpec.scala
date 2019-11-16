@@ -15,10 +15,11 @@
  */
 package org.scalatest.time
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 
-class SpanSugarSpec extends FunSpec with SpanMatchers with Matchers {
+class SpanSugarSpec extends AnyFunSpec with SpanMatchers with Matchers {
   
   import SpanSugar._
  

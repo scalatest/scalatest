@@ -16,6 +16,7 @@
 package org.scalatest.tools.scalasbt
 
 import org.scalatest._
+import org.scalatest.wordspec.AnyWordSpec
 
 trait NestedConfigMapSuiteConfigMap extends SuiteMixin { this: Suite =>
 
@@ -26,9 +27,9 @@ trait NestedConfigMapSuiteConfigMap extends SuiteMixin { this: Suite =>
   }
 }
 
-class NestedConfigMapSuite extends WordSpec with NestedConfigMapSuiteConfigMap {
+class NestedConfigMapSuite extends AnyWordSpec with NestedConfigMapSuiteConfigMap {
 
-  class NestedSuite extends WordSpec {
+  class NestedSuite extends AnyWordSpec {
 
     var configMap: ConfigMap = _
 

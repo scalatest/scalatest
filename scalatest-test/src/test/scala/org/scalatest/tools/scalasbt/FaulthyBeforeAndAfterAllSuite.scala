@@ -16,8 +16,9 @@
 package org.scalatest.tools.scalasbt
 
 import org.scalatest._
+import org.scalatest.funsuite.AnyFunSuite
 
-class FaulthyBeforeAndAfterAllSuite extends FunSuite with BeforeAndAfterAll {
+class FaulthyBeforeAndAfterAllSuite extends AnyFunSuite with BeforeAndAfterAll {
 
   test("test 1") {}
 

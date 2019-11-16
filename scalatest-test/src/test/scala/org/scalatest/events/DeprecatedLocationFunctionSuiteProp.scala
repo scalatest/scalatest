@@ -17,6 +17,14 @@ package org.scalatest.events.deprecated
 import org.scalatest.events._
 import org.scalatest._
 import SharedHelpers._
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 
 class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
   
@@ -34,7 +42,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
   
   val expectedSourceFileName: String = "LocationFunctionSuiteProp.scala"
   
-  def funSuite = new FunSuite with FixtureServices {
+  def funSuite = new AnyFunSuite with FixtureServices {
     test("succeed") {
       
     }
@@ -59,7 +67,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
     val expectedScopeClosedList = Nil
   }
   
-  def fixtureFunSuite = new fixture.FunSuite with FixtureServices with StringFixture {
+  def fixtureFunSuite = new funsuite.FixtureAnyFunSuite with FixtureServices with StringFixture {
     test("succeed") { param =>
       
     }
@@ -84,7 +92,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
     val expectedScopeClosedList = Nil
   }
   
-  def funSpec = new FunSpec with FixtureServices {
+  def funSpec = new AnyFunSpec with FixtureServices {
     describe("A Spec") {
       it("succeed") {
         
@@ -111,7 +119,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
     val expectedScopeClosedList = List(ScopeClosedPair("A Spec", expectedSourceFileName, thisLineNumber - 23))
   }
   
-  def fixtureFunSpec = new fixture.FunSpec with FixtureServices with StringFixture {
+  def fixtureFunSpec = new funspec.FixtureAnyFunSpec with FixtureServices with StringFixture {
     describe("A Spec") {
       it("succeed") { param =>
         
@@ -138,15 +146,15 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
     val expectedScopeClosedList = List(ScopeClosedPair("A Spec", expectedSourceFileName, thisLineNumber - 23))
   }
   
-  def featureSpec = new FeatureSpec with FixtureServices {
-    feature("Test") {
-      scenario("succeed") {
+  def featureSpec = new AnyFeatureSpec with FixtureServices {
+    Feature("Test") {
+      Scenario("succeed") {
       
       }
-      scenario("pending") {
+      Scenario("pending") {
         pending
       }
-      scenario("cancel") {
+      Scenario("cancel") {
         cancel
       }
       ignore("ignore") {
@@ -165,15 +173,15 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
     val expectedScopeClosedList = List(ScopeClosedPair("Feature: Test", expectedSourceFileName, thisLineNumber - 23))
   }
   
-  def fixtureFeatureSpec = new fixture.FeatureSpec with FixtureServices with StringFixture {
-    feature("Test") {
-      scenario("succeed") { param =>
+  def fixtureFeatureSpec = new featurespec.FixtureAnyFeatureSpec with FixtureServices with StringFixture {
+    Feature("Test") {
+      Scenario("succeed") { param =>
       
       }
-      scenario("pending") { param =>
+      Scenario("pending") { param =>
         pending
       }
-      scenario("cancel") { param =>
+      Scenario("cancel") { param =>
         cancel
       }
       ignore("ignore") { param =>
@@ -192,7 +200,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
     val expectedScopeClosedList = List(ScopeClosedPair("Feature: Test", expectedSourceFileName, thisLineNumber - 23))
   }
   
-  def flatSpec = new FlatSpec with FixtureServices {
+  def flatSpec = new AnyFlatSpec with FixtureServices {
     "Test 1" should "succeed" in {
       
     }
@@ -224,7 +232,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
                                        ScopeClosedPair("Test 4", expectedSourceFileName, thisLineNumber - 19))
   }
   
-  def fixtureFlatSpec = new fixture.FlatSpec with FixtureServices with StringFixture {
+  def fixtureFlatSpec = new flatspec.FixtureAnyFlatSpec with FixtureServices with StringFixture {
     "Test 1" should "succeed" in { param =>
       
     }
@@ -256,7 +264,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
                                        ScopeClosedPair("Test 4", expectedSourceFileName, thisLineNumber - 19))
   }
   
-  def freeSpec = new FreeSpec with FixtureServices {
+  def freeSpec = new AnyFreeSpec with FixtureServices {
     "Test" - {
       "should succeed" in {
         
@@ -283,7 +291,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
     val expectedScopeClosedList = List(ScopeClosedPair("Test", expectedSourceFileName, thisLineNumber - 23))
   }
   
-  def fixtureFreeSpec = new fixture.FreeSpec with FixtureServices with StringFixture {
+  def fixtureFreeSpec = new freespec.FixtureAnyFreeSpec with FixtureServices with StringFixture {
     "Test" - {
       "should succeed" in { param =>
         
@@ -310,7 +318,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
     val expectedScopeClosedList = List(ScopeClosedPair("Test", expectedSourceFileName, thisLineNumber - 23))
   }
   
-  def propSpec = new PropSpec with FixtureServices {
+  def propSpec = new AnyPropSpec with FixtureServices {
     property("Test should succeed") {
       
     }
@@ -335,7 +343,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
     val expectedScopeClosedList = Nil
   }
   
-  def fixturePropSpec = new fixture.PropSpec with FixtureServices with StringFixture {
+  def fixturePropSpec = new propspec.FixtureAnyPropSpec with FixtureServices with StringFixture {
     property("Test should succeed") { param =>
       
     }
@@ -360,7 +368,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
     val expectedScopeClosedList = Nil
   }
   
-  def wordSpec = new WordSpec with FixtureServices {
+  def wordSpec = new AnyWordSpec with FixtureServices {
     def provide = afterWord("provide")
     "Test 1" should provide {
       "succeed" in {
@@ -403,7 +411,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
                                        ScopeClosedPair("Test 4 that", expectedSourceFileName, thisLineNumber - 23))
   }
   
-  def fixtureWordSpec = new fixture.WordSpec with FixtureServices with StringFixture {
+  def fixtureWordSpec = new wordspec.FixtureAnyWordSpec with FixtureServices with StringFixture {
     def provide = afterWord("provide")
     "Test 1" should provide {
       "succeed" in { param =>
@@ -451,7 +459,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
   def pathFunSpec = new TestLocationFunctionPathFunSpec
 }
 
-class TestLocationFunctionPathFreeSpec extends path.FreeSpec with TestLocationFunctionServices {
+class TestLocationFunctionPathFreeSpec extends freespec.PathAnyFreeSpec with TestLocationFunctionServices {
   val expectedSourceFileName = "LocationFunctionSuiteProp.scala"
   //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestLocationFunctionPathFreeSpec
   "Test" - {
@@ -480,7 +488,7 @@ class TestLocationFunctionPathFreeSpec extends path.FreeSpec with TestLocationFu
   val expectedScopeClosedList = List(ScopeClosedPair("Test", expectedSourceFileName, thisLineNumber - 23))
 }
 
-class TestLocationFunctionPathFunSpec extends path.FunSpec with TestLocationFunctionServices {
+class TestLocationFunctionPathFunSpec extends funspec.PathAnyFunSpec with TestLocationFunctionServices {
   val expectedSourceFileName = "LocationFunctionSuiteProp.scala"
   //SCALATESTJS,NATIVE-ONLY override def newInstance = new TestLocationFunctionPathFunSpec
   describe("A Spec") {

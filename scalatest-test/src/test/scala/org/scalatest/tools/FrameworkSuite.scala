@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package org.scalatest.tools
-import org.scalatest.{FunSuite, Resources, Retries, OptionValues}
+import org.scalatest.{Resources, Retries, OptionValues}
+import org.scalatest.funsuite.AnyFunSuite
 import sbt.testing.{Framework => _, _}
 import org.scalatest.SharedHelpers.{EventRecordingReporter, createTempDirectory}
 import org.scalatest.exceptions.NotAllowedException
@@ -23,7 +24,7 @@ import java.io.File
 import Retries._
 import OptionValues._
 
-class FrameworkSuite extends FunSuite {
+class FrameworkSuite extends AnyFunSuite {
 
   override def withFixture(test: NoArgTest) = {
     if (isRetryable(test))

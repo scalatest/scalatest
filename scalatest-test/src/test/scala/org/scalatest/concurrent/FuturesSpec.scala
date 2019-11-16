@@ -18,15 +18,16 @@ package org.scalatest.concurrent
 import org.scalatest._
 import time._
 import java.util.concurrent.{Future => FutureOfJava}
-import org.scalatest.FunSpec
 import org.scalatest.OptionValues
 import exceptions.{TestCanceledException, TestFailedException, TestPendingException}
 import java.util.concurrent.TimeUnit
 import org.scalactic.source
 import org.scalatest.SharedHelpers.thisLineNumber
 import scala.compat.Platform.EOL
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures {
+class FuturesSpec extends AnyFunSpec with Matchers with OptionValues with Futures {
 
   import scala.language.implicitConversions
 

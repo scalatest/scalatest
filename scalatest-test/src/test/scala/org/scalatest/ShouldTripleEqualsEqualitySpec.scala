@@ -24,11 +24,12 @@ import scala.collection.GenTraversableOnce
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import org.scalactic.Equality
-import Matchers._
 
 import org.scalactic.ArrayHelper.deep
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldTripleEqualsEqualitySpec extends FunSpec with NonImplicitAssertions {
+class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertions {
 
   describe("the should === operator should use the appropriate Equality type class") {
     it("for Any") {

@@ -22,8 +22,9 @@ import SharedHelpers._
 import org.scalatest.events._
 
 import scala.io.Source
+import org.scalatest.funspec.AnyFunSpec
 
-class HtmlReporterSpec extends FunSpec {
+class HtmlReporterSpec extends AnyFunSpec {
 
   describe("HtmlReporter ") {
     

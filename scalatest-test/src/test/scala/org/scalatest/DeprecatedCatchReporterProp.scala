@@ -28,6 +28,14 @@ import org.scalatest.tools.TestSortingReporter
 import org.testng.annotations.{Test => TestNG }
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
 class DeprecatedCatchReporterProp extends AllSuiteProp {
@@ -422,7 +430,7 @@ class DeprecatedExampleCatchReporterTestNGSuite extends TestNGSuite with Depreca
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterFunSuite extends FunSuite with DeprecatedCatchReporterFixtureServices {
+class DeprecatedExampleCatchReporterFunSuite extends AnyFunSuite with DeprecatedCatchReporterFixtureServices {
   test("Test 1") {}
   test("Test 2") {}
   test("Test 3") {}
@@ -430,7 +438,7 @@ class DeprecatedExampleCatchReporterFunSuite extends FunSuite with DeprecatedCat
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterFixtureFunSuite extends fixture.FunSuite with DeprecatedCatchReporterFixtureServices with StringFixture {
+class DeprecatedExampleCatchReporterFixtureFunSuite extends funsuite.FixtureAnyFunSuite with DeprecatedCatchReporterFixtureServices with StringFixture {
   test("Test 1") {s =>}
   test("Test 2") {s =>}
   test("Test 3") {s =>}
@@ -438,7 +446,7 @@ class DeprecatedExampleCatchReporterFixtureFunSuite extends fixture.FunSuite wit
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterFunSpec extends FunSpec with DeprecatedCatchReporterFixtureServices {
+class DeprecatedExampleCatchReporterFunSpec extends AnyFunSpec with DeprecatedCatchReporterFixtureServices {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}
@@ -448,7 +456,7 @@ class DeprecatedExampleCatchReporterFunSpec extends FunSpec with DeprecatedCatch
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterFixtureFunSpec extends fixture.FunSpec with DeprecatedCatchReporterFixtureServices with StringFixture {
+class DeprecatedExampleCatchReporterFixtureFunSpec extends funspec.FixtureAnyFunSpec with DeprecatedCatchReporterFixtureServices with StringFixture {
   describe("Scope 1") {
     it("Test 1") {s =>}
     it("Test 2") {s =>}
@@ -458,27 +466,27 @@ class DeprecatedExampleCatchReporterFixtureFunSpec extends fixture.FunSpec with 
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterFeatureSpec extends FeatureSpec with DeprecatedCatchReporterFixtureServices {
-  feature("Feature 1") {
-    scenario("Scenario 1") {}
-    scenario("Scenario 2") {}
-    scenario("Scenario 3") {}
+class DeprecatedExampleCatchReporterFeatureSpec extends AnyFeatureSpec with DeprecatedCatchReporterFixtureServices {
+  Feature("Feature 1") {
+    Scenario("Scenario 1") {}
+    Scenario("Scenario 2") {}
+    Scenario("Scenario 3") {}
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterFixtureFeatureSpec extends fixture.FeatureSpec with DeprecatedCatchReporterFixtureServices with StringFixture {
-  feature("Feature 1") {
-    scenario("Scenario 1") {s =>}
-    scenario("Scenario 2") {s =>}
-    scenario("Scenario 3") {s =>}
+class DeprecatedExampleCatchReporterFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with DeprecatedCatchReporterFixtureServices with StringFixture {
+  Feature("Feature 1") {
+    Scenario("Scenario 1") {s =>}
+    Scenario("Scenario 2") {s =>}
+    Scenario("Scenario 3") {s =>}
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterFlatSpec extends FlatSpec with DeprecatedCatchReporterFixtureServices {
+class DeprecatedExampleCatchReporterFlatSpec extends AnyFlatSpec with DeprecatedCatchReporterFixtureServices {
   "Scope 1" should "do thing 1" in {}
   it should "do thing 2" in {}
   it should "do thing 3" in {}
@@ -486,7 +494,7 @@ class DeprecatedExampleCatchReporterFlatSpec extends FlatSpec with DeprecatedCat
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterFixtureFlatSpec extends fixture.FlatSpec with DeprecatedCatchReporterFixtureServices with StringFixture {
+class DeprecatedExampleCatchReporterFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with DeprecatedCatchReporterFixtureServices with StringFixture {
   "Scope 1" should "do thing 1" in {s =>}
   it should "do thing 2" in {s =>}
   it should "do thing 3" in {s =>}
@@ -494,7 +502,7 @@ class DeprecatedExampleCatchReporterFixtureFlatSpec extends fixture.FlatSpec wit
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterFreeSpec extends FreeSpec with DeprecatedCatchReporterFixtureServices {
+class DeprecatedExampleCatchReporterFreeSpec extends AnyFreeSpec with DeprecatedCatchReporterFixtureServices {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -504,7 +512,7 @@ class DeprecatedExampleCatchReporterFreeSpec extends FreeSpec with DeprecatedCat
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterFixtureFreeSpec extends fixture.FreeSpec with DeprecatedCatchReporterFixtureServices with StringFixture {
+class DeprecatedExampleCatchReporterFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with DeprecatedCatchReporterFixtureServices with StringFixture {
   "Scope 1" - {
     "Test 1" in {s =>}
     "Test 2" in {s =>}
@@ -514,7 +522,7 @@ class DeprecatedExampleCatchReporterFixtureFreeSpec extends fixture.FreeSpec wit
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterPropSpec extends PropSpec with DeprecatedCatchReporterFixtureServices {
+class DeprecatedExampleCatchReporterPropSpec extends AnyPropSpec with DeprecatedCatchReporterFixtureServices {
   property("Test 1") {}
   property("Test 2") {}
   property("Test 3") {}
@@ -522,7 +530,7 @@ class DeprecatedExampleCatchReporterPropSpec extends PropSpec with DeprecatedCat
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterFixturePropSpec extends fixture.PropSpec with DeprecatedCatchReporterFixtureServices with StringFixture {
+class DeprecatedExampleCatchReporterFixturePropSpec extends propspec.FixtureAnyPropSpec with DeprecatedCatchReporterFixtureServices with StringFixture {
   property("Test 1") {s =>}
   property("Test 2") {s =>}
   property("Test 3") {s =>}
@@ -530,7 +538,7 @@ class DeprecatedExampleCatchReporterFixturePropSpec extends fixture.PropSpec wit
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterWordSpec extends WordSpec with DeprecatedCatchReporterFixtureServices {
+class DeprecatedExampleCatchReporterWordSpec extends AnyWordSpec with DeprecatedCatchReporterFixtureServices {
   "Scope 1" should {
     "Test 1" in {}
     "Test 2" in {}
@@ -540,7 +548,7 @@ class DeprecatedExampleCatchReporterWordSpec extends WordSpec with DeprecatedCat
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterFixtureWordSpec extends fixture.WordSpec with DeprecatedCatchReporterFixtureServices with StringFixture {
+class DeprecatedExampleCatchReporterFixtureWordSpec extends wordspec.FixtureAnyWordSpec with DeprecatedCatchReporterFixtureServices with StringFixture {
   "Scope 1" should {
     "Test 1" in {s =>}
     "Test 2" in {s =>}
@@ -550,7 +558,7 @@ class DeprecatedExampleCatchReporterFixtureWordSpec extends fixture.WordSpec wit
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterPathFreeSpec extends path.FreeSpec with DeprecatedCatchReporterFixtureServices {
+class DeprecatedExampleCatchReporterPathFreeSpec extends freespec.PathAnyFreeSpec with DeprecatedCatchReporterFixtureServices {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -560,7 +568,7 @@ class DeprecatedExampleCatchReporterPathFreeSpec extends path.FreeSpec with Depr
 }
 
 @DoNotDiscover
-class DeprecatedExampleCatchReporterPathFunSpec extends path.FunSpec with DeprecatedCatchReporterFixtureServices {
+class DeprecatedExampleCatchReporterPathFunSpec extends funspec.PathAnyFunSpec with DeprecatedCatchReporterFixtureServices {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}

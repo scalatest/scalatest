@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-class FlatSpecMixedInMatchersSpec extends FlatSpec with Matchers {
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+class FlatSpecMixedInMatchersSpec extends AnyFlatSpec with Matchers {
   "This spec" should "work OK" in {
     "hello" should startWith ("he")
     "hello" should endWith ("lo")

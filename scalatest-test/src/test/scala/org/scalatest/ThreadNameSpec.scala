@@ -15,9 +15,10 @@
  */
 package org.scalatest
 
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ThreadNameSpec extends FunSpec {
+class ThreadNameSpec extends AnyFunSpec {
 
   describe("The Thread name augmenter") {
     it("""should add "running X" onto bare thread names""") {

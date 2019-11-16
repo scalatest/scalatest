@@ -15,11 +15,11 @@
  */
 package org.scalatest.tools.scalasbt
 
-import org.scalatest.FunSuite
 import org.scalatest.tags.Network
+import org.scalatest.funsuite.AnyFunSuite
 
 @Network
-class NetworkTaggedSuite extends FunSuite {
+class NetworkTaggedSuite extends AnyFunSuite {
 
   test("test 1") {
     

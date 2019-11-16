@@ -18,8 +18,10 @@ package org.scalatest.enablers
 import org.scalatest._
 import org.scalactic.Equality
 import scala.collection.immutable
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class CollectingSpec extends FunSpec with Matchers {
+class CollectingSpec extends AnyFunSpec with Matchers {
 
   describe("The implicit Containing providers") {
     it("should provide a working genTraversableFrom method") {

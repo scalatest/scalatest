@@ -16,13 +16,13 @@
 package org.scalatest.prop
 
 import org.scalactic.anyvals._
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.SortedMap
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class GeneratorSpec extends FunSpec with Matchers {
+class GeneratorSpec extends AnyFunSpec with Matchers {
   describe("A Generator") {
     it("should offer a map and flatMap method that composes the next methods") {
       import Generator._

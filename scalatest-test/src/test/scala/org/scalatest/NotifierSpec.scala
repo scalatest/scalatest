@@ -16,11 +16,12 @@
 package org.scalatest
 
 import SharedHelpers._
+import org.scalatest.funsuite.AnyFunSuite
 
 class NotifierSpec extends funspec.AnyFunSpec {
   describe("A Notifier") {
     it("should fire NoteProvided event with correct message and None in payload when using apply(message)") {
-      class MySuite extends FunSuite {
+      class MySuite extends AnyFunSuite {
         note("update message")
       }
       val suite = new MySuite()
@@ -32,7 +33,7 @@ class NotifierSpec extends funspec.AnyFunSpec {
       assert(noteProvidedEvents(0).payload === None)
     }
     it("should fire NoteProvided event with correct message and payload when using apply(message, payload)") {
-      class MySuite extends FunSuite {
+      class MySuite extends AnyFunSuite {
         note("update message", Some("a payload"))
       }
       val suite = new MySuite()

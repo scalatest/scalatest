@@ -24,6 +24,14 @@ import org.scalatest.time.Millis
 import org.scalatest.tools.TestSortingReporter
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
+import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.propspec.AnyPropSpec
+import org.scalatest.wordspec.AnyWordSpec
 // SKIP-SCALATESTJS,NATIVE-END
 
 trait TestTimeoutExpectedResults extends EventHelpers { s: ParallelTestExecution =>
@@ -125,7 +133,7 @@ class ExampleParallelTestExecutionTestTimeoutSpec extends RefSpec with ParallelT
 // SKIP-SCALATESTJS,NATIVE-END
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSuite extends FunSuite with ParallelTestExecution with TestTimeoutExpectedResults {
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSuite extends AnyFunSuite with ParallelTestExecution with TestTimeoutExpectedResults {
   test("Test 1") {}
   test("Test 2") {}
   test("Test 3") {}
@@ -152,7 +160,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSuite exten
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSuite extends fixture.FunSuite with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSuite extends funsuite.FixtureAnyFunSuite with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
   test("Test 1") { fixture => }
   test("Test 2") { fixture => }
   test("Test 3") { fixture => }
@@ -179,7 +187,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSuit
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSpec extends FunSpec with ParallelTestExecution with TestTimeoutExpectedResults {
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSpec extends AnyFunSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   describe("Scope 1") {
     it("Test 1") {}
     it("Test 2") {}
@@ -217,7 +225,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSpec extend
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSpec extends fixture.FunSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSpec extends funspec.FixtureAnyFunSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
   describe("Scope 1") {
     it("Test 1") { fixture => }
     it("Test 2") { fixture =>}
@@ -255,14 +263,14 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSpec
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFeatureSpec extends FeatureSpec with ParallelTestExecution with TestTimeoutExpectedResults {
-  feature("Scope 1") {
-    scenario("Test 1") {}
-    scenario("Test 2") {}
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFeatureSpec extends AnyFeatureSpec with ParallelTestExecution with TestTimeoutExpectedResults {
+  Feature("Scope 1") {
+    Scenario("Test 1") {}
+    Scenario("Test 2") {}
   }
-  feature("Scope 2") {
-    scenario("Test 3") {}
-    scenario("Test 4") {}
+  Feature("Scope 2") {
+    Scenario("Test 3") {}
+    Scenario("Test 4") {}
   }
   
   val holdTestSucceededName = "Feature: Scope 2 Scenario: Test 3"
@@ -293,14 +301,14 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFeatureSpec ex
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFeatureSpec extends fixture.FeatureSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
-  feature("Scope 1") {
-    scenario("Test 1") { fixture => }
-    scenario("Test 2") { fixture =>}
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFeatureSpec extends featurespec.FixtureAnyFeatureSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
+  Feature("Scope 1") {
+    Scenario("Test 1") { fixture => }
+    Scenario("Test 2") { fixture =>}
   }
-  feature("Scope 2") {
-    scenario("Test 3") { fixture => }
-    scenario("Test 4") { fixture => }
+  Feature("Scope 2") {
+    Scenario("Test 3") { fixture => }
+    Scenario("Test 4") { fixture => }
   }
   
   val holdTestSucceededName = "Feature: Scope 2 Scenario: Test 3"
@@ -331,7 +339,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFeature
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFlatSpec extends FlatSpec with ParallelTestExecution with TestTimeoutExpectedResults {
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFlatSpec extends AnyFlatSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   behavior of "Scope 1"
   it should "Test 1" in {}
   it should "Test 2" in {}
@@ -368,7 +376,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFlatSpec exten
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFlatSpec extends fixture.FlatSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFlatSpec extends flatspec.FixtureAnyFlatSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
   behavior of "Scope 1"
   it should "Test 1" in { fixture => }
   it should "Test 2" in { fixture => }
@@ -405,7 +413,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFlatSpe
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFreeSpec extends FreeSpec with ParallelTestExecution with TestTimeoutExpectedResults {
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFreeSpec extends AnyFreeSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   "Scope 1" - {
     "Test 1" in {}
     "Test 2" in {}
@@ -444,7 +452,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFreeSpec exten
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFreeSpec extends fixture.FreeSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFreeSpec extends freespec.FixtureAnyFreeSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
   "Scope 1" - {
     "Test 1" in { fixture => }
     "Test 2" in { fixture => }
@@ -483,7 +491,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFreeSpe
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutPropSpec extends PropSpec with ParallelTestExecution with TestTimeoutExpectedResults {
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutPropSpec extends AnyPropSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   property("Test 1") {}
   property("Test 2") {}
   property("Test 3") {}
@@ -510,7 +518,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutPropSpec exten
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixturePropSpec extends fixture.PropSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixturePropSpec extends propspec.FixtureAnyPropSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
   property("Test 1") { fixture => }
   property("Test 2") { fixture => }
   property("Test 3") { fixture => }
@@ -537,7 +545,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixturePropSpe
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutWordSpec extends WordSpec with ParallelTestExecution with TestTimeoutExpectedResults {
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutWordSpec extends AnyWordSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   "Scope 1" should {
     "Test 1" in {}
     "Test 2" in {}
@@ -576,7 +584,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutWordSpec exten
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureWordSpec extends fixture.WordSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureWordSpec extends wordspec.FixtureAnyWordSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
   "Scope 1" should {
     "Test 1" in { fixture => }
     "Test 2" in { fixture => }

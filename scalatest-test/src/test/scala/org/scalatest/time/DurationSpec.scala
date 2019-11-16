@@ -17,8 +17,10 @@ package org.scalatest.time
 
 import org.scalatest._
 import scala.concurrent.duration._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class DurationSpec extends FunSpec with Matchers {
+class DurationSpec extends AnyFunSpec with Matchers {
 
   import scala.language.postfixOps
 

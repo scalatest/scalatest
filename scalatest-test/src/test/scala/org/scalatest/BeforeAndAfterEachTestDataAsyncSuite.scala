@@ -21,6 +21,7 @@ import org.scalatest.events.InfoProvided
 import org.scalatest.events.Ordinal
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Promise
+import org.scalatest.funsuite.{ AnyFunSuite, AsyncFunSuite }
 
 // This tests that BeforeAndAfterEachTestData works correctly when mixed into an AsyncSuite
 class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
@@ -234,7 +235,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   test("If any invocation of beforeAll completes abruptly with an exception, run " +
     "will complete abruptly with the same exception.") {
     
-    class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
+    class MySuite extends AnyFunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def beforeAll(cm: ConfigMap): Unit = { throw new NumberFormatException }
       test("test July") {}
     }
@@ -246,7 +247,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
  
   test("If any call to super.run completes abruptly with an exception, run " +
     "will complete abruptly with the same exception, however, before doing so, it will invoke afterAll") {
-    trait FunkySuite extends FunSuite {
+    trait FunkySuite extends AnyFunSuite {
       override def run(testName: Option[String], args: Args): Status = {
         throw new NumberFormatException
       }
@@ -269,7 +270,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
    
   test("If both super.run and afterAll complete abruptly with an exception, run " + 
     "will complete abruptly with the exception thrown by super.run.") {
-    trait FunkySuite extends FunSuite {
+    trait FunkySuite extends AnyFunSuite {
       override def run(testName: Option[String], args: Args): Status = {
         throw new NumberFormatException
       }
@@ -293,7 +294,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   
   test("If super.run returns normally, but afterAll completes abruptly with an " +
     "exception, runTest will return a status that contains that exception as an unreportedException (using BeforeAndAfterAllConfigMap).") {
-    class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
+    class MySuite extends AnyFunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def afterAll(cm: ConfigMap): Unit = { throw new NumberFormatException }
       test("test July") {}
     }

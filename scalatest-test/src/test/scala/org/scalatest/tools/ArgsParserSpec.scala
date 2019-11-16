@@ -19,8 +19,9 @@ import java.util.regex.Pattern
 import org.scalatest._
 import java.io.File
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.funspec.AnyFunSpec
 
-class ArgsParserSpec extends FunSpec {
+class ArgsParserSpec extends AnyFunSpec {
 
   it("parseArgsIntoLists should throw IllegalArgumentException using long-deprecated args") {
 

@@ -21,6 +21,7 @@ import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
+import org.scalatest.flatspec.{ AsyncFlatSpec, AsyncFlatSpecLike }
 
 class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
 

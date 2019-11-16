@@ -16,8 +16,10 @@
 package org.scalatest.concurrent
 
 import org.scalatest.SharedHelpers._
-import org.scalatest.{Args, AsyncFlatSpec, AsyncFunSuite}
+import org.scalatest.Args
 import scala.concurrent.{Promise, Future}
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.funsuite.AsyncFunSuite
 
 class AsyncCancelAfterFailureSpec extends AsyncFlatSpec {
 

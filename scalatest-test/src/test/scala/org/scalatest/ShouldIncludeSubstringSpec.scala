@@ -17,9 +17,10 @@ package org.scalatest
 
 import org.scalatest.prop.PropertyChecks
 import org.scalatest.exceptions.TestFailedException
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ShouldIncludeSubstringSpec extends FunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
+class ShouldIncludeSubstringSpec extends AnyFunSpec with PropertyChecks with ReturnsNormallyThrowsAssertion {
 
   describe("The include substring syntax") {
 

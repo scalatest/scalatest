@@ -21,10 +21,11 @@ import org.scalactic.StringNormalizations
 import org.scalactic.Prettifier
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
-import Matchers._
 import StringNormalizations._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ContainMatcherAndOrDeciderSpec extends FunSpec with Explicitly {
+class ContainMatcherAndOrDeciderSpec extends AnyFunSpec with Explicitly {
 
   private val prettifier = Prettifier.default
 

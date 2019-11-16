@@ -23,6 +23,8 @@ import org.scalactic.anyvals.PosZInt
 import exceptions.TestFailedException
 import OptionValues._
 import scala.concurrent.Future
+import org.scalatest.funspec.AsyncFunSpec
+import org.scalatest.matchers.should.Matchers
 
 class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with GeneratorDrivenPropertyChecks with LineNumberHelper {
 

@@ -25,6 +25,8 @@ import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import SharedHelpers.serializeRoundtrip
 
 import scala.concurrent.Future
+import org.scalatest.funspec.AsyncFunSpec
+import org.scalatest.matchers.should.Matchers
 
 class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with SeveredStackTraces*/ {
 

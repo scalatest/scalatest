@@ -21,6 +21,8 @@ import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
+import org.scalatest.funspec.AsyncFunSpec
+import org.scalatest.wordspec.AsyncWordSpecLike
 
 class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
 

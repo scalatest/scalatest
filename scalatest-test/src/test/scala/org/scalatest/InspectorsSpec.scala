@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import Matchers._
 import SharedHelpers._
 import collection._
 import java.lang.annotation.AnnotationFormatError
@@ -28,8 +27,10 @@ import scala.annotation.tailrec
 import scala.collection.GenTraversable
 import FailureMessages.decorateToStringValue
 import org.scalatest.CompatParColls.Converters._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChecks {
+class InspectorsSpec extends AnyFunSpec with Inspectors with TableDrivenPropertyChecks {
 
   private val prettifier = Prettifier.default
   

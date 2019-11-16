@@ -15,9 +15,10 @@
  */
 package org.scalatest
 
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class RunningTestSpec extends FunSpec {
+class RunningTestSpec extends AnyFunSpec {
 
   describe("The RunningTest class") {
     it("should determine equality based on the suite ID and test name only") {

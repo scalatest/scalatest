@@ -15,16 +15,17 @@
  */
 package org.scalatest
 
-import Matchers._
 import org.scalactic.Prettifier
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
 /*
 This has a bit of redundancy with several other specs, but was the
 original file I used to develop the matchers syntax, and it has a few
 tests that don't exist elsewhere, so I'm keeping it alive for now.
 */
-class ShouldMatcherSpec extends FunSpec {
+class ShouldMatcherSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 

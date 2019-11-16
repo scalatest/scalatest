@@ -20,6 +20,8 @@ import java.lang.Thread.State._
 import org.scalatest.fixture
 import _root_.java.util.concurrent.{Callable, CountDownLatch}
 import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.funsuite
+import org.scalatest.matchers.should.Matchers
 
 // On Mac got: "ABCFEDGHI" was not equal to "ABCDEFGHI"
 // Finally Got: "ABDEFGHI" was not equal to "ABCDEFGHI" Didn't get a C, so that means
@@ -32,7 +34,7 @@ class VolatileString {
 }
 */
 
-class ConductorFixtureSuite extends fixture.FunSuite with ConductorFixture with Matchers {
+class ConductorFixtureSuite extends funsuite.FixtureAnyFunSuite with ConductorFixture with Matchers {
     
   @volatile var aa = false
   @volatile var bb = false

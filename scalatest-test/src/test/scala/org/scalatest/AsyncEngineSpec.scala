@@ -25,6 +25,7 @@ import events.Ordinal
 import concurrent.Eventually._
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalactic._
+import org.scalatest.funsuite.AsyncFunSuite
 
 class AsyncEngineSpec extends flatspec.AnyFlatSpec with matchers.should.Matchers {
 
