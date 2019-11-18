@@ -140,7 +140,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def sharedSettings: Seq[Setting[_]] = 
     commonSharedSettings ++ Seq(
-      scalaVersion := "2.13.0",
+      scalaVersion := "2.13.1",
       crossScalaVersions := supportedScalaVersions,
       libraryDependencies ++= {
         if (isDotty.value)
