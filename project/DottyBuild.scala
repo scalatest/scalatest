@@ -13,11 +13,11 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.14/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = "0.19.0"
+  lazy val dottyVersion = "0.21.0-RC1"
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
-    scalacOptions := List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
+    scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
   )
 
   lazy val scalacticDotty = Project("scalacticDotty", file("dotty/scalactic"))
