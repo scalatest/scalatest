@@ -584,7 +584,7 @@ import org.scalactic._
  * </p>
  *
  * <pre class="stHighlight">
- * import org.scalatest.Matchers._
+ * import org.scalatest.matchers.should.Matchers._
  *
  * forAll (fractions) { (n: Int, d: Int) =>
  *
@@ -1018,7 +1018,7 @@ object TableDrivenPropertyChecks extends TableDrivenPropertyChecks
 
 val tableSuitePreamble = """
 
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 import org.scalatest.refspec.RefSpec
 
@@ -1169,9 +1169,9 @@ $columnsOfIndexes$
 
 val asyncTableSuitePreamble = """
 
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
-import org.scalatest.AsyncFunSpec
+import org.scalatest.funspec.AsyncFunSpec
 import scala.concurrent.Future
 
 class AsyncTableSuite extends AsyncFunSpec with TableDrivenPropertyChecks {

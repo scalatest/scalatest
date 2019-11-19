@@ -56,6 +56,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.enablers.PropCheckerAsserting
+import org.scalatest.funspec._
 
 /**
  * Trait containing methods that faciliate property checks against generated data using [[Generator]].
@@ -821,6 +822,7 @@ object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
   val generatorSuitePreamble = """
 
 import org.scalatest._
+import org.scalatest.funspec._
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 """
 
@@ -3675,7 +3677,7 @@ $okayAssertions$
 
     val traitOrObjectName = if (withTables) "PropertyChecks" else "GeneratorDrivenPropertyChecks"
 
-    val asyncPrefix = if (async) "Async" else ""
+    val asyncPrefix = if (async) "Async" else "Any"
     val suiteClassName = asyncPrefix + traitOrObjectName + (if (mixinInvitationStyle) "Mixin" else "Import") + "Suite"
     val fileName = checkMethod.capitalize + suiteClassName + ".scala"
 
