@@ -540,7 +540,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   lazy val rootProject = scalatestApp
 
-  lazy val scalatestCompatible = Project("scalatestCompatible", file("scalatest-compatible"))
+  lazy val scalatestCompatible = Project("scalatestCompatible", file("jvm/compatible"))
     .enablePlugins(SbtOsgi)
     .settings(commonSharedSettings: _*)
     .settings(scalatestDocSettings: _*)
