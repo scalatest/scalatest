@@ -437,7 +437,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
    ).dependsOn(scalatestCompatible, scalacticMacro % "compile-internal, test-internal", scalactic)
 
-  lazy val scalatestTest = Project("scalatest-test", file("scalatest-test"))
+  lazy val scalatestTest = Project("scalatest-test", file("jvm/scalatest-test"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaTest Test",
