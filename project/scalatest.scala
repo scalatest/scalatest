@@ -256,7 +256,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalacOptions in (Compile, doc) := List.empty
     ).dependsOn(scalacticMacro, LocalProject("scalatestPom"))
 
-  lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
+  lazy val scalacticMacro = Project("scalacticMacro", file("jvm/scalactic-macro"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Scalactic Macro",

@@ -173,7 +173,7 @@ trait GenResourcesJVM extends GenResources {
 
 object ScalacticGenResourcesJVM extends GenResourcesJVM {
   def packageName: String = "scalactic"
-  def propertiesFile: File = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
+  def propertiesFile: File = new File("jvm/scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
 
 }
 
