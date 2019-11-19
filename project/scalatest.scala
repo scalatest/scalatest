@@ -239,7 +239,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       "-u", "target/junit",
       "-fW", "target/result.txt"))
 
-  lazy val commonTest = Project("common-test", file("common-test"))
+  lazy val commonTest = Project("common-test", file("jvm/common-test"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
@@ -277,7 +277,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalacOptions in (Compile, doc) := List.empty
     )
 
-  lazy val scalactic = Project("scalactic", file("scalactic"))
+  lazy val scalactic = Project("scalactic", file("jvm/scalactic"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalacticDocSettings: _*)
