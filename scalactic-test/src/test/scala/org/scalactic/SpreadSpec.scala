@@ -18,7 +18,7 @@ package org.scalactic
 import org.scalatest._
 import TripleEqualsSupport.Spread
 
-class SpreadSpec extends FunSpec {
+class SpreadSpec extends funspec.AnyFunSpec {
 
   describe("A Spread") {
     it("should throw IllegalArgumentException if a negative tolerance is passed") {

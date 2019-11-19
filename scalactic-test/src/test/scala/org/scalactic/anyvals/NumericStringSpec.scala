@@ -29,7 +29,7 @@ import org.scalactic.{Good, Bad}
 
 import org.scalactic.ColCompatHelper.aggregate
 
-class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class NumericStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers with GeneratorDrivenPropertyChecks {
 
   import prop._
 

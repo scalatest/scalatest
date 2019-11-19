@@ -48,7 +48,7 @@ trait NonZeroDoubleSpecSupport {
   }
 }
 
-class NonZeroDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroDoubleSpecSupport {
+class NonZeroDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroDoubleSpecSupport {
 
   describe("A NonZeroDouble") {
     describe("should offer a from factory method that") {

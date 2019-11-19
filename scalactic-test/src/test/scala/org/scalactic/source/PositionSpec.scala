@@ -17,7 +17,7 @@ package org.scalactic.source
 
 import org.scalatest._
 
-class PositionSpec extends FlatSpec with Matchers {
+class PositionSpec extends flatspec.AnyFlatSpec with matchers.should.Matchers {
 
   "source.Position's filePathname method" should "end in the simple name given in fileName" in {
     val pos = Position.here

@@ -16,15 +16,17 @@
 package org.scalatest.path
 
 import org.scalatest.DoNotDiscover
+import org.scalatest.freespec
+import org.scalatest.funspec
 
 class ExampleBaseClass
 
 @DoNotDiscover
-protected class ExampleFreeSpecLike extends ExampleBaseClass with FreeSpecLike {
-  //SCALATESTJS,NATIVE-ONLY override def newInstance: FreeSpecLike = new ExampleFreeSpecLike
+protected class ExampleFreeSpecLike extends ExampleBaseClass with freespec.PathAnyFreeSpecLike {
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: freespec.PathAnyFreeSpecLike = new ExampleFreeSpecLike
 }
 
 @DoNotDiscover
-protected class ExampleFunSpecLike extends ExampleBaseClass with FunSpecLike {
-  //SCALATESTJS,NATIVE-ONLY override def newInstance: FunSpecLike = new ExampleFunSpecLike
+protected class ExampleFunSpecLike extends ExampleBaseClass with funspec.PathAnyFunSpecLike {
+  //SCALATESTJS,NATIVE-ONLY override def newInstance: funspec.PathAnyFunSpecLike = new ExampleFunSpecLike
 }

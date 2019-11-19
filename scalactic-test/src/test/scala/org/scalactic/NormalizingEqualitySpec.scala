@@ -23,7 +23,7 @@ import scala.collection.GenSet
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class NormalizedEqualitySpec extends FunSpec with NonImplicitAssertions {
+class NormalizedEqualitySpec extends funspec.AnyFunSpec with NonImplicitAssertions {
 
   final case class StringWrapper(var value: String, var isNormalized: Boolean = false, var equalsWasCalled: Boolean = false) {
     override def equals(other: Any): Boolean = {

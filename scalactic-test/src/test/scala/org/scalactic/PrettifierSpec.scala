@@ -24,7 +24,7 @@ import scala.util.Success
 import scala.xml.NodeSeq
 // SKIP-SCALATESTJS,NATIVE-END
 
-class PrettifierSpec extends FunSpec with Matchers {
+class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
 
   describe("A Prettifier") {
     it("should convert an Any to a String") {

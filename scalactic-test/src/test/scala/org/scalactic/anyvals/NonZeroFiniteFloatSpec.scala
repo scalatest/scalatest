@@ -55,7 +55,7 @@ trait NonZeroFiniteFloatSpecSupport {
   }
 }
 
-class NonZeroFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroFiniteFloatSpecSupport {
+class NonZeroFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroFiniteFloatSpecSupport {
 
   describe("A NonZeroFiniteFloat") {
     describe("should offer a from factory method that") {

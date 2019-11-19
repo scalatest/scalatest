@@ -53,7 +53,7 @@ trait NegZIntSpecSupport {
 
 }
 
-class NegZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NegZIntSpecSupport {
+class NegZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with GeneratorDrivenPropertyChecks with NegZIntSpecSupport {
 
   describe("A NegZInt") {
     describe("should offer a from factory method that") {

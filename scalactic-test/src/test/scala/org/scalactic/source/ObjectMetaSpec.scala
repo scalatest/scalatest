@@ -17,7 +17,7 @@ package org.scalactic.source
 
 import org.scalatest._
 
-class ObjectMetaSpec extends FunSpec with Matchers {
+class ObjectMetaSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
 
   case class Person(name: String, age: Int) {
     val otherField = "test other field"

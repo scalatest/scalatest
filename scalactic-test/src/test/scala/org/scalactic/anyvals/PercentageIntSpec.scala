@@ -20,7 +20,7 @@ import scala.collection.mutable.WrappedArray
 import OptionValues._
 //import org.scalactic.CheckedEquality._
 
-class PercentageIntSpec extends FunSpec with Matchers {
+class PercentageIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
   describe("A PercentageInt") {
     describe("should offer a from factory method that") {
       it("returns Some[PercentageInt] if the passed Int is between 0 and 100") {

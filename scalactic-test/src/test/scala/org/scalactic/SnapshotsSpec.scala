@@ -17,7 +17,7 @@ package org.scalactic
 
 import org.scalatest._
 
-class SnapshotsSpec extends FunSpec {
+class SnapshotsSpec extends funspec.AnyFunSpec {
 
   describe("Snapshot ") {
 

@@ -17,7 +17,7 @@ package org.scalactic
 
 import org.scalatest._
 
-class TimesOnIntSpec extends FunSpec with TimesOnInt {
+class TimesOnIntSpec extends funspec.AnyFunSpec with TimesOnInt {
 
   describe("The TimesOnInt trait") {
 

@@ -17,7 +17,7 @@ package org.scalactic
 
 import org.scalatest._
 
-class StringNormalizationsSpec extends FunSpec with StringNormalizations {
+class StringNormalizationsSpec extends funspec.AnyFunSpec with StringNormalizations {
 
   describe("StringNormalizations ") {
     it("should provide a way to normalize a string by making it lower case") { 

@@ -16,5 +16,7 @@
 package org.scalactic
 
 import org.scalatest._
+import matchers.should.Matchers
+import flatspec.AnyFlatSpec
 
-abstract class UnitSpec extends FlatSpec with Matchers with OptionValues with Inside with TypeCheckedTripleEquals
+abstract class UnitSpec extends AnyFlatSpec with matchers.should.Matchers with OptionValues with Inside with TypeCheckedTripleEquals

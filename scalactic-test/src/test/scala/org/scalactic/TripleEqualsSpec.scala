@@ -23,7 +23,7 @@ import scala.collection.GenSet
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class TripleEqualsSpec extends FunSpec with NonImplicitAssertions {
+class TripleEqualsSpec extends funspec.AnyFunSpec with NonImplicitAssertions {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)

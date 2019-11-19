@@ -55,7 +55,7 @@ trait PosZIntSpecSupport {
 
 }
 
-class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosZIntSpecSupport {
+class PosZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with GeneratorDrivenPropertyChecks with PosZIntSpecSupport {
 
   describe("A PosZInt") {
     describe("should offer a from factory method that") {

@@ -16,6 +16,7 @@
 package org.scalatest.path
 
 import scala.collection.mutable.ListBuffer
+import org.scalatest.funspec.PathAnyFunSpec
 
 class Stack[T] {
 
@@ -50,7 +51,7 @@ class Stack[T] {
   override def toString = buf.mkString("Stack(", ", ", ")")
 }
 
-trait StackBehaviors { this: FunSpec =>
+trait StackBehaviors { this: PathAnyFunSpec =>
 
   def nonEmptyStack(newStack: => Stack[Int], lastItemAdded: Int): Unit = {
 
@@ -93,7 +94,7 @@ trait StackBehaviors { this: FunSpec =>
   }
 }
 
-class StackSpec extends org.scalatest.funspec.PathAnyFunSpec with StackBehaviors {
+class StackSpec extends PathAnyFunSpec with StackBehaviors {
 
   //SCALATESTJS,NATIVE-ONLY override def newInstance = new StackSpec
 

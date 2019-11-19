@@ -51,7 +51,7 @@ trait NonZeroIntSpecSupport {
 
 }
 
-class NonZeroIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NonZeroIntSpecSupport {
+class NonZeroIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with GeneratorDrivenPropertyChecks with NonZeroIntSpecSupport {
 
   describe("A NonZeroInt") {
 

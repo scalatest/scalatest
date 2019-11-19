@@ -55,7 +55,7 @@ trait NonZeroFloatSpecSupport {
   }
 }
 
-class NonZeroFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroFloatSpecSupport {
+class NonZeroFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with PropertyChecks with TypeCheckedTripleEquals with NonZeroFloatSpecSupport {
 
   // Float on either side should widen correctly.
   def areEqualForgivingNaNs(x: Double, y: Double): Assertion = {

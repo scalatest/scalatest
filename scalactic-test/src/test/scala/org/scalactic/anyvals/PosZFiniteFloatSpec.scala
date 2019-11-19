@@ -75,7 +75,7 @@ trait PosZFiniteFloatSpecSupport {
 
 }
 
-class PosZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with PosZFiniteFloatSpecSupport {
+class PosZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with PropertyChecks with TypeCheckedTripleEquals with PosZFiniteFloatSpecSupport {
 
   describe("A PosZFiniteFloat") {
     describe("should offer a from factory method that") {

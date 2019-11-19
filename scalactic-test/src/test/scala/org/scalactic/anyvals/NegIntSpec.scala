@@ -53,7 +53,7 @@ trait NegIntSpecSupport {
 
 }
 
-class NegIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NegIntSpecSupport {
+class NegIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with GeneratorDrivenPropertyChecks with NegIntSpecSupport {
 
   describe("A NegInt") {
 

@@ -55,7 +55,7 @@ trait PosLongSpecSupport {
 
 }
 
-class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosLongSpecSupport {
+class PosLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with GeneratorDrivenPropertyChecks with PosLongSpecSupport {
 
   describe("A PosLong") {
     describe("should offer a from factory method that") {

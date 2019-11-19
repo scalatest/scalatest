@@ -20,7 +20,7 @@ import java.util.Date
 import Prettifier.lineSeparator
 import org.scalactic.exceptions.NullArgumentException
 
-class DirectRequirementsSpec extends FunSpec with OptionValues {
+class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
 
   private def neverRuns1(f: => Unit): Boolean = true
   private def neverRuns2(f: => Unit)(a: Int): Boolean = true
@@ -1226,7 +1226,7 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends funspec.AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    _root_.org.scalactic.Requirements.require(org === "test")
@@ -2389,7 +2389,7 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends funspec.AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    _root_.org.scalactic.Requirements.require(org === "test", ", dude")
@@ -3512,7 +3512,7 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends funspec.AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    _root_.org.scalactic.Requirements.requireState(org === "test")
@@ -4675,7 +4675,7 @@ class DirectRequirementsSpec extends FunSpec with OptionValues {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends funspec.AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    _root_.org.scalactic.Requirements.requireState(org === "test", ", dude")

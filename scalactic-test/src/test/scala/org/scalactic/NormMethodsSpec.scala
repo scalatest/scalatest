@@ -17,7 +17,7 @@ package org.scalactic
 
 import org.scalatest._
 
-class NormMethodsSpec extends FunSpec with StringNormalizations with NormMethods {
+class NormMethodsSpec extends funspec.AnyFunSpec with StringNormalizations with NormMethods {
 
   describe("trait NormMethods") {
     it("should provide a .norm method for any type T for which an implicit Normalization[T] is available") {

@@ -17,7 +17,7 @@ package org.scalactic
 
 import org.scalatest._
 
-class NormalizationSpec extends FunSpec with StringNormalizations {
+class NormalizationSpec extends funspec.AnyFunSpec with StringNormalizations {
 
   describe("A Uniformity") {
     describe("when anded with another Uniformity") {

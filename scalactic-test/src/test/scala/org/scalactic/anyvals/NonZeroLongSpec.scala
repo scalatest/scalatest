@@ -55,7 +55,7 @@ trait NonZeroLongSpecSupport {
 
 }
 
-class NonZeroLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NonZeroLongSpecSupport {
+class NonZeroLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with GeneratorDrivenPropertyChecks with NonZeroLongSpecSupport {
 
   describe("A NonZeroLong") {
     describe("should offer a from factory method that") {

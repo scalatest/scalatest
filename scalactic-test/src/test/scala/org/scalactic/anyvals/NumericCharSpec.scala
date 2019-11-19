@@ -57,7 +57,7 @@ trait NumericCharSpecSupport {
 }
 
 
-class NumericCharSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NumericCharSpecSupport/* with StrictCheckedEquality*/ {
+class NumericCharSpec extends funspec.AnyFunSpec with matchers.should.Matchers with GeneratorDrivenPropertyChecks with NumericCharSpecSupport/* with StrictCheckedEquality*/ {
   describe("A NumericChar") {
     describe("should offer a from factory method that") {
       it("returns Some[NumericChar] if the passed Char is between '0' and '9'") {

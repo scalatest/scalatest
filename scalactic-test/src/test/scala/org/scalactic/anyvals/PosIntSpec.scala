@@ -52,7 +52,7 @@ trait PosIntSpecSupport {
 
 }
 
-class PosIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with PosIntSpecSupport {
+class PosIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with GeneratorDrivenPropertyChecks with PosIntSpecSupport {
 
   describe("A PosInt") {
 

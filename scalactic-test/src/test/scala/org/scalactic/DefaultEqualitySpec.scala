@@ -23,7 +23,7 @@ import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class DefaultEqualitySpec extends FunSpec with NonImplicitAssertions {
+class DefaultEqualitySpec extends funspec.AnyFunSpec with NonImplicitAssertions {
 
   describe("the default Equality class") {
 

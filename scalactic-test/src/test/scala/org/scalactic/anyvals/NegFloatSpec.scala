@@ -54,7 +54,7 @@ trait NegFloatSpecSupport {
   }
 }
 
-class NegFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NegFloatSpecSupport {
+class NegFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with PropertyChecks with TypeCheckedTripleEquals with NegFloatSpecSupport {
 
   describe("A NegFloat") {
     describe("should offer a from factory method that") {

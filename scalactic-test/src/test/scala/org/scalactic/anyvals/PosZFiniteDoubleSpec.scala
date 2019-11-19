@@ -67,7 +67,7 @@ trait PosZFiniteDoubleSpecSupport {
 
 }
 
-class PosZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with PosZFiniteDoubleSpecSupport {
+class PosZFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers with PropertyChecks with PosZFiniteDoubleSpecSupport {
 
   describe("A PosZFiniteDouble") {
     describe("should offer a from factory method that") {

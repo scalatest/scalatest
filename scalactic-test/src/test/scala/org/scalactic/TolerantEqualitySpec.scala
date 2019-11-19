@@ -19,7 +19,7 @@ import org.scalatest._
 
 // 1,$s/tolerantEquality\[Byte\](/tolerantByteEquality(tolerance = /
 
-class TolerantEqualitySpec extends FunSpec with TripleEquals with TolerantNumerics {
+class TolerantEqualitySpec extends funspec.AnyFunSpec with TripleEquals with TolerantNumerics {
 
   val sevenDotOh = 7.0
   val minusSevenDotOh = -7.0

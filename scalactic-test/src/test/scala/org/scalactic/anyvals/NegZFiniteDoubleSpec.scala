@@ -67,7 +67,7 @@ trait NegZFiniteDoubleSpecSupport {
 
 }
 
-class NegZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with NegZFiniteDoubleSpecSupport {
+class NegZFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers with PropertyChecks with NegZFiniteDoubleSpecSupport {
 
   describe("A NegZFiniteDouble") {
     describe("should offer a from factory method that") {

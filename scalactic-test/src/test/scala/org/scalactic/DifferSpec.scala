@@ -19,9 +19,9 @@ import org.scalatest._
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.SharedHelpers.thisLineNumber
 
-class DifferSpec extends FunSpec {
+class DifferSpec extends funspec.AnyFunSpec {
 
-  import Matchers._
+  import matchers.should.Matchers._
 
   describe("Differ") {
 

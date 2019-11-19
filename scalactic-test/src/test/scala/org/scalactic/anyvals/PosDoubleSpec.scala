@@ -49,7 +49,7 @@ trait PosDoubleSpecSupport {
 
 }
 
-class PosDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with PosDoubleSpecSupport {
+class PosDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers with PropertyChecks with TypeCheckedTripleEquals with PosDoubleSpecSupport {
 
   describe("A PosDouble") {
     describe("should offer a from factory method that") {

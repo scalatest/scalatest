@@ -17,7 +17,7 @@ package org.scalactic
 
 import org.scalatest._
 
-class TypeCheckedTripleEqualsExplicitlySpec extends FunSpec with Matchers with TypeCheckedTripleEquals with ExplicitlySpecHelpers {
+class TypeCheckedTripleEqualsExplicitlySpec extends funspec.AnyFunSpec with matchers.should.Matchers with TypeCheckedTripleEquals with ExplicitlySpecHelpers {
 
   describe("The Explicitly DSL") {
     describe("when used with === on identical types") {

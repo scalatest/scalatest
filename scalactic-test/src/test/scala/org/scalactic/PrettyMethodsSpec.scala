@@ -18,7 +18,7 @@ package org.scalactic
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 
-class PrettyMethodsSpec extends FunSpec with Matchers {
+class PrettyMethodsSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
   describe("Trait PrettyMethods") {
     describe("should by default allow you to call pretty on anything and get default Prettifier output,") {
       import PrettyMethods._

@@ -49,7 +49,7 @@ trait NegFiniteDoubleSpecSupport {
 
 }
 
-class NegFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NegFiniteDoubleSpecSupport {
+class NegFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers with PropertyChecks with TypeCheckedTripleEquals with NegFiniteDoubleSpecSupport {
 
   describe("A NegFiniteDouble") {
     describe("should offer a from factory method that") {

@@ -24,7 +24,7 @@ import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 import scala.collection.{mutable,immutable}
 
-class TypeCheckedSetEqualityConstraintsSpec extends FunSpec with NonImplicitAssertions with TypeCheckedTripleEquals with SetEqualityConstraints {
+class TypeCheckedSetEqualityConstraintsSpec extends funspec.AnyFunSpec with NonImplicitAssertions with TypeCheckedTripleEquals with SetEqualityConstraints {
 
   case class Super(size: Int)
   class Sub(sz: Int) extends Super(sz)

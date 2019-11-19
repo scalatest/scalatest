@@ -17,7 +17,7 @@ package org.scalactic
 
 import org.scalatest._
 
-class DecidersSpec extends FunSpec with Explicitly with StringNormalizations {
+class DecidersSpec extends funspec.AnyFunSpec with Explicitly with StringNormalizations {
 
   describe("The 'decided by' syntax") {
     it("should enable users to explicitly choose an Equality for a === use") {

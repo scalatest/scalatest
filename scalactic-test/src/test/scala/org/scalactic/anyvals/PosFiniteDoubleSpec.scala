@@ -49,7 +49,7 @@ trait PosFiniteDoubleSpecSupport {
 
 }
 
-class PosFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with PosFiniteDoubleSpecSupport {
+class PosFiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers with PropertyChecks with TypeCheckedTripleEquals with PosFiniteDoubleSpecSupport {
 
   describe("A PosFiniteDouble") {
     describe("should offer a from factory method that") {

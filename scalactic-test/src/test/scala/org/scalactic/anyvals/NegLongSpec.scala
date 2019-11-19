@@ -55,7 +55,7 @@ trait NegLongSpecSupport {
 
 }
 
-class NegLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChecks with NegLongSpecSupport {
+class NegLongSpec extends funspec.AnyFunSpec with matchers.should.Matchers with GeneratorDrivenPropertyChecks with NegLongSpecSupport {
 
   describe("A NegLong") {
     describe("should offer a from factory method that") {

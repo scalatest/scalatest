@@ -67,7 +67,7 @@ trait FiniteDoubleSpecSupport {
 
 }
 
-class FiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with FiniteDoubleSpecSupport {
+class FiniteDoubleSpec extends funspec.AnyFunSpec with matchers.should.Matchers with PropertyChecks with TypeCheckedTripleEquals with FiniteDoubleSpecSupport {
 
   describe("A FiniteDouble") {
     describe("should offer a from factory method that") {

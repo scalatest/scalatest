@@ -254,7 +254,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       publish := {},
       publishLocal := {},
       scalacOptions in (Compile, doc) := List.empty
-    ).dependsOn(scalacticMacro, LocalProject("scalatest"))
+    ).dependsOn(scalacticMacro, LocalProject("scalatestPom"))
 
   lazy val scalacticMacro = Project("scalacticMacro", file("scalactic-macro"))
     .settings(sharedSettings: _*)
@@ -341,7 +341,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)
       }.taskValue,
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
-    ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
+    ).dependsOn(scalactic, scalatestPom % "test", commonTest % "test")
 
   lazy val scalatest = Project("scalatest", file("scalatest"))
    .enablePlugins(SbtOsgi)

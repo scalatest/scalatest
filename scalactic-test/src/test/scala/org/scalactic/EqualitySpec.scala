@@ -23,7 +23,7 @@ import scala.collection.GenSet
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
 
-class EqualitySpec extends FunSpec with NonImplicitAssertions {
+class EqualitySpec extends funspec.AnyFunSpec with NonImplicitAssertions {
 
   describe("The Equality companion object") {
     it("should offer a factory method for NormalizingEqualities") {

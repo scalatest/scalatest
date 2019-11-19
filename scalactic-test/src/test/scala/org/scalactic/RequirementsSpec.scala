@@ -20,7 +20,7 @@ import java.util.Date
 import Prettifier.lineSeparator
 import org.scalactic.exceptions.NullArgumentException
 
-class RequirementsSpec extends FunSpec with Requirements with OptionValues {
+class RequirementsSpec extends funspec.AnyFunSpec with Requirements with OptionValues {
 
   private def neverRuns1(f: => Unit): Boolean = true
   private def neverRuns2(f: => Unit)(a: Int): Boolean = true
@@ -1226,7 +1226,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends funspec.AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    require(org === "test")
@@ -2389,7 +2389,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends funspec.AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    require(org === "test", ", dude")
@@ -3512,7 +3512,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends funspec.AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    requireState(org === "test")
@@ -4675,7 +4675,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
-          |class TestSpec extends FunSpec with org.scalactic.TypeCheckedTripleEquals {
+          |class TestSpec extends funspec.AnyFunSpec with org.scalactic.TypeCheckedTripleEquals {
           |  it("testing here") {
           |    val org = "test"
           |    requireState(org === "test", ", dude")

@@ -75,7 +75,7 @@ trait NegZFiniteFloatSpecSupport {
 
 }
 
-class NegZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCheckedTripleEquals with NegZFiniteFloatSpecSupport {
+class NegZFiniteFloatSpec extends funspec.AnyFunSpec with matchers.should.Matchers with PropertyChecks with TypeCheckedTripleEquals with NegZFiniteFloatSpecSupport {
 
   describe("A NegZFiniteFloat") {
     describe("should offer a from factory method that") {
