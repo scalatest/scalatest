@@ -23,7 +23,7 @@ trait JsBuild { this: BuildCommons =>
       "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
     )
 
-  lazy val scalacticMacroJS = Project("scalacticMacroJS", file("js/scalactic-macro.js"))
+  lazy val scalacticMacroJS = Project("scalacticMacroJS", file("js/scalactic-macro"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Scalactic Macro.js",
@@ -53,7 +53,7 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions in (Compile, doc) := List.empty
     ).enablePlugins(ScalaJSPlugin)
 
-  lazy val scalacticJS = Project("scalacticJS", file("js/scalactic.js"))
+  lazy val scalacticJS = Project("scalacticJS", file("js/scalactic"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalacticDocSettings: _*)
