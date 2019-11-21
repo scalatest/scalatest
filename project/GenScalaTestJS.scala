@@ -109,7 +109,7 @@ object GenScalaTestJS {
   }
 
   def genJava(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyFiles("scalatest/src/main/java/org/scalatest", "org/scalatest",
+    copyFiles("jvm/core/src/main/java/org/scalatest", "org/scalatest",
             List(
               "Finders.java",
               "TagAnnotation.java",
@@ -120,7 +120,7 @@ object GenScalaTestJS {
   }
 
   def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyResourceDir("scalatest/src/main/html", "html", targetDir, List.empty)
+    copyResourceDir("jvm/core/src/main/html", "html", targetDir, List.empty)
   }
 
   val genScalaPackages: Map[String, List[String]] = 

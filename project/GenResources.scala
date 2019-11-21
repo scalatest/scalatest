@@ -279,5 +279,5 @@ object ScalacticGenResourcesJSVM extends GenResourcesJSVM {
 
 object ScalaTestGenResourcesJSVM extends GenResourcesJSVM {
   def packageName: String = "scalatest"
-  def propertiesFile: File = new File("scalatest/src/main/resources/org/scalatest/ScalaTestBundle.properties")
+  def propertiesFile: File = new File("jvm/core/src/main/resources/org/scalatest/ScalaTestBundle.properties")
 }
