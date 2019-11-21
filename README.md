@@ -158,10 +158,6 @@ Before publishing any patch release, binary compatibility with previous version 
 To publish scalatest modules for jvm, use the following commands: 
 
     $ sbt scalatestCompatible/clean scalatestCompatible/publishSigned
-    $ sbt scalactic/clean +scalactic/publishSigned
-    $ sbt scalatestModules/clean
-    $ sbt +scalatestModules/publishSigned
-    $ sbt scalatestPom/clean +scalatestPom/publishSigned
     $ sbt scalatestApp/clean +scalatestApp/publishSigned
 
 To publish scalatest modules for js, use the following commands: 

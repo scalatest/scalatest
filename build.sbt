@@ -62,7 +62,6 @@ lazy val scalatestMatchersCore = ScalatestBuild.scalatestMatchersCore
 lazy val scalatestShouldMatchers = ScalatestBuild.scalatestShouldMatchers
 lazy val scalatestMustMatchers = ScalatestBuild.scalatestMustMatchers
 lazy val scalatestModules = ScalatestBuild.scalatestModules
-lazy val scalatestPom = ScalatestBuild.scalatestPom
 lazy val scalatestCoreJS = ScalatestBuild.scalatestCoreJS
 lazy val scalatestFeatureSpecJS = ScalatestBuild.scalatestFeatureSpecJS
 lazy val scalatestFlatSpecJS = ScalatestBuild.scalatestFlatSpecJS
