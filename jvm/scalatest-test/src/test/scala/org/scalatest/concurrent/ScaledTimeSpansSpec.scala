@@ -17,9 +17,9 @@ package org.scalatest.concurrent
 
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.tools.Runner
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-// SKIP-SCALATESTJS,NATIVE-END
 
 class ScaledTimeSpansSpec extends AnyFunSpec with Matchers with ScaledTimeSpans {
 

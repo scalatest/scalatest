@@ -20,6 +20,7 @@ import SharedHelpers._
 import org.scalatest.AllSuiteProp
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest
 import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
 import org.scalatest.featurespec.AnyFeatureSpec
@@ -29,7 +30,6 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.propspec.AnyPropSpec
 import org.scalatest.wordspec.AnyWordSpec
-// SKIP-SCALATESTJS,NATIVE-END
 
 class ScopePendingProp extends AllSuiteProp {
 

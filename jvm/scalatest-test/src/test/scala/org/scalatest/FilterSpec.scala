@@ -19,8 +19,8 @@ import org.scalactic.exceptions.NullArgumentException
 import scala.collection.immutable.TreeSet
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
-import org.scalatest.funspec.AnyFunSpec
 // SKIP-SCALATESTJS,NATIVE-END
+import org.scalatest.funspec.AnyFunSpec
 
 class FilterSpec extends AnyFunSpec {
   

@@ -25,6 +25,7 @@ import org.scalatest.events.TestSucceeded
 import org.scalatest.time.Millis
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest.{ featurespec, flatspec, freespec, funspec, funsuite, propspec, wordspec }
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.flatspec.AnyFlatSpec
@@ -33,7 +34,6 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.propspec.AnyPropSpec
 import org.scalatest.wordspec.AnyWordSpec
-// SKIP-SCALATESTJS,NATIVE-END
 
 trait SuiteTimeoutSetting { s: ParallelTestExecution =>
   override abstract def sortingTimeout: Span = Span(300, Millis)

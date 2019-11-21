@@ -36,7 +36,7 @@ import org.scalatest.matchers.should.Matchers._
 // SKIP-SCALATESTJS,NATIVE-START
 class CheckpointsSpec extends AnyFunSpec with AssertionsForJUnit {
 // SKIP-SCALATESTJS,NATIVE-END
-  //SCALATESTJS,NATIVE-ONLY class CheckpointsSpec extends FunSpec {
+  //SCALATESTJS,NATIVE-ONLY class CheckpointsSpec extends AnyFunSpec {
 
   describe("a Checkpoint") {
     describe("with a failure condition") {

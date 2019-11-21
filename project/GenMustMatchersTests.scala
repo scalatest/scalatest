@@ -51,7 +51,7 @@ trait GenMustMatchersTestsBase {
         "ShouldSameInstanceAsSpec.scala"     // skipped because identical string in js env is always the same instance.
       )
 
-    val sourceBaseDir = new File("scalatest-test/src/test/scala/org/scalatest")
+    val sourceBaseDir = new File("jvm/scalatest-test/src/test/scala/org/scalatest")
     val matchersDir = new File(targetBaseDir, "matchers")
     matchersDir.mkdirs()
 

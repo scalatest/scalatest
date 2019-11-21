@@ -141,6 +141,8 @@ object GenScalaTestJS {
         "run.scala",
         "SeveredStackTraces.scala"         // skipped because stack trace isn't really helpful after linked in different js env like node.
       ), 
+      "org/scalatest/compatible" -> List.empty, 
+      "org/scalatest/expectations" -> List.empty, 
       "org/scalatest/fixture" -> List(
         "Spec.scala",
         "SpecLike.scala"
@@ -258,7 +260,7 @@ object GenScalaTestJS {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     //copyStartsWithFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++
     //copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", List("FutureOutcomeSpec.scala"), targetDir)
-    copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
         "BigSuiteSuite.scala",
         "CatchReporterProp.scala",   // skipped because heavily depends on java reflection
@@ -295,7 +297,7 @@ object GenScalaTestJS {
         "SeveredStackTracesSpec.scala", // skipped because stack trace isn't really helpful after linked in different js env like node.
         "SeveredStackTracesFailureSpec.scala" // skipped because stack trace isn't really helpful after linked in different js env like node.
       )) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
         "WaitersSpec.scala",    // skipped because Waiters not supported.
         "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions (deprecated name for Waiters) not supported.
@@ -314,9 +316,9 @@ object GenScalaTestJS {
         "TimeoutsSpec.scala",            // skipped because Timeouts not supported.
         "UltimatelySpec.scala"   // skipped because Eventually not supported.
       )) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
       List(
         "TestLocationJUnit3Suite.scala",
         "TestLocationJUnitSuite.scala",
@@ -326,18 +328,19 @@ object GenScalaTestJS {
         "TestLocationMethodTestNGSuite.scala",
         "LocationMethodSuiteProp.scala"
       )) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "SpecSpec.scala",     // skipped because depends on java reflections
         "SuiteSpec.scala"    // skipped because depends on java reflections
       )) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
         "DashboardReporterSpec.scala",
         "DiscoverySuiteSuite.scala",

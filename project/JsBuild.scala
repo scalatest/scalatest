@@ -212,7 +212,7 @@ trait JsBuild { this: BuildCommons =>
       "-m", "org.scalatest.diagrams",
       "-oDIF"))  
 
-  lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
+  lazy val commonTestJS = Project("commonTestJS", file("js/common-test"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
@@ -230,7 +230,7 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions in (Compile, doc) := List.empty
     ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS")).enablePlugins(ScalaJSPlugin)
 
-  lazy val scalacticTestJS = Project("scalacticTestJS", file("scalactic-test.js"))
+  lazy val scalacticTestJS = Project("scalacticTestJS", file("js/scalactic-test"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Scalactic Test.js",
@@ -260,7 +260,7 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
     ).dependsOn(scalacticJS, scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestTestJS = Project("scalatestTestJS", file("scalatest-test.js"))
+  lazy val scalatestTestJS = Project("scalatestTestJS", file("js/scalatest-test"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaTest Test",
