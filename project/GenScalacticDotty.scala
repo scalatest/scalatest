@@ -95,30 +95,30 @@ object GenScalacticDotty {
   }
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
-    copyDir("scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir,
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir,
       List(
         "BooleanMacro.scala", // Re-implemented
         "Requirements.scala", // Re-implemented
         "Snapshots.scala"  // Re-implemented
       )
     ) ++
-    copyDir("scalactic/src/main/scala/org/scalactic/exceptions", "org/scalactic/exceptions", targetDir, List.empty) ++
-    copyDir("scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir,
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic/exceptions", "org/scalactic/exceptions", targetDir, List.empty) ++
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir,
       List(
         "Position.scala",  // Re-implemented
         "TypeInfo.scala"  // Re-implemented
       )) ++
-    copyDir("scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
 
   def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
-    copyDir("scalactic-macro/src/main/scala/org/scalactic", "org/scalactic", targetDir,
+    copyDir("jvm/scalactic-macro/src/main/scala/org/scalactic", "org/scalactic", targetDir,
       List(
         "BooleanMacro.scala", // Seems to be moved to scalactic already
         "MacroOwnerRepair.scala"  // No longer needed by the new macro?
       )
     ) ++
     //copyDir("scalactic-macro/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
-    copyDir("scalactic-macro/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir,
+    copyDir("jvm/scalactic-macro/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir,
       List(
         "PositionMacro.scala",  // Already reimplemented in Position.scala
         "TypeInfoMacro.scala",  // Already reimplemented
@@ -127,7 +127,7 @@ object GenScalacticDotty {
     )
 
   def genResource(targetDir: File): Seq[File] = {
-    val sourceResourceFile = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
+    val sourceResourceFile = new File("jvm/scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
     val destResourceDir = new File(targetDir, "org/scalactic")
     destResourceDir.mkdirs()
     val destResourceFile = new File(destResourceDir, "ScalacticBundle.properties")
@@ -138,20 +138,20 @@ object GenScalacticDotty {
   }
 
   def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyResourceDir("scalatest/src/main/html", "html", targetDir, List.empty)
+    copyResourceDir("jvm/core/src/main/html", "html", targetDir, List.empty)
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
-    copyDir("scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
+    copyDir("jvm/scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
       List(
         "TripleEqualsSpec.for210",  // Old staff, we shall delete this soon.
         "FutureSugarSpec.scala"     // instability, occasional timeout in CI
       )) ++
-    copyDir("scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
+    copyDir("jvm/scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
       List(
         "OddIntMacro.scala",  // not used, scala2 macros
         "OddInt.scala"        // not used, scala2 macros
       )) ++
-    copyDir("scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
+    copyDir("jvm/scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
 
 }
