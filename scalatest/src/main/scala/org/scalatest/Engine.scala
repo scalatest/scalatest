@@ -43,7 +43,6 @@ import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
 import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.PathEngine.isInTargetPath
-import org.scalatest.Suite.checkChosenStyles
 import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import org.scalatest.events.LineInFile
 import org.scalatest.events.Location
@@ -450,9 +449,6 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     requireNonNull(testName, args)
 
     import args._
-
-    if (theSuite.testNames.size > 0)
-      checkChosenStyles(configMap, theSuite.styleName)
 
     // Wrap any non-DispatchReporter, non-CatchReporter in a CatchReporter,
     // so that exceptions are caught and transformed
