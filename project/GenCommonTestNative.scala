@@ -80,7 +80,7 @@ object GenCommonTestNative {
   }
 
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyFiles("common-test/src/main/scala/org/scalatest", "org/scalatest",
+    copyFiles("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest",
       List(
         "SharedHelpers.scala",
         "mytags.scala",
@@ -93,10 +93,10 @@ object GenCommonTestNative {
         "FileMocks.scala",
         "StringFixture.scala"
       ), targetDir) ++
-    copyFiles("common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
+    copyFiles("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
       List("ExampleLikeSpecs.scala"), targetDir) ++ 
-    copyDir("common-test/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-    copyDir("common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty)  
+    copyDir("jvm/common-test/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDir("jvm/common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty)  
   }
 
 }

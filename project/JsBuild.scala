@@ -23,7 +23,7 @@ trait JsBuild { this: BuildCommons =>
       "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
     )
 
-  lazy val scalacticMacroJS = Project("scalacticMacroJS", file("scalactic-macro.js"))
+  lazy val scalacticMacroJS = Project("scalacticMacroJS", file("js/scalactic-macro"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Scalactic Macro.js",
@@ -53,7 +53,7 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions in (Compile, doc) := List.empty
     ).enablePlugins(ScalaJSPlugin)
 
-  lazy val scalacticJS = Project("scalacticJS", file("scalactic.js"))
+  lazy val scalacticJS = Project("scalacticJS", file("js/scalactic"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalacticDocSettings: _*)
@@ -104,102 +104,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestJS = Project("scalatestJS", file("scalatest.js"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(scalatestDocSettings: _*)
-    .settings(
-      projectTitle := "ScalaTest",
-      organization := "org.scalatest",
-      moduleName := "scalatest",
-      initialCommands in console := """|import org.scalatest._
-                                      |import org.scalactic._
-                                      |import Matchers._""".stripMargin,
-      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
-      libraryDependencies ++= scalatestJSLibraryDependencies,
-      //jsDependencies += RuntimeDOM % "test",
-      Compile / sourceGenerators += {
-        Def.task {
-          GenScalaTestJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          GenConfigMap.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
-        }
-      },
-      javaSourceManaged := target.value / "java",
-      managedSourceDirectories in Compile += javaSourceManaged.value,
-      Compile / sourceGenerators += {
-        Def.task{
-          GenScalaTestJS.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
-        }
-      },
-
-      //unmanagedResourceDirectories in Compile <+= sourceManaged( _ / "resources" ),
-      Compile / sourceGenerators += {
-        Def.task{
-          GenScalaTestJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
-          GenTable.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          GenFactories.genMainJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
-          //GenSafeStyles.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
-        }
-      },
-      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
-      scalatestJSDocTaskSetting,
-      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
-    ).settings(osgiSettings: _*).settings(
-      OsgiKeys.exportPackage := Seq(
-        "org.scalatest",
-        "org.scalatest.compatible",
-        "org.scalatest.concurrent",
-        "org.scalatest.check",
-        "org.scalatest.diagrams",
-        "org.scalatest.enablers",
-        "org.scalatest.events",
-        "org.scalatest.exceptions",
-        "org.scalatest.expectations",
-        "org.scalatest.fixture",
-        "org.scalatest.funsuite",
-        "org.scalatest.featurespec",
-        "org.scalatest.funspec",
-        "org.scalatest.freespec",
-        "org.scalatest.flatspec",
-        "org.scalatest.matchers",
-        "org.scalatest.matchers.should",
-        "org.scalatest.matchers.must",
-        "org.scalatest.matchers.dsl",
-        "org.scalatest.verbs",
-        "org.scalatest.path",
-        "org.scalatest.prop",
-        "org.scalatest.propspec",
-        "org.scalatest.tags",
-        "org.scalatest.tagobjects",
-        "org.scalatest.time",
-        "org.scalatest.tools",
-        "org.scalatest.verb",
-        "org.scalatest.words", 
-        "org.scalatest.wordspec"
-      ),
-      OsgiKeys.importPackage := Seq(
-        "org.scalatest.*",
-        "org.scalactic.*",
-        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
-        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
-        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
-        "*;resolution:=optional"
-      ),
-      OsgiKeys.additionalHeaders:= Map(
-        "Bundle-Name" -> "ScalaTest",
-        "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-        "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc.",
-        "Main-Class" -> "org.scalatest.tools.Runner"
-      )
-    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).enablePlugins(ScalaJSPlugin)
-
-  lazy val scalatestAppJS = Project("scalatestAppJS", file("scalatest-app.js"))
+  lazy val scalatestAppJS = Project("scalatestAppJS", file("js/scalatest-app"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -276,7 +181,40 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS % "compile-internal", scalatestJS % "compile-internal").aggregate(scalacticMacroJS, scalacticJS, scalatestJS, commonTestJS, scalacticTestJS, scalatestTestJS).enablePlugins(ScalaJSPlugin)  
+    ).dependsOn(
+      scalacticMacroJS % "compile-internal, test-internal", 
+      scalacticJS % "compile-internal", 
+      scalatestCoreJS % "compile-internal", 
+      scalatestFeatureSpecJS % "compile-internal", 
+      scalatestFlatSpecJS % "compile-internal", 
+      scalatestFreeSpecJS % "compile-internal", 
+      scalatestFunSuiteJS % "compile-internal", 
+      scalatestFunSpecJS % "compile-internal", 
+      scalatestPropSpecJS % "compile-internal", 
+      scalatestWordSpecJS % "compile-internal", 
+      scalatestDiagramsJS % "compile-internal", 
+      scalatestMatchersCoreJS % "compile-internal", 
+      scalatestShouldMatchersJS % "compile-internal", 
+      scalatestMustMatchersJS % "compile-internal")
+     .aggregate(
+       scalacticMacroJS, 
+       scalacticJS, 
+       scalatestJS, 
+       scalatestCoreJS, 
+       scalatestFeatureSpecJS, 
+       scalatestFlatSpecJS, 
+       scalatestFreeSpecJS, 
+       scalatestFunSuiteJS, 
+       scalatestFunSpecJS, 
+       scalatestPropSpecJS, 
+       scalatestWordSpecJS, 
+       scalatestDiagramsJS, 
+       scalatestMatchersCoreJS, 
+       scalatestShouldMatchersJS, 
+       scalatestMustMatchersJS, 
+       commonTestJS, 
+       scalacticTestJS, 
+       scalatestTestJS).enablePlugins(ScalaJSPlugin)  
 
   def scalatestTestJSOptions =
     Seq(Tests.Argument(TestFrameworks.ScalaTest,
@@ -307,7 +245,7 @@ trait JsBuild { this: BuildCommons =>
       "-m", "org.scalatest.diagrams",
       "-oDIF"))  
 
-  lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
+  lazy val commonTestJS = Project("commonTestJS", file("js/common-test"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
@@ -325,7 +263,7 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions in (Compile, doc) := List.empty
     ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS")).enablePlugins(ScalaJSPlugin)
 
-  lazy val scalacticTestJS = Project("scalacticTestJS", file("scalactic-test.js"))
+  lazy val scalacticTestJS = Project("scalacticTestJS", file("js/scalactic-test"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Scalactic Test.js",
@@ -355,7 +293,7 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
     ).dependsOn(scalacticJS, scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestTestJS = Project("scalatestTestJS", file("scalatest-test.js"))
+  lazy val scalatestTestJS = Project("scalatestTestJS", file("js/scalatest-test"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaTest Test",
@@ -408,7 +346,7 @@ trait JsBuild { this: BuildCommons =>
       }
     ).dependsOn(scalacticMacroJS, scalacticJS, scalatestJS).enablePlugins(ScalaJSPlugin)      
 
-  lazy val scalatestCoreJS = Project("scalatestCoreJS", file("modules/js/scalatest-core.js"))
+  lazy val scalatestCoreJS = Project("scalatestCoreJS", file("js/core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -484,7 +422,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestFeatureSpecJS = Project("scalatestFeatureSpecJS", file("modules/js/scalatest-featurespec.js"))
+  lazy val scalatestFeatureSpecJS = Project("scalatestFeatureSpecJS", file("js/featurespec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -516,7 +454,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestFlatSpecJS = Project("scalatestFlatSpecJS", file("modules/js/scalatest-flatspec.js"))
+  lazy val scalatestFlatSpecJS = Project("scalatestFlatSpecJS", file("js/flatspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -548,7 +486,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestFreeSpecJS = Project("scalatestFreeSpecJS", file("modules/js/scalatest-freespec.js"))
+  lazy val scalatestFreeSpecJS = Project("scalatestFreeSpecJS", file("js/freespec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -580,7 +518,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)      
 
-  lazy val scalatestFunSuiteJS = Project("scalatestFunSuiteJS", file("modules/js/scalatest-funsuite.js"))
+  lazy val scalatestFunSuiteJS = Project("scalatestFunSuiteJS", file("js/funsuite"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -612,7 +550,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestFunSpecJS = Project("scalatestFunSpecJS", file("modules/js/scalatest-funspec.js"))
+  lazy val scalatestFunSpecJS = Project("scalatestFunSpecJS", file("js/funspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -644,7 +582,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)  
 
-  lazy val scalatestPropSpecJS = Project("scalatestPropSpecJS", file("modules/js/scalatest-propspec.js"))
+  lazy val scalatestPropSpecJS = Project("scalatestPropSpecJS", file("js/propspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -676,7 +614,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestWordSpecJS = Project("scalatestWordSpecJS", file("modules/js/scalatest-wordspec.js"))
+  lazy val scalatestWordSpecJS = Project("scalatestWordSpecJS", file("js/wordspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -708,7 +646,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalatestCoreJS, scalacticMacroJS % "compile-internal, test-internal").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestDiagramsJS = Project("scalatestDiagramsJS", file("modules/js/scalatest-diagrams.js"))
+  lazy val scalatestDiagramsJS = Project("scalatestDiagramsJS", file("js/diagrams"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -740,7 +678,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestCoreJS).enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestMatchersCoreJS = Project("scalatestMatchersCoreJS", file("modules/js/scalatest-matchers-core.js"))
+  lazy val scalatestMatchersCoreJS = Project("scalatestMatchersCoreJS", file("js/matchers-core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -774,7 +712,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestCoreJS).enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestShouldMatchersJS = Project("scalatestShouldMatchersJS", file("modules/js/scalatest-shouldmatchers.js"))
+  lazy val scalatestShouldMatchersJS = Project("scalatestShouldMatchersJS", file("js/shouldmatchers"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -806,7 +744,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestMatchersCoreJS).enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestMustMatchersJS = Project("scalatestMustMatchersJS", file("modules/js/scalatest-mustmatchers.js"))
+  lazy val scalatestMustMatchersJS = Project("scalatestMustMatchersJS", file("js/mustmatchers"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -838,29 +776,7 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestMatchersCoreJS).enablePlugins(ScalaJSPlugin)              
 
-  lazy val scalatestModulesJS = (project in file("modules/js/modules-aggregation"))
-    .settings(sharedSettings: _*)
-    .settings(
-      publishArtifact := false,
-      publish := {},
-      publishLocal := {},
-      scalacOptions in (Compile, doc) := List.empty
-    ).aggregate(
-      scalatestCoreJS, 
-      scalatestFeatureSpecJS, 
-      scalatestFlatSpecJS, 
-      scalatestFreeSpecJS, 
-      scalatestFunSuiteJS, 
-      scalatestFunSpecJS, 
-      scalatestPropSpecJS, 
-      scalatestWordSpecJS, 
-      scalatestDiagramsJS, 
-      scalatestMatchersCoreJS, 
-      scalatestShouldMatchersJS, 
-      scalatestMustMatchersJS
-    )
-
-  lazy val scalatestPomJS = Project("scalatestPomJS", file("modules/js/scalatest-pom.js"))
+  lazy val scalatestJS = Project("scalatestJS", file("js/scalatest"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(
@@ -887,6 +803,20 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(
+      scalacticMacroJS % "compile-internal, test-internal", 
+      scalatestCoreJS, 
+      scalatestFeatureSpecJS, 
+      scalatestFlatSpecJS, 
+      scalatestFreeSpecJS, 
+      scalatestFunSuiteJS, 
+      scalatestFunSpecJS, 
+      scalatestPropSpecJS, 
+      scalatestWordSpecJS, 
+      scalatestDiagramsJS, 
+      scalatestMatchersCoreJS, 
+      scalatestShouldMatchersJS, 
+      scalatestMustMatchersJS
+    ).aggregate(
       scalatestCoreJS, 
       scalatestFeatureSpecJS, 
       scalatestFlatSpecJS, 
