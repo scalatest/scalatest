@@ -173,13 +173,13 @@ trait GenResourcesJVM extends GenResources {
 
 object ScalacticGenResourcesJVM extends GenResourcesJVM {
   def packageName: String = "scalactic"
-  def propertiesFile: File = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
+  def propertiesFile: File = new File("jvm/scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
 
 }
 
 object ScalaTestGenResourcesJVM extends GenResourcesJVM {
   def packageName: String = "scalatest"
-  def propertiesFile: File = new File("scalatest/src/main/resources/org/scalatest/ScalaTestBundle.properties")
+  def propertiesFile: File = new File("jvm/core/src/main/resources/org/scalatest/ScalaTestBundle.properties")
 
   override def resourcesTemplate(methods: String): String =
     s"""package org.$packageName
@@ -274,10 +274,10 @@ trait GenResourcesJSVM extends GenResources {
 
 object ScalacticGenResourcesJSVM extends GenResourcesJSVM {
   def packageName: String = "scalactic"
-  def propertiesFile: File = new File("scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
+  def propertiesFile: File = new File("jvm/scalactic-macro/src/main/resources/org/scalactic/ScalacticBundle.properties")
 }
 
 object ScalaTestGenResourcesJSVM extends GenResourcesJSVM {
   def packageName: String = "scalatest"
-  def propertiesFile: File = new File("scalatest/src/main/resources/org/scalatest/ScalaTestBundle.properties")
+  def propertiesFile: File = new File("jvm/core/src/main/resources/org/scalatest/ScalaTestBundle.properties")
 }

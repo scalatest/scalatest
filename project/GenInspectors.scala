@@ -3195,7 +3195,7 @@ object GenInspectors {
           "java.nio.charset.CoderMalfunctionError",
           "javax.xml.parsers.FactoryConfigurationError",
           "javax.xml.transform.TransformerFactoryConfigurationError",
-          "org.scalatest.AsyncFunSpec",
+          "org.scalatest.funspec.AsyncFunSpec",
           "scala.concurrent.Future"
         ),
         classTemplate = new ClassTemplate {
@@ -3257,7 +3257,7 @@ object GenInspectors {
           "java.nio.charset.CoderMalfunctionError",
           "javax.xml.parsers.FactoryConfigurationError",
           "javax.xml.transform.TransformerFactoryConfigurationError",
-          "org.scalatest.AsyncFunSpec",
+          "org.scalatest.funspec.AsyncFunSpec",
           "scala.concurrent.Future"
         ),
         classTemplate = new ClassTemplate {
@@ -3319,7 +3319,7 @@ object GenInspectors {
           "java.nio.charset.CoderMalfunctionError",
           "javax.xml.parsers.FactoryConfigurationError",
           "javax.xml.transform.TransformerFactoryConfigurationError",
-          "org.scalatest.AsyncFunSpec",
+          "org.scalatest.funspec.AsyncFunSpec",
           "scala.concurrent.Future"
         ),
         classTemplate = new ClassTemplate {
@@ -3381,7 +3381,7 @@ object GenInspectors {
           "java.nio.charset.CoderMalfunctionError",
           "javax.xml.parsers.FactoryConfigurationError",
           "javax.xml.transform.TransformerFactoryConfigurationError",
-          "org.scalatest.AsyncFunSpec",
+          "org.scalatest.funspec.AsyncFunSpec",
           "scala.concurrent.Future"
         ),
         classTemplate = new ClassTemplate {
@@ -3443,7 +3443,7 @@ object GenInspectors {
           "java.nio.charset.CoderMalfunctionError",
           "javax.xml.parsers.FactoryConfigurationError",
           "javax.xml.transform.TransformerFactoryConfigurationError",
-          "org.scalatest.AsyncFunSpec",
+          "org.scalatest.funspec.AsyncFunSpec",
           "scala.concurrent.Future"
         ),
         classTemplate = new ClassTemplate {
@@ -3505,7 +3505,7 @@ object GenInspectors {
           "java.nio.charset.CoderMalfunctionError",
           "javax.xml.parsers.FactoryConfigurationError",
           "javax.xml.transform.TransformerFactoryConfigurationError",
-          "org.scalatest.AsyncFunSpec",
+          "org.scalatest.funspec.AsyncFunSpec",
           "scala.concurrent.Future"
         ),
         classTemplate = new ClassTemplate {
@@ -3567,7 +3567,7 @@ object GenInspectors {
           "java.nio.charset.CoderMalfunctionError",
           "javax.xml.parsers.FactoryConfigurationError",
           "javax.xml.transform.TransformerFactoryConfigurationError",
-          "org.scalatest.AsyncFunSpec",
+          "org.scalatest.funspec.AsyncFunSpec",
           "scala.concurrent.Future"
         ),
         classTemplate = new ClassTemplate {

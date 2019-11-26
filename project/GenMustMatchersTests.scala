@@ -33,10 +33,10 @@ trait GenMustMatchersTestsBase {
     val temp7 = temp6.replaceAll("object Matchers extends Matchers", "object MustMatchers extends MustMatchers")
     val temp8 = temp7.replaceAll("I_WAS_must_ORIGINALLY", "should")
     val temp9 = temp8.replaceAll(" I_MUST_STAY_SHOULD", "should")
-    val temp10 = temp9.replaceAll("import Matchers._", "import MustMatchers._")
-    val temp11 = temp10.replaceAll("with Matchers", "with MustMatchers")
-    val temp12 = temp11.replaceAll("Matchers.scala", "MustMatchers.scala")
-    temp12.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
+    //val temp10 = temp9.replaceAll("import Matchers._", "import MustMatchers._")
+    //val temp11 = temp10.replaceAll("with Matchers", "with MustMatchers")
+    //val temp12 = temp11.replaceAll("Matchers.scala", "MustMatchers.scala")
+    temp9.replaceAll("I_WAS_Must_ORIGINALLY", "Should")
   }
 
   def genTestImpl(targetBaseDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
@@ -51,7 +51,7 @@ trait GenMustMatchersTestsBase {
         "ShouldSameInstanceAsSpec.scala"     // skipped because identical string in js env is always the same instance.
       )
 
-    val sourceBaseDir = new File("scalatest-test/src/test/scala/org/scalatest")
+    val sourceBaseDir = new File("jvm/scalatest-test/src/test/scala/org/scalatest")
     val matchersDir = new File(targetBaseDir, "matchers")
     matchersDir.mkdirs()
 

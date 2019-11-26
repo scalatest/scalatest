@@ -81,13 +81,13 @@ object GenCommonTestDotty {
   }
 
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyFiles("common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir,
+    copyFiles("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir,
       List.empty
     ) ++
-    copyDir("common-test/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-    copyDir("common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty)
+    copyDir("jvm/common-test/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDir("jvm/common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty)
     /*++
-      copyDir("common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
+      copyDir("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
         List("ExampleLikeSpecs.scala"), targetDir)*/
   }
 

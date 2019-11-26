@@ -62,6 +62,7 @@ object GenModulesJS {
         "org/scalatest/concurrent", 
         "org/scalatest/enablers", 
         "org/scalatest/exceptions", 
+        "org/scalatest/expectations", 
         "org/scalatest/events", 
         "org/scalatest/fixture",  
         "org/scalatest/prop", 
@@ -71,16 +72,8 @@ object GenModulesJS {
         "org/scalatest/verbs", 
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
-      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, 
-              if (packagePath == "org/scalatest" || packagePath == "org/scalatest/fixture") skipList ++ List("package.scala") else skipList)
-    }.toList ++ 
-    copyDir("scalatest.js/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
-    copyDir("scalatest.js/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++
-    copyDir("scalatest.js/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++
-    copyDir("scalatest.js/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
-    copyDir("scalatest.js/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++ 
-    copyDir("modules/jvm/scalatest-core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++ 
-    copyDir("modules/jvm/scalatest-core/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir, List.empty)
+      copyDir("jvm/core/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList
   }
 
   def genScalaTestFeatureSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
@@ -89,7 +82,7 @@ object GenModulesJS {
         "org/scalatest/featurespec"
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
-      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+      copyDir("jvm/featurespec/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList
 
   def genScalaTestFlatSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
@@ -98,7 +91,7 @@ object GenModulesJS {
         "org/scalatest/flatspec"
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
-      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+      copyDir("jvm/flatspec/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList
 
   def genScalaTestFreeSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
@@ -107,7 +100,7 @@ object GenModulesJS {
         "org/scalatest/freespec"
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
-      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+      copyDir("jvm/freespec/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList
 
   def genScalaTestFunSuite(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
@@ -116,7 +109,7 @@ object GenModulesJS {
         "org/scalatest/funsuite"
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
-      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+      copyDir("jvm/funsuite/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList
 
   def genScalaTestFunSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
@@ -125,7 +118,7 @@ object GenModulesJS {
         "org/scalatest/funspec"
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
-      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+      copyDir("jvm/funspec/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList  
 
   def genScalaTestPropSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
@@ -134,7 +127,7 @@ object GenModulesJS {
         "org/scalatest/propspec"
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
-      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+      copyDir("jvm/propspec/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList
 
   def genScalaTestWordSpec(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
@@ -143,7 +136,7 @@ object GenModulesJS {
         "org/scalatest/wordspec"
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
-      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+      copyDir("jvm/wordspec/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList
 
   def genScalaTestDiagrams(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
@@ -152,7 +145,7 @@ object GenModulesJS {
         "org/scalatest/diagrams"
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
-      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+      copyDir("jvm/diagrams/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList 
 
   def genScalaTestMatchersCore(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
@@ -162,7 +155,7 @@ object GenModulesJS {
         "org/scalatest/matchers/dsl"
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
-      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+      copyDir("jvm/matchers-core/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList
 
   def genScalaTestShouldMatchers(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
@@ -171,6 +164,6 @@ object GenModulesJS {
         "org/scalatest/matchers/should"
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
-      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+      copyDir("jvm/shouldmatchers/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList             
 }

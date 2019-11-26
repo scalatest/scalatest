@@ -4,7 +4,7 @@ import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scala.util.Try
 
-class $typeName$GeneratedSpec extends FunSpec with Matchers with OptionValues with GeneratorDrivenPropertyChecks with $typeName$SpecSupport {
+class $typeName$GeneratedSpec extends funspec.AnyFunSpec with matchers.should.Matchers with OptionValues with GeneratorDrivenPropertyChecks with $typeName$SpecSupport {
 
   def areEqualForgivingNaNs(x: AnyVal, y: AnyVal): Assertion = {
     def areEqualDoublesForgivingNaNs(xDouble: Double, yDouble: Double): Assertion = {
