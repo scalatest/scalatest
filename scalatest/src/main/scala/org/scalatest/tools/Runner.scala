@@ -90,7 +90,7 @@ w - wildcard path
 W - slowpoke detector (with two integral args, for timeout (delay) and interval (period), in seconds)
 x - save for ScalaTest native XML
 X -
-y - sets org.scalatest.chosenstyle -y FunSpec or -y "FunSpec FunSuite"
+y - sets org.scalatest.chosenstyle -y FunSpec or -y "FunSpec FunSuite" DEACTIVATED IN 3.1.0
 -Y for after -h to set a custom style sheet
 z - test name wildcard
 Z -
@@ -163,7 +163,6 @@ private[tools] case class SlowpokeConfig(delayInMillis: Long, periodInMillis: Lo
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-b <em>&lt;TestNG XML file&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">run <a href="#specifyingTestNGXML">TestNG tests</a> using the specified TestNG XML file</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-b testng.xml</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-F <em>&lt;span scale factor&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">a factor by which to <a href="#scalingTimeSpans">scale time spans</a><br/>(Note: only one <code>-F</code> is allowed)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-F 10</code> <em>or</em> <code>-F 2.5</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-T <em>&lt;sorting timeout&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">specifies a integer timeout (in seconds) for sorting the events of<br/>parallel runs back into sequential order</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-T 5</code></td></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-y <em>&lt;chosen styles&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">specifies <a href="#specifyingChosenStyles">chosen styles</a> for your project</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-y org.scalatest.FlatSpec</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-i <em>&lt;suite ID&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">specifies a <a href="#selectingSuitesAndTests">suite to run by ID</a> (Note: must follow <code>-s</code>, <br/>and is intended to be used primarily by tools such as IDEs.)</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-i com.company.project.FileSpec-file1.txt</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-t <em>&lt;test name&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><a href="#selectingSuitesAndTests">select the test</a> with the specified name</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-t "An empty Stack should complain when popped"</code></td></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-z <em>&lt;test name substring&gt;</em></code></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><a href="#selectingSuitesAndTests">select tests</a> whose names include the specified substring</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><code>-z "popped"</code></td></tr>
@@ -573,56 +572,6 @@ private[tools] case class SlowpokeConfig(delayInMillis: Long, periodInMillis: Lo
  * <p>
  * If you specify no <code>-s</code>, <code>-m</code>, or <code>-w</code> arguments on the command line to <code>Runner</code>, it will discover and execute all accessible <code>Suite</code>s
  * in the runpath.
- * </p>
- *
- * <a name="specifyingChosenStyles"></a>
- * <h2>Specifying chosen styles</h2>
- *
- * <p>
- * You can optionally specify chosen styles for a ScalaTest run. ScalaTest supports different styles of
- * testing so that different teams can use the style or styles that best suits their situation and culture. But
- * in any one project, it is recommended you decide on one main style for unit testing, and
- * consistently use only that style for unit testing throughout the project. If you also have integration
- * tests in your project, you may wish to pick a different style for them than you are using for unit testing.
- * You may want to allow certain styles to be used in special testing situations on a project, but in general,
- * it is best to minimize the styles used in any given project to a few, or one.
- * </p>
- *
- * <p>
- * To facilitate the communication and enforcement of a team's style choices for a project, you can
- * specify the chosen styles in your project build. If chosen styles is defined, ScalaTest style traits that are
- * not among the chosen list will abort with a message complaining that the style trait is not one of the
- * chosen styles. The style name for each ScalaTest style trait is its fully qualified name. For example,
- * to specify that <code>org.scalatest.FunSpec</code> as your chosen style you'd pass this to
- * <code>Runner</code>:
- * </p>
- *
- * <pre class="stExamples">-y org.scalatest.FunSpec</pre>
- *
- * <p>
- * If you wanted <code>org.scalatest.FunSpec</code> as your main unit testing style, but also wanted to
- * allow <code>PropSpec</code> for test matrixes and <code>FeatureSpec</code> for
- * integration tests, you would write:
- * </p>
- *
- * <pre class="stExamples">-y org.scalatest.FunSpec -y org.scalatest.PropSpec -y org.scalatest.FeatureSpec</pre>
- *
- * <p>
- * To select <code>org.scalatest.FlatSpec</code> as your main unit testing style, but allow
- * <code>org.scalatest.fixture.FlatSpec</code> for multi-threaded unit tests, you'd write:
- * </p>
- *
- * <pre class="stExamples">-y org.scalatest.FlatSpec -y org.scalatest.fixture.FlatSpec</pre>
- *
- * <p>
- * The style name for a suite is obtained by invoking its <code>styleName</code> method. Custom style
- * traits can override this method so that a custom style can participate in the chosen styles list.
- * </p>
- *
- * <p>
- * Because ScalaTest is so customizable, a determined programmer could circumvent
- * the chosen styles check, but in practice <code>-y</code> should be persuasive enough tool
- * to keep most team members in line.
  * </p>
  *
  * <a name="selectingSuitesAndTests"></a>

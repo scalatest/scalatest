@@ -31,8 +31,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.BeWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.BeWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.BeWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.BeWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.BeWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type BeWord = org.scalatest.matchers.dsl.BeWord
 
   /**
@@ -40,8 +42,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ContainWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ContainWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ContainWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ContainWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ContainWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ContainWord = org.scalatest.matchers.dsl.ContainWord
 
   /**
@@ -49,8 +53,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.DefinedWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.DefinedWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.DefinedWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.DefinedWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.DefinedWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type DefinedWord = org.scalatest.matchers.dsl.DefinedWord
 
   /**
@@ -58,8 +64,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.EmptyWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.EmptyWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.EmptyWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.EmptyWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.EmptyWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type EmptyWord = org.scalatest.matchers.dsl.EmptyWord
 
   /**
@@ -67,8 +75,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.EndWithWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.EndWithWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.EndWithWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.EndWithWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.EndWithWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type EndWithWord = org.scalatest.matchers.dsl.EndWithWord
 
   /**
@@ -76,8 +86,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ExistWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ExistWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ExistWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ExistWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ExistWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ExistWord = org.scalatest.matchers.dsl.ExistWord
 
   /**
@@ -85,8 +97,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.FullyMatchWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.FullyMatchWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.FullyMatchWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.FullyMatchWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.FullyMatchWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type FullyMatchWord = org.scalatest.matchers.dsl.FullyMatchWord
 
   /**
@@ -94,8 +108,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.HaveWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.HaveWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.HaveWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.HaveWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.HaveWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type HaveWord = org.scalatest.matchers.dsl.HaveWord
 
   /**
@@ -103,8 +119,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.IncludeWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.IncludeWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.IncludeWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.IncludeWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.IncludeWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type IncludeWord = org.scalatest.matchers.dsl.IncludeWord
 
   /**
@@ -112,8 +130,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.LengthWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.LengthWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.LengthWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.LengthWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.LengthWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type LengthWord = org.scalatest.matchers.dsl.LengthWord
 
   /**
@@ -121,8 +141,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.MatchPatternWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.MatchPatternWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.MatchPatternWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.MatchPatternWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.MatchPatternWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type MatchPatternWord = org.scalatest.matchers.dsl.MatchPatternWord
 
   /**
@@ -130,8 +152,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.MatcherWords</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.MatcherWords class has been moved and renamed. Please use org.scalatest.matchers.dsl.MatcherWords instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.MatcherWords class has been moved and renamed. Please use org.scalatest.matchers.dsl.MatcherWords instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type MatcherWords = org.scalatest.matchers.dsl.MatcherWords
 
   /**
@@ -139,8 +163,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.NoExceptionWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.NoExceptionWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.NoExceptionWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.NoExceptionWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.NoExceptionWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type NoExceptionWord = org.scalatest.matchers.dsl.NoExceptionWord
 
   /**
@@ -148,8 +174,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.NotWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.NotWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.NotWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.NotWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.NotWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type NotWord = org.scalatest.matchers.dsl.NotWord
 
   /**
@@ -157,8 +185,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.PleaseUseNoExceptionShouldSyntaxInstead</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.PleaseUseNoExceptionShouldSyntaxInstead class has been moved and renamed. Please use org.scalatest.matchers.dsl.PleaseUseNoExceptionShouldSyntaxInstead instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.PleaseUseNoExceptionShouldSyntaxInstead class has been moved and renamed. Please use org.scalatest.matchers.dsl.PleaseUseNoExceptionShouldSyntaxInstead instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type PleaseUseNoExceptionShouldSyntaxInstead = org.scalatest.matchers.dsl.PleaseUseNoExceptionShouldSyntaxInstead
 
   /**
@@ -166,8 +196,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ReadableWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ReadableWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ReadableWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ReadableWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ReadableWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ReadableWord = org.scalatest.matchers.dsl.ReadableWord
 
   /**
@@ -175,8 +207,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.RegexWithGroups</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.RegexWithGroups class has been moved and renamed. Please use org.scalatest.matchers.dsl.RegexWithGroups instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.RegexWithGroups class has been moved and renamed. Please use org.scalatest.matchers.dsl.RegexWithGroups instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type RegexWithGroups = org.scalatest.matchers.dsl.RegexWithGroups
 
   /**
@@ -184,8 +218,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfATypeInvocation</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfATypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfATypeInvocation instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfATypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfATypeInvocation instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfATypeInvocation[T] = org.scalatest.matchers.dsl.ResultOfATypeInvocation[T]
 
   /**
@@ -193,8 +229,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAWordToAMatcherApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAWordToAMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAWordToAMatcherApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAWordToAMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAWordToAMatcherApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAWordToAMatcherApplication[T] = org.scalatest.matchers.dsl.ResultOfAWordToAMatcherApplication[T]
 
   /**
@@ -202,8 +240,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAWordToBePropertyMatcherApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAWordToBePropertyMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAWordToBePropertyMatcherApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAWordToBePropertyMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAWordToBePropertyMatcherApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAWordToBePropertyMatcherApplication[T] = org.scalatest.matchers.dsl.ResultOfAWordToBePropertyMatcherApplication[T]
 
   /**
@@ -211,8 +251,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAWordToSymbolApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAWordToSymbolApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAWordToSymbolApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAWordToSymbolApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAWordToSymbolApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAWordToSymbolApplication = org.scalatest.matchers.dsl.ResultOfAWordToSymbolApplication
 
   /**
@@ -220,8 +262,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAllElementsOfApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAllElementsOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAllElementsOfApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAllElementsOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAllElementsOfApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAllElementsOfApplication = org.scalatest.matchers.dsl.ResultOfAllElementsOfApplication
 
   /**
@@ -229,8 +273,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAllOfApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAllOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAllOfApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAllOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAllOfApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAllOfApplication = org.scalatest.matchers.dsl.ResultOfAllOfApplication
 
   /**
@@ -238,8 +284,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAnTypeInvocation</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAnTypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnTypeInvocation instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAnTypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnTypeInvocation instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAnTypeInvocation[T] = org.scalatest.matchers.dsl.ResultOfAnTypeInvocation[T]
 
   /**
@@ -247,8 +295,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAnWordToAnMatcherApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAnWordToAnMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnWordToAnMatcherApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAnWordToAnMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnWordToAnMatcherApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAnWordToAnMatcherApplication[T] = org.scalatest.matchers.dsl.ResultOfAnWordToAnMatcherApplication[T]
 
   /**
@@ -256,8 +306,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAnWordToBePropertyMatcherApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAnWordToBePropertyMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnWordToBePropertyMatcherApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAnWordToBePropertyMatcherApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnWordToBePropertyMatcherApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAnWordToBePropertyMatcherApplication[T] = org.scalatest.matchers.dsl.ResultOfAnWordToBePropertyMatcherApplication[T]
 
   /**
@@ -265,8 +317,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAnWordToSymbolApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAnWordToSymbolApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnWordToSymbolApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAnWordToSymbolApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAnWordToSymbolApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAnWordToSymbolApplication = org.scalatest.matchers.dsl.ResultOfAnWordToSymbolApplication
 
   /**
@@ -274,8 +328,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAtLeastOneElementOfApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAtLeastOneElementOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtLeastOneElementOfApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAtLeastOneElementOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtLeastOneElementOfApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAtLeastOneElementOfApplication = org.scalatest.matchers.dsl.ResultOfAtLeastOneElementOfApplication
 
   /**
@@ -283,8 +339,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAtLeastOneOfApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAtLeastOneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtLeastOneOfApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAtLeastOneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtLeastOneOfApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAtLeastOneOfApplication = org.scalatest.matchers.dsl.ResultOfAtLeastOneOfApplication
 
   /**
@@ -292,8 +350,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAtMostOneElementOfApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAtMostOneElementOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtMostOneElementOfApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAtMostOneElementOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtMostOneElementOfApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAtMostOneElementOfApplication = org.scalatest.matchers.dsl.ResultOfAtMostOneElementOfApplication
 
   /**
@@ -301,8 +361,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfAtMostOneOfApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAtMostOneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtMostOneOfApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAtMostOneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfAtMostOneOfApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAtMostOneOfApplication = org.scalatest.matchers.dsl.ResultOfAtMostOneOfApplication
 
   /**
@@ -310,8 +372,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfBeThrownBy</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfBeThrownBy class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeThrownBy instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfBeThrownBy class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeThrownBy instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfBeThrownBy = org.scalatest.matchers.dsl.ResultOfBeThrownBy
 
   /**
@@ -319,8 +383,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfBeWordForAType</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfBeWordForAType class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeWordForAType instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfBeWordForAType class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeWordForAType instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfBeWordForAType[T] = org.scalatest.matchers.dsl.ResultOfBeWordForAType[T]
 
   /**
@@ -328,8 +394,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfBeWordForAnType</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfBeWordForAnType class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeWordForAnType instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfBeWordForAnType class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeWordForAnType instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfBeWordForAnType[T] = org.scalatest.matchers.dsl.ResultOfBeWordForAnType[T]
 
   /**
@@ -337,8 +405,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfBeWordForNoException</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfBeWordForNoException class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeWordForNoException instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfBeWordForNoException class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfBeWordForNoException instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfBeWordForNoException = org.scalatest.matchers.dsl.ResultOfBeWordForNoException
 
   /**
@@ -346,8 +416,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfContainWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfContainWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfContainWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfContainWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfContainWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfContainWord[T] = org.scalatest.matchers.dsl.ResultOfContainWord[T]
 
   /**
@@ -355,8 +427,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfDefinedAt</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfDefinedAt class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfDefinedAt instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfDefinedAt class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfDefinedAt instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfDefinedAt[T] = org.scalatest.matchers.dsl.ResultOfDefinedAt[T]
 
   /**
@@ -364,8 +438,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfGreaterThanComparison</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfGreaterThanComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfGreaterThanComparison instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfGreaterThanComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfGreaterThanComparison instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfGreaterThanComparison[T] = org.scalatest.matchers.dsl.ResultOfGreaterThanComparison[T]
 
   /**
@@ -373,8 +449,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfGreaterThanOrEqualToComparison</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfGreaterThanOrEqualToComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfGreaterThanOrEqualToComparison instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfGreaterThanOrEqualToComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfGreaterThanOrEqualToComparison instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfGreaterThanOrEqualToComparison[T] = org.scalatest.matchers.dsl.ResultOfGreaterThanOrEqualToComparison[T]
 
   /**
@@ -382,8 +460,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfInOrderApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfInOrderApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfInOrderApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfInOrderApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfInOrderApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfInOrderApplication = org.scalatest.matchers.dsl.ResultOfInOrderApplication
 
   /**
@@ -391,8 +471,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfInOrderElementsOfApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfInOrderElementsOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfInOrderElementsOfApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfInOrderElementsOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfInOrderElementsOfApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfInOrderElementsOfApplication = org.scalatest.matchers.dsl.ResultOfInOrderElementsOfApplication
 
   /**
@@ -400,8 +482,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfInOrderOnlyApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfInOrderOnlyApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfInOrderOnlyApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfInOrderOnlyApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfInOrderOnlyApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfInOrderOnlyApplication = org.scalatest.matchers.dsl.ResultOfInOrderOnlyApplication
 
   /**
@@ -409,8 +493,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfKeyWordApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfKeyWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfKeyWordApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfKeyWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfKeyWordApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfKeyWordApplication = org.scalatest.matchers.dsl.ResultOfKeyWordApplication
 
   /**
@@ -418,8 +504,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfLengthWordApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfLengthWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfLengthWordApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfLengthWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfLengthWordApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfLengthWordApplication = org.scalatest.matchers.dsl.ResultOfLengthWordApplication
 
   /**
@@ -427,8 +515,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfLessThanComparison</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfLessThanComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfLessThanComparison instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfLessThanComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfLessThanComparison instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfLessThanComparison[T] = org.scalatest.matchers.dsl.ResultOfLessThanComparison[T]
 
   /**
@@ -436,8 +526,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfLessThanOrEqualToComparison</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfLessThanOrEqualToComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfLessThanOrEqualToComparison instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfLessThanOrEqualToComparison class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfLessThanOrEqualToComparison instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfLessThanOrEqualToComparison[T] = org.scalatest.matchers.dsl.ResultOfLessThanOrEqualToComparison[T]
 
   /**
@@ -445,8 +537,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfMessageWordApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfMessageWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfMessageWordApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfMessageWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfMessageWordApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfMessageWordApplication = org.scalatest.matchers.dsl.ResultOfMessageWordApplication
 
   /**
@@ -454,8 +548,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfNoElementsOfApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfNoElementsOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNoElementsOfApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfNoElementsOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNoElementsOfApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfNoElementsOfApplication = org.scalatest.matchers.dsl.ResultOfNoElementsOfApplication
 
   /**
@@ -463,8 +559,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfNoneOfApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfNoneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNoneOfApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfNoneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNoneOfApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfNoneOfApplication = org.scalatest.matchers.dsl.ResultOfNoneOfApplication
 
   /**
@@ -472,8 +570,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfNotExist</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfNotExist class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNotExist instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfNotExist class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNotExist instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfNotExist = org.scalatest.matchers.dsl.ResultOfNotExist
 
   /**
@@ -481,8 +581,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfNotWordForAny</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfNotWordForAny class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNotWordForAny instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfNotWordForAny class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfNotWordForAny instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfNotWordForAny[T] = org.scalatest.matchers.dsl.ResultOfNotWordForAny[T]
 
   /**
@@ -490,8 +592,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfOfTypeInvocation</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfOfTypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOfTypeInvocation instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfOfTypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOfTypeInvocation instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfOfTypeInvocation[T] = org.scalatest.matchers.dsl.ResultOfOfTypeInvocation[T]
 
   /**
@@ -499,8 +603,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfOneElementOfApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfOneElementOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOneElementOfApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfOneElementOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOneElementOfApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfOneElementOfApplication = org.scalatest.matchers.dsl.ResultOfOneElementOfApplication
 
   /**
@@ -508,8 +614,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfOneOfApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfOneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOneOfApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfOneOfApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOneOfApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfOneOfApplication = org.scalatest.matchers.dsl.ResultOfOneOfApplication
 
   /**
@@ -517,8 +625,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfOnlyApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfOnlyApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOnlyApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfOnlyApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfOnlyApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfOnlyApplication = org.scalatest.matchers.dsl.ResultOfOnlyApplication
 
   /**
@@ -526,8 +636,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfRegexWordApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfRegexWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfRegexWordApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfRegexWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfRegexWordApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfRegexWordApplication = org.scalatest.matchers.dsl.ResultOfRegexWordApplication
 
   /**
@@ -535,8 +647,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfSizeWordApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfSizeWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfSizeWordApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfSizeWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfSizeWordApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfSizeWordApplication = org.scalatest.matchers.dsl.ResultOfSizeWordApplication
 
   /**
@@ -544,8 +658,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfTheSameElementsAsApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfTheSameElementsAsApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheSameElementsAsApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfTheSameElementsAsApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheSameElementsAsApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfTheSameElementsAsApplication = org.scalatest.matchers.dsl.ResultOfTheSameElementsAsApplication
 
   /**
@@ -553,8 +669,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfTheSameElementsInOrderAsApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfTheSameElementsInOrderAsApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheSameElementsInOrderAsApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfTheSameElementsInOrderAsApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheSameElementsInOrderAsApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfTheSameElementsInOrderAsApplication = org.scalatest.matchers.dsl.ResultOfTheSameElementsInOrderAsApplication
 
   /**
@@ -562,8 +680,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfTheSameInstanceAsApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfTheSameInstanceAsApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheSameInstanceAsApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfTheSameInstanceAsApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheSameInstanceAsApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfTheSameInstanceAsApplication = org.scalatest.matchers.dsl.ResultOfTheSameInstanceAsApplication
 
   /**
@@ -571,8 +691,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfTheTypeInvocation</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfTheTypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheTypeInvocation instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfTheTypeInvocation class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfTheTypeInvocation instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfTheTypeInvocation[T] = org.scalatest.matchers.dsl.ResultOfTheTypeInvocation[T]
 
   /**
@@ -580,8 +702,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfThrownByApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfThrownByApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfThrownByApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfThrownByApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfThrownByApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfThrownByApplication = org.scalatest.matchers.dsl.ResultOfThrownByApplication
 
   /**
@@ -589,8 +713,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.ResultOfValueWordApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfValueWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfValueWordApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfValueWordApplication class has been moved and renamed. Please use org.scalatest.matchers.dsl.ResultOfValueWordApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfValueWordApplication = org.scalatest.matchers.dsl.ResultOfValueWordApplication
 
   /**
@@ -598,8 +724,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.SizeWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.SizeWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.SizeWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.SizeWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.SizeWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type SizeWord = org.scalatest.matchers.dsl.SizeWord
 
   /**
@@ -607,8 +735,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.SortedWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.SortedWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.SortedWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.SortedWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.SortedWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type SortedWord = org.scalatest.matchers.dsl.SortedWord
 
   /**
@@ -616,8 +746,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.StartWithWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.StartWithWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.StartWithWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.StartWithWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.StartWithWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type StartWithWord = org.scalatest.matchers.dsl.StartWithWord
 
   /**
@@ -625,8 +757,10 @@ package object words {
    * its new name, <code>org.scalatest.matchers.dsl.WritableWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.WritableWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.WritableWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.WritableWord class has been moved and renamed. Please use org.scalatest.matchers.dsl.WritableWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type WritableWord = org.scalatest.matchers.dsl.WritableWord
 
   /**
@@ -634,8 +768,10 @@ package object words {
    * its new name, <code>org.scalatest.verbs.BehaveWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.BehaveWord class has been moved and renamed. Please use org.scalatest.verbs.BehaveWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.BehaveWord class has been moved and renamed. Please use org.scalatest.verbs.BehaveWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type BehaveWord = org.scalatest.verbs.BehaveWord
 
   /**
@@ -643,8 +779,10 @@ package object words {
    * its new name, <code>org.scalatest.verbs.CanVerb</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.CanVerb class has been moved and renamed. Please use org.scalatest.verbs.CanVerb instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.CanVerb class has been moved and renamed. Please use org.scalatest.verbs.CanVerb instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type CanVerb = org.scalatest.verbs.CanVerb
 
   /**
@@ -652,8 +790,10 @@ package object words {
    * its new name, <code>org.scalatest.verbs.CompileWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.CompileWord class has been moved and renamed. Please use org.scalatest.verbs.CompileWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.CompileWord class has been moved and renamed. Please use org.scalatest.verbs.CompileWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type CompileWord = org.scalatest.verbs.CompileWord
 
   /**
@@ -661,8 +801,10 @@ package object words {
    * its new name, <code>org.scalatest.verbs.MustVerb</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.MustVerb class has been moved and renamed. Please use org.scalatest.verbs.MustVerb instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.MustVerb class has been moved and renamed. Please use org.scalatest.verbs.MustVerb instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type MustVerb = org.scalatest.verbs.MustVerb
 
   /**
@@ -670,8 +812,10 @@ package object words {
    * its new name, <code>org.scalatest.verbs.ResultOfAfterWordApplication</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfAfterWordApplication class has been moved and renamed. Please use org.scalatest.verbs.ResultOfAfterWordApplication instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfAfterWordApplication class has been moved and renamed. Please use org.scalatest.verbs.ResultOfAfterWordApplication instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfAfterWordApplication = org.scalatest.verbs.ResultOfAfterWordApplication
 
   /**
@@ -679,8 +823,10 @@ package object words {
    * its new name, <code>org.scalatest.verbs.ResultOfStringPassedToVerb</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfStringPassedToVerb class has been moved and renamed. Please use org.scalatest.verbs.ResultOfStringPassedToVerb instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfStringPassedToVerb class has been moved and renamed. Please use org.scalatest.verbs.ResultOfStringPassedToVerb instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfStringPassedToVerb = org.scalatest.verbs.ResultOfStringPassedToVerb
 
   /**
@@ -688,8 +834,10 @@ package object words {
    * its new name, <code>org.scalatest.verbs.ResultOfTaggedAsInvocation</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ResultOfTaggedAsInvocation class has been moved and renamed. Please use org.scalatest.verbs.ResultOfTaggedAsInvocation instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ResultOfTaggedAsInvocation class has been moved and renamed. Please use org.scalatest.verbs.ResultOfTaggedAsInvocation instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ResultOfTaggedAsInvocation = org.scalatest.verbs.ResultOfTaggedAsInvocation
 
   /**
@@ -697,8 +845,10 @@ package object words {
    * its new name, <code>org.scalatest.verbs.ShouldVerb</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.ShouldVerb class has been moved and renamed. Please use org.scalatest.verbs.ShouldVerb instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.ShouldVerb class has been moved and renamed. Please use org.scalatest.verbs.ShouldVerb instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type ShouldVerb = org.scalatest.verbs.ShouldVerb
 
   /**
@@ -706,8 +856,10 @@ package object words {
    * its new name, <code>org.scalatest.verbs.StringVerbBehaveLikeInvocation</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.StringVerbBehaveLikeInvocation class has been moved and renamed. Please use org.scalatest.verbs.StringVerbBehaveLikeInvocation instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.StringVerbBehaveLikeInvocation class has been moved and renamed. Please use org.scalatest.verbs.StringVerbBehaveLikeInvocation instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type StringVerbBehaveLikeInvocation = org.scalatest.verbs.StringVerbBehaveLikeInvocation
 
   /**
@@ -715,8 +867,10 @@ package object words {
    * its new name, <code>org.scalatest.verbs.StringVerbBlockRegistration</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.StringVerbBlockRegistration class has been moved and renamed. Please use org.scalatest.verbs.StringVerbBlockRegistration instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.StringVerbBlockRegistration class has been moved and renamed. Please use org.scalatest.verbs.StringVerbBlockRegistration instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type StringVerbBlockRegistration = org.scalatest.verbs.StringVerbBlockRegistration
 
   /**
@@ -724,8 +878,10 @@ package object words {
    * its new name, <code>org.scalatest.verbs.StringVerbStringInvocation</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.StringVerbStringInvocation class has been moved and renamed. Please use org.scalatest.verbs.StringVerbStringInvocation instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.StringVerbStringInvocation class has been moved and renamed. Please use org.scalatest.verbs.StringVerbStringInvocation instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type StringVerbStringInvocation = org.scalatest.verbs.StringVerbStringInvocation
 
   /**
@@ -733,8 +889,10 @@ package object words {
    * its new name, <code>org.scalatest.verbs.SubjectWithAfterWordRegistration</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.SubjectWithAfterWordRegistration class has been moved and renamed. Please use org.scalatest.verbs.SubjectWithAfterWordRegistration instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.SubjectWithAfterWordRegistration class has been moved and renamed. Please use org.scalatest.verbs.SubjectWithAfterWordRegistration instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type SubjectWithAfterWordRegistration = org.scalatest.verbs.SubjectWithAfterWordRegistration
 
   /**
@@ -742,7 +900,9 @@ package object words {
    * its new name, <code>org.scalatest.verbs.TypeCheckWord</code>, instead.</strong>
    *
    * <p>This type has been renamed to support future modularization of ScalaTest.</p>
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  @deprecated("The org.scalatest.words.TypeCheckWord class has been moved and renamed. Please use org.scalatest.verbs.TypeCheckWord instead.", "3.1.0")
+  @deprecated("The org.scalatest.words.TypeCheckWord class has been moved and renamed. Please use org.scalatest.verbs.TypeCheckWord instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type TypeCheckWord = org.scalatest.verbs.TypeCheckWord
 }
