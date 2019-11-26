@@ -155,51 +155,6 @@ Before publishing any patch release, binary compatibility with previous version 
     $ sbt ++2.13.1 scalacticJS/package scalacticJS/mimaReportBinaryIssues
     $ sbt ++2.13.1 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
-To publish scalatest modules for jvm, use the following commands: 
+To publish scalatest modules for jvm, js, native and dotty, use the following commands: 
 
-    $ sbt scalatestCompatible/clean scalatestCompatible/publishSigned
-    $ sbt scalactic/clean +scalactic/publishSigned
-    $ sbt scalatestModules/clean
-    $ sbt +scalatestModules/publishSigned
-    $ sbt scalatestPom/clean +scalatestPom/publishSigned
-    $ sbt scalatestApp/clean +scalatestApp/publishSigned
-
-To publish scalatest modules for js, use the following commands: 
-
-    $ export SCALAJS_VERSION=0.6.29
-    $ sbt scalacticJS/clean +scalacticJS/publishSigned
-    $ sbt scalatestModulesJS/clean
-    $ sbt +scalatestModulesJS/publishSigned
-    $ sbt scalatestPomJS/clean +scalatestPomJS/publishSigned
-    $ sbt scalatestAppJS/clean +scalatestAppJS/publishSigned
-    $ export SCALAJS_VERSION=1.0.0-M8
-    $ sbt ++2.11.12 "project scalacticJS" clean publishSigned
-    $ sbt ++2.11.12 "project scalatestModulesJS" clean publishSigned
-    $ sbt ++2.11.12 "project scalatestPomJS" clean publishSigned
-    $ sbt ++2.11.12 "project scalatestAppJS" clean publishSigned
-    $ sbt ++2.12.10 "project scalacticJS" clean publishSigned
-    $ sbt ++2.12.10 "project scalatestModulesJS" clean publishSigned
-    $ sbt ++2.12.10 "project scalatestPomJS" clean publishSigned
-    $ sbt ++2.12.10 "project scalatestAppJS" clean publishSigned
-    $ sbt ++2.13.1 "project scalacticJS" clean publishSigned
-    $ sbt ++2.13.1 "project scalatestModulesJS" clean publishSigned
-    $ sbt ++2.13.1 "project scalatestPomJS" clean publishSigned
-    $ sbt ++2.13.1 "project scalatestAppJS" clean publishSigned
-
-To publish scalatest modules for native, use the following commands: 
-
-    $ sbt ++2.11.12 "project scalacticNative" clean publishSigned
-    $ sbt ++2.11.12 scalatestModulesNative/clean
-    $ sbt ++2.11.12 scalatestModulesNative/publishSigned
-    $ sbt ++2.11.12 scalatestPomNative/clean
-    $ sbt ++2.11.12 scalatestPomNative/publishSigned
-    $ sbt ++2.11.12 scalatestAppNative/clean
-    $ sbt ++2.11.12 scalatestAppNative/publishSigned
-
-To publish scalatest modules for Dotty, use the following commands: 
-
-    $ sbt "project scalacticDotty" clean publishSigned
-    $ sbt scalatestModulesDotty/clean
-    $ sbt scalatestModulesDotty/publishSigned
-    $ sbt scalatestPomDotty/clean
-    $ sbt scalatestPomDotty/publishSigned    
+    $ ./publish.sh
