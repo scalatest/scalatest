@@ -19,6 +19,8 @@ import com.typesafe.tools.mima.core.ProblemFilters._
 
 import dotty.tools.sbtplugin.DottyPlugin.autoImport._
 
+import xerial.sbt.Sonatype.autoImport.sonatypePublishToBundle
+
 object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with JsBuild {
 
   // To run gentests
@@ -93,13 +95,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     javaHome := getJavaHome(scalaBinaryVersion.value),
     version := releaseVersion,
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-    publishTo := {
-      val nexus = "https://oss.sonatype.org/"
-      if (version.value.trim.endsWith("SNAPSHOT"))
-        Some("publish-snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
-    },
+    publishTo := sonatypePublishToBundle.value, 
     publishMavenStyle := true,
     publishArtifact in Test := false,
     pomIncludeRepository := { _ => false },
