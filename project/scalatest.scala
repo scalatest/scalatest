@@ -358,7 +358,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
     ).dependsOn(scalatest % "test", commonTest % "test")
 
-  lazy val scalatestApp = Project("scalatestApp", file("."))
+  lazy val scalatestApp = Project("scalatestApp", file("scalatest-app"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -454,27 +454,28 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         scalatestMatchersCore % "compile-internal", 
         scalatestShouldMatchers % "compile-internal", 
         scalatestMustMatchers % "compile-internal")
-        .aggregate(
-          scalacticMacro, 
-          scalactic, 
-          scalatest, 
-          scalatestCore, 
-          scalatestFeatureSpec, 
-          scalatestFlatSpec, 
-          scalatestFreeSpec, 
-          scalatestFunSuite, 
-          scalatestFunSpec, 
-          scalatestPropSpec, 
-          scalatestWordSpec, 
-          scalatestDiagrams, 
-          scalatestMatchersCore, 
-          scalatestShouldMatchers, 
-          scalatestMustMatchers, 
-          commonTest, 
-          scalacticTest, 
-          scalatestTest)
 
-  lazy val rootProject = scalatestApp
+  lazy val rootProject = Project("root", file("."))
+                         .aggregate(
+                           scalacticMacro, 
+                           scalactic, 
+                           scalatest, 
+                           scalatestCore, 
+                           scalatestFeatureSpec, 
+                           scalatestFlatSpec, 
+                           scalatestFreeSpec, 
+                           scalatestFunSuite, 
+                           scalatestFunSpec, 
+                           scalatestPropSpec, 
+                           scalatestWordSpec, 
+                           scalatestDiagrams, 
+                           scalatestMatchersCore, 
+                           scalatestShouldMatchers, 
+                           scalatestMustMatchers, 
+                           commonTest, 
+                           scalacticTest, 
+                           scalatestTest
+                         )
 
   lazy val scalatestCompatible = Project("scalatestCompatible", file("jvm/compatible"))
     .enablePlugins(SbtOsgi)
@@ -1049,6 +1050,19 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalatestFunSpec, 
       scalatestPropSpec, 
       scalatestRefSpec, 
+      scalatestWordSpec, 
+      scalatestDiagrams, 
+      scalatestMatchersCore, 
+      scalatestShouldMatchers, 
+      scalatestMustMatchers
+    ).aggregate(
+      scalatestCore, 
+      scalatestFeatureSpec, 
+      scalatestFlatSpec, 
+      scalatestFreeSpec, 
+      scalatestFunSuite, 
+      scalatestFunSpec, 
+      scalatestPropSpec, 
       scalatestWordSpec, 
       scalatestDiagrams, 
       scalatestMatchersCore, 

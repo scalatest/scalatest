@@ -196,25 +196,7 @@ trait JsBuild { this: BuildCommons =>
       scalatestMatchersCoreJS % "compile-internal", 
       scalatestShouldMatchersJS % "compile-internal", 
       scalatestMustMatchersJS % "compile-internal")
-     .aggregate(
-       scalacticMacroJS, 
-       scalacticJS, 
-       scalatestJS, 
-       scalatestCoreJS, 
-       scalatestFeatureSpecJS, 
-       scalatestFlatSpecJS, 
-       scalatestFreeSpecJS, 
-       scalatestFunSuiteJS, 
-       scalatestFunSpecJS, 
-       scalatestPropSpecJS, 
-       scalatestWordSpecJS, 
-       scalatestDiagramsJS, 
-       scalatestMatchersCoreJS, 
-       scalatestShouldMatchersJS, 
-       scalatestMustMatchersJS, 
-       commonTestJS, 
-       scalacticTestJS, 
-       scalatestTestJS).enablePlugins(ScalaJSPlugin)  
+     .enablePlugins(ScalaJSPlugin)  
 
   def scalatestTestJSOptions =
     Seq(Tests.Argument(TestFrameworks.ScalaTest,

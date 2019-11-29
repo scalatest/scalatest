@@ -233,25 +233,7 @@ trait NativeBuild { this: BuildCommons =>
         scalatestMatchersCoreNative % "compile-internal", 
         scalatestShouldMatchersNative % "compile-internal", 
         scalatestMustMatchersNative % "compile-internal")
-       .aggregate(
-         scalacticMacroNative, 
-         scalacticNative, 
-         scalatestNative, 
-         scalatestCoreNative, 
-         scalatestFeatureSpecNative, 
-         scalatestFlatSpecNative, 
-         scalatestFreeSpecNative, 
-         scalatestFunSuiteNative, 
-         scalatestFunSpecNative, 
-         scalatestPropSpecNative, 
-         scalatestWordSpecNative, 
-         scalatestDiagramsNative, 
-         scalatestMatchersCoreNative, 
-         scalatestShouldMatchersNative, 
-         scalatestMustMatchersNative, 
-         commonTestNative, 
-         scalacticTestNative, 
-         scalatestTestNative).enablePlugins(ScalaNativePlugin)
+       .enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestCoreNative = Project("scalatestCoreNative", file("native/core"))
     .enablePlugins(SbtOsgi)
