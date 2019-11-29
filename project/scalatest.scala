@@ -538,7 +538,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           Seq.empty[File]
         }.taskValue
       },
-      aggregate in publishArtifact := false, 
       scalatestDocSettings,
       unmanagedResourceDirectories in Compile += baseDirectory.value / "scalatest" / "src" / "main" / "resources",
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),

@@ -223,7 +223,6 @@ trait JsBuild { this: BuildCommons =>
           Seq.empty[File]
         }.taskValue
       },
-      aggregate in publish := false, 
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(

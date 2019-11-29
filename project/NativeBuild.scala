@@ -211,7 +211,6 @@ trait NativeBuild { this: BuildCommons =>
             Seq.empty[File]
           }.taskValue
         }, 
-        aggregate in publish := false
       ).settings(osgiSettings: _*).settings(
         OsgiKeys.exportPackage := Seq(
           "org.scalatest",
