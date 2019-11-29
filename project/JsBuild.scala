@@ -223,6 +223,7 @@ trait JsBuild { this: BuildCommons =>
           Seq.empty[File]
         }.taskValue
       },
+      aggregate in publish := false, 
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + "_" + "sjs0.6_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
@@ -276,7 +277,7 @@ trait JsBuild { this: BuildCommons =>
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS % "compile-internal", scalatestJS % "compile-internal").aggregate(scalacticMacroJS, scalacticJS, scalatestJS, commonTestJS, scalacticTestJS, scalatestTestJS).enablePlugins(ScalaJSPlugin)  
+    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS % "compile-internal", scalatestJS % "compile-internal").enablePlugins(ScalaJSPlugin)  
 
   def scalatestTestJSOptions =
     Seq(Tests.Argument(TestFrameworks.ScalaTest,
