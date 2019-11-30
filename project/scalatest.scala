@@ -514,7 +514,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
     ).dependsOn(scalatest % "test", commonTest % "test")
 
-  lazy val scalatestApp = Project("scalatestApp", file("."))
+  lazy val scalatestApp = Project("scalatestApp", file("scalatest-app"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -594,9 +594,9 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal", scalatest % "compile-internal").aggregate(scalacticMacro, scalactic, scalatest, commonTest, scalacticTest, scalatestTest)
+    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal", scalatest % "compile-internal")
 
-  lazy val rootProject = scalatestApp
+  lazy val rootProject = Project("root", file(".")).aggregate(scalacticMacro, scalactic, scalatest, commonTest, scalacticTest, scalatestTest)
 
   lazy val scalatestCompatible = Project("scalatestCompatible", file("scalatest-compatible"))
     .enablePlugins(SbtOsgi)
