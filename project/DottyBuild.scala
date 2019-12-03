@@ -593,6 +593,7 @@ trait DottyBuild { this: BuildCommons =>
       scalatestFunSuiteDotty, 
       scalatestFunSpecDotty, 
       scalatestPropSpecDotty, 
+      scalatestRefSpecDotty, 
       scalatestWordSpecDotty, 
       scalatestDiagramsDotty, 
       scalatestMatchersCoreDotty, 

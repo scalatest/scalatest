@@ -1064,6 +1064,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalatestFunSpec, 
       scalatestPropSpec, 
       scalatestWordSpec, 
+      scalatestRefSpec, 
       scalatestDiagrams, 
       scalatestMatchersCore, 
       scalatestShouldMatchers, 
