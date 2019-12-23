@@ -25,11 +25,11 @@ import scala.quoted._
 object MatchersCompileMacro {
 
   // used by mustNot compile syntax, delegate to assertNotCompileImpl to generate code
-  def mustNotCompileImpl(self: Expr[Matchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
+  def mustNotCompileImpl(self: Expr[org.scalatest.matchers.must.Matchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
     org.scalatest.matchers.MatchersCompileMacro.assertNotCompileImpl(self, compileWord, pos)("must")
 
   // check that a code snippet does not compile
-  def assertNotTypeCheckImpl(self: Expr[Matchers#AnyMustWrapper[_]], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
+  def assertNotTypeCheckImpl(self: Expr[org.scalatest.matchers.must.Matchers#AnyMustWrapper[_]], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
     import qctx.tasty._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
