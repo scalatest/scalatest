@@ -414,6 +414,15 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
                                       |import matchers.should.Matchers._""".stripMargin,
      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
      libraryDependencies ++= scalatestLibraryDependencies,
+     Compile / unmanagedSourceDirectories ++= {
+       CrossVersion.partialVersion(scalaVersion.value) match {
+         case Some((2, scalaMajor)) if scalaMajor < 13 =>
+           Seq(sourceDirectory.value / "main" / "scala-pre-2.13")
+
+         case _ =>
+           Seq.empty
+       }
+     },
      genMustMatchersTask,
      genGenTask,
      genTablesTask,
