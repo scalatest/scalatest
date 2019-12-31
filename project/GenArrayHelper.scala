@@ -21,7 +21,7 @@ object GenArrayHelper {
 
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     val content =
-      if (scalaVersion startsWith "2.13")
+      if (ScalaVersionHelper.isStdLibCompat_213(scalaVersion))
         """/*
           | * Copyright 2001-2018 Artima, Inc.
           | *

@@ -824,8 +824,8 @@ class EverySpec extends UnitSpec {
   it should "have a scan method" in {
     Every(1).scan(0)(_ + _) shouldBe Every(0, 1)
     Every(1, 2, 3).scan(0)(_ + _) shouldBe Every(0, 1, 3, 6)
-    Every(1, 2, 3).scan("z")(_ + _.toString) shouldBe Every("z", "z1", "z12", "z123")
-    Every(0).scan("z")(_ + _.toString) shouldBe Every("z", "z0")
+    Every(1, 2, 3).scan("z")(_.toString + _.toString) shouldBe Every("z", "z1", "z12", "z123")
+    Every(0).scan("z")(_.toString + _.toString) shouldBe Every("z", "z0")
   }
   it should "have a scanLeft method" in {
     Every(1).scanLeft(0)(_ + _) shouldBe Every(0, 1)

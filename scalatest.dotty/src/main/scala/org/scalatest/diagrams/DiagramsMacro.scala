@@ -24,7 +24,7 @@ object DiagramsMacro {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def parse(qctx: QuoteContext)(expr: qctx.tasty.Term): qctx.tasty.Term = {
     implicit val qctx2: QuoteContext = qctx
-    import qctx.tasty._
+    import qctx.tasty.{_, given}
     import util._
 
     type R
@@ -32,8 +32,10 @@ object DiagramsMacro {
 
     def isXmlSugar(apply: Apply): Boolean = apply.tpe <:< typeOf[scala.xml.Elem]
     def isJavaStatic(tree: Tree): Boolean = tree.symbol.flags.is(Flags.Static)
-    def isImplicitMethodType(tp: Type): Boolean =
-      Type.IsMethodType.unapply(tp).flatMap(tp => if tp.isImplicit then Some(true) else None).nonEmpty
+    def isImplicitMethodType(tp: Type): Boolean = tp match {
+      case IsMethodType(tp) => tp.isImplicit
+      case _ => false
+    }
 
     def selectField(o: Term, name: String): Term = Select.unique(o, name)
 
@@ -45,23 +47,23 @@ object DiagramsMacro {
 
     def getAnchorForSelect(sel: Select): Expr[Int] = {
       if (sel.name == "unary_!")
-        (sel.pos.startColumn - rootPosition.startColumn).toExpr
+        Expr(sel.pos.startColumn - rootPosition.startColumn)
       else {
         val selOffset = sel.pos.endColumn - sel.qualifier.pos.endColumn - sel.name.length
-        (sel.qualifier.pos.endColumn + selOffset - rootPosition.startColumn).toExpr
+        Expr(sel.qualifier.pos.endColumn + selOffset - rootPosition.startColumn)
       }
     }
 
     def getAnchor(expr: Term): Expr[Int] = {
       // -1 to match scala2 position
-      // ((expr.unseal.pos.endColumn + expr.unseal.pos.startColumn - 1) / 2 - rootPosition.startColumn).toExpr
-      (expr.pos.startColumn - rootPosition.startColumn).toExpr
+      // Expr((expr.unseal.pos.endColumn + expr.unseal.pos.startColumn - 1) / 2 - rootPosition.startColumn)
+      Expr(expr.pos.startColumn - rootPosition.startColumn)
     }
 
     def handleArgs(argTps: List[Type], args: List[Term]): (List[Term], List[Term]) =
       args.zip(argTps).foldLeft(Nil -> Nil : (List[Term], List[Term])) { case ((diagrams, others), pair) =>
         pair match {
-          case (arg, Type.ByNameType(_)) =>
+          case (arg, ByNameType(_)) =>
             (diagrams, others :+ arg)
           case (arg, tp) =>
             if (tp.widen.typeSymbol.show.startsWith("scala.Function")) (diagrams, others :+ arg)
@@ -135,7 +137,7 @@ object DiagramsMacro {
                 val left = l.seal.cast[DiagrammedExpr[T]]
                 val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
                 val res = Select.unique(l, "value").select(sel.symbol).appliedToArgs(diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
-                '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
+                '{ DiagrammedExpr.applyExpr[R]($left, ${Expr.ofList(rights)}, $res, $anchor) }.unseal
               }
             }
         }
@@ -155,7 +157,7 @@ object DiagramsMacro {
             val left = l.seal.cast[DiagrammedExpr[T]]
             val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
             val res = Select.unique(l, "value").select(sel.symbol).appliedToArgs(diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
-            '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
+            '{ DiagrammedExpr.applyExpr[R]($left, ${Expr.ofList(rights)}, $res, $anchor) }.unseal
           }
         }
 
@@ -197,7 +199,7 @@ object DiagramsMacro {
             val rights = rs.map(_.seal.cast[DiagrammedExpr[_]])
             val res = Select.unique(l, "value").select(sel.symbol).appliedToTypes(targs.map(_.tpe))
                             .appliedToArgs(diagrams.map(r => Select.unique(r, "value")) ++ others).seal.cast[R]
-            '{ DiagrammedExpr.applyExpr[R]($left, ${rights.toExprOfList}, $res, $anchor) }.unseal
+            '{ DiagrammedExpr.applyExpr[R]($left, ${Expr.ofList(rights)}, $res, $anchor) }.unseal
           }
         }
 
@@ -223,8 +225,8 @@ object DiagramsMacro {
     helper: Expr[(DiagrammedExpr[Boolean], Any, String, source.Position) => Assertion],
     condition: Expr[Boolean], pos: Expr[source.Position], clue: Expr[Any], sourceText: String
   )(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty._
+    import qctx.tasty.{_, given}
     val diagExpr = parse(qctx)(condition.unseal.underlyingArgument).seal.cast[DiagrammedExpr[Boolean]]
-    '{ $helper($diagExpr, $clue, ${sourceText.toExpr}, $pos) }
+    '{ $helper($diagExpr, $clue, ${Expr(sourceText)}, $pos) }
   }
 }

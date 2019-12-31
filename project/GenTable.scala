@@ -353,7 +353,7 @@ object TableFor$n$ {
 """
 
 def tableTemplate(scalaVersion: String): String =
-  if (scalaVersion startsWith "2.13")
+  if(ScalaVersionHelper.isStdLibCompat_213(scalaVersion))
     tableTemplateRaw.replaceAllLiterally("scala.collection.IndexedSeqLike[($alphaUpper$), TableFor$n$[$alphaUpper$]]", "scala.collection.IndexedSeqOps[($alphaUpper$), scala.collection.IndexedSeq, scala.collection.IndexedSeq[($alphaUpper$)]]")
       .replaceAllLiterally("$$CLASS_BUILDER_METHODS$$", "")
       .replaceAllLiterally("$$OBJECT_BUILDER_METHODS$$",

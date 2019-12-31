@@ -80,7 +80,7 @@ object GenCompatibleClasses {
     targetDir.mkdirs()
     val file = new File(targetDir, "CompatParColls.scala")
     if (!file.exists || generatorSource.lastModified > file.lastModified) {
-      val parMethod = if (scalaVersion startsWith "2.13") "def par: T = oriCol" else ""
+      val parMethod = if(ScalaVersionHelper.isStdLibCompat_213(scalaVersion)) "def par: T = oriCol" else ""
       /*
        For recording purpose, this is the original version of CompatParColls that stops working in 2.13.0-M4
         /**
