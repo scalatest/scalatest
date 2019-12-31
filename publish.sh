@@ -2,7 +2,7 @@ sbt clean
 sbt "project scalactic" clean +publishSigned
 export SCALAJS_VERSION=0.6.31
 sbt "project scalacticJS" clean +publishSigned
-export SCALAJS_VERSION=1.0.0-RC1
+export SCALAJS_VERSION=1.0.0-RC2
 sbt ++2.11.12 "project scalacticJS" clean publishSigned
 sbt ++2.12.10 "project scalacticJS" clean publishSigned
 sbt ++2.13.1 "project scalacticJS" clean publishSigned
@@ -15,19 +15,18 @@ sbt scalatestCompatible/clean scalatestCompatible/publishSigned
 sbt "project scalatest" clean +publishSigned
 export SCALAJS_VERSION=0.6.31
 sbt "project scalatestJS" clean +publishSigned
-export SCALAJS_VERSION=1.0.0-RC1
+export SCALAJS_VERSION=1.0.0-RC2
 sbt ++2.11.12 "project scalatestJS" clean publishSigned
 sbt ++2.12.10 "project scalatestJS" clean publishSigned
 sbt ++2.13.1 "project scalatestJS" clean publishSigned
 sbt ++2.11.12 "project scalatestNative" clean publishSigned
 sbt "project scalatestDotty" clean publishSigned
-sbt "project scalatest" sonatypeBundleUpload
 
 sbt clean
 sbt "project scalatestApp" clean +publishSigned
 export SCALAJS_VERSION=0.6.31
 sbt "project scalatestAppJS" clean +publishSigned
-export SCALAJS_VERSION=1.0.0-RC1
+export SCALAJS_VERSION=1.0.0-RC2
 sbt ++2.11.12 "project scalatestAppJS" clean publishSigned
 sbt ++2.12.10 "project scalatestAppJS" clean publishSigned
 sbt ++2.13.1 "project scalatestAppJS" clean publishSigned
