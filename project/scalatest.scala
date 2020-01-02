@@ -344,24 +344,33 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
     ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
 
-  lazy val scalatestTest = Project("scalatest-test", file("jvm/scalatest-test"))
-    .settings(sharedSettings: _*)
-    .settings(
-      projectTitle := "ScalaTest Test",
+  def sharedTestSettings: Seq[Setting[_]] = 
+    Seq(
       organization := "org.scalatest",
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
       testOptions in Test := scalatestTestOptions,
       logBuffered in Test := false,
-      //fork in Test := true,
-      //parallelExecution in Test := true,
-      //testForkedParallel in Test := true,
       baseDirectory in Test := file("./"),
       publishArtifact := false,
       publish := {},
       publishLocal := {},
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
+    )
+
+  lazy val scalatestTest = Project("scalatest-test", file("jvm/scalatest-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Test"
     ).dependsOn(scalatest % "test", commonTest % "test")
+
+  lazy val scalatestDiagramsTest = Project("scalatestDiagramsTest", file("jvm/diagrams-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Diagrams Test"
+    ).dependsOn(scalatestCore % "test", scalatestDiagrams % "test", commonTest % "test")
 
   lazy val scalatestApp = Project("scalatestApp", file("scalatest-app"))
     .enablePlugins(SbtOsgi)

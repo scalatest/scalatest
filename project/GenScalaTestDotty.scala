@@ -197,7 +197,6 @@ object GenScalaTestDotty {
         // "ShouldNotTypeCheckSpec.scala"
       )
     ) ++ 
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty) ++ 
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, 
       List(
         "DirectExpectationsSpec.scala"
@@ -271,6 +270,9 @@ object GenScalaTestDotty {
           "XmlSocketReporterSpec.scala"
         )
       )*/
-  }
+    }
+
+    def genScalaTestDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+      copyDir("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
 
 }

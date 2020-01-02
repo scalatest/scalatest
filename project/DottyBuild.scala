@@ -638,11 +638,8 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue
     ).dependsOn(scalacticDotty, scalatestDotty % "test", commonTestDotty % "test")
 
-  lazy val scalatestTestDotty = Project("scalatestTestDotty", file("dotty/scalatest-test"))
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest Test",
+  def sharedTestSettingsDotty: Seq[Setting[_]] = 
+    Seq(
       organization := "org.scalatest",
       libraryDependencies ++= scalatestLibraryDependencies,
       //libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
@@ -651,15 +648,36 @@ trait DottyBuild { this: BuildCommons =>
       //fork in Test := true,
       //parallelExecution in Test := true,
       //testForkedParallel in Test := true,
-      sourceGenerators in Test += {
-        Def.task {
-          GenScalaTestDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
       baseDirectory in Test := file("./"),
       publishArtifact := false,
       publish := {},
       publishLocal := {}
-    ).dependsOn(scalatestDotty % "test", commonTestDotty % "test")  
+    )  
+
+  lazy val scalatestTestDotty = Project("scalatestTestDotty", file("dotty/scalatest-test"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDotty)
+    .settings(
+      projectTitle := "ScalaTest Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(scalatestDotty % "test", commonTestDotty % "test")
+
+  lazy val scalatestDiagramsTestDotty = Project("scalatestDiagramsTestDotty", file("dotty/diagrams-test"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDotty)
+    .settings(
+      projectTitle := "ScalaTest Diagrams Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestDotty.genScalaTestDiagramsTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(scalatestDotty % "test", commonTestDotty % "test")    
 
 }

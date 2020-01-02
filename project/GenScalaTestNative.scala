@@ -238,6 +238,9 @@ object GenScalaTestNative {
 
     )
 
+  def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
+
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     //copyStartsWithFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++
     //copyFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", List("FutureOutcomeSpec.scala"), targetDir)

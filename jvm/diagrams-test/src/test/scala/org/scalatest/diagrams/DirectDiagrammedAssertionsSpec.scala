@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.diagrams
 
-import SharedHelpers.thisLineNumber
+import org.scalatest.SharedHelpers.thisLineNumber
 import java.util.Date
 import org.scalactic.Prettifier
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.funspec.AnyFunSpec
 
-class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Matchers {
+class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.matchers.should.Matchers {
 
   val fileName: String = "DirectDiagrammedAssertionsSpec.scala"
 
@@ -199,6 +199,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         org.scalatest.diagrams.Diagrams.assert(3 == 3)
       }
 
+      // SKIP-DOTTY-START
+      // const-folding will eliminate the expr
       it("should throw TestFailedException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
         // This is because the compiler simply pass the false boolean literal
         // to the macro, can't find a way to get the 3 == 5 literal.
@@ -218,6 +220,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e1.failedCodeFileName should be (Some(fileName))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestFailedException with correct message and stack depth when is used to check a == b") {
         val e = intercept[TestFailedException] {
@@ -238,6 +241,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
+      // SKIP-DOTTY-START
       it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
         val e = intercept[TestFailedException] {
           org.scalatest.diagrams.Diagrams.assert(a == null)
@@ -275,6 +279,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestFailedException] {
@@ -2342,6 +2347,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
           a))
       }
 
+      // SKIP-DOTTY-START
+      // problem with quotes
       it("should throw friend message when used to check multiline org.scalatest.diagrams.Diagrams.assert((b == a + 2) && (b - 1 <= a))") {
         val e = intercept[TestFailedException] {
           org.scalatest.diagrams.Diagrams.assert((b == a + 2) && (b - 1 <=
@@ -2351,6 +2358,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when a block of code that evaluates to true is passed in") {
         assert {
@@ -2382,6 +2390,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
+      // SKIP-DOTTY-START
+      // different code show in Dotty
       it("should fallback to BooleanMacro when a block of code > 1 line is passed in ") {
         val e = intercept[TestFailedException] {
           assert {
@@ -2403,6 +2413,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
+      // SKIP-DOTTY-END
 
       // SKIP-SCALATESTJS,NATIVE-START
       it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
@@ -2647,6 +2658,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         org.scalatest.diagrams.Diagrams.assert(3 == 3, "this is a clue")
       }
 
+      // SKIP-DOTTY-START
+      // const-folding will eliminate the expr
       it("should throw TestFailedException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
         // This is because the compiler simply pass the false boolean literal
         // to the macro, can't find a way to get the 3 == 5 literal.
@@ -2666,6 +2679,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e1.failedCodeFileName should be (Some(fileName))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestFailedException with correct message and stack depth when is used to check a == b") {
         val e = intercept[TestFailedException] {
@@ -2686,6 +2700,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
+      // SKIP-DOTTY-START
       it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
         val e = intercept[TestFailedException] {
           org.scalatest.diagrams.Diagrams.assert(a == null, "this is a clue")
@@ -2723,6 +2738,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestFailedException] {
@@ -4790,6 +4806,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
           a), "this is a clue")
       }
 
+      // SKIP-DOTTY-START
+      // problem with quotes
       it("should throw friend message when used to check multiline org.scalatest.diagrams.Diagrams.assert((b == a + 2) && (b - 1 <= a))") {
         val e = intercept[TestFailedException] {
           org.scalatest.diagrams.Diagrams.assert((b == a + 2) && (b - 1 <=
@@ -4799,6 +4817,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when a block of code that evaluates to true is passed in") {
         org.scalatest.diagrams.Diagrams.assert({
@@ -4830,6 +4849,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
+      // SKIP-DOTTY-START
+      // different code show in Dotty
       it("should fallback to BooleanMacro when a block of code > 1 line is passed in ") {
         val e = intercept[TestFailedException] {
           org.scalatest.diagrams.Diagrams.assert({
@@ -4851,6 +4872,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
+      // SKIP-DOTTY-END
 
       // SKIP-SCALATESTJS,NATIVE-START
       it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
@@ -5095,6 +5117,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         org.scalatest.diagrams.Diagrams.assume(3 == 3)
       }
 
+      // SKIP-DOTTY-START
+      // const-folding will eliminate the expr
       it("should throw TestCanceledException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
         // This is because the compiler simply pass the false boolean literal
         // to the macro, can't find a way to get the 3 == 5 literal.
@@ -5114,6 +5138,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e1.failedCodeFileName should be (Some(fileName))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestCanceledException with correct message and stack depth when is used to check a == b") {
         val e = intercept[TestCanceledException] {
@@ -5134,6 +5159,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
+      // SKIP-DOTTY-START
       it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
         val e = intercept[TestCanceledException] {
           org.scalatest.diagrams.Diagrams.assume(a == null)
@@ -5171,6 +5197,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestCanceledException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestCanceledException] {
@@ -7238,6 +7265,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
           a))
       }
 
+      // SKIP-DOTTY-START
+      // problem with quotes
       it("should throw TestCanceledException with friend message when used to check multiline org.scalatest.diagrams.Diagrams.assert((b == a + 2) && (b - 1 <= a))") {
         val e = intercept[TestCanceledException] {
           org.scalatest.diagrams.Diagrams.assume((b == a + 2) && (b - 1 <=
@@ -7247,6 +7276,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when a block of code that evaluates to true is passed in") {
         assume {
@@ -7278,6 +7308,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
+      // SKIP-DOTTY-START
+      // different code show in Dotty
       it("should fallback to BooleanMacro when a block of code > 1 line is passed in ") {
         val e = intercept[TestCanceledException] {
           assume {
@@ -7299,6 +7331,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
+      // SKIP-DOTTY-END
 
       // SKIP-SCALATESTJS,NATIVE-START
       it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {
@@ -7543,6 +7576,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         org.scalatest.diagrams.Diagrams.assume(3 == 3, "this is a clue")
       }
 
+      // SKIP-DOTTY-START
+      // const-folding will eliminate the expr
       it("should throw TestCanceledException with message that contains the original code and correct stack depth when is used to check 3 == 5") {
         // This is because the compiler simply pass the false boolean literal
         // to the macro, can't find a way to get the 3 == 5 literal.
@@ -7562,6 +7597,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e1.failedCodeFileName should be (Some(fileName))
         e1.failedCodeLineNumber should be (Some(thisLineNumber - 13))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestCanceledException with correct message and stack depth when is used to check a == b") {
         val e = intercept[TestCanceledException] {
@@ -7582,6 +7618,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
+      // SKIP-DOTTY-START
       it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
         val e = intercept[TestCanceledException] {
           org.scalatest.diagrams.Diagrams.assume(a == null, "this is a clue")
@@ -7619,6 +7656,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+      // SKIP-DOTTY-END
 
       it("should throw TestCanceledException with correct message and stack depth when is used to check 3 != a") {
         val e = intercept[TestCanceledException] {
@@ -9686,6 +9724,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
           a), "this is a clue")
       }
 
+      // SKIP-DOTTY-START
+      // problem with quotes
       it("should throw friend message when used to check multiline org.scalatest.diagrams.Diagrams.assert((b == a + 2) && (b - 1 <= a))") {
         val e = intercept[TestCanceledException] {
           org.scalatest.diagrams.Diagrams.assume((b == a + 2) && (b - 1 <=
@@ -9695,6 +9735,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
       }
+      // SKIP-DOTTY-END
 
       it("should do nothing when a block of code that evaluates to true is passed in") {
         org.scalatest.diagrams.Diagrams.assume({
@@ -9726,6 +9767,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeLineNumber should be (Some(thisLineNumber - 16))
       }
 
+      // SKIP-DOTTY-START
+      // different code show in Dotty
       it("should fallback to BooleanMacro when a block of code > 1 line is passed in ") {
         val e = intercept[TestCanceledException] {
           org.scalatest.diagrams.Diagrams.assume({
@@ -9747,6 +9790,7 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with matchers.should.Mat
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 17))
       }
+      // SKIP-DOTTY-END
 
       // SKIP-SCALATESTJS,NATIVE-START
       it("should do nothing when used to check <person>Dude</person> == <person>Dude</person>") {

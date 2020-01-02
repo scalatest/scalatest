@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
-package diagrams
+package org.scalatest.diagrams
 
-import SharedHelpers.thisLineNumber
+import org.scalatest.SharedHelpers.thisLineNumber
 import java.util.Date
 import org.scalactic.Prettifier
 import org.scalatest.exceptions.TestCanceledException

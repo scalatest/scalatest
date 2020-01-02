@@ -696,10 +696,8 @@ trait NativeBuild { this: BuildCommons =>
       publishLocal := {}
     ).dependsOn(scalacticNative, scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)  
 
-  lazy val scalatestTestNative = Project("scalatestTestNative", file("native/scalatest-test"))
-    .settings(sharedSettings: _*)
-    .settings(
-      projectTitle := "ScalaTest Test",
+  def sharedTestSettingsNative: Seq[Setting[_]] = 
+    Seq(
       organization := "org.scalatest",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
@@ -723,7 +721,14 @@ trait NativeBuild { this: BuildCommons =>
       testOptions in Test := scalatestTestNativeOptions,
       publishArtifact := false,
       publish := {},
-      publishLocal := {},
+      publishLocal := {}
+    )  
+
+  lazy val scalatestTestNative = Project("scalatestTestNative", file("native/scalatest-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "ScalaTest Test",
       sourceGenerators in Test += {
         Def.task {
           GenScalaTestNative.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
@@ -738,6 +743,18 @@ trait NativeBuild { this: BuildCommons =>
           GenMustMatchersTests.genTestForScalaNative((sourceManaged in Test).value, version.value, scalaVersion.value)
         }*/
     ).dependsOn(scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestDiagramsTestNative = Project("scalatestDiagramsTestNative", file("native/diagrams-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "ScalaTest Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestNative.genDiagramsTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(scalatestCoreNative % "test", scalatestDiagramsNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)  
 
   lazy val scalatestModulesNative = (project in file("modules/native/modules-aggregation"))
     .settings(sharedSettings: _*)
