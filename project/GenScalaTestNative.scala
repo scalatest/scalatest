@@ -117,6 +117,10 @@ object GenScalaTestNative {
     new File(sourceDirName).listFiles.toList.map(_.getName).filter(_.toLowerCase.contains("async"))
   }
 
+  def nonAsyncs(sourceDirName: String): List[String] = {
+    new File(sourceDirName).listFiles.toList.map(_.getName).filter(!_.toLowerCase.contains("async"))
+  }
+
   val genScalaPackages: Map[String, List[String]] = 
     Map(
       "org/scalatest" -> (List(
@@ -237,9 +241,6 @@ object GenScalaTestNative {
       "org/scalatest/verbs" -> List.empty, 
 
     )
-
-  def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     //copyStartsWithFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++
@@ -647,5 +648,11 @@ object GenScalaTestNative {
       )
     )
   }
+
+  def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
+
+  def genFeatureSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyFiles("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", nonAsyncs("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec"), targetDir)
 
 }

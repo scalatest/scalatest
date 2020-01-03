@@ -13,63 +13,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.featurespec
 
+import org.scalatest.SharedHelpers.EventRecordingReporter
 import scala.concurrent.{ExecutionContext, Promise, Future}
-import org.scalatest._
-import SharedHelpers.EventRecordingReporter
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
-import org.scalatest
-import org.scalatest.featurespec
+import org.scalatest.featurespec.AsyncFeatureSpecLike
+import org.scalatest.funspec
+import org.scalatest.ParallelTestExecution
+import org.scalatest.Args
+import org.scalatest.Assertion
+import org.scalatest.Succeeded
 
-class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
+class FixtureAsyncFeatureSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
-  describe("AsyncFeatureSpec") {
+  describe("AsyncFeatureSpecLike") {
 
+    // SKIP-DOTTY-START
+    // ParallelTestExecution not working yet.
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec with ParallelTestExecution {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
         val a = 1
 
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           Future {
             assert(a == 1)
           }
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           Future {
             assert(a == 2)
           }
         }
 
-        Scenario("test 3") { fixture =>
+        Scenario("test 3") {
           Future {
             pending
           }
         }
 
-        Scenario("test 4") { fixture =>
+        Scenario("test 4") {
           Future {
-            cancel
+            cancel()
           }
         }
 
-        ignore("test 5") { fixture =>
+        ignore("test 5") {
           Future {
-            cancel
+            cancel()
           }
         }
 
         override def newInstance = new ExampleSpec
+
       }
 
       val rep = new EventRecordingReporter
@@ -94,40 +96,38 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec with ParallelTestExecution {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
         val a = 1
 
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           assert(a == 1)
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           assert(a == 2)
         }
 
-        Scenario("test 3") { fixture =>
+        Scenario("test 3") {
           pending
         }
 
-        Scenario("test 4") { fixture =>
-          cancel
+        Scenario("test 4") {
+          cancel()
         }
 
-        ignore("test 5") { fixture =>
-          cancel
+        ignore("test 5") {
+          cancel()
         }
 
         override def newInstance = new ExampleSpec
+
       }
 
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
+
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }
       promise.future.map { repo =>
@@ -144,18 +144,15 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
         assert(repo.testIgnoredEventsReceived(0).testName == "Scenario: test 5")
       }
     }
+    // SKIP-DOTTY-END
 
     it("should run tests that return Future in serial by default") {
 
       @volatile var count = 0
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -164,7 +161,7 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
           }
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -173,7 +170,7 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
           }
         }
 
-        Scenario("test 3") { fixture =>
+        Scenario("test 3") {
           Future {
             assert(count == 2)
           }
@@ -184,6 +181,7 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
+
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }
       promise.future.map { repo =>
@@ -196,27 +194,23 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
           Succeeded
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
           Succeeded
         }
 
-        Scenario("test 3") { fixture =>
+        Scenario("test 3") {
           assert(count == 2)
         }
 
@@ -225,6 +219,7 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
+
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }
       promise.future.map { repo =>
@@ -241,20 +236,16 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           Future {
             test1Thread = Some(Thread.currentThread)
             succeed
           }
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           Future {
             test2Thread = Some(Thread.currentThread)
             succeed
@@ -288,13 +279,9 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -311,7 +298,7 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
           }
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -351,15 +338,11 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
         // Note we get a StackOverflowError with the following execution
         // context.
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
           xs match {
@@ -367,7 +350,7 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
             case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
           }
 
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           val fut: Future[Int] = sum((1 to 50000).toList)
           fut.map(total => assert(total == 1250025000))
         }
@@ -387,27 +370,23 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           Future {
             SleepHelper.sleep(60)
             succeed
           }
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           Future {
             SleepHelper.sleep(30)
             succeed
           }
         }
 
-        Scenario("test 3") { fixture =>
+        Scenario("test 3") {
           Future {
             succeed
           }
@@ -438,23 +417,19 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           SleepHelper.sleep(60)
           succeed
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           SleepHelper.sleep(30)
           succeed
         }
 
-        Scenario("test 3") { fixture =>
+        Scenario("test 3") {
           succeed
         }
 
@@ -482,12 +457,7 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
+      class MySuite extends AsyncFeatureSpecLike  {
         info(
           "hi there"
         )
@@ -507,18 +477,14 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in feature body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
           info(
             "hi there"
           )
 
-          Scenario("test 1") { fixture => succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
@@ -536,14 +502,10 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             info("hi there")
             succeed
           }
@@ -570,14 +532,10 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             Future {
               info("hi there")
               succeed
@@ -606,12 +564,7 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
+      class MySuite extends AsyncFeatureSpecLike  {
         note(
           "hi there"
         )
@@ -631,18 +584,14 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in feature body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
           note(
             "hi there"
           )
 
-          Scenario("test 1") { fixture => succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
@@ -660,14 +609,10 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             note("hi there")
             succeed
           }
@@ -687,14 +632,10 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             Future {
               note("hi there")
               succeed
@@ -716,12 +657,7 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
+      class MySuite extends AsyncFeatureSpecLike  {
         alert(
           "hi there"
         )
@@ -741,18 +677,14 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in feature body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
           alert(
             "hi there"
           )
 
-          Scenario("test 1") { fixture => succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
@@ -770,14 +702,10 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             alert("hi there")
             succeed
           }
@@ -786,6 +714,7 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(reporter) }
       promise.future.map { repo =>
@@ -796,14 +725,10 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             Future {
               alert("hi there")
               succeed
@@ -825,12 +750,7 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
+      class MySuite extends AsyncFeatureSpecLike  {
         markup(
           "hi there"
         )
@@ -850,23 +770,20 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in feature body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
           markup(
             "hi there"
           )
 
-          Scenario("test 1") { fixture => succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(reporter) }
       promise.future.map { repo =>
@@ -878,14 +795,10 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             markup("hi there")
             succeed
           }
@@ -912,14 +825,10 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpecLike  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             Future {
               markup("hi there")
               succeed
@@ -948,29 +857,24 @@ class AsyncFeatureSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class TestSpec extends AsyncFeatureSpecLike {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         val a = 1
         Feature("feature 1") {
-          Scenario("scenario A") { fixture =>
+          Scenario("scenario A") {
             Future { assert(a == 1) }
           }
         }
         Feature("feature 2")  {
-          Scenario("scenario B") { fixture =>
+          Scenario("scenario B") {
             Future { assert(a == 1) }
           }
         }
         Feature("group3") {
-          Scenario("test C") { fixture =>
+          Scenario("test C") {
             Future { assert(a == 1) }
           }
         }

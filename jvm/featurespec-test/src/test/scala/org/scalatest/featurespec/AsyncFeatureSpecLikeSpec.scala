@@ -13,66 +13,74 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.featurespec
 
-import scala.concurrent.{Promise, ExecutionContext, Future}
-import org.scalatest._
-import SharedHelpers.EventRecordingReporter
-import org.scalatest.concurrent.SleepHelper
+import org.scalatest.SharedHelpers.{EventRecordingReporter, thisLineNumber}
 import org.scalatest.events.{InfoProvided, MarkupProvided}
+import scala.concurrent.{Promise, ExecutionContext, Future}
+import org.scalatest.concurrent.SleepHelper
+import org.scalatest.exceptions.{DuplicateTestNameException, NotAllowedException}
+import org.scalactic.Prettifier
 
 import scala.util.Success
-import org.scalatest
-import org.scalatest.featurespec
+import org.scalatest.featurespec.{ AsyncFeatureSpec, AsyncFeatureSpecLike }
+import org.scalatest.funspec
+import org.scalatest.ParallelTestExecution
+import org.scalatest.Args
+import org.scalatest.Assertion
+import org.scalatest.Succeeded
+import org.scalatest.FailureMessages
+import org.scalatest.UnquotedString
 
-class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
+class AsyncFeatureSpecLikeSpec extends funspec.AnyFunSpec {
 
-  describe("AsyncFeatureSpec") {
+  private val prettifier = Prettifier.default
 
+  describe("AsyncFeatureSpecLike") {
+
+    // SKIP-DOTTY-START
+    // ParallelTestExecution not working yet.
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         val a = 1
 
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           Future {
             assert(a == 1)
           }
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           Future {
             assert(a == 2)
           }
         }
 
-        Scenario("test 3") { fixture =>
+        Scenario("test 3") {
           Future {
             pending
           }
         }
 
-        Scenario("test 4") { fixture =>
+        Scenario("test 4") {
           Future {
-            cancel
+            cancel()
           }
         }
 
-        ignore("test 5") { fixture =>
+        ignore("test 5") {
           Future {
-            cancel
+            cancel()
           }
         }
 
         override def newInstance = new ExampleSpec
+
       }
 
       val rep = new EventRecordingReporter
@@ -96,38 +104,35 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         val a = 1
 
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           assert(a == 1)
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           assert(a == 2)
         }
 
-        Scenario("test 3") { fixture =>
+        Scenario("test 3") {
           pending
         }
 
-        Scenario("test 4") { fixture =>
-          cancel
+        Scenario("test 4") {
+          cancel()
         }
 
-        ignore("test 5") { fixture =>
-          cancel
+        ignore("test 5") {
+          cancel()
         }
 
         override def newInstance = new ExampleSpec
+
       }
 
       val rep = new EventRecordingReporter
@@ -148,21 +153,18 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(rep.testIgnoredEventsReceived.length == 1)
       assert(rep.testIgnoredEventsReceived(0).testName == "Scenario: test 5")
     }
+    // SKIP-DOTTY-END
 
     it("should run tests that return Future in serial by default") {
 
       @volatile var count = 0
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -171,7 +173,7 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
           }
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -180,7 +182,7 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
           }
         }
 
-        Scenario("test 3") { fixture =>
+        Scenario("test 3") {
           Future {
             assert(count == 2)
           }
@@ -204,30 +206,26 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
           succeed
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
           succeed
         }
 
-        Scenario("test 3") { fixture =>
+        Scenario("test 3") {
           assert(count == 2)
         }
 
@@ -253,20 +251,16 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           Future {
             test1Thread = Some(Thread.currentThread)
             succeed
           }
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           Future {
             test2Thread = Some(Thread.currentThread)
             succeed
@@ -297,13 +291,9 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -320,7 +310,7 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
           }
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -355,17 +345,46 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(onCompleteThread.get == mainThread)
     }
 
+    it("should not hang if a Future completes with nothing on the queue") {
+      // Despite not having a notify registered as a callback on the Future
+      // passed to SerialExecutionContext.runNow, it is not possible to get
+      // a test to hang, because there's always one more transformation after
+      // the Future[Assertion] completes, and that's the one that transforms
+      // the Future[Assertion] to a Future[Outcome]. That will cause a
+      // job to be enqueued via SerialExecutionContext.execute, and that
+      // will do the final notify. After running that job, the Future passed
+      // to runNow will be complete, and runNow will return.
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        Scenario("test 1") {
+          val promise = Promise[Assertion]
+          val timer = new java.util.Timer
+          timer.schedule(
+            new java.util.TimerTask {
+              def run(): Unit = {
+                promise.complete(Success(succeed))
+              }
+            },
+            1000
+          )
+          promise.future
+        }
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      status.waitUntilCompleted()
+      assert(!rep.testSucceededEventsReceived.isEmpty)
+    }
+
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
         // Note we get a StackOverflowError with the following execution
         // context.
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
           xs match {
@@ -373,7 +392,7 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
             case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
           }
 
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           val fut: Future[Int] = sum((1 to 50000).toList)
           fut.map(total => assert(total == 1250025000))
         }
@@ -389,30 +408,26 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           Future {
             SleepHelper.sleep(60)
             succeed
           }
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           Future {
             SleepHelper.sleep(30)
             succeed
           }
         }
 
-        Scenario("test 3") { fixture =>
+        Scenario("test 3") {
           Future {
             succeed
           }
@@ -439,26 +454,22 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        Scenario("test 1") { fixture =>
+        Scenario("test 1") {
           SleepHelper.sleep(60)
           succeed
         }
 
-        Scenario("test 2") { fixture =>
+        Scenario("test 2") {
           SleepHelper.sleep(30)
           succeed
         }
 
-        Scenario("test 3") { fixture =>
+        Scenario("test 3") {
           succeed
         }
 
@@ -482,12 +493,7 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
+      class MySuite extends AsyncFeatureSpecLike  {
         info(
           "hi there"
         )
@@ -506,21 +512,14 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in feature body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
-
-        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFeatureSpecLike  {
 
         Feature("test feature") {
           info(
             "hi there"
           )
 
-          Scenario("test 1") { fixture => succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
@@ -537,17 +536,13 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
+      class MySuite extends AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             info("hi there")
             succeed
           }
@@ -573,17 +568,13 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
+      class MySuite extends AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             Future {
               info("hi there")
               succeed
@@ -611,15 +602,7 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
-
-        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
+      class MySuite extends AsyncFeatureSpecLike  {
         note(
           "hi there"
         )
@@ -638,26 +621,25 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in feature body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
+      class MySuite extends AsyncFeatureSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
 
         Feature("test feature") {
           note(
             "hi there"
           )
 
-          Scenario("test 1") { fixture => succeed }
+          Scenario("test 1") {
+            succeed
+          }
         }
       }
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+
       // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS,NATIVE-END
@@ -668,18 +650,50 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(noteList(0).message == "hi there")
     }
 
-    it("should send a NoteProvided event for a note in scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
+    it("should report as failed test when non-fatal exception is thrown from scenario body") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+        Scenario("test 1") {
+          succeed
+        }
+
+        Scenario("test 2") {
+          throw new IllegalStateException("oops!")
+        }
+
+        Scenario("test 3") {
+          succeed
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testStartingEventsReceived(0).testName == "Scenario: test 1")
+      assert(rep.testStartingEventsReceived(1).testName == "Scenario: test 2")
+      assert(rep.testStartingEventsReceived(2).testName == "Scenario: test 3")
+      assert(rep.testSucceededEventsReceived.length == 2)
+      assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
+      assert(rep.testSucceededEventsReceived(1).testName == "Scenario: test 3")
+      assert(rep.testFailedEventsReceived.length == 1)
+      assert(rep.testFailedEventsReceived(0).testName == "Scenario: test 2")
+    }
+
+    it("should send a NoteProvided event for a note in scenario body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             note("hi there")
             succeed
           }
@@ -698,17 +712,13 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
+      class MySuite extends AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             Future {
               note("hi there")
               succeed
@@ -729,15 +739,7 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
-
-        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
+      class MySuite extends AsyncFeatureSpecLike  {
         alert(
           "hi there"
         )
@@ -756,26 +758,23 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in feature body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
+      class MySuite extends AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
 
         Feature("test feature") {
           alert(
             "hi there"
           )
 
-          Scenario("test 1") { fixture => succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+
       // SKIP-SCALATESTJS,NATIVE-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS,NATIVE-END
@@ -786,18 +785,52 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(alertList(0).message == "hi there")
     }
 
-    it("should send an AlertProvided event for an alert in scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
+    it("should report as failed test when non-fatal exception is thrown from Future returned by scenario body") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+        Scenario("test 1") {
+          succeed
+        }
+
+        Scenario("test 2") {
+          Future {
+            throw new IllegalStateException("oops!")
+          }
+        }
+
+        Scenario("test 3") {
+          succeed
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testStartingEventsReceived(0).testName == "Scenario: test 1")
+      assert(rep.testStartingEventsReceived(1).testName == "Scenario: test 2")
+      assert(rep.testStartingEventsReceived(2).testName == "Scenario: test 3")
+      assert(rep.testSucceededEventsReceived.length == 2)
+      assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
+      assert(rep.testSucceededEventsReceived(1).testName == "Scenario: test 3")
+      assert(rep.testFailedEventsReceived.length == 1)
+      assert(rep.testFailedEventsReceived(0).testName == "Scenario: test 2")
+    }
+
+    it("should send an AlertProvided event for an alert in scenario body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             alert("hi there")
             succeed
           }
@@ -816,17 +849,13 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
+      class MySuite extends AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             Future {
               alert("hi there")
               succeed
@@ -847,15 +876,7 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
-
-        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
+      class MySuite extends AsyncFeatureSpecLike  {
         markup(
           "hi there"
         )
@@ -874,21 +895,17 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in feature body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
+      class MySuite extends AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
 
         Feature("test feature") {
           markup(
             "hi there"
           )
 
-          Scenario("test 1") { fixture => succeed }
+          Scenario("test 1") { succeed }
         }
       }
       val suite = new MySuite
@@ -905,17 +922,13 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
+      class MySuite extends AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             markup("hi there")
             succeed
           }
@@ -941,17 +954,13 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by scenario body") {
-      class MySuite extends featurespec.FixtureAsyncFeatureSpec  {
+      class MySuite extends AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         Feature("test feature") {
-          Scenario("test 1") { fixture =>
+          Scenario("test 1") {
             Future {
               markup("hi there")
               succeed
@@ -978,30 +987,108 @@ class AsyncFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(markupProvided.text == "hi there")
     }
 
+
+
+    // SKIP-SCALATESTJS,NATIVE-START
+    it("should propagate fatal exception when thrown from scenario body") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+        Scenario("test 1") {
+          succeed
+        }
+
+        Scenario("test 2") {
+          throw new VirtualMachineError("oops!") {}
+        }
+
+        Scenario("test 3") {
+          succeed
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      assertThrows[VirtualMachineError] {
+        val suite = new ExampleSpec
+        suite.run(None, Args(reporter = rep))
+      }
+    }
+
+    it("should propagate fatal exception when thrown from Future returned by scenario body") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+        Scenario("test 1") {
+          succeed
+        }
+
+        Scenario("test 2") {
+          Future {
+            throw new VirtualMachineError("oops!") {}
+          }
+        }
+
+        Scenario("test 3") {
+          succeed
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      assertThrows[VirtualMachineError] {
+        val suite = new ExampleSpec
+        suite.run(None, Args(reporter = rep))
+      }
+    }
+    // SKIP-SCALATESTJS,NATIVE-END
+
+    it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
+      class TestSpec extends AsyncFeatureSpec {
+        Feature("a feature") {
+          Scenario("test 1") { succeed }
+          Scenario("test 1") { succeed }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+          new TestSpec
+        }
+      assert("AsyncFeatureSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInFeatureClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("Feature: a feature Scenario: test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("Feature: a feature Scenario: test 1")))
+    }
+
     it("should allow other execution context to be used") {
-      class TestSpec extends featurespec.FixtureAsyncFeatureSpec {
+      class TestSpec extends AsyncFeatureSpecLike {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         val a = 1
         Feature("feature 1") {
-          Scenario("scenario A") { fixture  =>
+          Scenario("scenario A") {
             Future { assert(a == 1) }
           }
         }
         Feature("feature 2")  {
-          Scenario("scenario B") { fixture  =>
+          Scenario("scenario B") {
             Future { assert(a == 1) }
           }
         }
         Feature("group3") {
-          Scenario("test C") { fixture  =>
+          Scenario("test C") {
             Future { assert(a == 1) }
           }
         }

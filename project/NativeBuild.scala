@@ -655,6 +655,7 @@ trait NativeBuild { this: BuildCommons =>
       "-m", "org.scalatest.enablers",
       "-m", "org.scalatest.expectations",
       "-m", "org.scalatest.diagrams",
+      "-m", "org.scalatest.featurespec",
       "-oDIF"))
 
   lazy val commonTestNative = Project("commonTestNative", file("native/common-test"))
@@ -748,13 +749,25 @@ trait NativeBuild { this: BuildCommons =>
     .settings(sharedSettings: _*)
     .settings(sharedTestSettingsNative: _*)
     .settings(
-      projectTitle := "ScalaTest Test",
+      projectTitle := "ScalaTest Diagrams Test",
       sourceGenerators in Test += {
         Def.task {
           GenScalaTestNative.genDiagramsTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(scalatestCoreNative % "test", scalatestDiagramsNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)  
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestFeatureSpecTestNative = Project("scalatestFeatureSpecTestNative", file("native/featurespec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "ScalaTest FeatureSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestNative.genFeatureSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)    
 
   lazy val scalatestModulesNative = (project in file("modules/native/modules-aggregation"))
     .settings(sharedSettings: _*)

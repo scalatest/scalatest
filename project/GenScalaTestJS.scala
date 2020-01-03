@@ -257,9 +257,6 @@ object GenScalaTestJS {
       copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList
 
-  def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
-
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     //copyStartsWithFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++
     //copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", List("FutureOutcomeSpec.scala"), targetDir)
@@ -368,5 +365,11 @@ object GenScalaTestJS {
       )
     )
   }
+
+  def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
+
+  def genFeatureSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)  
 
 }

@@ -225,6 +225,7 @@ trait JsBuild { this: BuildCommons =>
       "-m", "org.scalatest.enablers",
       "-m", "org.scalatest.expectations",
       "-m", "org.scalatest.diagrams",
+      "-m", "org.scalatest.featurespec",
       "-oDIF"))  
 
   lazy val commonTestJS = Project("commonTestJS", file("js/common-test"))
@@ -316,19 +317,31 @@ trait JsBuild { this: BuildCommons =>
         Def.task {
           GenMustMatchersTests.genTestForScalaJS((sourceManaged in Test).value, version.value, scalaVersion.value)
         }
-    ).dependsOn(scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestDiagramsTestJS = Project("scalatestDiagramsTestJS", file("js/diagrams-test"))
     .settings(sharedSettings: _*)
     .settings(sharedTestSettingsJS: _*)
     .settings(
-      projectTitle := "ScalaTest Test",
+      projectTitle := "ScalaTest Diagrams Test",
       sourceGenerators in Test += {
         Def.task {
           GenScalaTestJS.genDiagramsTest((sourceManaged in Test).value, version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(scalatestCoreJS % "test", scalatestDiagramsJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)    
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestFeatureSpecTestJS = Project("scalatestFeatureSpecTestJS", file("js/featurespec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsJS: _*)
+    .settings(
+      projectTitle := "ScalaTest FeatureSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestJS.genFeatureSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)      
 
   val scalatestJSDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,

@@ -272,7 +272,10 @@ object GenScalaTestDotty {
       )*/
     }
 
-    def genScalaTestDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
       copyDir("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
+
+    def genFeatureSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+      copyDir("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)  
 
 }
