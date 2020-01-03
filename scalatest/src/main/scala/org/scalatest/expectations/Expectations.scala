@@ -62,7 +62,7 @@ private[scalatest] trait Expectations {
     }
   }
 
-  def expectThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], prettifier: Prettifier): Expectation = {
+  @noinline def expectThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], prettifier: Prettifier): Expectation = {
     val clazz = classTag.runtimeClass
     try {
       f

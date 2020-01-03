@@ -41,7 +41,7 @@ final class ResultOfTheTypeInvocation[T](clazzTag: ClassTag[T], pos: source.Posi
    *                                     ^
    * </pre>
    **/
-  def thrownBy(fun: => Any): T = {
+  @noinline def thrownBy(fun: => Any): T = {
     checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, pos)
   }
   

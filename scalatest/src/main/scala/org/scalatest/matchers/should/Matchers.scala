@@ -3026,7 +3026,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                                ^
    * </pre>
    */
-  def thrownBy(fun: => Any) = new ResultOfThrownByApplication(fun)
+  @noinline def thrownBy(fun: => Any) = new ResultOfThrownByApplication(fun)
 
   /**
    * This method enables the following syntax:

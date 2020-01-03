@@ -94,7 +94,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  @noinline final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
@@ -102,7 +102,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
     engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyFlatSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  @noinline final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
@@ -267,7 +267,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * the <a href="AnyFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos)
     }
 
@@ -311,7 +311,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * the <a href="AnyFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos)
     }
   }
@@ -379,7 +379,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos)
     }
 
@@ -421,7 +421,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos)
     }
 
@@ -673,7 +673,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * the <a href="AnyFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", () => testFun, pos)
     }
 
@@ -770,7 +770,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", () => testFun, pos)
     }
 
@@ -982,7 +982,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * the <a href="AnyFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos)
     }
 
@@ -1026,7 +1026,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * the <a href="AnyFlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos)
     }
   }
@@ -1094,7 +1094,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos)
     }
 
@@ -1136,7 +1136,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos)
     }
 
@@ -1395,7 +1395,7 @@ import resultOfStringPassedToVerb.verb
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos)
     }
     
@@ -1416,7 +1416,7 @@ import resultOfStringPassedToVerb.verb
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", () => testFun, pos)
     }
   }
@@ -1493,7 +1493,7 @@ import resultOfStringPassedToVerb.verb
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos)
     }
 
@@ -1516,7 +1516,7 @@ import resultOfStringPassedToVerb.verb
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", () => testFun, pos)
     }
   }

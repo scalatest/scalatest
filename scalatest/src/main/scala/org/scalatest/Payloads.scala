@@ -63,7 +63,7 @@ trait Payloads {
    * </pre>
    *
   */
-  def withPayload[T](payload: => Any)(fun: => T): T = {
+  @noinline def withPayload[T](payload: => Any)(fun: => T): T = {
     try {
       val outcome: T = fun
       outcome match {

@@ -92,7 +92,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  @noinline final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS,NATIVE-END
@@ -100,7 +100,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
     engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyFreeSpecLike.scala", "registerTest", 5, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  @noinline final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
@@ -194,7 +194,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
      * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */): Unit = {
+    @noinline def in(testFun: => Any /* Assertion */): Unit = {
       registerTestToRun(specText, tags, "in", () => testFun, pos)
     }
 
@@ -234,7 +234,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
      * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */): Unit = {
+    @noinline def ignore(testFun: => Any /* Assertion */): Unit = {
       registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)
     }
   }       
@@ -290,7 +290,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
      * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
-    def in(f: => Any /* Assertion */): Unit = {
+    @noinline def in(f: => Any /* Assertion */): Unit = {
       registerTestToRun(string, List(), "in", () => f, pos)
     }
 
@@ -310,7 +310,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
      * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
-    def ignore(f: => Any /* Assertion */): Unit = {
+    @noinline def ignore(f: => Any /* Assertion */): Unit = {
       registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
 

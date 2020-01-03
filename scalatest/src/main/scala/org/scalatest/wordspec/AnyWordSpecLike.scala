@@ -87,7 +87,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  @noinline final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
@@ -95,7 +95,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
     engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyWordSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  @noinline final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
@@ -269,7 +269,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(specText, tags, "in", () => testFun, pos)
     }
 
@@ -309,7 +309,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)
     }
   }       
@@ -347,7 +347,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
-    def in(f: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def in(f: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(string, List(), "in", () => f, pos)
     }
 
@@ -367,7 +367,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
-    def ignore(f: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    @noinline def ignore(f: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
 

@@ -35,7 +35,7 @@ final class ResultOfBeWordForNoException(pos: source.Position) {
    *                       ^
    * </pre>
    **/
-  def thrownBy(fun: => Any): Assertion = {
+  @noinline def thrownBy(fun: => Any): Assertion = {
     checkNoException(fun, pos)
   }
 
