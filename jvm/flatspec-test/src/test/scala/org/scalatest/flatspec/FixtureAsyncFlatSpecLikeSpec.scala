@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.flatspec
 
 import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest._
@@ -25,7 +25,7 @@ import scala.util.Success
 import org.scalatest
 import org.scalatest.flatspec
 
-class AsyncFlatSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
+class FixtureAsyncFlatSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
 
    describe("AsyncFlatSpecLike") {
 

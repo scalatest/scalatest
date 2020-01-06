@@ -13,9 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.flatspec
 
-import SharedHelpers._
+import org.scalatest.SharedHelpers._
+import org.scalatest.GivenWhenThen
+import org.scalatest.Args
+import org.scalatest.Outcome
+import org.scalatest.ConfigMap
+import org.scalatest.Stopper
+import org.scalatest.Filter
+import org.scalatest.Tracker
+import org.scalatest.mytags
+import org.scalatest.Exceptional
+import org.scalatest.Suites
+import org.scalatest.expectations
 import org.scalatest.events._
 import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.exceptions.DuplicateTestNameException

@@ -767,7 +767,19 @@ trait NativeBuild { this: BuildCommons =>
           GenScalaTestNative.genFeatureSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)    
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestFlatSpecTestNative = Project("scalatestFlatSpecTestNative", file("native/flatspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "ScalaTest FlatSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestNative.genFlatSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)      
 
   lazy val scalatestModulesNative = (project in file("modules/native/modules-aggregation"))
     .settings(sharedSettings: _*)

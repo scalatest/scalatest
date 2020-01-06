@@ -655,4 +655,7 @@ object GenScalaTestNative {
   def genFeatureSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyFiles("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", nonAsyncs("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec"), targetDir)
 
+  def genFlatSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyFiles("jvm/featurespec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", nonAsyncs("jvm/featurespec-test/src/test/scala/org/scalatest/flatspec"), targetDir)  
+
 }

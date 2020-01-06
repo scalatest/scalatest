@@ -13,57 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.flatspec
 
+import org.scalatest.SharedHelpers.EventRecordingReporter
 import scala.concurrent.{ExecutionContext, Promise, Future}
-import org.scalatest._
-import SharedHelpers.EventRecordingReporter
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
-import org.scalatest
-import org.scalatest.flatspec
+import org.scalatest.flatspec.AsyncFlatSpecLike
+import org.scalatest.funspec
+import org.scalatest.Args
+import org.scalatest.ParallelTestExecution
+import org.scalatest.Assertion
+import org.scalatest.Succeeded
 
-class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
+class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
-  describe("AsyncFlatSpec") {
+  describe("AsyncFlatSpecLike") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec with ParallelTestExecution {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class ExampleSpec extends AsyncFlatSpecLike with ParallelTestExecution {
 
         val a = 1
 
-        it should "test 1" in { fixture =>
+        it should "test 1" in {
           Future {
             assert(a == 1)
           }
         }
 
-        it should "test 2" in { fixture =>
+        it should "test 2" in {
           Future {
             assert(a == 2)
           }
         }
 
-        it should "test 3" in { fixture =>
+        it should "test 3" in {
           Future {
             pending
           }
         }
 
-        it should "test 4" in { fixture =>
+        it should "test 4" in {
           Future {
             cancel
           }
         }
 
-        it should "test 5" ignore { fixture =>
+        it should "test 5" ignore {
           Future {
             cancel
           }
@@ -94,31 +93,27 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec with ParallelTestExecution {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class ExampleSpec extends AsyncFlatSpecLike with ParallelTestExecution {
 
         val a = 1
 
-        it should "test 1" in { fixture =>
+        it should "test 1" in {
           assert(a == 1)
         }
 
-        it should "test 2" in { fixture =>
+        it should "test 2" in {
           assert(a == 2)
         }
 
-        it should "test 3" in { fixture =>
+        it should "test 3" in {
           pending
         }
 
-        it should "test 4" in { fixture =>
+        it should "test 4" in {
           cancel
         }
 
-        it should "test 5" ignore { fixture =>
+        it should "test 5" ignore {
           cancel
         }
 
@@ -149,13 +144,9 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
+      class ExampleSpec extends AsyncFlatSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        it should "test 1" in { fixture =>
+        it should "test 1" in {
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -164,7 +155,7 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
           }
         }
 
-        it should "test 2" in { fixture =>
+        it should "test 2" in {
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -173,7 +164,7 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
           }
         }
 
-        it should "test 3" in { fixture =>
+        it should "test 3" in {
           Future {
             assert(count == 2)
           }
@@ -196,27 +187,23 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
+      class ExampleSpec extends AsyncFlatSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        it should "test 1" in { fixture =>
+        it should "test 1" in {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
           Succeeded
         }
 
-        it should "test 2" in { fixture =>
+        it should "test 2" in {
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
           Succeeded
         }
 
-        it should "test 3" in { fixture =>
+        it should "test 3" in {
           assert(count == 2)
         }
 
@@ -231,6 +218,7 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
         assert(repo.testStartingEventsReceived.length == 3)
         assert(repo.testSucceededEventsReceived.length == 3)
       }
+
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
@@ -241,20 +229,16 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
+      class ExampleSpec extends AsyncFlatSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        it should "test 1" in { fixture =>
+        it should "test 1" in {
           Future {
             test1Thread = Some(Thread.currentThread)
             succeed
           }
         }
 
-        it should "test 2" in { fixture =>
+        it should "test 2" in {
           Future {
             test2Thread = Some(Thread.currentThread)
             succeed
@@ -288,13 +272,9 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
+      class ExampleSpec extends AsyncFlatSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        it should "test 1" in { fixture =>
+        it should "test 1" in {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -311,7 +291,7 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
           }
         }
 
-        it should "test 2" in { fixture =>
+        it should "test 2" in {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -351,15 +331,11 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
+      class ExampleSpec extends AsyncFlatSpecLike {
 
         // Note we get a StackOverflowError with the following execution
         // context.
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
           xs match {
@@ -367,7 +343,7 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
             case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
           }
 
-        it should "test 1" in { fixture =>
+        it should "test 1" in {
           val fut: Future[Int] = sum((1 to 50000).toList)
           fut.map(total => assert(total == 1250025000))
         }
@@ -387,27 +363,23 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
+      class ExampleSpec extends AsyncFlatSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        it should "test 1" in { fixture =>
+        it should "test 1" in {
           Future {
             SleepHelper.sleep(60)
             succeed
           }
         }
 
-        it should "test 2" in { fixture =>
+        it should "test 2" in {
           Future {
             SleepHelper.sleep(30)
             succeed
           }
         }
 
-        it should "test 3" in { fixture =>
+        it should "test 3" in {
           Future {
             succeed
           }
@@ -438,23 +410,19 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
+      class ExampleSpec extends AsyncFlatSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        it should "test 1" in { fixture =>
+        it should "test 1" in {
           SleepHelper.sleep(60)
           succeed
         }
 
-        it should "test 2" in { fixture =>
+        it should "test 2" in {
           SleepHelper.sleep(30)
           succeed
         }
 
-        it should "test 3" in { fixture =>
+        it should "test 3" in {
           succeed
         }
 
@@ -482,12 +450,7 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
+      class MySuite extends AsyncFlatSpecLike  {
         info(
           "hi there"
         )
@@ -507,13 +470,9 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in test body") {
-      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
+      class MySuite extends AsyncFlatSpecLike  {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        "test feature" should "test 1" in { fixture =>
+        "test feature" should "test 1" in {
           info("hi there")
           succeed
         }
@@ -538,14 +497,10 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
       }
     }
 
-    it("should send an InfoProvided event for an info in Future returned by scenario body") {
-      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
+    it("should send an InfoProvided event for an info in Future returned by test body") {
+      class MySuite extends AsyncFlatSpecLike  {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        "test feature" should "test 1" in { fixture =>
+        "test feature" should "test 1" in {
           Future {
             info("hi there")
             succeed
@@ -573,10 +528,7 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFlatSpecLike  {
         note(
           "hi there"
         )
@@ -596,11 +548,9 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in test body") {
-      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-        "test feature" should "test 1" in { fixture =>
+      class MySuite extends AsyncFlatSpecLike  {
+
+        "test feature" should "test 1" in {
           note("hi there")
           succeed
         }
@@ -618,12 +568,10 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
       }
     }
 
-    it("should send a NoteProvided event for a note in Future returned by test body") {
-      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-        "test feature" should "test 1" in { fixture =>
+    it("should send a NoteProvided event for a note in Future returned by scenario body") {
+      class MySuite extends AsyncFlatSpecLike  {
+
+        "test feature" should "test 1" in {
           Future {
             note("hi there")
             succeed
@@ -644,10 +592,7 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFlatSpecLike  {
         alert(
           "hi there"
         )
@@ -667,11 +612,9 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in test body") {
-      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-        "test feature" should "test 1" in { fixture =>
+      class MySuite extends AsyncFlatSpecLike  {
+
+        "test feature" should "test 1" in {
           alert("hi there")
           succeed
         }
@@ -689,12 +632,10 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
       }
     }
 
-    it("should send an AlertProvided event for an alert in Future returned by test body") {
-      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-        "test feature" should "test 1" in { fixture =>
+    it("should send an AlertProvided event for an alert in Future returned by scenario body") {
+      class MySuite extends AsyncFlatSpecLike  {
+
+        "test feature" should "test 1" in {
           Future {
             alert("hi there")
             succeed
@@ -715,10 +656,7 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncFlatSpecLike  {
         markup(
           "hi there"
         )
@@ -738,11 +676,9 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in test body") {
-      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-        "test feature" should "test 1" in { fixture =>
+      class MySuite extends AsyncFlatSpecLike  {
+
+        "test feature" should "test 1" in {
           markup("hi there")
           succeed
         }
@@ -767,12 +703,10 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
       }
     }
 
-    it("should send a MarkupProvided event for a markup in Future returned by scenario body") {
-      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-        "test feature" should "test 1" in { fixture =>
+    it("should send a MarkupProvided event for a markup in Future returned by test body") {
+      class MySuite extends AsyncFlatSpecLike  {
+
+        "test feature" should "test 1" in {
           Future {
             markup("hi there")
             succeed
@@ -800,24 +734,19 @@ class AsyncFlatSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends flatspec.FixtureAsyncFlatSpec {
+      class TestSpec extends AsyncFlatSpecLike {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         val a = 1
-        "feature 1" should "test A" in { fixture =>
+        "feature 1" should "test A" in {
           Future { assert(a == 1) }
         }
-        "feature 2" should "test B" in { fixture =>
+        "feature 2" should "test B" in {
           Future { assert(a == 1) }
         }
-        "feature 3" should "test C" in { fixture =>
+        "feature 3" should "test C" in {
           Future { assert(a == 1) }
         }
       }

@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.flatspec
 
 import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers._
-
-/*
-This tests that matchers works with FlatSpec when matchers are imported,
-something that broke in 2.1.RC1.
-*/
-class FlatSpecImportedMatchersSpec extends AnyFlatSpec {
+import org.scalatest.matchers.should.Matchers
+class FlatSpecMixedInMatchersSpec extends AnyFlatSpec with Matchers {
   "This spec" should "work OK" in {
     "hello" should startWith ("he")
     "hello" should endWith ("lo")

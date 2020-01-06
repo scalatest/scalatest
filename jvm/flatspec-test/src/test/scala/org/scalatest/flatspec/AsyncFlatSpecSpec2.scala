@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.flatspec
 
-import SharedHelpers.EventRecordingReporter
+import org.scalatest.SharedHelpers.EventRecordingReporter
 import scala.concurrent.{ExecutionContext, Promise, Future}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
-import org.scalatest.flatspec.AsyncFlatSpecLike
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.funspec
+import org.scalatest.Args
+import org.scalatest.Assertion
+import org.scalatest.Succeeded
+import org.scalatest.ParallelTestExecution
 
-class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
+class AsyncFlatSpecSpec2 extends funspec.AsyncFunSpec {
 
-  describe("AsyncFlatSpecLike") {
+  describe("AsyncFlatSpec") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFlatSpecLike with ParallelTestExecution {
+      class ExampleSpec extends AsyncFlatSpec with ParallelTestExecution {
 
         val a = 1
 
@@ -88,7 +93,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFlatSpecLike with ParallelTestExecution {
+      class ExampleSpec extends AsyncFlatSpec with ParallelTestExecution {
 
         val a = 1
 
@@ -139,7 +144,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends AsyncFlatSpec {
 
         it should "test 1" in {
           Future {
@@ -182,7 +187,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends AsyncFlatSpec {
 
         it should "test 1" in {
           SleepHelper.sleep(30)
@@ -213,7 +218,6 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
         assert(repo.testStartingEventsReceived.length == 3)
         assert(repo.testSucceededEventsReceived.length == 3)
       }
-
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
@@ -224,7 +228,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends AsyncFlatSpec {
 
         it should "test 1" in {
           Future {
@@ -267,7 +271,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends AsyncFlatSpec {
 
         it should "test 1" in {
           val promise = Promise[Assertion]
@@ -326,7 +330,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends AsyncFlatSpec {
 
         // Note we get a StackOverflowError with the following execution
         // context.
@@ -358,7 +362,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends AsyncFlatSpec {
 
         it should "test 1" in {
           Future {
@@ -405,7 +409,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends AsyncFlatSpec {
 
         it should "test 1" in {
           SleepHelper.sleep(60)
@@ -445,7 +449,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends AsyncFlatSpec  {
         info(
           "hi there"
         )
@@ -465,7 +469,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in test body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends AsyncFlatSpec  {
 
         "test feature" should "test 1" in {
           info("hi there")
@@ -493,7 +497,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by test body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends AsyncFlatSpec  {
 
         "test feature" should "test 1" in {
           Future {
@@ -523,7 +527,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends AsyncFlatSpec  {
         note(
           "hi there"
         )
@@ -543,7 +547,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in test body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends AsyncFlatSpec  {
 
         "test feature" should "test 1" in {
           note("hi there")
@@ -564,7 +568,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by scenario body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends AsyncFlatSpec  {
 
         "test feature" should "test 1" in {
           Future {
@@ -587,7 +591,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends AsyncFlatSpec  {
         alert(
           "hi there"
         )
@@ -607,7 +611,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in test body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends AsyncFlatSpec  {
 
         "test feature" should "test 1" in {
           alert("hi there")
@@ -628,7 +632,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by scenario body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends AsyncFlatSpec  {
 
         "test feature" should "test 1" in {
           Future {
@@ -651,7 +655,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends AsyncFlatSpec  {
         markup(
           "hi there"
         )
@@ -671,7 +675,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in test body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends AsyncFlatSpec  {
 
         "test feature" should "test 1" in {
           markup("hi there")
@@ -699,7 +703,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends AsyncFlatSpec  {
 
         "test feature" should "test 1" in {
           Future {
@@ -729,7 +733,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends AsyncFlatSpecLike {
+      class TestSpec extends AsyncFlatSpec {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
@@ -748,14 +752,14 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
       val suite = new TestSpec
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { r =>
-        assert(reporter.scopeOpenedEventsReceived.length == 3)
-        assert(reporter.scopeClosedEventsReceived.length == 3)
-        assert(reporter.testStartingEventsReceived.length == 3)
-        assert(reporter.testSucceededEventsReceived.length == 3)
-      }
+
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
+      assert(reporter.scopeOpenedEventsReceived.length == 3)
+      assert(reporter.scopeClosedEventsReceived.length == 3)
+      assert(reporter.testStartingEventsReceived.length == 3)
+      assert(reporter.testSucceededEventsReceived.length == 3)
     }
 
   }

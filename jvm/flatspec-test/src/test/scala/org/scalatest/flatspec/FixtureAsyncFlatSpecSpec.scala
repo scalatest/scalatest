@@ -13,61 +13,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.flatspec
 
-import SharedHelpers.EventRecordingReporter
 import scala.concurrent.{Promise, ExecutionContext, Future}
+import org.scalatest._
+import SharedHelpers.{EventRecordingReporter, thisLineNumber}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
+import org.scalatest.exceptions.DuplicateTestNameException
 
 import scala.util.Success
-import org.scalatest.flatspec.{ AsyncFlatSpec, AsyncFlatSpecLike }
+import org.scalatest
+import org.scalatest.flatspec
 
-class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
+class FixtureAsyncFlatSpecSpec extends scalatest.funspec.AnyFunSpec {
 
-  describe("AsyncFlatSpecLike") {
+  describe("AsyncFlatSpec") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFlatSpecLike with ParallelTestExecution {
+      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
         val a = 1
 
-        it should "test 1" in {
+        it should "test 1" in { fixture =>
           Future {
             assert(a == 1)
           }
         }
 
-        it should "test 2" in {
+        it should "test 2" in { fixture =>
           Future {
             assert(a == 2)
           }
         }
 
-        it should "test 3" in {
+        it should "test 3" in { fixture =>
           Future {
             pending
           }
         }
 
-        it should "test 4" in {
+        it should "test 4" in { fixture =>
           Future {
             cancel
           }
         }
 
-        it should "test 5" ignore {
+        it should "test 5" ignore { fixture =>
           Future {
             cancel
           }
         }
 
         override def newInstance = new ExampleSpec
-
       }
 
       val rep = new EventRecordingReporter
@@ -91,35 +97,38 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFlatSpecLike with ParallelTestExecution {
+      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
         val a = 1
 
-        it should "test 1" in {
+        it should "test 1" in { fixture =>
           assert(a == 1)
         }
 
-        it should "test 2" in {
+        it should "test 2" in { fixture =>
           assert(a == 2)
         }
 
-        it should "test 3" in {
+        it should "test 3" in { fixture =>
           pending
         }
 
-        it should "test 4" in {
+        it should "test 4" in { fixture =>
           cancel
         }
 
-        it should "test 5" ignore {
+        it should "test 5" ignore { fixture =>
           cancel
         }
 
         override def newInstance = new ExampleSpec
-
       }
 
       val rep = new EventRecordingReporter
@@ -141,50 +150,20 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "should test 5")
     }
 
-    it("can be used with is for pending tests that don't return a Future") {
-
-      class ExampleSpec extends AsyncFlatSpec {
-
-        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
-
-        val a = 1
-
-        it should "test 1" is {
-          pending
-        }
-
-        it should "test 2" ignore {
-          pending
-        }
-      }
-
-      val rep = new EventRecordingReporter
-      val spec = new ExampleSpec
-      val status = spec.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS,NATIVE-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
-      assert(rep.testStartingEventsReceived.length == 1)
-      assert(rep.testSucceededEventsReceived.length == 0)
-      assert(rep.testFailedEventsReceived.length == 0)
-      assert(rep.testPendingEventsReceived.length == 1)
-      assert(rep.testPendingEventsReceived(0).testName == "should test 1")
-      assert(rep.testCanceledEventsReceived.length == 0)
-      assert(rep.testIgnoredEventsReceived.length == 1)
-      assert(rep.testIgnoredEventsReceived(0).testName == "should test 2")
-    }
-
     it("should run tests that return Future in serial by default") {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        it should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        it should "test 1" in { fixture =>
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -193,7 +172,7 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
           }
         }
 
-        it should "test 2" in {
+        it should "test 2" in { fixture =>
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -202,7 +181,7 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
           }
         }
 
-        it should "test 3" in {
+        it should "test 3" in { fixture =>
           Future {
             assert(count == 2)
           }
@@ -226,26 +205,30 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        it should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        it should "test 1" in { fixture =>
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
           succeed
         }
 
-        it should "test 2" in {
+        it should "test 2" in { fixture =>
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
           succeed
         }
 
-        it should "test 3" in {
+        it should "test 3" in { fixture =>
           assert(count == 2)
         }
 
@@ -271,16 +254,20 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
 
-        it should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        it should "test 1" in { fixture =>
           Future {
             test1Thread = Some(Thread.currentThread)
             succeed
           }
         }
 
-        it should "test 2" in {
+        it should "test 2" in { fixture =>
           Future {
             test2Thread = Some(Thread.currentThread)
             succeed
@@ -311,9 +298,13 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
 
-        it should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        it should "test 1" in { fixture =>
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -330,7 +321,7 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
           }
         }
 
-        it should "test 2" in {
+        it should "test 2" in { fixture =>
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -367,11 +358,15 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
 
         // Note we get a StackOverflowError with the following execution
         // context.
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
           xs match {
@@ -379,7 +374,7 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
             case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
           }
 
-        it should "test 1" in {
+        it should "test 1" in { fixture =>
           val fut: Future[Int] = sum((1 to 50000).toList)
           fut.map(total => assert(total == 1250025000))
         }
@@ -395,26 +390,30 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        it should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        it should "test 1" in { fixture =>
           Future {
             SleepHelper.sleep(60)
             succeed
           }
         }
 
-        it should "test 2" in {
+        it should "test 2" in { fixture =>
           Future {
             SleepHelper.sleep(30)
             succeed
           }
         }
 
-        it should "test 3" in {
+        it should "test 3" in { fixture =>
           Future {
             succeed
           }
@@ -441,22 +440,26 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncFlatSpecLike {
+      class ExampleSpec extends flatspec.FixtureAsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        it should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        it should "test 1" in { fixture =>
           SleepHelper.sleep(60)
           succeed
         }
 
-        it should "test 2" in {
+        it should "test 2" in { fixture =>
           SleepHelper.sleep(30)
           succeed
         }
 
-        it should "test 3" in {
+        it should "test 3" in { fixture =>
           succeed
         }
 
@@ -480,7 +483,15 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
         info(
           "hi there"
         )
@@ -499,12 +510,16 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in test body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        "test feature" should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        "test feature" should "test 1" in { fixture =>
           info("hi there")
           succeed
         }
@@ -529,12 +544,16 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by scenario body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        "test feature" should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        "test feature" should "test 1" in { fixture =>
           Future {
             info("hi there")
             succeed
@@ -561,7 +580,14 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         note(
           "hi there"
         )
@@ -580,12 +606,15 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in test body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        "test feature" should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+        "test feature" should "test 1" in { fixture =>
           note("hi there")
           succeed
         }
@@ -603,12 +632,15 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by test body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        "test feature" should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+        "test feature" should "test 1" in { fixture =>
           Future {
             note("hi there")
             succeed
@@ -628,7 +660,14 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         alert(
           "hi there"
         )
@@ -647,12 +686,15 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in test body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        "test feature" should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+        "test feature" should "test 1" in { fixture =>
           alert("hi there")
           succeed
         }
@@ -670,12 +712,15 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by test body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        "test feature" should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+        "test feature" should "test 1" in { fixture =>
           Future {
             alert("hi there")
             succeed
@@ -695,7 +740,14 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         markup(
           "hi there"
         )
@@ -714,12 +766,15 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in test body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        "test feature" should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+        "test feature" should "test 1" in { fixture =>
           markup("hi there")
           succeed
         }
@@ -744,12 +799,15 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by scenario body") {
-      class MySuite extends AsyncFlatSpecLike  {
+      class MySuite extends flatspec.FixtureAsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-        "test feature" should "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+        "test feature" should "test 1" in { fixture =>
           Future {
             markup("hi there")
             succeed
@@ -775,20 +833,41 @@ class AsyncFlatSpecLikeSpec extends funspec.AnyFunSpec {
       assert(markupProvided.text == "hi there")
     }
 
+    it("should generate a DuplicateTestNameException when duplicate test name is detected") {
+      class TestSpec extends flatspec.FixtureAsyncFlatSpec {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome = test("testing")
+        behavior of "a feature"
+        it should "test 1" in { fixture => succeed }
+        it should "test 1" in { fixture => succeed }
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("FixtureAsyncFlatSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
+      assert(!e.cause.isDefined)
+    }
+
     it("should allow other execution context to be used") {
-      class TestSpec extends AsyncFlatSpecLike {
+      class TestSpec extends flatspec.FixtureAsyncFlatSpec {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
         val a = 1
-        "feature 1" should "test A" in {
+        "feature 1" should "test A" in { fixture =>
           Future { assert(a == 1) }
         }
-        "feature 2" should "test B" in {
+        "feature 2" should "test B" in { fixture =>
           Future { assert(a == 1) }
         }
-        "feature 3" should "test C" in {
+        "feature 3" should "test C" in { fixture =>
           Future { assert(a == 1) }
         }
       }

@@ -691,6 +691,19 @@ trait DottyBuild { this: BuildCommons =>
           GenScalaTestDotty.genFeatureSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(commonTestDotty % "test")      
+    ).dependsOn(commonTestDotty % "test")
+
+  lazy val scalatestFlatSpecTestDotty = Project("scalatestFlatSpecTestDotty", file("dotty/flatspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDotty)
+    .settings(
+      projectTitle := "ScalaTest FlatSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestDotty.genFlatSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestDotty % "test")        
 
 }
