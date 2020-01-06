@@ -29,6 +29,8 @@ class FixtureAsyncFlatSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
 
    describe("AsyncFlatSpecLike") {
 
+     // SKIP-DOTTY-START
+    // ParallelTestExecution not working yet.
      it("can be used for tests that return Future under parallel async test execution") {
 
        class ExampleSpec extends flatspec.FixtureAsyncFlatSpecLike with ParallelTestExecution {
@@ -62,13 +64,13 @@ class FixtureAsyncFlatSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
 
          it should "test 4" in { fixture =>
            Future {
-             cancel
+             cancel()
            }
          }
 
          it should "test 5" ignore { fixture =>
            Future {
-             cancel
+             cancel()
            }
          }
 
@@ -120,11 +122,11 @@ class FixtureAsyncFlatSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
          }
 
          it should "test 4" in { fixture =>
-           cancel
+           cancel()
          }
 
          it should "test 5" ignore { fixture =>
-           cancel
+           cancel()
          }
 
          override def newInstance = new ExampleSpec
@@ -148,6 +150,7 @@ class FixtureAsyncFlatSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
        assert(rep.testIgnoredEventsReceived.length == 1)
        assert(rep.testIgnoredEventsReceived(0).testName == "should test 5")
      }
+     // SKIP-DOTTY-END
 
      it("should run tests that return Future in serial by default") {
 

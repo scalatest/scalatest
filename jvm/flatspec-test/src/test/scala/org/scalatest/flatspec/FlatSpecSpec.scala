@@ -118,10 +118,19 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       }
     }
 
+    trait InvokeChecking {
+      var withFixtureWasInvoked = false
+      var testWasInvoked = false  
+    }
+
+    trait CallChecking {
+      var theTestThisCalled = false
+      var theTestThatCalled = false
+      var theTestTheOtherCalled = false
+    }
+
     it("should invoke withFixture from runTest") {
-      val a = new AnyFlatSpec {
-        var withFixtureWasInvoked = false
-        var testWasInvoked = false
+      val a = new AnyFlatSpec with InvokeChecking {
         override def withFixture(test: NoArgTest): Outcome = {
           withFixtureWasInvoked = true
           super.withFixture(test)
@@ -138,9 +147,13 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(a.withFixtureWasInvoked)
       assert(a.testWasInvoked)
     }
+
+    trait TestNameChecking {
+      var correctTestNameWasPassed = false
+    }
+
     it("should pass the correct test name in the NoArgTest passed to withFixture") {
-      val a = new AnyFlatSpec {
-        var correctTestNameWasPassed = false
+      val a = new AnyFlatSpec with TestNameChecking {
         override def withFixture(test: NoArgTest): Outcome = {
           correctTestNameWasPassed = test.name == "should do something"
           super.withFixture(test)
@@ -153,9 +166,13 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
+
+    trait ConfigMapChecking {
+      var correctConfigMapWasPassed = false
+    }
+
     it("should pass the correct config map in the NoArgTest passed to withFixture") {
-      val a = new AnyFlatSpec {
-        var correctConfigMapWasPassed = false
+      val a = new AnyFlatSpec with ConfigMapChecking {
         override def withFixture(test: NoArgTest): Outcome = {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
           super.withFixture(test)
@@ -188,12 +205,12 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
         val myRep = new EventRecordingReporter
         spec.run(None, Args(myRep))
         val testStarting = myRep.testStartingEventsReceived
-        assert(1 === testStarting.size)
+        assert(1 == testStarting.size)
         val testSucceeded = myRep.testSucceededEventsReceived
-        assert(1 === testSucceeded.size)
-        assert(1 === testSucceeded(0).recordedEvents.size)
+        assert(1 == testSucceeded.size)
+        assert(1 == testSucceeded(0).recordedEvents.size)
         val ip: InfoProvided = testSucceeded(0).recordedEvents(0).asInstanceOf[InfoProvided]
-        assert(spec.msg === ip.message)
+        assert(spec.msg == ip.message)
       }
       class InfoBeforeTestFlatSpec extends AnyFlatSpec {
         val msg = "hi there, dude"
@@ -241,14 +258,14 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       it("should send an InfoProvided with an IndentedText formatter with level 0 when called outside a test") {
         val spec = new InfoBeforeTestFlatSpec
         val indentedText = getIndentedTextFromInfoProvided(spec)
-        assert(indentedText === IndentedText("+ " + spec.msg, spec.msg, 0))
+        assert(indentedText == IndentedText("+ " + spec.msg, spec.msg, 0))
       }
       it("should send an InfoProvided with an IndentedText formatter with level 1 when called within a test") {
         val spec = new InfoInsideTestFlatSpec
         val myRep = new EventRecordingReporter
         spec.run(None, Args(myRep))
         val indentedText = getIndentedTextFromTestInfoProvided(spec)
-        assert(indentedText === IndentedText("  + " + spec.msg, spec.msg, 1))
+        assert(indentedText == IndentedText("  + " + spec.msg, spec.msg, 1))
       }
       it("should work when using the shorthand notation for 'behavior of'") {
         val e = new AnyFlatSpec with Matchers {
@@ -307,7 +324,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
           it should "blow up" in {
             behavior of "in the wrong place, at the wrong time"
             it should "never run" in {
-              assert(1 === 1)
+              assert(1 == 1)
             }; /* ASSERTION_SUCCEED */
           }
         }
@@ -321,7 +338,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
           it should "blow up" in {
             "in the wrong place, at the wrong time" should "definitely blow up" in {
               it should "never run" in {
-                assert(1 === 1)
+                assert(1 == 1)
               }
               /* ASSERTION_SUCCEED */
             }
@@ -337,7 +354,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
         class MySpec extends AnyFlatSpec {
           it should "blow up" in {
             it should "never run" in {
-              assert(1 === 1)
+              assert(1 == 1)
             }
             /* ASSERTION_SUCCEED */
           }
@@ -351,7 +368,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
         class MySpec extends AnyFlatSpec {
           it should "blow up" in {
             it should "never run" taggedAs(mytags.SlowAsMolasses) in {
-              assert(1 === 1)
+              assert(1 == 1)
             }
             /* ASSERTION_SUCCEED */
           }
@@ -365,7 +382,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
         class MySpec extends AnyFlatSpec {
           registerTest("should blow up")  {
             registerTest("should never run", mytags.SlowAsMolasses) {
-              assert(1 === 1)
+              assert(1 == 1)
             }
             /* ASSERTION_SUCCEED */
           }
@@ -380,7 +397,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
           it should "blow up" in {
             behavior of "in the wrong place, at the wrong time"
             ignore should "never run" in {
-              assert(1 === 1)
+              assert(1 == 1)
             }
             /* ASSERTION_SUCCEED */
           }
@@ -394,7 +411,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
         class MySpec extends AnyFlatSpec {
           it should "blow up" in {
             ignore should "never run" in {
-              assert(1 === 1)
+              assert(1 == 1)
             }
             /* ASSERTION_SUCCEED */
           }
@@ -408,7 +425,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
         class MySpec extends AnyFlatSpec {
           it should "blow up" in {
             ignore should "never run" taggedAs(mytags.SlowAsMolasses) in {
-              assert(1 === 1)
+              assert(1 == 1)
             }
             /* ASSERTION_SUCCEED */
           }
@@ -422,7 +439,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
         class MySpec extends AnyFlatSpec {
           registerTest("should blow up") {
             registerIgnoredTest("should never run", mytags.SlowAsMolasses) {
-              assert(1 === 1)
+              assert(1 == 1)
             }
             /* ASSERTION_SUCCEED */
           }
@@ -449,7 +466,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
 
       val testStartingOption = indexedList.find(_.isInstanceOf[TestStarting])
       assert(testStartingOption.isDefined)
-      assert(testStartingOption.get.asInstanceOf[TestStarting].testName === "should I am shared")
+      assert(testStartingOption.get.asInstanceOf[TestStarting].testName == "should I am shared")
     }
     it("should run tests registered via the 'it can behave like' syntax") {
       trait SharedFlatSpecTests { this: AnyFlatSpec =>
@@ -468,7 +485,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
 
       val testStartingOption = indexedList.find(_.isInstanceOf[TestStarting])
       assert(testStartingOption.isDefined)
-      assert(testStartingOption.get.asInstanceOf[TestStarting].testName === "can I am shared")
+      assert(testStartingOption.get.asInstanceOf[TestStarting].testName == "can I am shared")
     }
     it("should throw NullArgumentException if a null test tag is provided") {
       // it
@@ -482,7 +499,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
           it should "hi" taggedAs(mytags.SlowAsMolasses, null) in {/* ASSERTION_SUCCEED */}
         }
       }
-      assert(caught.getMessage === "a test tag was null")
+      assert(caught.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new AnyFlatSpec {
           it should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in {/* ASSERTION_SUCCEED */}
@@ -500,7 +517,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
           ignore should "hi" taggedAs(mytags.SlowAsMolasses, null) in {/* ASSERTION_SUCCEED */}
         }
       }
-      assert(caught2.getMessage === "a test tag was null")
+      assert(caught2.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new AnyFlatSpec {
           ignore should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in {/* ASSERTION_SUCCEED */}
@@ -516,7 +533,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
           it should "hi" taggedAs(mytags.SlowAsMolasses, null) ignore {/* ASSERTION_SUCCEED */}
         }
       }
-      assert(caught3.getMessage === "a test tag was null")
+      assert(caught3.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new AnyFlatSpec {
           it should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) ignore {/* ASSERTION_SUCCEED */}
@@ -756,9 +773,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
 
     it("should report as ignored, and not run, tests marked ignored") {
 
-      val a = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val a = new AnyFlatSpec with CallChecking {
         it can "test this" in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         it can "test that" in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -771,9 +786,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(a.theTestThisCalled)
       assert(a.theTestThatCalled)
 
-      val b = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val b = new AnyFlatSpec with CallChecking {
         ignore must "test this" in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         it must "test that" in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -786,9 +799,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!b.theTestThisCalled)
       assert(b.theTestThatCalled)
 
-      val c = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val c = new AnyFlatSpec with CallChecking {
         it can "test this" in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         ignore can "test that" in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -803,9 +814,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
 
       // The order I want is order of appearance in the file.
       // Will try and implement that tomorrow. Subtypes will be able to change the order.
-      val d = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val d = new AnyFlatSpec with CallChecking {
         ignore should "test this" in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         ignore should "test that" in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -822,9 +831,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
     it("should ignore a test marked as ignored if run is invoked with that testName") {
       // If I provide a specific testName to run, then it should ignore an Ignore on that test
       // method and actually invoke it.
-      val e = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val e = new AnyFlatSpec with CallChecking {
         ignore must "test this" in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         it must "test that" in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -841,9 +848,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
     it("should run only those tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val a = new AnyFlatSpec with CallChecking {
         it should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test that" in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -857,9 +862,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val b = new AnyFlatSpec with CallChecking {
         it should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test that" in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -870,9 +873,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val c = new AnyFlatSpec with CallChecking {
         it should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -883,9 +884,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val d = new AnyFlatSpec with CallChecking {
         ignore should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -896,10 +895,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val e = new AnyFlatSpec with CallChecking {
         it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test the other" in { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -913,10 +909,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val f = new AnyFlatSpec with CallChecking {
         ignore should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test the other" in { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -930,10 +923,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val g = new AnyFlatSpec with CallChecking {
         it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         ignore should "test the other" in { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -947,10 +937,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val h = new AnyFlatSpec with CallChecking {
         it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test the other" in { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -963,10 +950,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, mytags.SlowAsMolasses excluded
-      val i = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val i = new AnyFlatSpec with CallChecking {
         it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test the other" in { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -979,10 +963,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, mytags.SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val j = new AnyFlatSpec with CallChecking {
         ignore should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         ignore should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         it should "test the other" in { theTestTheOtherCalled = true;/* ASSERTION_SUCCEED */ }
@@ -995,10 +976,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val k = new AnyFlatSpec with CallChecking {
         ignore should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         ignore should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         ignore should "test the other" in { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -1014,9 +992,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
     it("should run only those registered tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val a = new AnyFlatSpec with CallChecking {
         registerTest("should test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -1030,9 +1006,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val b = new AnyFlatSpec with CallChecking {
         registerTest("should test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -1043,9 +1017,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val c = new AnyFlatSpec with CallChecking {
         registerTest("should test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -1056,9 +1028,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
+      val d = new AnyFlatSpec with CallChecking {
         registerIgnoredTest("should test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
@@ -1069,10 +1039,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val e = new AnyFlatSpec with CallChecking {
         registerTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -1086,10 +1053,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val f = new AnyFlatSpec with CallChecking {
         registerIgnoredTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -1103,10 +1067,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val g = new AnyFlatSpec with CallChecking {
         registerTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerIgnoredTest("should test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -1120,10 +1081,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val h = new AnyFlatSpec with CallChecking {
         registerTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -1136,10 +1094,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, mytags.SlowAsMolasses excluded
-      val i = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val i = new AnyFlatSpec with CallChecking {
         registerTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -1152,10 +1107,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, mytags.SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val j = new AnyFlatSpec with CallChecking {
         registerIgnoredTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerIgnoredTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("should test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -1168,10 +1120,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new AnyFlatSpec {
-        var theTestThisCalled = false
-        var theTestThatCalled = false
-        var theTestTheOtherCalled = false
+      val k = new AnyFlatSpec with CallChecking {
         registerIgnoredTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerIgnoredTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerIgnoredTest("should test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
@@ -1281,18 +1230,18 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
         it should "do this" is (pending)
 
         it should "do that" in {
-          assert(2 + 2 === 4)
+          assert(2 + 2 == 4)
         }
 
         it should "do something else" in {
-          assert(2 + 2 === 4)
+          assert(2 + 2 == 4)
           pending
         }
       }
       val rep = new EventRecordingReporter
       a.run(None, Args(rep))
       val tp = rep.testPendingEventsReceived
-      assert(tp.size === 2)
+      assert(tp.size == 2)
     }
     it("should allow is pendingUntilFixed to be used after is") {
 
@@ -1303,18 +1252,18 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
         }
 
         it should "do that" in {
-          assert(2 + 2 === 4)
+          assert(2 + 2 == 4)
         }
 
         it should "do something else" in {
-          assert(2 + 2 === 4)
+          assert(2 + 2 == 4)
           pending
         }
       }
       val rep = new EventRecordingReporter
       a.run(None, Args(rep))
       val tp = rep.testPendingEventsReceived
-      assert(tp.size === 2)
+      assert(tp.size == 2)
     }
     it("should generate a test failure if a Throwable, or an Error other than direct Error subtypes " +
             "known in JDK 1.5, excluding AssertionError") {
@@ -1326,7 +1275,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       val rep = new EventRecordingReporter
       a.run(None, Args(rep))
       val tf = rep.testFailedEventsReceived
-      assert(tf.size === 3)
+      assert(tf.size == 3)
     }
     // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
@@ -1353,9 +1302,9 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       val rep = new EventRecordingReporter
       a.run(None, Args(rep))
       val testPending = rep.testPendingEventsReceived
-      assert(1 === testPending.size)
+      assert(1 == testPending.size)
       val recordedEvents = testPending(0).recordedEvents
-      assert(recordedEvents.size === 3)
+      assert(recordedEvents.size == 3)
       for (event <- recordedEvents) {
         val ip = event.asInstanceOf[InfoProvided]
         assert(ip.aboutAPendingTest.isDefined && ip.aboutAPendingTest.get)
@@ -1368,15 +1317,15 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
           given("two integers")
           when("one is subracted from the other")
           then("the result is the difference between the two numbers")
-          assert(1 + 1 === 2)
+          assert(1 + 1 == 2)
         }
       }
       val rep = new EventRecordingReporter
       a.run(None, Args(rep))
       val testSucceeded = rep.testSucceededEventsReceived
-      assert(1 === testSucceeded.size)
+      assert(1 == testSucceeded.size)
       val recordedEvents = testSucceeded(0).recordedEvents
-      assert(recordedEvents.size === 3)
+      assert(recordedEvents.size == 3)
       for (event <- recordedEvents) {
         val ip = event.asInstanceOf[InfoProvided]
         assert(ip.aboutAPendingTest.isDefined && !ip.aboutAPendingTest.get)
@@ -1431,7 +1380,7 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
           pending
         }
         registerTest("test 4") {
-          cancel
+          cancel()
         }
         registerIgnoredTest("test 5") {
           assert(a == 2)
@@ -1457,20 +1406,20 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
       class TestSpec extends AnyFlatSpec with expectations.Expectations {
         "a widget" should "do something"  in {
-          expect(1 === 2); /* ASSERTION_SUCCEED */
+          expect(1 == 2); /* ASSERTION_SUCCEED */
         }
         it should "do something else" in {
-          expect(1 === 2); /* ASSERTION_SUCCEED */
+          expect(1 == 2); /* ASSERTION_SUCCEED */
         }
       }
       val rep = new EventRecordingReporter
       val s1 = new TestSpec
       s1.run(None, Args(rep))
-      assert(rep.testFailedEventsReceived.size === 2)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FlatSpecSpec.scala")
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FlatSpecSpec.scala")
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
+      assert(rep.testFailedEventsReceived.size == 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get == "FlatSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get == thisLineNumber - 11)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get == "FlatSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get == thisLineNumber - 10)
     }
   }
   
@@ -1479,23 +1428,25 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
     it("should fire TestFailed event with correct stack depth info when test failed") {
       class TestSpec extends AnyFlatSpec {
         it should "fail"  in {
-          assert(1 === 2)
+          assert(1 == 2)
         }
         behavior of "scenario"
         it should "fail" in {
-          assert(1 === 2)
+          assert(1 == 2)
         }
       }
       val rep = new EventRecordingReporter
       val s1 = new TestSpec
       s1.run(None, Args(rep))
-      assert(rep.testFailedEventsReceived.size === 2)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FlatSpecSpec.scala")
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 12)
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FlatSpecSpec.scala")
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
+      assert(rep.testFailedEventsReceived.size == 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get == "FlatSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get == thisLineNumber - 12)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get == "FlatSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get == thisLineNumber - 10)
     }
     
+    // SKIP-DOTTY-START
+    // Failing line check not working yet.
     it("should generate TestRegistrationClosedException with correct stack depth info when has an in nested inside a in") {
       class TestSpec extends AnyFlatSpec {
         var registrationClosedThrown = false
@@ -1520,11 +1471,11 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       s.run(None, Args(rep))
       assert(s.registrationClosedThrown == true)
       val testFailedEvents = rep.testFailedEventsReceived
-      assert(testFailedEvents.size === 1)
-      assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
+      assert(testFailedEvents.size == 1)
+      assert(testFailedEvents(0).throwable.get.getClass() == classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FlatSpecSpec.scala" === trce.failedCodeFileName.get)
-      assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
+      assert("FlatSpecSpec.scala" == trce.failedCodeFileName.get)
+      assert(trce.failedCodeLineNumber.get == thisLineNumber - 23)
       assert(trce.message == Some("An in clause may not appear inside another in or is clause."))
     }
 
@@ -1552,11 +1503,11 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       s.run(None, Args(rep))
       assert(s.registrationClosedThrown == true)
       val testFailedEvents = rep.testFailedEventsReceived
-      assert(testFailedEvents.size === 1)
-      assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
+      assert(testFailedEvents.size == 1)
+      assert(testFailedEvents(0).throwable.get.getClass() == classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FlatSpecSpec.scala" === trce.failedCodeFileName.get)
-      assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
+      assert("FlatSpecSpec.scala" == trce.failedCodeFileName.get)
+      assert(trce.failedCodeLineNumber.get == thisLineNumber - 23)
       assert(trce.message == Some("An ignore clause may not appear inside an in or an is clause."))
     }
 
@@ -1584,11 +1535,11 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       s.run(None, Args(rep))
       assert(s.registrationClosedThrown == true)
       val testFailedEvents = rep.testFailedEventsReceived
-      assert(testFailedEvents.size === 1)
-      assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
+      assert(testFailedEvents.size == 1)
+      assert(testFailedEvents(0).throwable.get.getClass() == classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FlatSpecSpec.scala" === trce.failedCodeFileName.get)
-      assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
+      assert("FlatSpecSpec.scala" == trce.failedCodeFileName.get)
+      assert(trce.failedCodeLineNumber.get == thisLineNumber - 23)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
 
@@ -1616,13 +1567,14 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       s.run(None, Args(rep))
       assert(s.registrationClosedThrown == true)
       val testFailedEvents = rep.testFailedEventsReceived
-      assert(testFailedEvents.size === 1)
-      assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
+      assert(testFailedEvents.size == 1)
+      assert(testFailedEvents(0).throwable.get.getClass() == classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FlatSpecSpec.scala" === trce.failedCodeFileName.get)
-      assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
+      assert("FlatSpecSpec.scala" == trce.failedCodeFileName.get)
+      assert(trce.failedCodeLineNumber.get == thisLineNumber - 23)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
+    // SKIP-DOTTY-END
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected") {
       class TestSpec extends AnyFlatSpec {

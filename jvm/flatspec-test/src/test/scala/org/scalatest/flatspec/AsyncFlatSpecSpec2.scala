@@ -32,6 +32,8 @@ class AsyncFlatSpecSpec2 extends funspec.AsyncFunSpec {
 
   describe("AsyncFlatSpec") {
 
+    // SKIP-DOTTY-START
+    // ParallelTestExecution not working yet.
     it("can be used for tests that return Future under parallel async test execution") {
 
       class ExampleSpec extends AsyncFlatSpec with ParallelTestExecution {
@@ -58,13 +60,13 @@ class AsyncFlatSpecSpec2 extends funspec.AsyncFunSpec {
 
         it should "test 4" in {
           Future {
-            cancel
+            cancel()
           }
         }
 
         it should "test 5" ignore {
           Future {
-            cancel
+            cancel()
           }
         }
 
@@ -110,11 +112,11 @@ class AsyncFlatSpecSpec2 extends funspec.AsyncFunSpec {
         }
 
         it should "test 4" in {
-          cancel
+          cancel()
         }
 
         it should "test 5" ignore {
-          cancel
+          cancel()
         }
 
         override def newInstance = new ExampleSpec
@@ -139,6 +141,7 @@ class AsyncFlatSpecSpec2 extends funspec.AsyncFunSpec {
         assert(repo.testIgnoredEventsReceived(0).testName == "should test 5")
       }
     }
+    // SKIP-DOTTY-END
 
     it("should run tests that return Future in serial by default") {
 
