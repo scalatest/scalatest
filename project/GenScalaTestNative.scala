@@ -656,8 +656,9 @@ object GenScalaTestNative {
     copyFiles("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", nonAsyncs("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec"), targetDir)
 
   def genFlatSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyFiles("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", 
-              nonAsyncs("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec"),  // FlatSpecImportedMatchersSpec does not compile yet. 
-              targetDir)  
+    copyFiles("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", nonAsyncs("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec"),  targetDir)
+
+  def genFreeSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyFiles("jvm/freespec-test/src/test/scala/org/scalatest/freespec", "org/scalatest/freespec", nonAsyncs("jvm/freespec-test/src/test/scala/org/scalatest/freespec"),  targetDir)    
 
 }

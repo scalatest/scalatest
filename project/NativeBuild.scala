@@ -656,6 +656,8 @@ trait NativeBuild { this: BuildCommons =>
       "-m", "org.scalatest.expectations",
       "-m", "org.scalatest.diagrams",
       "-m", "org.scalatest.featurespec",
+      "-m", "org.scalatest.flatspec",
+      "-m", "org.scalatest.freespec",
       "-oDIF"))
 
   lazy val commonTestNative = Project("commonTestNative", file("native/common-test"))
@@ -779,7 +781,19 @@ trait NativeBuild { this: BuildCommons =>
           GenScalaTestNative.genFlatSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)      
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin) 
+
+  lazy val scalatestFreeSpecTestNative = Project("scalatestFreeSpecTestNative", file("native/freespec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "ScalaTest FreeSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestNative.genFreeSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)        
 
   lazy val scalatestModulesNative = (project in file("modules/native/modules-aggregation"))
     .settings(sharedSettings: _*)

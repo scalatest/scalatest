@@ -13,25 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.freespec
 
 import org.scalatest._
-import SharedHelpers.EventRecordingReporter
-import scala.concurrent.{ExecutionContext, Promise, Future}
+import SharedHelpers.{EventRecordingReporter, thisLineNumber}
+import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
+import org.scalatest.exceptions.{DuplicateTestNameException, NotAllowedException}
+import org.scalactic.Prettifier
 
 import scala.util.Success
 import org.scalatest
 import org.scalatest.freespec
 
-class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
+class FixtureAsyncFreeSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("AsyncFreeSpecLike") {
 
+    // SKIP-DOTTY-START
+    // ParallelTestExecution not working yet.
     it("can be used for tests that return Future under parallel async test execution") {
 
       class ExampleSpec extends freespec.FixtureAsyncFreeSpecLike with ParallelTestExecution {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -59,13 +68,13 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
 
         "test 4" in { fixture =>
           Future {
-            cancel
+            cancel()
           }
         }
 
         "test 5" ignore { fixture =>
           Future {
-            cancel
+            cancel()
           }
         }
 
@@ -75,26 +84,28 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(rep) }
-      promise.future.map { repo =>
-        assert(repo.testStartingEventsReceived.length == 4)
-        assert(repo.testSucceededEventsReceived.length == 1)
-        assert(repo.testSucceededEventsReceived(0).testName == "test 1")
-        assert(repo.testFailedEventsReceived.length == 1)
-        assert(repo.testFailedEventsReceived(0).testName == "test 2")
-        assert(repo.testPendingEventsReceived.length == 1)
-        assert(repo.testPendingEventsReceived(0).testName == "test 3")
-        assert(repo.testCanceledEventsReceived.length == 1)
-        assert(repo.testCanceledEventsReceived(0).testName == "test 4")
-        assert(repo.testIgnoredEventsReceived.length == 1)
-        assert(repo.testIgnoredEventsReceived(0).testName == "test 5")
-      }
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
+      assert(rep.testStartingEventsReceived.length == 4)
+      assert(rep.testSucceededEventsReceived.length == 1)
+      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+      assert(rep.testFailedEventsReceived.length == 1)
+      assert(rep.testFailedEventsReceived(0).testName == "test 2")
+      assert(rep.testPendingEventsReceived.length == 1)
+      assert(rep.testPendingEventsReceived(0).testName == "test 3")
+      assert(rep.testCanceledEventsReceived.length == 1)
+      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
+      assert(rep.testIgnoredEventsReceived.length == 1)
+      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
       class ExampleSpec extends freespec.FixtureAsyncFreeSpecLike with ParallelTestExecution {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -115,11 +126,11 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
         }
 
         "test 4" in { fixture =>
-          cancel
+          cancel()
         }
 
         "test 5" ignore { fixture =>
-          cancel
+          cancel()
         }
 
         override def newInstance = new ExampleSpec
@@ -128,28 +139,31 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(rep) }
-      promise.future.map { repo =>
-        assert(repo.testStartingEventsReceived.length == 4)
-        assert(repo.testSucceededEventsReceived.length == 1)
-        assert(repo.testSucceededEventsReceived(0).testName == "test 1")
-        assert(repo.testFailedEventsReceived.length == 1)
-        assert(repo.testFailedEventsReceived(0).testName == "test 2")
-        assert(repo.testPendingEventsReceived.length == 1)
-        assert(repo.testPendingEventsReceived(0).testName == "test 3")
-        assert(repo.testCanceledEventsReceived.length == 1)
-        assert(repo.testCanceledEventsReceived(0).testName == "test 4")
-        assert(repo.testIgnoredEventsReceived.length == 1)
-        assert(repo.testIgnoredEventsReceived(0).testName == "test 5")
-      }
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
+      assert(rep.testStartingEventsReceived.length == 4)
+      assert(rep.testSucceededEventsReceived.length == 1)
+      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+      assert(rep.testFailedEventsReceived.length == 1)
+      assert(rep.testFailedEventsReceived(0).testName == "test 2")
+      assert(rep.testPendingEventsReceived.length == 1)
+      assert(rep.testPendingEventsReceived(0).testName == "test 3")
+      assert(rep.testCanceledEventsReceived.length == 1)
+      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
+      assert(rep.testIgnoredEventsReceived.length == 1)
+      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
+    // SKIP-DOTTY-END
 
     it("should run tests that return Future in serial by default") {
 
       @volatile var count = 0
 
       class ExampleSpec extends freespec.FixtureAsyncFreeSpecLike {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -160,7 +174,7 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
             SleepHelper.sleep(30)
             assert(count == 0)
             count = 1
-            Succeeded
+            succeed
           }
         }
 
@@ -169,7 +183,7 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
             assert(count == 1)
             SleepHelper.sleep(50)
             count = 2
-            Succeeded
+            succeed
           }
         }
 
@@ -184,12 +198,13 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(rep) }
-      promise.future.map { repo =>
-        assert(repo.testStartingEventsReceived.length == 3)
-        assert(repo.testSucceededEventsReceived.length == 3)
-      }
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
+
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testSucceededEventsReceived.length == 3)
+
     }
 
     it("should run tests that does not return Future in serial by default") {
@@ -197,6 +212,9 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       @volatile var count = 0
 
       class ExampleSpec extends freespec.FixtureAsyncFreeSpecLike {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -206,31 +224,32 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
-          Succeeded
+          succeed
         }
 
         "test 2" in { fixture =>
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
-          Succeeded
+          succeed
         }
 
         "test 3" in { fixture =>
           assert(count == 2)
         }
-        
+
       }
 
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(rep) }
-      promise.future.map { repo =>
-        assert(repo.testStartingEventsReceived.length == 3)
-        assert(repo.testSucceededEventsReceived.length == 3)
-      }
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
+
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testSucceededEventsReceived.length == 3)
+
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
@@ -269,17 +288,14 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       status.whenCompleted { s =>
         onCompleteThread = Some(Thread.currentThread)
       }
+      status.waitUntilCompleted()
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(rep) }
-      promise.future.map { repo =>
-        assert(test1Thread.isDefined)
-        assert(test1Thread.get == mainThread)
-        assert(test2Thread.isDefined)
-        assert(test2Thread.get == mainThread)
-        assert(onCompleteThread.isDefined)
-        assert(onCompleteThread.get == mainThread)
-      }
+      assert(test1Thread.isDefined)
+      assert(test1Thread.get == mainThread)
+      assert(test2Thread.isDefined)
+      assert(test2Thread.get == mainThread)
+      assert(onCompleteThread.isDefined)
+      assert(onCompleteThread.get == mainThread)
     }
 
     it("should run tests and its true async future in the same thread when use SerialExecutionContext") {
@@ -336,17 +352,14 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       status.whenCompleted { s =>
         onCompleteThread = Some(Thread.currentThread)
       }
+      status.waitUntilCompleted()
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(rep) }
-      promise.future.map { repo =>
-        assert(test1Thread.isDefined)
-        assert(test1Thread.get == mainThread)
-        assert(test2Thread.isDefined)
-        assert(test2Thread.get == mainThread)
-        assert(onCompleteThread.isDefined)
-        assert(onCompleteThread.get == mainThread)
-      }
+      assert(test1Thread.isDefined)
+      assert(test1Thread.get == mainThread)
+      assert(test2Thread.isDefined)
+      assert(test2Thread.get == mainThread)
+      assert(onCompleteThread.isDefined)
+      assert(onCompleteThread.get == mainThread)
     }
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
@@ -376,18 +389,17 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(rep) }
-      promise.future.map { repo =>
-        assert(!rep.testSucceededEventsReceived.isEmpty)
-      }
+      status.waitUntilCompleted()
+      assert(!rep.testSucceededEventsReceived.isEmpty)
     }
     // SKIP-SCALATESTJS,NATIVE-END
 
     it("should run tests that returns Future and report their result in serial") {
 
       class ExampleSpec extends freespec.FixtureAsyncFreeSpecLike {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -418,24 +430,26 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(rep) }
-      promise.future.map { repo =>
-        assert(rep.testStartingEventsReceived.length == 3)
-        assert(rep.testStartingEventsReceived(0).testName == "test 1")
-        assert(rep.testStartingEventsReceived(1).testName == "test 2")
-        assert(rep.testStartingEventsReceived(2).testName == "test 3")
-        assert(rep.testSucceededEventsReceived.length == 3)
-        assert(rep.testSucceededEventsReceived(0).testName == "test 1")
-        assert(rep.testSucceededEventsReceived(1).testName == "test 2")
-        assert(rep.testSucceededEventsReceived(2).testName == "test 3")
-      }
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testStartingEventsReceived(0).testName == "test 1")
+      assert(rep.testStartingEventsReceived(1).testName == "test 2")
+      assert(rep.testStartingEventsReceived(2).testName == "test 3")
+      assert(rep.testSucceededEventsReceived.length == 3)
+      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+      assert(rep.testSucceededEventsReceived(1).testName == "test 2")
+      assert(rep.testSucceededEventsReceived(2).testName == "test 3")
     }
 
     it("should run tests that does not return Future and report their result in serial") {
 
       class ExampleSpec extends freespec.FixtureAsyncFreeSpecLike {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -460,19 +474,18 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(rep) }
-      promise.future.map { repo =>
-        assert(rep.testStartingEventsReceived.length == 3)
-        assert(rep.testStartingEventsReceived(0).testName == "test 1")
-        assert(rep.testStartingEventsReceived(1).testName == "test 2")
-        assert(rep.testStartingEventsReceived(2).testName == "test 3")
-        assert(rep.testSucceededEventsReceived.length == 3)
-        assert(rep.testSucceededEventsReceived(0).testName == "test 1")
-        assert(rep.testSucceededEventsReceived(1).testName == "test 2")
-        assert(rep.testSucceededEventsReceived(2).testName == "test 3")
-      }
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testStartingEventsReceived(0).testName == "test 1")
+      assert(rep.testStartingEventsReceived(1).testName == "test 2")
+      assert(rep.testStartingEventsReceived(2).testName == "test 3")
+      assert(rep.testSucceededEventsReceived.length == 3)
+      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+      assert(rep.testSucceededEventsReceived(1).testName == "test 2")
+      assert(rep.testSucceededEventsReceived(2).testName == "test 3")
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
@@ -487,19 +500,22 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val infoList = reporter.infoProvidedEventsReceived
+      val infoList = reporter.infoProvidedEventsReceived
 
-        assert(infoList.size == 1)
-        assert(infoList(0).message == "hi there")
-      }
+      assert(infoList.size == 1)
+      assert(infoList(0).message == "hi there")
     }
 
     it("should send an InfoProvided event for an info in scope body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -514,19 +530,22 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val infoList = reporter.infoProvidedEventsReceived
+      val infoList = reporter.infoProvidedEventsReceived
 
-        assert(infoList.size == 1)
-        assert(infoList(0).message == "hi there")
-      }
+      assert(infoList.size == 1)
+      assert(infoList(0).message == "hi there")
     }
 
     it("should send an InfoProvided event for an info in test body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -540,25 +559,28 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val infoList = reporter.infoProvidedEventsReceived
-        assert(infoList.size == 0)
+      val infoList = reporter.infoProvidedEventsReceived
+      assert(infoList.size == 0)
 
-        val testSucceededList = reporter.testSucceededEventsReceived
-        assert(testSucceededList.size == 1)
-        assert(testSucceededList(0).recordedEvents.size == 1)
-        val recordedEvent = testSucceededList(0).recordedEvents(0)
-        assert(recordedEvent.isInstanceOf[InfoProvided])
-        val infoProvided = recordedEvent.asInstanceOf[InfoProvided]
-        assert(infoProvided.message == "hi there")
-      }
+      val testSucceededList = reporter.testSucceededEventsReceived
+      assert(testSucceededList.size == 1)
+      assert(testSucceededList(0).recordedEvents.size == 1)
+      val recordedEvent = testSucceededList(0).recordedEvents(0)
+      assert(recordedEvent.isInstanceOf[InfoProvided])
+      val infoProvided = recordedEvent.asInstanceOf[InfoProvided]
+      assert(infoProvided.message == "hi there")
     }
 
     it("should send an InfoProvided event for an info in Future returned by test body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -574,25 +596,28 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val infoList = reporter.infoProvidedEventsReceived
-        assert(infoList.size == 0)
+      val infoList = reporter.infoProvidedEventsReceived
+      assert(infoList.size == 0)
 
-        val testSucceededList = reporter.testSucceededEventsReceived
-        assert(testSucceededList.size == 1)
-        assert(testSucceededList(0).recordedEvents.size == 1)
-        val recordedEvent = testSucceededList(0).recordedEvents(0)
-        assert(recordedEvent.isInstanceOf[InfoProvided])
-        val infoProvided = recordedEvent.asInstanceOf[InfoProvided]
-        assert(infoProvided.message == "hi there")
-      }
+      val testSucceededList = reporter.testSucceededEventsReceived
+      assert(testSucceededList.size == 1)
+      assert(testSucceededList(0).recordedEvents.size == 1)
+      val recordedEvent = testSucceededList(0).recordedEvents(0)
+      assert(recordedEvent.isInstanceOf[InfoProvided])
+      val infoProvided = recordedEvent.asInstanceOf[InfoProvided]
+      assert(infoProvided.message == "hi there")
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -603,19 +628,22 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val noteList = reporter.noteProvidedEventsReceived
+      val noteList = reporter.noteProvidedEventsReceived
 
-        assert(noteList.size == 1)
-        assert(noteList(0).message == "hi there")
-      }
+      assert(noteList.size == 1)
+      assert(noteList(0).message == "hi there")
     }
 
     it("should send a NoteProvided event for a note in scope body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -630,19 +658,22 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val noteList = reporter.noteProvidedEventsReceived
+      val noteList = reporter.noteProvidedEventsReceived
 
-        assert(noteList.size == 1)
-        assert(noteList(0).message == "hi there")
-      }
+      assert(noteList.size == 1)
+      assert(noteList(0).message == "hi there")
     }
 
     it("should send a NoteProvided event for a note in test body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -656,18 +687,21 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val noteList = reporter.noteProvidedEventsReceived
-        assert(noteList.size == 1)
-        assert(noteList(0).message == "hi there")
-      }
+      val noteList = reporter.noteProvidedEventsReceived
+      assert(noteList.size == 1)
+      assert(noteList(0).message == "hi there")
     }
 
     it("should send a NoteProvided event for a note in Future returned by test body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -683,18 +717,21 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val noteList = reporter.noteProvidedEventsReceived
-        assert(noteList.size == 1)
-        assert(noteList(0).message == "hi there")
-      }
+      val noteList = reporter.noteProvidedEventsReceived
+      assert(noteList.size == 1)
+      assert(noteList(0).message == "hi there")
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -705,19 +742,22 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val alertList = reporter.alertProvidedEventsReceived
+      val alertList = reporter.alertProvidedEventsReceived
 
-        assert(alertList.size == 1)
-        assert(alertList(0).message == "hi there")
-      }
+      assert(alertList.size == 1)
+      assert(alertList(0).message == "hi there")
     }
 
     it("should send an AlertProvided event for an alert in scope body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -732,19 +772,22 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val alertList = reporter.alertProvidedEventsReceived
+      val alertList = reporter.alertProvidedEventsReceived
 
-        assert(alertList.size == 1)
-        assert(alertList(0).message == "hi there")
-      }
+      assert(alertList.size == 1)
+      assert(alertList(0).message == "hi there")
     }
 
     it("should send an AlertProvided event for an alert in test body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -758,18 +801,21 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val alertList = reporter.alertProvidedEventsReceived
-        assert(alertList.size == 1)
-        assert(alertList(0).message == "hi there")
-      }
+      val alertList = reporter.alertProvidedEventsReceived
+      assert(alertList.size == 1)
+      assert(alertList(0).message == "hi there")
     }
 
     it("should send an AlertProvided event for an alert in Future returned by test body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -785,18 +831,21 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val alertList = reporter.alertProvidedEventsReceived
-        assert(alertList.size == 1)
-        assert(alertList(0).message == "hi there")
-      }
+      val alertList = reporter.alertProvidedEventsReceived
+      assert(alertList.size == 1)
+      assert(alertList(0).message == "hi there")
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -807,19 +856,22 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val markupList = reporter.markupProvidedEventsReceived
+      val markupList = reporter.markupProvidedEventsReceived
 
-        assert(markupList.size == 1)
-        assert(markupList(0).text == "hi there")
-      }
+      assert(markupList.size == 1)
+      assert(markupList(0).text == "hi there")
     }
 
     it("should send a MarkupProvided event for a markup in scope body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -834,19 +886,22 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val markupList = reporter.markupProvidedEventsReceived
+      val markupList = reporter.markupProvidedEventsReceived
 
-        assert(markupList.size == 1)
-        assert(markupList(0).text == "hi there")
-      }
+      assert(markupList.size == 1)
+      assert(markupList(0).text == "hi there")
     }
 
     it("should send a MarkupProvided event for a markup in test body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -860,25 +915,28 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val markupList = reporter.markupProvidedEventsReceived
-        assert(markupList.size == 0)
+      val markupList = reporter.markupProvidedEventsReceived
+      assert(markupList.size == 0)
 
-        val testSucceededList = reporter.testSucceededEventsReceived
-        assert(testSucceededList.size == 1)
-        assert(testSucceededList(0).recordedEvents.size == 1)
-        val recordedEvent = testSucceededList(0).recordedEvents(0)
-        assert(recordedEvent.isInstanceOf[MarkupProvided])
-        val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
-        assert(markupProvided.text == "hi there")
-      }
+      val testSucceededList = reporter.testSucceededEventsReceived
+      assert(testSucceededList.size == 1)
+      assert(testSucceededList(0).recordedEvents.size == 1)
+      val recordedEvent = testSucceededList(0).recordedEvents(0)
+      assert(recordedEvent.isInstanceOf[MarkupProvided])
+      val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
+      assert(markupProvided.text == "hi there")
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
       class MySuite extends freespec.FixtureAsyncFreeSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -894,21 +952,43 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
 
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { repo =>
-        val markupList = reporter.markupProvidedEventsReceived
-        assert(markupList.size == 0)
+      val markupList = reporter.markupProvidedEventsReceived
+      assert(markupList.size == 0)
 
-        val testSucceededList = reporter.testSucceededEventsReceived
-        assert(testSucceededList.size == 1)
-        assert(testSucceededList(0).recordedEvents.size == 1)
-        val recordedEvent = testSucceededList(0).recordedEvents(0)
-        assert(recordedEvent.isInstanceOf[MarkupProvided])
-        val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
-        assert(markupProvided.text == "hi there")
+      val testSucceededList = reporter.testSucceededEventsReceived
+      assert(testSucceededList.size == 1)
+      assert(testSucceededList(0).recordedEvents.size == 1)
+      val recordedEvent = testSucceededList(0).recordedEvents(0)
+      assert(recordedEvent.isInstanceOf[MarkupProvided])
+      val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
+      assert(markupProvided.text == "hi there")
+    }
+
+    it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
+      class TestSpec extends freespec.FixtureAsyncFreeSpecLike {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome = test("testing")
+        "a feature" - {
+          "test 1" in { fixture => succeed }
+          "test 1" in { fixture => succeed }
+        }
       }
+      val e = intercept[NotAllowedException] {
+        new TestSpec
+      }
+      assert("FixtureAsyncFreeSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))
     }
 
     it("should allow other execution context to be used") {
@@ -941,14 +1021,14 @@ class AsyncFreeSpecLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
       val suite = new TestSpec
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(reporter) }
-      promise.future.map { r =>
-        assert(reporter.scopeOpenedEventsReceived.length == 3)
-        assert(reporter.scopeClosedEventsReceived.length == 3)
-        assert(reporter.testStartingEventsReceived.length == 3)
-        assert(reporter.testSucceededEventsReceived.length == 3)
-      }
+
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
+      assert(reporter.scopeOpenedEventsReceived.length == 3)
+      assert(reporter.scopeClosedEventsReceived.length == 3)
+      assert(reporter.testStartingEventsReceived.length == 3)
+      assert(reporter.testSucceededEventsReceived.length == 3)
     }
 
   }

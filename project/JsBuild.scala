@@ -227,6 +227,7 @@ trait JsBuild { this: BuildCommons =>
       "-m", "org.scalatest.diagrams",
       "-m", "org.scalatest.featurespec",
       "-m", "org.scalatest.flatspec",
+      "-m", "org.scalatest.freespec",
       "-oDIF"))  
 
   lazy val commonTestJS = Project("commonTestJS", file("js/common-test"))
@@ -354,7 +355,19 @@ trait JsBuild { this: BuildCommons =>
           GenScalaTestJS.genFlatSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)        
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestFreeSpecTestJS = Project("scalatestFreeSpecTestJS", file("js/freespec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsJS: _*)
+    .settings(
+      projectTitle := "ScalaTest FreeSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestJS.genFreeSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)          
 
   val scalatestJSDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
