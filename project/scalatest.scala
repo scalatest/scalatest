@@ -140,9 +140,14 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def sharedSettings: Seq[Setting[_]] = 
     commonSharedSettings ++ Seq(
-      scalaVersion := "2.13.0",
+      scalaVersion := "2.13.1",
       crossScalaVersions := supportedScalaVersions,
-      libraryDependencies ++= scalaLibraries(scalaVersion.value)  
+      libraryDependencies ++= {
+        if (isDotty.value)
+          Seq()
+        else
+          scalaLibraries(scalaVersion.value),
+      }
     )
   
   /*Seq(
@@ -152,12 +157,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     version := releaseVersion,
     scalacOptions ++= Seq("-feature"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-    libraryDependencies ++= scalaLibraries(scalaVersion.value),
-    /*publishTo <<= version { v: String =>
-      val nexus = "https://oss.sonatype.org/"
-      if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
-      else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
-    },*/
+    libraryDependencies ++= {
+      if (isDotty.value)
+        Seq()
+      else
+        scalaLibraries(scalaVersion.value),
+    },
     publishTo := {
       val nexus = "https://oss.sonatype.org/"
       if (version.value.trim.endsWith("SNAPSHOT"))
@@ -475,7 +480,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
-        "org.scalatest.words", 
+        "org.scalatest.words",
         "org.scalatest.wordspec"
       ),
       OsgiKeys.importPackage := Seq(

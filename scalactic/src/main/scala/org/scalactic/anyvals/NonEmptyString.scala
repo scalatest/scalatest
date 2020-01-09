@@ -841,7 +841,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     //NonEmptyString("test")
     new NonEmptyString(
       theString.map { c =>
-        f(c) + ""
+        f(c).toString
       }.mkString
     )
   }

@@ -1043,8 +1043,8 @@ class NonEmptyArraySpec extends UnitSpec {
   it should "have a scan method" in {
     NonEmptyArray(1).scan(0)(_ + _) shouldBe NonEmptyArray(0, 1)
     NonEmptyArray(1, 2, 3).scan(0)(_ + _) shouldBe NonEmptyArray(0, 1, 3, 6)
-    NonEmptyArray(1, 2, 3).scan("z")(_ + _.toString) shouldBe NonEmptyArray("z", "z1", "z12", "z123")
-    NonEmptyArray(0).scan("z")(_ + _.toString) shouldBe NonEmptyArray("z", "z0")
+    NonEmptyArray(1, 2, 3).scan("z")(_.toString + _.toString) shouldBe NonEmptyArray("z", "z1", "z12", "z123")
+    NonEmptyArray(0).scan("z")(_.toString + _.toString) shouldBe NonEmptyArray("z", "z0")
   }
   it should "have a scanLeft method" in {
     NonEmptyArray(1).scanLeft(0)(_ + _) shouldBe NonEmptyArray(0, 1)

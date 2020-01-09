@@ -1023,8 +1023,8 @@ class NonEmptyListSpec extends UnitSpec {
   it should "have a scan method" in {
     NonEmptyList(1).scan(0)(_ + _) shouldBe NonEmptyList(0, 1)
     NonEmptyList(1, 2, 3).scan(0)(_ + _) shouldBe NonEmptyList(0, 1, 3, 6)
-    NonEmptyList(1, 2, 3).scan("z")(_ + _.toString) shouldBe NonEmptyList("z", "z1", "z12", "z123")
-    NonEmptyList(0).scan("z")(_ + _.toString) shouldBe NonEmptyList("z", "z0")
+    NonEmptyList(1, 2, 3).scan("z")(_.toString + _.toString) shouldBe NonEmptyList("z", "z1", "z12", "z123")
+    NonEmptyList(0).scan("z")(_.toString + _.toString) shouldBe NonEmptyList("z", "z0")
   }
   it should "have a scanLeft method" in {
     NonEmptyList(1).scanLeft(0)(_ + _) shouldBe NonEmptyList(0, 1)

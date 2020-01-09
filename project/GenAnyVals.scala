@@ -32,7 +32,7 @@ object GenAnyVals {
              |  def apply(value: Expr[$primitiveTypeName])(implicit qctx: QuoteContext): Expr[$typeName] = {
              |    val notValidMsg = Resources.notValid$typeName
              |    val notLiteralMsg = Resources.notLiteral$typeName
-             |    import qctx.tasty._
+             |    import qctx.tasty.{_, given}
              |    ensureValid${primitiveTypeName}Literal(value, notValidMsg, notLiteralMsg)(isValid)
              |    '{ $typeName.ensuringValid($$value) }
              |  }
@@ -636,7 +636,7 @@ object GenAnyVals {
        |def plus(x: $typePrefix2$primitiveName): $typePrefix$primitiveName = $typePrefix$primitiveName.ensuringValid(value + x.value)
        |""".stripMargin
 
-  def deprecatedOrdering(name: String, typePrefix: String, primitiveName: String): String = 
+  def deprecatedOrdering(name: String, typePrefix: String, primitiveName: String): String =
     s"""
        |/**
        | * <strong>The formerly implicit <code>$name</code> field has been deprecated and will be removed in a future version of ScalaTest. Please use the <code>ordering</code> field instead.</strong>
@@ -646,7 +646,7 @@ object GenAnyVals {
        |  new Ordering[$typePrefix$primitiveName] {
        |    def compare(x: $typePrefix$primitiveName, y: $typePrefix$primitiveName): Int = ordering.compare(x, y)
        |  }
-    """.stripMargin     
+    """.stripMargin
 
   def importsForMacro(dotty: Boolean): String =
     if (dotty)
@@ -705,7 +705,7 @@ object GenAnyVals {
       isPosInfinity("PosZ", "Float") +
       isFinite("PosZ", "Float"),
       positiveInfinity("PosZ", "Float") +
-      minPositiveValue("PosZ", "Float") + 
+      minPositiveValue("PosZ", "Float") +
       deprecatedOrdering("posZFloatOrd", "PosZ", "Float"),
       posZWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "PosZDouble", "non-negative", "", "i >= 0.0", "PosZDouble(1.1)", "PosZDouble(-1.1)", "1.1", "-1.1", "0.0", "0.0",
@@ -717,7 +717,7 @@ object GenAnyVals {
       isPosInfinity("PosZ", "Double") +
       isFinite("PosZ", "Double"),
       positiveInfinity("PosZ", "Double") +
-      minPositiveValue("PosZ", "Double") + 
+      minPositiveValue("PosZ", "Double") +
       deprecatedOrdering("posZDoubleOrd", "PosZ", "Double"),
       posZWidens("Double"), dotty) :::
     genIntAnyVal(dir, "PosInt", "positive", "Note: a <code>PosInt</code> may not equal 0. If you want positive number or 0, use [[PosZInt]].", "i > 0", "PosInt(42)", "PosInt(0)", "42", "0", "1", "1",
@@ -733,7 +733,7 @@ object GenAnyVals {
       isPosInfinity("Pos", "Float") +
       isFinite("Pos", "Float"),
       positiveInfinity("Pos", "Float") +
-      minPositiveValue("Pos", "Float") + 
+      minPositiveValue("Pos", "Float") +
       deprecatedOrdering("posFloatOrd", "Pos", "Float"),
       posWidens("Float"), dotty) :::
     genDoubleAnyVal(dir, "PosDouble", "positive", "", "i > 0.0", "PosDouble(1.1)", "PosDouble(-1.1)", "1.1", "-1.1", "Double.MinPositiveValue", "4.9E-324",
@@ -745,7 +745,7 @@ object GenAnyVals {
       isPosInfinity("Pos", "Double") +
       isFinite("Pos", "Double"),
       positiveInfinity("Pos", "Double") +
-      minPositiveValue("Pos", "Double") + 
+      minPositiveValue("Pos", "Double") +
       deprecatedOrdering("posDoubleOrd", "Pos", "Double"),
       posWidens("Double"), dotty) :::
     genIntAnyVal(dir, "NegInt", "negative", "Note: a <code>NegInt</code> may not equal 0. If you want negative number or 0, use [[NegZInt]].", "i < 0", "NegInt(-42)", "NegInt(0)", "-42", "0", "Int.MinValue", "-2147483648", "-1", "-1",
