@@ -362,7 +362,7 @@ object Diagrams extends Diagrams {
       requireNonNull(clue)
       if (!bool.value) {
         val failureMessage =
-          Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
+          Some(clue.toString + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
         throw newAssertionFailedException(failureMessage, None, pos, Vector.empty)
       }
       Succeeded
@@ -379,7 +379,7 @@ object Diagrams extends Diagrams {
       requireNonNull(clue)
       if (!bool.value) {
         val failureMessage =
-          Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
+          Some(clue.toString + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
         throw newTestCanceledException(failureMessage, None, pos)
       }
       Succeeded

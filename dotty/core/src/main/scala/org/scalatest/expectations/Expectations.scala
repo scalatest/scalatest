@@ -21,6 +21,7 @@ import Fact._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.reflect.ClassTag
+import scala.compiletime.testing.typeChecks
 
 private[scalatest] trait Expectations {
 
@@ -111,13 +112,13 @@ private[scalatest] trait Expectations {
     ${ ExpectationsMacro.expect('{expression})('{prettifier}, '{pos}) }
 
   inline def expectDoesNotCompile(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
-    ${ CompileMacro.expectDoesNotCompileImpl(code, 'prettifier, 'pos) }
+    ${ CompileMacro.expectDoesNotCompileImpl('code, typeChecks(code), 'prettifier, 'pos) }
 
   inline def expectCompiles(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
-    ${ CompileMacro.expectCompilesImpl(code, 'prettifier, 'pos) }
+    ${ CompileMacro.expectCompilesImpl('code, typeChecks(code), 'prettifier, 'pos) }
 
   inline def expectTypeError(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
-    ${ CompileMacro.expectTypeErrorImpl(code, 'prettifier, 'pos) }
+    ${ CompileMacro.expectTypeErrorImpl('code, typeChecks(code), 'prettifier, 'pos) }
 
   import scala.language.implicitConversions
 

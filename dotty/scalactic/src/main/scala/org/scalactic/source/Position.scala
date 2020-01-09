@@ -67,13 +67,13 @@ object Position {
    * Helper method for Position macro.
    */
   private def genPosition(implicit qctx: QuoteContext): Expr[Position] = {
-    import qctx.tasty._
+    import qctx.tasty.{_, given}
 
     val file = rootPosition.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = if (showScalacticFillFilePathnames) file.toString else Resources.pleaseDefineScalacticFillFilePathnameEnvVar
     val lineNo: Int = rootPosition.startLine
-    '{ Position(${fileName.toExpr}, ${filePath.toExpr}, ${lineNo.toExpr}) }
+    '{ Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}) }
   }
 
 }

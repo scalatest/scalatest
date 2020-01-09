@@ -142,7 +142,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     commonSharedSettings ++ Seq(
       scalaVersion := "2.13.1",
       crossScalaVersions := supportedScalaVersions,
-      libraryDependencies ++= scalaLibraries(scalaVersion.value)  
+      libraryDependencies ++= {
+        if (isDotty.value)
+          Seq()
+        else
+          scalaLibraries(scalaVersion.value),
+      }
     )
 
   lazy val scalatestDocSettings = Seq(

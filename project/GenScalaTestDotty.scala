@@ -164,9 +164,9 @@ object GenScalaTestDotty {
       "org/scalatest/matchers/dsl" -> List(
         "BeWord.scala", 
         "JavaCollectionWrapper.scala",
-        "JavaMapWrapper.scala", 
+        "JavaMapWrapper.scala",
         "MatchPatternWord.scala",
-        "NotWord.scala", 
+        "NotWord.scala",
         "ResultOfNotWordForAny.scala"
       ),
       "org/scalatest/expectations" -> List.empty,  
@@ -192,9 +192,9 @@ object GenScalaTestDotty {
     copyFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
         "AssertionsSpec.scala",
-        "ShouldCompileSpec.scala",
-        "ShouldNotCompileSpec.scala"/*,
-        "ShouldNotTypeCheckSpec.scala"*/
+        // "ShouldCompileSpec.scala",
+        // "ShouldNotCompileSpec.scala",
+        // "ShouldNotTypeCheckSpec.scala"
       )
     ) ++ 
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty) ++ 
@@ -202,7 +202,7 @@ object GenScalaTestDotty {
       List(
         "DirectExpectationsSpec.scala"
       )
-    ) 
+    )
     /*++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
         List(

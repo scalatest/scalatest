@@ -221,7 +221,7 @@ object Snapshots extends Snapshots
 object SnapshotsMacro {
 
   def snap(expressions: Expr[Seq[Any]])(implicit qctx: QuoteContext): Expr[SnapshotSeq] = {
-    import qctx.tasty._
+    import qctx.tasty.{_, given}
 
     def liftSeq(args: Seq[Expr[Snapshot]]): Expr[Seq[Snapshot]] = args match {
       case x :: xs  => '{ ($x) +: ${ liftSeq(xs) }  }
@@ -231,7 +231,7 @@ object SnapshotsMacro {
     val snapshots: List[Expr[Snapshot]] = expressions.unseal.underlyingArgument match {
       case Typed(Repeated(args, _), _) => // only sequence literal
         args.map { arg =>
-          val str = arg.seal.cast[Any].show.toExpr
+          val str = Expr(arg.seal.cast[Any].show)
           '{ Snapshot($str, ${ arg.seal.cast[Any] }) }
         }
       case arg =>
