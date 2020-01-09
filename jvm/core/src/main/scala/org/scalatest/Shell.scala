@@ -68,7 +68,7 @@ class ArithmeticSuite extends FunSuite with matchers.Matchers {
  *
  * <p>
  * The other useful "command"
- * to know about, though not technically part of the shell, is the <code>apply</code> factory method in the <a href="Suites$.html"><code>Suites</code></a> 
+ * to know about, though not technically part of the shell, is the <code>apply</code> factory method in the <a href="Suites$.html"><code>Suites</code></a>
  * singleton object. This allows you to easily create composite suites out of nested suites, which you can then pass to <code>run</code>. This
  * will be demonstrated later in this documentation.
  * </p>
@@ -93,17 +93,17 @@ class ArithmeticSuite extends FunSuite with matchers.Matchers {
  *
  * <pre style="background-color: #2c415c; padding: 10px">
  * <span style="color: white">scala> class ArithmeticSuite extends FunSuite with matchers.Matchers {
- *      |   test("addition works") { 
+ *      |   test("addition works") {
  *      |     1 + 1 should equal (2)
- *      |   } 
+ *      |   }
  *      |   ignore("subtraction works") {
  *      |     1 - 1 should equal (0)
  *      |   }
  *      |   test("multiplication works") {
- *      |     1 * 1 should equal (2) 
+ *      |     1 * 1 should equal (2)
  *      |   }
  *      |   test("division works") (pending)
- *      | } 
+ *      | }
  * defined class ArithmeticSuite</span>
  * </pre>
  *
@@ -257,7 +257,7 @@ class ArithmeticSuite extends FunSuite with matchers.Matchers {
  * <h2>Running multiple suites</h2>
  *
  * <p>
- * If you want to run multiple suites, you can use the factory method in the <a href="Suites$.html"><code>Suites</code></a> 
+ * If you want to run multiple suites, you can use the factory method in the <a href="Suites$.html"><code>Suites</code></a>
  * singleton object. If you wrap a comma-separated list of suite instances inside <code>Suites(...)</code>, for example,
  * you'll get a suite instance that contains no tests, but whose nested suites includes the suite instances you placed between
  * the parentheses. You can place <code>Suites</code> inside <code>Suites</code> to any level of depth, creating a tree of
@@ -299,7 +299,7 @@ class ArithmeticSuite extends FunSuite with matchers.Matchers {
  * Tests: succeeded 4, failed 4, ignored 4, pending 4</span>
  * <span style="color: #dd2233">*** 4 TESTS FAILED ***</span>
  * </pre>
- * 
+ *
  * <h2>Running a single test</h2>
  *
  * <p>
@@ -319,55 +319,55 @@ sealed trait Shell {
    * A <code>Shell</code> whose <code>run</code> method will pass <code>true</code> for <code>execute</code>'s <code>color</code>
    * parameter, and pass for all other parameters the same values as this <code>Shell</code>.
    */
-  val color: Shell
+  def color: Shell
 
   /**
    * A <code>Shell</code> whose <code>run</code> method will pass <code>true</code> for <code>execute</code>'s <code>durations</code>
    * parameter, and pass for all other parameters the same values as this <code>Shell</code>.
    */
-  val durations: Shell
+  def durations: Shell
 
   /**
    * A <code>Shell</code> whose <code>run</code> method will pass <code>true</code> for <code>execute</code>'s <code>shortstacks</code>
    * parameter and <code>false</code> for its <code>fullstacks</code> parameter, and pass for all other parameters the same values as
    * this <code>Shell</code>.
    */
-  val shortstacks: Shell
+  def shortstacks: Shell
 
   /**
    * A <code>Shell</code> whose <code>run</code> method will pass <code>false</code> for <code>execute</code>'s <code>shortstacks</code>
    * parameter and <code>true</code> for its <code>fullstacks</code> parameter, and pass for all other parameters the same values as this <code>Shell</code>.
    */
-  val fullstacks: Shell
+  def fullstacks: Shell
 
   /**
    * A <code>Shell</code> whose <code>run</code> method will pass <code>true</code> for <code>execute</code>'s <code>stats</code>
    * parameter, and pass for all other parameters the same values as this <code>Shell</code>.
    */
-  val stats: Shell
+  def stats: Shell
 
   /**
    * Returns a copy of this <code>Shell</code> with <code>colorPassed</code> configuration parameter set to <code>false</code>.
    */
-  val nocolor: Shell
+  def nocolor: Shell
 
   /**
    * Returns a copy of this <code>Shell</code> with <code>durationsPassed</code> configuration parameter set to <code>false</code>.
    */
-  val nodurations: Shell
+  def nodurations: Shell
 
   /**
    * Returns a copy of this <code>Shell</code> with <code>shortStacksPassed</code> configuration parameter set to <code>false</code>.
    */
-  val nostacks: Shell
+  def nostacks: Shell
 
   /**
    * Returns a copy of this <code>Shell</code> with <code>statsPassed</code> configuration parameter set to <code>false</code>.
    */
-  val nostats: Shell
+  def nostats: Shell
 
   /**
-   * Run the passed suite, optionally passing in a test name and config map. 
+   * Run the passed suite, optionally passing in a test name and config map.
    *
    * <p>
    * This method will invoke <code>execute</code> on the passed <code>suite</code>, passing in

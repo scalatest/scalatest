@@ -43,7 +43,7 @@ object RegexStringMacro {
     }
 
   def apply(value: Expr[String])(implicit qctx: QuoteContext): Expr[RegexString] = {
-    import qctx.tasty._
+    import qctx.tasty.{_, given}
 
     val notValidExceptionMsg: String = {
       value.unseal match {

@@ -30,8 +30,13 @@ object GenScalacticDotty {
     else
       line
 
+  private def rewrite213(line: String): String =
+    line.replaceAllLiterally("final def startsWith(that: GenSeq[Char]): Boolean = theString.startsWith(that)", "final def startsWith(that: GenSeq[Char]): Boolean = theString.startsWith(that.mkString)")
+        .replaceAllLiterally("final def startsWith(that: Every[Char]): Boolean = theString.startsWith(that.toVector)", "final def startsWith(that: Every[Char]): Boolean = theString.startsWith(that.mkString)")
+        .replaceAllLiterally("""val fn: Int => Char = NonEmptyString("123").compose((idx: Int) => (idx + 1).toChar)""", """val fn: Int => Char = NonEmptyString("123").compose { case idx => (idx + 1).toChar }""")
+
   private def transformLine(line: String): String =
-    uncommentJsExport(line)
+    ((uncommentJsExport _) andThen (rewrite213 _))(line)
 
   private def copyFile(sourceFile: File, destFile: File): File = {
     val destWriter = new BufferedWriter(new FileWriter(destFile))
