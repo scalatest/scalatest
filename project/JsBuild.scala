@@ -225,6 +225,9 @@ trait JsBuild { this: BuildCommons =>
       "-m", "org.scalatest.enablers",
       "-m", "org.scalatest.expectations",
       "-m", "org.scalatest.diagrams",
+      "-m", "org.scalatest.featurespec",
+      "-m", "org.scalatest.flatspec",
+      "-m", "org.scalatest.freespec",
       "-oDIF"))  
 
   lazy val commonTestJS = Project("commonTestJS", file("js/common-test"))
@@ -243,7 +246,7 @@ trait JsBuild { this: BuildCommons =>
       publish := {},
       publishLocal := {},
       scalacOptions in (Compile, doc) := List.empty
-    ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS")).enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS")).enablePlugins(ScalaJSPlugin)  
 
   lazy val scalacticTestJS = Project("scalacticTestJS", file("js/scalactic-test"))
     .settings(sharedSettings: _*)
@@ -275,10 +278,8 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
     ).dependsOn(scalacticJS, scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestTestJS = Project("scalatestTestJS", file("js/scalatest-test"))
-    .settings(sharedSettings: _*)
-    .settings(
-      projectTitle := "ScalaTest Test",
+  def sharedTestSettingsJS: Seq[Setting[_]] = 
+    Seq(
       organization := "org.scalatest",
       //jsDependencies += RuntimeDOM % "test",
       scalaJSLinkerConfig ~= { _.withOptimizer(false) },
@@ -297,7 +298,14 @@ trait JsBuild { this: BuildCommons =>
       publishArtifact := false,
       publish := {},
       publishLocal := {},
-      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
+    )
+
+  lazy val scalatestTestJS = Project("scalatestTestJS", file("js/scalatest-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsJS: _*)
+    .settings(
+      projectTitle := "ScalaTest Test",
       sourceGenerators in Test += {
         Def.task {
           GenScalaTestJS.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
@@ -311,7 +319,55 @@ trait JsBuild { this: BuildCommons =>
         Def.task {
           GenMustMatchersTests.genTestForScalaJS((sourceManaged in Test).value, version.value, scalaVersion.value)
         }
-    ).dependsOn(scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)  
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestDiagramsTestJS = Project("scalatestDiagramsTestJS", file("js/diagrams-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsJS: _*)
+    .settings(
+      projectTitle := "ScalaTest Diagrams Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestJS.genDiagramsTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestFeatureSpecTestJS = Project("scalatestFeatureSpecTestJS", file("js/featurespec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsJS: _*)
+    .settings(
+      projectTitle := "ScalaTest FeatureSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestJS.genFeatureSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestFlatSpecTestJS = Project("scalatestFlatSpecTestJS", file("js/flatspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsJS: _*)
+    .settings(
+      projectTitle := "ScalaTest FlatSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestJS.genFlatSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestFreeSpecTestJS = Project("scalatestFreeSpecTestJS", file("js/freespec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsJS: _*)
+    .settings(
+      projectTitle := "ScalaTest FreeSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestJS.genFreeSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)          
 
   val scalatestJSDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
