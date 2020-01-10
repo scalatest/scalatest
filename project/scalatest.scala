@@ -234,6 +234,9 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       "-m", "org.scalatest.enablers",
       "-m", "org.scalatest.expectations",
       "-m", "org.scalatest.diagrams",
+      "-m", "org.scalatest.featurespec",
+      "-m", "org.scalatest.flatspec",
+      "-m", "org.scalatest.freespec",
       "-oDIF",
       "-W", "120", "60",
       "-h", "target/html",
@@ -344,24 +347,54 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
     ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
 
-  lazy val scalatestTest = Project("scalatest-test", file("jvm/scalatest-test"))
-    .settings(sharedSettings: _*)
-    .settings(
-      projectTitle := "ScalaTest Test",
+  def sharedTestSettings: Seq[Setting[_]] = 
+    Seq(
       organization := "org.scalatest",
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
       testOptions in Test := scalatestTestOptions,
       logBuffered in Test := false,
-      //fork in Test := true,
-      //parallelExecution in Test := true,
-      //testForkedParallel in Test := true,
       baseDirectory in Test := file("./"),
       publishArtifact := false,
       publish := {},
       publishLocal := {},
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
-    ).dependsOn(scalatest % "test", commonTest % "test")
+    )
+
+  lazy val scalatestTest = Project("scalatest-test", file("jvm/scalatest-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Test"
+    ).dependsOn(commonTest % "test")
+
+  lazy val scalatestDiagramsTest = Project("scalatestDiagramsTest", file("jvm/diagrams-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Diagrams Test"
+    ).dependsOn(commonTest % "test")
+
+  lazy val scalatestFeatureSpecTest = Project("scalatestFeatureSpecTest", file("jvm/featurespec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FeatureSpec Test"
+    ).dependsOn(commonTest % "test")
+
+  lazy val scalatestFlatSpecTest = Project("scalatestFlatSpecTest", file("jvm/flatspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FlatSpec Test"
+    ).dependsOn(commonTest % "test")
+
+  lazy val scalatestFreeSpecTest = Project("scalatestFreeSpecTest", file("jvm/freespec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FreeSpec Test"
+    ).dependsOn(commonTest % "test")      
 
   lazy val scalatestApp = Project("scalatestApp", file("scalatest-app"))
     .enablePlugins(SbtOsgi)

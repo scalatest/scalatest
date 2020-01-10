@@ -57,7 +57,7 @@ object GenCommonTestDotty {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
     val sourceDir = new File(sourceDirName)
-    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && f.getName.endsWith(".scala")).map { sourceFile =>
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
       val destFile = new File(packageDir, sourceFile.getName)
       if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
         copyFile(sourceFile, destFile)
@@ -82,7 +82,9 @@ object GenCommonTestDotty {
 
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir,
-      List.empty
+      List(
+        "mytags.scala"
+      )
     ) ++
     copyDir("jvm/common-test/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("jvm/common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty)

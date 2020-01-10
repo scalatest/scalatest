@@ -197,7 +197,6 @@ object GenScalaTestDotty {
         // "ShouldNotTypeCheckSpec.scala"
       )
     ) ++ 
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty) ++ 
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, 
       List(
         "DirectExpectationsSpec.scala"
@@ -271,6 +270,22 @@ object GenScalaTestDotty {
           "XmlSocketReporterSpec.scala"
         )
       )*/
-  }
+    }
+
+    def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+      copyDir("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
+
+    def genFeatureSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+      copyDir("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)
+
+    def genFlatSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+      copyDir("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, 
+        List(
+          "FlatSpecImportedMatchersSpec.scala"
+        )
+      )    
+
+    def genFreeSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+      copyDir("jvm/freespec-test/src/test/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, List.empty)  
 
 }
