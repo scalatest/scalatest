@@ -228,6 +228,7 @@ trait JsBuild { this: BuildCommons =>
       "-m", "org.scalatest.featurespec",
       "-m", "org.scalatest.flatspec",
       "-m", "org.scalatest.freespec",
+      "-m", "org.scalatest.funspec",
       "-oDIF"))  
 
   lazy val commonTestJS = Project("commonTestJS", file("js/common-test"))
@@ -320,6 +321,13 @@ trait JsBuild { this: BuildCommons =>
           GenMustMatchersTests.genTestForScalaJS((sourceManaged in Test).value, version.value, scalaVersion.value)
         }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+     .aggregate(
+       scalatestDiagramsTestJS, 
+       scalatestFeatureSpecTestJS, 
+       scalatestFlatSpecTestJS, 
+       scalatestFreeSpecTestJS, 
+       scalatestFunSpecTestJS
+     )
 
   lazy val scalatestDiagramsTestJS = Project("scalatestDiagramsTestJS", file("js/diagrams-test"))
     .settings(sharedSettings: _*)
@@ -367,7 +375,19 @@ trait JsBuild { this: BuildCommons =>
           GenScalaTestJS.genFreeSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)          
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestFunSpecTestJS = Project("scalatestFunSpecTestJS", file("js/funspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsJS: _*)
+    .settings(
+      projectTitle := "ScalaTest FunSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestJS.genFunSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)            
 
   val scalatestJSDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,

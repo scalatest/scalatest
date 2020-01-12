@@ -745,13 +745,15 @@ trait NativeBuild { this: BuildCommons =>
         Def.task {
           GenMustMatchersTests.genTestForScalaNative((sourceManaged in Test).value, version.value, scalaVersion.value)
         }*/
-    ).dependsOn(scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)
+    ).dependsOn(scalatestNative % "test", commonTestNative % "test")
+     .enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestDiagramsTestNative = Project("scalatestDiagramsTestNative", file("native/diagrams-test"))
     .settings(sharedSettings: _*)
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest Diagrams Test",
+      nativeLink := file("test.hnir"), 
       sourceGenerators in Test += {
         Def.task {
           GenScalaTestNative.genDiagramsTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
@@ -764,6 +766,7 @@ trait NativeBuild { this: BuildCommons =>
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest FeatureSpec Test",
+      nativeLink := file("test2.hnir"),
       sourceGenerators in Test += {
         Def.task {
           GenScalaTestNative.genFeatureSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
@@ -793,7 +796,19 @@ trait NativeBuild { this: BuildCommons =>
           GenScalaTestNative.genFreeSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)        
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestFunSpecTestNative = Project("scalatestFunSpecTestNative", file("native/funspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "ScalaTest FunSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestNative.genFunSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)          
 
   lazy val scalatestModulesNative = (project in file("modules/native/modules-aggregation"))
     .settings(sharedSettings: _*)

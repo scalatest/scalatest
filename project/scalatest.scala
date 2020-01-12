@@ -237,6 +237,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       "-m", "org.scalatest.featurespec",
       "-m", "org.scalatest.flatspec",
       "-m", "org.scalatest.freespec",
+      "-m", "org.scalatest.funspec",
       "-oDIF",
       "-W", "120", "60",
       "-h", "target/html",
@@ -367,6 +368,13 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     .settings(
       projectTitle := "ScalaTest Test"
     ).dependsOn(commonTest % "test")
+     .aggregate(
+       scalatestDiagramsTest, 
+       scalatestFeatureSpecTest, 
+       scalatestFlatSpecTest, 
+       scalatestFreeSpecTest, 
+       scalatestFunSpecTest
+     )
 
   lazy val scalatestDiagramsTest = Project("scalatestDiagramsTest", file("jvm/diagrams-test"))
     .settings(sharedSettings: _*)
@@ -394,7 +402,14 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     .settings(sharedTestSettings: _*)
     .settings(
       projectTitle := "ScalaTest FreeSpec Test"
-    ).dependsOn(commonTest % "test")      
+    ).dependsOn(commonTest % "test")
+
+  lazy val scalatestFunSpecTest = Project("scalatestFunSpecTest", file("jvm/funspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FunSpec Test"
+    ).dependsOn(commonTest % "test")        
 
   lazy val scalatestApp = Project("scalatestApp", file("scalatest-app"))
     .enablePlugins(SbtOsgi)

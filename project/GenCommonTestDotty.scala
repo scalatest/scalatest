@@ -83,7 +83,8 @@ object GenCommonTestDotty {
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir,
       List(
-        "mytags.scala"
+        "mytags.scala", 
+        "StubReporter.scala"
       )
     ) ++
     copyDir("jvm/common-test/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
