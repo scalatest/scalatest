@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.funspec
 
-import SharedHelpers.EventRecordingReporter
+import org.scalatest.SharedHelpers.EventRecordingReporter
+import org.scalatest.funspec
+import org.scalatest.ParallelTestExecution
+import org.scalatest.Args
+import org.scalatest.Assertion
+import org.scalatest.Succeeded
 import scala.concurrent.{ExecutionContext, Promise, Future}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
@@ -27,6 +32,7 @@ class AsyncFunSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
   describe("AsyncFunSpecLike") {
 
+    // SKIP-DOTTY-START
     it("can be used for tests that return Future under parallel async test execution") {
 
       class ExampleSpec extends AsyncFunSpecLike with ParallelTestExecution {
@@ -53,13 +59,13 @@ class AsyncFunSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
         it("test 4") {
           Future {
-            cancel
+            cancel()
           }
         }
 
         ignore("test 5") {
           Future {
-            cancel
+            cancel()
           }
         }
 
@@ -105,11 +111,11 @@ class AsyncFunSpecLikeSpec2 extends funspec.AsyncFunSpec {
         }
 
         it("test 4") {
-          cancel
+          cancel()
         }
 
         ignore("test 5") {
-          cancel
+          cancel()
         }
 
         override def newInstance = new ExampleSpec
@@ -134,6 +140,7 @@ class AsyncFunSpecLikeSpec2 extends funspec.AsyncFunSpec {
         assert(repo.testIgnoredEventsReceived(0).testName == "test 5")
       }
     }
+    // SKIP-DOTTY-END
 
     it("should run tests that return Future in serial by default") {
 

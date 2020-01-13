@@ -13,9 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.funspec
 
-import SharedHelpers._
+import org.scalatest.SharedHelpers._
+import org.scalatest.Args
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.Reporter
+import org.scalatest.StubReporter
+import org.scalatest.Status
+import org.scalatest.Stopper
+import org.scalatest.Filter
+import org.scalatest.ConfigMap
+import org.scalatest.Suite
+import org.scalatest.Tracker
 import org.scalatest.events._
 import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.funspec.AnyFunSpec
@@ -96,9 +107,9 @@ class FunSpecSuite extends AnyFunSuite {
     }
     val a = new MySpec
     a.run(None, Args(SilentReporter))
-    assert(a.testNames.size === 2)
-    assert(a.testNames.iterator.toList(0) === "should get invoked")
-    assert(a.testNames.iterator.toList(1) === "should also get invoked")
+    assert(a.testNames.size == 2)
+    assert(a.testNames.iterator.toList(0) == "should get invoked")
+    assert(a.testNames.iterator.toList(1) == "should also get invoked")
   }
  
   test("plain-old specifier test names should include an enclosing describe string, separated by a space") {
@@ -109,9 +120,9 @@ class FunSpecSuite extends AnyFunSuite {
       }
     }
     val a = new MySpec
-    assert(a.testNames.size === 2)
-    assert(a.testNames.iterator.toList(0) === "A Stack must allow me to pop")
-    assert(a.testNames.iterator.toList(1) === "A Stack must allow me to push")
+    assert(a.testNames.size == 2)
+    assert(a.testNames.iterator.toList(0) == "A Stack must allow me to pop")
+    assert(a.testNames.iterator.toList(1) == "A Stack must allow me to push")
   }
 
   test("plain-old test names should properly nest plain-old descriptions in test names") {
@@ -126,11 +137,13 @@ class FunSpecSuite extends AnyFunSuite {
       }
     }
     val a = new MySpec
-    assert(a.testNames.size === 2)
-    assert(a.testNames.iterator.toList(0) === "A Stack (when not empty) must allow me to pop")
-    assert(a.testNames.iterator.toList(1) === "A Stack (when not full) must allow me to push")
+    assert(a.testNames.size == 2)
+    assert(a.testNames.iterator.toList(0) == "A Stack (when not empty) must allow me to pop")
+    assert(a.testNames.iterator.toList(1) == "A Stack (when not full) must allow me to push")
   }
   
+  // SKIP-DOTTY-START
+  // AbstractMethodError  
   test("should be able to mix in BeforeAndAfterEach with BeforeAndAfterAll without any problems") {
     class MySpec extends AnyFunSpec with Matchers with BeforeAndAfterEach with BeforeAndAfterAll {
       describe("A Stack") {
@@ -145,6 +158,7 @@ class FunSpecSuite extends AnyFunSuite {
     val a = new MySpec
     a.run(None, Args(SilentReporter))
   }
+  // SKIP-DOTTY-END
   
   // Test for good strings in report for top-level examples  
   test("Top-level plain-old specifiers should yield good strings in a TestSucceeded report") {
@@ -860,7 +874,7 @@ class FunSpecSuite extends AnyFunSuite {
       it("must five") {/* ASSERTION_SUCCEED */}
     }
     val a = new MySpec
-    assert(a.expectedTestCount(Filter()) === 5)
+    assert(a.expectedTestCount(Filter()) == 5)
   }
 
   // Testing strings sent in reports
@@ -1116,6 +1130,7 @@ class FunSpecSuite extends AnyFunSuite {
     assert(myRep.expectedMessageReceived)
   }
  
+  // SKIP-DOTTY-START
   // Testing Shared behaviors
   test("a shared specifier invoked with 'should behave like a' should get invoked") {
     class MySpec extends AnyFunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
@@ -1170,6 +1185,7 @@ class FunSpecSuite extends AnyFunSuite {
     assert(a.sharedExampleInvoked)
     assert(a.sharedExampleAlsoInvoked)
   }
+  // SKIP-DOTTY-END
 
   test("three examples in a shared behavior should be invoked in order") {
     class MySpec extends AnyFunSpec {
@@ -1231,6 +1247,7 @@ class FunSpecSuite extends AnyFunSuite {
     assert(!a.example3WasInvokedAfterExample2)
   }
   
+  // SKIP-DOTTY-START
   // Probably delete
   test("The test name for a shared specifier invoked with 'should behave like a' should be verbatim if top level") {
     var testSucceededReportHadCorrectTestName = false
@@ -1260,6 +1277,7 @@ class FunSpecSuite extends AnyFunSuite {
     a.run(None, Args(new MyReporter))
     assert(testSucceededReportHadCorrectTestName)
   }
+  // SKIP-DOTTY-END
   
   ignore("The example name for a shared example invoked with 'it should behave like' should start with '<description> should' if nested one level in a describe clause") {
     var testSucceededReportHadCorrectTestName = false
@@ -1307,7 +1325,7 @@ class FunSpecSuite extends AnyFunSuite {
       it("should five") {/* ASSERTION_SUCCEED */}
     }
     val a = new MySpec
-    assert(a.expectedTestCount(Filter()) === 5)
+    assert(a.expectedTestCount(Filter()) == 5)
   }
 
   test("expectedTestCount should include tests in a share that is called") {
@@ -1326,7 +1344,7 @@ class FunSpecSuite extends AnyFunSuite {
       it("should five") {/* ASSERTION_SUCCEED */}
     }
     val a = new MySpec
-    assert(a.expectedTestCount(Filter()) === 7)
+    assert(a.expectedTestCount(Filter()) == 7)
   }
 
   test("expectedTestCount should include tests in a share that is called twice") {
@@ -1346,7 +1364,7 @@ class FunSpecSuite extends AnyFunSuite {
       it should behave like misbehavior(1) 
     }
     val a = new MySpec
-    assert(a.expectedTestCount(Filter()) === 9)
+    assert(a.expectedTestCount(Filter()) == 9)
   }
 
   test("Spec's expectedTestCount includes tests in nested suites") {
@@ -1361,7 +1379,7 @@ class FunSpecSuite extends AnyFunSuite {
       it("should count this here test") {/* ASSERTION_SUCCEED */}
     }
     val mySpec = new MySpec
-    assert(mySpec.expectedTestCount(Filter()) === 7)
+    assert(mySpec.expectedTestCount(Filter()) == 7)
   }
 
   // End of Share stuff
