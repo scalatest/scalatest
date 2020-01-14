@@ -1,7 +1,7 @@
 language: scala
 scala:
-  - 2.10.7
-  - 2.11.12
+#  - 2.10.7
+#  - 2.11.12
   - 2.12.10
   - 2.13.1
 
@@ -12,6 +12,8 @@ dist: trusty
 sudo: true
 
 env:
+  - BUILD_PLATFORM=jvm
+  - BUILD_PLATFORM=dotty
   #see https://github.com/scalatest/scalatest/pull/245
   #global values should be replaced using http://docs.travis-ci.com/user/encryption-keys/ with valid values
   global:
@@ -23,27 +25,27 @@ env:
   matrix:
     - MODE=RegularTests1
     - MODE=RegularTests2
-    - MODE=RegularTests3
-    - MODE=RegularTests4
-    - MODE=RegularTests5
-    - MODE=ScalacticTests
-    - MODE=genMustMatchersTests1
-    - MODE=genMustMatchersTests2
-    - MODE=genMustMatchersTests3
-    - MODE=genMustMatchersTests4
-    - MODE=genGenTests
-    - MODE=genTablesTests
-    - MODE=genInspectorsTests
-    - MODE=genInspectorsShorthandsTests1
-    - MODE=genInspectorsShorthandsTests2
-    - MODE=genTheyTests
-    - MODE=genContainTests1
-    - MODE=genContainTests2
-    - MODE=genSortedTests
-    - MODE=genLoneElementTests
-    - MODE=genEmptyTests
-    - MODE=examples
-    - MODE=examplesJS
+#    - MODE=RegularTests3
+#    - MODE=RegularTests4
+#    - MODE=RegularTests5
+#    - MODE=ScalacticTests
+#    - MODE=genMustMatchersTests1
+#    - MODE=genMustMatchersTests2
+#    - MODE=genMustMatchersTests3
+#    - MODE=genMustMatchersTests4
+#    - MODE=genGenTests
+#    - MODE=genTablesTests
+#    - MODE=genInspectorsTests
+#    - MODE=genInspectorsShorthandsTests1
+#    - MODE=genInspectorsShorthandsTests2
+#    - MODE=genTheyTests
+#    - MODE=genContainTests1
+#    - MODE=genContainTests2
+#    - MODE=genSortedTests
+#    - MODE=genLoneElementTests
+#    - MODE=genEmptyTests
+    - MODE=ScalaTestDotty
+    - MODE=ScalacticDotty
 
 branches:
   only:
@@ -56,6 +58,13 @@ script:
   - if [[ $JAVA_HOME = *java-6* ]]; then jdk_switcher use openjdk6; fi
   - java -version
   - ./travis_build.sh $MODE
+
+jobs:
+  exclude:
+    - if: branch = 3.0.x
+      MODE=ScalaTestDotty
+    - if: branch = 3.0.x
+      MODE=ScalacticDotty  
 
 notifications:
   email:
