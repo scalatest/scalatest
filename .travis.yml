@@ -55,14 +55,7 @@ script:
   # work around https://github.com/travis-ci/travis-ci/issues/9713
   - if [[ $JAVA_HOME = *java-6* ]]; then jdk_switcher use openjdk6; fi
   - java -version
-  - ./travis_build.sh $MODE
-
-jobs:
-  exclude:
-    - if: branch = 3.0.x
-      MODE=ScalaTestDotty
-    - if: branch = 3.0.x
-      MODE=ScalacticDotty  
+  - ./travis_build.sh $MODE 
 
 notifications:
   email:
