@@ -53,10 +53,10 @@ branches:
     - 3.2.x-new
 
 jobs:
-  exclude:
-    - scala: 0.21.0-RC1
+  include:
+    - scala: 2.13.1
       env: MODE=RegularTests1
-    - scala: 0.21.0-RC1
+    - scala: 2.13.1
       env: MODE=RegularTests2 
 
 script:
