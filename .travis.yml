@@ -53,11 +53,11 @@ branches:
     - 3.2.x-new
 
 jobs:
-  include:
+  exclude:
     - scala: 0.21.0-RC1
-      env: MODE=ScalaTestDotty
+      env: MODE=RegularTests1
     - scala: 0.21.0-RC1
-      env: MODE=ScalacticDotty 
+      env: MODE=RegularTests2 
 
 script:
   # work around https://github.com/travis-ci/travis-ci/issues/9713
