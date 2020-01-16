@@ -984,8 +984,8 @@ class NonEmptyVectorSpec extends UnitSpec {
   it should "have a scan method" in {
     NonEmptyVector(1).scan(0)(_ + _) shouldBe NonEmptyVector(0, 1)
     NonEmptyVector(1, 2, 3).scan(0)(_ + _) shouldBe NonEmptyVector(0, 1, 3, 6)
-    NonEmptyVector(1, 2, 3).scan("z")(_ + _.toString) shouldBe NonEmptyVector("z", "z1", "z12", "z123")
-    NonEmptyVector(0).scan("z")(_ + _.toString) shouldBe NonEmptyVector("z", "z0")
+    NonEmptyVector(1, 2, 3).scan("z")(_.toString + _.toString) shouldBe NonEmptyVector("z", "z1", "z12", "z123")
+    NonEmptyVector(0).scan("z")(_.toString + _.toString) shouldBe NonEmptyVector("z", "z0")
   }
   it should "have a scanLeft method" in {
     NonEmptyVector(1).scanLeft(0)(_ + _) shouldBe NonEmptyVector(0, 1)

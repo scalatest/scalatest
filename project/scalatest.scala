@@ -19,6 +19,8 @@ import com.typesafe.tools.mima.core.ProblemFilters._
 
 import dotty.tools.sbtplugin.DottyPlugin.autoImport._
 
+import xerial.sbt.Sonatype.autoImport.sonatypePublishToBundle
+
 object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with JsBuild {
 
   // To run gentests
@@ -93,13 +95,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     javaHome := getJavaHome(scalaBinaryVersion.value),
     version := releaseVersion,
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-    publishTo := {
-      val nexus = "https://oss.sonatype.org/"
-      if (version.value.trim.endsWith("SNAPSHOT"))
-        Some("publish-snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
-    },
+    publishTo := sonatypePublishToBundle.value, 
     publishMavenStyle := true,
     publishArtifact in Test := false,
     pomIncludeRepository := { _ => false },
@@ -146,7 +142,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     commonSharedSettings ++ Seq(
       scalaVersion := "2.13.1",
       crossScalaVersions := supportedScalaVersions,
-      libraryDependencies ++= scalaLibraries(scalaVersion.value)  
+      libraryDependencies ++= {
+        if (isDotty.value)
+          Seq()
+        else
+          scalaLibraries(scalaVersion.value),
+      }
     )
   
   /*Seq(
@@ -156,12 +157,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     version := releaseVersion,
     scalacOptions ++= Seq("-feature"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
-    libraryDependencies ++= scalaLibraries(scalaVersion.value),
-    /*publishTo <<= version { v: String =>
-      val nexus = "https://oss.sonatype.org/"
-      if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
-      else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
-    },*/
+    libraryDependencies ++= {
+      if (isDotty.value)
+        Seq()
+      else
+        scalaLibraries(scalaVersion.value),
+    },
     publishTo := {
       val nexus = "https://oss.sonatype.org/"
       if (version.value.trim.endsWith("SNAPSHOT"))
@@ -479,7 +480,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
-        "org.scalatest.words", 
+        "org.scalatest.words",
         "org.scalatest.wordspec"
       ),
       OsgiKeys.importPackage := Seq(
@@ -518,7 +519,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
     ).dependsOn(scalatest % "test", commonTest % "test")
 
-  lazy val scalatestApp = Project("scalatestApp", file("."))
+  lazy val scalatestApp = Project("scalatestApp", file("scalatest-app"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -598,9 +599,9 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal", scalatest % "compile-internal").aggregate(scalacticMacro, scalactic, scalatest, commonTest, scalacticTest, scalatestTest)
+    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal", scalatest % "compile-internal")
 
-  lazy val rootProject = scalatestApp
+  lazy val rootProject = Project("root", file(".")).aggregate(scalacticMacro, scalactic, scalatest, commonTest, scalacticTest, scalatestTest)
 
   lazy val scalatestCompatible = Project("scalatestCompatible", file("scalatest-compatible"))
     .enablePlugins(SbtOsgi)

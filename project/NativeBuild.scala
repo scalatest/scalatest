@@ -210,7 +210,7 @@ trait NativeBuild { this: BuildCommons =>
             (new File(crossTarget.value, "classes")).mkdirs()
             Seq.empty[File]
           }.taskValue
-        }
+        }, 
       ).settings(osgiSettings: _*).settings(
         OsgiKeys.exportPackage := Seq(
           "org.scalatest",
@@ -262,7 +262,7 @@ trait NativeBuild { this: BuildCommons =>
           "Bundle-Vendor" -> "Artima, Inc.",
           "Main-Class" -> "org.scalatest.tools.Runner"
         )
-      ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalacticNative % "compile-internal", scalatestNative % "compile-internal").aggregate(scalacticMacroNative, scalacticNative, scalatestNative, commonTestNative, scalacticTestNative, scalatestTestNative).enablePlugins(ScalaNativePlugin)
+      ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalacticNative % "compile-internal", scalatestNative % "compile-internal").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestCoreNative = Project("scalatestCoreNative", file("modules/native/scalatest-core.native"))
     .enablePlugins(SbtOsgi)
