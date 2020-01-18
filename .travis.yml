@@ -21,8 +21,9 @@ env:
     - SCALATEST_GPG_PASSPHASE=tbd
 
   matrix:
-    - MODE=RegularTests1
-    - MODE=RegularTests2
+    - MODE=ScalatestTests
+#    - MODE=RegularTests1
+#    - MODE=RegularTests2
 #    - MODE=RegularTests3
 #    - MODE=RegularTests4
 #    - MODE=RegularTests5

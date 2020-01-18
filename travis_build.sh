@@ -5,7 +5,7 @@ if [[ "$TRAVIS_JDK_VERSION" == "openjdk6" ]]; then
   SBT_OPTS="-Dsbt.override.build.repos=true -Dsbt.repository.config=./.sbtrepos"
 fi
 
-export SBT_OPTS="$SBT_OPTS -server -Xms2G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+export SBT_OPTS="$SBT_OPTS -server -Xms2G -Xmx6G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 export MODE=$1
 
 if [[ $MODE = 'RegularTests1' ]] ; then
@@ -199,6 +199,12 @@ fi
 #
 #  sbt ++$TRAVIS_SCALA_VERSION genSafeStyleTests/test
 #fi
+
+if [[ $MODE = 'ScalatestTests' ]] ; then
+  echo "Doing 'sbt scalatestTest/test'"
+
+  sbt ++$TRAVIS_SCALA_VERSION scalatestTest/test
+fi
 
 if [[ $MODE = 'ScalacticDottyTests' ]] ; then
   echo "Doing 'sbt scalacticTestDotty/test'"
