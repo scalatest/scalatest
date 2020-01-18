@@ -221,8 +221,12 @@ if [[ $MODE = 'ScalatestTestsJS' ]] ; then
 
   export NODE_OPTIONS="--max_old_space_size=4096"
 
+  while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION scalatestTestJS/test:compile
   sbt ++$TRAVIS_SCALA_VERSION scalatestTestJS/test
+  rc=$?
+  kill %1
+  exit $rc
 fi
 
 if [[ $MODE = 'ScalacticDottyTests' ]] ; then
