@@ -219,6 +219,8 @@ if [[ $MODE = 'ScalatestTestsJS' ]] ; then
 
   sudo apt-get install nodejs
 
+  export NODE_OPTIONS="--max_old_space_size=4096"
+
   sbt ++$TRAVIS_SCALA_VERSION scalatestTestJS/test
 fi
 
