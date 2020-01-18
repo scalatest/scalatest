@@ -386,11 +386,11 @@ trait JsBuild { this: BuildCommons =>
       sourceGenerators in Test +=
         Def.task {
           GenGen.genTestForJS((sourceManaged in Test).value, version.value, scalaVersion.value)
-        },
+        }/*,
       sourceGenerators in Test +=
         Def.task {
           GenMustMatchersTests.genTestForScalaJS((sourceManaged in Test).value, version.value, scalaVersion.value)
-        }
+        }*/
     ).dependsOn(scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)  
 
   val scalatestJSDocTaskSetting =
