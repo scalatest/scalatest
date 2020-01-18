@@ -1,8 +1,8 @@
 language: scala
 scala:
-  - 2.10.7
-  - 2.11.12
-  - 2.12.10
+#  - 2.10.7
+#  - 2.11.12
+#  - 2.12.10
   - 2.13.1
 
 jdk:
@@ -22,12 +22,8 @@ env:
 
   matrix:
     - MODE=ScalatestTests
-#    - MODE=RegularTests1
-#    - MODE=RegularTests2
-#    - MODE=RegularTests3
-#    - MODE=RegularTests4
-#    - MODE=RegularTests5
     - MODE=ScalacticTests
+    - MODE=ScalacticTestsJS
 #    - MODE=genMustMatchersTests1
 #    - MODE=genMustMatchersTests2
 #    - MODE=genMustMatchersTests3
