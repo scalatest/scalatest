@@ -27,7 +27,7 @@ env:
 #    - MODE=RegularTests3
 #    - MODE=RegularTests4
 #    - MODE=RegularTests5
-#    - MODE=ScalacticTests
+    - MODE=ScalacticTests
 #    - MODE=genMustMatchersTests1
 #    - MODE=genMustMatchersTests2
 #    - MODE=genMustMatchersTests3
