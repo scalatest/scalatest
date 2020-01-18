@@ -200,6 +200,16 @@ fi
 #  sbt ++$TRAVIS_SCALA_VERSION genSafeStyleTests/test
 #fi
 
+if [[ $MODE = 'ScalacticDottyTests' ]] ; then
+  echo "Doing 'sbt scalacticTestDotty/test'"
+  sbt scalacticTestDotty/test
+fi
+
+if [[ $MODE = 'ScalatestDottyTests' ]] ; then
+  echo "Doing 'sbt scalatestTestDotty/test'"
+  sbt scalatestTestDotty/test
+fi
+
 if [[ $MODE = 'examples' ]] ; then
   echo "Doing 'sbt examples/test'"
 
