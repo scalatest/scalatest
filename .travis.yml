@@ -2,9 +2,8 @@ language: scala
 scala:
 #  - 2.10.7
 #  - 2.11.12
-  - 2.12.10
+#  - 2.12.10
   - 2.13.1
-  - 0.21.0-RC1
 
 jdk:
   - oraclejdk8
@@ -53,9 +52,9 @@ branches:
 jobs:
   include:
     - scala: 0.21.0-RC1
-      env: MODE=ScalaTestDotty
+      env: MODE=ScalacticDotty
     - scala: 0.21.0-RC1
-      env: MODE=ScalacticDotty 
+      env: MODE=ScalaTestDotty
 
 script:
   # work around https://github.com/travis-ci/travis-ci/issues/9713
