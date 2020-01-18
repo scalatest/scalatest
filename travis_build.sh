@@ -201,9 +201,9 @@ fi
 #fi
 
 if [[ $MODE = 'ScalatestTests' ]] ; then
-  echo "Doing 'sbt scalatestTest/test'"
+  echo "Doing 'sbt scalatest-test/test'"
 
-  sbt ++$TRAVIS_SCALA_VERSION scalatestTest/test
+  sbt ++$TRAVIS_SCALA_VERSION scalatest-test/test
 fi
 
 if [[ $MODE = 'ScalacticDottyTests' ]] ; then
