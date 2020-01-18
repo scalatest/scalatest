@@ -214,6 +214,14 @@ if [[ $MODE = 'ScalacticTestsJS' ]] ; then
   sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test
 fi
 
+if [[ $MODE = 'ScalatestTestsJS' ]] ; then
+  echo "Doing 'sbt scalatestTestJS/test'"
+
+  sudo apt-get install nodejs
+
+  sbt ++$TRAVIS_SCALA_VERSION scalatestTestJS/test
+fi
+
 if [[ $MODE = 'ScalacticDottyTests' ]] ; then
   echo "Doing 'sbt scalacticTestDotty/test'"
   sbt scalacticTestDotty/test

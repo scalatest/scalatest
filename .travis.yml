@@ -24,6 +24,7 @@ env:
     - MODE=ScalatestTests
     - MODE=ScalacticTests
     - MODE=ScalacticTestsJS
+    - MODE=ScalatestTestsJS
 #    - MODE=genMustMatchersTests1
 #    - MODE=genMustMatchersTests2
 #    - MODE=genMustMatchersTests3
