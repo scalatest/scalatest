@@ -8,7 +8,7 @@ scala:
 jdk:
   - openjdk8
 
-dist: bionic
+dist: xeniel
 #sudo: true
 
 env:
