@@ -30,6 +30,12 @@ class EitherValuesSpec extends FunSpec {
       e.left.value should startWith ("hi")
     }
 
+    it("should return the left value inside an either if leftValue is defined") {
+      val e: Either[String, String] = Left("hi there")
+      e.leftValue should === ("hi there")
+      e.leftValue should startWith ("hi")
+    }
+
     it("should throw TestFailedException if left.value is empty") {
       val e: Either[String, String] = Right("hi there")
       val caught = 
@@ -40,11 +46,28 @@ class EitherValuesSpec extends FunSpec {
       caught.failedCodeFileName.value should be ("EitherValuesSpec.scala")
       caught.message.value should be (Resources.eitherLeftValueNotDefined)
     }
+
+    it("should throw TestFailedException if leftValue is empty") {
+      val e: Either[String, String] = Right("hi there")
+      val caught =
+        the [TestFailedException] thrownBy {
+          e.leftValue should startWith ("hi")
+        }
+      caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
+      caught.failedCodeFileName.value should be ("EitherValuesSpec.scala")
+      caught.message.value should be (Resources.eitherLeftValueNotDefined)
+    }
     
     it("should return the right value inside an either if right.value is defined") {
       val e: Either[String, String] = Right("hi there")
       e.right.value should === ("hi there")
       e.right.value should startWith ("hi")
+    }
+
+    it("should return the right value inside an either if rightValue is defined") {
+      val e: Either[String, String] = Right("hi there")
+      e.rightValue should === ("hi there")
+      e.rightValue should startWith ("hi")
     }
     
     it("should throw TestFailedException if right.value is empty") {
@@ -58,14 +81,35 @@ class EitherValuesSpec extends FunSpec {
       caught.message.value should be (Resources.eitherRightValueNotDefined)
     }
 
+    it("should throw TestFailedException if rightValue is empty") {
+      val e: Either[String, String] = Left("hi there")
+      val caught =
+        the [TestFailedException] thrownBy {
+          e.rightValue should startWith ("hi")
+        }
+      caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
+      caught.failedCodeFileName.value should be ("EitherValuesSpec.scala")
+      caught.message.value should be (Resources.eitherRightValueNotDefined)
+    }
+
     it("should allow an immediate application of parens to invoke apply on the type contained in the Left") {
       val lefty: Either[Map[String, Int], String] = Left(Map("I" -> 1, "II" -> 2))
       lefty.left.value("II") shouldBe 2
     }
 
+    it("should allow an immediate application of parens to invoke apply on leftValue on the type contained in the Left") {
+      val lefty: Either[Map[String, Int], String] = Left(Map("I" -> 1, "II" -> 2))
+      lefty.leftValue("II") shouldBe 2
+    }
+
     it("should allow an immediate application of parens to invoke apply on the type contained in the Right") {
       val righty: Either[String, Map[String, Int]] = Right(Map("I" -> 1, "II" -> 2))
       righty.right.value("II") shouldBe 2
+    }
+
+    it("should allow an immediate application of parens to invoke apply on rightValue on the type contained in the Right") {
+      val righty: Either[String, Map[String, Int]] = Right(Map("I" -> 1, "II" -> 2))
+      righty.rightValue("II") shouldBe 2
     }
   } 
 }

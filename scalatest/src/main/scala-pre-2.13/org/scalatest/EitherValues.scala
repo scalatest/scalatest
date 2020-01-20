@@ -99,6 +99,26 @@ trait EitherValues {
   implicit def convertRightProjectionToValuable[L, R](rightProj: Either.RightProjection[L, R])(implicit pos: source.Position): RightValuable[L, R] = new RightValuable(rightProj, pos)
 
   /**
+   * Implicit class that adds the <code>rightValue</code> and <code>leftValue</code> methods to <code>Either</code>.
+   * @param either the <code>Either</code> on which to add the methods
+   */
+  implicit class EitherValuable[L, R](either: Either[L, R])(implicit pos: source.Position) {
+    /**
+     * Returns the <code>Left</code> value contained in the wrapped <code>LeftProjection</code>, if defined as a <code>Left</code>, else throws <code>TestFailedException</code> with
+     * a detail message indicating the <code>Either</code> was defined as a <code>Right</code>, not a <code>Left</code>.
+     */
+    def leftValue: L =
+      either.left.getOrElse(throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherLeftValueNotDefined), None, pos))
+
+    /**
+     * Returns the <code>Right</code> value contained in the wrapped <code>Either</code>, if defined as a <code>Right</code>, else throws <code>TestFailedException</code> with
+     * a detail message indicating the <code>Either</code> was defined as a <code>Left</code>, not a <code>Right</code>.
+     */
+    def rightValue: R =
+      either.right.getOrElse(throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherRightValueNotDefined), None, pos))
+  }
+
+  /**
    * Wrapper class that adds a <code>value</code> method to <code>LeftProjection</code>, allowing
    * you to make statements like:
    *
