@@ -8,7 +8,7 @@ scala:
 jdk:
   - openjdk8
 
-dist: xeniel
+dist: xenial
 #sudo: true
 
 env:
