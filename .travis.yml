@@ -8,8 +8,8 @@ scala:
 jdk:
   - oraclejdk8
 
-dist: trusty
-sudo: true
+dist: bionic
+#sudo: true
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
