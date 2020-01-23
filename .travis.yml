@@ -9,7 +9,7 @@ jdk:
   - openjdk8
 
 dist: xenial
-#sudo: true
+sudo: true
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
