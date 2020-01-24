@@ -5,7 +5,7 @@ if [[ "$TRAVIS_JDK_VERSION" == "openjdk6" ]]; then
   SBT_OPTS="-Dsbt.override.build.repos=true -Dsbt.repository.config=./.sbtrepos"
 fi
 
-export SBT_OPTS="$SBT_OPTS -server -Xms1G -Xmx4G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+export SBT_OPTS="$SBT_OPTS -server -Xms2G -Xmx4G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 export MODE=$1
 
 if [[ $MODE = 'RegularTests1' ]] ; then
@@ -223,6 +223,9 @@ if [[ $MODE = 'ScalatestTestsJS' ]] ; then
 
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION scalatestTestJS/test:compile
+
+  export SBT_OPTS="$SBT_OPTS -server -Xms128M -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+
   sbt ++$TRAVIS_SCALA_VERSION scalatestTestJS/test
   rc=$?
   kill %1
