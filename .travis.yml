@@ -8,7 +8,7 @@ scala:
 jdk:
   - oraclejdk8
 
-dist: trusty
+dist: xenial
 sudo: true
 
 env:
