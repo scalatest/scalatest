@@ -224,7 +224,7 @@ if [[ $MODE = 'ScalatestTestsJS' ]] ; then
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION scalatestTestJS/test:compile
 
-  export SBT_OPTS="$SBT_OPTS -server -Xms128M -Xmx2G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+  export SBT_OPTS="$SBT_OPTS -server -Xms128M -Xmx5G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 
   sbt ++$TRAVIS_SCALA_VERSION scalatestTestJS/test
   rc=$?
