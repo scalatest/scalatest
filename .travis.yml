@@ -6,9 +6,9 @@ scala:
   - 2.13.1
 
 jdk:
-  - openjdk8
+  - oraclejdk8
 
-dist: xenial
+dist: trusty
 sudo: true
 
 env:
