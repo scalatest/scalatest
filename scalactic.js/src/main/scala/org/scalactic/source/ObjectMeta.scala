@@ -55,8 +55,7 @@ object ObjectMeta {
           replaceAllLiterally("$$und", "_").
           replaceAllLiterally("$mcI", "").
           replaceAllLiterally("$sp", "").
-          replaceAllLiterally("$f", "").
-          replace(".*__f_", "")  // For scala-js 1.0
+          replaceAllLiterally("$f", "")
 
       val decodedKey10 = {
         val idx = decodedKey.indexOf("__f_")
