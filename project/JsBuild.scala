@@ -14,7 +14,7 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 trait JsBuild { this: BuildCommons =>
 
-  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.31")
+  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.32")
 
   lazy val deleteJsDependenciesTask = taskKey[Unit]("Delete JS_DEPENDENCIES")
 
