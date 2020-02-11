@@ -52,17 +52,39 @@ class SequentialNestedSuiteExecutionSpec extends FunSpec {
         class SeqSubSuite extends SuperSuite with SequentialNestedSuiteExecution
         val par = new ParSubSuite
         val seq = new SeqSubSuite
-        val parStatus = par.run(None, Args(SilentReporter, distributor = Some(new TestConcurrentDistributor(2))))
+
         // SKIP-SCALATESTJS,NATIVE-START
-        parStatus.waitUntilCompleted()
+        val execService = java.util.concurrent.Executors.newFixedThreadPool(2)
+        val execService2 = java.util.concurrent.Executors.newFixedThreadPool(2)
+        val distributor = new TestConcurrentDistributor(execService)
         // SKIP-SCALATESTJS,NATIVE-END
-        assert(par.distributorWasDefined)
-        assert(par.distributorWasPropagated)
-        val seqStatus = seq.run(None, Args(SilentReporter, distributor = Some(new TestConcurrentDistributor(2))))
-        assert(seqStatus.isCompleted) // When a seqential execution returns, the whole thing should be completed already
-        assert(!seq.distributorWasDefined)
-        assert(!seq.distributorWasPropagated)
-        assert(seq.lastNestedSuiteWasRunAfterFirst)
+        //SCALATESTJS,NATIVE-ONLY val distributor = new TestConcurrentDistributor()
+
+        try {
+          val parStatus = par.run(None, Args(SilentReporter, distributor = Some(distributor)))
+          // SKIP-SCALATESTJS,NATIVE-START
+          parStatus.waitUntilCompleted()
+          // SKIP-SCALATESTJS,NATIVE-END
+          assert(par.distributorWasDefined)
+          assert(par.distributorWasPropagated)
+
+          // SKIP-SCALATESTJS,NATIVE-START
+          val distributor2 = new TestConcurrentDistributor(execService2)
+          // SKIP-SCALATESTJS,NATIVE-END
+          //SCALATESTJS,NATIVE-ONLY val distributor2 = new TestConcurrentDistributor()
+
+          val seqStatus = seq.run(None, Args(SilentReporter, distributor = Some(distributor2)))
+          assert(seqStatus.isCompleted) // When a seqential execution returns, the whole thing should be completed already
+          assert(!seq.distributorWasDefined)
+          assert(!seq.distributorWasPropagated)
+          assert(seq.lastNestedSuiteWasRunAfterFirst)
+        }
+        finally {
+          // SKIP-SCALATESTJS,NATIVE-START
+          execService.shutdown()
+          execService2.shutdown()
+          // SKIP-SCALATESTJS,NATIVE-END
+        }
       }
     }
   }
