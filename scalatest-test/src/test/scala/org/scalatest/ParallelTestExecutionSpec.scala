@@ -85,7 +85,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
       private val futureQueue = new java.util.concurrent.LinkedBlockingQueue[Future[T] forSome { type T }]
       
       val buf = ListBuffer.empty[SuiteRunner]
-      val execSvc: ExecutorService = Executors.newFixedThreadPool(2)
+      val execSvc: ExecutorService = Executors.newFixedThreadPool(poolSize)
       def apply(suite: Suite, args: Args): Status = {
         val status = new ScalaTestStatefulStatus
         buf += new SuiteRunner(suite, args, status)
@@ -110,6 +110,10 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
 
       def apply(suite: Suite, tracker: Tracker): Unit = {
         throw new UnsupportedOperationException("Hey, we're not supposed to be calling this anymore!")
+      }
+
+      def shutdown(): Unit = {
+        execSvc.shutdown()
       }
     }
     // SKIP-SCALATESTJS-END
@@ -200,34 +204,39 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
     // SKIP-SCALATESTJS-START
     it("should have the blocking test's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired") {
       def withDistributor(fun: ControlledOrderConcurrentDistributor => Unit): Unit = {
-        val recordingReporter = new EventRecordingReporter
-        val args = Args(recordingReporter)
         val outOfOrderConcurrentDistributor = new ControlledOrderConcurrentDistributor(2)
-        (new ExampleTimeoutParallelSpec).run(None, Args(recordingReporter, distributor = Some(outOfOrderConcurrentDistributor)))
-        fun(outOfOrderConcurrentDistributor)
+        try {
+          val recordingReporter = new EventRecordingReporter
+          val args = Args(recordingReporter)
+          (new ExampleTimeoutParallelSpec).run(None, Args(recordingReporter, distributor = Some(outOfOrderConcurrentDistributor)))
+          fun(outOfOrderConcurrentDistributor)
 
-        val eventRecorded = recordingReporter.eventsReceived
-        assert(eventRecorded.size === 16)
+          val eventRecorded = recordingReporter.eventsReceived
+          assert(eventRecorded.size === 16)
 
-        checkScopeOpened(eventRecorded(0), "Thing 1")
-        checkTestStarting(eventRecorded(1), "Thing 1 do thing 1a")
-        checkTestSucceeded(eventRecorded(2), "Thing 1 do thing 1a")
-        checkTestStarting(eventRecorded(3), "Thing 1 do thing 1b")        
-        checkTestStarting(eventRecorded(4), "Thing 1 do thing 1c")
-        checkTestSucceeded(eventRecorded(5), "Thing 1 do thing 1c")
-        checkScopeClosed(eventRecorded(6), "Thing 1")
+          checkScopeOpened(eventRecorded(0), "Thing 1")
+          checkTestStarting(eventRecorded(1), "Thing 1 do thing 1a")
+          checkTestSucceeded(eventRecorded(2), "Thing 1 do thing 1a")
+          checkTestStarting(eventRecorded(3), "Thing 1 do thing 1b")        
+          checkTestStarting(eventRecorded(4), "Thing 1 do thing 1c")
+          checkTestSucceeded(eventRecorded(5), "Thing 1 do thing 1c")
+          checkScopeClosed(eventRecorded(6), "Thing 1")
         
-        checkScopeOpened(eventRecorded(7), "Thing 2")
-        checkTestStarting(eventRecorded(8), "Thing 2 do thing 2a")
-        checkTestSucceeded(eventRecorded(9), "Thing 2 do thing 2a")
-        checkTestStarting(eventRecorded(10), "Thing 2 do thing 2b")
-        checkTestSucceeded(eventRecorded(11), "Thing 2 do thing 2b")
-        checkTestStarting(eventRecorded(12), "Thing 2 do thing 2c")
-        checkTestSucceeded(eventRecorded(13), "Thing 2 do thing 2c")
-        checkScopeClosed(eventRecorded(14), "Thing 2")
+          checkScopeOpened(eventRecorded(7), "Thing 2")
+          checkTestStarting(eventRecorded(8), "Thing 2 do thing 2a")
+          checkTestSucceeded(eventRecorded(9), "Thing 2 do thing 2a")
+          checkTestStarting(eventRecorded(10), "Thing 2 do thing 2b")
+          checkTestSucceeded(eventRecorded(11), "Thing 2 do thing 2b")
+          checkTestStarting(eventRecorded(12), "Thing 2 do thing 2c")
+          checkTestSucceeded(eventRecorded(13), "Thing 2 do thing 2c")
+          checkScopeClosed(eventRecorded(14), "Thing 2")
         
-        // Now the missing one.
-        checkTestSucceeded(eventRecorded(15), "Thing 1 do thing 1b")
+          // Now the missing one.
+          checkTestSucceeded(eventRecorded(15), "Thing 1 do thing 1b")
+        }
+        finally {
+          outOfOrderConcurrentDistributor.shutdown()
+        }
       }
 
       withDistributor(_.executeInOrder())
@@ -237,25 +246,29 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
     // TODO: Check with Chee Seng. I'm not sure what this is supposed to be testing, and it fails.
     it("should have the events reported in correct order when multiple suite's tests are executed in parallel") {
       def withDistributor(fun: ControlledOrderConcurrentDistributor => Unit) = {
-        val recordingReporter = new EventRecordingReporter
         val outOfOrderConcurrentDistributor = new ControlledOrderConcurrentDistributor(2)
-        val suiteSortingReporter = new SuiteSortingReporter(recordingReporter, Span(5, Seconds), new PrintStream(new ByteArrayOutputStream))
-        val spec1 = new ExampleParallelSpec()
-        val spec2 = new ExampleBeforeAfterParallelSpec()
+        try {
+          val recordingReporter = new EventRecordingReporter
+          val suiteSortingReporter = new SuiteSortingReporter(recordingReporter, Span(5, Seconds), new PrintStream(new ByteArrayOutputStream))
+          val spec1 = new ExampleParallelSpec()
+          val spec2 = new ExampleBeforeAfterParallelSpec()
         
-        val tracker = new Tracker()
-        suiteSortingReporter(SuiteStarting(tracker.nextOrdinal, spec1.suiteName, spec1.suiteId, Some(spec1.getClass.getName), None))
-        suiteSortingReporter(SuiteStarting(tracker.nextOrdinal, spec2.suiteName, spec2.suiteId, Some(spec2.getClass.getName), None))
+          val tracker = new Tracker()
+          suiteSortingReporter(SuiteStarting(tracker.nextOrdinal, spec1.suiteName, spec1.suiteId, Some(spec1.getClass.getName), None))
+          suiteSortingReporter(SuiteStarting(tracker.nextOrdinal, spec2.suiteName, spec2.suiteId, Some(spec2.getClass.getName), None))
         
-        spec1.run(None, Args(suiteSortingReporter, distributor = Some(outOfOrderConcurrentDistributor), distributedSuiteSorter = Some(suiteSortingReporter)))
-        spec2.run(None, Args(suiteSortingReporter, distributor = Some(outOfOrderConcurrentDistributor), distributedSuiteSorter = Some(suiteSortingReporter)))
+          spec1.run(None, Args(suiteSortingReporter, distributor = Some(outOfOrderConcurrentDistributor), distributedSuiteSorter = Some(suiteSortingReporter)))
+          spec2.run(None, Args(suiteSortingReporter, distributor = Some(outOfOrderConcurrentDistributor), distributedSuiteSorter = Some(suiteSortingReporter)))
         
-        suiteSortingReporter(SuiteCompleted(tracker.nextOrdinal, spec1.suiteName, spec1.suiteId, Some(spec1.getClass.getName), None))
-        suiteSortingReporter(SuiteCompleted(tracker.nextOrdinal, spec2.suiteName, spec2.suiteId, Some(spec2.getClass.getName), None))
+          suiteSortingReporter(SuiteCompleted(tracker.nextOrdinal, spec1.suiteName, spec1.suiteId, Some(spec1.getClass.getName), None))
+          suiteSortingReporter(SuiteCompleted(tracker.nextOrdinal, spec2.suiteName, spec2.suiteId, Some(spec2.getClass.getName), None))
         
-        fun(outOfOrderConcurrentDistributor)
-        
-        recordingReporter.eventsReceived
+          fun(outOfOrderConcurrentDistributor)
+          recordingReporter.eventsReceived
+        }
+        finally {
+          outOfOrderConcurrentDistributor.shutdown()
+        }
       }
       
       val spec1SuiteId = new ExampleParallelSpec().suiteId
@@ -375,74 +388,80 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
     }
     
     it("should have the blocking suite's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired") {
-      val recordingReporter = new EventRecordingReporter
-      val args = Args(recordingReporter)
       val outOfOrderConcurrentDistributor = new ControlledOrderConcurrentDistributor(2)
-      val suiteSortingReporter = new SuiteSortingReporter(recordingReporter, Span(1, Second), new PrintStream(new ByteArrayOutputStream))
-      val spec1 = new ExampleSuiteTimeoutSpec()
-      val spec2 = new ExampleSuiteTimeoutSpec2()
-        
-      val tracker = new Tracker()
+      try {
+        val recordingReporter = new EventRecordingReporter
+        val args = Args(recordingReporter)
       
-      suiteSortingReporter(SuiteStarting(tracker.nextOrdinal, spec1.suiteName, spec1.suiteId, Some(spec1.getClass.getName), None))
-      suiteSortingReporter(SuiteStarting(tracker.nextOrdinal, spec2.suiteName, spec2.suiteId, Some(spec2.getClass.getName), None))
+        val suiteSortingReporter = new SuiteSortingReporter(recordingReporter, Span(1, Second), new PrintStream(new ByteArrayOutputStream))
+        val spec1 = new ExampleSuiteTimeoutSpec()
+        val spec2 = new ExampleSuiteTimeoutSpec2()
+        
+        val tracker = new Tracker()
       
-      spec1.run(None, Args(suiteSortingReporter, distributor = Some(outOfOrderConcurrentDistributor), distributedSuiteSorter = Some(suiteSortingReporter)))
-      spec2.run(None, Args(suiteSortingReporter, distributor = Some(outOfOrderConcurrentDistributor), distributedSuiteSorter = Some(suiteSortingReporter)))
-        
-      suiteSortingReporter(SuiteCompleted(tracker.nextOrdinal, spec1.suiteName, spec1.suiteId, Some(spec1.getClass.getName), None))
-      suiteSortingReporter(SuiteCompleted(tracker.nextOrdinal, spec2.suiteName, spec2.suiteId, Some(spec2.getClass.getName), None))
+        suiteSortingReporter(SuiteStarting(tracker.nextOrdinal, spec1.suiteName, spec1.suiteId, Some(spec1.getClass.getName), None))
+        suiteSortingReporter(SuiteStarting(tracker.nextOrdinal, spec2.suiteName, spec2.suiteId, Some(spec2.getClass.getName), None))
       
-      outOfOrderConcurrentDistributor.executeInOrder()
+        spec1.run(None, Args(suiteSortingReporter, distributor = Some(outOfOrderConcurrentDistributor), distributedSuiteSorter = Some(suiteSortingReporter)))
+        spec2.run(None, Args(suiteSortingReporter, distributor = Some(outOfOrderConcurrentDistributor), distributedSuiteSorter = Some(suiteSortingReporter)))
         
-      val eventRecorded = recordingReporter.eventsReceived
-      println(eventRecorded.map(e => e.getClass.getName).mkString("\n"))
+        suiteSortingReporter(SuiteCompleted(tracker.nextOrdinal, spec1.suiteName, spec1.suiteId, Some(spec1.getClass.getName), None))
+        suiteSortingReporter(SuiteCompleted(tracker.nextOrdinal, spec2.suiteName, spec2.suiteId, Some(spec2.getClass.getName), None))
+      
+        outOfOrderConcurrentDistributor.executeInOrder()
         
-      assert(eventRecorded.size === 34)
+        val eventRecorded = recordingReporter.eventsReceived
+        println(eventRecorded.map(e => e.getClass.getName).mkString("\n"))
+        
+        assert(eventRecorded.size === 34)
 
-      checkSuiteStarting(eventRecorded(0), spec1.suiteId)
+        checkSuiteStarting(eventRecorded(0), spec1.suiteId)
         
-      checkScopeOpened(eventRecorded(1), "Thing 1")
-      checkTestStarting(eventRecorded(2), "Thing 1 do thing 1a")
-      checkTestSucceeded(eventRecorded(3), "Thing 1 do thing 1a")
-      checkTestStarting(eventRecorded(4), "Thing 1 do thing 1b")
-      checkTestSucceeded(eventRecorded(5), "Thing 1 do thing 1b")
-      checkTestStarting(eventRecorded(6), "Thing 1 do thing 1c")
-      checkTestSucceeded(eventRecorded(7), "Thing 1 do thing 1c")
-      checkScopeClosed(eventRecorded(8), "Thing 1")
+        checkScopeOpened(eventRecorded(1), "Thing 1")
+        checkTestStarting(eventRecorded(2), "Thing 1 do thing 1a")
+        checkTestSucceeded(eventRecorded(3), "Thing 1 do thing 1a")
+        checkTestStarting(eventRecorded(4), "Thing 1 do thing 1b")
+        checkTestSucceeded(eventRecorded(5), "Thing 1 do thing 1b")
+        checkTestStarting(eventRecorded(6), "Thing 1 do thing 1c")
+        checkTestSucceeded(eventRecorded(7), "Thing 1 do thing 1c")
+        checkScopeClosed(eventRecorded(8), "Thing 1")
         
-      checkScopeOpened(eventRecorded(9), "Thing 2")
-      checkTestStarting(eventRecorded(10), "Thing 2 do thing 2a")
-      checkTestSucceeded(eventRecorded(11), "Thing 2 do thing 2a")
-      // SuiteSortingReporter timeout should hit here.
-      checkSuiteCompleted(eventRecorded(12), spec1.suiteId)
+        checkScopeOpened(eventRecorded(9), "Thing 2")
+        checkTestStarting(eventRecorded(10), "Thing 2 do thing 2a")
+        checkTestSucceeded(eventRecorded(11), "Thing 2 do thing 2a")
+        // SuiteSortingReporter timeout should hit here.
+        checkSuiteCompleted(eventRecorded(12), spec1.suiteId)
        
-      checkSuiteStarting(eventRecorded(13), spec2.suiteId)
+        checkSuiteStarting(eventRecorded(13), spec2.suiteId)
         
-      checkScopeOpened(eventRecorded(14), "Subject 1")
-      checkTestStarting(eventRecorded(15), "Subject 1 content 1a")
-      checkTestSucceeded(eventRecorded(16), "Subject 1 content 1a")
-      checkTestStarting(eventRecorded(17), "Subject 1 content 1b")
-      checkTestSucceeded(eventRecorded(18), "Subject 1 content 1b")
-      checkTestStarting(eventRecorded(19), "Subject 1 content 1c")
-      checkTestSucceeded(eventRecorded(20), "Subject 1 content 1c")
-      checkScopeClosed(eventRecorded(21), "Subject 1")
+        checkScopeOpened(eventRecorded(14), "Subject 1")
+        checkTestStarting(eventRecorded(15), "Subject 1 content 1a")
+        checkTestSucceeded(eventRecorded(16), "Subject 1 content 1a")
+        checkTestStarting(eventRecorded(17), "Subject 1 content 1b")
+        checkTestSucceeded(eventRecorded(18), "Subject 1 content 1b")
+        checkTestStarting(eventRecorded(19), "Subject 1 content 1c")
+        checkTestSucceeded(eventRecorded(20), "Subject 1 content 1c")
+        checkScopeClosed(eventRecorded(21), "Subject 1")
         
-      checkScopeOpened(eventRecorded(22), "Subject 2")
-      checkTestStarting(eventRecorded(23), "Subject 2 content 2a")
-      checkTestSucceeded(eventRecorded(24), "Subject 2 content 2a")
-      checkTestStarting(eventRecorded(25), "Subject 2 content 2b")
-      checkTestSucceeded(eventRecorded(26), "Subject 2 content 2b")
-      checkTestStarting(eventRecorded(27), "Subject 2 content 2c")
-      checkTestSucceeded(eventRecorded(28), "Subject 2 content 2c")
-      checkScopeClosed(eventRecorded(29), "Subject 2")
+        checkScopeOpened(eventRecorded(22), "Subject 2")
+        checkTestStarting(eventRecorded(23), "Subject 2 content 2a")
+        checkTestSucceeded(eventRecorded(24), "Subject 2 content 2a")
+        checkTestStarting(eventRecorded(25), "Subject 2 content 2b")
+        checkTestSucceeded(eventRecorded(26), "Subject 2 content 2b")
+        checkTestStarting(eventRecorded(27), "Subject 2 content 2c")
+        checkTestSucceeded(eventRecorded(28), "Subject 2 content 2c")
+        checkScopeClosed(eventRecorded(29), "Subject 2")
         
-      checkSuiteCompleted(eventRecorded(30), spec2.suiteId)
+        checkSuiteCompleted(eventRecorded(30), spec2.suiteId)
        
-      // Now the missing ones.
-      checkTestStarting(eventRecorded(31), "Thing 2 do thing 2b")
-      checkTestSucceeded(eventRecorded(32), "Thing 2 do thing 2b")
-      checkScopeClosed(eventRecorded(33), "Thing 2")
+        // Now the missing ones.
+        checkTestStarting(eventRecorded(31), "Thing 2 do thing 2b")
+        checkTestSucceeded(eventRecorded(32), "Thing 2 do thing 2b")
+        checkScopeClosed(eventRecorded(33), "Thing 2")
+      }
+      finally {
+        outOfOrderConcurrentDistributor.shutdown()
+      }
     }
     // SKIP-SCALATESTJS-END
     
