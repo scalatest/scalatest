@@ -20,9 +20,9 @@ import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestFailedException
 
 /**
- * Trait that provides an implicit conversion that adds <code>left.value</code> and <code>right.value</code> methods
- * to <code>Either</code>, which will return the selected value of the <code>Either</code> if defined,
- * or throw <code>TestFailedException</code> if not.
+ * Trait that provides an implicit conversion that adds <code>value</code>, <code>left.value</code> and
+ * <code>right.value</code> methods to <code>Either</code>, which will return the selected value of the
+ * <code>Either</code> if defined, or throw <code>TestFailedException</code> if not.
  *
  * <p>
  * This construct allows you to express in one statement that an <code>Either</code> should be <em>left</em> or <em>right</em>
@@ -30,6 +30,7 @@ import org.scalatest.exceptions.TestFailedException
  * </p>
  *
  * <pre class="stHighlight">
+ * either1.value should be &gt; 9 // Either is right-biased since Scala 2.12)
  * either1.right.value should be &gt; 9
  * either2.left.value should be ("Muchas problemas")
  * </pre>
@@ -39,6 +40,7 @@ import org.scalatest.exceptions.TestFailedException
  * </p>
  *
  * <pre class="stHighlight">
+ * assert(either1.value &gt; 9)
  * assert(either1.right.value &gt; 9)
  * assert(either2.left.value === "Muchas problemas")
  * </pre>
@@ -83,6 +85,14 @@ import org.scalatest.exceptions.TestFailedException
 trait EitherValues {
 
   import scala.language.implicitConversions
+
+  /**
+   * Implicit conversion that adds a (right) biased <code>value</code> method to <code>Either</code>
+   * (which since Scala 2.12 has been right-biased).
+   *
+   * @param either the <code>Either</code> on which to add the <code>value</code> method
+   */
+  implicit def convertEitherToValuable[L, R](either: Either[L, R])(implicit pos: source.Position): RightValuable[L, R] = new RightValuable(either.right, pos)
 
   /**
    * Implicit conversion that adds a <code>value</code> method to <code>LeftProjection</code>.
@@ -141,7 +151,7 @@ trait EitherValues {
 
     /**
      * Returns the <code>Right</code> value contained in the wrapped <code>RightProjection</code>, if defined as a <code>Right</code>, else throws <code>TestFailedException</code> with
-     * a detail message indicating the <code>Either</code> was defined as a <code>Right</code>, not a <code>Left</code>.
+     * a detail message indicating the <code>Either</code> was defined as a <code>Left</code>, not a <code>Right</code>.
      */
     def value: R = {
       try {
