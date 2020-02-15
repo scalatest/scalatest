@@ -57,12 +57,20 @@ object ObjectMeta {
           replaceAllLiterally("$sp", "").
           replaceAllLiterally("$f", "")
 
-      Some((filterDollarNumberAtTheEnd(decodedKey), value))
+      val decodedKey10 = {
+        val idx = decodedKey.indexOf("__f_")
+        if (idx >= 0)
+          decodedKey.drop(idx + 4)
+        else
+          decodedKey
+      }    
+
+      Some((filterDollarNumberAtTheEnd(decodedKey10), value))
     }.flatten.toMap
 
     new ObjectMeta {
 
-      lazy val fieldNames = dict.keys.toVector.filter(_ != "$$outer")
+      lazy val fieldNames = dict.keys.toVector.filter(k => k != "$$outer" && k != "$outer")
 
       def value(name: String): Any = {
         dict.get(name) match {
