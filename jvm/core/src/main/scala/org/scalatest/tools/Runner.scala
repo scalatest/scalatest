@@ -1248,10 +1248,10 @@ object Runner {
             // Because some tests may do IO, will create a pool of 2 times the number of processors reported
             // by the Runtime's availableProcessors method.
             val poolSize =
-            if (concurrentConfig.numThreads == 0)
-              Runtime.getRuntime.availableProcessors * 2
-            else
-              concurrentConfig.numThreads
+              if (concurrentConfig.numThreads == 0)
+                Runtime.getRuntime.availableProcessors * 2
+              else
+                concurrentConfig.numThreads
 
             val distributedSuiteSorter = 
               if (concurrentConfig.enableSuiteSortingReporter)
