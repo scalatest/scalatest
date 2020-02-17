@@ -1248,8 +1248,10 @@ object Runner {
             // Because some tests may do IO, will create a pool of 2 times the number of processors reported
             // by the Runtime's availableProcessors method.
             val poolSize =
-              if (concurrentConfig.numThreads > 0) concurrentConfig.numThreads
-              else Runtime.getRuntime.availableProcessors * 2
+            if (concurrentConfig.numThreads == 0)
+              Runtime.getRuntime.availableProcessors * 2
+            else
+              concurrentConfig.numThreads
 
             val distributedSuiteSorter = 
               if (concurrentConfig.enableSuiteSortingReporter)
@@ -1272,7 +1274,11 @@ object Runner {
                   thread
                 }
               }
-            val execSvc: ExecutorService = Executors.newFixedThreadPool(poolSize, threadFactory)
+            val execSvc: ExecutorService =
+              if (poolSize > 0)
+                Executors.newFixedThreadPool(poolSize, threadFactory)
+              else
+                Executors.newCachedThreadPool(threadFactory)
             try {
 
               val distributor = new ConcurrentDistributor(Args(dispatch, stopper, Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet), configMap, None, tracker, chosenStyleSet, false, None, None), execSvc)

@@ -1096,7 +1096,7 @@ class FrameworkSuite extends FunSuite {
     assert(iae.getMessage === "-P without specifying <numthreads> is not supported when running ScalaTest from sbt, please use sbt parallel configuration instead.")
   }
 
-  test("Framework.runner accept without problem when -P 4 is passed in") {
+  test("Framework.runner accept without problem when -P4 is passed in") {
     framework.runner(Array("-P4"), Array.empty, testClassLoader)
   }
 
