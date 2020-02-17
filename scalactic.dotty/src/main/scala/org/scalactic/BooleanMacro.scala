@@ -44,7 +44,7 @@ object BooleanMacro {
     def exprStr: String = condition.show
     def defaultCase = '{ Bool.simpleMacroBool($condition, ${Expr(exprStr)}, $prettifier) }
     def isImplicitMethodType(tp: Type): Boolean = tp match {
-      case IsMethodType(tp) => tp.isImplicit
+      case tp: MethodType => tp.isImplicit
       case _ => false
     }
 
