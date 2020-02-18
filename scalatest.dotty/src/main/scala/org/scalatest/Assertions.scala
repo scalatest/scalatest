@@ -467,7 +467,7 @@ trait Assertions extends TripleEquals  {
    * @param condition the boolean condition to assert
    * @throws TestFailedException if the condition is <code>false</code>.
    */
-  inline def assert(condition: => Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assert(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
     ${ AssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{""}) }
 
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position, analysis: scala.collection.immutable.IndexedSeq[String]): Throwable =
@@ -526,7 +526,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  inline def assert(condition: => Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assert(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
     ${ AssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{clue}) }
 
   /**
@@ -574,7 +574,7 @@ trait Assertions extends TripleEquals  {
    * @param condition the boolean condition to assume
    * @throws TestCanceledException if the condition is <code>false</code>.
    */
-  inline def assume(condition: => Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assume(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
     ${ AssertionsMacro.assume('{condition}, '{prettifier}, '{pos}, '{""}) }
 
   /**
@@ -627,7 +627,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestCanceledException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  inline def assume(condition: => Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assume(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
     ${ AssertionsMacro.assume('{condition}, '{prettifier}, '{pos}, '{clue}) }
 
   /**
@@ -661,7 +661,7 @@ trait Assertions extends TripleEquals  {
    * @param code the snippet of code that should not type check
    */
   inline def assertTypeError(inline code: String)(implicit pos: source.Position): Assertion =
-    ${ CompileMacro.assertTypeErrorImpl('code, typeChecks(code), '{ pos }) }
+    ${ CompileMacro.assertTypeErrorImpl('code, '{typeChecks(code)}, '{ pos }) }
 
   /**
    * Asserts that a given string snippet of code does not pass either the Scala parser or type checker.
@@ -693,7 +693,7 @@ trait Assertions extends TripleEquals  {
    * @param code the snippet of code that should not type check
    */
   inline def assertDoesNotCompile(inline code: String)(implicit pos: source.Position): Assertion =
-    ${ CompileMacro.assertDoesNotCompileImpl('code, typeChecks(code), 'pos) }
+    ${ CompileMacro.assertDoesNotCompileImpl('code, '{typeChecks(code)}, 'pos) }
 
   /**
    * Asserts that a given string snippet of code passes both the Scala parser and type checker.
@@ -715,7 +715,7 @@ trait Assertions extends TripleEquals  {
    * @param code the snippet of code that should compile
    */
   inline def assertCompiles(inline code: String)(implicit pos: source.Position): Assertion =
-    ${ CompileMacro.assertCompilesImpl('code, typeChecks(code), 'pos) }
+    ${ CompileMacro.assertCompilesImpl('code, '{typeChecks(code)}, 'pos) }
 
   /**
    * Intercept and return an exception that's expected to

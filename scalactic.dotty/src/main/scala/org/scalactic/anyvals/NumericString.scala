@@ -2711,7 +2711,7 @@ object NumericString {
    *     a valid <code>String</code> literal, the invocation of this method
    *     will not compile.)
    */
-  inline def apply(value: => String): NumericString = ${ NumericStringMacro('{value}) }
+  inline def apply(inline value: String): NumericString = ${ NumericStringMacro('{value}) }
 
   /**
    * A factory/validation method that produces a <code>NumericString</code>,
