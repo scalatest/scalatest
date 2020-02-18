@@ -24,7 +24,6 @@ import scala.collection.GenTraversable
 import scala.collection.SortedMap
 import scala.collection.SortedSet
 import FailureMessages.decorateToStringValue
-import java.util.concurrent.Executors
 import org.scalactic.Prettifier
 import org.scalactic.ArrayHelper.deep
 
