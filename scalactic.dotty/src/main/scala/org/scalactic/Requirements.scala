@@ -143,7 +143,7 @@ trait Requirements {
    * @param condition the boolean condition to check as requirement
    * @throws IllegalArgumentException if the condition is <code>false</code>.
    */
-  inline def require(condition: => Boolean)(implicit prettifier: Prettifier): Unit =
+  inline def require(inline condition: Boolean)(implicit prettifier: Prettifier): Unit =
     ${ RequirementsMacro.require('{condition}, '{prettifier}, '{""}) }
 
   /**
@@ -161,7 +161,7 @@ trait Requirements {
    * @throws IllegalArgumentException if the condition is <code>false</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
-  inline def require(condition: => Boolean, clue: Any)(implicit prettifier: Prettifier): Unit =
+  inline def require(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier): Unit =
     ${ RequirementsMacro.require('{condition}, '{prettifier}, '{clue}) }
 
   /**
@@ -179,7 +179,7 @@ trait Requirements {
    * @param condition the boolean condition to check as requirement
    * @throws IllegalStateException if the condition is <code>false</code>.
    */
-  inline def requireState(condition: => Boolean)(implicit prettifier: Prettifier): Unit =
+  inline def requireState(inline condition: Boolean)(implicit prettifier: Prettifier): Unit =
     ${ RequirementsMacro.requireState('{condition}, '{prettifier}, '{""}) }
 
   /**
@@ -199,7 +199,7 @@ trait Requirements {
    * @throws IllegalStateException if the condition is <code>false</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
-  inline def requireState(condition: => Boolean, clue: Any)(implicit prettifier: Prettifier): Unit =
+  inline def requireState(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier): Unit =
     ${ RequirementsMacro.requireState('{condition}, '{prettifier}, '{clue}) }
 
   /**

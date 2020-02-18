@@ -188,6 +188,6 @@ private[scalactic] object RegexString {
   def fromOrElse(value: String, default: => RegexString): RegexString =
     if (RegexStringMacro.isValid(value)) new RegexString(value) else default
 
-  inline def apply(value: => String): RegexString = ${ RegexStringMacro('{value}) }
+  inline def apply(inline value: String): RegexString = ${ RegexStringMacro('{value}) }
 }
 
