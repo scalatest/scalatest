@@ -112,13 +112,25 @@ trait EitherValues {
       * Returns the <code>Left</code> value contained in the wrapped <code>LeftProjection</code>, if defined as a <code>Left</code>, else throws <code>TestFailedException</code> with
       * a detail message indicating the <code>Either</code> was defined as a <code>Right</code>, not a <code>Left</code>.
       */
-    def leftValue: L = either.swap.getOrElse(throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherLeftValueNotDefined), Some(new NoSuchElementException), pos))
+    def leftValue: L = {
+      try {
+        either.left.get
+      }
+      catch {
+        case cause: NoSuchElementException =>
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherLeftValueNotDefined), Some(cause), pos)
+      }
+    }
 
     /**
       * Returns the <code>Right</code> value contained in the wrapped <code>Either</code>, if defined as a <code>Right</code>, else throws <code>TestFailedException</code> with
       * a detail message indicating the <code>Either</code> was defined as a <code>Left</code>, not a <code>Right</code>.
       */
-    def rightValue: R = either.getOrElse(throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherRightValueNotDefined), Some(new NoSuchElementException), pos))
+    def rightValue: R = either match {
+      case Right(x) => x
+      case Left(_) =>
+        throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherRightValueNotDefined), Some(new NoSuchElementException), pos)
+    }
   }
 
   /**
