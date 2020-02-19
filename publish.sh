@@ -1,8 +1,10 @@
 sbt clean
 sbt "project scalactic" clean +publishSigned
 export SCALAJS_VERSION=0.6.32
+sbt "project scalacticMacroJS" clean
 sbt "project scalacticJS" clean +publishSigned
 export SCALAJS_VERSION=1.0.0
+sbt "project scalacticMacroJS" clean
 sbt ++2.11.12 "project scalacticJS" clean publishSigned
 sbt ++2.12.10 "project scalacticJS" clean publishSigned
 sbt ++2.13.1 "project scalacticJS" clean publishSigned
