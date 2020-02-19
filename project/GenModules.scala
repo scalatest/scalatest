@@ -34,6 +34,10 @@ object GenModules {
     }
   }
 
+  def genScalaTestCompatible(targetDir: File, version: String, scalaVersion: String): Seq[File] = { 
+    copyDir("scalatest/src/main/java/org/scalatest/compatible", "org/scalatest/compatible", targetDir,List.empty)
+  }
+
   def genScalaTestCore(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("scalatest/src/main/scala/org/scalatest", "org/scalatest", targetDir, 
       List("package.scala")
