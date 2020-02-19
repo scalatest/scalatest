@@ -177,7 +177,7 @@ trait Diagrams extends Assertions {
    * @param condition the boolean condition to assert
    * @throws TestFailedException if the condition is <code>false</code>.
    */
-  inline override def assert(condition: => Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline override def assert(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
     ${ DiagrammedAssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{""}) }
 
   /**
@@ -199,7 +199,7 @@ trait Diagrams extends Assertions {
    * @throws TestFailedException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  inline override def assert(condition: => Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline override def assert(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
     ${ DiagrammedAssertionsMacro.assert('condition, 'prettifier, 'pos, 'clue) }
 
   /**
@@ -220,7 +220,7 @@ trait Diagrams extends Assertions {
    * @param condition the boolean condition to assume
    * @throws TestCanceledException if the condition is <code>false</code>.
    */
-  inline override def assume(condition: => Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline override def assume(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
     ${ DiagrammedAssertionsMacro.assume('condition, 'prettifier, 'pos, '{""}) }
 
   /**
@@ -242,7 +242,7 @@ trait Diagrams extends Assertions {
    * @throws TestCanceledException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  inline override def assume(condition: => Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline override def assume(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
     ${ DiagrammedAssertionsMacro.assume('condition, 'prettifier, 'pos, 'clue) }
 }
 

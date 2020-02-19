@@ -33,7 +33,7 @@ object DiagramsMacro {
     def isXmlSugar(apply: Apply): Boolean = apply.tpe <:< typeOf[scala.xml.Elem]
     def isJavaStatic(tree: Tree): Boolean = tree.symbol.flags.is(Flags.Static)
     def isImplicitMethodType(tp: Type): Boolean = tp match {
-      case IsMethodType(tp) => tp.isImplicit
+      case tp: MethodType => tp.isImplicit
       case _ => false
     }
 
@@ -74,15 +74,15 @@ object DiagramsMacro {
     expr match {
       case Apply(Select(New(_), _), _) => default(expr)
 
-      case IsApply(apply) if isXmlSugar(apply) => default(expr)
+      case apply: Apply if isXmlSugar(apply) => default(expr)
 
-      case IsApply(apply) if isJavaStatic(apply) => default(expr)
+      case apply: Apply if isJavaStatic(apply) => default(expr)
 
       case Select(This(_), _) => default(expr)
 
-      case IsSelect(x) if x.symbol.flags.is(Flags.Object) => default(expr)
+      case x: Select if x.symbol.flags.is(Flags.Object) => default(expr)
 
-      case IsSelect(x) if isJavaStatic(x) => default(expr)
+      case x: Select if isJavaStatic(x) => default(expr)
 
       case sel @ Select(qual, name) =>
         type T

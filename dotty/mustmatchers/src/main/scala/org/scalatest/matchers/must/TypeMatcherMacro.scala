@@ -26,10 +26,32 @@ import scala.tasty._
 
 object TypeMatcherMacro {
 
+  //   // Check that no type parameter is specified, if any does, give a friendly compiler warning.
+  def checkTypeParameter(qctx: QuoteContext)(tree: qctx.tasty.Term, methodName: String): Unit = {
+    import qctx.tasty.{_, given}
+
+    // TODO#Macros: Select lack unapply
+    /*
+    tree.underlyingArgument match {
+      case Apply(TypeApply(Select(_,methodNameTermName), typeList: List[TypeTree]), _)
+      if methodNameTermName.decoded == methodName =>
+        // Got a type list, let's go through it
+        typeList.foreach {
+          case Applied(tpt, args) => // type is specified, let's give warning.
+            // TODO#Macros: Blocked by error reporting API
+            // context.warning(args(0).pos, "Type parameter should not be specified because it will be erased at runtime, please use _ instead.  Note that in future version of ScalaTest this will give a compiler error.")
+
+          case _ => // otherwise don't do anything
+        }
+      case _ => // otherwise don't do anything
+    } */
+
+  }
+
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'mustBe a [type]' syntax
   def mustBeATypeImpl(self: Expr[org.scalatest.matchers.must.Matchers#AnyMustWrapper[_]], aType: Expr[ResultOfATypeInvocation[_]])(implicit qctx: QuoteContext): Expr[org.scalatest.Assertion] = {
-    import qctx.tasty._
-    org.scalatest.matchers.TypeMatcherMacro.checkTypeParameter(qctx)(aType.unseal, "a")
+    import qctx.tasty.{_, given}
+    checkTypeParameter(qctx)(aType.unseal, "a")
     '{
       org.scalatest.matchers.TypeMatcherHelper.assertAType(($self).leftSideValue, $aType, ($self).prettifier, ($self).pos)
     }
@@ -37,8 +59,8 @@ object TypeMatcherMacro {
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAnType, used by 'mustBe an [type]' syntax
   def mustBeAnTypeImpl(self: Expr[org.scalatest.matchers.must.Matchers#AnyMustWrapper[_]], anType: Expr[ResultOfAnTypeInvocation[_]])(implicit qctx: QuoteContext): Expr[org.scalatest.Assertion] = {
-    import qctx.tasty._
-    org.scalatest.matchers.TypeMatcherMacro.checkTypeParameter(qctx)(anType.unseal, "an")
+    import qctx.tasty.{_, given}
+    checkTypeParameter(qctx)(anType.unseal, "an")
     '{
       org.scalatest.matchers.TypeMatcherHelper.assertAnType(($self).leftSideValue, $anType, ($self).prettifier, ($self).pos)
     }
