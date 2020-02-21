@@ -453,6 +453,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
+        "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.check",
         "org.scalatest.diagrams",
@@ -498,7 +499,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   ).dependsOn(scalatestCompatible, scalacticMacro % "compile-internal, test-internal", scalactic)
+   ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic)
 
   lazy val scalatestTest = Project("scalatest-test", file("scalatest-test"))
     .settings(sharedSettings: _*)
@@ -603,7 +604,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   lazy val rootProject = Project("root", file(".")).aggregate(scalacticMacro, scalactic, scalatest, commonTest, scalacticTest, scalatestTest)
 
-  lazy val scalatestCompatible = Project("scalatestCompatible", file("scalatest-compatible"))
+  lazy val scalatestCompatible = Project("scalatestCompatible", file("modules/jvm/scalatest-compatible"))
     .enablePlugins(SbtOsgi)
     .settings(commonSharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -619,6 +620,11 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         Def.task{
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
+        }.taskValue
+      },
+      sourceGenerators in Compile += {
+        Def.task{
+          GenModules.genScalaTestCompatible((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
       scalatestDocSettings,
