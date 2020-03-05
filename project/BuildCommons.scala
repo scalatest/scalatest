@@ -7,7 +7,7 @@ trait BuildCommons {
 
   lazy val supportedScalaVersions = List("2.13.1", "2.12.10", "2.11.12", "2.10.7")
 
-  val releaseVersion = "3.2.0-M3"
+  val releaseVersion = "3.2.0-M4"
 
   val previousReleaseVersion = "3.1.1"
 
