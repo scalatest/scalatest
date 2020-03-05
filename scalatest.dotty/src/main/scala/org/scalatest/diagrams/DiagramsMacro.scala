@@ -23,7 +23,7 @@ import org.scalatest.compatible.Assertion
 object DiagramsMacro {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def parse(qctx: QuoteContext)(expr: qctx.tasty.Term): qctx.tasty.Term = {
-    implicit val qctx2: QuoteContext = qctx
+    implicit val qctx2: qctx.type = qctx // TODO qctx should be given
     import qctx.tasty.{_, given _}
     import util._
 
