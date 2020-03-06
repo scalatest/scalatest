@@ -101,16 +101,19 @@ class ConductorSuite extends AnyFunSuite with Matchers with Conductors with Seve
           "must have a unique name") {
 
     val conductor = new Conductor
-    conductor.threadNamed("Fiesta del Mar") { 1 should be (1) }
-    val caught =
-      intercept[NotAllowedException] {
-        conductor.threadNamed("Fiesta del Mar") { 2 should be (2) }
+    try {
+      conductor.threadNamed("Fiesta del Mar") { 1 should be (1) }
+      val caught =
+        intercept[NotAllowedException] {
+          conductor.threadNamed("Fiesta del Mar") { 2 should be (2) }
+        }
+      caught.getMessage should be ("Cannot register two threads with the same name. Duplicate name: Fiesta del Mar.")
+      caught.failedCodeFileNameAndLineNumberString match {
+        case Some(s) => s should equal ("ConductorSuite.scala:" + (thisLineNumber - 4))
+        case None => fail("Didn't produce a file name and line number string: ", caught)
       }
-    caught.getMessage should be ("Cannot register two threads with the same name. Duplicate name: Fiesta del Mar.")
-    caught.failedCodeFileNameAndLineNumberString match {
-      case Some(s) => s should equal ("ConductorSuite.scala:" + (thisLineNumber - 4))
-      case None => fail("Didn't produce a file name and line number string: ", caught)
     }
+    finally conductor.conduct
   }
 
   test("waitForBeat throws NotAllowedException if is called with zero or a negative number") {
