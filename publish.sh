@@ -25,7 +25,6 @@ sbt ++2.13.1 "project scalatestJS" clean publishSigned
 sbt ++2.11.12 "project scalatestNative" clean publishSigned
 sbt "project scalatestDotty" clean publishSigned
 
-sbt clean
 sbt "project scalatestApp" clean +publishSigned
 export SCALAJS_VERSION=0.6.32
 sbt "project scalatestAppJS" clean +publishSigned
