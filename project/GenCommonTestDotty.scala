@@ -86,9 +86,7 @@ object GenCommonTestDotty {
         "mytags.scala", 
         "StubReporter.scala"
       )
-    ) ++
-    copyDir("jvm/common-test/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-    copyDir("jvm/common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty)
+    )
     /*++
       copyDir("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
         List("ExampleLikeSpecs.scala"), targetDir)*/

@@ -56,7 +56,6 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.enablers.PropCheckerAsserting
-import org.scalatest.funspec._
 
 /**
  * Trait containing methods that faciliate property checks against generated data using [[Generator]].
@@ -822,7 +821,6 @@ object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
   val generatorSuitePreamble = """
 
 import org.scalatest._
-import org.scalatest.funspec._
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 """
 
@@ -3698,7 +3696,7 @@ $okayAssertions$
           bw.write("import scala.concurrent.Future\n")
         bw.write("\n")
         bw.write(
-          "class " + checkMethod.capitalize + suiteClassName + " extends " + asyncPrefix + "FunSpec " +
+          "class " + checkMethod.capitalize + suiteClassName + " extends org.scalatest.funspec." + asyncPrefix + "FunSpec " +
             (if (mixinInvitationStyle) "with " + traitOrObjectName else "") + " {\n")
         bw.write(generatorSuitePostamble)
         val alpha = "abcdefghijklmnopqrstuv"
