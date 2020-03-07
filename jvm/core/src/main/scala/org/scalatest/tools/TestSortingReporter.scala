@@ -50,8 +50,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
     }
   }
   
-  private val timer = new Timer
-  private var timeoutTask: Option[TimeoutTask] = None
+  private var timeoutTask: Option[(TimeoutTask, Timer)] = None
 
   /**
    * Called to indicate a test is being distributed. The tests will be reported
@@ -259,23 +258,27 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
   private def scheduleTimeoutTask(): Unit = {
     val head = waitingBuffer.head  // Assumes waitingBuffer is non-empty. Put a require there to make that obvious.
     timeoutTask match {
-        case Some(task) => 
-          if (head.uuid != task.slot.uuid) {
-            task.cancel()
-            timeoutTask = Some(new TimeoutTask(head)) // Replace the old with the new
-            timer.schedule(timeoutTask.get, sortingTimeout.millisPart)
+        case Some((oldTask, oldTimer)) => 
+          if (head.uuid != oldTask.slot.uuid) {
+            oldTask.cancel()
+            oldTimer.cancel()
+            val (task, timer) = (new TimeoutTask(head), new Timer)
+            timeoutTask = Some((task, timer)) // Replace the old with the new
+            timer.schedule(task, sortingTimeout.millisPart)
           }
         case None => 
-          timeoutTask = Some(new TimeoutTask(head)) // Just create a new one
-          timer.schedule(timeoutTask.get, sortingTimeout.millisPart)
+          val (task, timer) = (new TimeoutTask(head), new Timer)
+          timeoutTask = Some((task, timer)) // Just create a new one
+          timer.schedule(task, sortingTimeout.millisPart)
       }
   }
   
   // Also happening inside synchronized block
   private def cancelTimeoutTask(): Unit = {
     timeoutTask match { // Waiting buffer is zero, so no timeout needed
-      case Some(task) => 
+      case Some((task, timer)) => 
         task.cancel()
+        timer.cancel()
         timeoutTask = None
       case None =>
     }
@@ -285,7 +288,8 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
     synchronized {
       if (waitingBuffer.size > 0) {
         val head = waitingBuffer.head
-        if (timeoutTask.get.slot.uuid == head.uuid) { // Probably a double check, or just in case there's race condition
+        val (task, _) = timeoutTask.get
+        if (task.slot.uuid == head.uuid) { // Probably a double check, or just in case there's race condition
           val newSlot = head.copy(ready = true) // Essentially, if time out, just say that one is ready. This test's events go out, and
           waitingBuffer.update(0, newSlot)
         }

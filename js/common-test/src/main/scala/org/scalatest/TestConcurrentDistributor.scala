@@ -2,7 +2,7 @@ package org.scalatest
 
 import _root_.org.scalatest.tools.SuiteRunner
 
-class TestConcurrentDistributor(poolSize: Int) extends Distributor {
+class TestConcurrentDistributor extends Distributor {
   def apply(suite: Suite, tracker: Tracker) {
     throw new UnsupportedOperationException("Please use apply with args.")
   }

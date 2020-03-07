@@ -1318,7 +1318,7 @@ class NumericStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers
     it("should offer a lines method consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.lines.mkString(",") shouldEqual
-          numStr.value.lines.mkString(",")
+          numStr.value.linesIterator.mkString(",")
       }
     }
     it("should offer a linesWithSeparators method consistent with StringOps") {
