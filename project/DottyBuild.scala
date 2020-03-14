@@ -30,6 +30,7 @@ trait DottyBuild { this: BuildCommons =>
       organization := "org.scalactic",
       moduleName := "scalactic",
       initialCommands in console := "import org.scalactic._",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task{
           // From scalactic-macro
@@ -78,6 +79,16 @@ trait DottyBuild { this: BuildCommons =>
     )
   )
 
+  // https://github.com/sbt/sbt/issues/2205#issuecomment-144375501
+  private lazy val packageManagedSources =
+    mappings in (Compile, packageSrc) ++= { // publish generated sources
+      val srcs = (managedSources in Compile).value
+      val sdirs = (managedSourceDirectories in Compile).value
+      val base = baseDirectory.value
+      import Path._
+      (srcs --- sdirs --- base) pair (relativeTo(sdirs) | relativeTo(base) | flat)
+    }
+
   lazy val scalatestDotty = Project("scalatestDotty", file("scalatest.dotty"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
@@ -91,6 +102,7 @@ trait DottyBuild { this: BuildCommons =>
                                        |import Matchers._""".stripMargin,
       libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenScalaTestDotty.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
