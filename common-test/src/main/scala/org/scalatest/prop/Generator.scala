@@ -429,7 +429,7 @@ trait Generator[T] { thisGeneratorOfT =>
     *
     *   - `Int`: 0, 1, -1, 2, -2, 3, -3
     *   - `Char`: the letters and digits
-    *   - `String`: single-charactor Strings of the letter and digits
+    *   - `String`: single-character Strings of the letter and digits
     *
     * You do not have to provide canonicals for a Generator. By default, this simply
     * returns an empty [[Iterator]].
