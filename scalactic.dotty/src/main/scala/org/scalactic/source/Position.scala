@@ -67,7 +67,7 @@ object Position {
    * Helper method for Position macro.
    */
   private def genPosition(implicit qctx: QuoteContext): Expr[Position] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     val file = rootPosition.sourceFile
     val fileName: String = file.jpath.getFileName.toString

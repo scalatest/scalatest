@@ -25,7 +25,7 @@ object CompileMacro {
 
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
   def assertTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     if (!typeChecked.value) '{ Succeeded }
     else '{
@@ -35,7 +35,7 @@ object CompileMacro {
   }
 
   def expectTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     if (typeChecked.value)
       '{
@@ -70,7 +70,7 @@ object CompileMacro {
 
   // parse and type check a code snippet, generate code to throw TestFailedException when both parse and type check succeeded
   def assertDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     if (!typeChecked.value) '{ Succeeded }
     else '{
@@ -81,7 +81,7 @@ object CompileMacro {
 
   // parse and type check a code snippet, generate code to return Fact (Yes or No).
   def expectDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     if (typeChecked.value)
       '{
@@ -116,7 +116,7 @@ object CompileMacro {
 
   // parse and type check a code snippet, generate code to throw TestFailedException when either parse or type check fails.
   def assertCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     if (typeChecked.value) '{ Succeeded }
     else '{
@@ -126,7 +126,7 @@ object CompileMacro {
   }
 
   def expectCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     if (typeChecked.value)
       '{
@@ -161,7 +161,7 @@ object CompileMacro {
 
   // check that a code snippet does not compile
   def assertNotCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotCompile(code: String): Expr[Assertion] =
@@ -212,7 +212,7 @@ object CompileMacro {
 
   // check that a code snippet does not compile
   def assertNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotTypeCheck(code: String): Expr[Assertion] =
@@ -265,7 +265,7 @@ object CompileMacro {
 
   // check that a code snippet compiles
   def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkCompile(code: String): Expr[Assertion] =

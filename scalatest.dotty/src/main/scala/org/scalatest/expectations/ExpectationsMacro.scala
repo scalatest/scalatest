@@ -25,7 +25,7 @@ import org.scalatest.Fact
 object ExpectationsMacro {
 
   def expect(condition: Expr[Boolean])(prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ Expectations.expectationsHelper.macroExpect($bool, "", $prettifier, $pos) }

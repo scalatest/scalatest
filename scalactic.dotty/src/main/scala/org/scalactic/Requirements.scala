@@ -231,7 +231,7 @@ object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message if requirement failed
    */
   def require(condition: Expr[Boolean], prettifier: Expr[Prettifier], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Unit] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ Requirements.requirementsHelper.macroRequire($bool, $clue) }
@@ -245,7 +245,7 @@ object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message if requirement failed
    */
   def requireState(condition: Expr[Boolean], prettifier: Expr[Prettifier], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Unit] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ Requirements.requirementsHelper.macroRequireState($bool, $clue) }
@@ -259,7 +259,7 @@ object RequirementsMacro {
    * @return transformed expression that performs the requirement check and throw <code>NullArgumentException</code> with rich error message if requirement failed
    */
   def requireNonNull(arguments: Expr[Seq[Any]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Unit] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     def liftSeq(args: Seq[Expr[String]]): Expr[Seq[String]] = args match {
       case x :: xs  => '{ ($x) +: ${ liftSeq(xs) }  }
