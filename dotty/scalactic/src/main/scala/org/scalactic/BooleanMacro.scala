@@ -38,7 +38,7 @@ object BooleanMacro {
       "exists") ++ logicOperators
 
   def parse(condition: Expr[Boolean], prettifier: Expr[Prettifier])(implicit qctx: QuoteContext): Expr[Bool] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
     import util._
 
     def exprStr: String = condition.show

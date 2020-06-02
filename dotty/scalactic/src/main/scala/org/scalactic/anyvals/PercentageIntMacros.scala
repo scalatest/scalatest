@@ -24,7 +24,7 @@ object PercentageIntMacro {
   def isValid(i: Int): Boolean = i >= 0 && i <= 100
 
   def apply(value: Expr[Int])(implicit qctx: QuoteContext): Expr[PercentageInt] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     val notValidMsg =
       "PercentageInt.apply can only be invoked on Int literals between 0 and 100, "+
