@@ -508,6 +508,41 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         scalatestShouldMatchers % "compile-internal", 
         scalatestMustMatchers % "compile-internal")
 
+  lazy val scalatestDoc = Project("scalatestDoc", file("scalatest-doc"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Doc",
+      name := "scalatest-doc",
+      organization := "org.scalatest",
+      libraryDependencies ++= scalatestLibraryDependencies,
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+      javaSourceManaged := target.value / "java",
+      sourceGenerators in Compile += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          GenScalaTestDoc.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
+          GenScalaTestDoc.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
+          GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenConfigMap.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
+          ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+          GenCompatibleClasses.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value) ++ 
+          GenFactories.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "matchers" / "dsl", version.value, scalaVersion.value) ++ 
+          GenMatchers.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      scalatestDocSettings,
+      unmanagedResourceDirectories in Compile += baseDirectory.value / "scalatest" / "src" / "main" / "resources",
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).dependsOn(
+      scalacticMacro, 
+      scalactic
+    )      
+
   lazy val rootProject = Project("root", file("."))
                          .aggregate(
                            scalacticMacro, 
