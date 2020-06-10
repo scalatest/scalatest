@@ -15,7 +15,7 @@
 */
 
 import scala.annotation.tailrec
-import io.Source
+import scala.io.Source
 import java.io.{File, FileWriter, BufferedWriter}
 
 object GenEmpty {
