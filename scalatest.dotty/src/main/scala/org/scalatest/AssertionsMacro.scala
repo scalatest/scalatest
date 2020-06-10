@@ -29,11 +29,8 @@ object AssertionsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message if assertion failed
    */
-  def assert(ths: Expr[Assertions], condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Assertion] =
-    ths match {
-      case '{ $ths: diagrams.Diagrams } => org.scalatest.DiagrammedAssertionsMacro.assert(condition, prettifier, pos, clue)
-      case _ => transform('{Assertions.assertionsHelper.macroAssert}, condition, prettifier, pos, clue)
-    }
+  def assert(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Assertion] =
+    transform('{Assertions.assertionsHelper.macroAssert}, condition, prettifier, pos, clue)
 
   /**
    * Provides implementation for <code>Assertions.assume(booleanExpr: Boolean)</code>, with rich error message.
@@ -42,12 +39,8 @@ object AssertionsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the assumption check and throw <code>TestCanceledException</code> with rich error message if assumption failed
    */
-  def assume(ths: Expr[Assertions], condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Assertion] =
-    ths match {
-      case '{ $ths: diagrams.Diagrams } => org.scalatest.DiagrammedAssertionsMacro.assume(condition, prettifier, pos, clue)
-      case _ => transform('{Assertions.assertionsHelper.macroAssume}, condition, prettifier, pos, clue)
-    }
-
+  def assume(condition: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position], clue: Expr[Any])(implicit qctx: QuoteContext): Expr[Assertion] =
+    transform('{Assertions.assertionsHelper.macroAssume}, condition, prettifier, pos, clue)
 
   def transform(
     helper:Expr[(Bool, Any, source.Position) => Assertion],
