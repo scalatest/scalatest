@@ -143,7 +143,7 @@ object JavaTagDocumenter {
 
     for {
       srcFile <- javaSources
-      val contents = Source.fromFile(srcFile).mkString
+      contents = Source.fromFile(srcFile).mkString
       if isAnnotation(contents) || isMarkerAssertion(contents)
     } yield {
       val filename = srcFile.getName

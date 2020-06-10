@@ -1335,10 +1335,10 @@ trait GenInspectorsShorthandsBase {
         (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
           javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val errorAssertFun = getJavaMapFun(errorFun, right)
-            import collection.JavaConversions._
-            val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
+            import collection.JavaConverters._
+            val passedCount = 3 - List(Map.empty[String, String],
               Map("b" -> "boom!"),
-              Map("h" -> "hello!")).filter(errorAssertFun).length
+              Map("h" -> "hello!")).map(_.asJava).count(errorAssertFun)
             (colText, condition, atLeast2ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
@@ -1598,10 +1598,10 @@ trait GenInspectorsShorthandsBase {
         (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
           javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val errorAssertFun = getJavaMapFun(errorFun, right)
-            import collection.JavaConversions._
-            val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
+            import collection.JavaConverters._
+            val passedCount = 3 - List(Map.empty[String, String],
               Map("b" -> "boom!"),
-              Map("h" -> "hello!")).filter(errorAssertFun).length
+              Map("h" -> "hello!")).map(_.asJava).count(errorAssertFun)
             (colText, condition, everyColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
@@ -1862,10 +1862,10 @@ trait GenInspectorsShorthandsBase {
         (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
           javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val errorAssertFun = getJavaMapFun(errorFun, right)
-            import collection.JavaConversions._
-            val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
+            import collection.JavaConverters._
+            val passedCount = 3 - List(Map.empty[String, String],
               Map("b" -> "boom!"),
-              Map("h" -> "hello!")).filter(errorAssertFun).length
+              Map("h" -> "hello!")).map(_.asJava).count(errorAssertFun)
             (colText, condition, exactly3ColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
@@ -2124,10 +2124,10 @@ trait GenInspectorsShorthandsBase {
         (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
           javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val errorAssertFun = getJavaMapFun(errorFun, right)
-            import collection.JavaConversions._
-            val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
+            import collection.JavaConverters._
+            val passedCount = 3 - List(Map.empty[String, String],
               Map("b" -> "boom!"),
-              Map("h" -> "hello!")).filter(errorAssertFun).length
+              Map("h" -> "hello!")).map(_.asJava).count(errorAssertFun)
             (colText, condition, noColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
@@ -2388,10 +2388,10 @@ trait GenInspectorsShorthandsBase {
         (javaMapCheckCol flatMap { case (colText, xsText, colType) =>
           javaMapCheckTypes map { case (condition, assertText, okFun, errorFun, errorValue, right, messageFun) =>
             val errorAssertFun = getJavaMapFun(errorFun, right)
-            import collection.JavaConversions._
-            val passedCount = 3 - List[java.util.Map[String, String]](Map.empty[String, String],
+            import collection.JavaConverters._
+            val passedCount = 3 - List(Map.empty[String, String],
               Map("b" -> "boom!"),
-              Map("h" -> "hello!")).filter(errorAssertFun).length
+              Map("h" -> "hello!")).map(_.asJava).count(errorAssertFun)
             (colText, condition, betweenColText + assertText, colType, okFun, errorFun, errorValue, passedCount, messageFun(colType, errorFun, errorValue).toString, xsText, true)
           }
         }).filter { case (colText, condition, _, _, _, _, _, _, _, _, _) => filterJavaMapLength(colText, condition) }
