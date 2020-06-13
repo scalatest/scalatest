@@ -154,7 +154,99 @@ import org.scalatest.compatible.Assertion
  *
  * <p>Trait <code>DiagrammedAssertions</code> was inspired by Peter Niederwieser's work in <a href="http://code.google.com/p/spock/">Spock</a> and <a href="https://github.com/pniederw/expecty">Expecty</a>.
  */
-trait Diagrams extends Assertions
+trait Diagrams extends Assertions {
+  // https://github.com/lampepfl/dotty/pull/8601#pullrequestreview-380646858
+  implicit object UseDiagram
+
+  import scala.tasty._
+  import scala.quoted._
+
+  /**
+   * Assert that a boolean condition is true.
+   * If the condition is <code>true</code>, this method returns normally.
+   * Else, it throws <code>TestFailedException</code>.
+   *
+   * <p>
+   * This method is implemented in terms of a Scala macro that will generate a more helpful error message that includes
+   * a diagram showing expression values.
+   * </p>
+   *
+   * <p>
+   * If multi-line <code>Boolean</code> is passed in, it will fallback to the macro implementation of <code>Assertions</code>
+   * that does not contain diagram.
+   * </p>
+   *
+   * @param condition the boolean condition to assert
+   * @throws TestFailedException if the condition is <code>false</code>.
+   */
+  inline def assert(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position, use: UseDiagram.type): Assertion =
+    ${ DiagrammedAssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{""}) }
+
+  /**
+   * Assert that a boolean condition, described in <code>String</code>
+   * <code>message</code>, is true.
+   * If the condition is <code>true</code>, this method returns normally.
+   * Else, it throws <code>TestFailedException</code> with the
+   * <code>String</code> obtained by invoking <code>toString</code> on the
+   * specified <code>clue</code> as the exception's detail message and a
+   * diagram showing expression values.
+   *
+   * <p>
+   * If multi-line <code>Boolean</code> is passed in, it will fallback to the macro implementation of <code>Assertions</code>
+   * that does not contain diagram.
+   * </p>
+   *
+   * @param condition the boolean condition to assert
+   * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
+   * @throws TestFailedException if the condition is <code>false</code>.
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>.
+   */
+  inline def assert(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position, use: UseDiagram.type): Assertion =
+    ${ DiagrammedAssertionsMacro.assert('condition, 'prettifier, 'pos, 'clue) }
+
+  /**
+   * Assume that a boolean condition is true.
+   * If the condition is <code>true</code>, this method returns normally.
+   * Else, it throws <code>TestCanceledException</code>.
+   *
+   * <p>
+   * This method is implemented in terms of a Scala macro that will generate a more helpful error message that includes
+   * a diagram showing expression values.
+   * </p>
+   *
+   * <p>
+   * If multi-line <code>Boolean</code> is passed in, it will fallback to the macro implementation of <code>Assertions</code>
+   * that does not contain diagram.
+   * </p>
+   *
+   * @param condition the boolean condition to assume
+   * @throws TestCanceledException if the condition is <code>false</code>.
+   */
+  inline def assume(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position, use: UseDiagram.type): Assertion =
+    ${ DiagrammedAssertionsMacro.assume('condition, 'prettifier, 'pos, '{""}) }
+
+  /**
+   * Assume that a boolean condition, described in <code>String</code>
+   * <code>message</code>, is true.
+   * If the condition is <code>true</code>, this method returns normally.
+   * Else, it throws <code>TestCanceledException</code> with the
+   * <code>String</code> obtained by invoking <code>toString</code> on the
+   * specified <code>clue</code> as the exception's detail message and a
+   * diagram showing expression values.
+   *
+   * <p>
+   * If multi-line <code>Boolean</code> is passed in, it will fallback to the macro implementation of <code>Assertions</code>
+   * that does not contain diagram.
+   * </p>
+   *
+   * @param condition the boolean condition to assume
+   * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
+   * @throws TestCanceledException if the condition is <code>false</code>.
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>.
+   */
+  inline def assume(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position, use: UseDiagram.type): Assertion =
+    ${ DiagrammedAssertionsMacro.assume('condition, 'prettifier, 'pos, 'clue) }
+}
 
 /**
  * Companion object that facilitates the importing of <code>DiagrammedAssertions</code> members as
