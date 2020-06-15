@@ -3,7 +3,7 @@ sbt "project scalactic" clean +publishSigned
 export SCALAJS_VERSION=0.6.33
 sbt "project scalacticMacroJS" clean
 sbt "project scalacticJS" clean +publishSigned
-export SCALAJS_VERSION=1.0.1
+export SCALAJS_VERSION=1.1.0
 sbt "project scalacticMacroJS" clean
 sbt ++2.11.12 "project scalacticJS" clean publishSigned
 sbt ++2.12.11 "project scalacticJS" clean publishSigned
@@ -19,7 +19,7 @@ export SCALAJS_VERSION=0.6.33
 sbt "project scalacticMacroJS" clean
 sbt "project scalacticJS" clean
 sbt "project scalatestJS" clean +publishSigned
-export SCALAJS_VERSION=1.0.1
+export SCALAJS_VERSION=1.1.0
 sbt "project scalacticMacroJS" clean
 sbt "project scalacticJS" clean
 sbt ++2.11.12 "project scalatestJS" clean publishSigned
@@ -35,7 +35,7 @@ export SCALAJS_VERSION=0.6.33
 sbt "project scalacticMacroJS" clean
 sbt "project scalacticJS" clean
 sbt "project scalatestAppJS" clean +publishSigned
-export SCALAJS_VERSION=1.0.1
+export SCALAJS_VERSION=1.1.0
 sbt "project scalacticMacroJS" clean
 sbt "project scalacticJS" clean
 sbt ++2.11.12 "project scalatestAppJS" clean publishSigned
