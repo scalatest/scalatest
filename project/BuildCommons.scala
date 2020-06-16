@@ -5,11 +5,11 @@ import scala.io.Source
 
 trait BuildCommons {
 
-  lazy val supportedScalaVersions = List("2.13.1", "2.12.10", "2.11.12", "2.10.7")
+  lazy val supportedScalaVersions = List("2.13.2", "2.12.11", "2.11.12", "2.10.7")
 
-  val releaseVersion = "3.2.0-M4"
+  val releaseVersion = "3.2.0"
 
-  val previousReleaseVersion = "3.1.1"
+  val previousReleaseVersion = "3.1.2"
 
   def rootProject: Project
 

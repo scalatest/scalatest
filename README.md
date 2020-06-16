@@ -145,15 +145,15 @@ Before publishing any patch release, binary compatibility with previous version 
     $ sbt ++2.10.7 scalacticJS/package scalacticJS/mimaReportBinaryIssues
     $ sbt ++2.10.7 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
-    $ sbt ++2.12.10 scalactic/package scalactic/mimaReportBinaryIssues
-    $ sbt ++2.12.10 scalatest/package scalatest/mimaReportBinaryIssues
-    $ sbt ++2.12.10 scalacticJS/package scalacticJS/mimaReportBinaryIssues
-    $ sbt ++2.12.10 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+    $ sbt ++2.12.11 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.12.11 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.12.11 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.12.11 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
-    $ sbt ++2.13.1 scalactic/package scalactic/mimaReportBinaryIssues
-    $ sbt ++2.13.1 scalatest/package scalatest/mimaReportBinaryIssues
-    $ sbt ++2.13.1 scalacticJS/package scalacticJS/mimaReportBinaryIssues
-    $ sbt ++2.13.1 scalatestJS/package scalatestJS/mimaReportBinaryIssues
+    $ sbt ++2.13.2 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.13.2 scalatest/package scalatest/mimaReportBinaryIssues
+    $ sbt ++2.13.2 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.13.2 scalatestJS/package scalatestJS/mimaReportBinaryIssues
 
 To publish scalatest modules for jvm, js, native and dotty, use the following commands: 
 
