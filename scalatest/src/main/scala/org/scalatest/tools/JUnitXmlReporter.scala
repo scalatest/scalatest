@@ -47,10 +47,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   private val events = Set.empty[Event]
   private val propertiesXml = genPropertiesXml
 
-  //
-  // Records events in 'events' set.  Generates xml from events upon receipt
-  // of SuiteCompleted or SuiteAborted events.
-  //
+  // Records events in 'events' set.  Generates xml from events upon receipt of SuiteCompleted or SuiteAborted events.
   def apply(event: Event): Unit = {
     events += event
 
@@ -65,10 +62,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     }
   }
 
-  //
-  // Writes the xml file for a single test suite.  Removes processed
-  // events from the events Set as they are used.
-  //
+  // Writes the xml file for a single test suite.  Removes processed events from the events Set as they are used.
   private def writeSuiteFile(endEvent: Event, suiteId: String): Unit = {
     require(endEvent.isInstanceOf[SuiteCompleted] ||
             endEvent.isInstanceOf[SuiteAborted])
@@ -82,22 +76,24 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     out.close()
   }
 
-  //
-  // Constructs a Testsuite object corresponding to a specified
-  // SuiteCompleted or SuiteAborted event.
-  //
-  // Scans events reported so far and builds the Testsuite from events
-  // associated with the specified suite.  Removes events from
-  // the class's events Set as they are consumed.
-  //
-  // Only looks at events that have the same ordinal prefix as the
-  // end event being processed (where an event's ordinal prefix is its
-  // ordinal list with last element removed).  Events with the same
-  // prefix get processed sequentially, so filtering this way eliminates
-  // events from any nested suites being processed concurrently
-  // that have not yet completed when the parent's SuiteCompleted or
-  // SuiteAborted event is processed.
-  //
+
+  /*
+  Constructs a Testsuite object corresponding to a specified
+  SuiteCompleted or SuiteAborted event.
+
+  Scans events reported so far and builds the Testsuite from events
+  associated with the specified suite.  Removes events from
+  the class's events Set as they are consumed.
+
+  Only looks at events that have the same ordinal prefix as the
+  end event being processed (where an event's ordinal prefix is its
+  ordinal list with last element removed).  Events with the same
+  prefix get processed sequentially, so filtering this way eliminates
+  events from any nested suites being processed concurrently
+  that have not yet completed when the parent's SuiteCompleted or
+  SuiteAborted event is processed.
+  */
+
   private def getTestsuite(endEvent: Event, suiteId: String): Testsuite = {
     require(endEvent.isInstanceOf[SuiteCompleted] ||
             endEvent.isInstanceOf[SuiteAborted])
@@ -208,21 +204,21 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     testsuite
   }
 
-  //
-  // Finds the indexes for the SuiteStarted and SuiteCompleted or
-  // SuiteAborted endpoints of a test suite within an ordered array of
-  // events, given the terminating SuiteCompleted or SuiteAborted event.
-  //
-  // Searches sequentially through the array to find the specified
-  // SuiteCompleted event and its preceding SuiteStarting event.
-  //
-  // (The orderedEvents array does not contain any SuiteStarting events
-  // from nested suites running concurrently because of the ordinal-prefix
-  // filtering performed in getTestsuite().  It does not contain any from
-  // nested suites running sequentially because those get removed when they
-  // are processed upon occurrence of their corresponding SuiteCompleted
-  // events.)
-  //
+  /*
+   Finds the indexes for the SuiteStarted and SuiteCompleted or
+   SuiteAborted endpoints of a test suite within an ordered array of
+   events, given the terminating SuiteCompleted or SuiteAborted event.
+
+   Searches sequentially through the array to find the specified
+   SuiteCompleted event and its preceding SuiteStarting event.
+
+   (The orderedEvents array does not contain any SuiteStarting events
+   from nested suites running concurrently because of the ordinal-prefix
+   filtering performed in getTestsuite().  It does not contain any from
+   nested suites running sequentially because those get removed when they
+   are processed upon occurrence of their corresponding SuiteCompleted
+   events.)
+  */
   private def locateSuite(orderedEvents: Array[Event],
                           endEvent: Event):
   (Int, Int) = {
@@ -272,14 +268,15 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   private def idxAdjustmentForRecordedEvents(recordedEvents: collection.immutable.IndexedSeq[RecordableEvent]) =
     recordedEvents.filter(e => e.isInstanceOf[InfoProvided] || e.isInstanceOf[MarkupProvided]).size
   
-  //
-  // Constructs a Testcase object from events in orderedEvents array.
-  //
-  // Accepts a TestStarting event and its index within orderedEvents.
-  // Returns a Testcase object plus the index to its corresponding
-  // test completion event.  Removes events from class's events Set
-  // as they are processed.
-  //
+  /*
+   Constructs a Testcase object from events in orderedEvents array.
+
+   Accepts a TestStarting event and its index within orderedEvents.
+   Returns a Testcase object plus the index to its corresponding
+   test completion event.  Removes events from class's events Set
+   as they are processed.
+   */
+
   private def processTest(orderedEvents: Array[Event],
                           startEvent: TestStarting, startIndex: Int):
   (Int, Testcase) = {
@@ -337,9 +334,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     (endIndex, testcase)
   }
 
-  //
   // Creates an xml string describing a run of a test suite.
-  //
   def xmlify(testsuite: Testsuite): String = {
     val xmlVal =
       <testsuite
@@ -384,10 +379,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + withCDATA
   }
 
-  //
-  // Returns string representation of stack trace for specified Throwable,
-  // including any nested exceptions.
-  //
+  // Returns string representation of stack trace for specified Throwable, including any nested exceptions.
   def getStackTrace(throwable: Throwable): String = {
     "" + throwable +
     Array.concat(throwable.getStackTrace).mkString("\n      at ",
@@ -401,10 +393,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     }
   }
 
-  //
-  // Generates <failure> xml for TestFailed event, if specified Option
-  // contains one.
-  //
+  // Generates <failure> xml for TestFailed event, if specified Option contains one.
   private def failureXml(failureOption: Option[TestFailed]): xml.NodeSeq = {
     failureOption match {
       case None =>
@@ -428,10 +417,8 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     }
   }
 
-  //
   // Returns toString value of option contents if Some, or empty string if
   // None.
-  //
   private def strVal(option: Option[Any]): String = {
     option match {
       case Some(x) => "" + x
@@ -450,9 +437,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
       case e: UnknownHostException => "unknown"
     }
 
-  //
   // Generates <properties> element of xml.
-  //
   private def genPropertiesXml: xml.Elem = {
     val sysprops = System.getProperties
 
@@ -464,9 +449,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     </properties>
   }
 
-  //
   // Returns a list of the names of properties in a Properties object.
-  //
   private def propertyNames(props: Properties): List[String] = {
     val listBuf = new ListBuffer[String]
 
@@ -478,25 +461,19 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     listBuf.toList
   }
 
-  //
   // Formats timestamp into a string for display, e.g. "2009-08-31T14:59:37"
-  //
   private def formatTimeStamp(timeStamp: Long): String = {
     val dateFmt = new SimpleDateFormat("yyyy-MM-dd")
     val timeFmt = new SimpleDateFormat("HH:mm:ss")
     dateFmt.format(timeStamp) + "T" + timeFmt.format(timeStamp)
   }
 
-  //
   // Throws an exception if an unexpected Event is encountered.
-  //
   def unexpected(event: Event): Unit = {
     throw new RuntimeException("unexpected event [" + event + "]")
   }
 
-  //
   // Class to hold information about an execution of a test suite.
-  //
   private[scalatest] case class Testsuite(name: String, timeStamp: Long) {
     var errors   = 0
     var failures = 0
@@ -504,9 +481,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     val testcases = new ListBuffer[Testcase]
   }
 
-  //
   // Class to hold information about an execution of a testcase.
-  //
   private[scalatest] case class Testcase(name: String, className: Option[String],
                               timeStamp: Long) {
     var time = 0L

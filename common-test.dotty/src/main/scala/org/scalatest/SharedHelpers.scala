@@ -75,8 +75,8 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   // This now needs to be thread safe, because I'm setting it in one thread
   // and asserting using it from a different thread in Async tests.
   class EventRecordingReporter extends Reporter {
-    private var eventList: List[Event] = List()
-    def eventsReceived = synchronized { eventList.reverse }
+    private var eventList: List[Event] = List.empty[Event]
+    def eventsReceived: List[Any] = synchronized { eventList.reverse }
     def testSucceededEventsReceived: List[TestSucceeded] = {
       synchronized {
         eventsReceived filter {

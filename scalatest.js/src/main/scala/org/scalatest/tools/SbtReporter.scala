@@ -22,14 +22,14 @@ private class SbtReporter(suiteId: String, fullyQualifiedName: String, fingerpri
 
   import org.scalatest.events._
 
-  private def getTestSelector(eventSuiteId: String, testName: String) = {
+  private def getTestSelector(eventSuiteId: String, testName: String): Any = {
     if (suiteId == eventSuiteId)
       new TestSelector(testName)
     else
       new NestedTestSelector(eventSuiteId, testName)
   }
 
-  private def getSuiteSelector(eventSuiteId: String) = {
+  private def getSuiteSelector(eventSuiteId: String): Any = {
     if (suiteId == eventSuiteId)
       new SuiteSelector
     else
@@ -47,17 +47,17 @@ private class SbtReporter(suiteId: String, fullyQualifiedName: String, fingerpri
     event match {
       // the results of running an actual test
       case t: TestPending =>
-        eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Pending, new OptionalThrowable, t.duration.getOrElse(0)))
+        eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Pending, new OptionalThrowable, t.duration.fold(0)(identity)))
       case t: TestFailed =>
-        eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Failure, getOptionalThrowable(t.throwable), t.duration.getOrElse(0)))
+        eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Failure, getOptionalThrowable(t.throwable), t.duration.fold(0)(identity)))
       case t: TestSucceeded =>
-        eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Success, new OptionalThrowable, t.duration.getOrElse(0)))
+        eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Success, new OptionalThrowable, t.duration.fold(0)(identity)))
       case t: TestIgnored =>
         eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Ignored, new OptionalThrowable, -1))
       case t: TestCanceled =>
-        eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Canceled, new OptionalThrowable, t.duration.getOrElse(0)))
+        eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Canceled, new OptionalThrowable, t.duration.fold(0)(identity)))
       case t: SuiteAborted =>
-        eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getSuiteSelector(t.suiteId), SbtStatus.Error, getOptionalThrowable(t.throwable), t.duration.getOrElse(0)))
+        eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getSuiteSelector(t.suiteId), SbtStatus.Error, getOptionalThrowable(t.throwable), t.duration.fold(0)(identity)))
       case _ =>
     }
   }

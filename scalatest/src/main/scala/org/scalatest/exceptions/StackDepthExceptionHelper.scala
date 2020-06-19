@@ -169,7 +169,7 @@ private[scalatest] object StackDepthExceptionHelper extends Serializable {
     if (sdf == null) throw new NullArgumentException("sdf was null")
     pos match {
       case Some(null) => throw new NullArgumentException("pos was Some(null)")
-      case _ =>
+      case None =>
     }
     pos match {
       case Some(pos) => Left(pos)

@@ -52,7 +52,6 @@ abstract class StackDepthException(
   posOrStackDepthFun match {
     case Right(null) => throw new NullArgumentException("posOrStackDepthFun was Right(null)")
     case Left(null) => throw new NullArgumentException("posOrStackDepthFun was Left(null)")
-    case _ =>
   }
 
   val position: Option[source.Position] = posOrStackDepthFun.left.toOption
