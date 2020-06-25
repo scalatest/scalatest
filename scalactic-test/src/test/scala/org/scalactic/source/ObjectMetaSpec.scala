@@ -19,14 +19,15 @@ import org.scalatest._
 
 class ObjectMetaSpec extends FunSpec with Matchers {
 
-  case class Person(name: String, age: Int) {
+  case class Person(name: String, private val age: Int) {
     val otherField = "test other field"
+    val privateField = "test private field"
   }
 
   describe("ObjectMeta") {
 
     it("should extract case class attribute names correctly") {
-      ObjectMeta(Person("test", 33)).fieldNames should contain theSameElementsAs Set("name", "age", "otherField")
+      ObjectMeta(Person("test", 33)).fieldNames should contain theSameElementsAs Set("name", "age", "otherField", "privateField")
     }
 
     it("should extract dynamically field value correctly") {
@@ -34,6 +35,7 @@ class ObjectMetaSpec extends FunSpec with Matchers {
       meta.value("name") shouldBe "test"
       meta.value("age") shouldBe 33
       meta.value("otherField") shouldBe "test other field"
+      meta.value("privateField") shouldBe "test private field"
     }
 
     it("should throw IllegalArgumentException when invalid attribute name is used to retrieve value") {
