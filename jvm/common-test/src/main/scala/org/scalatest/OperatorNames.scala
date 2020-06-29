@@ -35,7 +35,7 @@ class OperatorNames {
   def op_5e_^ : Boolean = true
   def op_7c_| : Boolean = true
   def op_7e_~ : Boolean = true
-  def op_7f_\u007f : Boolean = true
+  def `op_7f_\u007f` : Boolean = true
 
   def !!! : Boolean = true
   def ### : Boolean = true

@@ -160,7 +160,7 @@ trait PrivateMethodTester {
       import invocation._
 
       // If 'getMessage passed as methodName, methodNameToInvoke would be "getMessage"
-      val methodNameToInvoke = methodName.toString.substring(1)
+      val methodNameToInvoke = methodName.name
 
       def isMethodToInvoke(m: Method) = {
 

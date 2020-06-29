@@ -2011,15 +2011,15 @@ import resultOfStringPassedToVerb.verb
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0, Some(pos))
         new ResultOfStringPassedToVerb(verb, rest) {
           def is(testFun: => PendingStatement): Unit = {
-            registerPendingTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun, pos)
+            registerPendingTestToRun(this.verb.trim + " " + this.rest.trim, List(), "is", unusedFixtureParam => testFun, pos)
           }
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
             val tagList = firstTestTag :: otherTestTags.toList
-            new ResultOfTaggedAsInvocation(verb, rest, tagList) {
+            new ResultOfTaggedAsInvocation(this.verb, this.rest, tagList) {
               // "A Stack" must "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
               //                                                            ^
               def is(testFun: => PendingStatement): Unit = {
-                registerPendingTestToRun(verb.trim + " " + rest.trim, tags, "is", new NoArgTestWrapper(() => testFun), pos)
+                registerPendingTestToRun(this.verb.trim + " " + this.rest.trim, this.tags, "is", new NoArgTestWrapper(() => testFun), pos)
               }
             }
           }
@@ -2051,7 +2051,7 @@ import resultOfStringPassedToVerb.verb
    */
   protected implicit val shorthandSharedTestRegistrationFunction: StringVerbBehaveLikeInvocation =
     new StringVerbBehaveLikeInvocation {
-      def apply(subject: String, pos: source.Position): BehaveWord = { 
+      def apply(subject: String, pos: source.Position): BehaveWord = {
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", 5, 0, Some(pos))
         new BehaveWord
       }

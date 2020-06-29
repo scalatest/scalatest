@@ -2244,7 +2244,7 @@ object Randomizer {
     */
   def apply(seed: Long): Randomizer =
     new Randomizer(seed) {
-      override private[scalatest] lazy val scrambledSeed: Long = (seed ^ 0x5DEECE66DL) & ((1L << 48) - 1)
+      override private[scalatest] lazy val scrambledSeed: Long = (this.seed ^ 0x5DEECE66DL) & ((1L << 48) - 1)
     }
 
   /**

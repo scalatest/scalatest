@@ -30,7 +30,7 @@ object DiagrammedAssertionsMacro {
     condition: Expr[Boolean], clue: Expr[Any],
     prettifier: Expr[Prettifier],
     pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     val startLine = rootPosition.startLine // Get the expression first line number
     val endLine = rootPosition.endLine // Get the expression last line number

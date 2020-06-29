@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-import io.Source
+import scala.io.Source
 import java.io.{File, FileWriter, BufferedWriter}
 
 object GenCommonTestDotty {
