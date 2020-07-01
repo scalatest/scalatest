@@ -885,7 +885,7 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
   private final val bundleRef: AtomicReference[Bundle] =
     new AtomicReference(
       Bundle(
-        succeeded = false,
+        succeeded = true,
         asyncException = None
       )
     )
