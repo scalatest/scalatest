@@ -1,0 +1,4 @@
+{
+  "contributors": "https://www.artima.com/cla/contributors", 
+  "message": "Hi {{usersWithoutCLA}}, we require contributors to sign our Contributor License Agreement, and we don\"t have yours on file. In order for us to review and merge your code, please access https://www.artima.com/cla/choose-type to sign our Contributor License Agreement.  Your effort to help us is highly appreciated, thank you."
+}
