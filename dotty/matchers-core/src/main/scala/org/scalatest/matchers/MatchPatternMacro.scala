@@ -18,7 +18,6 @@ package org.scalatest.matchers
 import org.scalatest.Resources
 import org.scalatest.matchers.dsl.ResultOfNotWordForAny
 import scala.quoted._
-import scala.tasty._
 
 private[scalatest] object MatchPatternMacro {
 
