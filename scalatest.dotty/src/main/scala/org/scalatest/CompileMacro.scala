@@ -27,7 +27,7 @@ object CompileMacro {
   def assertTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
     import qctx.tasty._
 
-    if (!typeChecked.value) '{ Succeeded }
+    if (!typeChecked.unliftOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedTypeErrorButGotNone($code)
       throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
@@ -37,7 +37,7 @@ object CompileMacro {
   def expectTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
     import qctx.tasty._
 
-    if (typeChecked.value)
+    if (typeChecked.unliftOrError)
       '{
           val messageExpr = Resources.expectedTypeErrorButGotNone($code)
           Fact.No(
@@ -72,7 +72,7 @@ object CompileMacro {
   def assertDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
     import qctx.tasty._
 
-    if (!typeChecked.value) '{ Succeeded }
+    if (!typeChecked.unliftOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedCompileErrorButGotNone($code)
       throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
@@ -83,7 +83,7 @@ object CompileMacro {
   def expectDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
     import qctx.tasty._
 
-    if (typeChecked.value)
+    if (typeChecked.unliftOrError)
       '{
           val messageExpr = Resources.expectedCompileErrorButGotNone($code)
           Fact.No(
@@ -118,7 +118,7 @@ object CompileMacro {
   def assertCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
     import qctx.tasty._
 
-    if (typeChecked.value) '{ Succeeded }
+    if (typeChecked.unliftOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedNoErrorButGotTypeError("unknown", $code)
       throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
@@ -128,7 +128,7 @@ object CompileMacro {
   def expectCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
     import qctx.tasty._
 
-    if (typeChecked.value)
+    if (typeChecked.unliftOrError)
       '{
           val messageExpr = Resources.compiledSuccessfully($code)
           Fact.Yes(
