@@ -41,7 +41,7 @@ trait DottyBuild { this: BuildCommons =>
       initialCommands in console := "import org.scalactic._",
       packageManagedSources,
       sourceGenerators in Compile += {
-        Def.task{
+        Def.task {
           // From scalactic-macro
           GenScalacticDotty.genMacroScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
           ScalacticGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
@@ -55,11 +55,9 @@ trait DottyBuild { this: BuildCommons =>
           GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
-      resourceGenerators in Compile += {
-        Def.task {
-          GenScalacticDotty.genResource((resourceManaged in Compile).value)
-        }.taskValue
-      },
+      resourceGenerators in Compile += Def.task {
+        GenScalacticDotty.genResource((resourceManaged in Compile).value)
+      }.taskValue,
       //scalacticDocSourcesSetting,
       //docTaskSetting,
       publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
@@ -102,34 +100,26 @@ trait DottyBuild { this: BuildCommons =>
       libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
       packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenModulesDotty.genScalaTestCore((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
-          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)  ++
-          GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
-        }.taskValue
-      },
+      sourceGenerators in Compile += Def.task {
+        GenModulesDotty.genScalaTestCore((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+        GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+        ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+        ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)  ++
+        GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+      }.taskValue,
       javaSourceManaged := target.value / "java",
       managedSourceDirectories in Compile += javaSourceManaged.value,
-      sourceGenerators in Compile += {
-        Def.task{
-          GenScalaTestDotty.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      resourceGenerators in Compile += {
-        Def.task {
+      sourceGenerators in Compile += Def.task {
+        GenScalaTestDotty.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      resourceGenerators in Compile += Def.task {
           GenScalaTestDotty.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      sourceGenerators in Compile += {
-        Def.task{
-          GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-          GenCompatibleClasses.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
-          //GenSafeStyles.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
-        }.taskValue
-      },
+      }.taskValue,
+      sourceGenerators in Compile += Def.task {
+        GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+        GenCompatibleClasses.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
+        //GenSafeStyles.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+      }.taskValue,
       //scalatestJSDocTaskSetting,
       publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
@@ -274,12 +264,10 @@ trait DottyBuild { this: BuildCommons =>
     OsgiKeys.exportPackage := Seq("org.scalatest.matchers.must"),
   ).dependsOn(scalatestMatchersCoreDotty)
 
-  lazy val scalatestModulesDotty = (project in file("modules/dotty/modules-aggregation"))
+  lazy val scalatestModulesDotty = project.in(file("modules/dotty/modules-aggregation"))
     .settings(sharedSettings: _*)
     .settings(
-      publishArtifact := false,
-      publish := {},
-      publishLocal := {},
+      noPublishSettings,
       scalacOptions in (Compile, doc) := List.empty
     ).aggregate(
       scalatestCoreDotty, 
@@ -348,13 +336,11 @@ trait DottyBuild { this: BuildCommons =>
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
-      sourceGenerators in Compile += {
-        Def.task{
-          GenCommonTestDotty.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
-          GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-          GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
+      sourceGenerators in Compile += Def.task {
+        GenCommonTestDotty.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+        GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+        GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
       noPublishSettings,
     ).dependsOn(scalacticDotty, LocalProject("scalatestDotty"))
 
@@ -395,11 +381,9 @@ trait DottyBuild { this: BuildCommons =>
     .settings(sharedTestSettingsDotty)
     .settings(
       projectTitle := "ScalaTest Test",
-      sourceGenerators in Test += {
-        Def.task {
-          GenScalaTestDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
-        }.taskValue
-      }
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
     ).dependsOn(commonTestDotty % "test")
 
   lazy val scalatestDiagramsTestDotty = project.in(file("dotty/diagrams-test"))
@@ -408,11 +392,9 @@ trait DottyBuild { this: BuildCommons =>
     .settings(sharedTestSettingsDotty)
     .settings(
       projectTitle := "ScalaTest Diagrams Test",
-      sourceGenerators in Test += {
-        Def.task {
-          GenScalaTestDotty.genDiagramsTest((sourceManaged in Test).value, version.value, scalaVersion.value)
-        }.taskValue
-      }
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genDiagramsTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
     ).dependsOn(commonTestDotty % "test")
 
   lazy val scalatestFeatureSpecTestDotty = project.in(file("dotty/featurespec-test"))
@@ -421,11 +403,9 @@ trait DottyBuild { this: BuildCommons =>
     .settings(sharedTestSettingsDotty)
     .settings(
       projectTitle := "ScalaTest FeatureSpec Test",
-      sourceGenerators in Test += {
-        Def.task {
-          GenScalaTestDotty.genFeatureSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
-        }.taskValue
-      }
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFeatureSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
     ).dependsOn(commonTestDotty % "test")
 
   lazy val scalatestFlatSpecTestDotty = project.in(file("dotty/flatspec-test"))
@@ -434,11 +414,9 @@ trait DottyBuild { this: BuildCommons =>
     .settings(sharedTestSettingsDotty)
     .settings(
       projectTitle := "ScalaTest FlatSpec Test",
-      sourceGenerators in Test += {
-        Def.task {
-          GenScalaTestDotty.genFlatSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
-        }.taskValue
-      }
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFlatSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
     ).dependsOn(commonTestDotty % "test")
 
   lazy val scalatestFreeSpecTestDotty = project.in(file("dotty/freespec-test"))
@@ -447,11 +425,9 @@ trait DottyBuild { this: BuildCommons =>
     .settings(sharedTestSettingsDotty)
     .settings(
       projectTitle := "ScalaTest FreeSpec Test",
-      sourceGenerators in Test += {
-        Def.task {
-          GenScalaTestDotty.genFreeSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
-        }.taskValue
-      }
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFreeSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
     ).dependsOn(commonTestDotty % "test")
 
   lazy val scalatestFunSpecTestDotty = project.in(file("dotty/funspec-test"))
@@ -460,11 +436,9 @@ trait DottyBuild { this: BuildCommons =>
     .settings(sharedTestSettingsDotty)
     .settings(
       projectTitle := "ScalaTest FunSpec Test",
-      sourceGenerators in Test += {
-        Def.task {
-          GenScalaTestDotty.genFunSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
-        }.taskValue
-      }
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFunSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
     ).dependsOn(commonTestDotty % "test")            
 
 }
