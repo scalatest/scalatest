@@ -1,7 +1,6 @@
 import dotty.tools.sbtplugin.DottyPlugin.autoImport._
 import sbt._
 import Keys._
-import com.typesafe.sbt.osgi.SbtOsgi
 import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurrentClassfiles, mimaBinaryIssueFilters}
 import com.typesafe.tools.mima.core._
 import com.typesafe.tools.mima.core.ProblemFilters._
@@ -173,378 +172,106 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalacticDotty, scalatestCompatible)
 
+  private implicit class DottyProjectEx(private val p: Project) {
+    /** common settings for all scalatest modules */
+    def scalatestModule(name: String, title: String): Project = p
+      .enablePlugins(SbtOsgi)
+      .settings(sharedSettings: _*)
+      .settings(dottySettings: _*)
+      .settings(
+        projectTitle := title,
+        organization := "org.scalatest",
+        moduleName := name,
+        packageManagedSources,
+        publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
+        osgiSettings,
+        OsgiKeys.additionalHeaders := Map(
+          "Bundle-Name" -> title,
+          "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+          "Bundle-DocURL" -> "http://www.scalatest.org/",
+          "Bundle-Vendor" -> "Artima, Inc."
+        ),
+      )
+
+    /** common settings for all scalatest sub modules (all modules, except the `scalatest` module) */
+    def scalatestSubModule(name: String, title: String, gen: GenModulesDotty.GenFn): Project =
+      scalatestModule(name, title).settings(
+        sourceGenerators in Compile += Def.task {
+          gen((sourceManaged in Compile).value, version.value, scalaVersion.value)
+        }.taskValue,
+        OsgiKeys.importPackage := Seq(
+          "org.scalatest.*",
+          "*;resolution:=optional"
+        ),
+      )
+
+    /** common settings for all scalatest `style` modules such as `featurespec`, `funsuite`,.. */
+    def scalatestStyleModule(style: String, title: String): Project =
+      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty(style))
+        .settings(
+          OsgiKeys.exportPackage := Seq(s"org.scalatest.$style"),
+        ).dependsOn(scalatestCoreDotty)
+  }
+  
   lazy val scalatestFeatureSpecDotty = project.in(file("dotty/featurespec"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest FeatureSpec Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest-featurespec",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenModulesDotty.genScalaTestFeatureSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
-    OsgiKeys.exportPackage := Seq(
-      "org.scalatest.featurespec"
-    ),
-    OsgiKeys.importPackage := Seq(
-      "org.scalatest.*",
-      "*;resolution:=optional"
-    ),
-    OsgiKeys.additionalHeaders:= Map(
-      "Bundle-Name" -> "ScalaTest FeatureSpec Dotty",
-      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-      "Bundle-DocURL" -> "http://www.scalatest.org/",
-      "Bundle-Vendor" -> "Artima, Inc."
-    )
-  ).dependsOn(scalatestCoreDotty)
+    .scalatestStyleModule("featurespec", "ScalaTest FeatureSpec Dotty")
 
   lazy val scalatestFlatSpecDotty = project.in(file("dotty/flatspec"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest FlatSpec Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest-flatspec",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenModulesDotty.genScalaTestFlatSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
-    OsgiKeys.exportPackage := Seq(
-      "org.scalatest.flatspec"
-    ),
-    OsgiKeys.importPackage := Seq(
-      "org.scalatest.*",
-      "*;resolution:=optional"
-    ),
-    OsgiKeys.additionalHeaders:= Map(
-      "Bundle-Name" -> "ScalaTest FlatSpec Dotty",
-      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-      "Bundle-DocURL" -> "http://www.scalatest.org/",
-      "Bundle-Vendor" -> "Artima, Inc."
-    )
-  ).dependsOn(scalatestCoreDotty)
+    .scalatestStyleModule("flatspec", "ScalaTest FlatSpec Dotty")
 
   lazy val scalatestFreeSpecDotty = project.in(file("dotty/freespec"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest FreeSpec Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest-freespec",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenModulesDotty.genScalaTestFreeSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
-    OsgiKeys.exportPackage := Seq(
-      "org.scalatest.freespec"
-    ),
-    OsgiKeys.importPackage := Seq(
-      "org.scalatest.*",
-      "*;resolution:=optional"
-    ),
-    OsgiKeys.additionalHeaders:= Map(
-      "Bundle-Name" -> "ScalaTest FreeSpec Dotty",
-      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-      "Bundle-DocURL" -> "http://www.scalatest.org/",
-      "Bundle-Vendor" -> "Artima, Inc."
-    )
-  ).dependsOn(scalatestCoreDotty)
+    .scalatestStyleModule("freespec", "ScalaTest FreeSpec Dotty")
 
   lazy val scalatestFunSuiteDotty = project.in(file("dotty/funsuite"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest FunSuite Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest-funsuite",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenModulesDotty.genScalaTestFunSuite((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
-    OsgiKeys.exportPackage := Seq(
-      "org.scalatest.funsuite"
-    ),
-    OsgiKeys.importPackage := Seq(
-      "org.scalatest.*",
-      "*;resolution:=optional"
-    ),
-    OsgiKeys.additionalHeaders:= Map(
-      "Bundle-Name" -> "ScalaTest FunSuite Dotty",
-      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-      "Bundle-DocURL" -> "http://www.scalatest.org/",
-      "Bundle-Vendor" -> "Artima, Inc."
-    )
-  ).dependsOn(scalatestCoreDotty)
+    .scalatestStyleModule("funsuite", "ScalaTest FunSuite Dotty")
 
   lazy val scalatestFunSpecDotty = project.in(file("dotty/funspec"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest FunSpec Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest-funspec",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenModulesDotty.genScalaTestFunSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
-    OsgiKeys.exportPackage := Seq(
-      "org.scalatest.funspec"
-    ),
-    OsgiKeys.importPackage := Seq(
-      "org.scalatest.*",
-      "*;resolution:=optional"
-    ),
-    OsgiKeys.additionalHeaders:= Map(
-      "Bundle-Name" -> "ScalaTest FunSpec Dotty",
-      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-      "Bundle-DocURL" -> "http://www.scalatest.org/",
-      "Bundle-Vendor" -> "Artima, Inc."
-    )
-  ).dependsOn(scalatestCoreDotty)
+    .scalatestStyleModule("funspec", "ScalaTest FunSpec Dotty")
 
   lazy val scalatestPropSpecDotty = project.in(file("dotty/propspec"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest PropSpec Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest-propspec",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenModulesDotty.genScalaTestPropSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
-    OsgiKeys.exportPackage := Seq(
-      "org.scalatest.propspec"
-    ),
-    OsgiKeys.importPackage := Seq(
-      "org.scalatest.*",
-      "*;resolution:=optional"
-    ),
-    OsgiKeys.additionalHeaders:= Map(
-      "Bundle-Name" -> "ScalaTest PropSpec Dotty",
-      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-      "Bundle-DocURL" -> "http://www.scalatest.org/",
-      "Bundle-Vendor" -> "Artima, Inc."
-    )
-  ).dependsOn(scalatestCoreDotty)
+    .scalatestStyleModule("propspec", "ScalaTest PropSpec Dotty")
 
   lazy val scalatestRefSpecDotty = project.in(file("dotty/refspec"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest RefSpec Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest-refspec",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenModulesDotty.genScalaTestRefSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
-    OsgiKeys.exportPackage := Seq(
-      "org.scalatest.refspec"
-    ),
-    OsgiKeys.importPackage := Seq(
-      "org.scalatest.*",
-      "*;resolution:=optional"
-    ),
-    OsgiKeys.additionalHeaders:= Map(
-      "Bundle-Name" -> "ScalaTest RefSpec Dotty",
-      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-      "Bundle-DocURL" -> "http://www.scalatest.org/",
-      "Bundle-Vendor" -> "Artima, Inc."
-    )
-  ).dependsOn(scalatestCoreDotty)
+    .scalatestStyleModule("refspec", "ScalaTest RefSpec Dotty")
 
   lazy val scalatestWordSpecDotty = project.in(file("dotty/wordspec"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest WordSpec Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest-wordspec",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenModulesDotty.genScalaTestWordSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
-    OsgiKeys.exportPackage := Seq(
-      "org.scalatest.wordspec"
-    ),
-    OsgiKeys.importPackage := Seq(
-      "org.scalatest.*",
-      "*;resolution:=optional"
-    ),
-    OsgiKeys.additionalHeaders:= Map(
-      "Bundle-Name" -> "ScalaTest WordSpec Dotty",
-      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-      "Bundle-DocURL" -> "http://www.scalatest.org/",
-      "Bundle-Vendor" -> "Artima, Inc."
-    )
-  ).dependsOn(scalatestCoreDotty)
+    .scalatestStyleModule("wordspec", "ScalaTest WordSpec Dotty")
 
   lazy val scalatestDiagramsDotty = project.in(file("dotty/diagrams"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest Diagrams Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest-diagrams",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenModulesDotty.genScalaTestDiagrams((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
-    OsgiKeys.exportPackage := Seq(
-      "org.scalatest.diagrams"
-    ),
-    OsgiKeys.importPackage := Seq(
-      "org.scalatest.*",
-      "*;resolution:=optional"
-    ),
-    OsgiKeys.additionalHeaders:= Map(
-      "Bundle-Name" -> "ScalaTest Diagrams Dotty",
-      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-      "Bundle-DocURL" -> "http://www.scalatest.org/",
-      "Bundle-Vendor" -> "Artima, Inc."
-    )
-  ).dependsOn(scalatestCoreDotty)
+    .scalatestStyleModule("diagrams", "ScalaTest Diagrams Dotty")
 
   lazy val scalatestMatchersCoreDotty = project.in(file("dotty/matchers-core"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest Matchers Core Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest-matchers-core",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenModulesDotty.genScalaTestMatchersCore((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
-          GenFactoriesDotty.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "matchers" / "dsl", version.value, scalaVersion.value)
-        }.taskValue
-      },
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
-    OsgiKeys.exportPackage := Seq(
-      "org.scalatest.matchers", 
-      "org.scalatest.matchers.dsl"
-    ),
-    OsgiKeys.importPackage := Seq(
-      "org.scalatest.*",
-      "*;resolution:=optional"
-    ),
-    OsgiKeys.additionalHeaders:= Map(
-      "Bundle-Name" -> "ScalaTest Matchers Core Dotty",
-      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-      "Bundle-DocURL" -> "http://www.scalatest.org/",
-      "Bundle-Vendor" -> "Artima, Inc."
-    )
-  ).dependsOn(scalatestCoreDotty)
+    .scalatestSubModule(
+      "scalatest-matchers-core",
+      "ScalaTest Matchers Core Dotty",
+      (targetDir, version, scalaVersion) => {
+        GenModulesDotty.genScalaTestMatchersCore(targetDir, version, scalaVersion) ++
+          GenFactoriesDotty.genMain(targetDir / "org" / "scalatest" / "matchers" / "dsl", version, scalaVersion)
+      }
+    ).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.matchers",
+        "org.scalatest.matchers.dsl"
+      ),
+    ).dependsOn(scalatestCoreDotty)
 
   lazy val scalatestShouldMatchersDotty = project.in(file("dotty/shouldmatchers"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest Should Matchers Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest-shouldmatchers",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenModulesDotty.genScalaTestShouldMatchers((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue
-      },
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
-    OsgiKeys.exportPackage := Seq(
-      "org.scalatest.matchers.should"
-    ),
-    OsgiKeys.importPackage := Seq(
-      "org.scalatest.*",
-      "*;resolution:=optional"
-    ),
-    OsgiKeys.additionalHeaders:= Map(
-      "Bundle-Name" -> "ScalaTest Should Matchers Dotty",
-      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-      "Bundle-DocURL" -> "http://www.scalatest.org/",
-      "Bundle-Vendor" -> "Artima, Inc."
-    )
-  ).dependsOn(scalatestMatchersCoreDotty)
+    .scalatestSubModule(
+      "scalatest-shouldmatchers",
+      "ScalaTest Should Matchers Dotty",
+      GenModulesDotty.genScalaTestShouldMatchers
+    ).settings(
+      OsgiKeys.exportPackage := Seq("org.scalatest.matchers.should"),
+    ).dependsOn(scalatestMatchersCoreDotty)
 
   lazy val scalatestMustMatchersDotty = project.in(file("dotty/mustmatchers"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
-    .settings(
-      projectTitle := "ScalaTest Must Matchers Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest-mustmatchers",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        Def.task {
-          GenMatchers.genMainForDotty((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
-        }.taskValue
-      },
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
-    OsgiKeys.exportPackage := Seq(
-      "org.scalatest.matchers.must"
-    ),
-    OsgiKeys.importPackage := Seq(
-      "org.scalatest.*",
-      "*;resolution:=optional"
-    ),
-    OsgiKeys.additionalHeaders:= Map(
-      "Bundle-Name" -> "ScalaTest Must Matchers Dotty",
-      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-      "Bundle-DocURL" -> "http://www.scalatest.org/",
-      "Bundle-Vendor" -> "Artima, Inc."
-    )
+    .scalatestSubModule(
+      "scalatest-mustmatchers",
+      "ScalaTest Must Matchers Dotty",
+      (targetDir, version, scalaVersion) =>
+        GenMatchers.genMainForDotty(targetDir / "org" / "scalatest", version, scalaVersion)
+    ).settings(
+    OsgiKeys.exportPackage := Seq("org.scalatest.matchers.must"),
   ).dependsOn(scalatestMatchersCoreDotty)
 
   lazy val scalatestModulesDotty = (project in file("modules/dotty/modules-aggregation"))
@@ -571,30 +298,14 @@ trait DottyBuild { this: BuildCommons =>
     )
 
   lazy val scalatestDotty = project.in(file("dotty/scalatest"))
-    .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .scalatestModule("scalatest", "ScalaTest Dotty")
     .settings(
-      projectTitle := "ScalaTest Dotty",
-      organization := "org.scalatest",
-      moduleName := "scalatest",
-      packageManagedSources,
-      sourceGenerators in Compile += {
-        // Little trick to get rid of bnd error when publish.
-        Def.task{
-          (new File(crossTarget.value, "classes")).mkdirs()
-          Seq.empty[File]
-        }.taskValue
-      }, 
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
-    ).settings(osgiSettings: _*).settings(
+      // Little trick to get rid of bnd error when publish.
+      sourceGenerators in Compile += Def.task {
+        (crossTarget.value / "classes").mkdirs()
+        Seq.empty[File]
+      }.taskValue,
       OsgiKeys.privatePackage := Seq.empty, 
-      OsgiKeys.additionalHeaders:= Map(
-        "Bundle-Name" -> "ScalaTest FeatureSpec Dotty",
-        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-        "Bundle-DocURL" -> "http://www.scalatest.org/",
-        "Bundle-Vendor" -> "Artima, Inc."
-      )
     ).dependsOn(
       scalatestCoreDotty, 
       scalatestFeatureSpecDotty, 
@@ -625,6 +336,12 @@ trait DottyBuild { this: BuildCommons =>
       scalatestMustMatchersDotty
     )
 
+  private lazy val noPublishSettings = Seq(
+    publishArtifact := false,
+    publish := {},
+    publishLocal := {},
+  )
+
   lazy val commonTestDotty = project.in(file("dotty/common-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -638,9 +355,7 @@ trait DottyBuild { this: BuildCommons =>
           GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
-      publishArtifact := false,
-      publish := {},
-      publishLocal := {}
+      noPublishSettings,
     ).dependsOn(scalacticDotty, LocalProject("scalatestDotty"))
 
   lazy val scalacticTestDotty = project.in(file("dotty/scalactic-test"))
@@ -654,9 +369,7 @@ trait DottyBuild { this: BuildCommons =>
           "-oDIF",
           "-W", "120", "60")),
       logBuffered in Test := false,
-      publishArtifact := false,
-      publish := {},
-      publishLocal := {},
+      noPublishSettings,
       sourceGenerators in Test += Def.task {
         GenScalacticDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value) /*++
         GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)*/
@@ -674,10 +387,7 @@ trait DottyBuild { this: BuildCommons =>
       //parallelExecution in Test := true,
       //testForkedParallel in Test := true,
       baseDirectory in Test := file("./"),
-      publishArtifact := false,
-      publish := {},
-      publishLocal := {}
-    )  
+    ) ++ noPublishSettings
 
   lazy val scalatestTestDotty = project.in(file("dotty/scalatest-test"))
     .settings(sharedSettings: _*)
