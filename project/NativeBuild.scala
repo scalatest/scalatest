@@ -38,7 +38,7 @@ trait NativeBuild { this: BuildCommons =>
           ScalacticGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenAnyVals.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, false) ++
           GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenColCompatHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++ 
+          GenColCompatHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenMacroContext.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
@@ -99,7 +99,7 @@ trait NativeBuild { this: BuildCommons =>
     .settings(
       projectTitle := "ScalaTest Native",
       organization := "org.scalatest",
-      moduleName := "scalatest", 
+      moduleName := "scalatest",
       sourceGenerators in Compile += {
         // Little trick to get rid of bnd error when publish.
         Def.task{
@@ -115,30 +115,30 @@ trait NativeBuild { this: BuildCommons =>
         "Bundle-Vendor" -> "Artima, Inc."
       )
     ).dependsOn(
-      scalatestCoreNative, 
-      scalatestFeatureSpecNative, 
-      scalatestFlatSpecNative, 
-      scalatestFreeSpecNative, 
-      scalatestFunSuiteNative, 
-      scalatestFunSpecNative, 
-      scalatestPropSpecNative, 
-      scalatestWordSpecNative, 
-      scalatestDiagramsNative, 
-      scalatestMatchersCoreNative, 
-      scalatestShouldMatchersNative, 
+      scalatestCoreNative,
+      scalatestFeatureSpecNative,
+      scalatestFlatSpecNative,
+      scalatestFreeSpecNative,
+      scalatestFunSuiteNative,
+      scalatestFunSpecNative,
+      scalatestPropSpecNative,
+      scalatestWordSpecNative,
+      scalatestDiagramsNative,
+      scalatestMatchersCoreNative,
+      scalatestShouldMatchersNative,
       scalatestMustMatchersNative
     ).aggregate(
-      scalatestCoreNative, 
-      scalatestFeatureSpecNative, 
-      scalatestFlatSpecNative, 
-      scalatestFreeSpecNative, 
-      scalatestFunSuiteNative, 
-      scalatestFunSpecNative, 
-      scalatestPropSpecNative, 
-      scalatestWordSpecNative, 
-      scalatestDiagramsNative, 
-      scalatestMatchersCoreNative, 
-      scalatestShouldMatchersNative, 
+      scalatestCoreNative,
+      scalatestFeatureSpecNative,
+      scalatestFlatSpecNative,
+      scalatestFreeSpecNative,
+      scalatestFunSuiteNative,
+      scalatestFunSpecNative,
+      scalatestPropSpecNative,
+      scalatestWordSpecNative,
+      scalatestDiagramsNative,
+      scalatestMatchersCoreNative,
+      scalatestShouldMatchersNative,
       scalatestMustMatchersNative
     ).enablePlugins(ScalaNativePlugin)
 
@@ -219,19 +219,19 @@ trait NativeBuild { this: BuildCommons =>
           "Main-Class" -> "org.scalatest.tools.Runner"
         )
       ).dependsOn(
-        scalacticMacroNative % "compile-internal, test-internal", 
-        scalacticNative % "compile-internal", 
-        scalatestCoreNative % "compile-internal", 
-        scalatestFeatureSpecNative % "compile-internal", 
-        scalatestFlatSpecNative % "compile-internal", 
-        scalatestFreeSpecNative % "compile-internal", 
-        scalatestFunSuiteNative % "compile-internal", 
-        scalatestFunSpecNative % "compile-internal", 
-        scalatestPropSpecNative % "compile-internal", 
-        scalatestWordSpecNative % "compile-internal", 
-        scalatestDiagramsNative % "compile-internal", 
-        scalatestMatchersCoreNative % "compile-internal", 
-        scalatestShouldMatchersNative % "compile-internal", 
+        scalacticMacroNative % "compile-internal, test-internal",
+        scalacticNative % "compile-internal",
+        scalatestCoreNative % "compile-internal",
+        scalatestFeatureSpecNative % "compile-internal",
+        scalatestFlatSpecNative % "compile-internal",
+        scalatestFreeSpecNative % "compile-internal",
+        scalatestFunSuiteNative % "compile-internal",
+        scalatestFunSpecNative % "compile-internal",
+        scalatestPropSpecNative % "compile-internal",
+        scalatestWordSpecNative % "compile-internal",
+        scalatestDiagramsNative % "compile-internal",
+        scalatestMatchersCoreNative % "compile-internal",
+        scalatestShouldMatchersNative % "compile-internal",
         scalatestMustMatchersNative % "compile-internal")
        .enablePlugins(ScalaNativePlugin)
 
@@ -549,13 +549,13 @@ trait NativeBuild { this: BuildCommons =>
       moduleName := "scalatest-matchers-core",
       sourceGenerators in Compile += {
         Def.task {
-          GenModulesNative.genScalaTestMatchersCore((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
+          GenModulesNative.genScalaTestMatchersCore((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
           GenFactories.genMainJS((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
     OsgiKeys.exportPackage := Seq(
-      "org.scalatest.matchers", 
+      "org.scalatest.matchers",
       "org.scalatest.matchers.dsl"
     ),
     OsgiKeys.importPackage := Seq(
@@ -675,7 +675,7 @@ trait NativeBuild { this: BuildCommons =>
         publish := {},
         publishLocal := {},
         scalacOptions in (Compile, doc) := List.empty
-      ).dependsOn(scalacticMacroNative, LocalProject("scalatestNative")).enablePlugins(ScalaNativePlugin)      
+      ).dependsOn(scalacticMacroNative, LocalProject("scalatestNative")).enablePlugins(ScalaNativePlugin)
 
   lazy val scalacticTestNative = Project("scalacticTestNative", file("native/scalactic-test"))
     .settings(sharedSettings: _*)
@@ -697,9 +697,9 @@ trait NativeBuild { this: BuildCommons =>
       publishArtifact := false,
       publish := {},
       publishLocal := {}
-    ).dependsOn(scalacticNative, scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)  
+    ).dependsOn(scalacticNative, scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)
 
-  def sharedTestSettingsNative: Seq[Setting[_]] = 
+  def sharedTestSettingsNative: Seq[Setting[_]] =
     Seq(
       organization := "org.scalatest",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
@@ -725,7 +725,7 @@ trait NativeBuild { this: BuildCommons =>
       publishArtifact := false,
       publish := {},
       publishLocal := {}
-    )  
+    )
 
   lazy val scalatestTestNative = Project("scalatestTestNative", file("native/scalatest-test"))
     .settings(sharedSettings: _*)
@@ -753,7 +753,7 @@ trait NativeBuild { this: BuildCommons =>
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest Diagrams Test",
-      nativeLink := file("test.hnir"), 
+      nativeLink := file("test.hnir"),
       sourceGenerators in Test += {
         Def.task {
           GenScalaTestNative.genDiagramsTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
@@ -784,7 +784,7 @@ trait NativeBuild { this: BuildCommons =>
           GenScalaTestNative.genFlatSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin) 
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestFreeSpecTestNative = Project("scalatestFreeSpecTestNative", file("native/freespec-test"))
     .settings(sharedSettings: _*)
