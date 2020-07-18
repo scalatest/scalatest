@@ -125,9 +125,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   )
 
   def sharedSettings: Seq[Setting[_]] = 
-    commonSharedSettings ++ Seq(
-      scalaVersion := "2.13.3",
-      crossScalaVersions := supportedScalaVersions,
+    commonSharedSettings ++ scalaVersionsSettings ++ Seq(
       libraryDependencies ++= {
         if (isDotty.value)
           Seq()
@@ -1152,10 +1150,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       "org.scalatestplus" %% "scalatestplus-junit" % plusJUnitVersion % "test"
     )
 
-  def gentestsSharedSettings: Seq[Setting[_]] = Seq(
+  def gentestsSharedSettings: Seq[Setting[_]] = scalaVersionsSettings ++ Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
-    scalaVersion := "2.13.3",
-    crossScalaVersions := supportedScalaVersions,
     scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty else Seq("-Ypartial-unification")),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= gentestsLibraryDependencies,
@@ -1418,7 +1414,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   lazy val examples = Project("examples", file("examples"))
     .settings(
-      crossScalaVersions := supportedScalaVersions
+      scalaVersionsSettings
     ).dependsOn(scalacticMacro, scalactic, scalatest)
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {

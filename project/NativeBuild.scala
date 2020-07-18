@@ -30,7 +30,6 @@ trait NativeBuild { this: BuildCommons =>
   private lazy val sharedNativeSettings = Seq(
     // scala-native only available for scala 2.11
     crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2.11.")),
-    scalaVersion := crossScalaVersions.value.head,
   )
 
   lazy val scalacticMacroNative = project.in(file("native/scalactic-macro"))

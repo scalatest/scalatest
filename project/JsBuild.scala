@@ -397,7 +397,7 @@ trait JsBuild { this: BuildCommons =>
 
   lazy val examplesJS = Project("examplesJS", file("examples.js"))
     .settings(
-      crossScalaVersions := supportedScalaVersions,
+      scalaVersionsSettings,
       sourceGenerators in Test += {
         Def.task {
           GenExamplesJS.genScala((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
