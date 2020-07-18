@@ -245,7 +245,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalacOptions in (Compile, doc) := List.empty
     ).dependsOn(scalacticMacro, LocalProject("scalatest"))
 
-  lazy val scalacticMacro = Project("scalacticMacro", file("jvm/scalactic-macro"))
+  lazy val scalacticMacro = project.in(file("jvm/scalactic-macro"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Scalactic Macro",
@@ -266,7 +266,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalacOptions in (Compile, doc) := List.empty
     )
 
-  lazy val scalactic = Project("scalactic", file("jvm/scalactic"))
+  lazy val scalactic = project.in(file("jvm/scalactic"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalacticDocSettings: _*)
@@ -360,42 +360,42 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
        scalatestFunSpecTest
      )
 
-  lazy val scalatestDiagramsTest = Project("scalatestDiagramsTest", file("jvm/diagrams-test"))
+  lazy val scalatestDiagramsTest = project.in(file("jvm/diagrams-test"))
     .settings(sharedSettings: _*)
     .settings(sharedTestSettings: _*)
     .settings(
       projectTitle := "ScalaTest Diagrams Test"
     ).dependsOn(commonTest % "test")
 
-  lazy val scalatestFeatureSpecTest = Project("scalatestFeatureSpecTest", file("jvm/featurespec-test"))
+  lazy val scalatestFeatureSpecTest = project.in(file("jvm/featurespec-test"))
     .settings(sharedSettings: _*)
     .settings(sharedTestSettings: _*)
     .settings(
       projectTitle := "ScalaTest FeatureSpec Test"
     ).dependsOn(commonTest % "test")
 
-  lazy val scalatestFlatSpecTest = Project("scalatestFlatSpecTest", file("jvm/flatspec-test"))
+  lazy val scalatestFlatSpecTest = project.in(file("jvm/flatspec-test"))
     .settings(sharedSettings: _*)
     .settings(sharedTestSettings: _*)
     .settings(
       projectTitle := "ScalaTest FlatSpec Test"
     ).dependsOn(commonTest % "test")
 
-  lazy val scalatestFreeSpecTest = Project("scalatestFreeSpecTest", file("jvm/freespec-test"))
+  lazy val scalatestFreeSpecTest = project.in(file("jvm/freespec-test"))
     .settings(sharedSettings: _*)
     .settings(sharedTestSettings: _*)
     .settings(
       projectTitle := "ScalaTest FreeSpec Test"
     ).dependsOn(commonTest % "test")
 
-  lazy val scalatestFunSpecTest = Project("scalatestFunSpecTest", file("jvm/funspec-test"))
+  lazy val scalatestFunSpecTest = project.in(file("jvm/funspec-test"))
     .settings(sharedSettings: _*)
     .settings(sharedTestSettings: _*)
     .settings(
       projectTitle := "ScalaTest FunSpec Test"
     ).dependsOn(commonTest % "test")        
 
-  lazy val scalatestApp = Project("scalatestApp", file("scalatest-app"))
+  lazy val scalatestApp = project.in(file("scalatest-app"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -492,7 +492,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         scalatestShouldMatchers % "compile-internal", 
         scalatestMustMatchers % "compile-internal")
 
-  lazy val scalatestDoc = Project("scalatestDoc", file("scalatest-doc"))
+  lazy val scalatestDoc = project.in(file("scalatest-doc"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -549,7 +549,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
                            scalatestTest
                          )
 
-  lazy val scalatestCompatible = Project("scalatestCompatible", file("jvm/compatible"))
+  lazy val scalatestCompatible = project.in(file("jvm/compatible"))
     .enablePlugins(SbtOsgi)
     .settings(commonSharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -586,7 +586,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     )
 
-  lazy val scalatestCore = Project("scalatestCore", file("jvm/core"))
+  lazy val scalatestCore = project.in(file("jvm/core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -644,7 +644,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCompatible, scalacticMacro % "compile-internal, test-internal", scalactic)  
 
-  lazy val scalatestFeatureSpec = Project("scalatestFeatureSpec", file("jvm/featurespec"))
+  lazy val scalatestFeatureSpec = project.in(file("jvm/featurespec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -678,7 +678,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestFlatSpec = Project("scalatestFlatSpec", file("jvm/flatspec"))
+  lazy val scalatestFlatSpec = project.in(file("jvm/flatspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -712,7 +712,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestFreeSpec = Project("scalatestFreeSpec", file("jvm/freespec"))
+  lazy val scalatestFreeSpec = project.in(file("jvm/freespec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -746,7 +746,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestFunSuite = Project("scalatestFunSuite", file("jvm/funsuite"))
+  lazy val scalatestFunSuite = project.in(file("jvm/funsuite"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -780,7 +780,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal") 
 
-  lazy val scalatestFunSpec = Project("scalatestFunSpec", file("jvm/funspec"))
+  lazy val scalatestFunSpec = project.in(file("jvm/funspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -814,7 +814,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")     
 
-  lazy val scalatestPropSpec = Project("scalatestPropSpec", file("jvm/propspec"))
+  lazy val scalatestPropSpec = project.in(file("jvm/propspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -848,7 +848,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestRefSpec = Project("scalatestRefSpec", file("jvm/refspec"))
+  lazy val scalatestRefSpec = project.in(file("jvm/refspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -882,7 +882,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal") 
 
-  lazy val scalatestWordSpec = Project("scalatestWordSpec", file("jvm/wordspec"))
+  lazy val scalatestWordSpec = project.in(file("jvm/wordspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -916,7 +916,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestDiagrams = Project("scalatestDiagrams", file("jvm/diagrams"))
+  lazy val scalatestDiagrams = project.in(file("jvm/diagrams"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -950,7 +950,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestMatchersCore = Project("scalatestMatchersCore", file("jvm/matchers-core"))
+  lazy val scalatestMatchersCore = project.in(file("jvm/matchers-core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -990,7 +990,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal") 
 
-  lazy val scalatestShouldMatchers = Project("scalatestShouldMatchers", file("jvm/shouldmatchers"))
+  lazy val scalatestShouldMatchers = project.in(file("jvm/shouldmatchers"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -1024,7 +1024,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestMatchersCore, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val scalatestMustMatchers = Project("scalatestMustMatchers", file("jvm/scalatest-mustmatchers"))
+  lazy val scalatestMustMatchers = project.in(file("jvm/scalatest-mustmatchers"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -1086,7 +1086,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalatestMustMatchers
     )
 
-  lazy val scalatest = Project("scalatest", file("jvm/scalatest"))
+  lazy val scalatest = project.in(file("jvm/scalatest"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(scalatestDocSettings: _*)
@@ -1158,7 +1158,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/html"))
   )
 
-  lazy val genRegularTests1 = Project("genRegularTests1", file("gentests/GenRegular1"))
+  lazy val genRegularTests1 = project.in(file("gentests/GenRegular1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genRegularTask1,
@@ -1169,7 +1169,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genRegularTests2 = Project("genRegularTests2", file("gentests/GenRegular2"))
+  lazy val genRegularTests2 = project.in(file("gentests/GenRegular2"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genRegularTask2,
@@ -1180,7 +1180,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genRegularTests3 = Project("genRegularTests3", file("gentests/GenRegular3"))
+  lazy val genRegularTests3 = project.in(file("gentests/GenRegular3"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genRegularTask3,
@@ -1191,7 +1191,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genRegularTests4 = Project("genRegularTests4", file("gentests/GenRegular4"))
+  lazy val genRegularTests4 = project.in(file("gentests/GenRegular4"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genRegularTask4,
@@ -1211,7 +1211,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genRegularTests5 = Project("genRegularTests5", file("gentests/GenRegular5"))
+  lazy val genRegularTests5 = project.in(file("gentests/GenRegular5"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genRegularTask5,
@@ -1232,7 +1232,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genMustMatchersTests1 = Project("genMustMatchersTests1", file("gentests/MustMatchers1"))
+  lazy val genMustMatchersTests1 = project.in(file("gentests/MustMatchers1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
@@ -1243,7 +1243,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genMustMatchersTests2 = Project("genMustMatchersTests2", file("gentests/MustMatchers2"))
+  lazy val genMustMatchersTests2 = project.in(file("gentests/MustMatchers2"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
@@ -1254,7 +1254,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genMustMatchersTests3 = Project("genMustMatchersTests3", file("gentests/MustMatchers3"))
+  lazy val genMustMatchersTests3 = project.in(file("gentests/MustMatchers3"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
@@ -1265,7 +1265,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genMustMatchersTests4 = Project("genMustMatchersTests4", file("gentests/MustMatchers4"))
+  lazy val genMustMatchersTests4 = project.in(file("gentests/MustMatchers4"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
@@ -1276,7 +1276,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genGenTests = Project("genGenTests", file("gentests/GenGen"))
+  lazy val genGenTests = project.in(file("gentests/GenGen"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genGenTask,
@@ -1287,7 +1287,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genTablesTests = Project("genTablesTests", file("gentests/GenTables"))
+  lazy val genTablesTests = project.in(file("gentests/GenTables"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genTablesTask,
@@ -1298,7 +1298,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genInspectorsTests = Project("genInspectorsTests", file("gentests/GenInspectors"))
+  lazy val genInspectorsTests = project.in(file("gentests/GenInspectors"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genInspectorsTask,
@@ -1309,7 +1309,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genInspectorsShorthandsTests1 = Project("genInspectorsShorthandsTests1", file("gentests/GenInspectorsShorthands1"))
+  lazy val genInspectorsShorthandsTests1 = project.in(file("gentests/GenInspectorsShorthands1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genInspectorsShorthandsTask1,
@@ -1320,7 +1320,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genInspectorsShorthandsTests2 = Project("genInspectorsShorthandsTests2", file("gentests/GenInspectorsShorthands2"))
+  lazy val genInspectorsShorthandsTests2 = project.in(file("gentests/GenInspectorsShorthands2"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genInspectorsShorthandsTask2,
@@ -1331,7 +1331,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genTheyTests = Project("genTheyTests", file("gentests/GenThey"))
+  lazy val genTheyTests = project.in(file("gentests/GenThey"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genTheyWordTask,
@@ -1342,7 +1342,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genContainTests1 = Project("genContainTests1", file("gentests/GenContain1"))
+  lazy val genContainTests1 = project.in(file("gentests/GenContain1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genContainTask1,
@@ -1353,7 +1353,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genContainTests2 = Project("genContainTests2", file("gentests/GenContain2"))
+  lazy val genContainTests2 = project.in(file("gentests/GenContain2"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genContainTask2,
@@ -1364,7 +1364,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genSortedTests = Project("genSortedTests", file("gentests/GenSorted"))
+  lazy val genSortedTests = project.in(file("gentests/GenSorted"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genSortedTask,
@@ -1375,7 +1375,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genLoneElementTests = Project("genLoneElementTests", file("gentests/GenLoneElement"))
+  lazy val genLoneElementTests = project.in(file("gentests/GenLoneElement"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genLoneElementTask,
@@ -1386,7 +1386,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genEmptyTests = Project("genEmptyTests", file("gentests/GenEmpty"))
+  lazy val genEmptyTests = project.in(file("gentests/GenEmpty"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genEmptyTask,
@@ -1397,7 +1397,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  /*lazy val genSafeStyleTests = Project("genSafeStyleTests", file("gentests/GenSafeStyles"))
+  /*lazy val genSafeStyleTests = project.in(file("gentests/GenSafeStyles"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genSafeStyleTestsTask,
@@ -1408,11 +1408,11 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       }
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")*/
 
-  lazy val gentests = Project("gentests", file("gentests"))
+  lazy val gentests = project.in(file("gentests"))
     .aggregate(genMustMatchersTests1, genMustMatchersTests2, genMustMatchersTests3, genMustMatchersTests4, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests1,
                genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests/*, genSafeStyleTests*/)
 
-  lazy val examples = Project("examples", file("examples"))
+  lazy val examples = project.in(file("examples"))
     .settings(
       scalaVersionsSettings
     ).dependsOn(scalacticMacro, scalactic, scalatest)

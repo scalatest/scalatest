@@ -30,7 +30,7 @@ trait DottyBuild { this: BuildCommons =>
       (srcs --- sdirs --- base) pair (relativeTo(sdirs) | relativeTo(base) | flat)
     }
 
-  lazy val scalacticDotty = Project("scalacticDotty", file("dotty/scalactic"))
+  lazy val scalacticDotty = project.in(file("dotty/scalactic"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -89,7 +89,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   )
 
-  lazy val scalatestCoreDotty = Project("scalatestCoreDotty", file("dotty/core"))
+  lazy val scalatestCoreDotty = project.in(file("dotty/core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -173,7 +173,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalacticDotty, scalatestCompatible)
 
-  lazy val scalatestFeatureSpecDotty = Project("scalatestFeatureSpecDotty", file("dotty/featurespec"))
+  lazy val scalatestFeatureSpecDotty = project.in(file("dotty/featurespec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -204,7 +204,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestFlatSpecDotty = Project("scalatestFlatSpecDotty", file("dotty/flatspec"))
+  lazy val scalatestFlatSpecDotty = project.in(file("dotty/flatspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -235,7 +235,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestFreeSpecDotty = Project("scalatestFreeSpecDotty", file("dotty/freespec"))
+  lazy val scalatestFreeSpecDotty = project.in(file("dotty/freespec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -266,7 +266,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestFunSuiteDotty = Project("scalatestFunSuiteDotty", file("dotty/funsuite"))
+  lazy val scalatestFunSuiteDotty = project.in(file("dotty/funsuite"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -297,7 +297,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestFunSpecDotty = Project("scalatestFunSpecDotty", file("dotty/funspec"))
+  lazy val scalatestFunSpecDotty = project.in(file("dotty/funspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -328,7 +328,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestPropSpecDotty = Project("scalatestPropSpecDotty", file("dotty/propspec"))
+  lazy val scalatestPropSpecDotty = project.in(file("dotty/propspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -359,7 +359,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestRefSpecDotty = Project("scalatestRefSpecDotty", file("dotty/refspec"))
+  lazy val scalatestRefSpecDotty = project.in(file("dotty/refspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -390,7 +390,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestWordSpecDotty = Project("scalatestWordSpecDotty", file("dotty/wordspec"))
+  lazy val scalatestWordSpecDotty = project.in(file("dotty/wordspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -421,7 +421,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestDiagramsDotty = Project("scalatestDiagramsDotty", file("dotty/diagrams"))
+  lazy val scalatestDiagramsDotty = project.in(file("dotty/diagrams"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -452,7 +452,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestMatchersCoreDotty = Project("scalatestMatchersCoreDotty", file("dotty/matchers-core"))
+  lazy val scalatestMatchersCoreDotty = project.in(file("dotty/matchers-core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -485,7 +485,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestShouldMatchersDotty = Project("scalatestShouldMatchersDotty", file("dotty/shouldmatchers"))
+  lazy val scalatestShouldMatchersDotty = project.in(file("dotty/shouldmatchers"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -516,7 +516,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestMatchersCoreDotty)
 
-  lazy val scalatestMustMatchersDotty = Project("scalatestMustMatchersDotty", file("dotty/mustmatchers"))
+  lazy val scalatestMustMatchersDotty = project.in(file("dotty/mustmatchers"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -570,7 +570,7 @@ trait DottyBuild { this: BuildCommons =>
       scalatestMustMatchersDotty
     )
 
-  lazy val scalatestDotty = Project("scalatestDotty", file("dotty/scalatest"))
+  lazy val scalatestDotty = project.in(file("dotty/scalatest"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -625,7 +625,7 @@ trait DottyBuild { this: BuildCommons =>
       scalatestMustMatchersDotty
     )
 
-  lazy val commonTestDotty = Project("commonTestDotty", file("dotty/common-test"))
+  lazy val commonTestDotty = project.in(file("dotty/common-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
     .settings(
@@ -643,7 +643,7 @@ trait DottyBuild { this: BuildCommons =>
       publishLocal := {}
     ).dependsOn(scalacticDotty, LocalProject("scalatestDotty"))
 
-  lazy val scalacticTestDotty = Project("scalacticTestDotty", file("dotty/scalactic-test"))
+  lazy val scalacticTestDotty = project.in(file("dotty/scalactic-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
     .settings(
@@ -679,7 +679,7 @@ trait DottyBuild { this: BuildCommons =>
       publishLocal := {}
     )  
 
-  lazy val scalatestTestDotty = Project("scalatestTestDotty", file("dotty/scalatest-test"))
+  lazy val scalatestTestDotty = project.in(file("dotty/scalatest-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
     .settings(sharedTestSettingsDotty)
@@ -692,7 +692,7 @@ trait DottyBuild { this: BuildCommons =>
       }
     ).dependsOn(commonTestDotty % "test")
 
-  lazy val scalatestDiagramsTestDotty = Project("scalatestDiagramsTestDotty", file("dotty/diagrams-test"))
+  lazy val scalatestDiagramsTestDotty = project.in(file("dotty/diagrams-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
     .settings(sharedTestSettingsDotty)
@@ -705,7 +705,7 @@ trait DottyBuild { this: BuildCommons =>
       }
     ).dependsOn(commonTestDotty % "test")
 
-  lazy val scalatestFeatureSpecTestDotty = Project("scalatestFeatureSpecTestDotty", file("dotty/featurespec-test"))
+  lazy val scalatestFeatureSpecTestDotty = project.in(file("dotty/featurespec-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
     .settings(sharedTestSettingsDotty)
@@ -718,7 +718,7 @@ trait DottyBuild { this: BuildCommons =>
       }
     ).dependsOn(commonTestDotty % "test")
 
-  lazy val scalatestFlatSpecTestDotty = Project("scalatestFlatSpecTestDotty", file("dotty/flatspec-test"))
+  lazy val scalatestFlatSpecTestDotty = project.in(file("dotty/flatspec-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
     .settings(sharedTestSettingsDotty)
@@ -731,7 +731,7 @@ trait DottyBuild { this: BuildCommons =>
       }
     ).dependsOn(commonTestDotty % "test")
 
-  lazy val scalatestFreeSpecTestDotty = Project("scalatestFreeSpecTestDotty", file("dotty/freespec-test"))
+  lazy val scalatestFreeSpecTestDotty = project.in(file("dotty/freespec-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
     .settings(sharedTestSettingsDotty)
@@ -744,7 +744,7 @@ trait DottyBuild { this: BuildCommons =>
       }
     ).dependsOn(commonTestDotty % "test")
 
-  lazy val scalatestFunSpecTestDotty = Project("scalatestFunSpecTestDotty", file("dotty/funspec-test"))
+  lazy val scalatestFunSpecTestDotty = project.in(file("dotty/funspec-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
     .settings(sharedTestSettingsDotty)
