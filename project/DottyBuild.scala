@@ -10,9 +10,9 @@ import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
 
 trait DottyBuild { this: BuildCommons =>
 
-  // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.14/
+  // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = "0.25.0-RC2"
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "0.26.0-RC1")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
