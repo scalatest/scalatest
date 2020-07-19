@@ -235,7 +235,7 @@ object SnapshotsMacro {
           '{ Snapshot($str, ${ arg.seal.cast[Any] }) }
         }
       case arg =>
-        Reporting.throwError("snap can only be used with sequence literal, not `seq : _*`")
+        report.throwError("snap can only be used with sequence literal, not `seq : _*`")
     }
 
     val argumentsS: Expr[Seq[Snapshot]] = liftSeq(snapshots)
