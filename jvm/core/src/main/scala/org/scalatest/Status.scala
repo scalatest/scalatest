@@ -1054,7 +1054,7 @@ private[scalatest] object CompositeStatus {
             // latch to zero. If a thread is currently blocked waiting to acquire the mutex
             // in the whenCompleted method, it will observe the status as completed and
             // therefore execute that callback locally.
-            executeQueue(queue, tri)
+            executeQueue(queue, completionTri)
           }
 
           // Once this latch counts down to zero, other threads will see it because we don't synchronize
