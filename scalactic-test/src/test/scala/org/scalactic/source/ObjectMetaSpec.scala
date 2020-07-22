@@ -27,7 +27,10 @@ class ObjectMetaSpec extends FunSpec with Matchers {
   describe("ObjectMeta") {
 
     it("should extract case class attribute names correctly") {
+      // SKIP-DOTTY-START
       ObjectMeta(Person("test", 33)).fieldNames should contain theSameElementsAs Set("name", "age", "otherField", "privateField")
+      // SKIP-DOTTY-END
+      //DOTTY-ONLY ObjectMeta(Person("test", 33)).fieldNames should contain theSameElementsAs Set("name", "age", "otherField")
     }
 
     it("should extract dynamically field value correctly") {
@@ -35,7 +38,9 @@ class ObjectMetaSpec extends FunSpec with Matchers {
       meta.value("name") shouldBe "test"
       meta.value("age") shouldBe 33
       meta.value("otherField") shouldBe "test other field"
+      // SKIP-DOTTY-START
       meta.value("privateField") shouldBe "test private field"
+      // SKIP-DOTTY-END
     }
 
     it("should throw IllegalArgumentException when invalid attribute name is used to retrieve value") {
@@ -45,5 +50,13 @@ class ObjectMetaSpec extends FunSpec with Matchers {
       }
       e.getMessage shouldBe "'invalid' is not attribute for this instance."
     }
+
+    //DOTTY-ONLY it("should throw IllegalArgumentException when private attribute name is used to retrieve value") {
+    //DOTTY-ONLY   val meta = ObjectMeta(Person("test", 33))
+    //DOTTY-ONLY   val e = intercept[IllegalArgumentException] {
+    //DOTTY-ONLY             meta.value("invalid")
+    //DOTTY-ONLY   }
+    //DOTTY-ONLY   e.getMessage shouldBe "'invalid' is not attribute for this instance."
+    //DOTTY-ONLY }
   }
 }
