@@ -21,7 +21,7 @@ class ObjectMetaSpec extends FunSpec with Matchers {
 
   case class Person(name: String, private val age: Int) {
     val otherField = "test other field"
-    val privateField = "test private field"
+    private val privateField = "test private field"
   }
 
   describe("ObjectMeta") {
