@@ -22,7 +22,6 @@ import org.scalatest.matchers.dsl.{ResultOfAnTypeInvocation, MatcherWords, Resul
 // import org.scalatest.{UnquotedString, Resources, Suite, FailureMessages, Assertions}
 
 import scala.quoted._
-import scala.tasty._
 
 object TypeMatcherMacro {
 
