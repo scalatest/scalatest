@@ -173,6 +173,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, val testSortin
           dispatch(doneEvent)
           dispatchToRegisteredSuiteReporter(head.suiteId, doneEvent)
         }
+        suiteReporterMap -= (head.suiteId)
         slotListBuf = fireReadySuiteEvents(slotListBuf.tail)
         if (slotListBuf.size > 0) 
           scheduleTimeoutTask()
@@ -213,6 +214,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, val testSortin
         fireSuiteEvents(slot.suiteId)
         dispatch(slot.doneEvent.get)
         dispatchToRegisteredSuiteReporter(slot.suiteId, slot.doneEvent.get)
+        suiteReporterMap -= (slot.suiteId)
     }
     undone
   }
@@ -231,7 +233,6 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, val testSortin
       if (slotIdx >= 0)
         slotListBuf.update(slotIdx, newSlot)
       fireReadyEvents()
-      suiteReporterMap -= (suiteId)
     }
   }
 
