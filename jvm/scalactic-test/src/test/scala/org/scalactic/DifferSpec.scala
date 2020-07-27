@@ -262,7 +262,7 @@ class DifferSpec extends funspec.AnyFunSpec {
   val EOL = scala.compat.Platform.EOL
 
   sealed trait Parent
-  case class Bar( s: String, i: Int ) extends Parent
+  case class Bar( s: String, private val i: Int ) extends Parent
   case class Foo( bar: Bar, b: List[Int], parent: Option[Parent] ) extends Parent
 
   // SKIP-SCALATESTNATIVE-START
