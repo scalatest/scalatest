@@ -289,7 +289,10 @@ trait ScalaFutures extends Futures {
 
       override private[concurrent] def futureValueImpl(pos: source.Position)(implicit config: PatienceConfig): T = {
         try {
+          // SKIP-SCALATESTJS-START
           Await.ready(scalaFuture, Duration.fromNanos(config.timeout.totalNanos)).eitherValue.get match {
+          // SKIP-SCALATESTJS-END
+          //SCALATESTJS-ONLY scalaFuture.value.getOrElse(throw new TimeoutException("Wait is useless in js.")).transform(s => Success(Right(s)), f => Success(Left(f))).get match {   
             case Right(v) => v
             case Left(tpe: TestPendingException) => throw tpe
             case Left(tce: TestCanceledException) => throw tce
