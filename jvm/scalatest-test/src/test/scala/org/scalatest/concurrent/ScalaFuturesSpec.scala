@@ -102,11 +102,13 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
         futureIsNow.isReadyWithin(Span(1, Second)) should be (true)
       }
 
+      // SKIP-SCALATESTJS-START
       it("should query a never-ready future by at least the specified timeout") {
         var startTime = System.currentTimeMillis
         neverReadyFuture.isReadyWithin(Span(1250, Milliseconds)) should be (false)
         (System.currentTimeMillis - startTime).toInt should be >= (1250)
       }
+      // SKIP-SCALATESTJS-END
 
       it("should wrap any exception that normally causes a test to fail to propagate back wrapped in a TFE") {
 
@@ -202,6 +204,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
         caught4.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
       }
 
+      // SKIP-SCALATESTJS-START
       it("should by default query a never-ready future for at least 1 second") {
         var startTime = System.currentTimeMillis
         a [TestFailedException] should be thrownBy {
@@ -237,6 +240,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
         }
         (System.currentTimeMillis - startTime).toInt should be >= (1388)
       }
+      // SKIP-SCALATESTJS-END
 
       it("should wrap any exception that normally causes a test to fail to propagate back wrapped in a TFE") {
 
@@ -363,6 +367,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
         caught4.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
       }
 
+      // SKIP-SCALATESTJS-START
       it("should by default query a never-ready future for at least 1 second") {
         var startTime = System.currentTimeMillis
         a [TestFailedException] should be thrownBy {
@@ -406,6 +411,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
         }
         (System.currentTimeMillis - startTime).toInt should be >= (1388)
       }
+      // SKIP-SCALATESTJS-END
 
       it("should wrap any exception that normally causes a test to fail to propagate back wrapped in a TFE") {
 
