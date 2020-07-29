@@ -32,7 +32,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends fixture.AsyncFeatureSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -97,7 +96,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends fixture.AsyncFeatureSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -154,7 +152,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends fixture.AsyncFeatureSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -205,7 +202,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends fixture.AsyncFeatureSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -390,7 +386,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends fixture.AsyncFeatureSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -440,7 +435,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends fixture.AsyncFeatureSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -507,7 +501,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -538,7 +531,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -574,7 +566,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -612,7 +603,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -639,7 +629,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -670,7 +659,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -699,7 +687,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -730,7 +717,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -757,7 +743,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -788,7 +773,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -817,7 +801,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -848,7 +831,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -875,7 +857,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -906,7 +887,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -942,7 +922,6 @@ class DeprecatedAsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       class MySuite extends fixture.AsyncFeatureSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =

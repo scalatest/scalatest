@@ -32,7 +32,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class ExampleSpec extends AsyncFlatSpec with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -93,7 +92,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class ExampleSpec extends AsyncFlatSpec with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -144,7 +142,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class ExampleSpec extends AsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -180,7 +177,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class ExampleSpec extends AsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         it should "test 1" in {
           Future {
@@ -227,7 +223,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class ExampleSpec extends AsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         it should "test 1" in {
           SleepHelper.sleep(30)
@@ -396,7 +391,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class ExampleSpec extends AsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         it should "test 1" in {
           Future {
@@ -442,7 +436,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class ExampleSpec extends AsyncFlatSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         it should "test 1" in {
           SleepHelper.sleep(60)
@@ -500,7 +493,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should "test 1" in {
           info("hi there")
@@ -530,7 +522,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should "test 1" in {
           Future {
@@ -581,7 +572,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should "test 1" in {
           note("hi there")
@@ -604,7 +594,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should "test 1" in {
           Future {
@@ -648,7 +637,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should "test 1" in {
           alert("hi there")
@@ -671,7 +659,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should "test 1" in {
           Future {
@@ -715,7 +702,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should "test 1" in {
           markup("hi there")
@@ -745,7 +731,6 @@ class AsyncFlatSpecSpec extends FunSpec {
       class MySuite extends AsyncFlatSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should "test 1" in {
           Future {
