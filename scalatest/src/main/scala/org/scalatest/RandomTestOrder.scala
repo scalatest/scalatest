@@ -184,7 +184,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
       case (Some(name), Some(sorter)) =>
         super.run(testName, args.copy(reporter = createTestSpecificReporter(sorter, name)))
       case _ =>
-        val testSortingReporter = new TestSortingReporter(suiteId, args.reporter, sortingTimeout, testNames.size, args.distributedSuiteSorter, System.err)
+        val testSortingReporter = new TestSortingReporter(suiteId, args.reporter, sortingTimeout, expectedTestCount(args.filter), args.distributedSuiteSorter, System.err)
         val newArgs = args.copy(reporter = testSortingReporter, distributedTestSorter = Some(testSortingReporter))
         val status = super.run(testName, newArgs)
         // Random shuffle the deferred suite list, before executing them.
