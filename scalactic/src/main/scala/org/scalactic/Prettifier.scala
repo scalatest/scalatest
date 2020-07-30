@@ -195,6 +195,7 @@ object Prettifier {
             case Success(e) => "Success(" + apply(e) + ")"
             case Left(e) => "Left(" + apply(e) + ")"
             case Right(e) => "Right(" + apply(e) + ")"
+            case s: Symbol => "'" + s.name
             case Good(e) => "Good(" + apply(e) + ")"
             case Bad(e) => "Bad(" + apply(e) + ")"
             case One(e) => "One(" + apply(e) + ")"

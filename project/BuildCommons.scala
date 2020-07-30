@@ -5,7 +5,9 @@ import scala.io.Source
 
 trait BuildCommons {
 
-  lazy val supportedScalaVersions = List("2.13.2", "2.12.11", "2.11.12", "2.10.7")
+  val defaultScalaVersion = "2.13.3"
+
+  val supportedScalaVersions = List("2.13.3", "2.12.12", "2.11.12", "2.10.7")
 
   val releaseVersion = "3.1.2"
 

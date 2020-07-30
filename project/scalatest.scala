@@ -140,7 +140,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def sharedSettings: Seq[Setting[_]] = 
     commonSharedSettings ++ Seq(
-      scalaVersion := "2.13.1",
+      scalaVersion := defaultScalaVersion,
       crossScalaVersions := supportedScalaVersions,
       libraryDependencies ++= {
         if (isDotty.value)
@@ -1218,7 +1218,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def gentestsSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
-    scalaVersion := "2.13.0",
+    scalaVersion := defaultScalaVersion,
     crossScalaVersions := supportedScalaVersions,
     scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty else Seq("-Ypartial-unification")),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
