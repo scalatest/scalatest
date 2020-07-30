@@ -220,7 +220,7 @@ object Snapshots extends Snapshots
 
 object SnapshotsMacro {
 
-  def snap(expressions: Expr[Seq[Any]])(implicit qctx: QuoteContext): Expr[SnapshotSeq] = {
+  def snap(expressions: Expr[Seq[Any]])(using QuoteContext): Expr[SnapshotSeq] = {
     import qctx.tasty._
 
     def liftSeq(args: Seq[Expr[Snapshot]]): Expr[Seq[Snapshot]] = args match {
@@ -235,8 +235,7 @@ object SnapshotsMacro {
           '{ Snapshot($str, ${ arg.seal.cast[Any] }) }
         }
       case arg =>
-        qctx.error("snap can only be used with sequence literal, not `seq : _*`")
-        return '{???}
+        Reporting.throwError("snap can only be used with sequence literal, not `seq : _*`")
     }
 
     val argumentsS: Expr[Seq[Snapshot]] = liftSeq(snapshots)
