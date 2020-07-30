@@ -24,7 +24,7 @@ object GenContain2 extends GenContainBase {
 
   def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
 
-    val sourceBaseDir = new File("scalatest-test/src/test/scala/org/scalatest")
+    val sourceBaseDir = new File("jvm/scalatest-test/src/test/scala/org/scalatest")
 
     targetBaseDir.mkdirs()
 
