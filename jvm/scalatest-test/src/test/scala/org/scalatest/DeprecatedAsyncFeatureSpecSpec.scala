@@ -37,7 +37,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncFeatureSpec with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -99,7 +98,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncFeatureSpec with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -153,7 +151,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncFeatureSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Scenario("test 1") {
           Future {
@@ -200,7 +197,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncFeatureSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Scenario("test 1") {
           SleepHelper.sleep(3000)
@@ -367,7 +363,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncFeatureSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Scenario("test 1") {
           Future {
@@ -412,7 +407,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncFeatureSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Scenario("test 1") {
           SleepHelper.sleep(60)
@@ -469,7 +463,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class MySuite extends AsyncFeatureSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
           info(
@@ -496,7 +489,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class MySuite extends AsyncFeatureSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -528,7 +520,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class MySuite extends AsyncFeatureSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -581,7 +572,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class MySuite extends AsyncFeatureSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
           note(
@@ -608,7 +598,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class MySuite extends AsyncFeatureSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -633,7 +622,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class MySuite extends AsyncFeatureSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -679,7 +667,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class MySuite extends AsyncFeatureSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
           alert(
@@ -706,7 +693,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class MySuite extends AsyncFeatureSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -731,7 +717,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class MySuite extends AsyncFeatureSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -777,7 +762,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class MySuite extends AsyncFeatureSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
           markup(
@@ -804,7 +788,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class MySuite extends AsyncFeatureSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
           Scenario("test 1") {
@@ -836,7 +819,6 @@ class DeprecatedAsyncFeatureSpecSpec extends AnyFunSpec {
       class MySuite extends AsyncFeatureSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         Feature("test feature") {
           Scenario("test 1") {

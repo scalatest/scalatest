@@ -34,7 +34,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class ExampleSuite extends AsyncFunSuite with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -96,7 +95,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class ExampleSuite extends AsyncFunSuite with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -149,7 +147,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class ExampleSuite extends AsyncFunSuite {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         test("test 1") {
           Future {
@@ -196,7 +193,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class ExampleSuite extends AsyncFunSuite {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         test("test 1") {
           SleepHelper.sleep(30)
@@ -365,7 +361,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncFunSuite {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         test("test 1") {
           Future {
@@ -411,7 +406,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncFunSuite {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         test("test 1") {
           SleepHelper.sleep(60)
@@ -469,7 +463,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class MySuite extends AsyncFunSuite  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         test("test 1") {
           info("hi there")
@@ -499,7 +492,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class MySuite extends AsyncFunSuite  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         test("test 1") {
           Future {
@@ -550,7 +542,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class MySuite extends AsyncFunSuite  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         test("test 1") {
           note("hi there")
@@ -573,7 +564,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class MySuite extends AsyncFunSuite  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         test("test 1") {
           Future {
@@ -617,7 +607,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class MySuite extends AsyncFunSuite  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         test("test 1") {
           alert("hi there")
@@ -640,7 +629,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class MySuite extends AsyncFunSuite  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         test("test 1") {
           Future {
@@ -684,7 +672,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class MySuite extends AsyncFunSuite  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         test("test 1") {
           markup("hi there")
@@ -714,7 +701,6 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
       class MySuite extends AsyncFunSuite  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         test("test 1") {
           Future {

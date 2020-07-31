@@ -15,11 +15,17 @@
  */
 package org.scalatest.concurrent
 
+import org.scalactic.source
 import org.scalatest.Resources
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
+import org.scalatest.exceptions.{StackDepthException, TestCanceledException, TestFailedException, TestPendingException, TimeoutField}
 import org.scalatest.time.Span
+import scala.concurrent.Await
+import scala.concurrent.TimeoutException
+import scala.concurrent.duration.Duration
 import scala.util.Failure
 import scala.util.Success
+
 
 /**
  * Provides an implicit conversion from <code>scala.concurrent.Future[T]</code> to
@@ -280,14 +286,59 @@ trait ScalaFutures extends Futures {
          }
       def isExpired: Boolean = false // Scala Futures themselves don't support the notion of a timeout
       def isCanceled: Boolean = false // Scala Futures don't seem to be cancelable either
-/*
-      def futureValue(implicit config: PatienceConfig): T = {
-        try Await.ready(scalaFuture, Duration.fromNanos(config.timeout.totalNanos))
+
+      override private[concurrent] def futureValueImpl(pos: source.Position)(implicit config: PatienceConfig): T = {
+        try {
+          // SKIP-SCALATESTJS-START
+          Await.ready(scalaFuture, Duration.fromNanos(config.timeout.totalNanos)).eitherValue.get match {
+          // SKIP-SCALATESTJS-END
+          //SCALATESTJS-ONLY scalaFuture.value.getOrElse(throw new TimeoutException("Cannot Await or block in Scala.js.")).transform(s => Success(Right(s)), f => Success(Left(f))).get match {
+            case Right(v) => v
+            case Left(tpe: TestPendingException) => throw tpe
+            case Left(tce: TestCanceledException) => throw tce
+            case Left(e) if anExceptionThatShouldCauseAnAbort(e) => throw e
+            case Left(ee: java.util.concurrent.ExecutionException) if ee.getCause != null =>
+              val cause = ee.getCause
+              cause match {
+                case tpe: TestPendingException => throw tpe
+                case tce: TestCanceledException => throw tce
+                case e if anExceptionThatShouldCauseAnAbort(e) => throw e
+                case _ =>
+                  throw new TestFailedException(
+                    (_: StackDepthException) => Some {
+                      if (cause.getMessage == null)
+                        Resources.futureReturnedAnException(cause.getClass.getName)
+                      else
+                        Resources.futureReturnedAnExceptionWithMessage(cause.getClass.getName, cause.getMessage)
+                    },
+                    Some(cause),
+                    pos
+                  )
+              }
+            case Left(e) =>
+              throw new TestFailedException(
+                (_: StackDepthException) => Some {
+                  if (e.getMessage == null)
+                    Resources.futureReturnedAnException(e.getClass.getName)
+                  else
+                    Resources.futureReturnedAnExceptionWithMessage(e.getClass.getName, e.getMessage)
+                },
+                Some(e),
+                pos
+              )
+          }
+        }
         catch {
           case e: TimeoutException => 
+            throw new TestFailedException(
+                  (_: StackDepthException) => Some(Resources.wasNeverReady(config.timeout.prettyString)),
+                  None,
+                  pos
+                ) with TimeoutField {
+                  val timeout: Span = config.timeout
+                }
         }
       }
-*/
     }
   //SCALATESTJS,NATIVE-ONLY override private[concurrent] val jsAdjustment: Int = -1
 }
