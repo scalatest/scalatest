@@ -292,7 +292,7 @@ trait ScalaFutures extends Futures {
           // SKIP-SCALATESTJS-START
           Await.ready(scalaFuture, Duration.fromNanos(config.timeout.totalNanos)).eitherValue.get match {
           // SKIP-SCALATESTJS-END
-          //SCALATESTJS-ONLY scalaFuture.value.getOrElse(throw new TimeoutException("Wait is useless in js.")).transform(s => Success(Right(s)), f => Success(Left(f))).get match {   
+          //SCALATESTJS-ONLY scalaFuture.value.getOrElse(throw new TimeoutException("Cannot Await or block in Scala.js.")).transform(s => Success(Right(s)), f => Success(Left(f))).get match {
             case Right(v) => v
             case Left(tpe: TestPendingException) => throw tpe
             case Left(tce: TestCanceledException) => throw tce
