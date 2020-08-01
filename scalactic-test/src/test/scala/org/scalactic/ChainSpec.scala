@@ -505,10 +505,10 @@ class ChainSpec extends UnitSpec {
     num shouldBe 60
   }
   it should "have a groupBy method" in {
-    Chain(1, 2, 3, 4, 5).groupBy(_ % 2) shouldBe Map(1 -> Chain(1, 3, 5), 0 -> Chain(2, 4))
-    Chain(1, 2, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> Chain(1, 3, 3, 3), 0 -> Chain(2))
-    Chain(1, 1, 3, 3, 3).groupBy(_ % 2) shouldBe Map(1 -> Chain(1, 1, 3, 3, 3))
-    Chain(1, 2, 3, 5, 7).groupBy(_ % 2) shouldBe Map(1 -> Chain(1, 3, 5, 7), 0 -> Chain(2))
+    Chain(1, 2, 3, 4, 5).groupBy(_ % 2).toMap shouldBe Map(1 -> Chain(1, 3, 5), 0 -> Chain(2, 4))
+    Chain(1, 2, 3, 3, 3).groupBy(_ % 2).toMap shouldBe Map(1 -> Chain(1, 3, 3, 3), 0 -> Chain(2))
+    Chain(1, 1, 3, 3, 3).groupBy(_ % 2).toMap shouldBe Map(1 -> Chain(1, 1, 3, 3, 3))
+    Chain(1, 2, 3, 5, 7).groupBy(_ % 2).toMap shouldBe Map(1 -> Chain(1, 3, 5, 7), 0 -> Chain(2))
   }
   it should "have a grouped method" in {
     Chain(1, 2, 3).grouped(2).toList shouldBe List(Chain(1, 2), Chain(3))
