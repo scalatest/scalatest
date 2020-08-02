@@ -63,7 +63,7 @@ object CompileMacro {
         checkCompile(code.toString)
 
       case other =>
-        Reporting.throwError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
+        report.throwError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
     }
   }
 
@@ -105,7 +105,7 @@ object CompileMacro {
         checkNotCompile(code)
 
       case other =>
-        Reporting.throwError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
+        report.throwError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
     }
   }
 
@@ -149,7 +149,7 @@ object CompileMacro {
         checkNotTypeCheck(code.toString)
 
       case _ =>
-        Reporting.throwError("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
+        report.throwError("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
     }
   }
 
