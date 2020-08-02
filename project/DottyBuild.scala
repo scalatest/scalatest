@@ -11,16 +11,26 @@ import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
 
 trait DottyBuild { this: BuildCommons =>
 
-  // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.14/
+  // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = "0.25.0"
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "0.26.0-RC1")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
     scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
   )
 
-  lazy val scalacticDotty = Project("scalacticDotty", file("scalactic.dotty"))
+  // https://github.com/sbt/sbt/issues/2205#issuecomment-144375501
+  private lazy val packageManagedSources =
+    mappings in (Compile, packageSrc) ++= { // publish generated sources
+      val srcs = (managedSources in Compile).value
+      val sdirs = (managedSourceDirectories in Compile).value
+      val base = baseDirectory.value
+      import Path._
+      (srcs --- sdirs --- base) pair (relativeTo(sdirs) | relativeTo(base) | flat)
+    }
+
+  lazy val scalacticDotty = project.in(file("scalactic.dotty"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -78,7 +88,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   )
 
-  lazy val scalatestDotty = Project("scalatestDotty", file("scalatest.dotty"))
+  lazy val scalatestDotty = project.in(file("scalatest.dotty"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -182,7 +192,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalacticDotty)
 
-  lazy val scalatestCoreDotty = Project("scalatestCoreDotty", file("modules/dotty/scalatest-core"))
+  lazy val scalatestCoreDotty = project.in(file("modules/dotty/scalatest-core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -265,7 +275,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalacticDotty)
 
-  lazy val scalatestFeatureSpecDotty = Project("scalatestFeatureSpecDotty", file("modules/dotty/scalatest-featurespec"))
+  lazy val scalatestFeatureSpecDotty = project.in(file("modules/dotty/scalatest-featurespec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -295,7 +305,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestFlatSpecDotty = Project("scalatestFlatSpecDotty", file("modules/dotty/scalatest-flatspec"))
+  lazy val scalatestFlatSpecDotty = project.in(file("modules/dotty/scalatest-flatspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -325,7 +335,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestFreeSpecDotty = Project("scalatestFreeSpecDotty", file("modules/dotty/scalatest-freespec"))
+  lazy val scalatestFreeSpecDotty = project.in(file("modules/dotty/scalatest-freespec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -355,7 +365,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestFunSuiteDotty = Project("scalatestFunSuiteDotty", file("modules/dotty/scalatest-funsuite"))
+  lazy val scalatestFunSuiteDotty = project.in(file("modules/dotty/scalatest-funsuite"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -385,7 +395,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestFunSpecDotty = Project("scalatestFunSpecDotty", file("modules/dotty/scalatest-funspec"))
+  lazy val scalatestFunSpecDotty = project.in(file("modules/dotty/scalatest-funspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -415,7 +425,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestPropSpecDotty = Project("scalatestPropSpecDotty", file("modules/dotty/scalatest-propspec"))
+  lazy val scalatestPropSpecDotty = project.in(file("modules/dotty/scalatest-propspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -445,7 +455,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestRefSpecDotty = Project("scalatestRefSpecDotty", file("modules/dotty/scalatest-refspec"))
+  lazy val scalatestRefSpecDotty = project.in(file("modules/dotty/scalatest-refspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -475,7 +485,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestWordSpecDotty = Project("scalatestWordSpecDotty", file("modules/dotty/scalatest-wordspec"))
+  lazy val scalatestWordSpecDotty = project.in(file("modules/dotty/scalatest-wordspec"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -505,7 +515,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestDiagramsDotty = Project("scalatestDiagramsDotty", file("modules/dotty/scalatest-diagrams"))
+  lazy val scalatestDiagramsDotty = project.in(file("modules/dotty/scalatest-diagrams"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -535,7 +545,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestMatchersCoreDotty = Project("scalatestMatchersCoreDotty", file("modules/dotty/scalatest-matchers-core"))
+  lazy val scalatestMatchersCoreDotty = project.in(file("modules/dotty/scalatest-matchers-core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -567,7 +577,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreDotty)
 
-  lazy val scalatestShouldMatchersDotty = Project("scalatestShouldMatchersDotty", file("modules/dotty/scalatest-shouldmatchers"))
+  lazy val scalatestShouldMatchersDotty = project.in(file("modules/dotty/scalatest-shouldmatchers"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -597,7 +607,7 @@ trait DottyBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestMatchersCoreDotty)
 
-  lazy val scalatestMustMatchersDotty = Project("scalatestMustMatchersDotty", file("modules/dotty/scalatest-mustmatchers"))
+  lazy val scalatestMustMatchersDotty = project.in(file("modules/dotty/scalatest-mustmatchers"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -651,9 +661,29 @@ trait DottyBuild { this: BuildCommons =>
       scalatestMustMatchersDotty
     )
 
-  lazy val commonTestDotty = Project("commonTestDotty", file("common-test.dotty"))
+  private lazy val noPublishSettings = Seq(
+    publishArtifact := false,
+    publish := {},
+    publishLocal := {},
+  )  
+
+  def sharedTestSettingsDotty: Seq[Setting[_]] = 
+    Seq(
+      organization := "org.scalatest",
+      libraryDependencies ++= scalatestLibraryDependencies,
+      //libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
+      testOptions in Test := scalatestTestOptions,
+      logBuffered in Test := false,
+      //fork in Test := true,
+      //parallelExecution in Test := true,
+      //testForkedParallel in Test := true,
+      baseDirectory in Test := file("./"),
+    ) ++ noPublishSettings 
+
+  lazy val commonTestDotty = project.in(file("common-test.dotty"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDotty: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
@@ -664,14 +694,12 @@ trait DottyBuild { this: BuildCommons =>
           GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
         }.taskValue
       },
-      publishArtifact := false,
-      publish := {},
-      publishLocal := {}
     ).dependsOn(scalacticDotty, LocalProject("scalatestDotty"))
 
   lazy val scalacticTestDotty = Project("scalacticTestDotty", file("scalactic-test.dotty"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDotty: _*)
     .settings(
       projectTitle := "Scalactic Test",
       organization := "org.scalactic",
@@ -680,34 +708,24 @@ trait DottyBuild { this: BuildCommons =>
           "-oDIF",
           "-W", "120", "60")),
       logBuffered in Test := false,
-      publishArtifact := false,
-      publish := {},
-      publishLocal := {},
       sourceGenerators in Test += Def.task {
         GenScalacticDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value) /*++
         GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)*/
       }.taskValue
     ).dependsOn(scalacticDotty, scalatestDotty % "test", commonTestDotty % "test")
+ 
 
-  lazy val scalatestTestDotty = Project("scalatestTestDotty", file("scalatest-test.dotty"))
+  lazy val scalatestTestDotty = project.in(file("scalatest-test.dotty"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDotty: _*)
     .settings(
       projectTitle := "ScalaTest Test",
-      organization := "org.scalatest",
-      libraryDependencies ++= scalatestLibraryDependencies,
-      //libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
-      testOptions in Test := scalatestTestOptions,
-      logBuffered in Test := false,
-      //fork in Test := true,
-      //parallelExecution in Test := true,
-      //testForkedParallel in Test := true,
       sourceGenerators in Test += {
         Def.task {
           GenScalaTestDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
         }.taskValue
       },
-      baseDirectory in Test := file("./"),
       publishArtifact := false,
       publish := {},
       publishLocal := {}

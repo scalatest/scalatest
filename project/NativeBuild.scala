@@ -27,8 +27,13 @@ trait NativeBuild { this: BuildCommons =>
     }
   }
 
-  lazy val scalacticMacroNative = Project("scalacticMacroNative", file("scalactic-macro.native"))
-    .settings(sharedSettings: _*)
+  private lazy val sharedNativeSettings = Seq(
+    // scala-native only available for scala 2.11
+    crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2.11.")),
+  )
+
+  lazy val scalacticMacroNative = project.in(file("scalactic-macro.native"))
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(
       projectTitle := "Scalactic Macro.native",
       organization := "org.scalactic",
@@ -49,9 +54,9 @@ trait NativeBuild { this: BuildCommons =>
       scalacOptions in (Compile, doc) := List.empty
     ).enablePlugins(ScalaNativePlugin)
 
-  lazy val scalacticNative = Project("scalacticNative", file("scalactic.native"))
+  lazy val scalacticNative = project.in(file("scalactic.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalacticDocSettings: _*)
     .settings(
       projectTitle := "Scalactic.native",
@@ -92,9 +97,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestNative = Project("scalatestNative", file("scalatest.native"))
+  lazy val scalatestNative = project.in(file("scalatest.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest",
@@ -186,9 +191,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalacticNative).enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestAppNative = Project("scalatestAppNative", file("scalatest-app.native"))
+  lazy val scalatestAppNative = project.in(file("scalatest-app.native"))
       .enablePlugins(SbtOsgi)
-      .settings(sharedSettings: _*)
+      .settings(sharedSettings ++ sharedNativeSettings)
       .settings(
         projectTitle := "ScalaTest App",
         name := "scalatest-app",
@@ -264,9 +269,9 @@ trait NativeBuild { this: BuildCommons =>
         )
       ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalacticNative % "compile-internal", scalatestNative % "compile-internal").enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestCoreNative = Project("scalatestCoreNative", file("modules/native/scalatest-core.native"))
+  lazy val scalatestCoreNative = project.in(file("modules/native/scalatest-core.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest Core Native",
@@ -336,9 +341,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalacticNative).enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestFeatureSpecNative = Project("scalatestFeatureSpecNative", file("modules/native/scalatest-featurespec.native"))
+  lazy val scalatestFeatureSpecNative = project.in(file("modules/native/scalatest-featurespec.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest FeatureSpec Native",
@@ -365,9 +370,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestFlatSpecNative = Project("scalatestFlatSpecNative", file("modules/native/scalatest-flatspec.native"))
+  lazy val scalatestFlatSpecNative = project.in(file("modules/native/scalatest-flatspec.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest FlatSpec Native",
@@ -394,9 +399,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestFreeSpecNative = Project("scalatestFreeSpecNative", file("modules/native/scalatest-freespec.native"))
+  lazy val scalatestFreeSpecNative = project.in(file("modules/native/scalatest-freespec.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest FreeSpec Native",
@@ -423,9 +428,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestFunSuiteNative = Project("scalatestFunSuiteNative", file("modules/native/scalatest-funsuite.native"))
+  lazy val scalatestFunSuiteNative = project.in(file("modules/native/scalatest-funsuite.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest FunSuite Native",
@@ -452,9 +457,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestFunSpecNative = Project("scalatestFunSpecNative", file("modules/native/scalatest-funspec.native"))
+  lazy val scalatestFunSpecNative = project.in(file("modules/native/scalatest-funspec.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest FunSpec Native",
@@ -481,9 +486,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestPropSpecNative = Project("scalatestPropSpecNative", file("modules/native/scalatest-propspec.native"))
+  lazy val scalatestPropSpecNative = project.in(file("modules/native/scalatest-propspec.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest PropSpec Native",
@@ -510,9 +515,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestWordSpecNative = Project("scalatestWordSpecNative", file("modules/native/scalatest-wordspec.native"))
+  lazy val scalatestWordSpecNative = project.in(file("modules/native/scalatest-wordspec.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest WordSpec Native",
@@ -539,9 +544,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalatestCoreNative, scalacticMacroNative % "compile-internal, test-internal").enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestDiagramsNative = Project("scalatestDiagramsNative", file("modules/native/scalatest-diagrams.native"))
+  lazy val scalatestDiagramsNative = project.in(file("modules/native/scalatest-diagrams.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest Diagrams Native",
@@ -568,9 +573,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalatestCoreNative).enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestMatchersCoreNative = Project("scalatestMatchersCoreNative", file("modules/native/scalatest-matchers-core.native"))
+  lazy val scalatestMatchersCoreNative = project.in(file("modules/native/scalatest-matchers-core.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest Matchers Core Native",
@@ -599,9 +604,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalatestCoreNative).enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestShouldMatchersNative = Project("scalatestShouldMatchersNative", file("modules/native/scalatest-shouldmatchers.native"))
+  lazy val scalatestShouldMatchersNative = project.in(file("modules/native/scalatest-shouldmatchers.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest Should Matchers Native",
@@ -628,9 +633,9 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalatestMatchersCoreNative).enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestMustMatchersNative = Project("scalatestMustMatchersNative", file("modules/native/scalatest-mustmatchers.native"))
+  lazy val scalatestMustMatchersNative = project.in(file("modules/native/scalatest-mustmatchers.native"))
     .enablePlugins(SbtOsgi)
-    .settings(sharedSettings: _*)
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(scalatestDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest Must Matchers Native",
@@ -686,8 +691,8 @@ trait NativeBuild { this: BuildCommons =>
       "-m", "org.scalatest.diagrams",
       "-oDIF"))
 
-  lazy val commonTestNative = Project("commonTestNative", file("common-test.native"))
-      .settings(sharedSettings: _*)
+  lazy val commonTestNative = project.in(file("common-test.native"))
+      .settings(sharedSettings ++ sharedNativeSettings)
       .settings(
         projectTitle := "Common test classes used by scalactic.native and scalatest.native",
         sourceGenerators in Compile += {
@@ -703,8 +708,8 @@ trait NativeBuild { this: BuildCommons =>
         scalacOptions in (Compile, doc) := List.empty
       ).dependsOn(scalacticMacroNative, LocalProject("scalatestNative")).enablePlugins(ScalaNativePlugin)      
 
-  lazy val scalacticTestNative = Project("scalacticTestNative", file("scalactic-test.native"))
-    .settings(sharedSettings: _*)
+  lazy val scalacticTestNative = project.in(file("scalactic-test.native"))
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(
       projectTitle := "Scalactic Test.native",
       organization := "org.scalactic",
@@ -725,10 +730,8 @@ trait NativeBuild { this: BuildCommons =>
       publishLocal := {}
     ).dependsOn(scalacticNative, scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)  
 
-  lazy val scalatestTestNative = Project("scalatestTestNative", file("scalatest-test.native"))
-    .settings(sharedSettings: _*)
-    .settings(
-      projectTitle := "ScalaTest Test",
+  def sharedTestSettingsNative: Seq[Setting[_]] = 
+    Seq(
       organization := "org.scalatest",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
@@ -752,7 +755,14 @@ trait NativeBuild { this: BuildCommons =>
       testOptions in Test := scalatestTestNativeOptions,
       publishArtifact := false,
       publish := {},
-      publishLocal := {},
+      publishLocal := {}
+    )    
+
+  lazy val scalatestTestNative = Project("scalatestTestNative", file("scalatest-test.native"))
+    .settings(sharedSettings ++ sharedNativeSettings)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "ScalaTest Test",
       sourceGenerators in Test += {
         Def.task {
           GenScalaTestNative.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
@@ -768,8 +778,8 @@ trait NativeBuild { this: BuildCommons =>
         }*/
     ).dependsOn(scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)
 
-  lazy val scalatestModulesNative = (project in file("modules/native/modules-aggregation"))
-    .settings(sharedSettings: _*)
+  lazy val scalatestModulesNative = project.in(file("modules/native/modules-aggregation"))
+    .settings(sharedSettings ++ sharedNativeSettings)
     .settings(
       publishArtifact := false,
       publish := {},
