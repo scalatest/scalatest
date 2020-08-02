@@ -23,7 +23,10 @@ object ScalatestBuild extends Build {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  val buildScalaVersion = "2.12.8"
+  lazy val scalaVersionsSettings: Seq[Setting[_]] = Seq(
+    crossScalaVersions := Seq("2.13.3", "2.12.12", "2.11.12", "2.10.7"),
+    scalaVersion := crossScalaVersions.value.head
+  )
 
   val releaseVersion = "3.0.8"
 
@@ -100,12 +103,10 @@ object ScalatestBuild extends Build {
     }
   }
 
-  def sharedSettings: Seq[Setting[_]] = Seq(
-    javaHome := getJavaHome(scalaBinaryVersion.value),
-    scalaVersion := buildScalaVersion,
-    crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.12.0"),
+  def sharedSettings: Seq[Setting[_]] = scalaVersionsSettings ++ Seq(
+    javaHome := getJavaHome(scalaBinaryVersion.value), 
     version := releaseVersion,
-    scalacOptions ++= Seq("-feature", "-target:jvm-1.6"),
+    scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value.startsWith("2.13")) Seq.empty else Seq("-target:jvm-1.6")),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= scalaLibraries(scalaVersion.value),
     publishTo <<= version { v: String =>
@@ -970,9 +971,8 @@ object ScalatestBuild extends Build {
       "org.pegdown" % "pegdown" % pegdownVersion % "optional"
     )
 
-  def gentestsSharedSettings: Seq[Setting[_]] = Seq(
-    javaHome := getJavaHome(scalaBinaryVersion.value),
-    scalaVersion := buildScalaVersion,
+  def gentestsSharedSettings: Seq[Setting[_]] = scalaVersionsSettings ++ Seq(
+    javaHome := getJavaHome(scalaBinaryVersion.value), 
     scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10" || (scalaVersion.value startsWith "2.13")) Seq.empty else Seq("-Ypartial-unification")),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
@@ -1262,13 +1262,13 @@ object ScalatestBuild extends Build {
 
   lazy val examples = Project("examples", file("examples"), delegates = scalatest :: Nil)
     .settings(
-      scalaVersion := buildScalaVersion,
+      scalaVersionsSettings, 
       libraryDependencies += scalacheckDependency("test")
     ).dependsOn(scalacticMacro, scalactic, scalatest)
 
   lazy val examplesJS = Project("examplesJS", file("examples.js"), delegates = scalatest :: Nil)
     .settings(
-      scalaVersion := buildScalaVersion,
+      scalaVersionsSettings, 
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       sourceGenerators in Test += {
         Def.task {

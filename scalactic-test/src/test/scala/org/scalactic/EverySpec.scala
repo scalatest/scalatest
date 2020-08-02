@@ -133,9 +133,12 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3)(1) shouldEqual 2 
     One("hi")(0) shouldEqual "hi"
     Many(7, 8, 9)(2) shouldEqual 9
+    val vectorOutOfBoundsException = intercept[IndexOutOfBoundsException] {
+      Vector(1, 2, 3)(3)
+    }
     the [IndexOutOfBoundsException] thrownBy {
       Every(1, 2, 3)(3)
-    } should have message "3"
+    } should have message vectorOutOfBoundsException.getMessage
   }
   it should "have an length method" in {
     One(1).length shouldBe 1
