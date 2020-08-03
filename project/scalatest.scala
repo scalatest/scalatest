@@ -28,9 +28,9 @@ object ScalatestBuild extends Build {
     scalaVersion := crossScalaVersions.value.head
   )
 
-  val releaseVersion = "3.0.8"
+  val releaseVersion = "3.0.9"
 
-  val previousReleaseVersion = "3.0.5"
+  val previousReleaseVersion = "3.0.8"
 
   val scalacheckVersion = "1.14.3"
   val easyMockVersion = "3.2"
