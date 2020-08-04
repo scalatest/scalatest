@@ -14,6 +14,6 @@ addSbtPlugin("org.portable-scala" % "sbt-scala-native-crossproject" % "0.6.1")
 
 addSbtPlugin("org.scala-native" % "sbt-scala-native" % "0.4.0-M2")
 
-addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.2.0")
+addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.7.0")
 
 addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.4.1")
