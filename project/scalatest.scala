@@ -32,7 +32,7 @@ object ScalatestBuild extends Build {
 
   val previousReleaseVersion = "3.0.8"
 
-  val scalacheckVersion = "1.14.3"
+  val scalacheckVersion = Option(System.getenv("SCALACHECK_VERSION")).getOrElse("1.14.3")
   val easyMockVersion = "3.2"
   val jmockVersion = "2.8.3"
   val mockitoVersion = "1.10.19"

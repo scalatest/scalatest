@@ -326,6 +326,11 @@ if [[ $MODE = 'examplesJS' ]] ; then
   #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
   echo "Doing 'sbt examplesJS'"
 
+  if [[ "$TRAVIS_JDK_VERSION" == "openjdk6" ]]; then
+    export SCALAJS_VERSION="0.6.28"
+    export SCALACHECK_VERSION="1.14.0"
+  fi
+
   while true; do echo "..."; sleep 60; done &
   sbt ++$TRAVIS_SCALA_VERSION examplesJS/compile examplesJS/test:compile
   rc=$?
