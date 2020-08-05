@@ -615,7 +615,17 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
+      mimaBinaryIssueFilters ++= {
+        Seq(
+          exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.wasNeverReady"), // Generated function from error message bundle
+          exclude[DirectMissingMethodProblem]("org.scalatest.Resources.wasNeverReady"),  // Generated function from error message bundle
+          exclude[DirectMissingMethodProblem]("org.scalatest.Resources.wasNeverReady"),  // Generated function from error message bundle
+          exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.wasNeverReady"),  // Generated function from error message bundle
+          exclude[DirectAbstractMethodProblem]("org.scalatest.concurrent.Futures#FutureConcept.futureValueImpl"), // Private function.
+          exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.Futures#FutureConcept.futureValueImpl") // Private function, for scala 2.11 and 2.10.
+        )
+      }
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest", 

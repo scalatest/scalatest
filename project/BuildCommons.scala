@@ -10,9 +10,9 @@ trait BuildCommons {
     scalaVersion := crossScalaVersions.value.head,
   )
 
-  val releaseVersion = "3.2.0"
+  val releaseVersion = "3.2.1"
 
-  val previousReleaseVersion = "3.1.2"
+  val previousReleaseVersion = "3.2.0"
 
   def rootProject: Project
 
