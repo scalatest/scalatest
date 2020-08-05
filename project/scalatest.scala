@@ -36,7 +36,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   val plusTestNGVersion = "1.0.0-SNAP8"
   val flexmarkVersion = "0.35.10"
 
-  val githubTag = "release-3.1.2" // for scaladoc source urls
+  val githubTag = "release-3.1.3" // for scaladoc source urls
 
   val scalatestDocSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -444,8 +444,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"),
      mimaBinaryIssueFilters ++= {
        Seq(
-         exclude[MissingClassProblem]("org.scalatest.tools.SbtCommandParser$"),
-         exclude[MissingClassProblem]("org.scalatest.tools.SbtCommandParser")
+         ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.wasNeverReady"), // Generated function from error message bundle
+         ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.Resources.wasNeverReady"),  // Generated function from error message bundle
+         ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.Resources.wasNeverReady"),  // Generated function from error message bundle
+         ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.wasNeverReady"),  // Generated function from error message bundle
+         ProblemFilters.exclude[DirectAbstractMethodProblem]("org.scalatest.concurrent.Futures#FutureConcept.futureValueImpl"), // Private function.
+         ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.Futures#FutureConcept.futureValueImpl") // Private function, for scala 2.11 and 2.10.
        )
      }
    ).settings(osgiSettings: _*).settings(

@@ -149,7 +149,15 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       scalatestJSDocTaskSetting,
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
+      mimaBinaryIssueFilters ++= {
+       Seq(
+         ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages#wasNeverReady.apply"), // Generated function from error message bundle
+         ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.Resources.wasNeverReady"),  // Generated function from error message bundle
+         ProblemFilters.exclude[DirectAbstractMethodProblem]("org.scalatest.concurrent.Futures#FutureConcept.futureValueImpl"), // Private function.
+         ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.Futures#FutureConcept.futureValueImpl"), // Private funciton, for Scala 2.11 and 2.10.
+       )
+     }
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",

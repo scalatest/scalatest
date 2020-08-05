@@ -31,7 +31,6 @@ class AsyncPropSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncPropSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -96,7 +95,6 @@ class AsyncPropSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncPropSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -153,7 +151,6 @@ class AsyncPropSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -204,7 +201,6 @@ class AsyncPropSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -389,7 +385,6 @@ class AsyncPropSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -439,7 +434,6 @@ class AsyncPropSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =

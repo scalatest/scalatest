@@ -107,7 +107,6 @@ package object scalatest {
   @deprecated("The org.scalatest.FunSuite trait has been moved and renamed. Please use org.scalatest.funsuite.AnyFunSuite instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type FunSuite = funsuite.AnyFunSuite
 
-  // SKIP-SCALATESTNATIVE-START
   /**
    * <strong>The name <code>org.scalatest.AsyncFunSuiteLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.funsuite.AsyncFunSuiteLike</code>, instead.</strong>
@@ -129,8 +128,7 @@ package object scalatest {
    */
   @deprecated("The org.scalatest.AsyncFunSuite trait has been moved and renamed. Please use org.scalatest.funsuite.AsyncFunSuite instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type AsyncFunSuite = funsuite.AsyncFunSuite
-  // SKIP-SCALATESTNATIVE-END
-
+  
   /**
    * <strong>The name <code>org.scalatest.FeatureSpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.featurespec.AnyFeatureSpecLike</code>, instead.</strong>
@@ -153,7 +151,6 @@ package object scalatest {
   @deprecated("The org.scalatest.FeatureSpec trait has been moved and renamed. Please use org.scalatest.featurespec.AnyFeatureSpec instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type FeatureSpec = featurespec.AnyFeatureSpec
 
-  // SKIP-SCALATESTNATIVE-START
   /**
    * <strong>The name <code>org.scalatest.AsyncFeatureSpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.featurespec.AsyncFeatureSpecLike</code>, instead.</strong>
@@ -175,8 +172,7 @@ package object scalatest {
    */
   @deprecated("The org.scalatest.AsyncFeatureSpec trait has been moved and renamed. Please use org.scalatest.featurespec.AsyncFeatureSpec instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type AsyncFeatureSpec = featurespec.AsyncFeatureSpec
-  // SKIP-SCALATESTNATIVE-END
-
+  
   /**
    * <strong>The name <code>org.scalatest.FunSpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.funspec.AnyFunSpecLike</code>, instead.</strong>
@@ -199,7 +195,6 @@ package object scalatest {
   @deprecated("The org.scalatest.FunSpec trait has been moved and renamed. Please use org.scalatest.funspec.AnyFunSpec instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type FunSpec = funspec.AnyFunSpec
 
-  // SKIP-SCALATESTNATIVE-START
   /**
    * <strong>The name <code>org.scalatest.AsyncFunSpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.funspec.AsyncFunSpecLike</code>, instead.</strong>
@@ -221,8 +216,7 @@ package object scalatest {
    */
   @deprecated("The org.scalatest.AsyncFunSpec trait has been moved and renamed. Please use org.scalatest.funspec.AsyncFunSpec instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type AsyncFunSpec = funspec.AsyncFunSpec
-  // SKIP-SCALATESTNATIVE-END
-
+  
   /**
    * <strong>The name <code>org.scalatest.FreeSpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.freespec.AnyFreeSpecLike</code>, instead.</strong>
@@ -245,7 +239,6 @@ package object scalatest {
   @deprecated("The org.scalatest.FreeSpec trait has been moved and renamed. Please use org.scalatest.freespec.AnyFreeSpec instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type FreeSpec = freespec.AnyFreeSpec
 
-  // SKIP-SCALATESTNATIVE-START
   /**
    * <strong>The name <code>org.scalatest.AsyncFreeSpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.freespec.AsyncFreeSpecLike</code>, instead.</strong>
@@ -267,8 +260,7 @@ package object scalatest {
    */
   @deprecated("The org.scalatest.AsyncFreeSpec trait has been moved and renamed. Please use org.scalatest.freespec.AsyncFreeSpec instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type AsyncFreeSpec = freespec.AsyncFreeSpec
-  // SKIP-SCALATESTNATIVE-END
-
+  
   /**
    * <strong>The name <code>org.scalatest.FlatSpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.flatspec.AnyFlatSpecLike</code>, instead.</strong>
@@ -299,7 +291,6 @@ package object scalatest {
    *
    * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
-  // SKIP-SCALATESTNATIVE-START
   @deprecated("The org.scalatest.AsyncFlatSpecLike trait has been moved and renamed. Please use org.scalatest.flatspec.AsyncFlatSpecLike instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type AsyncFlatSpecLike = flatspec.AsyncFlatSpecLike
 
@@ -313,8 +304,7 @@ package object scalatest {
    */
   @deprecated("The org.scalatest.AsyncFlatSpec trait has been moved and renamed. Please use org.scalatest.flatspec.AsyncFlatSpec instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type AsyncFlatSpec = flatspec.AsyncFlatSpec
-  // SKIP-SCALATESTNATIVE-END
-
+  
   /**
    * <strong>The name <code>org.scalatest.PropSpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.propspec.AnyPropSpecLike</code>, instead.</strong>
@@ -359,7 +349,6 @@ package object scalatest {
   @deprecated("The org.scalatest.WordSpec trait has been moved and renamed. Please use org.scalatest.wordspec.AnyWordSpec instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type WordSpec = wordspec.AnyWordSpec
 
-  // SKIP-SCALATESTNATIVE-START
   /**
    * <strong>The name <code>org.scalatest.AsyncWordSpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.wordspec.AsyncWordSpecLike</code>, instead.</strong>
@@ -381,8 +370,7 @@ package object scalatest {
    */
   @deprecated("The org.scalatest.AsyncWordSpec trait has been moved and renamed. Please use org.scalatest.wordspec.AsyncWordSpec instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   type AsyncWordSpec = wordspec.AsyncWordSpec
-  // SKIP-SCALATESTNATIVE-END
-
+  
   /**
    * <strong>The name <code>org.scalatest.Matchers</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.matchers.should.Matchers</code>, instead.</strong>
