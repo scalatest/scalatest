@@ -19,6 +19,7 @@ import org.scalactic.{Resources => _, FailureMessages => _, _}
 import Requirements._
 
 import scala.reflect.ClassTag
+import scala.util.control.NonFatal
 import Assertions.areEqualComparingArraysStructurally
 import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.StackDepthException.toExceptionFunction
@@ -1162,7 +1163,7 @@ trait Assertions extends TripleEquals  {
         false
       }
       catch {
-        case _: Throwable => true
+        case NonFatal(_) => true
       }
       if (isPending)
         throw new TestPendingException
