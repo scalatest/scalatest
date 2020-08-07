@@ -25,6 +25,7 @@ sbt ++2.12.12 "project scalatestJS" clean publishSigned
 sbt ++2.13.3 "project scalatestJS" clean publishSigned
 sbt ++2.11.12 "project scalatestNative" clean publishSigned
 sbt "project scalatestDotty" clean publishSigned
+sbt "project scalatest" sonatypeBundleUpload
 
 sbt clean
 sbt "project scalatestApp" clean +publishSigned
