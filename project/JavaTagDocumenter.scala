@@ -149,8 +149,8 @@ object JavaTagDocumenter {
       val filename = srcFile.getName
       val className = filename.replaceFirst("""\.java$""", "")
       val sep = File.separator
-      val relativeDir =
-        srcFile.getParent.replaceFirst(".*"+ sep +"main"+ sep +"java"+ sep, "")
+      val suffix =  Pattern.quote(sep + "main" + sep + "java" + sep)
+      val relativeDir = srcFile.getParent.replaceFirst(".*" + suffix, "")
       val destFile =
         file(docsrcDir + sep + relativeDir + sep + className +".scala")
 
