@@ -54,19 +54,40 @@ class StepwiseNestedSuiteExecutionSpec extends FunSpec {
         class SeqSubSuite extends SuperSuite with StepwiseNestedSuiteExecution
         val par = new ParSubSuite
         val stp = new SeqSubSuite
-        val parStatus = par.run(None, Args(SilentReporter, distributor = Some(new TestConcurrentDistributor(2))))
+
         // SKIP-SCALATESTJS-START
-        parStatus.waitUntilCompleted()
+        val execService = java.util.concurrent.Executors.newFixedThreadPool(2)
+        val execService2 = java.util.concurrent.Executors.newFixedThreadPool(2)
+        val distributor = new TestConcurrentDistributor(execService)
         // SKIP-SCALATESTJS-END
-        assert(par.superRunNestedSuitesWasInvoked )
-        assert(par.distributorWasDefined)
-        assert(par.distributorWasPropagated) // This flickers. Is this a problem with volatile?
-        val stpStatus = stp.run(None, Args(SilentReporter, distributor = Some(new TestConcurrentDistributor(2))))
-        assert(stpStatus.isCompleted) // When a stepwise execution returns, the whole thing should be completed already, even though some of it may have run in parallel
-        assert(!stp.superRunNestedSuitesWasInvoked )
-        assert(!stp.distributorWasDefined)
-        assert(stp.distributorWasPropagated)
-        assert(stp.lastNestedSuiteWasRunAfterFirst)
+        //SCALATESTJS-ONLY val distributor = new TestConcurrentDistributor()
+        try {
+          val parStatus = par.run(None, Args(SilentReporter, distributor = Some(distributor)))
+          // SKIP-SCALATESTJS-START
+          parStatus.waitUntilCompleted()
+          // SKIP-SCALATESTJS-END
+          assert(par.superRunNestedSuitesWasInvoked )
+          assert(par.distributorWasDefined)
+          assert(par.distributorWasPropagated) // This flickers. Is this a problem with volatile?
+
+          // SKIP-SCALATESTJS-START
+          val distributor2 = new TestConcurrentDistributor(execService2)
+          // SKIP-SCALATESTJS-END
+          //SCALATESTJS-ONLY val distributor2 = new TestConcurrentDistributor()
+
+          val stpStatus = stp.run(None, Args(SilentReporter, distributor = Some(distributor2)))
+          assert(stpStatus.isCompleted) // When a stepwise execution returns, the whole thing should be completed already, even though some of it may have run in parallel
+          assert(!stp.superRunNestedSuitesWasInvoked )
+          assert(!stp.distributorWasDefined)
+          assert(stp.distributorWasPropagated)
+          assert(stp.lastNestedSuiteWasRunAfterFirst)
+        }
+        finally {
+          // SKIP-SCALATESTJS-START
+          execService.shutdown()
+          execService2.shutdown()
+          // SKIP-SCALATESTJS-END
+        }
       }
     }
   }
