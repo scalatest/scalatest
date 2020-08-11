@@ -107,49 +107,74 @@ class BeforeAndAfterAllSpec extends FunSpec {
 
   describe("BeforeAndAfterAll") {
     it ("should call beforeAll before any test starts, and call afterAll after all tests completed") {
-      val suite = new ExampleSuite()
-      val rep = new EventRecordingReporter()
-      val dist = new TestConcurrentDistributor(2)
-      suite.run(None, Args(reporter = rep, distributor = Some(dist)))
-      dist.waitUntilDone()
+      // SKIP-SCALATESTJS-START
+      val execService = java.util.concurrent.Executors.newFixedThreadPool(2)
+      val dist = new TestConcurrentDistributor(execService)
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val dist = new TestConcurrentDistributor()
+      try {
+        val suite = new ExampleSuite()
+        val rep = new EventRecordingReporter()
+        suite.run(None, Args(reporter = rep, distributor = Some(dist)))
+        dist.waitUntilDone()
       
-      // should call beforeAll before any test starts
-      val beforeAllTime = suite.beforeAllTime
-      val testStartingEvents = rep.testStartingEventsReceived
-      testStartingEvents should have size 3
-      testStartingEvents.foreach { testStarting =>
-        beforeAllTime should be <= testStarting.timeStamp
+        // should call beforeAll before any test starts
+        val beforeAllTime = suite.beforeAllTime
+        val testStartingEvents = rep.testStartingEventsReceived
+        testStartingEvents should have size 3
+        testStartingEvents.foreach { testStarting =>
+          beforeAllTime should be <= testStarting.timeStamp
+        }
+      
+        // should call afterAll after all tests completed
+        val afterAllTime = suite.afterAllTime
+        val testSucceededEvents = rep.testSucceededEventsReceived
+        testSucceededEvents should have size 3
+        testSucceededEvents.foreach { testSucceeded =>
+          afterAllTime should be >= testSucceeded.timeStamp
+        }
+      }
+      finally {
+        // SKIP-SCALATESTJS-START
+        execService.shutdown()
+        // SKIP-SCALATESTJS-END
       }
       
-      // should call afterAll after all tests completed
-      val afterAllTime = suite.afterAllTime
-      val testSucceededEvents = rep.testSucceededEventsReceived
-      testSucceededEvents should have size 3
-      testSucceededEvents.foreach { testSucceeded =>
-        afterAllTime should be >= testSucceeded.timeStamp
-      }
     }
     it ("should call beforeAll before any test starts in nested suite, and call afterAll after all tests in nested suites completed") {
       val suite = new ExampleSuites
       val rep = new EventRecordingReporter
-      val dist = new TestConcurrentDistributor(2)
-      suite.run(None, Args(reporter = rep, distributor = Some(dist)))
-      dist.waitUntilDone()
+
+      // SKIP-SCALATESTJS-START
+      val execService = java.util.concurrent.Executors.newFixedThreadPool(2)
+      val dist = new TestConcurrentDistributor(execService)
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val dist = new TestConcurrentDistributor()
+
+      try {
+        suite.run(None, Args(reporter = rep, distributor = Some(dist)))
+        dist.waitUntilDone()
       
-      // should call beforeAll before any test in nested suite starts
-      val beforeAllTime = suite.beforeAllTime
-      val testStartingEvents = rep.testStartingEventsReceived
-      testStartingEvents should have size 3
-      testStartingEvents.foreach { testStarting =>
-        beforeAllTime should be <= testStarting.timeStamp
+        // should call beforeAll before any test in nested suite starts
+        val beforeAllTime = suite.beforeAllTime
+        val testStartingEvents = rep.testStartingEventsReceived
+        testStartingEvents should have size 3
+        testStartingEvents.foreach { testStarting =>
+          beforeAllTime should be <= testStarting.timeStamp
+        }
+      
+        // should call afterAll after all tests completed
+        val afterAllTime = suite.afterAllTime
+        val testSucceededEvents = rep.testSucceededEventsReceived
+        testSucceededEvents should have size 3
+        testSucceededEvents.foreach { testSucceeded =>
+          afterAllTime should be >= testSucceeded.timeStamp
+        }
       }
-      
-      // should call afterAll after all tests completed
-      val afterAllTime = suite.afterAllTime
-      val testSucceededEvents = rep.testSucceededEventsReceived
-      testSucceededEvents should have size 3
-      testSucceededEvents.foreach { testSucceeded =>
-        afterAllTime should be >= testSucceeded.timeStamp
+      finally {
+        // SKIP-SCALATESTJS-START
+        execService.shutdown()
+        // SKIP-SCALATESTJS-END
       }
     }
     it ("should be called once for beforeAll and afterAll when used with OneInstancePerTest") {

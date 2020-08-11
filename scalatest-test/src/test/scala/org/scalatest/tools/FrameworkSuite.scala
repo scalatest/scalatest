@@ -1052,8 +1052,13 @@ class FrameworkSuite extends FunSuite {
                                      new TaskDef("org.scalatest.SuiteSuite", subclassFingerprint, false, Array(new SuiteSelector))))
       assert(tasks.size === 1)
       val runner2 = framework.runner(Array("-m", "org.scalatest.concurrent"), Array.empty, testClassLoader)
-      val tasks2 = runner2.tasks(Array(new TaskDef("org.scalatest.enablers.NoParamSpec", subclassFingerprint, false, Array(new SuiteSelector))))
-      assert(tasks2.size === 0)
+      try {
+        val tasks2 = runner2.tasks(Array(new TaskDef("org.scalatest.enablers.NoParamSpec", subclassFingerprint, false, Array(new SuiteSelector))))
+        assert(tasks2.size === 0)
+      }
+      finally {
+        runner2.done()
+      }
     }
     finally {
       runner.done()
@@ -1097,7 +1102,8 @@ class FrameworkSuite extends FunSuite {
   }
 
   test("Framework.runner accept without problem when -P4 is passed in") {
-    framework.runner(Array("-P4"), Array.empty, testClassLoader)
+    val runner = framework.runner(Array("-P4"), Array.empty, testClassLoader)
+    runner.done()
   }
 
   test("Framework.runner should throw IllegalArgumentException when -P0 is passed in") {
@@ -1143,7 +1149,8 @@ class FrameworkSuite extends FunSuite {
   }
 
   test("Framework.runner should be able to pass in test sorting timeout with -T") {
-    framework.runner(Array("-T", "100"), Array.empty, testClassLoader)
+    val runner = framework.runner(Array("-T", "100"), Array.empty, testClassLoader)
+    runner.done()
   }
   
   private def makeSureDone(runners: Runner*)(fun: => Unit): Unit = {
