@@ -157,6 +157,7 @@ To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, versi
     $ sbt ++2.12.8 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
     $ sbt ++2.13.3 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned
     $ export SCALAJS_VERSION=1.0.0-M3
+    $ export SCALACHECK_VERSION=1.14.0
     $ sbt ++2.12.6 "project scalatestAppJS" clean publishSigned
     $ export SCALAJS_VERSION=1.0.0-M8
     $ sbt ++2.13.0 "project scalatestAppJS" clean publishSigned
