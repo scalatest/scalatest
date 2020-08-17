@@ -330,6 +330,12 @@ class SuiteSortingReporterSpec extends FunSpec with Matchers with EventHelpers {
     it("should fire blocking suite's events when timeout, and just fire the missing event directly without waiting when received later.") {
       val recordingReporter = new EventRecordingReporter()
       val dispatch = new SuiteSortingReporter(recordingReporter, Span(1, Second), new PrintStream(new ByteArrayOutputStream))
+
+      val suite1Reporter = new EventRecordingReporter()
+      dispatch.registerReporter("suite1", suite1Reporter)
+
+      val suite2Reporter = new EventRecordingReporter()
+      dispatch.registerReporter("suite2", suite2Reporter)
       
       val tracker = new Tracker()
       
@@ -356,6 +362,20 @@ class SuiteSortingReporterSpec extends FunSpec with Matchers with EventHelpers {
       checkSuiteCompleted(recordedEvents(6), "suite2")
       // Now this guy finally arrive
       checkSuiteCompleted(recordedEvents(7), "suite1")
+
+      val suite1RecordedEvents = suite1Reporter.eventsReceived
+      assert(suite1RecordedEvents.size === 4)
+      checkSuiteStarting(suite1RecordedEvents(0), "suite1")
+      checkTestStarting(suite1RecordedEvents(1), "Suite 1 Test")
+      checkTestSucceeded(suite1RecordedEvents(2), "Suite 1 Test")
+      checkSuiteCompleted(suite1RecordedEvents(3), "suite1")
+
+      val suite2RecordedEvents = suite2Reporter.eventsReceived
+      assert(suite2RecordedEvents.size === 4)
+      checkSuiteStarting(suite2RecordedEvents(0), "suite2")
+      checkTestStarting(suite2RecordedEvents(1), "Suite 2 Test")
+      checkTestSucceeded(suite2RecordedEvents(2), "Suite 2 Test")
+      checkSuiteCompleted(suite2RecordedEvents(3), "suite2")
     }
     // SKIP-SCALATESTJS-END
   }
