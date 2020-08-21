@@ -34,7 +34,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   val plusJUnitVersion = "1.0.0-SNAP9"
   val plusTestNGVersion = "1.0.0-SNAP8"
-  val flexmarkVersion = "0.35.10"
+  val flexmarkVersion = "0.36.8"
 
   val githubTag = "release-3.2.2" // for scaladoc source urls
 
