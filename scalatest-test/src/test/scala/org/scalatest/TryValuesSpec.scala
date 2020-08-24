@@ -17,16 +17,14 @@ package org.scalatest
 
 import org.scalatest.TryValues._
 import org.scalatest.OptionValues._
-import matchers.should.Matchers._
+import org.scalatest.Matchers._
 import org.scalatest.SharedHelpers.thisLineNumber
 import scala.util.Try
 import scala.util.Failure
 import scala.util.Success
 import org.scalatest.exceptions.TestFailedException
-import org.scalatest.matchers
-import org.scalatest.funspec.AnyFunSpec
 
-class TryValuesSpec extends AnyFunSpec {
+class TryValuesSpec extends FunSpec {
 
   describe("invoking failure on Try") {
 
