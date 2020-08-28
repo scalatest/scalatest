@@ -361,7 +361,10 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalacticDocSourcesSetting,
       docTaskSetting,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
+      mimaBinaryIssueFilters ++= Seq(
+        ProblemFilters.exclude[ReversedMissingMethodProblem]("org.scalactic.ObjectDiffer.diffImpl")  // New function in private object
+      )
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",

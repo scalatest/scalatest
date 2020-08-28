@@ -81,7 +81,12 @@ trait JsBuild { this: BuildCommons =>
       // include the macro sources in the main source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacroJS, Compile, packageSrc).value,
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
+      mimaBinaryIssueFilters ++= {
+        Seq(
+          exclude[ReversedMissingMethodProblem]("org.scalactic.ObjectDiffer.diffImpl")  // New function in private object
+        )
+      }
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
