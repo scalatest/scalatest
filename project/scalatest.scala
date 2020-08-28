@@ -32,8 +32,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
 
-  val plusJUnitVersion = "1.0.0-SNAP9"
-  val plusTestNGVersion = "1.0.0-SNAP8"
+  val plusJUnitVersion = "3.1.3.0"
+  val plusTestNGVersion = "3.1.3.0"
   val flexmarkVersion = "0.36.8"
 
   val githubTag = "release-3.1.4" // for scaladoc source urls
@@ -264,8 +264,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def scalatestTestLibraryDependencies(theScalaVersion: String) =
     Seq(
-      "org.scalatestplus" %% "scalatestplus-testng" % plusTestNGVersion % "test",
-      "org.scalatestplus" %% "scalatestplus-junit" % plusJUnitVersion % "test"
+      "org.scalatestplus" %% "testng-6-7" % plusTestNGVersion % "test",
+      "org.scalatestplus" %% "junit-4-12" % plusJUnitVersion % "test"
     )
 
   def scalatestTestOptions =
@@ -1217,8 +1217,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   def gentestsLibraryDependencies =
     Seq(
       flexmarkAll,
-      "org.scalatestplus" %% "scalatestplus-testng" % plusTestNGVersion % "test",
-      "org.scalatestplus" %% "scalatestplus-junit" % plusJUnitVersion % "test"
+      "org.scalatestplus" %% "testng-6-7" % plusTestNGVersion % "test",
+      "org.scalatestplus" %% "junit-4-12" % plusJUnitVersion % "test"
     )
 
   def gentestsSharedSettings: Seq[Setting[_]] = scalaVersionsSettings ++ Seq(
