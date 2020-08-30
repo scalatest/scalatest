@@ -172,8 +172,9 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, val testSortin
         for (doneEvent<- head.doneEvent) {
           dispatch(doneEvent)
           dispatchToRegisteredSuiteReporter(head.suiteId, doneEvent)
+          // Only remove the suite reporter only if tests completed, don't remove if it is due to timeout.
+          suiteReporterMap -= (head.suiteId)
         }
-        suiteReporterMap -= (head.suiteId)
         slotListBuf = fireReadySuiteEvents(slotListBuf.tail)
         if (slotListBuf.size > 0) 
           scheduleTimeoutTask()
