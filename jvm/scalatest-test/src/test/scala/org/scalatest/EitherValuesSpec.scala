@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import java.io.ObjectOutputStream
+
 import org.scalatest.EitherValues._
 import org.scalatest.OptionValues._
 import org.scalatest.SharedHelpers.thisLineNumber
@@ -42,6 +44,17 @@ class EitherValuesSpec extends AnyFunSpec {
       caught.message.value should be (Resources.eitherLeftValueNotDefined(e))
     }
     
+    it("should throw a serialized TestFailedException") {
+      val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(_ => ())
+      val e: Either[String, String] = Right("hi there")
+      val caught =
+        the [TestFailedException] thrownBy {
+          e.left.value should startWith ("hi")
+        }
+
+      noException should be thrownBy objectOutputStream.writeObject(caught)
+    }
+
     it("should return the right value inside an either if right.value is defined") {
       val e: Either[String, String] = Right("hi there")
       e.right.value should === ("hi there")
