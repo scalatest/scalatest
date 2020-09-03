@@ -179,7 +179,7 @@ trait Waiters extends PatienceConfiguration {
    * specifies the number of dismissals to wait for before returning normally from an <code>await</code>
    * call on a <code>Waiter</code>.
    */
-  def dismissals(value: Int) = Dismissals(value)
+  def dismissals(value: Int): Waiters.this.Dismissals = Dismissals(value)
 
   /**
    * Class that facilitates performing assertions outside the main test thread, such as assertions in callback methods

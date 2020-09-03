@@ -20,7 +20,7 @@ import org.scalatest._
 
 class ExampleSuite extends FunSuite {
 
-  override def withFixture(test: NoArgTest) = {
+  override def withFixture(test: NoArgTest): Any = {
 
     try super.withFixture(test)
     catch {

@@ -75,7 +75,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   // and asserting using it from a different thread in Async tests.
   class EventRecordingReporter extends Reporter {
     private var eventList: List[Event] = List()
-    def eventsReceived = synchronized { eventList.reverse }
+    def eventsReceived: List[Any] = synchronized { eventList.reverse }
     def testSucceededEventsReceived: List[TestSucceeded] = {
       synchronized {
         eventsReceived filter {
@@ -1941,12 +1941,12 @@ object SharedHelpers extends Assertions with LineNumberHelper {
             case other => builder.append(other)
               (openBracket, multilineBracket)
           }
-        transform(itr, newOpenBracket, builder, newMultilineBracket)
+        transform(itr = itr, openBracket = newOpenBracket, builder = builder, multilineBracket = newMultilineBracket)
       }
     }
     val itr = str.toCharArray.iterator.buffered
     val builder = new StringBuilder
-    transform(itr, 0, builder)
+    transform(itr = itr, openBracket = 0, builder = builder)
     builder.toString
   }
 }

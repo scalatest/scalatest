@@ -16,26 +16,19 @@
 package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
+import scala.util.{Failure, Success, Try}
 
 trait ReturnsNormallyThrowsAssertion {
 
-  def returnsNormally(f: => Unit): Boolean = {
-    try {
-      f
-      true
+  def returnsNormally(f: => Unit): Boolean =
+    Try(f) match {
+      case Success(_) => true
+      case Failure(_) => false
     }
-    catch {
-      case e: Throwable => false
-    }
-  }
 
-  def throwsTestFailedException(f: => Unit): Boolean = {
-    try {
-      f
-      false
+  def throwsTestFailedException(f: => Unit): Boolean =
+    Try(f) match {
+      case Success(_) => true
+      case Failure(_: TestFailedException) => false
     }
-    catch {
-      case e: TestFailedException => true
-    }
-  }
 }
