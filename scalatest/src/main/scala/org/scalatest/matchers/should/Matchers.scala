@@ -2485,8 +2485,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
-     * map should not contain key (10)
-     *                            ^
+     * map should not contain value (10)
+     *                        ^
      * </pre>
      */
     def apply(expectedValue: Any): ResultOfValueWordApplication = new ResultOfValueWordApplication(expectedValue)
