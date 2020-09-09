@@ -19,20 +19,15 @@ import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.OptionValues
 import scala.concurrent.{Future => FutureOfScala}
 import scala.concurrent.Promise
-import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.concurrent.CanAwait
-import scala.concurrent.Awaitable
 import scala.concurrent.ExecutionContext
-import java.util.concurrent.TimeUnit
+import java.io.ObjectOutputStream
 import java.util.concurrent.TimeoutException
 import org.scalatest._
 import time._
 import exceptions.{TestCanceledException, TestFailedException, TestPendingException}
 import util.Try
-import util.Success
-import util.Failure
-import org.scalactic.source
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -182,6 +177,15 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
         caught.message.value should be (Resources.wasNeverReady("150 milliseconds"))
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
         caught.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
+      }
+
+      it("should eventually blow up with a serialized TestFailedException") {
+        val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(_ => ())
+        val caught = the [TestFailedException] thrownBy {
+          neverReadyFuture.futureValue
+        }
+
+        noException should be thrownBy objectOutputStream.writeObject(caught)
       }
 
       it("should provide the correct stack depth") {

@@ -88,10 +88,31 @@ trait AbstractPatienceConfiguration extends ScaledTimeSpans {
    * @author Bill Venners
    * @author Chua Chee Seng
    */
-  final case class PatienceConfig(timeout: Span = scaled(Span(150, Millis)), interval: Span = scaled(Span(15, Millis)))
+  final case class PatienceConfig(timeout: Span = scaled(Span(150, Millis)), interval: Span = scaled(Span(15, Millis))) {
+    /**
+     * <code>PatienceConfig</code> is an inner class. For some reason (like using <code>SocketReporter</code> and having
+     * a <code>ScalaFutures</code> test that fails), instance of this class will be serialized. But as an inner class,
+     * scala will add an extra <code>$outer</code> field that references actual outer class: an instance that you don't
+     * want make serializable.
+     * To avoid errors like <code>java.io.NotSerializableException: org.scalatest.verbs.BehaveWord</code>, this function
+     * delegates serialization to a non inner class.
+     */
+    private def writeReplace(): Any = new AbstractPatienceConfiguration.PatienceConfigProxy(timeout, interval)
+  }
 
   /**
    * Returns a <code>PatienceConfig</code> value providing default configuration values if implemented and made implicit in subtraits.
    */
   def patienceConfig: PatienceConfig
+}
+
+private object AbstractPatienceConfiguration extends AbstractPatienceConfiguration {
+
+  override def patienceConfig: PatienceConfig = PatienceConfig()
+
+  @SerialVersionUID(3466997156436169627L)
+  private final class PatienceConfigProxy(timeout: Span, interval: Span) extends Serializable {
+    private def readResolve(): Any = PatienceConfig(timeout, interval)
+  }
+
 }
