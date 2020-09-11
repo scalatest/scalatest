@@ -297,7 +297,7 @@ import TripleEqualsSupport.TripleEqualsInvocation
  * </pre>
  *
  * <p>
- * At thsi point, however, the error message for the <code>beAsIntsGreaterThan</code>
+ * At this point, however, the error message for the <code>beAsIntsGreaterThan</code>
  * gives no hint that the <code>Int</code>s being compared were parsed from <code>String</code>s:
  * </p>
  *
