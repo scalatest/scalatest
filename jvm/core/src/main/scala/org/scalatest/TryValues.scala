@@ -87,7 +87,6 @@ import org.scalatest.exceptions.TestFailedException
  * </pre>
  *
  */
-@SerialVersionUID(1122096182308845989L)
 trait TryValues extends Serializable {
 
   import scala.language.implicitConversions

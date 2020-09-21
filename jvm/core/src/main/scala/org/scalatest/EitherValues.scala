@@ -80,7 +80,6 @@ import org.scalatest.exceptions.TestFailedException
  * either.right.value should be &gt; 9 // either.right.value throws TestFailedException
  * </pre>
  */
-@SerialVersionUID(1384255766627026242L)
 trait EitherValues extends Serializable {
 
   import scala.language.implicitConversions
