@@ -22,7 +22,9 @@ import scala.concurrent.Promise
 import scala.concurrent.duration.Duration
 import scala.concurrent.CanAwait
 import scala.concurrent.ExecutionContext
+// SKIP-SCALATESTJS-START
 import java.io.ObjectOutputStream
+// SKIP-SCALATESTJS-END
 import java.util.concurrent.TimeoutException
 import org.scalatest._
 import time._
@@ -179,6 +181,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
         caught.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
       }
 
+      // SKIP-SCALATESTJS-START
       it("should eventually blow up with a serialized TestFailedException") {
         val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(_ => ())
         val caught = the [TestFailedException] thrownBy {
@@ -187,6 +190,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
 
         noException should be thrownBy objectOutputStream.writeObject(caught)
       }
+      // SKIP-SCALATESTJS-END
 
       it("should provide the correct stack depth") {
         val caught1 = the [TestFailedException] thrownBy {

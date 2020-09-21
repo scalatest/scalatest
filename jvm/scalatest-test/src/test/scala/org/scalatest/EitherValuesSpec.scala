@@ -44,6 +44,7 @@ class EitherValuesSpec extends AnyFunSpec {
       caught.message.value should be (Resources.eitherLeftValueNotDefined(e))
     }
     
+    // SKIP-SCALATESTJS-START
     it("should throw a serialized TestFailedException") {
       val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(_ => ())
       val e: Either[String, String] = Right("hi there")
@@ -54,6 +55,7 @@ class EitherValuesSpec extends AnyFunSpec {
 
       noException should be thrownBy objectOutputStream.writeObject(caught)
     }
+    // SKIP-SCALATESTJS-END
 
     it("should return the right value inside an either if right.value is defined") {
       val e: Either[String, String] = Right("hi there")
