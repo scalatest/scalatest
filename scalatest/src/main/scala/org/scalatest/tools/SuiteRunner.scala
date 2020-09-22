@@ -89,7 +89,12 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
           
         }
         case e: Throwable => 
-          status.setFailed()
+          // SKIP-SCALATESTJS-START
+          if (Suite.anExceptionThatShouldCauseAnAbort(e) && args.distributor.isDefined && args.distributor.get.isInstanceOf[ConcurrentDistributor]) 
+            status.setFailedWith(e)  // If it is parallel test execution and an exception that should cause an abort, set it as unreported exception.
+          else
+          // SKIP-SCALATESTJS-END
+            status.setFailed()  
           status.setCompleted()
           throw e
       }
