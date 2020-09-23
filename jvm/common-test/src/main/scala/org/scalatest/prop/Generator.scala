@@ -130,7 +130,7 @@ import scala.collection.immutable.SortedMap
   *
   * One important rule: the values returned from `shrink` must always be smaller than -- not equal to --
   * the values passed in. Otherwise, an infinite loop can result. Also, similar to Canonicals, the
-  * "smallest" values should be returned at the front of this Iterator, with less-small values later.
+  * "smallest" values should be returned at the front of this List, with less-small values later.
   *
   * @tparam T the type that this Generator produces
   */
@@ -229,11 +229,25 @@ trait Generator[T] { thisGeneratorOfT =>
             (f(nextT), Nil, nextRandomizer)
         }
       }
-      override def canonicals(rnd: Randomizer): (Iterator[U], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[U], Randomizer) = {
         val (cansOfT, nextRnd) = thisGeneratorOfT.canonicals(rnd)
         (cansOfT.map(f), nextRnd)
       }
-      override def shrink(value: U, rnd: Randomizer): (Iterator[U], Randomizer) = canonicals(rnd)
+      override def shrink(value: U, rnd: Randomizer): (List[U], Randomizer) = canonicals(rnd)
+/*
+scala> case class RoseBush[a](a: a, shr: a => List[RoseBush[a]]) {                                                                                         
+     |   def map[b](f: a => b): RoseBush[b] = RoseBush(f(a), b => shr(a).map(rba => rba.map(f))) 
+     |   def flatMap[b](f: a => RoseBush[b]): RoseBush[b] = {
+     |     val rbb: RoseBush[b] = f(a)
+     |     val b: b = rbb.a
+     |     val lrbb: List[RoseBush[b]] = rbb.shr(b) // I don't use this one.
+     |     val lrba: List[RoseBush[a]] = shr(a)
+     |     RoseBush(b, b => lrba.map(rba => f(rba.a)))
+     |   }
+     | }
+// defined case class RoseBush
+
+*/
     }
 
   /**
@@ -318,10 +332,10 @@ trait Generator[T] { thisGeneratorOfT =>
         }
       }
 
-      override def canonicals(rnd: Randomizer): (Iterator[U], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[U], Randomizer) = {
         val (cansOfT, rnd1) = thisGeneratorOfT.canonicals(rnd)
         var currentRnd = rnd1 // Local var, one thread; TODO: Do this with a tailrec loop
-        def getCanonicals(o: T): Iterator[U] = {
+        def getCanonicals(o: T): List[U] = {
           val genOfU: Generator[U] = f(o)
           val (canonicals, nextRnd) = genOfU.canonicals(currentRnd)
           currentRnd = nextRnd
@@ -331,7 +345,7 @@ trait Generator[T] { thisGeneratorOfT =>
         (cansOfT.flatMap(getCanonicals), currentRnd)
       }
 
-      override def shrink(value: U, rnd: Randomizer): (Iterator[U], Randomizer) = canonicals(rnd)
+      override def shrink(value: U, rnd: Randomizer): (List[U], Randomizer) = canonicals(rnd)
     }
   }
 
@@ -405,9 +419,9 @@ trait Generator[T] { thisGeneratorOfT =>
     * if not, simply return the passed-in one.
     *
     * You do not have to implement this function. If you do not, it will return an empty
-    * Iterator, and the test system will not try to simplify failing values of this type.
+    * List, and the test system will not try to simplify failing values of this type.
     *
-    * This function returns a Tuple. The first element should be an [[Iterator]] that returns
+    * This function returns a Tuple. The first element should be an [[List]] that returns
     * simplified values, and is empty when there are no more. The second element is the
     * next [[Randomizer]], as discussed above.
     *
@@ -415,7 +429,7 @@ trait Generator[T] { thisGeneratorOfT =>
     * @param rnd a [[Randomizer]] to use, if you need random data for the shrinking process
     * @return a Tuple of the shrunk values and the next [[Randomizer]]
     */
-  def shrink(value: T, rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)
+  def shrink(value: T, rnd: Randomizer): (List[T], Randomizer) = (List.empty, rnd)
 
   /**
     * Some simple, "ordinary" values of type [[T]].
@@ -432,7 +446,7 @@ trait Generator[T] { thisGeneratorOfT =>
     *   - `String`: single-charactor Strings of the letter and digits
     *
     * You do not have to provide canonicals for a Generator. By default, this simply
-    * returns an empty [[Iterator]].
+    * returns an empty [[List]].
     *
     * This function takes a [[Randomizer]] to use as a parameter, in case canonical generation
     * for this type has a random element to it. If you use this [[Randomizer]], return the
@@ -441,7 +455,7 @@ trait Generator[T] { thisGeneratorOfT =>
     * @param rnd a [[Randomizer]] to use if this function requires any random data
     * @return the canonical values for this type (if any), and the next [[Randomizer]]
     */
-  def canonicals(rnd: Randomizer): (Iterator[T], Randomizer) = (Iterator.empty, rnd)
+  def canonicals(rnd: Randomizer): (List[T], Randomizer) = (List.empty, rnd)
 
   /**
     * Fetch a generated value of type [[T]].
@@ -620,8 +634,8 @@ object Generator {
         }
       }
       private val byteCanonicals: List[Byte] = List(0, 1, -1, 2, -2, 3, -3)
-      override def canonicals(rnd: Randomizer): (Iterator[Byte], Randomizer) = (byteCanonicals.iterator, rnd)
-      override def shrink(n: Byte, rnd: Randomizer): (Iterator[Byte], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Byte], Randomizer) = (byteCanonicals, rnd)
+      override def shrink(n: Byte, rnd: Randomizer): (List[Byte], Randomizer) = {
         @tailrec
         def shrinkLoop(n: Byte, acc: List[Byte]): List[Byte] = {
           if (n == 0) acc
@@ -631,7 +645,7 @@ object Generator {
             else shrinkLoop(half, (-half).toByte :: half :: acc)
           }
         }
-        (shrinkLoop(n, Nil).iterator, rnd)
+        (shrinkLoop(n, Nil), rnd)
       }
       override def toString = "Generator[Byte]"
     }
@@ -655,8 +669,8 @@ object Generator {
         }
       }
       private val shortCanonicals: List[Short] = List(0, 1, -1, 2, -2, 3, -3)
-      override def canonicals(rnd: Randomizer): (Iterator[Short], Randomizer) = (shortCanonicals.iterator, rnd)
-      override def shrink(n: Short, rnd: Randomizer): (Iterator[Short], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Short], Randomizer) = (shortCanonicals, rnd)
+      override def shrink(n: Short, rnd: Randomizer): (List[Short], Randomizer) = {
         @tailrec
         def shrinkLoop(n: Short, acc: List[Short]): List[Short] = {
           if (n == 0) acc
@@ -666,7 +680,7 @@ object Generator {
             else shrinkLoop(half, (-half).toShort :: half :: acc)
           }
         }
-        (shrinkLoop(n, Nil).iterator, rnd)
+        (shrinkLoop(n, Nil), rnd)
       }
       override def toString = "Generator[Short]"
     }
@@ -689,7 +703,7 @@ object Generator {
             (c, Nil, nextRnd)
         }
       }
-      override def canonicals(rnd: Randomizer): (Iterator[Char], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Char], Randomizer) = {
         val lowerAlphaChars = "abcdefghikjlmnopqrstuvwxyz"
         val upperAlphaChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         val numericChars = "0123456789"
@@ -699,12 +713,12 @@ object Generator {
         val lowerChar = lowerAlphaChars(lowerCharIndex)
         val upperChar = upperAlphaChars(upperCharIndex)
         val numericChar = numericChars(numericCharIndex)
-        (Iterator(lowerChar, upperChar, numericChar), rnd3)
+        (List(lowerChar, upperChar, numericChar), rnd3)
       }
-      override def shrink(c: Char, rnd: Randomizer): (Iterator[Char], Randomizer) = {
+      override def shrink(c: Char, rnd: Randomizer): (List[Char], Randomizer) = {
         val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        if (userFriendlyChars.indexOf(c) >= 0) (Iterator.empty, rnd)
-        else (userFriendlyChars.toIterator, rnd)
+        if (userFriendlyChars.indexOf(c) >= 0) (List.empty, rnd)
+        else (userFriendlyChars.toList, rnd)
       }
       override def toString = "Generator[Char]"
     }
@@ -729,8 +743,8 @@ object Generator {
       }
       override def toString = "Generator[Int]"
       private val intCanonicals = List(0, 1, -1, 2, -2, 3, -3)
-      override def canonicals(rnd: Randomizer): (Iterator[Int], Randomizer) = (intCanonicals.iterator, rnd)
-      override def shrink(i: Int, rnd: Randomizer): (Iterator[Int], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Int], Randomizer) = (intCanonicals, rnd)
+      override def shrink(i: Int, rnd: Randomizer): (List[Int], Randomizer) = {
         @tailrec
         def shrinkLoop(i: Int, acc: List[Int]): List[Int] = {
           if (i == 0) acc
@@ -740,7 +754,7 @@ object Generator {
             else shrinkLoop(half, -half :: half :: acc)
           }
         }
-        (shrinkLoop(i, Nil).iterator, rnd)
+        (shrinkLoop(i, Nil), rnd)
       }
     }
 
@@ -763,8 +777,8 @@ object Generator {
         }
       }
       private val longCanonicals: List[Long] = List(0, 1, -1, 2, -2, 3, -3)
-      override def canonicals(rnd: Randomizer): (Iterator[Long], Randomizer) = (longCanonicals.iterator, rnd)
-      override def shrink(n: Long, rnd: Randomizer): (Iterator[Long], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Long], Randomizer) = (longCanonicals, rnd)
+      override def shrink(n: Long, rnd: Randomizer): (List[Long], Randomizer) = {
         @tailrec
         def shrinkLoop(n: Long, acc: List[Long]): List[Long] = {
           if (n == 0L) acc
@@ -774,7 +788,7 @@ object Generator {
             else shrinkLoop(half, -half :: half :: acc)
           }
         }
-        (shrinkLoop(n, Nil).iterator, rnd)
+        (shrinkLoop(n, Nil), rnd)
       }
       override def toString = "Generator[Long]"
     }
@@ -797,8 +811,8 @@ object Generator {
         }
       }
       private val floatCanonicals: List[Float] = List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f)
-      override def canonicals(rnd: Randomizer): (Iterator[Float], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(f: Float, rnd: Randomizer): (Iterator[Float], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Float], Randomizer) = (floatCanonicals, rnd)
+      override def shrink(f: Float, rnd: Randomizer): (List[Float], Randomizer) = {
         @tailrec
         def shrinkLoop(f: Float, acc: List[Float]): List[Float] = {
           if (f == 0.0f) acc
@@ -844,7 +858,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[Float]"
     }
@@ -867,8 +881,8 @@ object Generator {
         }
       }
       private val doubleCanonicals: List[Double] = List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0)
-      override def canonicals(rnd: Randomizer): (Iterator[Double], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(d: Double, rnd: Randomizer): (Iterator[Double], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Double], Randomizer) = (doubleCanonicals, rnd)
+      override def shrink(d: Double, rnd: Randomizer): (List[Double], Randomizer) = {
         @tailrec
         def shrinkLoop(d: Double, acc: List[Double]): List[Double] = {
           if (d == 0.0) acc
@@ -915,7 +929,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(d, Nil).iterator, rnd)
+        (shrinkLoop(d, Nil), rnd)
       }
       override def toString = "Generator[Double]"
     }
@@ -939,8 +953,8 @@ object Generator {
         }
       }
       private val posIntCanonicals = List(1, 2, 3).map(PosInt.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[PosInt], Randomizer) = (posIntCanonicals.iterator, rnd)
-      override def shrink(i: PosInt, rnd: Randomizer): (Iterator[PosInt], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[PosInt], Randomizer) = (posIntCanonicals, rnd)
+      override def shrink(i: PosInt, rnd: Randomizer): (List[PosInt], Randomizer) = {
         @tailrec
         def shrinkLoop(i: PosInt, acc: List[PosInt]): List[PosInt] = {
           val half: Int = i / 2
@@ -950,7 +964,7 @@ object Generator {
             shrinkLoop(posIntHalf, posIntHalf :: acc)
           }
         }
-        (shrinkLoop(i, Nil).iterator, rnd)
+        (shrinkLoop(i, Nil), rnd)
       }
       override def toString = "Generator[PosInt]"
     }
@@ -974,8 +988,8 @@ object Generator {
         }
       }
       private val posZIntCanonicals = List(0, 1, 2, 3).map(PosZInt.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[PosZInt], Randomizer) = (posZIntCanonicals.iterator, rnd)
-      override def shrink(i: PosZInt, rnd: Randomizer): (Iterator[PosZInt], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[PosZInt], Randomizer) = (posZIntCanonicals, rnd)
+      override def shrink(i: PosZInt, rnd: Randomizer): (List[PosZInt], Randomizer) = {
         @tailrec
         def shrinkLoop(i: PosZInt, acc: List[PosZInt]): List[PosZInt] = {
           if (i.value == 0)
@@ -986,7 +1000,7 @@ object Generator {
             shrinkLoop(posIntHalf, posIntHalf :: acc)
           }
         }
-        (shrinkLoop(i, Nil).iterator, rnd)
+        (shrinkLoop(i, Nil), rnd)
       }
       override def toString = "Generator[PosZInt]"
     }
@@ -1010,8 +1024,8 @@ object Generator {
         }
       }
       private val posLongCanonicals = List(1, 2, 3).map(PosLong.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[PosLong], Randomizer) = (posLongCanonicals.iterator, rnd)
-      override def shrink(i: PosLong, rnd: Randomizer): (Iterator[PosLong], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[PosLong], Randomizer) = (posLongCanonicals, rnd)
+      override def shrink(i: PosLong, rnd: Randomizer): (List[PosLong], Randomizer) = {
         @tailrec
         def shrinkLoop(i: PosLong, acc: List[PosLong]): List[PosLong] = {
           val half: Long = i / 2
@@ -1021,7 +1035,7 @@ object Generator {
             shrinkLoop(posLongHalf, posLongHalf :: acc)
           }
         }
-        (shrinkLoop(i, Nil).iterator, rnd)
+        (shrinkLoop(i, Nil), rnd)
       }
       override def toString = "Generator[PosLong]"
     }
@@ -1045,8 +1059,8 @@ object Generator {
         }
       }
       private val posZLongCanonicals = List(0, 1, 2, 3).map(PosZLong.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[PosZLong], Randomizer) = (posZLongCanonicals.iterator, rnd)
-      override def shrink(i: PosZLong, rnd: Randomizer): (Iterator[PosZLong], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[PosZLong], Randomizer) = (posZLongCanonicals, rnd)
+      override def shrink(i: PosZLong, rnd: Randomizer): (List[PosZLong], Randomizer) = {
         @tailrec
         def shrinkLoop(i: PosZLong, acc: List[PosZLong]): List[PosZLong] = {
           if (i.value == 0L)
@@ -1057,7 +1071,7 @@ object Generator {
             shrinkLoop(posLongHalf, posLongHalf :: acc)
           }
         }
-        (shrinkLoop(i, Nil).iterator, rnd)
+        (shrinkLoop(i, Nil), rnd)
       }
       override def toString = "Generator[PosZLong]"
     }
@@ -1081,8 +1095,8 @@ object Generator {
         }
       }
       private val posFloatCanonicals: List[PosFloat] = List(1.0f, 2.0f, 3.0f).map(PosFloat.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[PosFloat], Randomizer) = (posFloatCanonicals.iterator, rnd)
-      override def shrink(f: PosFloat, rnd: Randomizer): (Iterator[PosFloat], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[PosFloat], Randomizer) = (posFloatCanonicals, rnd)
+      override def shrink(f: PosFloat, rnd: Randomizer): (List[PosFloat], Randomizer) = {
         @tailrec
         def shrinkLoop(f: PosFloat, acc: List[PosFloat]): List[PosFloat] = {
           val fv = f.value
@@ -1103,7 +1117,7 @@ object Generator {
             shrinkLoop(whole, whole :: acc)
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[PosFloat]"
     }
@@ -1127,8 +1141,8 @@ object Generator {
         }
       }
       private val posFloatCanonicals: List[PosFiniteFloat] = List(1.0f, 2.0f, 3.0f).map(PosFiniteFloat.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[PosFiniteFloat], Randomizer) = (posFloatCanonicals.iterator, rnd)
-      override def shrink(f: PosFiniteFloat, rnd: Randomizer): (Iterator[PosFiniteFloat], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[PosFiniteFloat], Randomizer) = (posFloatCanonicals, rnd)
+      override def shrink(f: PosFiniteFloat, rnd: Randomizer): (List[PosFiniteFloat], Randomizer) = {
         @tailrec
         def shrinkLoop(f: PosFiniteFloat, acc: List[PosFiniteFloat]): List[PosFiniteFloat] = {
           val fv = f.value
@@ -1145,7 +1159,7 @@ object Generator {
             shrinkLoop(whole, whole :: acc)
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[PosFiniteFloat]"
     }
@@ -1169,8 +1183,8 @@ object Generator {
         }
       }
       private val floatCanonicals: List[FiniteFloat] = List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f).map(FiniteFloat.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[FiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(f: FiniteFloat, rnd: Randomizer): (Iterator[FiniteFloat], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[FiniteFloat], Randomizer) = (floatCanonicals, rnd)
+      override def shrink(f: FiniteFloat, rnd: Randomizer): (List[FiniteFloat], Randomizer) = {
         @tailrec
         def shrinkLoop(f: FiniteFloat, acc: List[FiniteFloat]): List[FiniteFloat] = {
           val fv = f.value
@@ -1192,7 +1206,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[FiniteFloat]"
     }
@@ -1216,8 +1230,8 @@ object Generator {
         }
       }
       private val doubleCanonicals: List[FiniteDouble] = List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(FiniteDouble.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[FiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(f: FiniteDouble, rnd: Randomizer): (Iterator[FiniteDouble], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[FiniteDouble], Randomizer) = (doubleCanonicals, rnd)
+      override def shrink(f: FiniteDouble, rnd: Randomizer): (List[FiniteDouble], Randomizer) = {
         @tailrec
         def shrinkLoop(f: FiniteDouble, acc: List[FiniteDouble]): List[FiniteDouble] = {
           val fv = f.value
@@ -1239,7 +1253,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[FiniteDouble]"
     }
@@ -1263,8 +1277,8 @@ object Generator {
         }
       }
       private val floatCanonicals: List[PosZFloat] = List(0.0f, 1.0f, 2.0f, 3.0f).map(PosZFloat.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[PosZFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(f: PosZFloat, rnd: Randomizer): (Iterator[PosZFloat], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[PosZFloat], Randomizer) = (floatCanonicals, rnd)
+      override def shrink(f: PosZFloat, rnd: Randomizer): (List[PosZFloat], Randomizer) = {
         @tailrec
         def shrinkLoop(f: PosZFloat, acc: List[PosZFloat]): List[PosZFloat] = {
           val fv = f.value
@@ -1288,7 +1302,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[PosZFloat]"
     }
@@ -1312,8 +1326,8 @@ object Generator {
         }
       }
       private val floatCanonicals: List[PosZFiniteFloat] = List(0.0f, 1.0f, 2.0f, 3.0f).map(PosZFiniteFloat.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[PosZFiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(f: PosZFiniteFloat, rnd: Randomizer): (Iterator[PosZFiniteFloat], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[PosZFiniteFloat], Randomizer) = (floatCanonicals, rnd)
+      override def shrink(f: PosZFiniteFloat, rnd: Randomizer): (List[PosZFiniteFloat], Randomizer) = {
         @tailrec
         def shrinkLoop(f: PosZFiniteFloat, acc: List[PosZFiniteFloat]): List[PosZFiniteFloat] = {
           val fv = f.value
@@ -1333,7 +1347,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[PosZFiniteFloat]"
     }
@@ -1357,8 +1371,8 @@ object Generator {
         }
       }
       private val posDoubleCanonicals: List[PosDouble] = List(1.0, 2.0, 3.0).map(PosDouble.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[PosDouble], Randomizer) = (posDoubleCanonicals.iterator, rnd)
-      override def shrink(f: PosDouble, rnd: Randomizer): (Iterator[PosDouble], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[PosDouble], Randomizer) = (posDoubleCanonicals, rnd)
+      override def shrink(f: PosDouble, rnd: Randomizer): (List[PosDouble], Randomizer) = {
         @tailrec
         def shrinkLoop(f: PosDouble, acc: List[PosDouble]): List[PosDouble] = {
           val fv = f.value
@@ -1379,7 +1393,7 @@ object Generator {
             shrinkLoop(whole, whole :: acc)
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[PosDouble]"
     }
@@ -1403,8 +1417,8 @@ object Generator {
         }
       }
       private val posDoubleCanonicals: List[PosFiniteDouble] = List(1.0, 2.0, 3.0).map(PosFiniteDouble.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[PosFiniteDouble], Randomizer) = (posDoubleCanonicals.iterator, rnd)
-      override def shrink(f: PosFiniteDouble, rnd: Randomizer): (Iterator[PosFiniteDouble], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[PosFiniteDouble], Randomizer) = (posDoubleCanonicals, rnd)
+      override def shrink(f: PosFiniteDouble, rnd: Randomizer): (List[PosFiniteDouble], Randomizer) = {
         @tailrec
         def shrinkLoop(f: PosFiniteDouble, acc: List[PosFiniteDouble]): List[PosFiniteDouble] = {
           val fv = f.value
@@ -1421,7 +1435,7 @@ object Generator {
             shrinkLoop(whole, whole :: acc)
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[PosFiniteDouble]"
     }
@@ -1445,8 +1459,8 @@ object Generator {
         }
       }
       private val doubleCanonicals: List[PosZDouble] = List(0.0, 1.0, 2.0, 3.0).map(PosZDouble.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[PosZDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(f: PosZDouble, rnd: Randomizer): (Iterator[PosZDouble], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[PosZDouble], Randomizer) = (doubleCanonicals, rnd)
+      override def shrink(f: PosZDouble, rnd: Randomizer): (List[PosZDouble], Randomizer) = {
         @tailrec
         def shrinkLoop(f: PosZDouble, acc: List[PosZDouble]): List[PosZDouble] = {
           val fv = f.value
@@ -1470,7 +1484,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[PosZDouble]"
     }
@@ -1494,8 +1508,8 @@ object Generator {
         }
       }
       private val doubleCanonicals: List[PosZFiniteDouble] = List(0.0, 1.0, 2.0, 3.0).map(PosZFiniteDouble.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[PosZFiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(f: PosZFiniteDouble, rnd: Randomizer): (Iterator[PosZFiniteDouble], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[PosZFiniteDouble], Randomizer) = (doubleCanonicals, rnd)
+      override def shrink(f: PosZFiniteDouble, rnd: Randomizer): (List[PosZFiniteDouble], Randomizer) = {
         @tailrec
         def shrinkLoop(f: PosZFiniteDouble, acc: List[PosZFiniteDouble]): List[PosZFiniteDouble] = {
           val fv = f.value
@@ -1515,7 +1529,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[PosZFiniteDouble]"
     }
@@ -1539,8 +1553,8 @@ object Generator {
         }
       }
       private val doubleCanonicals: List[NonZeroDouble] = List(1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(NonZeroDouble.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NonZeroDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(d: NonZeroDouble, rnd: Randomizer): (Iterator[NonZeroDouble], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NonZeroDouble], Randomizer) = (doubleCanonicals, rnd)
+      override def shrink(d: NonZeroDouble, rnd: Randomizer): (List[NonZeroDouble], Randomizer) = {
         @tailrec
         def shrinkLoop(raw: NonZeroDouble, acc: List[NonZeroDouble]): List[NonZeroDouble] = {
           val d = raw.value
@@ -1568,7 +1582,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(d, Nil).iterator, rnd)
+        (shrinkLoop(d, Nil), rnd)
       }
       override def toString = "Generator[NonZeroDouble]"
     }
@@ -1592,8 +1606,8 @@ object Generator {
         }
       }
       private val doubleCanonicals: List[NonZeroFiniteDouble] = List(1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(NonZeroFiniteDouble.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NonZeroFiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(d: NonZeroFiniteDouble, rnd: Randomizer): (Iterator[NonZeroFiniteDouble], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NonZeroFiniteDouble], Randomizer) = (doubleCanonicals, rnd)
+      override def shrink(d: NonZeroFiniteDouble, rnd: Randomizer): (List[NonZeroFiniteDouble], Randomizer) = {
         @tailrec
         def shrinkLoop(raw: NonZeroFiniteDouble, acc: List[NonZeroFiniteDouble]): List[NonZeroFiniteDouble] = {
           val d = raw.value
@@ -1615,7 +1629,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(d, Nil).iterator, rnd)
+        (shrinkLoop(d, Nil), rnd)
       }
       override def toString = "Generator[NonZeroFiniteDouble]"
     }
@@ -1639,8 +1653,8 @@ object Generator {
         }
       }
       private val floatCanonicals: List[NonZeroFloat] = List(1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f).map(NonZeroFloat.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NonZeroFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(d: NonZeroFloat, rnd: Randomizer): (Iterator[NonZeroFloat], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NonZeroFloat], Randomizer) = (floatCanonicals, rnd)
+      override def shrink(d: NonZeroFloat, rnd: Randomizer): (List[NonZeroFloat], Randomizer) = {
         @tailrec
         def shrinkLoop(raw: NonZeroFloat, acc: List[NonZeroFloat]): List[NonZeroFloat] = {
           val d = raw.value
@@ -1668,7 +1682,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(d, Nil).iterator, rnd)
+        (shrinkLoop(d, Nil), rnd)
       }
       override def toString = "Generator[NonZeroFloat]"
     }
@@ -1692,8 +1706,8 @@ object Generator {
         }
       }
       private val floatCanonicals: List[NonZeroFiniteFloat] = List(1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f).map(NonZeroFiniteFloat.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NonZeroFiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(d: NonZeroFiniteFloat, rnd: Randomizer): (Iterator[NonZeroFiniteFloat], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NonZeroFiniteFloat], Randomizer) = (floatCanonicals, rnd)
+      override def shrink(d: NonZeroFiniteFloat, rnd: Randomizer): (List[NonZeroFiniteFloat], Randomizer) = {
         @tailrec
         def shrinkLoop(raw: NonZeroFiniteFloat, acc: List[NonZeroFiniteFloat]): List[NonZeroFiniteFloat] = {
           val d = raw.value
@@ -1715,7 +1729,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(d, Nil).iterator, rnd)
+        (shrinkLoop(d, Nil), rnd)
       }
       override def toString = "Generator[NonZeroFiniteFloat]"
     }
@@ -1740,15 +1754,15 @@ object Generator {
       }
       override def toString = "Generator[NonZeroInt]"
       private val nonZeroIntCanonicals = List(NonZeroInt(1), NonZeroInt(-1), NonZeroInt(2), NonZeroInt(-2), NonZeroInt(3), NonZeroInt(-3))
-      override def canonicals(rnd: Randomizer): (Iterator[NonZeroInt], Randomizer) = (nonZeroIntCanonicals.iterator, rnd)
-      override def shrink(i: NonZeroInt, rnd: Randomizer): (Iterator[NonZeroInt], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NonZeroInt], Randomizer) = (nonZeroIntCanonicals, rnd)
+      override def shrink(i: NonZeroInt, rnd: Randomizer): (List[NonZeroInt], Randomizer) = {
         @tailrec
         def shrinkLoop(i: Int, acc: List[NonZeroInt]): List[NonZeroInt] = {
           val half: Int = i / 2 // i cannot be zero, because initially it is the underlying Int value of a NonZeroInt (in types
           if (half == 0) acc    // we trust), then if half results in zero, we return acc here. I.e., we don't loop.
           else shrinkLoop(half, NonZeroInt.ensuringValid(-half) :: NonZeroInt.ensuringValid(half) :: acc)
         }
-        (shrinkLoop(i.value, Nil).iterator, rnd)
+        (shrinkLoop(i.value, Nil), rnd)
       }
     }
 
@@ -1771,15 +1785,15 @@ object Generator {
         }
       }
       private val nonZeroLongCanonicals = List(1, -1, 2, -2, 3, -3).map(NonZeroLong.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NonZeroLong], Randomizer) = (nonZeroLongCanonicals.iterator, rnd)
-      override def shrink(i: NonZeroLong, rnd: Randomizer): (Iterator[NonZeroLong], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NonZeroLong], Randomizer) = (nonZeroLongCanonicals, rnd)
+      override def shrink(i: NonZeroLong, rnd: Randomizer): (List[NonZeroLong], Randomizer) = {
         @tailrec
         def shrinkLoop(i: Long, acc: List[NonZeroLong]): List[NonZeroLong] = {
           val half: Long = i / 2 // i cannot be zero, because initially it is the underlying Int value of a NonZeroLong (in types
           if (half == 0) acc     // we trust), then if half results in zero, we return acc here. I.e., we don't loop.
           else shrinkLoop(half, NonZeroLong.ensuringValid(-half) :: NonZeroLong.ensuringValid(half) :: acc)
         }
-        (shrinkLoop(i.value, Nil).iterator, rnd)
+        (shrinkLoop(i.value, Nil), rnd)
       }
       override def toString = "Generator[NonZeroLong]"
     }
@@ -1803,8 +1817,8 @@ object Generator {
         }
       }
       private val negDoubleCanonicals: List[NegDouble] = List(-1.0, -2.0, -3.0).map(NegDouble.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NegDouble], Randomizer) = (negDoubleCanonicals.iterator, rnd)
-      override def shrink(f: NegDouble, rnd: Randomizer): (Iterator[NegDouble], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NegDouble], Randomizer) = (negDoubleCanonicals, rnd)
+      override def shrink(f: NegDouble, rnd: Randomizer): (List[NegDouble], Randomizer) = {
         @tailrec
         def shrinkLoop(f: NegDouble, acc: List[NegDouble]): List[NegDouble] = {
           val fv = f.value
@@ -1825,7 +1839,7 @@ object Generator {
             shrinkLoop(whole, whole :: acc)
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[NegDouble]"
     }
@@ -1849,8 +1863,8 @@ object Generator {
         }
       }
       private val negDoubleCanonicals: List[NegFiniteDouble] = List(-1.0, -2.0, -3.0).map(NegFiniteDouble.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NegFiniteDouble], Randomizer) = (negDoubleCanonicals.iterator, rnd)
-      override def shrink(f: NegFiniteDouble, rnd: Randomizer): (Iterator[NegFiniteDouble], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NegFiniteDouble], Randomizer) = (negDoubleCanonicals, rnd)
+      override def shrink(f: NegFiniteDouble, rnd: Randomizer): (List[NegFiniteDouble], Randomizer) = {
         @tailrec
         def shrinkLoop(f: NegFiniteDouble, acc: List[NegFiniteDouble]): List[NegFiniteDouble] = {
           val fv = f.value
@@ -1867,7 +1881,7 @@ object Generator {
             shrinkLoop(whole, whole :: acc)
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[NegFiniteDouble]"
     }
@@ -1891,8 +1905,8 @@ object Generator {
         }
       }
       private val negFloatCanonicals: List[NegFloat] = List(-1.0f, -2.0f, -3.0f).map(NegFloat.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NegFloat], Randomizer) = (negFloatCanonicals.iterator, rnd)
-      override def shrink(f: NegFloat, rnd: Randomizer): (Iterator[NegFloat], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NegFloat], Randomizer) = (negFloatCanonicals, rnd)
+      override def shrink(f: NegFloat, rnd: Randomizer): (List[NegFloat], Randomizer) = {
         @tailrec
         def shrinkLoop(f: NegFloat, acc: List[NegFloat]): List[NegFloat] = {
           val fv = f.value
@@ -1913,7 +1927,7 @@ object Generator {
             shrinkLoop(whole, whole :: acc)
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[NegFloat]"
     }
@@ -1937,8 +1951,8 @@ object Generator {
         }
       }
       private val negFloatCanonicals: List[NegFiniteFloat] = List(-1.0f, -2.0f, -3.0f).map(NegFiniteFloat.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NegFiniteFloat], Randomizer) = (negFloatCanonicals.iterator, rnd)
-      override def shrink(f: NegFiniteFloat, rnd: Randomizer): (Iterator[NegFiniteFloat], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NegFiniteFloat], Randomizer) = (negFloatCanonicals, rnd)
+      override def shrink(f: NegFiniteFloat, rnd: Randomizer): (List[NegFiniteFloat], Randomizer) = {
         @tailrec
         def shrinkLoop(f: NegFiniteFloat, acc: List[NegFiniteFloat]): List[NegFiniteFloat] = {
           val fv = f.value
@@ -1955,7 +1969,7 @@ object Generator {
             shrinkLoop(whole, whole :: acc)
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[NegFiniteFloat]"
     }
@@ -1979,8 +1993,8 @@ object Generator {
         }
       }
       private val negIntCanonicals = List(-1, -2, -3).map(NegInt.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NegInt], Randomizer) = (negIntCanonicals.iterator, rnd)
-      override def shrink(i: NegInt, rnd: Randomizer): (Iterator[NegInt], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NegInt], Randomizer) = (negIntCanonicals, rnd)
+      override def shrink(i: NegInt, rnd: Randomizer): (List[NegInt], Randomizer) = {
         @tailrec
         def shrinkLoop(i: NegInt, acc: List[NegInt]): List[NegInt] = {
           val half: Int = i / 2
@@ -1990,7 +2004,7 @@ object Generator {
             shrinkLoop(negIntHalf, negIntHalf :: acc)
           }
         }
-        (shrinkLoop(i, Nil).iterator, rnd)
+        (shrinkLoop(i, Nil), rnd)
       }
       override def toString = "Generator[NegInt]"
     }
@@ -2014,8 +2028,8 @@ object Generator {
         }
       }
       private val negLongCanonicals = List(-1, -2, -3).map(NegLong.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NegLong], Randomizer) = (negLongCanonicals.iterator, rnd)
-      override def shrink(i: NegLong, rnd: Randomizer): (Iterator[NegLong], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NegLong], Randomizer) = (negLongCanonicals, rnd)
+      override def shrink(i: NegLong, rnd: Randomizer): (List[NegLong], Randomizer) = {
         @tailrec
         def shrinkLoop(i: NegLong, acc: List[NegLong]): List[NegLong] = {
           val half: Long = i / 2
@@ -2025,7 +2039,7 @@ object Generator {
             shrinkLoop(negLongHalf, negLongHalf :: acc)
           }
         }
-        (shrinkLoop(i, Nil).iterator, rnd)
+        (shrinkLoop(i, Nil), rnd)
       }
       override def toString = "Generator[NegLong]"
     }
@@ -2049,8 +2063,8 @@ object Generator {
         }
       }
       private val doubleCanonicals: List[NegZDouble] = List(0.0, -1.0, -2.0, -3.0).map(NegZDouble.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NegZDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(f: NegZDouble, rnd: Randomizer): (Iterator[NegZDouble], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NegZDouble], Randomizer) = (doubleCanonicals, rnd)
+      override def shrink(f: NegZDouble, rnd: Randomizer): (List[NegZDouble], Randomizer) = {
         @tailrec
         def shrinkLoop(f: NegZDouble, acc: List[NegZDouble]): List[NegZDouble] = {
           val fv = f.value
@@ -2074,7 +2088,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[NegZDouble]"
     }
@@ -2098,8 +2112,8 @@ object Generator {
         }
       }
       private val doubleCanonicals: List[NegZFiniteDouble] = List(0.0, -1.0, -2.0, -3.0).map(NegZFiniteDouble.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NegZFiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(f: NegZFiniteDouble, rnd: Randomizer): (Iterator[NegZFiniteDouble], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NegZFiniteDouble], Randomizer) = (doubleCanonicals, rnd)
+      override def shrink(f: NegZFiniteDouble, rnd: Randomizer): (List[NegZFiniteDouble], Randomizer) = {
         @tailrec
         def shrinkLoop(f: NegZFiniteDouble, acc: List[NegZFiniteDouble]): List[NegZFiniteDouble] = {
           val fv = f.value
@@ -2119,7 +2133,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[NegZFiniteDouble]"
     }
@@ -2143,8 +2157,8 @@ object Generator {
         }
       }
       private val floatCanonicals: List[NegZFloat] = List(0.0f, -1.0f, -2.0f, -3.0f).map(NegZFloat.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NegZFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(f: NegZFloat, rnd: Randomizer): (Iterator[NegZFloat], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NegZFloat], Randomizer) = (floatCanonicals, rnd)
+      override def shrink(f: NegZFloat, rnd: Randomizer): (List[NegZFloat], Randomizer) = {
         @tailrec
         def shrinkLoop(f: NegZFloat, acc: List[NegZFloat]): List[NegZFloat] = {
           val fv = f.value
@@ -2168,7 +2182,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[NegZFloat]"
     }
@@ -2192,8 +2206,8 @@ object Generator {
         }
       }
       private val floatCanonicals: List[NegZFiniteFloat] = List(0.0f, -1.0f, -2.0f, -3.0f).map(NegZFiniteFloat.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NegZFiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(f: NegZFiniteFloat, rnd: Randomizer): (Iterator[NegZFiniteFloat], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NegZFiniteFloat], Randomizer) = (floatCanonicals, rnd)
+      override def shrink(f: NegZFiniteFloat, rnd: Randomizer): (List[NegZFiniteFloat], Randomizer) = {
         @tailrec
         def shrinkLoop(f: NegZFiniteFloat, acc: List[NegZFiniteFloat]): List[NegZFiniteFloat] = {
           val fv = f.value
@@ -2213,7 +2227,7 @@ object Generator {
             }
           }
         }
-        (shrinkLoop(f, Nil).iterator, rnd)
+        (shrinkLoop(f, Nil), rnd)
       }
       override def toString = "Generator[NegZFiniteFloat]"
     }
@@ -2237,8 +2251,8 @@ object Generator {
         }
       }
       private val negZIntCanonicals = List(0, -1, -2, -3).map(NegZInt.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NegZInt], Randomizer) = (negZIntCanonicals.iterator, rnd)
-      override def shrink(i: NegZInt, rnd: Randomizer): (Iterator[NegZInt], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NegZInt], Randomizer) = (negZIntCanonicals, rnd)
+      override def shrink(i: NegZInt, rnd: Randomizer): (List[NegZInt], Randomizer) = {
         @tailrec
         def shrinkLoop(i: NegZInt, acc: List[NegZInt]): List[NegZInt] = {
           if (i.value == 0)
@@ -2249,7 +2263,7 @@ object Generator {
             shrinkLoop(negIntHalf, negIntHalf :: acc)
           }
         }
-        (shrinkLoop(i, Nil).iterator, rnd)
+        (shrinkLoop(i, Nil), rnd)
       }
       override def toString = "Generator[NegZInt]"
     }
@@ -2273,8 +2287,8 @@ object Generator {
         }
       }
       private val negZLongCanonicals = List(0, -1, -2, -3).map(NegZLong.ensuringValid(_))
-      override def canonicals(rnd: Randomizer): (Iterator[NegZLong], Randomizer) = (negZLongCanonicals.iterator, rnd)
-      override def shrink(i: NegZLong, rnd: Randomizer): (Iterator[NegZLong], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[NegZLong], Randomizer) = (negZLongCanonicals, rnd)
+      override def shrink(i: NegZLong, rnd: Randomizer): (List[NegZLong], Randomizer) = {
         @tailrec
         def shrinkLoop(i: NegZLong, acc: List[NegZLong]): List[NegZLong] = {
           if (i.value == 0)
@@ -2285,7 +2299,7 @@ object Generator {
             shrinkLoop(negLongHalf, negLongHalf :: acc)
           }
         }
-        (shrinkLoop(i, Nil).iterator, rnd)
+        (shrinkLoop(i, Nil), rnd)
       }
       override def toString = "Generator[NegZLong]"
     }
@@ -2333,11 +2347,11 @@ object Generator {
             (s, Nil, nextRnd)
         }
       }
-      override def canonicals(rnd: Randomizer): (Iterator[String], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[String], Randomizer) = {
         val (canonicalsOfChar, rnd1) = charGenerator.canonicals(rnd)
-        (Iterator("") ++ canonicalsOfChar.map(t => s"$t"), rnd1)
+        (List("") ++ canonicalsOfChar.map(t => s"$t"), rnd1)
       }
-      override def shrink(s: String, rnd: Randomizer): (Iterator[String], Randomizer) = {
+      override def shrink(s: String, rnd: Randomizer): (List[String], Randomizer) = {
 
         val lowerAlphaChars = "abcdefghikjlmnopqrstuvwxyz"
         val upperAlphaChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -2362,9 +2376,9 @@ object Generator {
             }
           }
 
-        if (s.isEmpty) (Iterator.empty, rnd)
+        if (s.isEmpty) (List.empty, rnd)
         else (
-          Iterator("") ++ candidateStrings ++ lastBatch,
+          List("") ++ candidateStrings ++ lastBatch,
           rnd3
         )
       }
@@ -2394,30 +2408,30 @@ object Generator {
             (listOfT, Nil, nextRnd)
         }
       }
-      override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[List[T]], Randomizer) = {
         val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
         (canonicalsOfT.map(t => List(t)), rnd1)
       }
-      override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = {
+      override def shrink(xs: List[T], rnd: Randomizer): (List[List[T]], Randomizer) = {
 
-        if (xs.isEmpty) (Iterator.empty, rnd)
+        if (xs.isEmpty) (List.empty, rnd)
         else {
           val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
           val canonicalTs = canonicalTsIt.toList
           // Start with Lists of length one each of which contain one of the canonical values
           // of the element type.
-          val canonicalListOfTsIt: Iterator[List[T]] = canonicalTs.map(t => List(t)).toIterator
+          val canonicalListOfTsIt: List[List[T]] = canonicalTs.map(t => List(t)).toList
 
           // Only include distinctListsOfTs if the list to shrink (xs) does not contain
           // just one element itself. If it does, then xs will appear in the output, which
           // we don't need, since we already know it fails.
-          val distinctListOfTsIt: Iterator[List[T]] =
+          val distinctListOfTsIt: List[List[T]] =
             if (xs.nonEmpty && xs.tail.nonEmpty) {
               val distinctListOfTs: List[List[T]] =
                 for (x <- xs if !canonicalTs.contains(x)) yield List(x)
-              distinctListOfTs.iterator
+              distinctListOfTs
             }
-            else Iterator.empty
+            else List.empty
 
           // The last batch of candidate shrunken values are just slices of the list starting at
           // 0 with size doubling each time.
@@ -2434,7 +2448,7 @@ object Generator {
               }
             }
 
-          (Iterator(Nil) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+          (List(Nil) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
         }
       }
       override def toString = "Generator[List[T]]"
@@ -2445,8 +2459,8 @@ object Generator {
           override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd) // TODO: filter lists's edges by valid size
           def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
             outerGenOfListOfT.next(SizeParam(PosZInt(0), szp.maxSize, size), edges, rnd) // TODO: SizeParam(size, size, size)?
-          override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
-          override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
+          override def canonicals(rnd: Randomizer): (List[List[T]], Randomizer) = (List.empty, rnd)
+          override def shrink(xs: List[T], rnd: Randomizer): (List[List[T]], Randomizer) = (List.empty, rnd)
           override def toString = s"Generator[List[T] /* having length $size */]"
         }
       def havingSizesBetween(from: PosZInt, to: PosZInt): Generator[List[T]] = { // TODO: add with HavingLength again
@@ -2468,10 +2482,10 @@ object Generator {
             outerGenOfListOfT.next(SizeParam(PosZInt(0), to, nextSize), edges, rnd) // This assumes from < to, and i'm not guaranteeing that yet
           }
           // If from is either 0 or 1, return the canonicals of the outer Generator.
-          override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) =
-            if (from <= 1) outerGenOfListOfT.canonicals(rnd) else (Iterator.empty, rnd)
+          override def canonicals(rnd: Randomizer): (List[List[T]], Randomizer) =
+            if (from <= 1) outerGenOfListOfT.canonicals(rnd) else (List.empty, rnd)
           // TODO: Shrink can go from from up to xs length
-          override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = outerGenOfListOfT.shrink(xs, rnd)
+          override def shrink(xs: List[T], rnd: Randomizer): (List[List[T]], Randomizer) = outerGenOfListOfT.shrink(xs, rnd)
           override def toString = s"Generator[List[T] /* having lengths between $from and $to (inclusive) */]"
         }
       }
@@ -2480,8 +2494,8 @@ object Generator {
           override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
           def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (List[T], List[List[T]], Randomizer) =
             outerGenOfListOfT.next(f(szp), edges, rnd)
-          override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
-          override def shrink(xs: List[T], rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
+          override def canonicals(rnd: Randomizer): (List[List[T]], Randomizer) = (List.empty, rnd)
+          override def shrink(xs: List[T], rnd: Randomizer): (List[List[T]], Randomizer) = (List.empty, rnd)
           override def toString = s"Generator[List[T] /* having lengths determined by a function */]"
         }
     }
@@ -2512,12 +2526,12 @@ object Generator {
             (PrettyFunction0(nextT), Nil, nextRnd)
         }
       }
-      override def canonicals(rnd: Randomizer): (Iterator[() => T], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[() => T], Randomizer) = {
         val (canonicalsOfT, nextRnd) = genOfT.canonicals(rnd)
         val canonicals = canonicalsOfT.map(t => PrettyFunction0(t))
         (canonicals, nextRnd)
       }
-      override def shrink(f: () => T, rnd: Randomizer): (Iterator[() => T], Randomizer) = {
+      override def shrink(f: () => T, rnd: Randomizer): (List[() => T], Randomizer) = {
         val (shrinksOfT, nextRnd) = genOfT.shrink(f(), rnd)
         val shrinks = shrinksOfT.map(t => PrettyFunction0(t))
         (shrinks, nextRnd)
@@ -3451,10 +3465,10 @@ object Generator {
         (edges, nextRnd)
       }
 
-      override def canonicals(rnd: Randomizer): (Iterator[Option[T]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Option[T]], Randomizer) = {
         // The canonicals of Option[T] are the canonicals of T, plus None
         val (tCanonicals, nextRnd) = genOfT.canonicals(rnd)
-        (Iterator(None) ++ tCanonicals.map(Some(_)), nextRnd)
+        (List(None) ++ tCanonicals.map(Some(_)), nextRnd)
       }
 
       def next(szp: SizeParam, edges: List[Option[T]], rnd: Randomizer): (Option[T], List[Option[T]], Randomizer) = {
@@ -3472,16 +3486,16 @@ object Generator {
         }
       }
 
-      override def shrink(value: Option[T], rnd: Randomizer): (Iterator[Option[T]], Randomizer) = {
+      override def shrink(value: Option[T], rnd: Randomizer): (List[Option[T]], Randomizer) = {
         value match {
           // If there is a real value, shrink that value, and return that and None.
           case Some(t) => {
             val (tShrinks, nextRnd) = genOfT.shrink(t, rnd)
-            (Iterator(None) ++ tShrinks.map(Some(_)), nextRnd)
+            (List(None) ++ tShrinks.map(Some(_)), nextRnd)
           }
 
           // There's no way to simplify None:
-          case None => (Iterator.empty, rnd)
+          case None => (List.empty, rnd)
         }
       }
 
@@ -3518,7 +3532,7 @@ object Generator {
         (loop(maxLength, edgesOfG, edgesOfB, Nil), nextNextRnd)
       }
 
-      override def canonicals(rnd: Randomizer): (Iterator[Or[G, B]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Or[G, B]], Randomizer) = {
         val (goodCanon, nextRnd) = genOfG.canonicals(rnd)
         val (badCanon, nextNextRnd) = genOfB.canonicals(nextRnd)
 
@@ -3542,7 +3556,7 @@ object Generator {
         }
       }
 
-      override def shrink(value: Or[G, B], rnd: Randomizer): (Iterator[Or[G, B]], Randomizer) = {
+      override def shrink(value: Or[G, B], rnd: Randomizer): (List[Or[G, B]], Randomizer) = {
         value match {
           case Good(g) => {
             val (gShrink, nextRnd) = genOfG.shrink(g, rnd)
@@ -3588,7 +3602,7 @@ object Generator {
         (loop(maxLength, edgesOfR, edgesOfL, Nil), nextNextRnd)
       }
 
-      override def canonicals(rnd: Randomizer): (Iterator[Either[L, R]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Either[L, R]], Randomizer) = {
         val (rightCanon, nextRnd) = genOfR.canonicals(rnd)
         val (leftCanon, nextNextRnd) = genOfL.canonicals(nextRnd)
 
@@ -3612,7 +3626,7 @@ object Generator {
         }
       }
 
-      override def shrink(value: Either[L, R], rnd: Randomizer): (Iterator[Either[L, R]], Randomizer) = {
+      override def shrink(value: Either[L, R], rnd: Randomizer): (List[Either[L, R]], Randomizer) = {
         value match {
           case Right(r) => {
             val (rShrink, nextRnd) = genOfR.shrink(r, rnd)
@@ -3809,29 +3823,29 @@ object Generator {
         }
       }
 
-      override def canonicals(rnd: Randomizer): (Iterator[Vector[T]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Vector[T]], Randomizer) = {
         val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
         (canonicalsOfT.map(t => Vector(t)), rnd1)
       }
-      override def shrink(xs: Vector[T], rnd: Randomizer): (Iterator[Vector[T]], Randomizer) = {
-        if (xs.isEmpty) (Iterator.empty, rnd)
+      override def shrink(xs: Vector[T], rnd: Randomizer): (List[Vector[T]], Randomizer) = {
+        if (xs.isEmpty) (List.empty, rnd)
         else {
           val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
           val canonicalTs = canonicalTsIt.toVector
           // Start with Lists of length one each of which contain one of the canonical values
           // of the element type.
-          val canonicalListOfTsIt: Iterator[Vector[T]] = canonicalTs.map(t => Vector(t)).toIterator
+          val canonicalListOfTsIt: List[Vector[T]] = canonicalTs.map(t => Vector(t)).toList
 
           // Only include distinctListsOfTs if the list to shrink (xs) does not contain
           // just one element itself. If it does, then xs will appear in the output, which
           // we don't need, since we already know it fails.
-          val distinctListOfTsIt: Iterator[Vector[T]] =
+          val distinctListOfTsIt: List[Vector[T]] =
             if (xs.nonEmpty && (xs.size > 1)) {
               val distinctListOfTs: Vector[Vector[T]] =
                 for (x <- xs if !canonicalTs.contains(x)) yield Vector(x)
-              distinctListOfTs.iterator
+              distinctListOfTs.toList
             }
-            else Iterator.empty
+            else List.empty
 
           // The last batch of candidate shrunken values are just slices of the list starting at
           // 0 with size doubling each time.
@@ -3848,7 +3862,7 @@ object Generator {
               }
             }
 
-          (Iterator(Vector.empty) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+          (List(Vector.empty) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
         }
       }
 
@@ -3919,29 +3933,29 @@ object Generator {
         }
       }
 
-      override def canonicals(rnd: Randomizer): (Iterator[Set[T]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Set[T]], Randomizer) = {
         val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
         (canonicalsOfT.map(t => Set(t)), rnd1)
       }
-      override def shrink(xs: Set[T], rnd: Randomizer): (Iterator[Set[T]], Randomizer) = {
-        if (xs.isEmpty) (Iterator.empty, rnd)
+      override def shrink(xs: Set[T], rnd: Randomizer): (List[Set[T]], Randomizer) = {
+        if (xs.isEmpty) (List.empty, rnd)
         else {
           val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
           val canonicalTs = canonicalTsIt.toList
           // Start with Lists of length one each of which contain one of the canonical values
           // of the element type.
-          val canonicalListOfTsIt: Iterator[Set[T]] = canonicalTs.map(t => Set(t)).toIterator
+          val canonicalListOfTsIt: List[Set[T]] = canonicalTs.map(t => Set(t)).toList
 
           // Only include distinctListsOfTs if the list to shrink (xs) does not contain
           // just one element itself. If it does, then xs will appear in the output, which
           // we don't need, since we already know it fails.
-          val distinctListOfTsIt: Iterator[Set[T]] =
+          val distinctListOfTsIt: List[Set[T]] =
             if (xs.nonEmpty && (xs.size > 1)) {
               val distinctListOfTs: List[Set[T]] =
                 for (x <- xs.toList if !canonicalTs.contains(x)) yield Set(x)
-              distinctListOfTs.iterator
+              distinctListOfTs
             }
-            else Iterator.empty
+            else List.empty
 
           // The last batch of candidate shrunken values are just slices of the list starting at
           // 0 with size doubling each time.
@@ -3958,7 +3972,7 @@ object Generator {
               }
             }
 
-          (Iterator(Set.empty[T]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+          (List(Set.empty[T]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
         }
       }
 
@@ -4029,29 +4043,29 @@ object Generator {
         }
       }
 
-      override def canonicals(rnd: Randomizer): (Iterator[SortedSet[T]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[SortedSet[T]], Randomizer) = {
         val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
         (canonicalsOfT.map(t => SortedSet(t)), rnd1)
       }
-      override def shrink(xs: SortedSet[T], rnd: Randomizer): (Iterator[SortedSet[T]], Randomizer) = {
-        if (xs.isEmpty) (Iterator.empty, rnd)
+      override def shrink(xs: SortedSet[T], rnd: Randomizer): (List[SortedSet[T]], Randomizer) = {
+        if (xs.isEmpty) (List.empty, rnd)
         else {
           val (canonicalTsIt, rnd1) = genOfT.canonicals(rnd)
           val canonicalTs = canonicalTsIt.toList
           // Start with Lists of length one each of which contain one of the canonical values
           // of the element type.
-          val canonicalListOfTsIt: Iterator[SortedSet[T]] = canonicalTs.map(t => SortedSet(t)).toIterator
+          val canonicalListOfTsIt: List[SortedSet[T]] = canonicalTs.map(t => SortedSet(t)).toList
 
           // Only include distinctListsOfTs if the list to shrink (xs) does not contain
           // just one element itself. If it does, then xs will appear in the output, which
           // we don't need, since we already know it fails.
-          val distinctListOfTsIt: Iterator[SortedSet[T]] =
+          val distinctListOfTsIt: List[SortedSet[T]] =
             if (xs.nonEmpty && (xs.size > 1)) {
               val distinctListOfTs: List[SortedSet[T]] =
                 for (x <- xs.toList if !canonicalTs.contains(x)) yield SortedSet(x)
-              distinctListOfTs.iterator
+              distinctListOfTs
             }
-            else Iterator.empty
+            else List.empty
 
           // The last batch of candidate shrunken values are just slices of the list starting at
           // 0 with size doubling each time.
@@ -4068,7 +4082,7 @@ object Generator {
               }
             }
 
-          (Iterator(SortedSet.empty[T]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+          (List(SortedSet.empty[T]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
         }
       }
 
@@ -4142,30 +4156,30 @@ object Generator {
         }
       }
 
-      override def canonicals(rnd: Randomizer): (Iterator[Map[K, V]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[Map[K, V]], Randomizer) = {
         val (canonicalsOfKV, rnd1) = genOfTuple2KV.canonicals(rnd)
         (canonicalsOfKV.map(t => Map(t)), rnd1)
       }
 
-      override def shrink(xs: Map[K, V], rnd: Randomizer): (Iterator[Map[K, V]], Randomizer) = {
-        if (xs.isEmpty) (Iterator.empty, rnd)
+      override def shrink(xs: Map[K, V], rnd: Randomizer): (List[Map[K, V]], Randomizer) = {
+        if (xs.isEmpty) (List.empty, rnd)
         else {
           val (canonicalTsIt, rnd1) = genOfTuple2KV.canonicals(rnd)
           val canonicalTs = canonicalTsIt.toList
           // Start with Lists of length one each of which contain one of the canonical values
           // of the element type.
-          val canonicalListOfTsIt: Iterator[Map[K, V]] = canonicalTs.map(t => Map(t)).toIterator
+          val canonicalListOfTsIt: List[Map[K, V]] = canonicalTs.map(t => Map(t)).toList
 
           // Only include distinctListsOfTs if the list to shrink (xs) does not contain
           // just one element itself. If it does, then xs will appear in the output, which
           // we don't need, since we already know it fails.
-          val distinctListOfTsIt: Iterator[Map[K, V]] =
+          val distinctListOfTsIt: List[Map[K, V]] =
             if (xs.nonEmpty && (xs.size > 1)) {
               val distinctListOfTs: List[Map[K, V]] =
                 for (x <- xs.toList if !canonicalTs.contains(x)) yield Map(x)
-              distinctListOfTs.iterator
+              distinctListOfTs
             }
-            else Iterator.empty
+            else List.empty
 
           // The last batch of candidate shrunken values are just slices of the list starting at
           // 0 with size doubling each time.
@@ -4183,7 +4197,7 @@ object Generator {
               }
             }
 
-          (Iterator(Map.empty[K, V]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+          (List(Map.empty[K, V]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
         }
       }
       // Members declared in org.scalatest.prop.HavingSize
@@ -4256,30 +4270,30 @@ object Generator {
         }
       }
 
-      override def canonicals(rnd: Randomizer): (Iterator[SortedMap[K, V]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (List[SortedMap[K, V]], Randomizer) = {
         val (canonicalsOfKV, rnd1) = genOfTuple2KV.canonicals(rnd)
         (canonicalsOfKV.map(t => SortedMap(t)), rnd1)
       }
 
-      override def shrink(xs: SortedMap[K, V], rnd: Randomizer): (Iterator[SortedMap[K, V]], Randomizer) = {
-        if (xs.isEmpty) (Iterator.empty, rnd)
+      override def shrink(xs: SortedMap[K, V], rnd: Randomizer): (List[SortedMap[K, V]], Randomizer) = {
+        if (xs.isEmpty) (List.empty, rnd)
         else {
           val (canonicalTsIt, rnd1) = genOfTuple2KV.canonicals(rnd)
           val canonicalTs = canonicalTsIt.toList
           // Start with Lists of length one each of which contain one of the canonical values
           // of the element type.
-          val canonicalListOfTsIt: Iterator[SortedMap[K, V]] = canonicalTs.map(t => SortedMap(t)).toIterator
+          val canonicalListOfTsIt: List[SortedMap[K, V]] = canonicalTs.map(t => SortedMap(t)).toList
 
           // Only include distinctListsOfTs if the list to shrink (xs) does not contain
           // just one element itself. If it does, then xs will appear in the output, which
           // we don't need, since we already know it fails.
-          val distinctListOfTsIt: Iterator[SortedMap[K, V]] =
+          val distinctListOfTsIt: List[SortedMap[K, V]] =
           if (xs.nonEmpty && (xs.size > 1)) {
             val distinctListOfTs: List[SortedMap[K, V]] =
               for (x <- xs.toList if !canonicalTs.contains(x)) yield SortedMap(x)
-            distinctListOfTs.iterator
+            distinctListOfTs
           }
-          else Iterator.empty
+          else List.empty
 
           // The last batch of candidate shrunken values are just slices of the list starting at
           // 0 with size doubling each time.
@@ -4296,7 +4310,7 @@ object Generator {
               }
             }
 
-          (Iterator(SortedMap.empty[K, V]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
+          (List(SortedMap.empty[K, V]) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
         }
       }
 

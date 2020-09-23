@@ -3601,8 +3601,8 @@ $okayAssertions$
       |  override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[$lastType$], Randomizer) = underlying.initEdges(maxLength, rnd)
       |  override def map[Z](f: ($lastType$) => Z): Generator[Z] = underlying.map(f)
       |  override def flatMap[Z](f: ($lastType$) => Generator[Z]): Generator[Z] = underlying.flatMap(f)
-      |  override def canonicals(rnd: Randomizer): (Iterator[$lastType$], Randomizer) = underlying.canonicals(rnd)
-      |  override def shrink(lastValue: $lastType$, rnd0: Randomizer): (Iterator[$lastType$], Randomizer) = {
+      |  override def canonicals(rnd: Randomizer): (List[$lastType$], Randomizer) = underlying.canonicals(rnd)
+      |  override def shrink(lastValue: $lastType$, rnd0: Randomizer): (List[$lastType$], Randomizer) = {
       |    val ($initLower$) = $lastToInitName$(lastValue)
       |    $initShrinks$
       |    $initStreams$
@@ -3610,7 +3610,7 @@ $okayAssertions$
       |      for {
       |        $initStreamArrows$
       |      } yield $initToLastName$($initLower$)
-      |    (streamOf$lastType$.iterator, rnd$arity$)
+      |    (streamOf$lastType$.toList, rnd$arity$)
       |  }
       |}
     """.stripMargin
