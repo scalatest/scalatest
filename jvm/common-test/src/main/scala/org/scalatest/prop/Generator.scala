@@ -251,51 +251,6 @@ scala> case class RoseBush[a](a: a, shr: a => List[RoseBush[a]]) {
         (cansOfT.map(f), nextRnd)
       }
       override def shrink(value: U, rnd: Randomizer): (List[U], Randomizer) = canonicals(rnd)
-      // I have a (T, Randomizer) => (List[T], Randomizer) and T => U
-      // So 
-/*
-scala> case class RoseBush[a](a: a, shr: a => List[RoseBush[a]]) {
-     |   def map[b](f: a => b): RoseBush[b] = RoseBush(f(a), b => shr(a).map(rba => rba.map(f)))
-     |   def flatMap[b](f: a => RoseBush[b]): RoseBush[b] = {
-     |     val rbb: RoseBush[b] = f(a)
-     |     val b: b = rbb.a
-     |     val lrbb: List[RoseBush[b]] = rbb.shr(b) // I don't use this one.
-     |     val lrba: List[RoseBush[a]] = shr(a)
-     |     RoseBush(b, b => lrba.map(rba => f(rba.a)))
-     |   }
-     | }
-// defined case class RoseBush
-
-scala> val intFun: Int => List[RoseBush[Int]] = (n: Int) => if n > 0 then (0 to n - 1).toList.reverse.map(x => RoseBush(x, intFun)) else List.empty
-val intFun: Int => List[RoseBush[Int]] = Lambda$1713/1057260670@2a7b4b19
-
-scala> val dubFun: Double => List[RoseBush[Double]] = (n: Double) => if n > 0.0 then (0 to n.toInt - 1).toList.reverse.map(_.toDouble).map(x => RoseBush(x, dubFun)) else List.empty
-val dubFun: Double => List[RoseBush[Double]] = Lambda$1731/1745844830@3005133e
-
-scala> val intRt = RoseBush(3, intFun)
-val intRt: RoseBush[Int] = RoseBush(3,rs$line$19$$$Lambda$1713/1057260670@2a7b4b19)
-
-scala> val dubRt = RoseBush(3.0, dubFun)
-val dubRt: RoseBush[Double] = RoseBush(3.0,rs$line$20$$$Lambda$1731/1745844830@3005133e)
-
-scala> for {
-     |   i <- intRt
-     |   d <- dubRt
-     | } yield (i, d)
-val res3: RoseBush[(Int, Double)] = RoseBush((3,3.0),rs$line$18$RoseBush$$Lambda$1748/1142279201@7bb5f1b5)
-
-scala> res3.shr((3, 3.0))
-val res4: List[RoseBush[(Int, Double)]] = List(RoseBush((2,3.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@5b11b6c8), RoseBush((1,3.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@4c026825), RoseBush((0,3.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@14f7e21a))
-
-scala> res3.shr(res3.a)
-val res5: List[RoseBush[(Int, Double)]] = List(RoseBush((2,3.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@3b00a7b9), RoseBush((1,3.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@29cbdd86), RoseBush((0,3.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@84e1883))
-
-scala> res5.map(rb => rb.shr(rb.a))
-val res6: List[List[RoseBush[(Int, Double)]]] = List(List(RoseBush((2,2.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@4cf1ba4e), RoseBush((2,1.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@23368646), RoseBush((2,0.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@4dc80b7a)), List(RoseBush((1,2.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@5882ff51), RoseBush((1,1.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@19601dc5), RoseBush((1,0.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@ef3bc19)), List(RoseBush((0,2.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@36df566), RoseBush((0,1.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@4c5afa2d), RoseBush((0,0.0),rs$line$18$RoseBush$$Lambda$1743/1323874943@554d4856)))
-
-
-
-*/
     }
 
   /**
