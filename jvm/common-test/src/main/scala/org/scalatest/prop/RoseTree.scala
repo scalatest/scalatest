@@ -15,12 +15,20 @@
  */
 package org.scalatest.prop
 
-
 case class RoseTree[T](value: T, shrinker: T => List[RoseTree[T]]) {
 
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int) So
   // for each shrunken Char, we'll get the one Int.
-  def map[U](f: T => U): RoseTree[U] = RoseTree(f(value), u => shrinker(value).map(rtt => rtt.map(f))) 
+  def map[U](f: T => U): RoseTree[U] = {
+
+    val u: U = f(value)
+
+    def roseTreeOfTToRoseTreeOfUFun(roseTreeOfT: RoseTree[T]): RoseTree[U] = roseTreeOfT.map(f) 
+
+    def uToListOfRoseTreeOfUFun(u: U): List[RoseTree[U]] = shrinker(value).map(roseTreeOfTToRoseTreeOfUFun) 
+
+    RoseTree(u, uToListOfRoseTreeOfUFun)
+  }
 
   // So here, we need to go through each of the Ints. U here is Char? No, U is (Char, Int) again? Yes.
   // Ah, and T is Int.
@@ -34,11 +42,11 @@ case class RoseTree[T](value: T, shrinker: T => List[RoseTree[T]]) {
 
     def roseTreeOfTToRoseTreeOfUFun(roseTreeOfT: RoseTree[T]): RoseTree[U] = f(roseTreeOfT.value)
 
-    def uToRoseTreeOfUFun(u: U): List[RoseTree[U]] = roseTreeOfTs.map(roseTreeOfTToRoseTreeOfUFun)
+    def uToListOfRoseTreeOfUFun(u: U): List[RoseTree[U]] = roseTreeOfTs.map(roseTreeOfTToRoseTreeOfUFun)
 
     // So yes, I get one u (one (Char, Int)), which is the root of the tree. I now need to make the
     // tree part. It should use the same Char but go through the Ints.
-    RoseTree(u, uToRoseTreeOfUFun)
+    RoseTree(u, uToListOfRoseTreeOfUFun)
     // CharIntPair => roseTreeOfInts.map(roseTreeOfInt => f(roseTreeOfInt.value))
     // So I think right there it should be working. But I am throwing away 
   }
