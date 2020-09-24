@@ -17,17 +17,74 @@ package org.scalatest.prop
 
 
 case class RoseTree[T](value: T, shrinker: T => List[RoseTree[T]]) {
+
+  // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int) So
+  // for each shrunken Char, we'll get the one Int.
   def map[U](f: T => U): RoseTree[U] = RoseTree(f(value), u => shrinker(value).map(rtt => rtt.map(f))) 
+
+  // So here, we need to go through each of the Ints. U here is Char? No, U is (Char, Int) again? Yes.
+  // Ah, and T is Int.
   def flatMap[U](f: T => RoseTree[U]): RoseTree[U] = {
-    val rtu: RoseTree[U] = f(value)
-    val u: U = rtu.value
-    val lrtt: List[RoseTree[T]] = shrinker(value)
-    RoseTree(u, u => lrtt.map(rtt => f(rtt.value)))
+    val roseTreeOfU: RoseTree[U] = f(value) // One RoseTree[(Char, Int)]
+    val u: U = roseTreeOfU.value // One (Char, Int)
+    val roseTreeOfTs: List[RoseTree[T]] = shrinker(value) // List of RoseTree[Int]
+
+    // Ah, I'm not using value, which is T, except to get the roseTreeOfU oh and the List[RoseTree[T]]
+    // That's the one that's missing. I need to add one more at the top, which is value (: T)...
+
+    def roseTreeOfTToRoseTreeOfUFun(roseTreeOfT: RoseTree[T]): RoseTree[U] = f(roseTreeOfT.value)
+
+    def uToRoseTreeOfUFun(u: U): List[RoseTree[U]] = roseTreeOfTs.map(roseTreeOfTToRoseTreeOfUFun)
+
+    // So yes, I get one u (one (Char, Int)), which is the root of the tree. I now need to make the
+    // tree part. It should use the same Char but go through the Ints.
+    RoseTree(u, uToRoseTreeOfUFun)
+    // CharIntPair => roseTreeOfInts.map(roseTreeOfInt => f(roseTreeOfInt.value))
+    // So I think right there it should be working. But I am throwing away 
   }
 }
 
 object RoseTree {
   def emptyFun[T]: T => List[RoseTree[T]] = o => List.empty
 }
+
+
+/*
+def unfold[a](rt: RoseTree[a], indent: String = ""): Unit =
+   println(s"$indent ${rt.value}")
+   val rts = rt.shrinker(rt.value)
+   // if rts.isEmpty then println("EMPTY: ${rt.value}")
+   rts.foreach(t => unfold(t, s"$indent  "))
+
+def boolShr: Boolean => List[RoseTree[Boolean]] =
+  (b: Boolean) => if b then List(RoseTree(false, unused => List.empty)) else List.empty
+
+def intShr: Int => List[RoseTree[Int]] =
+  (n: Int) => if (n > 0) (0 to n - 1).toList.reverse.map(x => RoseTree(x, intShr)) else List.empty
+
+def charShr: Char => List[RoseTree[Char]] =
+  (c: Char) => if (c > 'a') ('a' to (c - 1).toChar).toList.reverse.map(x => RoseTree(x, charShr)) else List.empty
+
+Wow.
+
+https://www.well-typed.com/blog/2019/05/integrated-shrinking/
+
+
+(c,2)
+   (c,1)
+     (b,1)
+       (a,1)
+     (a,1)
+   (c,0)
+     (b,0)
+       (a,0)
+     (a,0)
+
+
+case class Ugh[t](value: t, shrink: t => List[t]) {
+  def map[u](f: t => u): Ugh[u] = Ugh(u => shrink(value).map(f))
+}
+
+*/
 
 
