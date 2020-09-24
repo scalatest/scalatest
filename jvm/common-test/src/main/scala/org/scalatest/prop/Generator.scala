@@ -215,22 +215,6 @@ trait Generator[T] { thisGeneratorOfT =>
     * @tparam U the type of Generator you want to create
     * @return a new Generator, based on this one and the given transformation function
     */
-/*
-scala> case class RoseBush[a](a: a, shr: a => List[RoseBush[a]]) {
-     |   def map[b](f: a => b): RoseBush[b] = RoseBush(f(a), b => shr(a).map(rba => rba.map(f)))
-
-     |   def flatMap[b](f: a => RoseBush[b]): RoseBush[b] = {
-     |     val rbb: RoseBush[b] = f(a)
-     |     val b: b = rbb.a
-     |     val lrbb: List[RoseBush[b]] = rbb.shr(b)
-     |     val lrba: List[RoseBush[a]] = shr(a)
-     |     RoseBush(b, b => lrba.map(rba => f(rba.a)))
-     |     // RoseBush(rbb.a, b => shr(a).map(rba => RoseBush(b, :List[RoseBush[b]]))
-     |   }
-     | }
-// defined case class RoseBush
-
-*/
   def map[U](f: T => U): Generator[U] =
     new Generator[U] { thisGeneratorOfU =>
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[U], Randomizer) = {
