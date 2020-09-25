@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import java.io.ObjectOutputStream
+
 import org.scalatest.TryValues._
 import org.scalatest.OptionValues._
 import matchers.should.Matchers._
@@ -46,6 +48,19 @@ class TryValuesSpec extends AnyFunSpec {
       caught.failedCodeFileName.value should be ("TryValuesSpec.scala")
       caught.message.value should be (Resources.tryNotAFailure(t))
     }
+
+    // SKIP-SCALATESTJS-START
+    it("should throw a serializable TestFailedException") {
+      val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(_ => ())
+      val t: Try[String] = Success("hi there")
+      val caught =
+        the [TestFailedException] thrownBy {
+          t.failure.exception should equal (new Exception)
+        }
+
+      noException should be thrownBy objectOutputStream.writeObject(caught)
+    }
+    // SKIP-SCALATESTJS-END
 
     it("should return the value inside a Try if it is a Success") {
       val t: Try[String] = Success("hi there")

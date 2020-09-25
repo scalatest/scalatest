@@ -87,7 +87,7 @@ import org.scalatest.exceptions.TestFailedException
  * </pre>
  *
  */
-trait TryValues {
+trait TryValues extends Serializable {
 
   import scala.language.implicitConversions
 
@@ -109,7 +109,8 @@ trait TryValues {
    *
    * @param theTry An <code>Try</code> to convert to <code>SuccessOrFailure</code>, which provides the <code>success</code> and <code>failure</code> methods.
    */
-  class SuccessOrFailure[T](theTry: Try[T], pos: source.Position) {
+  @SerialVersionUID(7710541571360501642L)
+  class SuccessOrFailure[T](theTry: Try[T], pos: source.Position) extends Serializable {
 
     /**
      * Returns the <code>Try</code> passed to the constructor as a <code>Failure</code>, if it is a <code>Failure</code>, else throws <code>TestFailedException</code> with
