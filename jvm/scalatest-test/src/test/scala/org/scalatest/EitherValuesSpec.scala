@@ -88,7 +88,7 @@ class EitherValuesSpec extends AnyFunSpec {
         }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("EitherValuesSpec.scala")
-      caught.message.value should be (Resources.eitherRightValueNotDefined)
+      caught.message.value should be (Resources.eitherRightValueNotDefined(e))
     }
 
     it("should allow an immediate application of parens to invoke apply on the type contained in the Left") {
