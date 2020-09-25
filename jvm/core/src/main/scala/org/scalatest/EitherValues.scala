@@ -87,16 +87,24 @@ trait EitherValues extends Serializable {
   /**
    * Implicit conversion that adds a <code>value</code> method to <code>LeftProjection</code>.
    *
-   * @param either the <code>LeftProjection</code> on which to add the <code>value</code> method
+   * @param leftProj the <code>LeftProjection</code> on which to add the <code>value</code> method
    */
   implicit def convertLeftProjectionToValuable[L, R](leftProj: Either.LeftProjection[L, R])(implicit pos: source.Position): LeftValuable[L, R] = new LeftValuable(leftProj, pos)
 
   /**
    * Implicit conversion that adds a <code>value</code> method to <code>RightProjection</code>.
    *
-   * @param either the <code>RightProjection</code> on which to add the <code>value</code> method
+   * @param rightProj the <code>RightProjection</code> on which to add the <code>value</code> method
    */
   implicit def convertRightProjectionToValuable[L, R](rightProj: Either.RightProjection[L, R])(implicit pos: source.Position): RightValuable[L, R] = new RightValuable(rightProj, pos)
+
+  /**
+   * Implicit conversion that adds a <code>value</code> method to <code>Either</code>.
+   * This method is right biased and is the equivalent of calling <code>either.right.value</code>.
+   *
+   * @param either the <code>Either</code> on which to add the <code>value</code> method
+   */
+  implicit def convertEitherToValuable[L, R](either: Either[L, R])(implicit pos: source.Position): RightValuable[L, R] = new RightValuable(either.right, pos)
 
   /**
    * Wrapper class that adds a <code>value</code> method to <code>LeftProjection</code>, allowing
