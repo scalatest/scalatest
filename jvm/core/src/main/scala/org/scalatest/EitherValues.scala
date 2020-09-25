@@ -20,7 +20,8 @@ import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestFailedException
 
 /**
- * Trait that provides an implicit conversion that adds <code>left.value</code> and <code>right.value</code> methods
+ * Trait that provides an implicit conversion that adds <code>value</code> (when you expect a Right)
+ * and <code>left.value</code> (when you expect a Left) methods
  * to <code>Either</code>, which will return the selected value of the <code>Either</code> if defined,
  * or throw <code>TestFailedException</code> if not.
  *
@@ -30,8 +31,8 @@ import org.scalatest.exceptions.TestFailedException
  * </p>
  *
  * <pre class="stHighlight">
- * either1.right.value should be &gt; 9
- * either2.left.value should be ("Muchas problemas")
+ * either1.value should be &gt; 9
+ * either2.left.value should be ("Muchos problemas")
  * </pre>
  *
  * <p>
@@ -39,20 +40,20 @@ import org.scalatest.exceptions.TestFailedException
  * </p>
  *
  * <pre class="stHighlight">
- * assert(either1.right.value &gt; 9)
- * assert(either2.left.value === "Muchas problemas")
+ * assert(either1.value &gt; 9)
+ * assert(either2.left.value === "Muchos problemas")
  * </pre>
  *
  * <p>
- * Were you to simply invoke <code>right.get</code> or <code>left.get</code> on the <code>Either</code>, 
- * if the <code>Either</code> wasn't defined as expected (<em>e.g.</em>, it was a <code>Left</code> when you expected a <code>Right</code>), it
+ * Were you to simply invoke <code>left.get</code> on the <code>Either</code>,
+ * if the <code>Either</code> wasn't defined as expected (<em>e.g.</em>, it was a <code>Right</code> when you expected a <code>Left</code>), it
  * would throw a <code>NoSuchElementException</code>:
  * </p>
  *
  * <pre class="stHighlight">
- * val either: Either[String, Int] = Left("Muchas problemas")
+ * val either: Either[String, Int] = Right(9)
  *
- * either.right.get should be &gt; 9 // either.right.get throws NoSuchElementException
+ * either.left.get should be &gt; "Muchos problemas" // either.right.get throws NoSuchElementException
  * </pre>
  *
  * <p>
@@ -64,10 +65,10 @@ import org.scalatest.exceptions.TestFailedException
  * </p>
  *
  * <pre class="stHighlight">
- * val either: Either[String, Int] = Left("Muchas problemas")
+ * val either: Either[String, Int] = Right(9)
  *
- * either should be ('right) // throws TestFailedException
- * either.right.get should be &gt; 9
+ * either should be ('left) // throws TestFailedException
+ * either.left.get should be &gt; "Muchos problemas"
  * </pre>
  *
  * <p>
@@ -77,7 +78,7 @@ import org.scalatest.exceptions.TestFailedException
  * <pre class="stHighlight">
  * val either: Either[String, Int] = Left("Muchas problemas")
  *
- * either.right.value should be &gt; 9 // either.right.value throws TestFailedException
+ * either.left.value should be &gt; 9 // either.left.value throws TestFailedException
  * </pre>
  */
 trait EitherValues extends Serializable {
@@ -96,6 +97,7 @@ trait EitherValues extends Serializable {
    *
    * @param rightProj the <code>RightProjection</code> on which to add the <code>value</code> method
    */
+  @deprecated("The .right.value syntax on Either has been deprecated and will be removed in a future version of ScalaTest. Please use .value instead.")
   implicit def convertRightProjectionToValuable[L, R](rightProj: Either.RightProjection[L, R])(implicit pos: source.Position): RightValuable[L, R] = new RightValuable(rightProj, pos)
 
   /**
@@ -213,12 +215,12 @@ trait EitherValues extends Serializable {
  * import EitherValues._
  * 
  * scala&gt; val e: Either[String, Int] = Left("Muchas problemas")
- * e: Either[String,Int] = Left(Muchas problemas)
+ * e: Either[String,Int] = Left(Muchos problemas)
  * 
- * scala&gt; e.left.value should be ("Muchas problemas")
+ * scala&gt; e.left.value should be ("Muchos problemas")
  * 
- * scala&gt; e.right.value should be &lt; 9
- * org.scalatest.TestFailedException: The Either on which rightValue was invoked was not defined.
+ * scala&gt; e.value should be &lt; 9
+ * org.scalatest.TestFailedException: The Either on which value was invoked was not defined.
  *   at org.scalatest.EitherValues$RightValuable.value(EitherValues.scala:148)
  *   at .&lt;init&gt;(&lt;console&gt;:18)
  *   ...
