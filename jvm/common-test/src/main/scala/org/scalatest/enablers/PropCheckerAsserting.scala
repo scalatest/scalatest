@@ -17,7 +17,7 @@ package org.scalatest.enablers
 
 import org.scalactic.{Prettifier, source}
 import org.scalatest.exceptions.{StackDepth, StackDepthException, GeneratorDrivenPropertyCheckFailedException}
-import org.scalatest.prop.{Configuration, PropertyArgument, PropertyCheckResult}
+import org.scalatest.prop.{Configuration, PropertyArgument, PropertyCheckResult, RoseTree}
 import org.scalatest.{FailureMessages, Resources, UnquotedString, Fact, Expectation, Assertion, Succeeded}
 import FailureMessages.decorateToStringValue
 import org.scalactic.anyvals.PosZInt
@@ -151,7 +151,7 @@ abstract class UnitPropCheckerAsserting {
           }
         val (a, nextEdges, nextNextRnd) = genA.next(SizeParam(PosZInt(0), maxSize, size), edges, nextRnd) // TODO: Move PosZInt farther out
 
-        val result: Try[T] = Try { fun(a) }
+        val result: Try[T] = Try { fun(a.value) }
         val argsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a))
         result match {
           case Success(r) =>
@@ -183,27 +183,27 @@ abstract class UnitPropCheckerAsserting {
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
             @tailrec
-            def shrinkLoop(shrinksRemaining: List[A]): PropertyCheckResult = {
-              shrinksRemaining match {
+            def shrinkLoop(remaining: List[RoseTree[A]]): PropertyCheckResult = {
+              remaining match {
                 case Nil => new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
-                case shrinkHead :: shrinkTail =>
-                  val result: Try[T] = Try { fun(shrinkHead) }
+                case head :: tail =>
+                  val result: Try[T] = Try { fun(head.value) }
                   result match {
-                    case Success(_) => shrinkLoop(shrinkTail)
+                    case Success(_) => shrinkLoop(tail)
                     case Failure(shrunkEx) =>
                       val shrunkArgsPassed =
                         List(
                           if (names.isDefinedAt(0))
-                            PropertyArgument(Some(names(0)), shrinkHead)
+                            PropertyArgument(Some(names(0)), head)
                           else
-                            PropertyArgument(None, shrinkHead)
+                            PropertyArgument(None, head)
                         )
                       new PropertyCheckResult.Failure(succeededCount, Some(shrunkEx), names, shrunkArgsPassed, initSeed)
                   }
               }
             }
-            val (it, _) = genA.shrink(a, rnd)
-            shrinkLoop(it.take(100).toList)
+            val unfoldResult: List[RoseTree[A]] = a.shrinker.apply(a.value)
+            shrinkLoop(unfoldResult)
         }
       }
 
