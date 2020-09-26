@@ -71,55 +71,47 @@ case class RoseTree[T](value: T, private val shrinker: (T, Randomizer) => (List[
 }
 
 object RoseTree {
-  def emptyFun[T]: T => List[RoseTree[T]] = o => List.empty
+  def NoMoreNodes[T]: (T, Randomizer) => (List[RoseTree[T]], Randomizer) = (o, rnd) => (List.empty, rnd)
 }
 
 
 /*
-def unfold[a](rt: RoseTree[a], indent: String = ""): Unit =
-   println(s"$indent ${rt.value}")
-   val rts = rt.shrinker(rt.value)
-   rts.foreach(t => unfold(t, s"$indent  "))
+import org.scalatest.prop._
+def unfold[a](rt: RoseTree[a], indent: String = ""): Unit = {
+  println(s"$indent ${rt.value}")
+  val (roseTrees, rnd2) = rt.shrinks(Randomizer.default)
+  roseTrees.foreach(t => unfold(t, s"$indent  "))
+}
 
-def xShr: Char => List[RoseTree[Char]] =
-  (c: Char) => if (c > 'X') ('X' to (c - 1).toChar).toList.reverse.map(x => RoseTree(x, xShr)) else List.empty
+def intShr: (Int, Randomizer) => (List[RoseTree[Int]], Randomizer) = { (n: Int, rnd: Randomizer) =>
+  val roseTrees = if (n > 0) (0 to n - 1).toList.reverse.map(x => RoseTree(x, intShr)) else List.empty
+  (roseTrees, rnd)
+}
 
-def boolShr: Boolean => List[RoseTree[Boolean]] =
-  (b: Boolean) => if b then List(RoseTree(false, unused => List.empty)) else List.empty
+def dubShr: (Double, Randomizer) => (List[RoseTree[Double]], Randomizer) = { (n: Double, rnd: Randomizer) =>
+  val roseTrees = if (n > 0) (0 to n.toInt - 1).toList.map(_.toDouble).reverse.map(x => RoseTree(x, dubShr)) else List.empty
+  (roseTrees, rnd)
+}
 
-def intShr: Int => List[RoseTree[Int]] =
-  (n: Int) => if (n > 0) (0 to n - 1).toList.reverse.map(x => RoseTree(x, intShr)) else List.empty
-
-def charShr: Char => List[RoseTree[Char]] =
-  (c: Char) => if (c > 'a') ('a' to (c - 1).toChar).toList.reverse.map(x => RoseTree(x, charShr)) else List.empty
-
-Wow.
+def charShr: (Char, Randomizer) => (List[RoseTree[Char]], Randomizer) = { (c: Char, rnd: Randomizer) =>
+  val roseTrees = if (c.toLower > 'a') ('a' to (c - 1).toChar).toList.reverse.map(x => RoseTree(x, charShr)) else List.empty
+  (roseTrees, rnd)
+}
 
 https://www.well-typed.com/blog/2019/05/integrated-shrinking/
 
-(c,2)
-   (c,1) // I don't get to 0 here. Oh, I get a List, so I have the other one. Need to go all the way down all List ones? Oh and later in the list is smaller? c,0 is similar to b,1. But need to get to b,0. So farther down is smaller.
-     (b,1)
-       (a,1)
-     (a,1)
-   (c,0)
-     (b,0)
-       (a,0)
-     (a,0)
-
-  case class Ugh[t](value: t, shrink: t => List[t]) {
-    def map[u](f: t => u): Ugh[u] = Ugh(u => shrink(value).map(f))
-  }
-
-
 scala> for {
-     |   i <- iRt
-     |   c <- cRt
+     |   i <- RoseTree(2, intShr)
+     |   c <- RoseTree('c', charShr)
      | } yield (c, i)
-val res3: RoseTree[(Char, Int)] = RoseTree((c,2),rs$line$10$RoseTree$$Lambda$1728/368792881@7f814c6e)
+res5: org.scalatest.prop.RoseTree[(Char, Int)] = RoseTree((c,2),org.scalatest.prop.RoseTree$$Lambda$12440/1544455474@1a80e1d9)
 
-scala> unfold(res3)
+scala> unfold(res5)
  (c,2)
+   (c,2)
+     (b,2)
+       (a,2)
+     (a,2)
    (c,1)
      (b,1)
        (a,1)
@@ -128,8 +120,6 @@ scala> unfold(res3)
      (b,0)
        (a,0)
      (a,0)
-
-I'm missing (b, 2), and (a, 2). Oh, my map needs value at the beginning.
 */
 
 
