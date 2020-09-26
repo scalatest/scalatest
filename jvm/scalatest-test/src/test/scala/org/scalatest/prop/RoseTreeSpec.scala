@@ -24,26 +24,52 @@ import org.scalatest.matchers.should.Matchers
 
 class RoseTreeSpec extends AnyFunSpec with Matchers {
   describe("A RoseTree") {
+    it("should offer a toString that gives the value only") {
+      val irt = new RoseTree[Int] {
+        val value: Int = 42;
+
+        def shrinks(rnd: Randomizer) = (List.empty, rnd)
+      }
+      irt.toString shouldBe "RoseTree(42)"
+    }
     it("should offer a map and flatMap method") {
 
-      def intShr: (Int, Randomizer) => (List[RoseTree[Int]], Randomizer) = { (n: Int, rnd: Randomizer) =>
-        val roseTrees = if (n > 0) (0 to n - 1).toList.reverse.map(x => RoseTree(x, intShr)) else List.empty
-        (roseTrees, rnd)
-      }
+      import RoseTreeSpec._
 
-      def dubShr: (Double, Randomizer) => (List[RoseTree[Double]], Randomizer) = { (n: Double, rnd: Randomizer) =>
-        val roseTrees = if (n > 0) (0 to n.toInt - 1).toList.map(_.toDouble).reverse.map(x => RoseTree(x, dubShr)) else List.empty
-        (roseTrees, rnd)
-      }
-
-      val rt = RoseTree(10, intShr)
+      val rt = intRoseTree(10)
       rt.value shouldBe 10
       rt.map(n => n.toString + "!").value shouldBe "10!"
 
-      val rt2 = RoseTree(43.0, dubShr)
-      rt.flatMap(n => rt2.map(d => (n.toString + "!", d - 1))).value shouldBe (("10!", 42.0))
+      val rt2 = charRoseTree('e')
+      rt.flatMap(n => rt2.map(c => (n.toString + "!", (c - 1).toChar))).value shouldBe (("10!", 'd'))
+    }
+  }
+  describe("A Rose") {
+    it("should have a toString that gives the value") {
+      Rose(42).toString shouldBe "Rose(42)"
     }
   }
 }
 
+object RoseTreeSpec {
+  def intRoseTree(i: Int): RoseTree[Int] =
+    new RoseTree[Int] {
+      val value: Int = i
+
+      def shrinks(rnd: Randomizer): (List[RoseTree[Int]], Randomizer) = {
+        val roseTrees = if (value > 0) (0 to value - 1).toList.reverse.map(x => intRoseTree(x)) else List.empty
+        (roseTrees, rnd)
+      }
+    }
+
+  def charRoseTree(c: Char): RoseTree[Char] =
+    new RoseTree[Char] {
+      val value: Char = c
+      def shrinks(rnd: Randomizer): (List[RoseTree[Char]], Randomizer) = {
+        val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        if (userFriendlyChars.indexOf(c) >= 0) (List.empty, rnd)
+        else (userFriendlyChars.toList.map(c => Rose(c)), rnd)
+      }
+    }
+}
 

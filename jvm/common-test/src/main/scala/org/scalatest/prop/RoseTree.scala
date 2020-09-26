@@ -15,12 +15,14 @@
  */
 package org.scalatest.prop
 
-case class RoseTree[T](value: T, private val shrinker: (T, Randomizer) => (List[RoseTree[T]], Randomizer)) {
+trait RoseTree[T] { thisRoseTreeOfT =>
+
+  val value: T
 
   // Compute the shrinks list on demand using this RoseTree's value.
   // This will be called only when a property fails, and just once, and it
   // won't take long, so no need to make this a lazy val.
-  def shrinks(rnd: Randomizer): (List[RoseTree[T]], Randomizer) = shrinker(value, rnd)
+  def shrinks(rnd: Randomizer): (List[RoseTree[T]], Randomizer)
 
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
   // for each shrunken Char, we'll get the one (Char, Int).
@@ -35,7 +37,14 @@ case class RoseTree[T](value: T, private val shrinker: (T, Randomizer) => (List[
       (roseTrees.map(roseTreeOfTToRoseTreeOfUFun), rnd2)
     }
 
-    RoseTree(u, uToListOfRoseTreeOfUFun)
+    new RoseTree[U] {
+      val value: U = f(thisRoseTreeOfT.value)
+      def shrinks(rnd: Randomizer): (List[RoseTree[U]], Randomizer) = {
+        def roseTreeOfTToRoseTreeOfUFun(roseTreeOfT: RoseTree[T]): RoseTree[U] = roseTreeOfT.map(f)
+        val (roseTrees, rnd2) = thisRoseTreeOfT.shrinks(rnd)
+        (roseTrees.map(roseTreeOfTToRoseTreeOfUFun), rnd2)
+      }
+    }
   }
 
   // So here, we need to go through each of the Ints. U here is Char? No, U is (Char, Int) again? Yes.
@@ -48,7 +57,7 @@ case class RoseTree[T](value: T, private val shrinker: (T, Randomizer) => (List[
 
     def roseTreeOfTs(rnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
       val (roseTrees, rnd2) = shrinks(rnd)
-      (RoseTree(value, (o: T, theRnd: Randomizer) => (List.empty, theRnd)) :: roseTrees, rnd2)
+      (Rose(value) :: roseTrees, rnd2)
     } // List of RoseTree[Int]
     // Can I add to this a RoseTree(value, emptyListFun)?
 
@@ -64,14 +73,37 @@ case class RoseTree[T](value: T, private val shrinker: (T, Randomizer) => (List[
 
     // So yes, I get one u (one (Char, Int)), which is the root of the tree. I now need to make the
     // tree part. It should use the same Char but go through the Ints.
-    RoseTree(u, uToListOfRoseTreeOfUFun)
+    //RoseTree(u, uToListOfRoseTreeOfUFun)
+    new RoseTree[U] {
+
+      val value: U = {
+        val roseTreeOfU: RoseTree[U] = f(thisRoseTreeOfT.value)
+        roseTreeOfU.value
+      }
+
+      def shrinks(rnd: Randomizer): (List[RoseTree[U]], Randomizer) = {
+        def roseTreeOfTs(rnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
+          val (roseTrees, rnd2) = thisRoseTreeOfT.shrinks(rnd)
+          (Rose(thisRoseTreeOfT.value) :: roseTrees, rnd2)
+        } // List of RoseTree[Int]
+
+        def roseTreeOfTToRoseTreeOfUFun(roseTreeOfT: RoseTree[T]): RoseTree[U] = f(roseTreeOfT.value)
+
+        val (roseTrees, rnd2) = roseTreeOfTs(rnd)
+        (roseTrees.map(roseTreeOfTToRoseTreeOfUFun), rnd2)
+      }
+    }
     // CharIntPair => roseTreeOfInts.map(roseTreeOfInt => f(roseTreeOfInt.value))
     // So I think right there it should be working. But I am throwing away 
   }
+
+  override def toString: String = s"RoseTree($value)"
 }
 
-object RoseTree {
-  def NoMoreNodes[T]: (T, Randomizer) => (List[RoseTree[T]], Randomizer) = (o, rnd) => (List.empty, rnd)
+// Terminal node of a RoseTree is a Rose.
+case class Rose[T](value: T) extends RoseTree[T] {
+  def shrinks(rnd: Randomizer): (List[RoseTree[T]], Randomizer) = (List.empty, rnd)
+  override def toString: String = s"Rose($value)"
 }
 
 
