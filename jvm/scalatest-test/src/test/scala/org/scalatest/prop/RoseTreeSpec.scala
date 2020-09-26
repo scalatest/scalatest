@@ -26,11 +26,15 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
   describe("A RoseTree") {
     it("should offer a map and flatMap method") {
 
-      def intShr: Int => List[RoseTree[Int]] =
-        (n: Int) => if (n > 0) (0 to n - 1).toList.reverse.map(x => RoseTree(x, intShr)) else List.empty
+      def intShr: (Int, Randomizer) => (List[RoseTree[Int]], Randomizer) = { (n: Int, rnd: Randomizer) =>
+        val roseTrees = if (n > 0) (0 to n - 1).toList.reverse.map(x => RoseTree(x, intShr)) else List.empty
+        (roseTrees, rnd)
+      }
 
-      def dubShr: Double => List[RoseTree[Double]] =
-        (n: Double) => if (n > 0) (0 to n.toInt - 1).toList.map(_.toDouble).reverse.map(x => RoseTree(x, dubShr)) else List.empty
+      def dubShr: (Double, Randomizer) => (List[RoseTree[Double]], Randomizer) = { (n: Double, rnd: Randomizer) =>
+        val roseTrees = if (n > 0) (0 to n.toInt - 1).toList.map(_.toDouble).reverse.map(x => RoseTree(x, dubShr)) else List.empty
+        (roseTrees, rnd)
+      }
 
       val rt = RoseTree(10, intShr)
       rt.value shouldBe 10

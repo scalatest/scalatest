@@ -15,12 +15,12 @@
  */
 package org.scalatest.prop
 
-case class RoseTree[T](value: T, private val shrinker: T => List[RoseTree[T]]) {
+case class RoseTree[T](value: T, private val shrinker: (T, Randomizer) => (List[RoseTree[T]], Randomizer)) {
 
   // Compute the shrinks list on demand using this RoseTree's value.
   // This will be called only when a property fails, and just once, and it
   // won't take long, so no need to make this a lazy val.
-  def shrinks: List[RoseTree[T]] = shrinker(value)
+  def shrinks(rnd: Randomizer): (List[RoseTree[T]], Randomizer) = shrinker(value, rnd)
 
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
   // for each shrunken Char, we'll get the one (Char, Int).
@@ -30,7 +30,10 @@ case class RoseTree[T](value: T, private val shrinker: T => List[RoseTree[T]]) {
 
     def roseTreeOfTToRoseTreeOfUFun(roseTreeOfT: RoseTree[T]): RoseTree[U] = roseTreeOfT.map(f) 
 
-    def uToListOfRoseTreeOfUFun(u: U): List[RoseTree[U]] = shrinks.map(roseTreeOfTToRoseTreeOfUFun)
+    def uToListOfRoseTreeOfUFun(u: U, rnd: Randomizer): (List[RoseTree[U]], Randomizer) = {
+      val (roseTrees, rnd2) = shrinks(rnd)
+      (roseTrees.map(roseTreeOfTToRoseTreeOfUFun), rnd2)
+    }
 
     RoseTree(u, uToListOfRoseTreeOfUFun)
   }
@@ -43,7 +46,10 @@ case class RoseTree[T](value: T, private val shrinker: T => List[RoseTree[T]]) {
 
     val u: U = roseTreeOfU.value // One (Char, Int)
 
-    val roseTreeOfTs: List[RoseTree[T]] = RoseTree(value, (o: T) => List.empty) :: shrinks // List of RoseTree[Int]
+    def roseTreeOfTs(rnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
+      val (roseTrees, rnd2) = shrinks(rnd)
+      (RoseTree(value, (o: T, theRnd: Randomizer) => (List.empty, theRnd)) :: roseTrees, rnd2)
+    } // List of RoseTree[Int]
     // Can I add to this a RoseTree(value, emptyListFun)?
 
     // Ah, I'm not using value, which is T, except to get the roseTreeOfU oh and the List[RoseTree[T]]
@@ -51,7 +57,10 @@ case class RoseTree[T](value: T, private val shrinker: T => List[RoseTree[T]]) {
 
     def roseTreeOfTToRoseTreeOfUFun(roseTreeOfT: RoseTree[T]): RoseTree[U] = f(roseTreeOfT.value)
 
-    def uToListOfRoseTreeOfUFun(u: U): List[RoseTree[U]] = roseTreeOfTs.map(roseTreeOfTToRoseTreeOfUFun)
+    def uToListOfRoseTreeOfUFun(u: U, rnd: Randomizer): (List[RoseTree[U]], Randomizer) = {
+      val (roseTrees, rnd2) = roseTreeOfTs(rnd)
+      (roseTrees.map(roseTreeOfTToRoseTreeOfUFun), rnd2)
+    }
 
     // So yes, I get one u (one (Char, Int)), which is the root of the tree. I now need to make the
     // tree part. It should use the same Char but go through the Ints.
