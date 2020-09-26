@@ -71,5 +71,11 @@ object RoseTreeSpec {
         else (userFriendlyChars.toList.map(c => Rose(c)), rnd)
       }
     }
+
+  def unfold[a](rt: RoseTree[a], indent: String = ""): Unit = {
+    println(s"$indent ${rt.value}")
+    val (roseTrees, rnd2) = rt.shrinks(Randomizer.default)
+    roseTrees.foreach(t => unfold(t, s"$indent  "))
+  }
 }
 
