@@ -15,7 +15,12 @@
  */
 package org.scalatest.prop
 
-case class RoseTree[T](value: T, shrinker: T => List[RoseTree[T]]) {
+case class RoseTree[T](value: T, private val shrinker: T => List[RoseTree[T]]) {
+
+  // Compute the shrinks list on demand using this RoseTree's value.
+  // This will be called only when a property fails, and just once, and it
+  // won't take long, so no need to make this a lazy val.
+  def shrinks: List[RoseTree[T]] = shrinker(value)
 
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
   // for each shrunken Char, we'll get the one (Char, Int).
@@ -25,7 +30,7 @@ case class RoseTree[T](value: T, shrinker: T => List[RoseTree[T]]) {
 
     def roseTreeOfTToRoseTreeOfUFun(roseTreeOfT: RoseTree[T]): RoseTree[U] = roseTreeOfT.map(f) 
 
-    def uToListOfRoseTreeOfUFun(u: U): List[RoseTree[U]] = shrinker(value).map(roseTreeOfTToRoseTreeOfUFun) 
+    def uToListOfRoseTreeOfUFun(u: U): List[RoseTree[U]] = shrinks.map(roseTreeOfTToRoseTreeOfUFun)
 
     RoseTree(u, uToListOfRoseTreeOfUFun)
   }
@@ -38,7 +43,7 @@ case class RoseTree[T](value: T, shrinker: T => List[RoseTree[T]]) {
 
     val u: U = roseTreeOfU.value // One (Char, Int)
 
-    val roseTreeOfTs: List[RoseTree[T]] = RoseTree(value, (o: T) => List.empty) :: shrinker(value) // List of RoseTree[Int]
+    val roseTreeOfTs: List[RoseTree[T]] = RoseTree(value, (o: T) => List.empty) :: shrinks // List of RoseTree[Int]
     // Can I add to this a RoseTree(value, emptyListFun)?
 
     // Ah, I'm not using value, which is T, except to get the roseTreeOfU oh and the List[RoseTree[T]]
