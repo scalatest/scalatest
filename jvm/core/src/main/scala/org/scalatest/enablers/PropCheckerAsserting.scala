@@ -202,8 +202,14 @@ abstract class UnitPropCheckerAsserting {
                   }
               }
             }
-            val (it, _) = genA.shrink(a, rnd)
-            shrinkLoop(it.take(100).toList)
+            val (rootRoseTree, rnd2) = genA.shrink(a, rnd)
+            // For now, just look at the first level of the RoseTree, which
+            // should (except maybe in the case of Option) be the same
+            // values in our old shrink List[A]. Currently I won't use
+            // the next rnd that comes out of here, but later when we
+            // traverse the tree, we will use it.
+            val (firstLevelRoseTrees, _) = rootRoseTree.shrinks(rnd2)
+            shrinkLoop(firstLevelRoseTrees.map(_.value).take(100))
         }
       }
 
@@ -750,8 +756,14 @@ trait FuturePropCheckerAsserting {
                   }
               }
             }
-            val (it, _) = genA.shrink(a, rnd)
-            shrinkLoop(it.take(100).toList)
+            val (rootRoseTree, rnd2) = genA.shrink(a, rnd)
+            // For now, just look at the first level of the RoseTree, which
+            // should (except maybe in the case of Option) be the same
+            // values in our old shrink List[A]. Currently I won't use
+            // the next rnd that comes out of here, but later when we
+            // traverse the tree, we will use it.
+            val (firstLevelRoseTrees, _) = rootRoseTree.shrinks(rnd2)
+            shrinkLoop(firstLevelRoseTrees.map(_.value).take(100))
           case pcr => Future.successful(pcr)
         }
 
