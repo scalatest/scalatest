@@ -836,19 +836,6 @@ object Generator {
             }
           }
         (rootRoseTree, rnd)
-        // ???
-        /*
-        val rootRoseTree =
-          new RoseTree[Long] {
-            val value: Long = n
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Long]], Randomizer) = {
-              XXX
-              (shrinkLoop(n, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-         */
-
       }
       override def toString = "Generator[Long]"
     }
