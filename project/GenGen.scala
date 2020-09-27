@@ -3595,7 +3595,7 @@ $okayAssertions$
       |    } yield $initToLastName$($initLower$)
       |  }
       |
-      |  def next(szp: SizeParam, edges: List[$lastType$], rnd: Randomizer): ($lastType$, List[$lastType$], Randomizer) = underlying.next(szp, edges, rnd)
+      |  def next(szp: SizeParam, edges: List[$lastType$], rnd: Randomizer): (RoseTree[$lastType$], List[$lastType$], Randomizer) = underlying.next(szp, edges, rnd)
       |  override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[$lastType$], Randomizer) = underlying.initEdges(maxLength, rnd)
       |  override def map[Z](f: ($lastType$) => Z): Generator[Z] = underlying.map(f)
       |  override def flatMap[Z](f: ($lastType$) => Generator[Z]): Generator[Z] = underlying.flatMap(f)

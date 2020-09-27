@@ -151,12 +151,12 @@ trait CommonGenerators {
         val (allEdges, nextNextRnd) = Randomizer.shuffle(fromToEdges, nextRnd)
         (allEdges.take(maxLength), nextNextRnd)
       }
-      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (RoseTree[T], List[T], Randomizer) = {
         edges match {
-          case head :: tail => (head, tail, rnd)
+          case head :: tail => (Rose(head), tail, rnd)
           case _ =>
             val (nextValue, nextRandomizer) = chooser.choose(from, to)(rnd)
-            (nextValue, Nil, nextRandomizer)
+            (Rose(nextValue), Nil, nextRandomizer)
         }
       }
     }
@@ -850,14 +850,14 @@ trait CommonGenerators {
   def specificValues[T](first: T, second: T, rest: T*): Generator[T] =
     new Generator[T] {
       private val seq: Seq[T] = first +: second +: rest
-      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (RoseTree[T], List[T], Randomizer) = {
         edges match {
           case head :: tail =>
-            (head, tail, rnd)
+            (Rose(head), tail, rnd)
           case _ =>
             val (nextInt, nextRandomizer) = rnd.chooseInt(0, seq.length - 1)
             val nextT = seq(nextInt)
-            (nextT, Nil, nextRandomizer)
+            (Rose(nextT), Nil, nextRandomizer)
         }
       }
     }
@@ -877,12 +877,12 @@ trait CommonGenerators {
     */
   def specificValue[T](theValue: T): Generator[T] =
     new Generator[T] {
-      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (RoseTree[T], List[T], Randomizer) = {
         edges match {
           case head :: tail =>
-            (head, tail, rnd)
+            (Rose(head), tail, rnd)
           case _ =>
-            (theValue, Nil, rnd)
+            (Rose(theValue), Nil, rnd)
         }
       }
     }
@@ -972,10 +972,10 @@ trait CommonGenerators {
         distribution.toVector flatMap { case (w, g) =>
           Vector.fill(w)(g)
         }
-      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (RoseTree[T], List[T], Randomizer) = {
         edges match {
           case head :: tail =>
-            (head, tail, rnd)
+            (Rose(head), tail, rnd)
           case _ =>
             val (nextInt, nextRandomizer) = rnd.chooseInt(0, gens.length - 1)
             val nextGen = gens(nextInt)
@@ -1022,10 +1022,10 @@ trait CommonGenerators {
     val distributees: Vector[Generator[T]] = (first +: second +: rest).toVector
     new Generator[T] {
       // gens contains, for each distribution pair, weight generators.
-      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (RoseTree[T], List[T], Randomizer) = {
         edges match {
           case head :: tail =>
-            (head, tail, rnd)
+            (Rose(head), tail, rnd)
           case _ =>
             val (nextInt, nextRandomizer) = rnd.chooseInt(0, distributees.length - 1)
             val nextGen = distributees(nextInt)
@@ -2408,9 +2408,9 @@ trait CommonGenerators {
     def loop(currentCount: Int, edges: List[A], rnd: Randomizer, acc: Map[String, PosZInt]): Map[String, PosZInt] = {
       if (currentCount >= count) acc
       else {
-        val (nextA, nextEdges, nextRnd) = genOfA.next(SizeParam(PosZInt(0), PosZInt(100), PosZInt(100)), edges, rnd) // TODO: I think this need to mimic forAll.
-        if (pf.isDefinedAt(nextA)) {
-          val category = pf(nextA)
+        val (nextRoseTreeOfA, nextEdges, nextRnd) = genOfA.next(SizeParam(PosZInt(0), PosZInt(100), PosZInt(100)), edges, rnd) // TODO: I think this need to mimic forAll.
+        if (pf.isDefinedAt(nextRoseTreeOfA.value)) {
+          val category = pf(nextRoseTreeOfA.value)
           val prevTotal = acc.getOrElse(category, PosZInt(0))
           val nextAcc = acc + (category -> PosZInt.ensuringValid(prevTotal + 1))
           loop(currentCount + 1, nextEdges, nextRnd, nextAcc)
@@ -2438,13 +2438,13 @@ trait CommonGenerators {
     */
   lazy val first1000Primes: Generator[Int] =
     new Generator[Int] { thisIntGenerator =>
-      def next(szp: SizeParam, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
+      def next(szp: SizeParam, edges: List[Int], rnd: Randomizer): (RoseTree[Int], List[Int], Randomizer) = {
         edges match {
-          case head :: tail => (head, tail, rnd)
+          case head :: tail => (Rose(head), tail, rnd)
           case _ =>
             import CommonGenerators.primeNumbers
             val (index, nextRandomizer) = rnd.chooseInt(0, primeNumbers.length - 1)
-            (primeNumbers(index), Nil, nextRandomizer)
+            (Rose(primeNumbers(index)), Nil, nextRandomizer)
         }
       }
     }
