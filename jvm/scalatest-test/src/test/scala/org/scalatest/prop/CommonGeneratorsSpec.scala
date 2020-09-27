@@ -3230,8 +3230,8 @@ If it doesn't show up for a while, please delete this comment.
         else {
           val maxSize = PosZInt(100)
           val (size, nextRnd) = rnd.chooseInt(1, maxSize)
-          val (value, _, nextNextRnd) = genOfT.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, rnd)
-          samplesLoop(count + 1, nextNextRnd, value :: acc)
+          val (roseTreeOfT, _, nextNextRnd) = genOfT.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, rnd)
+          samplesLoop(count + 1, nextNextRnd, roseTreeOfT.value :: acc)
         } 
       }
       samplesLoop(0, originalRnd, Nil)
@@ -3249,8 +3249,8 @@ If it doesn't show up for a while, please delete this comment.
           if (n == 0)
             results
           else {
-            val (bool, _, nextRnd) = gen.next(SizeParam(0, 0, 0), Nil, rnd)
-            loop(gen, n - 1, nextRnd, bool :: results)
+            val (nextRoseTreeOfBoolean, _, nextRnd) = gen.next(SizeParam(0, 0, 0), Nil, rnd)
+            loop(gen, n - 1, nextRnd, nextRoseTreeOfBoolean.value :: results)
           }
         }
 
