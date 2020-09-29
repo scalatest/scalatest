@@ -42,9 +42,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val (b1, _, br1) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
       val (b2, _, br2) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br1)
       val (b3, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br2)
-      a1 shouldEqual b1
-      a2 shouldEqual b2
-      a3 shouldEqual b3
+      a1.value shouldEqual b1.value
+      a2.value shouldEqual b2.value
+      a3.value shouldEqual b3.value
     }
     it("should offer a map method that composes canonicals methods and offers a shrink that uses the canonicals methods") {
 
@@ -123,9 +123,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val (b1, _, br1) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
       val (b2, _, br2) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br1)
       val (b3, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br2)
-      a1 shouldEqual b1
-      a2 shouldEqual b2
-      a3 shouldEqual b3
+      a1.value shouldEqual b1.value
+      a2.value shouldEqual b2.value
+      a3.value shouldEqual b3.value
     }
     it("should be usable in a forAll") {
       import GeneratorDrivenPropertyChecks._
@@ -300,9 +300,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce Byte edge values first in random order") {
         import Generator._
@@ -368,9 +368,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce Short edge values first in random order") {
         import Generator._
@@ -436,9 +436,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce Int edge values first in random order") {
         import Generator._
@@ -504,9 +504,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce Long edge values first in random order") {
         import Generator._
@@ -577,9 +577,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce Char edge values first in random order") {
         import Generator._
@@ -632,9 +632,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b1, _, br1) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
         val (b2, _, br2) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br1)
         val (b3, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br2)
-        a1 shouldEqual b1
-        a2 shouldEqual b2
-        a3 shouldEqual b3
+        a1.value shouldEqual b1.value
+        a2.value shouldEqual b2.value
+        a3.value shouldEqual b3.value
       }
       it("should produce the Float edge value first") {
         import Generator._
@@ -711,9 +711,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b1, _, br1) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
         val (b2, _, br2) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br1)
         val (b3, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br2)
-        a1 shouldEqual b1
-        a2 shouldEqual b2
-        a3 shouldEqual b3
+        a1.value shouldEqual b1.value
+        a2.value shouldEqual b2.value
+        a3.value shouldEqual b3.value
       }
       it("should produce the Double edge value first") {
         import Generator._
@@ -871,9 +871,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce PosInt edge values first in random order") {
         import Generator._
@@ -913,9 +913,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce PosZInt edge values first in random order") {
         import Generator._
@@ -957,9 +957,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce PosLong edge values first in random order") {
         import Generator._
@@ -999,9 +999,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce PosZLong edge values first in random order") {
         import Generator._
@@ -1043,9 +1043,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce PosFloat edge values first in random order") {
         import Generator._
@@ -1089,9 +1089,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce PosFiniteFloat edge values first in random order") {
         import Generator._
@@ -1133,9 +1133,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce PosZFloat edge values first in random order") {
         import Generator._
@@ -1183,9 +1183,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce PosZFiniteFloat edge values first in random order") {
         import Generator._
@@ -1231,9 +1231,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce PosDouble edge values first in random order") {
         import Generator._
@@ -1277,9 +1277,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce PosFiniteDouble edge values first in random order") {
         import Generator._
@@ -1321,9 +1321,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce PosZDouble edge values first in random order") {
         import Generator._
@@ -1371,9 +1371,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce PosZFiniteDouble edge values first in random order") {
         import Generator._
@@ -1419,9 +1419,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NegInt edge values first in random order") {
         import Generator._
@@ -1461,9 +1461,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NegZInt edge values first in random order") {
         import Generator._
@@ -1505,9 +1505,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NegLong edge values first in random order") {
         import Generator._
@@ -1547,9 +1547,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NegZLong edge values first in random order") {
         import Generator._
@@ -1591,9 +1591,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NegFloat edge values first in random order") {
         import Generator._
@@ -1637,9 +1637,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NegFiniteFloat edge values first in random order") {
         import Generator._
@@ -1681,9 +1681,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NegZFloat edge values first in random order") {
         import Generator._
@@ -1731,9 +1731,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NegZFiniteFloat edge values first in random order") {
         import Generator._
@@ -1779,9 +1779,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NegDouble edge values first in random order") {
         import Generator._
@@ -1825,9 +1825,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NegFiniteDouble edge values first in random order") {
         import Generator._
@@ -1869,9 +1869,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NegZDouble edge values first in random order") {
         import Generator._
@@ -1919,9 +1919,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NegZFiniteDouble edge values first in random order") {
         import Generator._
@@ -1967,9 +1967,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NonZeroInt edge values first in random order") {
         import Generator._
@@ -2033,9 +2033,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NonZeroLong edge values first in random order") {
         import Generator._
@@ -2079,9 +2079,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NonZeroFloat edge values first in random order") {
         import Generator._
@@ -2133,9 +2133,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NonZeroFiniteFloat edge values first in random order") {
         import Generator._
@@ -2183,9 +2183,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NonZeroDouble edge values first in random order") {
         import Generator._
@@ -2237,9 +2237,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce NonZeroFiniteDouble edge values first in random order") {
         import Generator._
@@ -2287,9 +2287,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce FiniteFloat edge values first in random order") {
         import Generator._
@@ -2339,9 +2339,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1.value, a2.value, a3.value, a4.value, a5.value) should contain theSameElementsAs List(b1.value, b2.value, b3.value, b4.value, b5.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce FiniteDouble edge values first in random order") {
         import Generator._

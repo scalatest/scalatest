@@ -98,12 +98,6 @@ trait RoseTree[T] { thisRoseTreeOfT =>
   }
 
   override def toString: String = s"RoseTree($value)"
-
-  override def equals(other: Any): Boolean = 
-    other match {
-      case rt: RoseTree[_] => value == rt.value
-      case _ => false
-    }
 }
 
 // Terminal node of a RoseTree is a Rose.
