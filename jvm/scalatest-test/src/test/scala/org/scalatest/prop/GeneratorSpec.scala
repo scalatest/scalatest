@@ -37,8 +37,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val (a1, _, ar1) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
       val (a2, _, ar2) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar1)
       val (a3, _, _) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar2)
-      a1._1 should not equal a2._1
-      a1._2 should not equal a2._2
+      a1.value._1 should not equal a2.value._1
+      a1.value._2 should not equal a2.value._2
       val (b1, _, br1) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
       val (b2, _, br2) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br1)
       val (b3, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br2)
@@ -118,8 +118,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val (a1, _, ar1) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
       val (a2, _, ar2) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar1)
       val (a3, _, _) = aGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = ar2)
-      a1._1 should not equal a2._1
-      a1._2 should not equal a2._2
+      a1.value._1 should not equal a2.value._1
+      a1.value._2 should not equal a2.value._2
       val (b1, _, br1) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = Randomizer(100))
       val (b2, _, br2) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br1)
       val (b3, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br2)
@@ -247,7 +247,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val values = List(tup1, tup2, tup3, tup4, tup5, tup6, tup7, tup8, tup9, tup10,
           tup11, tup12, tup13, tup14, tup15, tup16, tup17, tup18, tup19, tup20,
           tup21, tup22, tup23, tup24, tup25)
-      values should contain theSameElementsAs expectedInitEdges
+      values.map(_.value) should contain theSameElementsAs expectedInitEdges
     }
 
     describe("for Booleans") {
@@ -269,7 +269,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             results
           else {
             val (bool, _, nextRnd) = booleanGenerator.next(SizeParam(0, 0, 0), Nil, rnd)
-            loop(n - 1, nextRnd, bool :: results)
+            loop(n - 1, nextRnd, bool.value :: results)
           }
         }
 
@@ -308,17 +308,17 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = byteGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: Byte, ae1: List[Byte], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Byte], ae1: List[Byte], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val edges = List(a1, a2, a3, a4, a5)
-        edges should contain (0)
-        edges should contain (1)
-        edges should contain (-1)
-        edges should contain (Byte.MaxValue)
-        edges should contain (Byte.MinValue)
+        edges should contain (Rose(0))
+        edges should contain (Rose(1))
+        edges should contain (Rose(-1))
+        edges should contain (Rose(Byte.MaxValue))
+        edges should contain (Rose(Byte.MinValue))
       }
       it("should produce Byte canonical values") {
         import Generator._
@@ -376,17 +376,17 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = shortGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: Short, ae1: List[Short], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Short], ae1: List[Short], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val edges = List(a1, a2, a3, a4, a5)
-        edges should contain (0)
-        edges should contain (1)
-        edges should contain (-1)
-        edges should contain (Short.MaxValue)
-        edges should contain (Short.MinValue)
+        edges should contain (Rose(0))
+        edges should contain (Rose(1))
+        edges should contain (Rose(-1))
+        edges should contain (Rose(Short.MaxValue))
+        edges should contain (Rose(Short.MinValue))
       }
       it("should produce Short canonical values") {
         import Generator._
@@ -444,17 +444,17 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = intGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: Int, ae1: List[Int], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Int], ae1: List[Int], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val edges = List(a1, a2, a3, a4, a5)
-        edges should contain (0)
-        edges should contain (1)
-        edges should contain (-1)
-        edges should contain (Int.MaxValue)
-        edges should contain (Int.MinValue)
+        edges should contain (Rose(0))
+        edges should contain (Rose(1))
+        edges should contain (Rose(-1))
+        edges should contain (Rose(Int.MaxValue))
+        edges should contain (Rose(Int.MinValue))
       }
       it("should produce Int canonical values") {
         import Generator._
@@ -512,17 +512,17 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = longGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: Long, ae1: List[Long], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Long], ae1: List[Long], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val edges = List(a1, a2, a3, a4, a5)
-        edges should contain (0)
-        edges should contain (1)
-        edges should contain (-1)
-        edges should contain (Long.MaxValue)
-        edges should contain (Long.MinValue)
+        edges should contain (Rose(0))
+        edges should contain (Rose(1))
+        edges should contain (Rose(-1))
+        edges should contain (Rose(Long.MaxValue))
+        edges should contain (Rose(Long.MinValue))
       }
       it("should produce Long canonical values") {
         import Generator._
@@ -585,11 +585,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = charGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: Char, ae1: List[Char], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Char], ae1: List[Char], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val edges = List(a1, a2)
-        edges should contain (Char.MinValue)
-        edges should contain (Char.MaxValue)
+        edges should contain (Rose(Char.MinValue))
+        edges should contain (Rose(Char.MaxValue))
       }
       it("should produce Char canonical values") {
         import Generator._
@@ -640,7 +640,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = floatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: Float, ae1: List[Float], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Float], ae1: List[Float], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -650,7 +650,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (a8, ae8, ar8) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae7, rnd = ar7)
         val (a9, ae9, ar9) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae8, rnd = ar8)
         val (a10, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae9, rnd = ar9)
-        val edges = List(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+        val edges = List(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10).map(_.value)
         edges should contain (Float.NegativeInfinity)
         edges should contain (Float.MinValue)
         edges should contain (-1.0F)
@@ -719,7 +719,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = doubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: Double, ae1: List[Double], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[Double], ae1: List[Double], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -729,7 +729,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (a8, ae8, ar8) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae7, rnd = ar7)
         val (a9, ae9, ar9) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae8, rnd = ar8)
         val (a10, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae9, rnd = ar9)
-        val edges = List(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+        val edges = List(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10).map(_.value)
         edges should contain (Double.NegativeInfinity)
         edges should contain (Double.MinValue)
         edges should contain (-1.0)
@@ -879,9 +879,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posIntGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosInt, ae1: List[PosInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosInt], ae1: List[PosInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
-        val edges = List(a1, a2)
+        val edges = List(a1, a2).map(_.value)
         edges should contain (PosInt(1))
         edges should contain (PosInt.MaxValue)
       }
@@ -921,10 +921,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZIntGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosZInt, ae1: List[PosZInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosZInt], ae1: List[PosZInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (PosZInt(0))
         edges should contain (PosZInt(1))
         edges should contain (PosZInt.MaxValue)
@@ -965,9 +965,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posLongGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosLong, ae1: List[PosLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosLong], ae1: List[PosLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
-        val edges = List(a1, a2)
+        val edges = List(a1, a2).map(_.value)
         edges should contain (PosLong(1L))
         edges should contain (PosLong.MaxValue)
       }
@@ -1007,10 +1007,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZLongGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosZLong, ae1: List[PosZLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosZLong], ae1: List[PosZLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (PosZLong(0L))
         edges should contain (PosZLong(1L))
         edges should contain (PosZLong.MaxValue)
@@ -1051,11 +1051,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosFloat, ae1: List[PosFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosFloat], ae1: List[PosFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
-        val edges = List(a1, a2, a3, a4)
+        val edges = List(a1, a2, a3, a4).map(_.value)
         edges should contain (PosFloat.MinPositiveValue)
         edges should contain (PosFloat(1.0f))
         edges should contain (PosFloat.MaxValue)
@@ -1097,10 +1097,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posFiniteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosFiniteFloat, ae1: List[PosFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosFiniteFloat], ae1: List[PosFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (PosFiniteFloat.MinValue)
         edges should contain (PosFiniteFloat(1.0f))
         edges should contain (PosFiniteFloat.MaxValue)
@@ -1141,13 +1141,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosZFloat, ae1: List[PosZFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosZFloat], ae1: List[PosZFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val (a6, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
-        val edges = List(a1, a2, a3, a4, a5, a6)
+        val edges = List(a1, a2, a3, a4, a5, a6).map(_.value)
         edges should contain (PosZFloat(-0.0f))
         edges should contain (PosZFloat(0.0f))
         edges should contain (PosZFloat.MinPositiveValue)
@@ -1191,12 +1191,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZFiniteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosZFiniteFloat, ae1: List[PosZFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosZFiniteFloat], ae1: List[PosZFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
-        val edges = List(a1, a2, a3, a4, a5)
+        val edges = List(a1, a2, a3, a4, a5).map(_.value)
         edges should contain (PosZFiniteFloat(-0.0f))
         edges should contain (PosZFiniteFloat(0.0f))
         edges should contain (PosZFiniteFloat.MinPositiveValue)
@@ -1239,11 +1239,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosDouble, ae1: List[PosDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosDouble], ae1: List[PosDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
-        val edges = List(a1, a2, a3, a4)
+        val edges = List(a1, a2, a3, a4).map(_.value)
         edges should contain (PosDouble.MinPositiveValue)
         edges should contain (PosDouble(1.0))
         edges should contain (PosDouble.MaxValue)
@@ -1285,10 +1285,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posFiniteDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosFiniteDouble, ae1: List[PosFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosFiniteDouble], ae1: List[PosFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (PosFiniteDouble.MinValue)
         edges should contain (PosFiniteDouble(1.0))
         edges should contain (PosFiniteDouble.MaxValue)
@@ -1329,13 +1329,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosZDouble, ae1: List[PosZDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosZDouble], ae1: List[PosZDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val (a6, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
-        val edges = List(a1, a2, a3, a4, a5, a6)
+        val edges = List(a1, a2, a3, a4, a5, a6).map(_.value)
         edges should contain (PosZDouble(-0.0f))
         edges should contain (PosZDouble(0.0f))
         edges should contain (PosZDouble.MinPositiveValue)
@@ -1379,12 +1379,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZFiniteDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: PosZFiniteDouble, ae1: List[PosZFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[PosZFiniteDouble], ae1: List[PosZFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
-        val edges = List(a1, a2, a3, a4, a5)
+        val edges = List(a1, a2, a3, a4, a5).map(_.value)
         edges should contain (PosZFiniteDouble(-0.0f))
         edges should contain (PosZFiniteDouble(0.0f))
         edges should contain (PosZFiniteDouble.MinPositiveValue)
@@ -1427,9 +1427,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negIntGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NegInt, ae1: List[NegInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegInt], ae1: List[NegInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
-        val edges = List(a1, a2)
+        val edges = List(a1, a2).map(_.value)
         edges should contain (NegInt(-1))
         edges should contain (NegInt.MaxValue)
       }
@@ -1469,10 +1469,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZIntGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NegZInt, ae1: List[NegZInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegZInt], ae1: List[NegZInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (NegZInt(0))
         edges should contain (NegZInt(-1))
         edges should contain (NegZInt.MaxValue)
@@ -1513,9 +1513,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negLongGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NegLong, ae1: List[NegLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegLong], ae1: List[NegLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
-        val edges = List(a1, a2)
+        val edges = List(a1, a2).map(_.value)
         edges should contain (NegLong(-1L))
         edges should contain (NegLong.MaxValue)
       }
@@ -1555,10 +1555,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZLongGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NegZLong, ae1: List[NegZLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegZLong], ae1: List[NegZLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (NegZLong(0L))
         edges should contain (NegZLong(-1L))
         edges should contain (NegZLong.MaxValue)
@@ -1599,11 +1599,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NegFloat, ae1: List[NegFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegFloat], ae1: List[NegFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
-        val edges = List(a1, a2, a3, a4)
+        val edges = List(a1, a2, a3, a4).map(_.value)
         edges should contain (NegFloat.MaxValue)
         edges should contain (NegFloat(-1.0f))
         edges should contain (NegFloat.MinValue)
@@ -1645,10 +1645,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negFiniteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NegFiniteFloat, ae1: List[NegFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegFiniteFloat], ae1: List[NegFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (NegFiniteFloat(-1.0f))
         edges should contain (NegFiniteFloat.MaxValue)
         edges should contain (NegFiniteFloat.MinValue)
@@ -1689,13 +1689,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NegZFloat, ae1: List[NegZFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegZFloat], ae1: List[NegZFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val (a6, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
-        val edges = List(a1, a2, a3, a4, a5, a6)
+        val edges = List(a1, a2, a3, a4, a5, a6).map(_.value)
         edges should contain (NegZFloat(0.0f))
         edges should contain (NegZFloat(-0.0f))
         edges should contain (NegZFloat.ensuringValid(-Float.MinPositiveValue))
@@ -1739,12 +1739,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZFiniteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NegZFiniteFloat, ae1: List[NegZFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegZFiniteFloat], ae1: List[NegZFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
-        val edges = List(a1, a2, a3, a4, a5)
+        val edges = List(a1, a2, a3, a4, a5).map(_.value)
         edges should contain (NegZFiniteFloat(0.0f))
         edges should contain (NegZFiniteFloat(-0.0f))
         edges should contain (NegZFiniteFloat.ensuringValid(-Float.MinPositiveValue))
@@ -1787,11 +1787,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NegDouble, ae1: List[NegDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegDouble], ae1: List[NegDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
-        val edges = List(a1, a2, a3, a4)
+        val edges = List(a1, a2, a3, a4).map(_.value)
         edges should contain (NegDouble.MaxValue)
         edges should contain (NegDouble(-1.0f))
         edges should contain (NegDouble.MinValue)
@@ -1833,10 +1833,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negFiniteDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NegFiniteDouble, ae1: List[NegFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegFiniteDouble], ae1: List[NegFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (NegFiniteDouble(-1.0))
         edges should contain (NegFiniteDouble.MinValue)
         edges should contain (NegFiniteDouble.MaxValue)
@@ -1877,13 +1877,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NegZDouble, ae1: List[NegZDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegZDouble], ae1: List[NegZDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val (a6, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
-        val edges = List(a1, a2, a3, a4, a5, a6)
+        val edges = List(a1, a2, a3, a4, a5, a6).map(_.value)
         edges should contain (NegZDouble(0.0f))
         edges should contain (NegZDouble(-0.0f))
         edges should contain (NegZDouble.ensuringValid(-Double.MinPositiveValue))
@@ -1927,12 +1927,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZFiniteDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NegZFiniteDouble, ae1: List[NegZFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NegZFiniteDouble], ae1: List[NegZFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
-        val edges = List(a1, a2, a3, a4, a5)
+        val edges = List(a1, a2, a3, a4, a5).map(_.value)
         edges should contain (NegZFiniteDouble(0.0))
         edges should contain (NegZFiniteDouble(-0.0))
         edges should contain (NegZFiniteDouble.ensuringValid(-Double.MinPositiveValue))
@@ -1975,11 +1975,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroIntGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NonZeroInt, ae1: List[NonZeroInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NonZeroInt], ae1: List[NonZeroInt], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
-        val edges = List(a1, a2, a3, a4)
+        val edges = List(a1, a2, a3, a4).map(_.value)
         edges should contain (NonZeroInt(-1))
         edges should contain (NonZeroInt.MaxValue)
         edges should contain (NonZeroInt(1))
@@ -2041,11 +2041,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroLongGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NonZeroLong, ae1: List[NonZeroLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NonZeroLong], ae1: List[NonZeroLong], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
-        val edges = List(a1, a2, a3, a4)
+        val edges = List(a1, a2, a3, a4).map(_.value)
         edges should contain (NonZeroLong(-1L))
         edges should contain (NonZeroLong.MaxValue)
         edges should contain (NonZeroLong(1L))
@@ -2087,7 +2087,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NonZeroFloat, ae1: List[NonZeroFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NonZeroFloat], ae1: List[NonZeroFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -2095,7 +2095,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (a6, ae6, ar6) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
         val (a7, ae7, ar7) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae6, rnd = ar6)
         val (a8, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae7, rnd = ar7)
-        val edges = List(a1, a2, a3, a4, a5, a6, a7, a8)
+        val edges = List(a1, a2, a3, a4, a5, a6, a7, a8).map(_.value)
         edges should contain (NonZeroFloat.NegativeInfinity)
         edges should contain (NonZeroFloat.MinValue)
         edges should contain (NonZeroFloat(-1.0f))
@@ -2141,13 +2141,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroFiniteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NonZeroFiniteFloat, ae1: List[NonZeroFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NonZeroFiniteFloat], ae1: List[NonZeroFiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val (a6, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
-        val edges = List(a1, a2, a3, a4, a5, a6)
+        val edges = List(a1, a2, a3, a4, a5, a6).map(_.value)
         edges should contain (NonZeroFiniteFloat.MinValue)
         edges should contain (NonZeroFiniteFloat(-1.0f))
         edges should contain (NonZeroFiniteFloat.ensuringValid(-NonZeroFiniteFloat.MinPositiveValue))
@@ -2191,7 +2191,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NonZeroDouble, ae1: List[NonZeroDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NonZeroDouble], ae1: List[NonZeroDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
@@ -2199,7 +2199,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (a6, ae6, ar6) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
         val (a7, ae7, ar7) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae6, rnd = ar6)
         val (a8, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae7, rnd = ar7)
-        val edges = List(a1, a2, a3, a4, a5, a6, a7, a8)
+        val edges = List(a1, a2, a3, a4, a5, a6, a7, a8).map(_.value)
         edges should contain (NonZeroDouble.NegativeInfinity)
         edges should contain (NonZeroDouble.MinValue)
         edges should contain (NonZeroDouble(-1.0f))
@@ -2245,13 +2245,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroFiniteDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: NonZeroFiniteDouble, ae1: List[NonZeroFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[NonZeroFiniteDouble], ae1: List[NonZeroFiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val (a6, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
-        val edges = List(a1, a2, a3, a4, a5, a6)
+        val edges = List(a1, a2, a3, a4, a5, a6).map(_.value)
         edges should contain (NonZeroFiniteDouble.MinValue)
         edges should contain (NonZeroFiniteDouble(-1.0))
         edges should contain (NonZeroFiniteDouble.ensuringValid(-NonZeroFiniteDouble.MinPositiveValue))
@@ -2295,14 +2295,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = finiteFloatGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: FiniteFloat, ae1: List[FiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[FiniteFloat], ae1: List[FiniteFloat], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val (a6, ae6, ar6) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
         val (a7, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae6, rnd = ar6)
-        val edges = List(a1, a2, a3, a4, a5, a6, a7)
+        val edges = List(a1, a2, a3, a4, a5, a6, a7).map(_.value)
         edges should contain (FiniteFloat.MinValue)
         edges should contain (FiniteFloat(-1.0f))
         edges should contain (FiniteFloat.ensuringValid(-FiniteFloat.MinPositiveValue))
@@ -2347,14 +2347,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = finiteDoubleGenerator
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
-        val (a1: FiniteDouble, ae1: List[FiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
+        val (a1: RoseTree[FiniteDouble], ae1: List[FiniteDouble], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, ae3, ar3) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, ae5, ar5) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val (a6, ae6, ar6) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae5, rnd = ar5)
         val (a7, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae6, rnd = ar6)
-        val edges = List(a1, a2, a3, a4, a5, a6, a7)
+        val edges = List(a1, a2, a3, a4, a5, a6, a7).map(_.value)
         edges should contain (FiniteDouble.MinValue)
         edges should contain (FiniteDouble(-1.0))
         edges should contain (FiniteDouble.ensuringValid(-FiniteDouble.MinPositiveValue))
@@ -2401,7 +2401,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (initEdges, ier) = gen.initEdges(10, Randomizer.default)
         val (a1, ae1, ar1) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
-        List(a1, a2) should contain theSameElementsAs List(NumericChar('0'), NumericChar('9'))
+        List(a1, a2).map(_.value) should contain theSameElementsAs List(NumericChar('0'), NumericChar('9'))
       }
     }
 
@@ -2412,19 +2412,19 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = stringGenerator
   
         val (s1, _, r1) = gen.next(szp = SizeParam(PosZInt(0), 100, 0), edges = Nil, rnd = Randomizer(100))
-        s1.length shouldBe 0
+        s1.value.length shouldBe 0
   
         val (s2, _, r2) = gen.next(szp = SizeParam(PosZInt(0), 100, 3), edges = Nil, rnd = r1)
-        s2.length shouldBe 3
+        s2.value.length shouldBe 3
   
         val (s3, _, r3) = gen.next(szp = SizeParam(PosZInt(0), 100, 38), edges = Nil, rnd = r2)
-        s3.length shouldBe 38
+        s3.value.length shouldBe 38
   
         val (s4, _, r4) = gen.next(szp = SizeParam(PosZInt(0), 100, 88), edges = Nil, rnd = r3)
-        s4.length shouldBe 88
+        s4.value.length shouldBe 88
   
         val (s5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = r4)
-        s5.length shouldBe 100
+        s5.value.length shouldBe 100
       }
       it("should shrink Strings using strategery") {
         import GeneratorDrivenPropertyChecks._
@@ -2723,19 +2723,19 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = listGenerator[Int]
 
         val (l1, _, r1) = gen.next(szp = SizeParam(PosZInt(0), 100, 0), edges = Nil, rnd = Randomizer(100))
-        l1.length shouldBe 0
+        l1.value.length shouldBe 0
 
         val (l2, _, r2) = gen.next(szp = SizeParam(PosZInt(0), 100, 3), edges = Nil, rnd = r1)
-        l2.length shouldBe 3
+        l2.value.length shouldBe 3
 
         val (l3, _, r3) = gen.next(szp = SizeParam(PosZInt(0), 100, 38), edges = Nil, rnd = r2)
-        l3.length shouldBe 38
+        l3.value.length shouldBe 38
 
         val (l4, _, r4) = gen.next(szp = SizeParam(PosZInt(0), 100, 88), edges = Nil, rnd = r3)
-        l4.length shouldBe 88
+        l4.value.length shouldBe 88
 
         val (l5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = r4)
-        l5.length shouldBe 100
+        l5.value.length shouldBe 100
       }
       it("should not exhibit this bug in List shrinking") {
         val lstGen = implicitly[Generator[List[List[Int]]]]
@@ -2892,10 +2892,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Vector[T] edge values first in random order") {
         val gen = Generator.vectorGenerator[Int]
-        val (a1: Vector[Int], ae1: List[Vector[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Vector.empty[Int], Vector(1, 2), Vector(3, 4, 5)), rnd = Randomizer.default)
+        val (a1: RoseTree[Vector[Int]], ae1: List[Vector[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Vector.empty[Int], Vector(1, 2), Vector(3, 4, 5)), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (Vector.empty[Int])
         edges should contain (Vector(1, 2))
         edges should contain (Vector(3, 4, 5))
@@ -3049,10 +3049,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Set[T] edge values first in random order") {
         val gen = Generator.setGenerator[Int]
-        val (a1: Set[Int], ae1: List[Set[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Set.empty[Int], Set(1, 2), Set(3, 4, 5)), rnd = Randomizer.default)
+        val (a1: Rose[Set[Int]], ae1: List[Set[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Set.empty[Int], Set(1, 2), Set(3, 4, 5)), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (Set.empty[Int])
         edges should contain (Set(1, 2))
         edges should contain (Set(3, 4, 5))
@@ -3168,10 +3168,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce SortedSet[T] edge values first in random order") {
         val gen = Generator.sortedSetGenerator[Int]
-        val (a1: SortedSet[Int], ae1: List[SortedSet[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedSet.empty[Int], SortedSet(1, 2), SortedSet(3, 4, 5)), rnd = Randomizer.default)
+        val (a1: Rose[SortedSet[Int]], ae1: List[SortedSet[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedSet.empty[Int], SortedSet(1, 2), SortedSet(3, 4, 5)), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (SortedSet.empty[Int])
         edges should contain (SortedSet(1, 2))
         edges should contain (SortedSet(3, 4, 5))
@@ -3325,10 +3325,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Map[K, V] edge values first in random order") {
         val gen = Generator.mapGenerator[Int, String]
-        val (a1: Map[Int, String], ae1: List[Map[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Map.empty[Int, String], Map(1 -> "one", 2 -> "two"), Map(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
+        val (a1: Rose[Map[Int, String]], ae1: List[Map[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Map.empty[Int, String], Map(1 -> "one", 2 -> "two"), Map(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (Map.empty[Int, String])
         edges should contain (Map(1 -> "one", 2 -> "two"))
         edges should contain (Map(3 -> "three", 4 -> "four", 5 -> "five"))
@@ -3485,10 +3485,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce SortedMap[K, V] edge values first in random order") {
         val gen = Generator.sortedMapGenerator[Int, String]
-        val (a1: SortedMap[Int, String], ae1: List[SortedMap[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedMap.empty[Int, String], SortedMap(1 -> "one", 2 -> "two"), SortedMap(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
+        val (a1: Rose[SortedMap[Int, String]], ae1: List[SortedMap[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedMap.empty[Int, String], SortedMap(1 -> "one", 2 -> "two"), SortedMap(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
-        val edges = List(a1, a2, a3)
+        val edges = List(a1, a2, a3).map(_.value)
         edges should contain (SortedMap.empty[Int, String])
         edges should contain (SortedMap(1 -> "one", 2 -> "two"))
         edges should contain (SortedMap(3 -> "three", 4 -> "four", 5 -> "five"))
