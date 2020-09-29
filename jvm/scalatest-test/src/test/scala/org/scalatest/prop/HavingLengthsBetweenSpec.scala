@@ -30,16 +30,16 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         val gen = lists[Int].havingLengthsBetween(0, 100)
   
         val (l1, _, r1) = gen.next(szp = SizeParam(PosZInt(0), 100, 0), edges = Nil, rnd = Randomizer(100))
-        l1.length shouldBe 0
+        l1.value.length shouldBe 0
   
         val (l2, _, r2) = gen.next(szp = SizeParam(PosZInt(0), 100, 3), edges = Nil, rnd = r1)
-        l2.length shouldBe 3
+        l2.value.length shouldBe 3
   
         val (l3, _, r3) = gen.next(szp = SizeParam(PosZInt(0), 100, 38), edges = Nil, rnd = r2)
-        l3.length shouldBe 38
+        l3.value.length shouldBe 38
   
         val (l4, _, r4) = gen.next(szp = SizeParam(PosZInt(0), 100, 88), edges = Nil, rnd = r3)
-        l4.length shouldBe 88 +- 1 // TODO: Why is this coming out as 87?
+        l4.value.length shouldBe 88 +- 1 // TODO: Why is this coming out as 87?
       }
       it("should not exhibit this bug in List shrinking") {
         import CommonGenerators.lists
@@ -159,19 +159,19 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         }
 
         val (l1, _, r1) = gen.next(szp = SizeParam(PosZInt(0), maxSize, 0), edges = Nil, rnd = Randomizer(100))
-        l1.length shouldBe expectedSize(0)
+        l1.value.length shouldBe expectedSize(0)
   
         val (l2, _, r2) = gen.next(szp = SizeParam(PosZInt(0), maxSize, 3), edges = Nil, rnd = r1)
-        l2.length shouldBe expectedSize(3)
+        l2.value.length shouldBe expectedSize(3)
   
         val (l3, _, r3) = gen.next(szp = SizeParam(PosZInt(0), maxSize, 38), edges = Nil, rnd = r2)
-        l3.length shouldBe expectedSize(38)
+        l3.value.length shouldBe expectedSize(38)
   
         val (l4, _, r4) = gen.next(szp = SizeParam(PosZInt(0), maxSize, 88), edges = Nil, rnd = r3)
-        l4.length shouldBe expectedSize(88)
+        l4.value.length shouldBe expectedSize(88)
   
         val (l5, _, r5) = gen.next(szp = SizeParam(PosZInt(0), maxSize, 89), edges = Nil, rnd = r3)
-        l5.length shouldBe expectedSize(89)
+        l5.value.length shouldBe expectedSize(89)
       }
       it("should not exhibit this bug in List shrinking") {
         import CommonGenerators.lists
