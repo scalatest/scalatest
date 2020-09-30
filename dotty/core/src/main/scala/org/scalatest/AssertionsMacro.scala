@@ -49,7 +49,7 @@ object AssertionsMacro {
   )
   (implicit qctx: QuoteContext): Expr[Assertion] = {
 
-    import qctx.tasty.{_, given}
+    import qctx.tasty._
 
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ ($helper)($bool, $clue, $pos) }
