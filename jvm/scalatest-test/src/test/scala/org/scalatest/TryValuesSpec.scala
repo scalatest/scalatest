@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-import java.io.ObjectOutputStream
+// SKIP-SCALATESTJS-START
+import java.io.{ObjectOutputStream, ByteArrayOutputStream}
+// SKIP-SCALATESTJS-END
 
 import org.scalatest.TryValues._
 import org.scalatest.OptionValues._
@@ -51,7 +53,7 @@ class TryValuesSpec extends AnyFunSpec {
 
     // SKIP-SCALATESTJS-START
     it("should throw a serializable TestFailedException") {
-      val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(_ => ())
+      val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(new ByteArrayOutputStream())
       val t: Try[String] = Success("hi there")
       val caught =
         the [TestFailedException] thrownBy {
