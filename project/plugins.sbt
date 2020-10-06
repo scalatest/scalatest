@@ -2,7 +2,7 @@ addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.4")
 
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.1")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-osgi" % "0.9.4")
+addSbtPlugin("com.typesafe.sbt" % "sbt-osgi" % "0.9.6")
 
 val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.2.0")
 
