@@ -23,7 +23,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.CanAwait
 import scala.concurrent.ExecutionContext
 // SKIP-SCALATESTJS-START
-import java.io.ObjectOutputStream
+import java.io.{ObjectOutputStream, ByteArrayOutputStream}
 // SKIP-SCALATESTJS-END
 import java.util.concurrent.TimeoutException
 import org.scalatest._
@@ -183,7 +183,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
 
       // SKIP-SCALATESTJS-START
       it("should eventually blow up with a serialized TestFailedException") {
-        val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(_ => ())
+        val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(new ByteArrayOutputStream())
         val caught = the [TestFailedException] thrownBy {
           neverReadyFuture.futureValue
         }
