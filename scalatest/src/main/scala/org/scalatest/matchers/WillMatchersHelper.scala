@@ -22,7 +22,7 @@ import org.scalatest.exceptions.TestFailedException
 
 private[scalatest] object WillMatchersHelper {
 
-  def checkNoException(fun: => Any)(implicit prettifier: Prettifier): Fact = {
+  @noinline def checkNoException(fun: => Any)(implicit prettifier: Prettifier): Fact = {
     try {
       fun
       Fact.Yes(Resources.noExceptionWasThrown)(prettifier)

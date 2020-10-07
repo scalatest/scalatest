@@ -39,7 +39,7 @@ final class ResultOfBeWordForAnType[T](clazz: Class[T], prettifier: Prettifier, 
    *                          ^
    * </pre>
    **/
-  def thrownBy(fun: => Any): Assertion = {
+  @noinline def thrownBy(fun: => Any): Assertion = {
     try {
       checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, pos)
       indicateSuccess(Resources.exceptionThrown(clazz.getName))

@@ -317,7 +317,7 @@ private[scalatest] object MatchersHelper {
     }
   }
 
-  def checkNoException(fun: => Any, pos: source.Position): Assertion = {
+  @noinline def checkNoException(fun: => Any, pos: source.Position): Assertion = {
     try {
       fun
       Succeeded

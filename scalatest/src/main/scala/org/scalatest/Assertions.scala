@@ -743,7 +743,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type.
    */
-  def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): T = {
+  @noinline def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): T = {
     val clazz = classTag.runtimeClass
     val caught = try {
       f
@@ -801,7 +801,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type.
    */
-  def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): Assertion = {
+  @noinline def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): Assertion = {
     val clazz = classTag.runtimeClass
     val threwExpectedException =
       try {
