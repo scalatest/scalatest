@@ -3,7 +3,6 @@ import Keys._
 import scalanativecrossproject.ScalaNativeCrossPlugin.autoImport._
 
 import scalanative.sbtplugin.ScalaNativePlugin
-import scalanative.sbtplugin.ScalaNativePluginInternal.NativeTest
 import ScalaNativePlugin.autoImport._
 
 import com.typesafe.sbt.osgi.SbtOsgi
@@ -14,6 +13,8 @@ import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
 import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 trait NativeBuild { this: BuildCommons =>
+
+  val scalaNativeVersion = Option(System.getenv("SCALANATIVE_VERSION")).getOrElse("0.4.0-M2")
 
   lazy val nativeCrossBuildLibraryDependencies = Def.setting {
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -28,8 +29,6 @@ trait NativeBuild { this: BuildCommons =>
   }
 
   private lazy val sharedNativeSettings = Seq(
-    // scala-native only available for scala 2.11
-    crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2.11.")),
   )
 
   lazy val scalacticMacroNative = project.in(file("native/scalactic-macro"))
@@ -156,7 +155,7 @@ trait NativeBuild { this: BuildCommons =>
         organization := "org.scalatest",
         moduleName := "scalatest-app",
         libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-        libraryDependencies += "org.scala-native" %%% "test-interface" % "0.4.0-M2",
+        libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
         // include the scalactic classes and resources in the jar
         mappings in (Compile, packageBin) ++= mappings.in(scalacticNative, Compile, packageBin).value,
         // include the scalactic sources in the source jar
@@ -248,7 +247,7 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Core Native",
       organization := "org.scalatest",
       moduleName := "scalatest-core",
-      libraryDependencies += "org.scala-native" %%% "test-interface" % "0.4.0-M2",
+      libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
       sourceGenerators in Compile += {
         Def.task {
           GenScalaTestNative.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -689,11 +688,7 @@ trait NativeBuild { this: BuildCommons =>
       organization := "org.scalactic",
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
-      /*nativeOptimizerDriver in NativeTest := {
-        val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
-        orig.withPasses(orig.passes.filterNot(p => p == pass.DeadBlockElimination || p == pass.GlobalBoxingElimination))
-      },*/
-      nativeLinkStubs in NativeTest := true,
+      nativeLinkStubs in Test := true,
       sourceGenerators in Test += {
         Def.task {
           GenScalacticNative.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
@@ -710,22 +705,7 @@ trait NativeBuild { this: BuildCommons =>
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
       fork in test := false,
-      /*nativeOptimizerDriver in NativeTest := {
-        val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
-        orig.withPasses(orig.passes.filterNot(p => p == pass.DeadBlockElimination || p == pass.GlobalBoxingElimination))
-      },
-      nativeOptimizerReporter in NativeTest := new tools.OptimizerReporter {
-        override def onStart(batchId: Int, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
-          println(s"start $batchId")
-        }
-        override def onPass(batchId: Int, passId: Int, pass: scala.scalanative.optimizer.Pass, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
-          println(s"$batchId ${pass.getClass.getSimpleName}")
-        }
-        override def onComplete(batchId: Int, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
-          println(s"end $batchId")
-        }
-      },*/
-      nativeLinkStubs in NativeTest := true,
+      nativeLinkStubs in Test := true,
       testOptions in Test := scalatestTestNativeOptions,
       publishArtifact := false,
       publish := {},
