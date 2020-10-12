@@ -29,6 +29,18 @@ trait NativeBuild { this: BuildCommons =>
   }
 
   private lazy val sharedNativeSettings = Seq(
+    // This hack calls class directory as "resource" that forces to add all NIRs that was generated
+    // by scala-native for classes that has `EnableReflectiveInstantiation` annotation
+    // it requires because otherway all this NIRs is ignored by OSGI
+    // and enduser will has a error like
+    // [info] Linking (2152 ms)
+    // [error] missing symbols:
+    // [error] * M89org.scalatest.tools.FrameworkL29org.scalatest.tools.Framework$SN$ReflectivelyInstantiate$RE
+    // [error]   - from M29org.scalatest.tools.FrameworkIE
+    // [error] * T89org.scalatest.tools.FrameworkL29org.scalatest.tools.Framework$SN$ReflectivelyInstantiate$
+    //
+    // Details: https://github.com/scala-native/scala-native/issues/1930
+    resourceDirectories in Compile += (classDirectory in Compile).value
   )
 
   lazy val scalacticMacroNative = project.in(file("native/scalactic-macro"))
