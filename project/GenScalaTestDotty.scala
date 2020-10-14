@@ -258,13 +258,18 @@ object GenScalaTestDotty {
         List(
           "StackDepthExceptionSpec.scala", // skipped because does not compile yet.
           "PayloadSpec.scala" // skipped because does not compile yet.
-        )) /*++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
+        )) ++
+      /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
         List(
           "SpecSpec.scala",     // skipped because depends on java reflections
           "SuiteSpec.scala"    // skipped because depends on java reflections
-        )) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
+        )) ++ */
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, 
+        List(
+          "StackSpec.scala",  // skipped because does not compile yet.
+          "FunSpecSpec.scala",  // skipped because does not compile yet.
+          "FreeSpecSpec.scala" // skipped because does not compile yet.
+        )) /*++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
