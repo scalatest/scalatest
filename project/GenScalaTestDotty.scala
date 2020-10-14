@@ -191,6 +191,7 @@ object GenScalaTestDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
+        "UnitSpec.scala", 
         "AssertionsSpec.scala",
         "TryValuesSpec.scala", 
         "EitherValuesSpec.scala"
@@ -203,8 +204,7 @@ object GenScalaTestDotty {
       List(
         "DirectExpectationsSpec.scala"
       )
-    )
-    /*++
+    ) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
         List(
           "WaitersSpec.scala",    // skipped because Waiters not supported.
@@ -222,8 +222,10 @@ object GenScalaTestDotty {
           "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
           "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
           "TimeoutsSpec.scala",            // skipped because Timeouts not supported.
-          "UltimatelySpec.scala"   // skipped because Eventually not supported.
-        )) ++
+          "UltimatelySpec.scala",   // skipped because Eventually not supported.
+          "TimeLimitsSpec.scala",  // skipped because failed with line number tests.
+          "ScalaFuturesSpec.scala",  // skipped because failed with line number tests.
+        )) /*++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
