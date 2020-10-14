@@ -230,8 +230,12 @@ object GenScalaTestDotty {
         List(
           "PropCheckerAssertingAsyncSpec.scala", // skipped for failing tests.
           "PropCheckerAssertingSpec.scala" // skipped for failing tests.
-        )) /*++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
+        )) ++
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, 
+        List(
+          "ExampleCancelSpec.scala", // skipped because does not compile yet.
+          "ExampleCancelInNestedSuite.scala" // skipped because does not compile yet.
+        )) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
         List(
           "TestLocationJUnit3Suite.scala",
@@ -240,8 +244,16 @@ object GenScalaTestDotty {
           "TestLocationMethodJUnit3Suite.scala",
           "TestLocationMethodJUnitSuite.scala",
           "TestLocationMethodTestNGSuite.scala",
-          "LocationMethodSuiteProp.scala"
-        )) ++
+          "LocationMethodSuiteProp.scala", 
+          "LocationSuiteProp.scala", // skipped because does not compile yet.
+          "ScopePendingProp.scala", // skipped because does not compile yet.
+          "LocationSpec.scala",  // skipped because does not compile yet.
+          "LocationFunctionSuiteProp.scala", // skipped because does not compile yet.
+          "EventSpec.scala", // skipped because does not compile yet.
+          "DeprecatedScopePendingProp.scala",  // skipped because does not compile yet.
+          "DeprecatedLocationSuiteProp.scala", // skipped because does not compile yet.
+          "DeprecatedLocationFunctionSuiteProp.scala" // skipped because does not compile yet.
+        )) /*++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
         List(
