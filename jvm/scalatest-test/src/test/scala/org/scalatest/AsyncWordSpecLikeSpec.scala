@@ -37,7 +37,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncWordSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -98,7 +97,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncWordSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -149,7 +147,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncWordSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-        //SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -185,7 +182,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncWordSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test 1" in {
           Future {
@@ -232,7 +228,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncWordSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test 1" in {
           SleepHelper.sleep(30)
@@ -401,7 +396,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncWordSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test 1" in {
           Future {
@@ -447,7 +441,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class ExampleSpec extends AsyncWordSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test 1" in {
           SleepHelper.sleep(60)
@@ -505,7 +498,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should {
           info(
@@ -532,7 +524,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should {
           "test 1" in {
@@ -564,7 +555,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should {
           "test 1" in {
@@ -617,7 +607,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should {
           note(
@@ -644,7 +633,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should {
           "test 1" in {
@@ -669,7 +657,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should {
           "test 1" in {
@@ -715,7 +702,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should {
           alert(
@@ -742,7 +728,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should {
           "test 1" in {
@@ -767,7 +752,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should {
           "test 1" in {
@@ -813,7 +797,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should {
           markup(
@@ -840,7 +823,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should {
           "test 1" in {
@@ -872,7 +854,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         "test feature" should {
           "test 1" in {

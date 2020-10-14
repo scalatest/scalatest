@@ -30,7 +30,6 @@ class AsyncPropSpecLikeSpec extends FunSpec {
       class ExampleSpec extends AsyncPropSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -91,7 +90,6 @@ class AsyncPropSpecLikeSpec extends FunSpec {
       class ExampleSpec extends AsyncPropSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         val a = 1
 
@@ -144,7 +142,6 @@ class AsyncPropSpecLikeSpec extends FunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         property("test 1") {
           Future {
@@ -191,7 +188,6 @@ class AsyncPropSpecLikeSpec extends FunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         property("test 1") {
           SleepHelper.sleep(30)
@@ -360,7 +356,6 @@ class AsyncPropSpecLikeSpec extends FunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         property("test 1") {
           Future {
@@ -406,7 +401,6 @@ class AsyncPropSpecLikeSpec extends FunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
         property("test 1") {
           SleepHelper.sleep(60)

@@ -333,6 +333,12 @@ class SuiteSortingReporterSpec extends AnyFunSpec with Matchers with EventHelper
       val recordingReporter = new EventRecordingReporter()
       val dispatch = new SuiteSortingReporter(recordingReporter, Span(1, Second), new PrintStream(new ByteArrayOutputStream))
       
+      val suite1Reporter = new EventRecordingReporter()
+      dispatch.registerReporter("suite1", suite1Reporter)
+
+      val suite2Reporter = new EventRecordingReporter()
+      dispatch.registerReporter("suite2", suite2Reporter)
+      
       val tracker = new Tracker()
       
       dispatch(SuiteStarting(tracker.nextOrdinal, "suite1", "suite1", Some("suite1 class name")))
@@ -358,6 +364,20 @@ class SuiteSortingReporterSpec extends AnyFunSpec with Matchers with EventHelper
       checkSuiteCompleted(recordedEvents(6), "suite2")
       // Now this guy finally arrive
       checkSuiteCompleted(recordedEvents(7), "suite1")
+
+      val suite1RecordedEvents = suite1Reporter.eventsReceived
+      assert(suite1RecordedEvents.size === 4)
+      checkSuiteStarting(suite1RecordedEvents(0), "suite1")
+      checkTestStarting(suite1RecordedEvents(1), "Suite 1 Test")
+      checkTestSucceeded(suite1RecordedEvents(2), "Suite 1 Test")
+      checkSuiteCompleted(suite1RecordedEvents(3), "suite1")
+
+      val suite2RecordedEvents = suite2Reporter.eventsReceived
+      assert(suite2RecordedEvents.size === 4)
+      checkSuiteStarting(suite2RecordedEvents(0), "suite2")
+      checkTestStarting(suite2RecordedEvents(1), "Suite 2 Test")
+      checkTestSucceeded(suite2RecordedEvents(2), "Suite 2 Test")
+      checkSuiteCompleted(suite2RecordedEvents(3), "suite2")
     }
     // SKIP-SCALATESTJS,NATIVE-END
   }

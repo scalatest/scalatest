@@ -37,7 +37,6 @@ class CompleteLastlySpec extends AsyncFunSpec {
         override def executionContext: ExecutionContext = ExecutionContext.Implicits.global
 // SKIP-SCALATESTJS,NATIVE-END
 //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-//SCALATESTNATIVE-ONLY implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
       }
 */
     describe("when an exception is immediately thrown") {

@@ -15,6 +15,8 @@
  */
 package org.scalactic.source
 
+import scala.util.{Failure, Try, Success}
+
 trait ObjectMeta {
 
   def fieldNames: scala.collection.immutable.IndexedSeq[String]
@@ -49,20 +51,31 @@ object ObjectMeta {
         }.toVector
       }
 
-      def value(name: String): Any =
-        try {
-          v.getClass.getDeclaredMethod(name).invoke(v)
-        }
-        catch {
-          case e: NoSuchMethodException =>
+      def value(name: String): Any = {
+        val fieldTry = Try(v.getClass.getDeclaredMethod(name))
+          .recoverWith {
+            case e: NoSuchMethodException =>
+              Try(v.getClass.getDeclaredMethod(name + "$mcI$sp"))
+                .recoverWith {
+                  case e: NoSuchMethodException =>
+                    Failure(new IllegalArgumentException("'" + name + "' is not attribute for this instance."))
+                }
+          }
+
+        fieldTry match {
+          case Failure(e) => throw e
+          case Success(field) =>
             try {
-              v.getClass.getDeclaredMethod(name + "$mcI$sp").invoke(v)
-            }
-            catch {
-              case e: NoSuchMethodException =>
-                throw new IllegalArgumentException("'" + name + "' is not attribute for this instance.")
+              field.invoke(v)
+            } catch {
+              case e: IllegalAccessException =>
+                field.setAccessible(true)
+                val value = field.invoke(v)
+                field.setAccessible(false)
+                value
             }
         }
+      }
 
       def typeName(name: String): String = value(name).getClass.getName
 
