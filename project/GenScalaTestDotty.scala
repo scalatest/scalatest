@@ -283,31 +283,26 @@ object GenScalaTestDotty {
           "SpanSugarSpec.scala" // skipped because does not compile yet.
         )
       ) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) /*++
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
         List(
-          "DashboardReporterSpec.scala",
-          "DiscoverySuiteSuite.scala",
-          "FilterReporterSpec.scala",
-          "FrameworkSuite.scala",
-          "HtmlReporterSpec.scala",
-          "JUnitXmlReporterSuite.scala",
-          "MemoryReporterSuite.scala",
-          "RunnerSpec.scala",
-          "SbtCommandParserSpec.scala",
-          "ScalaTestAntTaskSpec.scala",
-          "ScalaTestFrameworkSuite.scala",
-          "ScalaTestRunnerSuite.scala",
-          "SomeApiClass.scala",
-          "SomeApiClassRunner.scala",
-          "SomeApiSubClass.scala",
-          "StringReporterAlertSpec.scala",
-          "StringReporterSuite.scala",
-          "StringReporterSummarySpec.scala",
-          "SuiteDiscoveryHelperSuite.scala",
-          "XmlSocketReporterSpec.scala"
+          "DiscoverySuiteSuite.scala",  // skipped because failing test.
+          "FilterReporterSpec.scala",  // skipped because does not compile yet.
+          "FrameworkSuite.scala", // skipped because hang when tests execute.
+          "ScalaTestFrameworkSuite.scala", // skipped because does not compile yet.
+          "ScalaTestRunnerSuite.scala", // skipped because does not compile yet.
+          //"SomeApiClass.scala",
+          //"SomeApiClassRunner.scala",
+          //"SomeApiSubClass.scala",
+          //"StringReporterAlertSpec.scala",
+          //"StringReporterSuite.scala",
+          //"StringReporterSummarySpec.scala",
+          "SuiteDiscoveryHelperSuite.scala",  // skipped because does not compile yet.
+          "XmlSocketReporterSpec.scala", // skipped because hang when tests execute.
+          "SuiteSortingReporterSpec.scala",  // skipped because does not compile yet.
+          "TestSortingReporterSpec.scala" // skipped because does not compile yet.
         )
-      )*/
+      )
     }
 
     def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
