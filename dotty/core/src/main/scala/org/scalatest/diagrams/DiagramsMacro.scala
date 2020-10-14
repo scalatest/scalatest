@@ -22,8 +22,7 @@ import org.scalatest.compatible.Assertion
 
 object DiagramsMacro {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
-  def parse(qctx: QuoteContext)(expr: qctx.tasty.Term): qctx.tasty.Term = {
-    implicit val qctx2: qctx.type = qctx // TODO qctx should be given
+  def parse(using qctx: QuoteContext)(expr: qctx.tasty.Term): qctx.tasty.Term = {
     import qctx.tasty._
     import util._
 
@@ -67,7 +66,7 @@ object DiagramsMacro {
             (diagrams, others :+ arg)
           case (arg, tp) =>
             if (tp.widen.typeSymbol.show.startsWith("scala.Function")) (diagrams, others :+ arg)
-            else (diagrams :+ parse(qctx)(arg), others)
+            else (diagrams :+ parse(arg), others)
         }
       }
 
@@ -87,7 +86,7 @@ object DiagramsMacro {
       case sel @ Select(qual, name) =>
         type T
         implicit val objTp: quoted.Type[T] = qual.tpe.seal.asInstanceOf[quoted.Type[T]]
-        val obj = parse(qctx)(qual).seal.cast[DiagrammedExpr[T]]
+        val obj = parse(qual).seal.cast[DiagrammedExpr[T]]
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
 
         '{
@@ -97,13 +96,13 @@ object DiagramsMacro {
 
       case Block(stats, expr) =>
         // call parse recursively using the expr argument if it is a block
-        Block(stats, parse(qctx)(expr))
+        Block(stats, parse(expr))
       case Apply(sel @ Select(lhs, op), rhs :: Nil) =>
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
         op match {
           case "||" | "|" =>
-            val left = parse(qctx)(lhs).seal.cast[DiagrammedExpr[Boolean]]
-            val right = parse(qctx)(rhs).seal.cast[DiagrammedExpr[Boolean]]
+            val left = parse(lhs).seal.cast[DiagrammedExpr[Boolean]]
+            val right = parse(rhs).seal.cast[DiagrammedExpr[Boolean]]
 
             '{
               val l = $left
@@ -114,8 +113,8 @@ object DiagramsMacro {
               }
             }.unseal
           case "&&" | "&" =>
-            val left = parse(qctx)(lhs).seal.cast[DiagrammedExpr[Boolean]]
-            val right = parse(qctx)(rhs).seal.cast[DiagrammedExpr[Boolean]]
+            val left = parse(lhs).seal.cast[DiagrammedExpr[Boolean]]
+            val right = parse(rhs).seal.cast[DiagrammedExpr[Boolean]]
             '{
               val l = $left
               if (!l.value) l
@@ -127,7 +126,7 @@ object DiagramsMacro {
           case _ =>
             type T
             implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
-            val left = parse(qctx)(lhs)
+            val left = parse(lhs)
 
             val methTp = sel.tpe.widen.asInstanceOf[MethodType]
             val (diagrams, others) = handleArgs(methTp.paramTypes, rhs :: Nil)
@@ -146,7 +145,7 @@ object DiagramsMacro {
         type T
         implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
 
-        val left = parse(qctx)(lhs)
+        val left = parse(lhs)
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
 
         val methTp = sel.tpe.widen.asInstanceOf[MethodType]
@@ -165,8 +164,8 @@ object DiagramsMacro {
       if isImplicitMethodType(f.tpe) =>
         type T
         implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
-        val left = parse(qctx)(lhs)
-        val right = parse(qctx)(rhs)
+        val left = parse(lhs)
+        val right = parse(rhs)
 
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
 
@@ -187,7 +186,7 @@ object DiagramsMacro {
         type T
         implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
 
-        val left = parse(qctx)(lhs)
+        val left = parse(lhs)
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
 
         val methTp = fun.tpe.widen.asInstanceOf[MethodType]
@@ -207,7 +206,7 @@ object DiagramsMacro {
         type T
         implicit val tpT: quoted.Type[T] = lhs.tpe.seal.asInstanceOf[quoted.Type[T]]
 
-        val left = parse(qctx)(lhs)
+        val left = parse(lhs)
         val anchor = getAnchorForSelect(sel.asInstanceOf[Select])
 
         let(left) { l =>
@@ -224,9 +223,9 @@ object DiagramsMacro {
   def transform(
     helper: Expr[(DiagrammedExpr[Boolean], Any, String, source.Position) => Assertion],
     condition: Expr[Boolean], pos: Expr[source.Position], clue: Expr[Any], sourceText: String
-  )(implicit qctx: QuoteContext): Expr[Assertion] = {
+  )(using qctx: QuoteContext): Expr[Assertion] = {
     import qctx.tasty._
-    val diagExpr = parse(qctx)(condition.unseal.underlyingArgument).seal.cast[DiagrammedExpr[Boolean]]
+    val diagExpr = parse(condition.unseal.underlyingArgument).seal.cast[DiagrammedExpr[Boolean]]
     '{ $helper($diagExpr, $clue, ${Expr(sourceText)}, $pos) }
   }
 }

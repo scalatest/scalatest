@@ -13,12 +13,22 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.14/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = "0.24.0-RC1"
+  lazy val dottyVersion = "0.24.0"
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
     scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
   )
+
+  // https://github.com/sbt/sbt/issues/2205#issuecomment-144375501
+  private lazy val packageManagedSources =
+    mappings in (Compile, packageSrc) ++= { // publish generated sources
+      val srcs = (managedSources in Compile).value
+      val sdirs = (managedSourceDirectories in Compile).value
+      val base = baseDirectory.value
+      import Path._
+      (srcs --- sdirs --- base) pair (relativeTo(sdirs) | relativeTo(base) | flat)
+    }
 
   lazy val scalacticDotty = Project("scalacticDotty", file("dotty/scalactic"))
     .enablePlugins(SbtOsgi)
@@ -30,6 +40,7 @@ trait DottyBuild { this: BuildCommons =>
       organization := "org.scalactic",
       moduleName := "scalactic",
       initialCommands in console := "import org.scalactic._",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task{
           // From scalactic-macro
@@ -91,6 +102,7 @@ trait DottyBuild { this: BuildCommons =>
                                        |import Matchers._""".stripMargin,
       libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenModulesDotty.genScalaTestCore((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
@@ -170,6 +182,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FeatureSpec Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest-featurespec",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenModulesDotty.genScalaTestFeatureSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -200,6 +213,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FlatSpec Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest-flatspec",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenModulesDotty.genScalaTestFlatSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -230,6 +244,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FreeSpec Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest-freespec",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenModulesDotty.genScalaTestFreeSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -260,6 +275,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FunSuite Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest-funsuite",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenModulesDotty.genScalaTestFunSuite((sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -290,6 +306,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FunSpec Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest-funspec",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenModulesDotty.genScalaTestFunSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -320,6 +337,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest PropSpec Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest-propspec",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenModulesDotty.genScalaTestPropSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -350,6 +368,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest RefSpec Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest-refspec",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenModulesDotty.genScalaTestRefSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -380,6 +399,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest WordSpec Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest-wordspec",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenModulesDotty.genScalaTestWordSpec((sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -410,6 +430,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Diagrams Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest-diagrams",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenModulesDotty.genScalaTestDiagrams((sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -440,6 +461,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Matchers Core Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest-matchers-core",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenModulesDotty.genScalaTestMatchersCore((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
@@ -472,6 +494,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Should Matchers Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest-shouldmatchers",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenModulesDotty.genScalaTestShouldMatchers((sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -502,6 +525,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Must Matchers Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest-mustmatchers",
+      packageManagedSources,
       sourceGenerators in Compile += {
         Def.task {
           GenMatchers.genMainForDotty((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
@@ -555,6 +579,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Dotty",
       organization := "org.scalatest",
       moduleName := "scalatest",
+      packageManagedSources,
       sourceGenerators in Compile += {
         // Little trick to get rid of bnd error when publish.
         Def.task{

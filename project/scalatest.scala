@@ -6,7 +6,7 @@ import scala.io.Source
 import com.typesafe.sbt.osgi.OsgiKeys
 import com.typesafe.sbt.osgi.SbtOsgi
 import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
-import com.typesafe.sbt.SbtPgp.autoImport._
+import com.jsuereth.sbtpgp.SbtPgp.autoImport._
 
 //import sbtcrossproject.CrossPlugin.autoImport._
 import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
@@ -52,18 +52,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     }
     catch {
       case e: NoSuchElementException => None
-    }
-
-  def getGPGFilePath: String =
-    envVar("SCALATEST_GPG_FILE") match {
-      case Some(path) => path
-      case None => (Path.userHome / ".gnupg" / "secring.gpg").getAbsolutePath
-    }
-
-  def getGPGPassphase: Option[Array[Char]] =
-    envVar("SCALATEST_GPG_PASSPHASE") match {
-      case Some(passphase) => Some(passphase.toCharArray)
-      case None => None
     }
 
   def getNexusCredentials: Credentials =
@@ -134,8 +122,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         </developers>
       ),
     credentials += getNexusCredentials,
-    pgpSecretRing := file(getGPGFilePath),
-    pgpPassphrase := getGPGPassphase
   )
 
   def sharedSettings: Seq[Setting[_]] = 
@@ -506,6 +492,41 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         scalatestMatchersCore % "compile-internal", 
         scalatestShouldMatchers % "compile-internal", 
         scalatestMustMatchers % "compile-internal")
+
+  lazy val scalatestDoc = Project("scalatestDoc", file("scalatest-doc"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Doc",
+      name := "scalatest-doc",
+      organization := "org.scalatest",
+      libraryDependencies ++= scalatestLibraryDependencies,
+      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+      javaSourceManaged := target.value / "java",
+      sourceGenerators in Compile += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          GenScalaTestDoc.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
+          GenScalaTestDoc.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
+          GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenConfigMap.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
+          ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+          GenCompatibleClasses.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value) ++ 
+          GenFactories.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "matchers" / "dsl", version.value, scalaVersion.value) ++ 
+          GenMatchers.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      scalatestDocSettings,
+      unmanagedResourceDirectories in Compile += baseDirectory.value / "scalatest" / "src" / "main" / "resources",
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).dependsOn(
+      scalacticMacro, 
+      scalactic
+    )      
 
   lazy val rootProject = Project("root", file("."))
                          .aggregate(
