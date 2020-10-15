@@ -2,8 +2,8 @@ language: scala
 scala:
   - 2.10.7
   - 2.11.12
-  - 2.12.8
-  - 2.13.0
+  - 2.12.12
+  - 2.13.3
 
 jdk:
   - oraclejdk8
@@ -49,7 +49,8 @@ branches:
   only:
     - 3.0.x
     - 3.1.x
-    - 3.2.x
+    - 3.2.x-new
+    - 3.3.x
 
 script:
   # work around https://github.com/travis-ci/travis-ci/issues/9713

@@ -15,6 +15,10 @@
  */
 package org.scalatest
 
+// SKIP-SCALATESTJS-START
+import java.io.{ObjectOutputStream, ByteArrayOutputStream}
+// SKIP-SCALATESTJS-END
+
 import org.scalatest.EitherValues._
 import org.scalatest.OptionValues._
 import org.scalatest.SharedHelpers.thisLineNumber
@@ -39,9 +43,22 @@ class EitherValuesSpec extends AnyFunSpec {
         }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("EitherValuesSpec.scala")
-      caught.message.value should be (Resources.eitherLeftValueNotDefined)
+      caught.message.value should be (Resources.eitherLeftValueNotDefined(e))
     }
     
+    // SKIP-SCALATESTJS-START
+    it("should throw a serialized TestFailedException") {
+      val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(new ByteArrayOutputStream())
+      val e: Either[String, String] = Right("hi there")
+      val caught =
+        the [TestFailedException] thrownBy {
+          e.left.value should startWith ("hi")
+        }
+
+      noException should be thrownBy objectOutputStream.writeObject(caught)
+    }
+    // SKIP-SCALATESTJS-END
+
     it("should return the right value inside an either if right.value is defined") {
       val e: Either[String, String] = Right("hi there")
       e.right.value should === ("hi there")
@@ -56,7 +73,7 @@ class EitherValuesSpec extends AnyFunSpec {
         }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("EitherValuesSpec.scala")
-      caught.message.value should be (Resources.eitherRightValueNotDefined)
+      caught.message.value should be (Resources.eitherRightValueNotDefined(e))
     }
 
     it("should allow an immediate application of parens to invoke apply on the type contained in the Left") {

@@ -192,6 +192,8 @@ object GenScalaTestDotty {
     copyFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
         "AssertionsSpec.scala",
+        "TryValuesSpec.scala", 
+        "EitherValuesSpec.scala"
         // "ShouldCompileSpec.scala",
         // "ShouldNotCompileSpec.scala",
         // "ShouldNotTypeCheckSpec.scala"

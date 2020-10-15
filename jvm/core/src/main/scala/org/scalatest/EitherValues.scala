@@ -80,7 +80,7 @@ import org.scalatest.exceptions.TestFailedException
  * either.right.value should be &gt; 9 // either.right.value throws TestFailedException
  * </pre>
  */
-trait EitherValues {
+trait EitherValues extends Serializable {
 
   import scala.language.implicitConversions
 
@@ -109,7 +109,8 @@ trait EitherValues {
    * @param leftProj A <code>LeftProjection</code> to convert to <code>LeftValuable</code>, which provides the
    *   <code>value</code> method.
    */
-  class LeftValuable[L, R](leftProj: Either.LeftProjection[L, R], pos: source.Position) {
+  @SerialVersionUID(6456651986588292408L)
+  class LeftValuable[L, R](leftProj: Either.LeftProjection[L, R], pos: source.Position) extends Serializable {
 
     /**
      * Returns the <code>Left</code> value contained in the wrapped <code>LeftProjection</code>, if defined as a <code>Left</code>, else throws <code>TestFailedException</code> with
@@ -121,7 +122,7 @@ trait EitherValues {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherLeftValueNotDefined), Some(cause), pos)
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherLeftValueNotDefined(leftProj.e)), Some(cause), pos)
       }
     }
   }
@@ -137,7 +138,8 @@ trait EitherValues {
    * @param rightProj A <code>RightProjection</code> to convert to <code>RightValuable</code>, which provides the
    *   <code>value</code> method.
    */
-  class RightValuable[L, R](rightProj: Either.RightProjection[L, R], pos: source.Position) {
+  @SerialVersionUID(7116575630323705558L)
+  class RightValuable[L, R](rightProj: Either.RightProjection[L, R], pos: source.Position) extends Serializable {
 
     /**
      * Returns the <code>Right</code> value contained in the wrapped <code>RightProjection</code>, if defined as a <code>Right</code>, else throws <code>TestFailedException</code> with
@@ -149,7 +151,7 @@ trait EitherValues {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherRightValueNotDefined), Some(cause), pos)
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherRightValueNotDefined(rightProj.e)), Some(cause), pos)
       }
     }
   }

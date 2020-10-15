@@ -262,7 +262,7 @@ class DifferSpec extends funspec.AnyFunSpec {
   val EOL = scala.compat.Platform.EOL
 
   sealed trait Parent
-  case class Bar( s: String, i: Int ) extends Parent
+  case class Bar( s: String, private val i: Int ) extends Parent
   case class Foo( bar: Bar, b: List[Int], parent: Option[Parent] ) extends Parent
 
   // SKIP-SCALATESTNATIVE-START
@@ -394,6 +394,23 @@ class DifferSpec extends funspec.AnyFunSpec {
       }
       assert(e.analysis.length == 1)
       assert(e.analysis(0) == "Tuple3(_2: 2 -> 6)")
+    }
+
+    it("should handle cyclic object diff correctly without causing stack overflow exception") {
+      case class Cyclic(str: String, var c: Cyclic) {
+        override def toString = str
+      }
+
+      val a = Cyclic("a", null)
+      val b = Cyclic("b", a)
+      a.c = b 
+      
+      val e = intercept[TestFailedException] {
+        assert(a == b)
+      }
+      assert(e.getMessage == "a did not equal b")
+      assert(e.analysis.length == 1)
+      assert(e.analysis(0).contains("Cyclic value detected, name: a -> b, str: \"[b]\" -> \"[a]\"), str: \"[a]\" -> \"[b]\""))
     }
 
   }

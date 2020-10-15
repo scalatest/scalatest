@@ -16,7 +16,6 @@
 package org.scalactic.source
 
 import scala.quoted._
-import scala.tasty._
 
 class TypeInfo[T](val name: String)
 
