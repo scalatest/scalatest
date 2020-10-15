@@ -2187,6 +2187,7 @@ import org.scalatest.{Suite, Finders}
   * </ul>
   */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
+//SCALATESTNATIVE-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 
