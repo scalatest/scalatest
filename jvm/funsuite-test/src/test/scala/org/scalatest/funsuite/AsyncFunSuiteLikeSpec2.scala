@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.funsuite
 
+import org.scalatest._
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import scala.concurrent.{ExecutionContext, Promise, Future}
 import org.scalatest.concurrent.SleepHelper

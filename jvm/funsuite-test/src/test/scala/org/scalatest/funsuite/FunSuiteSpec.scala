@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.funsuite
 
-import SharedHelpers._
+import org.scalatest._
+import org.scalatest.SharedHelpers._
 import org.scalatest.events._
-import Suite.CHOSEN_STYLES
+import org.scalatest.Suite.CHOSEN_STYLES
 import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.NotAllowedException
