@@ -43,6 +43,7 @@ import Suite.autoTagClassAnnotations
   */
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
+//SCALATESTNATIVE-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 trait AnyFunSuiteLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentFunSuiteMod, "FunSuite")
