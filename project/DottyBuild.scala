@@ -384,7 +384,13 @@ trait DottyBuild { this: BuildCommons =>
       sourceGenerators in Test += Def.task {
         GenScalaTestDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
-    ).dependsOn(commonTestDotty % "test")
+    ).dependsOn(commonTestDotty % "test").aggregate(
+      scalatestDiagramsTestDotty, 
+      scalatestFeatureSpecTestDotty, 
+      scalatestFlatSpecTestDotty, 
+      scalatestFreeSpecTestDotty, 
+      scalatestFunSpecTestDotty
+    )
 
   lazy val scalatestDiagramsTestDotty = project.in(file("dotty/diagrams-test"))
     .settings(sharedSettings: _*)
