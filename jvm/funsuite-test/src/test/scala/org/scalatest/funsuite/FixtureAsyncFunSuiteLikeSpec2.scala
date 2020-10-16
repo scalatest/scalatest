@@ -59,13 +59,13 @@ class FixtureAsyncFunSuiteLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
 
         test("test 4") { fixture =>
           Future {
-            cancel
+            cancel()
           }
         }
 
         ignore("test 5") { fixture =>
           Future {
-            cancel
+            cancel()
           }
         }
 
@@ -115,11 +115,11 @@ class FixtureAsyncFunSuiteLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
         }
 
         test("test 4") { fixture =>
-          cancel
+          cancel()
         }
 
         ignore("test 5") { fixture =>
-          cancel
+          cancel()
         }
 
         override def newInstance = new ExampleSuite

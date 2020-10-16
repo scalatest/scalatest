@@ -58,13 +58,13 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
 
         test("test 4") {
           Future {
-            cancel
+            cancel()
           }
         }
 
         ignore("test 5") {
           Future {
-            cancel
+            cancel()
           }
         }
 
@@ -112,11 +112,11 @@ class AsyncFunSuiteSpec extends AnyFunSpec {
         }
 
         test("test 4") {
-          cancel
+          cancel()
         }
 
         ignore("test 5") {
-          cancel
+          cancel()
         }
 
         override def newInstance = new ExampleSuite

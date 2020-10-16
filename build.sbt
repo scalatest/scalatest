@@ -44,6 +44,7 @@ lazy val scalatestFeatureSpecTestDotty = ScalatestBuild.scalatestFeatureSpecTest
 lazy val scalatestFlatSpecTestDotty = ScalatestBuild.scalatestFlatSpecTestDotty
 lazy val scalatestFreeSpecTestDotty = ScalatestBuild.scalatestFreeSpecTestDotty
 lazy val scalatestFunSpecTestDotty = ScalatestBuild.scalatestFunSpecTestDotty
+lazy val scalatestFunSuiteTestDotty = ScalatestBuild.scalatestFunSuiteTestDotty
 lazy val scalatestApp = ScalatestBuild.scalatestApp
 lazy val scalatestAppJS = ScalatestBuild.scalatestAppJS
 lazy val scalatestAppNative = ScalatestBuild.scalatestAppNative
