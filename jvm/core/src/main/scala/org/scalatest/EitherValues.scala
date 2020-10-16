@@ -109,7 +109,6 @@ trait EitherValues extends Serializable {
    * @param leftProj A <code>LeftProjection</code> to convert to <code>LeftValuable</code>, which provides the
    *   <code>value</code> method.
    */
-  @SerialVersionUID(6456651986588292408L)
   class LeftValuable[L, R](leftProj: Either.LeftProjection[L, R], pos: source.Position) extends Serializable {
 
     /**
@@ -138,7 +137,6 @@ trait EitherValues extends Serializable {
    * @param rightProj A <code>RightProjection</code> to convert to <code>RightValuable</code>, which provides the
    *   <code>value</code> method.
    */
-  @SerialVersionUID(7116575630323705558L)
   class RightValuable[L, R](rightProj: Either.RightProjection[L, R], pos: source.Position) extends Serializable {
 
     /**

@@ -110,7 +110,6 @@ private object AbstractPatienceConfiguration extends AbstractPatienceConfigurati
 
   override def patienceConfig: PatienceConfig = PatienceConfig()
 
-  @SerialVersionUID(3466997156436169627L)
   private final class PatienceConfigProxy(timeout: Span, interval: Span) extends Serializable {
     private def readResolve(): Any = PatienceConfig(timeout, interval)
   }
