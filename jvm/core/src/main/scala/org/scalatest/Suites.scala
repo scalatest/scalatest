@@ -53,6 +53,7 @@ import org.scalactic.exceptions.NullArgumentException
  * @author Bill Venners
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
+//SCALATESTNATIVE-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 class Suites(suitesToNest: Suite*) extends Suite { thisSuite =>
 
   requireNonNull(suitesToNest)
