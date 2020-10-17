@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.funsuite
 
+import org.scalatest._
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import scala.concurrent.{ExecutionContext, Promise, Future}
 import org.scalatest.concurrent.SleepHelper
@@ -54,13 +55,13 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
 
         test("test 4") {
           Future {
-            cancel
+            cancel()
           }
         }
 
         ignore("test 5") {
           Future {
-            cancel
+            cancel()
           }
         }
 
@@ -106,11 +107,11 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
         }
 
         test("test 4") {
-          cancel
+          cancel()
         }
 
         ignore("test 5") {
-          cancel
+          cancel()
         }
 
         override def newInstance = new ExampleSuite

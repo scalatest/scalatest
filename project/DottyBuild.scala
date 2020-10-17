@@ -389,7 +389,8 @@ trait DottyBuild { this: BuildCommons =>
       scalatestFeatureSpecTestDotty, 
       scalatestFlatSpecTestDotty, 
       scalatestFreeSpecTestDotty, 
-      scalatestFunSpecTestDotty
+      scalatestFunSpecTestDotty, 
+      scalatestFunSuiteTestDotty
     )
 
   lazy val scalatestDiagramsTestDotty = project.in(file("dotty/diagrams-test"))
@@ -445,6 +446,17 @@ trait DottyBuild { this: BuildCommons =>
       sourceGenerators in Test += Def.task {
         GenScalaTestDotty.genFunSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
-    ).dependsOn(commonTestDotty % "test")            
+    ).dependsOn(commonTestDotty % "test")
+
+  lazy val scalatestFunSuiteTestDotty = project.in(file("dotty/funsuite-test"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDotty)
+    .settings(
+      projectTitle := "ScalaTest FunSuite Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFunSuiteTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDotty % "test")              
 
 }
