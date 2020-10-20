@@ -73,7 +73,7 @@ trait ExampleStackBehaviors { this: AnyFunSpec =>
     it("should remove the top item on pop") {
       val stack = newStack
       val size = stack.size
-      assert(stack.pop === lastItemAdded)
+      assert(stack.pop() === lastItemAdded)
       assert(stack.size === size - 1)
     }
   }
@@ -137,7 +137,7 @@ class ExampleStackSpec extends AnyFunSpec with ExampleStackBehaviors {
 
       it("should complain on pop") {
         intercept[IllegalStateException] {
-          emptyStack.pop
+          emptyStack.pop()
         }
       }
     }

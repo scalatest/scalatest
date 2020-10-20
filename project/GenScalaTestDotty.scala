@@ -262,6 +262,68 @@ object GenScalaTestDotty {
         //"DirectAssertionsSpec.scala", // skipped because does not compile yet 
         "DispatchReporterSpec.scala", 
         "DocSpecSpec.scala", 
+        "EasySuite.scala", 
+        "EitherValuesSpec.scala", 
+        "EncodedOrderingSpec.scala", 
+        "EntrySpec.scala", 
+        "EventHelpers.scala", 
+        "EveryLoneElementSpec.scala", 
+        "EveryShouldContainAllElementsOfLogicalAndSpec.scala", 
+        "EveryShouldContainAllElementsOfLogicalOrSpec.scala", 
+        //"EveryShouldContainAllElementsOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainAllOfLogicalAndSpec.scala", 
+        "EveryShouldContainAllOfLogicalOrSpec.scala", 
+        //"EveryShouldContainAllOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainAtLeastOneElementOfLogicalAndSpec.scala", 
+        "EveryShouldContainAtLeastOneElementOfLogicalOrSpec.scala", 
+        //"EveryShouldContainAtLeastOneElementOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainAtLeastOneOfLogicalAndSpec.scala", 
+        "EveryShouldContainAtLeastOneOfLogicalOrSpec.scala", 
+        //"EveryShouldContainAtLeastOneOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainAtMostOneElementOfLogicalAndSpec.scala", 
+        "EveryShouldContainAtMostOneElementOfLogicalOrSpec.scala", 
+        //"EveryShouldContainAtMostOneElementOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainAtMostOneOfLogicalAndSpec.scala", 
+        "EveryShouldContainAtMostOneOfLogicalOrSpec.scala", 
+        //"EveryShouldContainAtMostOneOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainInOrderElementsOfLogicalAndSpec.scala", 
+        "EveryShouldContainInOrderElementsOfLogicalOrSpec.scala", 
+        //"EveryShouldContainInOrderElementsOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainInOrderLogicalAndSpec.scala", 
+        "EveryShouldContainInOrderLogicalOrSpec.scala", 
+        "EveryShouldContainInOrderOnlyLogicalAndSpec.scala", 
+        "EveryShouldContainInOrderOnlyLogicalOrSpec.scala", 
+        //"EveryShouldContainInOrderOnlySpec.scala", // skipped because does not compile yet 
+        //"EveryShouldContainInOrderSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainNoElementsOfLogicalAndSpec.scala", 
+        "EveryShouldContainNoElementsOfLogicalOrSpec.scala", 
+        //"EveryShouldContainNoElementsOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainNoneOfLogicalAndSpec.scala", 
+        "EveryShouldContainNoneOfLogicalOrSpec.scala", 
+        //"EveryShouldContainNoneOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainOneElementOfLogicalAndSpec.scala", 
+        "EveryShouldContainOneElementOfLogicalOrSpec.scala", 
+        //"EveryShouldContainOneElementOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainOneOfLogicalAndSpec.scala", 
+        "EveryShouldContainOneOfLogicalOrSpec.scala", 
+        //"EveryShouldContainOneOfSpec.scala", // skipped because does not compile yet 
+        //"EveryShouldContainOnlyLogicalAndSpec.scala", // skipped because tests failed
+        //"EveryShouldContainOnlyLogicalOrSpec.scala", // skipped because tests failed 
+        //"EveryShouldContainOnlySpec.scala", // skipped because does not compile yet 
+        //"EveryShouldContainSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainTheSameElementsAsLogicalAndSpec.scala", 
+        "EveryShouldContainTheSameElementsAsLogicalOrSpec.scala", 
+        //"EveryShouldContainTheSameElementsAsSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", 
+        "EveryShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", 
+        //"EveryShouldContainTheSameElementsInOrderAsSpec.scala", // skipped because does not compile yet 
+        "ExampleBeforeAfterParallelSpec.scala", 
+        "ExampleParallelSpec.scala", 
+        "ExamplesSuite.scala", 
+        "ExampleStackSpec.scala", 
+        "ExampleSuiteTimeoutSpec.scala", 
+        "ExampleTimeoutParallelSpec.scala", 
+        "ExpectationHavePropertyMatchers.scala", 
 
         "UnitSpec.scala", 
         "AssertionsSpec.scala",
