@@ -242,6 +242,26 @@ object GenScalaTestDotty {
         "ContainMatcherAndOrExplicitEqualitySpec.scala", 
         "ContainMatcherAndOrSpec.scala", 
         "CustomMatcherSpec.scala", 
+        "DeprecatedAsyncFeatureSpecLikeSpec.scala", 
+        "DeprecatedAsyncFeatureSpecLikeSpec2.scala", 
+        "DeprecatedAsyncFeatureSpecSpec.scala", 
+        "DeprecatedAsyncFeatureSpecSpec2.scala", 
+        //"DeprecatedBeforeAndAfterAllProp.scala", // skipped because does not compile yet 
+        //"DeprecatedCatchReporterProp.scala", // skipped because does not compile yet 
+        //"DeprecatedClassTaggingProp.scala", // skipped because does not compile yet 
+        //"DeprecatedFeatureSpecSpec.scala", // skipped because does not compile yet 
+        //"DeprecatedParallelTestExecutionInfoExamples.scala", // skipped because does not compile yet 
+        //"DeprecatedParallelTestExecutionOrderExamples.scala", // skipped because does not compile yet 
+        //"DeprecatedParallelTestExecutionSuiteTimeoutExamples.scala", // skipped because does not compile yet 
+        //"DeprecatedParallelTestExecutionTestTimeoutExamples.scala", // skipped because does not compile yet 
+        "DeprecatedRandomTestOrderSpec.scala", 
+        //"DeprecatedStatusProp.scala", // skipped because does not compile yet 
+        //"DeprecatedStopOnFailureProp.scala", // skipped because does not compile yet 
+        //"DeprecatedTestDataProp.scala", // skipped because does not compile yet 
+        //"DeprecatedTestNameProp.scala", // skipped because does not compile yet 
+        //"DirectAssertionsSpec.scala", // skipped because does not compile yet 
+        "DispatchReporterSpec.scala", 
+        "DocSpecSpec.scala", 
 
         "UnitSpec.scala", 
         "AssertionsSpec.scala",
