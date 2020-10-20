@@ -333,6 +333,24 @@ object GenScalaTestDotty {
         "FunctionSuiteProp.scala", 
         "FutureOutcomeSpec.scala", 
         "GivenWhenThenSpec.scala", 
+        "InformerSpec.scala", 
+        //"InheritedTagProp.scala", // skipped because does not compile yet 
+        "InOrderContainMatcherDeciderSpec.scala", 
+        "InOrderContainMatcherEqualitySpec.scala", 
+        "InOrderContainMatcherSpec.scala", 
+        "InOrderElementsOfContainMatcherDeciderSpec.scala", 
+        "InOrderElementsOfContainMatcherEqualitySpec.scala", 
+        "InOrderElementsOfContainMatcherSpec.scala", 
+        "InOrderOnlyContainMatcherDeciderSpec.scala", 
+        "InOrderOnlyContainMatcherEqualitySpec.scala", 
+        "InOrderOnlyContainMatcherSpec.scala", 
+        "InsertionOrderSetSpec.scala", 
+        //"InsideMixinSpec.scala", skipped because tests failed 
+        //"InsideSpec.scala", skipped because tests failed
+        //"InspectorsForMapSpec.scala", skipped because tests failed 
+        "InspectorShorthandsRegexWithGroupsSpec.scala", 
+        //"InspectorShorthandsSpec.scala", // skipped because does not compile yet 
+        //"InspectorsSpec.scala", skipped because tests failed 
 
         "UnitSpec.scala", 
         "AssertionsSpec.scala",
