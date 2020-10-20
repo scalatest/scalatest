@@ -215,6 +215,19 @@ object GenScalaTestDotty {
         "AsyncWordSpecLikeSpec2.scala", 
         //"AsyncWordSpecSpec.scala", // skipped because does not compile yet 
         "AsyncWordSpecSpec2.scala", 
+        //"BeforeAndAfterAllConfigMapSpec.scala", // skipped because does not compile yet 
+        //"BeforeAndAfterAllProp.scala", // skipped because does not compile yet 
+        //"BeforeAndAfterAllSpec.scala", // skipped because does not compile yet 
+        "BeforeAndAfterAsyncSuite.scala", 
+        "BeforeAndAfterConfigSuite.scala", 
+        "BeforeAndAfterEachAllSuite.scala", 
+        "BeforeAndAfterEachAsyncSuite.scala", 
+        "BeforeAndAfterEachSuite.scala", 
+        "BeforeAndAfterEachTestDataAsyncSuite.scala", 
+        "BeforeAndAfterEachTestDataSuite.scala", 
+        "BeforeAndAfterSuite.scala", 
+        "BigSuite.scala", 
+        "BigSuiteSuite.scala", 
 
         "UnitSpec.scala", 
         "AssertionsSpec.scala",
