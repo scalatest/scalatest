@@ -324,6 +324,14 @@ object GenScalaTestDotty {
         "ExampleSuiteTimeoutSpec.scala", 
         "ExampleTimeoutParallelSpec.scala", 
         "ExpectationHavePropertyMatchers.scala", 
+        //"FactSpec.scala", // skipped because does not compile yet 
+        "FailureMessagesSuite.scala", 
+        //"FilterProp.scala", // skipped because does not compile yet 
+        //"FilterSpec.scala", // skipped because does not compile yet 
+        "FixtureContextSpec.scala", 
+        "FunctionSuiteExamples.scala", 
+        "FunctionSuiteProp.scala", 
+        "FutureOutcomeSpec.scala", 
 
         "UnitSpec.scala", 
         "AssertionsSpec.scala",
