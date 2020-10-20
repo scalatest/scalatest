@@ -351,6 +351,7 @@ object GenScalaTestDotty {
         "InspectorShorthandsRegexWithGroupsSpec.scala", 
         //"InspectorShorthandsSpec.scala", // skipped because does not compile yet 
         //"InspectorsSpec.scala", skipped because tests failed 
+        "JavaMapLoneElementSpec.scala", 
 
         "UnitSpec.scala", 
         "AssertionsSpec.scala",
