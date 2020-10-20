@@ -228,6 +228,20 @@ object GenScalaTestDotty {
         "BeforeAndAfterSuite.scala", 
         "BigSuite.scala", 
         "BigSuiteSuite.scala", 
+        "CancelAfterFailureSpec.scala", 
+        //"CatchReporterProp.scala", // skipped because does not compile yet  
+        "CatchReporterSpec.scala", 
+        //"CheckpointsSpec.scala", // skipped because does not compile yet 
+        //"ClassTaggingProp.scala", // skipped because does not compile yet  
+        //"ClueSpec.scala", // skipped because does not compile yet  
+        "CompleteLastlySpec.scala", 
+        "ConfigMapSpec.scala", 
+        //"ConfigMapWrapperSuiteSpec.scala", // skipped because does not compile yet  
+        "ContainMatcherAndOrDeciderSpec.scala", 
+        "ContainMatcherAndOrEqualitySpec.scala", 
+        "ContainMatcherAndOrExplicitEqualitySpec.scala", 
+        "ContainMatcherAndOrSpec.scala", 
+        "CustomMatcherSpec.scala", 
 
         "UnitSpec.scala", 
         "AssertionsSpec.scala",
