@@ -191,6 +191,31 @@ object GenScalaTestDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
+        "AlerterSpec.scala", 
+        "AllElementsOfContainMatcherDeciderSpec.scala", 
+        "AllElementsOfContainMatcherEqualitySpec.scala", 
+        "AllElementsOfContainMatcherSpec.scala", 
+        "AllOfContainMatcherDeciderSpec.scala", 
+        "AllOfContainMatcherEqualitySpec.scala", 
+        "AllOfContainMatcherSpec.scala", 
+        //"AllSuiteProp.scala", // skipped because does not compile yet
+        //"AMatcherSpec.scala", // skipped because does not compile yet 
+        //"AnMatcherSpec.scala",  // skipped because does not compile yet
+        //"AnyValMatchersSpec.scala",  // skipped because does not compile yet
+        //"AppendedCluesSpec.scala", // skipped because does not compile yet 
+        //"ArgsSpec.scala",  // skipped because does not compile yet
+        "AsyncEngineSpec.scala", 
+        "AsyncFixturesSpec.scala", 
+        "AsyncInspectorsSpec.scala", 
+        "AsyncPropSpecLikeSpec.scala", 
+        "AsyncPropSpecLikeSpec2.scala", 
+        "AsyncPropSpecSpec.scala", 
+        "AsyncPropSpecSpec2.scala", 
+        //"AsyncWordSpecLikeSpec.scala", // skipped because does not compile yet 
+        "AsyncWordSpecLikeSpec2.scala", 
+        //"AsyncWordSpecSpec.scala", // skipped because does not compile yet 
+        "AsyncWordSpecSpec2.scala", 
+
         "UnitSpec.scala", 
         "AssertionsSpec.scala",
         "TryValuesSpec.scala", 
@@ -199,7 +224,14 @@ object GenScalaTestDotty {
         // "ShouldNotCompileSpec.scala",
         // "ShouldNotTypeCheckSpec.scala"
       )
-    ) ++ 
+    ) ++
+    /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
+      List(
+        "ShouldCompileSpec.scala",
+        "ShouldNotCompileSpec.scala",
+        "ShouldNotTypeCheckSpec.scala"
+      )
+    ) ++*/ 
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, 
       List(
         "DirectExpectationsSpec.scala"
