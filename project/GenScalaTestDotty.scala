@@ -332,6 +332,7 @@ object GenScalaTestDotty {
         "FunctionSuiteExamples.scala", 
         "FunctionSuiteProp.scala", 
         "FutureOutcomeSpec.scala", 
+        "GivenWhenThenSpec.scala", 
 
         "UnitSpec.scala", 
         "AssertionsSpec.scala",
