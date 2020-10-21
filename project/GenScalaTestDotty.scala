@@ -618,15 +618,11 @@ object GenScalaTestDotty {
         "ThreadNameSpec.scala", 
         "TryValuesSpec.scala", 
         //"TypeCheckedAssertionsSpec.scala", // skipped because does not compile yet 
-
-
         "UnitSpec.scala", 
-        "AssertionsSpec.scala",
-        "TryValuesSpec.scala", 
-        "EitherValuesSpec.scala"
-        // "ShouldCompileSpec.scala",
-        // "ShouldNotCompileSpec.scala",
-        // "ShouldNotTypeCheckSpec.scala"
+        "VariousWordSpec.scala", 
+        //"WordSpecImportedMatchersSpec.scala", 
+        "WordSpecMixedInMatchersSpec.scala"
+        //"WordSpecSpec.scala"
       )
     ) ++
     /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
