@@ -439,7 +439,19 @@ object GenScalaTestDotty {
         //"OptionShouldContainOneOfSpec.scala", // skipped because does not compile yet 
         //"OptionShouldContainSpec.scala", // skipped because does not compile yet 
         "OptionValuesSpec.scala", 
-        //"OutcomeSpec.scala", 
+        //"OutcomeSpec.scala", // skipped because does not compile yet 
+        //"ParallelTestExecutionInfoExamples.scala", // skipped because does not compile yet 
+        //"ParallelTestExecutionOrderExamples.scala", // skipped because does not compile yet 
+        //"ParallelTestExecutionParallelSuiteExamples.scala", // skipped because does not compile yet 
+        //"ParallelTestExecutionProp.scala", // skipped because does not compile yet 
+        //"ParallelTestExecutionSpec.scala", // skipped because does not compile yet 
+        //"ParallelTestExecutionSuiteTimeoutExamples.scala", // skipped because does not compile yet 
+        //"ParallelTestExecutionTestTimeoutExamples.scala", // skipped because does not compile yet 
+        "PartialFunctionValuesSpec.scala", 
+        "PrettyAstSpec.scala", 
+        //"PrivateMethodTesterSpec.scala", // skipped because does not compile yet 
+        //"PropertyFunSuite.scala", // skipped because does not compile yet 
+        //"PropSpecSpec.scala", // skipped because does not compile yet  
 
 
         "UnitSpec.scala", 
