@@ -420,6 +420,26 @@ object GenScalaTestDotty {
         "NoneOfContainMatcherSpec.scala", 
         "NonImplicitAssertionsSuite.scala", 
         "NotifierSpec.scala", 
+        "OldDocSpec.scala", 
+        "OneElementOfContainMatcherDeciderSpec.scala", 
+        "OneElementOfContainMatcherEqualitySpec.scala", 
+        "OneElementOfContainMatcherSpec.scala", 
+        "OneInstancePerTestSpec.scala", 
+        "OneOfContainMatcherDeciderSpec.scala", 
+        "OneOfContainMatcherEqualitySpec.scala", 
+        "OneOfContainMatcherSpec.scala", 
+        "OnlyContainMatcherDeciderSpec.scala", 
+        "OnlyContainMatcherEqualitySpec.scala", 
+        "OnlyContainMatcherSpec.scala", 
+        //"OptionShouldContainOneElementOfLogicalAndSpec.scala", // skipped because does not compile yet 
+        //"OptionShouldContainOneElementOfLogicalOrSpec.scala", // skipped because does not compile yet 
+        //"OptionShouldContainOneElementOfSpec.scala", // skipped because does not compile yet 
+        //"OptionShouldContainOneOfLogicalAndSpec.scala", // skipped because does not compile yet 
+        //"OptionShouldContainOneOfLogicalOrSpec.scala", // skipped because does not compile yet 
+        //"OptionShouldContainOneOfSpec.scala", // skipped because does not compile yet 
+        //"OptionShouldContainSpec.scala", // skipped because does not compile yet 
+        "OptionValuesSpec.scala", 
+        //"OutcomeSpec.scala", 
 
 
         "UnitSpec.scala", 
