@@ -460,6 +460,149 @@ object GenScalaTestDotty {
         "RunInSpurtsSpec1.scala", 
         "RunInSpurtsSpec2.scala", 
         "RunningTestSpec.scala", 
+        "SavesConfigMapSuite.scala", 
+        //"SequentialNestedSuiteExecutionSpec.scala", // skipped because does not compile yet 
+        //"SeveredStackTracesFailureSpec.scala", // skipped because tests failed 
+        //"SeveredStackTracesSpec.scala", // skipped because tests failed 
+        //"ShellSuite.scala", // skipped because does not compile yet 
+        //"ShorthandShouldBeThrownBySpec.scala", // skipped because tests failed 
+        //"ShorthandShouldNotBeThrownBySpec.scala", // skipped because does not compile yet 
+        "ShouldBeAMatcherAndOrSpec.scala", 
+        "ShouldBeAnMatcherAndOrSpec.scala", 
+        //"ShouldBeAnSymbolSpec.scala", // skipped because does not compile yet 
+        //"ShouldBeAnTypeSpec.scala", // skipped because does not compile yet
+        "ShouldBeAnySpec.scala", 
+        //"ShouldBeASymbolSpec.scala", // skipped because does not compile yet  
+        //"ShouldBeATypeSpec.scala", // skipped because does not compile yet 
+        //"ShouldBeDefinedAtForAllSpec.scala", // skipped because does not compile yet 
+        //"ShouldBeDefinedAtSpec.scala", // skipped because does not compile yet 
+        "ShouldBeDefinedExplicitSpec.scala", 
+        "ShouldBeDefinedImplicitSpec.scala", 
+        "ShouldBeDefinedLogicalAndExplicitSpec.scala", 
+        "ShouldBeDefinedLogicalAndImplicitSpec.scala", 
+        "ShouldBeDefinedLogicalAndSpec.scala", 
+        "ShouldBeDefinedLogicalOrExplicitSpec.scala", 
+        "ShouldBeDefinedLogicalOrImplicitSpec.scala", 
+        "ShouldBeDefinedLogicalOrSpec.scala", 
+        "ShouldBeDefinedSpec.scala", 
+        "ShouldBeDefinedStructuralLogicalAndSpec.scala", 
+        "ShouldBeDefinedStructuralLogicalOrSpec.scala", 
+        "ShouldBeDefinedStructuralSpec.scala", 
+        "ShouldBeEmptyExplicitSpec.scala", 
+        "ShouldBeEmptyImplicitSpec.scala", 
+        "ShouldBeEmptyLogicalAndExplicitSpec.scala", 
+        "ShouldBeEmptyLogicalAndImplicitSpec.scala", 
+        "ShouldBeEmptyLogicalOrExplicitSpec.scala", 
+        "ShouldBeEmptyLogicalOrImplicitSpec.scala", 
+        "ShouldBeEmptyStructuralLogicalAndSpec.scala", 
+        "ShouldBeEmptyStructuralLogicalOrSpec.scala", 
+        "ShouldBeEmptyStructuralSpec.scala", 
+        "ShouldBehaveLikeSpec.scala", 
+        "ShouldBeMatcherSpec.scala", 
+        //"ShouldBeNullSpec.scala", // skipped because does not compile yet 
+        //"ShouldBePropertyMatcherSpec.scala", // skipped because does not compile yet
+        "ShouldBeReadableExplicitSpec.scala", 
+        "ShouldBeReadableImplicitSpec.scala", 
+        "ShouldBeReadableLogicalAndExplicitSpec.scala", 
+        "ShouldBeReadableLogicalAndImplicitSpec.scala", 
+        "ShouldBeReadableLogicalAndSpec.scala", 
+        "ShouldBeReadableLogicalOrExplicitSpec.scala", 
+        "ShouldBeReadableLogicalOrImplicitSpec.scala", 
+        "ShouldBeReadableLogicalOrSpec.scala", 
+        "ShouldBeReadableSpec.scala", 
+        "ShouldBeReadableStructuralLogicalAndSpec.scala", 
+        "ShouldBeReadableStructuralLogicalOrSpec.scala", 
+        "ShouldBeReadableStructuralSpec.scala", 
+        //"ShouldBeShorthandForAllSpec.scala", // skipped because does not compile yet   
+        //"ShouldBeShorthandSpec.scala", // skipped because does not compile yet 
+        //"ShouldBeSortedLogicalAndSpec.scala", // skipped because does not compile yet 
+        //"ShouldBeSortedLogicalOrSpec.scala", // skipped because does not compile yet 
+        //"ShouldBeSortedSpec.scala", // skipped because does not compile yet 
+        //"ShouldBeSymbolSpec.scala", // skipped because does not compile yet 
+        //"ShouldBeThrownBySpec.scala", // skipped because does not compile yet 
+        "ShouldBeWritableExplicitSpec.scala", 
+        "ShouldBeWritableImplicitSpec.scala", 
+        "ShouldBeWritableLogicalAndExplicitSpec.scala", 
+        "ShouldBeWritableLogicalAndImplicitSpec.scala", 
+        "ShouldBeWritableLogicalAndSpec.scala", 
+        "ShouldBeWritableLogicalOrExplicitSpec.scala", 
+        "ShouldBeWritableLogicalOrImplicitSpec.scala", 
+        "ShouldBeWritableLogicalOrSpec.scala", 
+        "ShouldBeWritableSpec.scala", 
+        "ShouldBeWritableStructuralLogicalAndSpec.scala", 
+        "ShouldBeWritableStructuralLogicalOrSpec.scala", 
+        "ShouldBeWritableStructuralSpec.scala", 
+        "ShouldCollectedTripleEqualsSpec.scala", 
+        "ShouldCollectedTripleEqualsToleranceSpec.scala", 
+        //"ShouldCompileSpec.scala", // skipped because tests failed 
+        //"ShouldContainElementNewSpec.scala", // skipped because does not compile yet 
+        //"ShouldContainElementSpec.scala", // skipped because does not compile yet  
+        "ShouldContainKeySpec.scala", 
+        "ShouldContainValueSpec.scala", 
+        "ShouldEndWithRegexSpec.scala", 
+        "ShouldEndWithSubstringSpec.scala", 
+        //"ShouldEqualEqualitySpec.scala", // skipped because does not compile yet 
+        "ShouldEqualExplicitlySpec.scala", 
+        "ShouldEqualNullSpec.scala", 
+        "ShouldEqualSpec.scala", 
+        "ShouldEqualTokenToleranceSpec.scala", 
+        "ShouldEqualToleranceSpec.scala", 
+        "ShouldExistExplicitSpec.scala", 
+        "ShouldExistImplicitSpec.scala", 
+        "ShouldExistLogicalAndExplicitSpec.scala", 
+        "ShouldExistLogicalAndImplicitSpec.scala", 
+        "ShouldExistLogicalAndSpec.scala", 
+        "ShouldExistLogicalOrExplicitSpec.scala", 
+        "ShouldExistLogicalOrImplicitSpec.scala", 
+        "ShouldExistLogicalOrSpec.scala", 
+        "ShouldExistSpec.scala", 
+        "ShouldFileBePropertyMatcherSpec.scala", 
+        "ShouldFullyMatchSpec.scala", 
+        //"ShouldHavePropertiesSpec.scala", // skipped because does not compile yet 
+        "ShouldIncludeRegexSpec.scala", 
+        "ShouldIncludeSubstringSpec.scala", 
+        //"ShouldLengthSizeSpec.scala", // skipped because does not compile yet 
+        //"ShouldLengthSpec.scala", // skipped because does not compile yet 
+        "ShouldLogicalMatcherExprSpec.scala", 
+        "ShouldMatcherSpec.scala", 
+        //"ShouldMatchPatternSpec.scala", // skipped because does not compile yet 
+        "ShouldMessageSpec.scala", 
+        //"ShouldNotBeThrownBySpec.scala", // skipped because does not compile yet 
+        //"ShouldNotCompileSpec.scala", // skipped because tests failed
+        //"ShouldNotShorthandForAllSpec.scala", // skipped because does not compile yet 
+        //"ShouldNotShorthandSpec.scala", // skipped because does not compile yet 
+        //"ShouldNotTypeCheckSpec.scala", // skipped because tests failed 
+        "ShouldOrderedSpec.scala", 
+        "ShouldPlusOrMinusSpec.scala", 
+        "ShouldSameInstanceAsSpec.scala", 
+        //"ShouldSizeSpec.scala", // skipped because does not compile yet 
+        "ShouldStartWithRegexSpec.scala", 
+        "ShouldStartWithSubstringSpec.scala", 
+        //"ShouldStructuralLengthSpec.scala", // skipped because does not compile yet 
+        //"ShouldStructuralSizeSpec.scala", // skipped because does not compile yet 
+        "ShouldThrowSpec.scala", 
+        //"ShouldTripleEqualsEqualitySpec.scala", // skipped because does not compile yet 
+        "ShouldTripleEqualsSpec.scala", 
+        "ShouldTripleEqualsToleranceSpec.scala", 
+        //"ShouldTypeCheckedTripleEqualsEqualitySpec.scala", // skipped because does not compile yet 
+        "SlowpokeDetectorSpec.scala", 
+        //"StatefulStatusSpec.scala", // skipped because does not compile yet 
+        //"StatusProp.scala", // skipped because does not compile yet 
+        //"StatusSpec.scala", // skipped because does not compile yet 
+        //"StepwiseNestedSuiteExecutionSpec.scala", // skipped because does not compile yet 
+        //"StopOnFailureProp.scala", // skipped because does not compile yet 
+        "StopOnFailureSpec.scala", 
+        //"StreamlinedXmlEqualitySpec.scala", // skipped because does not compile yet 
+        //"StreamlinedXmlNormMethodsSpec.scala", // skipped because does not compile yet 
+        //"StreamlinedXmlSpec.scala", // skipped because does not compile yet 
+        "StringLoneElementSpec.scala", 
+        "StyleNameSpec.scala", 
+        "SuiteCompletedStatusReporter.scala", 
+        //"SuiteExamples.scala", // skipped because does not compile yet 
+        //"SuiteProp.scala", // skipped because does not compile yet 
+        //"SuiteSpec.scala", // skipped because does not compile yet 
+        "SuitesSpec.scala", 
+        //"SuiteSuite.scala", // skipped because does not compile yet 
 
         "UnitSpec.scala", 
         "AssertionsSpec.scala",
