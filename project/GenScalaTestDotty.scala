@@ -358,60 +358,68 @@ object GenScalaTestDotty {
         "ListShouldBeEmptySpec.scala", 
         "ListShouldContainAllElementsOfLogicalAndSpec.scala", 
         "ListShouldContainAllElementsOfLogicalOrSpec.scala", 
-        //"ListShouldContainAllElementsOfSpec.scala", 
+        //"ListShouldContainAllElementsOfSpec.scala", // skipped because does not compile yet 
         "ListShouldContainAllOfLogicalAndSpec.scala", 
         "ListShouldContainAllOfLogicalOrSpec.scala", 
-        //"ListShouldContainAllOfSpec.scala", 
+        //"ListShouldContainAllOfSpec.scala", // skipped because does not compile yet 
         "ListShouldContainAtLeastOneElementOfLogicalAndSpec.scala", 
         "ListShouldContainAtLeastOneElementOfLogicalOrSpec.scala", 
-        //"ListShouldContainAtLeastOneElementOfSpec.scala", 
+        //"ListShouldContainAtLeastOneElementOfSpec.scala", // skipped because does not compile yet 
         "ListShouldContainAtLeastOneOfLogicalAndSpec.scala", 
         "ListShouldContainAtLeastOneOfLogicalOrSpec.scala", 
-        //"ListShouldContainAtLeastOneOfSpec.scala", 
+        //"ListShouldContainAtLeastOneOfSpec.scala", // skipped because does not compile yet 
         "ListShouldContainAtMostOneElementOfLogicalAndSpec.scala", 
         "ListShouldContainAtMostOneElementOfLogicalOrSpec.scala", 
-        //"ListShouldContainAtMostOneElementOfSpec.scala", 
+        //"ListShouldContainAtMostOneElementOfSpec.scala", // skipped because does not compile yet 
         "ListShouldContainAtMostOneOfLogicalAndSpec.scala", 
         "ListShouldContainAtMostOneOfLogicalOrSpec.scala", 
-        //"ListShouldContainAtMostOneOfSpec.scala", 
+        //"ListShouldContainAtMostOneOfSpec.scala", // skipped because does not compile yet 
         "ListShouldContainInOrderElementsOfLogicalAndSpec.scala", 
         "ListShouldContainInOrderElementsOfLogicalOrSpec.scala", 
-        //"ListShouldContainInOrderElementsOfSpec.scala", 
+        //"ListShouldContainInOrderElementsOfSpec.scala", // skipped because does not compile yet 
         "ListShouldContainInOrderLogicalAndSpec.scala", 
         "ListShouldContainInOrderLogicalOrSpec.scala", 
         "ListShouldContainInOrderOnlyLogicalAndSpec.scala", 
         "ListShouldContainInOrderOnlyLogicalOrSpec.scala", 
-        //"ListShouldContainInOrderOnlySpec.scala", 
-        //"ListShouldContainInOrderSpec.scala", 
+        //"ListShouldContainInOrderOnlySpec.scala", // skipped because does not compile yet 
+        //"ListShouldContainInOrderSpec.scala", // skipped because does not compile yet 
         "ListShouldContainNoElementsOfLogicalAndSpec.scala", 
         "ListShouldContainNoElementsOfLogicalOrSpec.scala", 
-        //"ListShouldContainNoElementsOfSpec.scala", 
+        //"ListShouldContainNoElementsOfSpec.scala", // skipped because does not compile yet 
         "ListShouldContainNoneOfLogicalAndSpec.scala", 
         "ListShouldContainNoneOfLogicalOrSpec.scala", 
-        //"ListShouldContainNoneOfSpec.scala", 
+        //"ListShouldContainNoneOfSpec.scala", // skipped because does not compile yet 
         "ListShouldContainOneElementOfLogicalAndSpec.scala", 
         "ListShouldContainOneElementOfLogicalOrSpec.scala", 
-        //"ListShouldContainOneElementOfSpec.scala", 
+        //"ListShouldContainOneElementOfSpec.scala", // skipped because does not compile yet 
         "ListShouldContainOneOfLogicalAndSpec.scala", 
         "ListShouldContainOneOfLogicalOrSpec.scala", 
-        //"ListShouldContainOneOfSpec.scala", 
-        //"ListShouldContainOnlyLogicalAndSpec.scala", 
-        //"ListShouldContainOnlyLogicalOrSpec.scala", 
-        //"ListShouldContainOnlySpec.scala", 
+        //"ListShouldContainOneOfSpec.scala", // skipped because does not compile yet 
+        //"ListShouldContainOnlyLogicalAndSpec.scala", // skipped because does not compile yet 
+        //"ListShouldContainOnlyLogicalOrSpec.scala", // skipped because does not compile yet 
+        //"ListShouldContainOnlySpec.scala", // skipped because does not compile yet 
         //"ListShouldContainSpec.scala", // skipped because does not compile yet 
         "ListShouldContainTheSameElementsAsLogicalAndSpec.scala", 
         "ListShouldContainTheSameElementsAsLogicalOrSpec.scala", 
-        //"ListShouldContainTheSameElementsAsSpec.scala", 
+        //"ListShouldContainTheSameElementsAsSpec.scala", // skipped because does not compile yet 
         "ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", 
         "ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", 
-        //"ListShouldContainTheSameElementsInOrderAsSpec.scala", 
+        //"ListShouldContainTheSameElementsInOrderAsSpec.scala", // skipped because does not compile yet 
         "MapShouldBeDefinedAtSpec.scala", 
         "MatcherGenSpec.scala", 
-        //"MatchersSerializableSpec.scala", 
-        //"MatchersSpec.scala", 
-        //"MatcherStackDepthSpec.scala", 
-        //"MethodSuiteExamples.scala", 
-        //"MethodSuiteProp.scala", 
+        //"MatchersSerializableSpec.scala", // skipped because does not compile yet 
+        //"MatchersSpec.scala", // skipped because does not compile yet 
+        //"MatcherStackDepthSpec.scala", // skipped because does not compile yet 
+        //"MethodSuiteExamples.scala", // skipped because does not compile yet 
+        //"MethodSuiteProp.scala", // skipped because does not compile yet 
+        "NoElementsOfContainMatcherDeciderSpec.scala", 
+        //"NoElementsOfContainMatcherEqualitySpec.scala", // skipped because does not compile yet 
+        "NoElementsOfContainMatcherSpec.scala", 
+        "NoneOfContainMatcherDeciderSpec.scala", 
+        //"NoneOfContainMatcherEqualitySpec.scala", // skipped because does not compile yet 
+        "NoneOfContainMatcherSpec.scala", 
+        "NonImplicitAssertionsSuite.scala", 
+        "NotifierSpec.scala", 
 
 
         "UnitSpec.scala", 
