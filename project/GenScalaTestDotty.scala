@@ -452,7 +452,14 @@ object GenScalaTestDotty {
         //"PrivateMethodTesterSpec.scala", // skipped because does not compile yet 
         //"PropertyFunSuite.scala", // skipped because does not compile yet 
         //"PropSpecSpec.scala", // skipped because does not compile yet  
-
+        "RandomAsyncTestExecutionSpec.scala", 
+        "RandomTestOrderSpec.scala", 
+        //"RecoverMethodsSpec.scala", // skipped because does not compile yet 
+        //"RefSpecSpec.scala", // skipped because does not compile yet 
+        "RetriesSpec.scala", 
+        "RunInSpurtsSpec1.scala", 
+        "RunInSpurtsSpec2.scala", 
+        "RunningTestSpec.scala", 
 
         "UnitSpec.scala", 
         "AssertionsSpec.scala",
