@@ -603,6 +603,22 @@ object GenScalaTestDotty {
         //"SuiteSpec.scala", // skipped because does not compile yet 
         "SuitesSpec.scala", 
         //"SuiteSuite.scala", // skipped because does not compile yet 
+        "TaggingScopesSpec.scala", 
+        "TagGroupsSpec.scala", 
+        //"TestColonEscapeProp.scala", // skipped because does not compile yet 
+        //"TestDataProp.scala", // skipped because does not compile yet 
+        //"TestNameProp.scala", // skipped because does not compile yet 
+        "TestsBeforeNestedSuiteSpec.scala", 
+        "TheSameElementsAsContainMatcherDeciderSpec.scala", 
+        "TheSameElementsAsContainMatcherEqualitySpec.scala", 
+        "TheSameElementsAsContainMatcherSpec.scala", 
+        "TheSameElementsInOrderAsContainMatcherDeciderSpec.scala", 
+        "TheSameElementsInOrderAsContainMatcherEqualitySpec.scala", 
+        "TheSameElementsInOrderAsContainMatcherSpec.scala", 
+        "ThreadNameSpec.scala", 
+        "TryValuesSpec.scala", 
+        //"TypeCheckedAssertionsSpec.scala", // skipped because does not compile yet 
+
 
         "UnitSpec.scala", 
         "AssertionsSpec.scala",
