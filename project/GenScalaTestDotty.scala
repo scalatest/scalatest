@@ -405,6 +405,13 @@ object GenScalaTestDotty {
         "ListShouldContainTheSameElementsInOrderAsLogicalAndSpec.scala", 
         "ListShouldContainTheSameElementsInOrderAsLogicalOrSpec.scala", 
         //"ListShouldContainTheSameElementsInOrderAsSpec.scala", 
+        "MapShouldBeDefinedAtSpec.scala", 
+        "MatcherGenSpec.scala", 
+        //"MatchersSerializableSpec.scala", 
+        //"MatchersSpec.scala", 
+        //"MatcherStackDepthSpec.scala", 
+        //"MethodSuiteExamples.scala", 
+        //"MethodSuiteProp.scala", 
 
 
         "UnitSpec.scala", 
