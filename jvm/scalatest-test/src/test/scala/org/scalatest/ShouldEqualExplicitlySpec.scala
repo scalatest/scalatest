@@ -24,7 +24,7 @@ import org.scalatest.matchers.should.Matchers._
 
 class ShouldEqualExplicitlySpec extends AnyFunSpec with Explicitly {
 
-  implicit val e = new Equality[Int] {
+  implicit val e: Equality[Int] = new Equality[Int] {
     def areEqual(a: Int, b: Any): Boolean = a != b
   }
 

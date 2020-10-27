@@ -70,7 +70,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         Map("I" -> 1, "II" -> 2) should !== (Map("one" -> 1, "two" -> 2))
       }
       it("with inferred GenMap equality") {
-        implicit def travEq[T <: GenMap[String, Int]] = new Equality[T] {
+        implicit def travEq[T <: GenMap[String, Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         Map("I" -> 1, "II" -> 2) should !== (Map("I" -> 1, "II" -> 2))
@@ -94,7 +94,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         Map("I" -> 1, "II" -> 2) should === (Map("one" -> 1, "two" -> 2))
       }
       it("with both inferred GenMap and specific Map equality") {
-        implicit def travEq[T <: GenMap[String, Int]] = new Equality[T] {
+        implicit def travEq[T <: GenMap[String, Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         implicit val e2 = new Equality[Map[String, Int]] { // Should pick the most specific one
@@ -115,7 +115,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         mutable.Map("I" -> 1, "II" -> 2) should !== (mutable.Map("one" -> 1, "two" -> 2))
       }
       it("with inferred GenMap equality") {
-        implicit def travEq[T <: GenMap[String, Int]] = new Equality[T] {
+        implicit def travEq[T <: GenMap[String, Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         mutable.Map("I" -> 1, "II" -> 2) should !== (mutable.Map("I" -> 1, "II" -> 2))
@@ -139,7 +139,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         mutable.Map("I" -> 1, "II" -> 2) should === (mutable.Map("one" -> 1, "two" -> 2))
       }
       it("with both inferred GenMap and specific mutable.Map equality") {
-        implicit def travEq[T <: GenMap[String, Int]] = new Equality[T] {
+        implicit def travEq[T <: GenMap[String, Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         implicit val e2 = new Equality[mutable.Map[String, Int]] { // Should pick the most specific one
@@ -172,7 +172,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         Set(1, 2, 3) should !== (Set(1, 2, 4))
       }
       it("with inferred GenTraversable equality") {
-        implicit def travEq[T <: GenTraversable[Int]] = new Equality[T] {
+        implicit def travEq[T <: GenTraversable[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         Set(1, 2, 3) should !== (Set(1, 2, 3))
@@ -196,7 +196,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         Set(1, 2, 3) should === (Set(1, 2, 4))
       }
       it("with both inferred GenTraversable and specific Traversable equality") {
-        implicit def travEq[T <: GenTraversable[Int]] = new Equality[T] {
+        implicit def travEq[T <: GenTraversable[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         implicit val e2 = new Equality[Set[Int]] { // Should pick the most specific one
@@ -219,7 +219,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         mutable.Set(1, 2, 3) should !== (mutable.Set(1, 2, 4))
       }
       it("with inferred GenTraversable equality") {
-        implicit def travEq[T <: GenTraversable[Int]] = new Equality[T] {
+        implicit def travEq[T <: GenTraversable[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         mutable.Set(1, 2, 3) should !== (mutable.Set(1, 2, 3))
@@ -243,7 +243,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         mutable.Set(1, 2, 3) should === (mutable.Set(1, 2, 4))
       }
       it("with both inferred GenTraversable and specific Traversable equality") {
-        implicit def travEq[T <: GenTraversable[Int]] = new Equality[T] {
+        implicit def travEq[T <: GenTraversable[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         implicit val e2 = new Equality[mutable.Set[Int]] { // Should pick the most specific one
@@ -278,7 +278,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
 
       it("with inferred Collection equality") {
         // implicit val e = new Equality[GenTraversable[Int]] { ... does not and should not compile
-        implicit def travEq[T <: java.util.Collection[Int]] = new Equality[T] {
+        implicit def travEq[T <: java.util.Collection[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         javaSet123 should !== (javaSet123)
@@ -304,7 +304,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         javaSet123 should === (javaSet124)
       }
       it("with both inferred Collection and specific Collection equality") {
-        implicit def travEq[T <: java.util.Collection[Int]] = new Equality[T] {
+        implicit def travEq[T <: java.util.Collection[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         implicit val e2 = new Equality[java.util.Set[Int]] { // Should pick the most specific one
@@ -338,7 +338,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
       }
 
       it("with inferred Map equality") {
-        implicit def travEq[T <: java.util.Map[String, Int]] = new Equality[T] {
+        implicit def travEq[T <: java.util.Map[String, Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         javaMap123 should !== (javaMap123)
@@ -364,7 +364,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         javaMap123 should === (javaMap124)
       }
       it("with both inferred Map and specific HashMap equality") {
-        implicit def travEq[T <: java.util.Map[String, Int]] = new Equality[T] {
+        implicit def travEq[T <: java.util.Map[String, Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         implicit val e2 = new Equality[java.util.HashMap[String, Int]] { // Should pick the most specific one
@@ -382,7 +382,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         Vector(1, 2, 3) should !== (Vector(1, 2, 4))
       }
       it("with inferred GenSeq equality") {
-        implicit def travEq[T <: GenSeq[Int]] = new Equality[T] {
+        implicit def travEq[T <: GenSeq[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         Vector(1, 2, 3) should !== (Vector(1, 2, 3))
@@ -406,7 +406,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         Vector(1, 2, 3) should === (Vector(1, 2, 4))
       }
       it("with both inferred GenSeq and specific Seq equality") {
-        implicit def travEq[T <: GenSeq[Int]] = new Equality[T] {
+        implicit def travEq[T <: GenSeq[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a == b
         }
         implicit val e2 = new Equality[Vector[Int]] { // Should pick the exact one
@@ -422,7 +422,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         ListBuffer(1, 2, 3) should !== (ListBuffer(1, 2, 4))
       }
       it("with inferred GenSeq equality") {
-        implicit def travEq[T <: GenSeq[Int]] = new Equality[T] {
+        implicit def travEq[T <: GenSeq[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         ListBuffer(1, 2, 3) should !== (ListBuffer(1, 2, 3))
@@ -446,7 +446,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         ListBuffer(1, 2, 3) should === (ListBuffer(1, 2, 4))
       }
       it("with both inferred GenSeq and specific Seq equality") {
-        implicit def travEq[T <: GenSeq[Int]] = new Equality[T] {
+        implicit def travEq[T <: GenSeq[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a == b
         }
         implicit val e2 = new Equality[ListBuffer[Int]] { // Should pick the exact one
@@ -488,7 +488,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         javaList123 should !== (javaList124)
       }
       it("with inferred java.util.Collection equality") {
-        implicit def travEq[T <: java.util.Collection[Int]] = new Equality[T] {
+        implicit def travEq[T <: java.util.Collection[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         javaList123 should !== (javaList123)
@@ -512,7 +512,7 @@ class ShouldTripleEqualsEqualitySpec extends AnyFunSpec with NonImplicitAssertio
         javaList123 should === (javaList124)
       }
       it("with both inferred java.util.List and specific java.util.List equality") {
-        implicit def travEq[T <: java.util.List[Int]] = new Equality[T] {
+        implicit def travEq[T <: java.util.List[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a == b
         }
         implicit val e2 = new Equality[java.util.List[Int]] { // Should pick the exact one
