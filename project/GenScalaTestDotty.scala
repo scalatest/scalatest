@@ -191,6 +191,7 @@ object GenScalaTestDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
+        "UnitSpec.scala", 
         "AssertionsSpec.scala",
         "TryValuesSpec.scala", 
         "EitherValuesSpec.scala"
@@ -203,8 +204,7 @@ object GenScalaTestDotty {
       List(
         "DirectExpectationsSpec.scala"
       )
-    )
-    /*++
+    ) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
         List(
           "WaitersSpec.scala",    // skipped because Waiters not supported.
@@ -222,10 +222,20 @@ object GenScalaTestDotty {
           "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
           "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
           "TimeoutsSpec.scala",            // skipped because Timeouts not supported.
-          "UltimatelySpec.scala"   // skipped because Eventually not supported.
+          "UltimatelySpec.scala",   // skipped because Eventually not supported.
+          "TimeLimitsSpec.scala",  // skipped because failed with line number tests.
+          "ScalaFuturesSpec.scala",  // skipped because failed with line number tests.
         )) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, 
+        List(
+          "PropCheckerAssertingAsyncSpec.scala", // skipped for failing tests.
+          "PropCheckerAssertingSpec.scala" // skipped for failing tests.
+        )) ++
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, 
+        List(
+          "ExampleCancelSpec.scala", // skipped because does not compile yet.
+          "ExampleCancelInNestedSuite.scala" // skipped because does not compile yet.
+        )) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
         List(
           "TestLocationJUnit3Suite.scala",
@@ -234,48 +244,68 @@ object GenScalaTestDotty {
           "TestLocationMethodJUnit3Suite.scala",
           "TestLocationMethodJUnitSuite.scala",
           "TestLocationMethodTestNGSuite.scala",
-          "LocationMethodSuiteProp.scala"
+          "LocationMethodSuiteProp.scala", 
+          "LocationSuiteProp.scala", // skipped because does not compile yet.
+          "ScopePendingProp.scala", // skipped because does not compile yet.
+          "LocationSpec.scala",  // skipped because does not compile yet.
+          "LocationFunctionSuiteProp.scala", // skipped because does not compile yet.
+          "EventSpec.scala", // skipped because does not compile yet.
+          "DeprecatedScopePendingProp.scala",  // skipped because does not compile yet.
+          "DeprecatedLocationSuiteProp.scala", // skipped because does not compile yet.
+          "DeprecatedLocationFunctionSuiteProp.scala" // skipped because does not compile yet.
         )) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, 
+        List(
+          "StackDepthExceptionSpec.scala", // skipped because does not compile yet.
+          "PayloadSpec.scala" // skipped because does not compile yet.
+        )) ++
+      /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
         List(
           "SpecSpec.scala",     // skipped because depends on java reflections
           "SuiteSpec.scala"    // skipped because depends on java reflections
+        )) ++ */
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, 
+        List(
+          "StackSpec.scala",  // skipped because does not compile yet.
+          "FunSpecSpec.scala",  // skipped because does not compile yet.
+          "FreeSpecSpec.scala" // skipped because does not compile yet.
         )) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty) ++
+      /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++*/
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, 
+        List(
+          "TypeMatcherMacroSpec.scala", // skipped because does not compile yet.
+          "MatcherProducersSpec.scala" // skipped because does not compile yet.
+        )
+      ) ++
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, 
+        List(
+          "SpanSugarSpec.scala" // skipped because does not compile yet.
+        )
+      ) ++
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
         List(
-          "DashboardReporterSpec.scala",
-          "DiscoverySuiteSuite.scala",
-          "FilterReporterSpec.scala",
-          "FrameworkSuite.scala",
-          "HtmlReporterSpec.scala",
-          "JUnitXmlReporterSuite.scala",
-          "MemoryReporterSuite.scala",
-          "RunnerSpec.scala",
-          "SbtCommandParserSpec.scala",
-          "ScalaTestAntTaskSpec.scala",
-          "ScalaTestFrameworkSuite.scala",
-          "ScalaTestRunnerSuite.scala",
-          "SomeApiClass.scala",
-          "SomeApiClassRunner.scala",
-          "SomeApiSubClass.scala",
-          "StringReporterAlertSpec.scala",
-          "StringReporterSuite.scala",
-          "StringReporterSummarySpec.scala",
-          "SuiteDiscoveryHelperSuite.scala",
-          "XmlSocketReporterSpec.scala"
+          "DiscoverySuiteSuite.scala",  // skipped because failing test.
+          "FilterReporterSpec.scala",  // skipped because does not compile yet.
+          "FrameworkSuite.scala", // skipped because hang when tests execute.
+          "ScalaTestFrameworkSuite.scala", // skipped because does not compile yet.
+          "ScalaTestRunnerSuite.scala", // skipped because does not compile yet.
+          "SuiteDiscoveryHelperSuite.scala",  // skipped because does not compile yet.
+          "XmlSocketReporterSpec.scala", // skipped because tests failed execute.
+          "SuiteSortingReporterSpec.scala",  // skipped because does not compile yet.
+          "TestSortingReporterSpec.scala" // skipped because does not compile yet.
         )
-      )*/
+      )
     }
 
     def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-      copyDir("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
+      copyDir("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, 
+        List(
+          "DiagramsSpec.scala", // skipped because tests failed execute.
+          "DirectDiagrammedAssertionsSpec.scala" // skipped because tests failed execute.
+        )
+      )
 
     def genFeatureSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
       copyDir("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)
@@ -293,4 +323,13 @@ object GenScalaTestDotty {
     def genFunSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
       copyDir("jvm/funspec-test/src/test/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty)    
 
+    def genFunSuiteTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+      copyDir("jvm/funsuite-test/src/test/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, 
+        List("FunSuiteSpec.scala")
+      )
+
+    def genPropSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+      copyDir("jvm/propspec-test/src/test/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, 
+        List("PropSpecSpec.scala")
+      )  
 }

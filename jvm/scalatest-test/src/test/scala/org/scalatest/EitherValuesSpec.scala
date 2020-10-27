@@ -15,7 +15,9 @@
  */
 package org.scalatest
 
-import java.io.ObjectOutputStream
+// SKIP-SCALATESTJS-START
+import java.io.{ObjectOutputStream, ByteArrayOutputStream}
+// SKIP-SCALATESTJS-END
 
 import org.scalatest.EitherValues._
 import org.scalatest.OptionValues._
@@ -46,7 +48,7 @@ class EitherValuesSpec extends AnyFunSpec {
     
     // SKIP-SCALATESTJS-START
     it("should throw a serialized TestFailedException") {
-      val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(_ => ())
+      val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(new ByteArrayOutputStream())
       val e: Either[String, String] = Right("hi there")
       val caught =
         the [TestFailedException] thrownBy {

@@ -109,7 +109,6 @@ trait TryValues extends Serializable {
    *
    * @param theTry An <code>Try</code> to convert to <code>SuccessOrFailure</code>, which provides the <code>success</code> and <code>failure</code> methods.
    */
-  @SerialVersionUID(7710541571360501642L)
   class SuccessOrFailure[T](theTry: Try[T], pos: source.Position) extends Serializable {
 
     /**

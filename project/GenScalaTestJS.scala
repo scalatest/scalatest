@@ -379,6 +379,12 @@ object GenScalaTestJS {
     copyDir("jvm/freespec-test/src/test/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, List.empty)
 
   def genFunSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("jvm/funspec-test/src/test/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty)        
+    copyDir("jvm/funspec-test/src/test/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty)
+
+  def genFunSuiteTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("jvm/funsuite-test/src/test/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty)          
+
+  def genPropSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("jvm/propspec-test/src/test/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, List.empty)
 
 }
