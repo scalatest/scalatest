@@ -660,7 +660,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.tryNotAFailure"), // Function in private object FailureMessages.
           exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.tryNotASuccess"), // Function in private object FailureMessages.
           exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.eitherLeftValueNotDefined"), // Function in private object FailureMessages.
-          exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.eitherRightValueNotDefined") // Function in private object FailureMessages.
+          exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.eitherRightValueNotDefined"), // Function in private object FailureMessages.
+          exclude[ReversedMissingMethodProblem]("org.scalatest.EitherValues.convertEitherToValuable") // New implicit conversion function.
         )
       }
     ).settings(osgiSettings: _*).settings(
