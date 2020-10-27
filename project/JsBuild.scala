@@ -503,6 +503,7 @@ trait JsBuild { this: BuildCommons =>
          ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.tryNotASuccess"), // Function in private object FailureMessages.
          ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.eitherLeftValueNotDefined"), // Function in private object FailureMessages.
          ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.eitherRightValueNotDefined"), // Function in private object FailureMessages.
+         ProblemFilters.exclude[ReversedMissingMethodProblem]("org.scalatest.EitherValues.convertEitherToValuable") // New implicit conversion function.
        )
      }
     ).settings(osgiSettings: _*).settings(
