@@ -60,13 +60,13 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
 
         "test 4" in {
           Future {
-            cancel
+            cancel()
           }
         }
 
         "test 5" ignore {
           Future {
-            cancel
+            cancel()
           }
         }
 
@@ -113,11 +113,11 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
         }
 
         "test 4" in {
-          cancel
+          cancel()
         }
 
         "test 5" ignore {
-          cancel
+          cancel()
         }
 
         override def newInstance = new ExampleSpec

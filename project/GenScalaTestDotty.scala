@@ -189,15 +189,168 @@ object GenScalaTestDotty {
     }.toList
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyFiles("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
       List(
-        "UnitSpec.scala", 
-        "AssertionsSpec.scala",
-        "TryValuesSpec.scala", 
-        "EitherValuesSpec.scala"
-        // "ShouldCompileSpec.scala",
-        // "ShouldNotCompileSpec.scala",
-        // "ShouldNotTypeCheckSpec.scala"
+        "AllSuiteProp.scala", // skipped because does not compile yet
+        "AMatcherSpec.scala", // skipped because does not compile yet 
+        "AnMatcherSpec.scala",  // skipped because does not compile yet
+        "AnyValMatchersSpec.scala",  // skipped because does not compile yet
+        "AppendedCluesSpec.scala", // skipped because does not compile yet 
+        "ArgsSpec.scala",  // skipped because does not compile yet
+        "AsyncWordSpecLikeSpec.scala", // skipped because does not compile yet 
+        "AsyncWordSpecSpec.scala", // skipped because does not compile yet 
+        "BeforeAndAfterAllConfigMapSpec.scala", // skipped because does not compile yet 
+        "BeforeAndAfterAllProp.scala", // skipped because does not compile yet 
+        "BeforeAndAfterAllSpec.scala", // skipped because does not compile yet 
+        "CatchReporterProp.scala", // skipped because does not compile yet  
+        "CheckpointsSpec.scala", // skipped because does not compile yet 
+        "ClassTaggingProp.scala", // skipped because does not compile yet  
+        "ClueSpec.scala", // skipped because does not compile yet  
+        "ConfigMapWrapperSuiteSpec.scala", // skipped because does not compile yet  
+        "DeprecatedBeforeAndAfterAllProp.scala", // skipped because does not compile yet 
+        "DeprecatedCatchReporterProp.scala", // skipped because does not compile yet 
+        "DeprecatedClassTaggingProp.scala", // skipped because does not compile yet 
+        "DeprecatedFeatureSpecSpec.scala", // skipped because does not compile yet 
+        "DeprecatedParallelTestExecutionInfoExamples.scala", // skipped because does not compile yet 
+        "DeprecatedParallelTestExecutionOrderExamples.scala", // skipped because does not compile yet 
+        "DeprecatedParallelTestExecutionSuiteTimeoutExamples.scala", // skipped because does not compile yet 
+        "DeprecatedParallelTestExecutionTestTimeoutExamples.scala", // skipped because does not compile yet 
+        "DeprecatedStatusProp.scala", // skipped because does not compile yet 
+        "DeprecatedStopOnFailureProp.scala", // skipped because does not compile yet 
+        "DeprecatedTestDataProp.scala", // skipped because does not compile yet 
+        "DeprecatedTestNameProp.scala", // skipped because does not compile yet 
+        "DirectAssertionsSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainAllElementsOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainAllOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainAtLeastOneElementOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainAtLeastOneOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainAtMostOneElementOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainAtMostOneOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainInOrderElementsOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainInOrderOnlySpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainInOrderSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainNoElementsOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainNoneOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainOneElementOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainOneOfSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainOnlyLogicalAndSpec.scala", // skipped because tests failed
+        "EveryShouldContainOnlyLogicalOrSpec.scala", // skipped because tests failed 
+        "EveryShouldContainOnlySpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainTheSameElementsAsSpec.scala", // skipped because does not compile yet 
+        "EveryShouldContainTheSameElementsInOrderAsSpec.scala", // skipped because does not compile yet 
+        "FactSpec.scala", // skipped because does not compile yet 
+        "FilterProp.scala", // skipped because does not compile yet 
+        "FilterSpec.scala", // skipped because does not compile yet 
+        "InheritedTagProp.scala", // skipped because does not compile yet 
+        "InsideMixinSpec.scala", // skipped because tests failed 
+        "InsideSpec.scala", // skipped because tests failed
+        "InspectorsForMapSpec.scala", // skipped because tests failed 
+        "InspectorShorthandsSpec.scala", // skipped because does not compile yet 
+        "InspectorsSpec.scala", // skipped because tests failed 
+        "ListShouldContainAllElementsOfSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainAllOfSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainAtLeastOneElementOfSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainAtLeastOneOfSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainAtMostOneElementOfSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainAtMostOneOfSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainInOrderElementsOfSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainInOrderOnlySpec.scala", // skipped because does not compile yet 
+        "ListShouldContainInOrderSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainNoElementsOfSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainNoneOfSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainOneElementOfSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainOneOfSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainOnlyLogicalAndSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainOnlyLogicalOrSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainOnlySpec.scala", // skipped because does not compile yet 
+        "ListShouldContainSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainTheSameElementsAsSpec.scala", // skipped because does not compile yet 
+        "ListShouldContainTheSameElementsInOrderAsSpec.scala", // skipped because does not compile yet 
+        "MatchersSerializableSpec.scala", // skipped because does not compile yet 
+        "MatchersSpec.scala", // skipped because does not compile yet 
+        "MatcherStackDepthSpec.scala", // skipped because does not compile yet 
+        "MethodSuiteExamples.scala", // skipped because does not compile yet 
+        "MethodSuiteProp.scala", // skipped because does not compile yet 
+        "NoElementsOfContainMatcherEqualitySpec.scala", // skipped because does not compile yet 
+        "NoneOfContainMatcherEqualitySpec.scala", // skipped because does not compile yet 
+        "OptionShouldContainOneElementOfLogicalAndSpec.scala", // skipped because does not compile yet 
+        "OptionShouldContainOneElementOfLogicalOrSpec.scala", // skipped because does not compile yet 
+        "OptionShouldContainOneElementOfSpec.scala", // skipped because does not compile yet 
+        "OptionShouldContainOneOfLogicalAndSpec.scala", // skipped because does not compile yet 
+        "OptionShouldContainOneOfLogicalOrSpec.scala", // skipped because does not compile yet 
+        "OptionShouldContainOneOfSpec.scala", // skipped because does not compile yet 
+        "OptionShouldContainSpec.scala", // skipped because does not compile yet 
+        "OutcomeSpec.scala", // skipped because does not compile yet 
+        "ParallelTestExecutionInfoExamples.scala", // skipped because does not compile yet 
+        "ParallelTestExecutionOrderExamples.scala", // skipped because does not compile yet 
+        "ParallelTestExecutionParallelSuiteExamples.scala", // skipped because does not compile yet 
+        "ParallelTestExecutionProp.scala", // skipped because does not compile yet 
+        "ParallelTestExecutionSpec.scala", // skipped because does not compile yet 
+        "ParallelTestExecutionSuiteTimeoutExamples.scala", // skipped because does not compile yet 
+        "ParallelTestExecutionTestTimeoutExamples.scala", // skipped because does not compile yet 
+        "PrivateMethodTesterSpec.scala", // skipped because does not compile yet 
+        "PropertyFunSuite.scala", // skipped because does not compile yet 
+        "PropSpecSpec.scala", // skipped because does not compile yet  
+        "RecoverMethodsSpec.scala", // skipped because does not compile yet 
+        "RefSpecSpec.scala", // skipped because does not compile yet 
+        "SequentialNestedSuiteExecutionSpec.scala", // skipped because does not compile yet 
+        "SeveredStackTracesFailureSpec.scala", // skipped because tests failed 
+        "SeveredStackTracesSpec.scala", // skipped because tests failed 
+        "ShellSuite.scala", // skipped because does not compile yet 
+        "ShorthandShouldBeThrownBySpec.scala", // skipped because tests failed 
+        "ShorthandShouldNotBeThrownBySpec.scala", // skipped because does not compile yet 
+        "ShouldBeAnSymbolSpec.scala", // skipped because does not compile yet 
+        "ShouldBeAnTypeSpec.scala", // skipped because does not compile yet
+        "ShouldBeASymbolSpec.scala", // skipped because does not compile yet  
+        "ShouldBeATypeSpec.scala", // skipped because does not compile yet 
+        "ShouldBeDefinedAtForAllSpec.scala", // skipped because does not compile yet 
+        "ShouldBeDefinedAtSpec.scala", // skipped because does not compile yet 
+        "ShouldBeNullSpec.scala", // skipped because does not compile yet 
+        "ShouldBePropertyMatcherSpec.scala", // skipped because does not compile yet
+        "ShouldBeShorthandForAllSpec.scala", // skipped because does not compile yet   
+        "ShouldBeShorthandSpec.scala", // skipped because does not compile yet 
+        "ShouldBeSortedLogicalAndSpec.scala", // skipped because does not compile yet 
+        "ShouldBeSortedLogicalOrSpec.scala", // skipped because does not compile yet 
+        "ShouldBeSortedSpec.scala", // skipped because does not compile yet 
+        "ShouldBeSymbolSpec.scala", // skipped because does not compile yet 
+        "ShouldBeThrownBySpec.scala", // skipped because does not compile yet 
+        "ShouldCompileSpec.scala", // skipped because tests failed 
+        "ShouldContainElementNewSpec.scala", // skipped because does not compile yet 
+        "ShouldContainElementSpec.scala", // skipped because does not compile yet  
+        "ShouldEqualEqualitySpec.scala", // skipped because does not compile yet 
+        "ShouldHavePropertiesSpec.scala", // skipped because does not compile yet 
+        "ShouldLengthSizeSpec.scala", // skipped because does not compile yet 
+        "ShouldLengthSpec.scala", // skipped because does not compile yet 
+        "ShouldMatchPatternSpec.scala", // skipped because does not compile yet 
+        "ShouldNotBeThrownBySpec.scala", // skipped because does not compile yet 
+        "ShouldNotCompileSpec.scala", // skipped because tests failed
+        "ShouldNotShorthandForAllSpec.scala", // skipped because does not compile yet 
+        "ShouldNotShorthandSpec.scala", // skipped because does not compile yet 
+        "ShouldNotTypeCheckSpec.scala", // skipped because tests failed 
+        "ShouldSizeSpec.scala", // skipped because does not compile yet 
+        "ShouldStructuralLengthSpec.scala", // skipped because does not compile yet 
+        "ShouldStructuralSizeSpec.scala", // skipped because does not compile yet 
+        "ShouldTripleEqualsEqualitySpec.scala", // skipped because does not compile yet 
+        "ShouldTypeCheckedTripleEqualsEqualitySpec.scala", // skipped because does not compile yet 
+        "StatefulStatusSpec.scala", // skipped because does not compile yet 
+        "StatusProp.scala", // skipped because does not compile yet 
+        "StatusSpec.scala", // skipped because does not compile yet 
+        "StepwiseNestedSuiteExecutionSpec.scala", // skipped because does not compile yet 
+        "StopOnFailureProp.scala", // skipped because does not compile yet 
+        "StreamlinedXmlEqualitySpec.scala", // skipped because does not compile yet 
+        "StreamlinedXmlNormMethodsSpec.scala", // skipped because does not compile yet 
+        "StreamlinedXmlSpec.scala", // skipped because does not compile yet 
+        "SuiteExamples.scala", // skipped because does not compile yet 
+        "SuiteProp.scala", // skipped because does not compile yet 
+        "SuiteSpec.scala", // skipped because does not compile yet 
+        "SuiteSuite.scala", // skipped because does not compile yet 
+        "TestColonEscapeProp.scala", // skipped because does not compile yet 
+        "TestDataProp.scala", // skipped because does not compile yet 
+        "TestNameProp.scala", // skipped because does not compile yet 
+        "TypeCheckedAssertionsSpec.scala", // skipped because does not compile yet 
+        "WordSpecImportedMatchersSpec.scala", // skipped because does not compile yet 
+        "WordSpecSpec.scala" // skipped because does not compile yet 
       )
     ) ++ 
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, 
