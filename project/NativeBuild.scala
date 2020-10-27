@@ -718,6 +718,7 @@ trait NativeBuild { this: BuildCommons =>
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
       fork in test := false,
       nativeLinkStubs in Test := true,
+      nativeDump in Test := false, 
       testOptions in Test := scalatestTestNativeOptions,
       publishArtifact := false,
       publish := {},
@@ -744,6 +745,15 @@ trait NativeBuild { this: BuildCommons =>
         }*/
     ).dependsOn(scalatestNative % "test", commonTestNative % "test")
      .enablePlugins(ScalaNativePlugin)
+     /*.aggregate(
+       scalatestDiagramsTestNative, 
+       scalatestFeatureSpecTestNative, 
+       scalatestFlatSpecTestNative, 
+       scalatestFreeSpecTestNative, 
+       scalatestFunSpecTestNative, 
+       scalatestFunSuiteTestNative, 
+       scalatestPropSpecTestNative
+    )*/
 
   lazy val scalatestDiagramsTestNative = project.in(file("native/diagrams-test"))
     .settings(sharedSettings ++ sharedNativeSettings)
@@ -817,7 +827,19 @@ trait NativeBuild { this: BuildCommons =>
           GenScalaTestNative.genFunSuiteTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)            
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestPropSpecTestNative = project.in(file("native/propspec-test"))
+    .settings(sharedSettings ++ sharedNativeSettings)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "ScalaTest PropSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestNative.genPropSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestModulesNative = project.in(file("modules/native/modules-aggregation"))
     .settings(sharedSettings ++ sharedNativeSettings)
@@ -839,6 +861,6 @@ trait NativeBuild { this: BuildCommons =>
       scalatestMatchersCoreNative, 
       scalatestShouldMatchersNative, 
       scalatestMustMatchersNative
-    )  
+    )    
 
 }

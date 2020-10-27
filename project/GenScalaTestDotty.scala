@@ -327,4 +327,9 @@ object GenScalaTestDotty {
       copyDir("jvm/funsuite-test/src/test/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, 
         List("FunSuiteSpec.scala")
       )
+
+    def genPropSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+      copyDir("jvm/propspec-test/src/test/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, 
+        List("PropSpecSpec.scala")
+      )  
 }
