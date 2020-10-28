@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.funsuite
 
 import org.scalatest._
 import SharedHelpers._
@@ -25,7 +25,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest
 import org.scalatest.funsuite
 
-class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTester*/ {
+class FixtureFunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTester*/ {
 
   describe("A fixture.FunSuite") {
     it("should return the test names in order of registration from testNames") {
@@ -265,7 +265,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
 
     it("should report as ignored, and not run, tests marked ignored") {
 
-      val a = new funsuite.FixtureAnyFunSuite {
+      class SuiteA extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -273,6 +273,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         test("test this") { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         test("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val a = new SuiteA
 
       import scala.language.reflectiveCalls
 
@@ -282,7 +283,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(a.theTestThisCalled)
       assert(a.theTestThatCalled)
 
-      val b = new funsuite.FixtureAnyFunSuite {
+      class SuiteB extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -290,6 +291,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         ignore("test this") { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         test("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val b = new SuiteB
 
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB))
@@ -299,7 +301,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(!b.theTestThisCalled)
       assert(b.theTestThatCalled)
 
-      val c = new funsuite.FixtureAnyFunSuite {
+      class SuiteC extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -307,6 +309,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         test("test this") { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         ignore("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val c = new SuiteC
 
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repC))
@@ -318,7 +321,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
 
       // The order I want is order of appearance in the file.
       // Will try and implement that tomorrow. Subtypes will be able to change the order.
-      val d = new funsuite.FixtureAnyFunSuite {
+      class SuiteD extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -326,6 +329,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         ignore("test this") { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         ignore("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val d = new SuiteD
 
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD))
@@ -339,7 +343,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
     it("should ignore a test marked as ignored if run is invoked with that testName") {
       // If I provide a specific testName to run, then it should ignore an Ignore on that test
       // method and actually invoke it.
-      val e = new funsuite.FixtureAnyFunSuite {
+      class SuiteE extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -347,6 +351,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         ignore("test this") { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         test("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val e = new SuiteE
 
       import scala.language.reflectiveCalls
 
@@ -360,7 +365,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
     it("should run only those tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new funsuite.FixtureAnyFunSuite {
+      class SuiteA extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -368,6 +373,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         test("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         test("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val a = new SuiteA
 
       import scala.language.reflectiveCalls
 
@@ -378,7 +384,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new funsuite.FixtureAnyFunSuite {
+      class SuiteB extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -386,6 +392,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         test("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         test("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val b = new SuiteB
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repB.testIgnoredReceived)
@@ -393,7 +400,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new funsuite.FixtureAnyFunSuite {
+      class SuiteC extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -401,6 +408,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         test("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         test("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val c = new SuiteC
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repC.testIgnoredReceived)
@@ -408,7 +416,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new funsuite.FixtureAnyFunSuite {
+      class SuiteD extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -416,6 +424,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         ignore("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         test("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val d = new SuiteD
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(repD.testIgnoredReceived)
@@ -423,7 +432,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new funsuite.FixtureAnyFunSuite {
+      class SuiteE extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -433,6 +442,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         test("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         test("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val e = new SuiteE
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
                 ConfigMap.empty, None, new Tracker, Set.empty))
@@ -442,7 +452,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new funsuite.FixtureAnyFunSuite {
+      class SuiteF extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -452,6 +462,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         test("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         test("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val f = new SuiteF
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
                 ConfigMap.empty, None, new Tracker, Set.empty))
@@ -461,7 +472,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new funsuite.FixtureAnyFunSuite {
+      class SuiteG extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -471,6 +482,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         test("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         ignore("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val g = new SuiteG
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
                 ConfigMap.empty, None, new Tracker, Set.empty))
@@ -480,7 +492,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new funsuite.FixtureAnyFunSuite {
+      class SuiteH extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -490,6 +502,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         test("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         test("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val h = new SuiteH
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repH.testIgnoredReceived)
@@ -498,7 +511,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new funsuite.FixtureAnyFunSuite {
+      class SuiteI extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -508,6 +521,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         test("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         test("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val i = new SuiteI
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repI.testIgnoredReceived)
@@ -516,7 +530,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new funsuite.FixtureAnyFunSuite {
+      class SuiteJ extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -526,6 +540,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         ignore("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         test("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val j = new SuiteJ
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repI.testIgnoredReceived)
@@ -534,7 +549,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new funsuite.FixtureAnyFunSuite {
+      class SuiteK extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -544,6 +559,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         ignore("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         ignore("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val k = new SuiteK
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(repK.testIgnoredReceived)
@@ -555,7 +571,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
     it("should run only those registered tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new funsuite.FixtureAnyFunSuite {
+      class SuiteA extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -563,6 +579,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val a = new SuiteA
 
       import scala.language.reflectiveCalls
 
@@ -573,7 +590,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new funsuite.FixtureAnyFunSuite {
+      class SuiteB extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -581,6 +598,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val b = new SuiteB
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repB.testIgnoredReceived)
@@ -588,7 +606,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new funsuite.FixtureAnyFunSuite {
+      class SuiteC extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -596,6 +614,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val c = new SuiteC
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repC.testIgnoredReceived)
@@ -603,7 +622,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new funsuite.FixtureAnyFunSuite {
+      class SuiteD extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -611,6 +630,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         registerIgnoredTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val d = new SuiteD
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(repD.testIgnoredReceived)
@@ -618,7 +638,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new funsuite.FixtureAnyFunSuite {
+      class SuiteE extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -628,6 +648,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val e = new SuiteE
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
         ConfigMap.empty, None, new Tracker, Set.empty))
@@ -637,7 +658,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new funsuite.FixtureAnyFunSuite {
+      class SuiteF extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -647,6 +668,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val f = new SuiteF
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
         ConfigMap.empty, None, new Tracker, Set.empty))
@@ -656,7 +678,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new funsuite.FixtureAnyFunSuite {
+      class SuiteG extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -666,6 +688,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerIgnoredTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val g = new SuiteG
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
         ConfigMap.empty, None, new Tracker, Set.empty))
@@ -675,7 +698,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new funsuite.FixtureAnyFunSuite {
+      class SuiteH extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -685,6 +708,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val h = new SuiteH
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repH.testIgnoredReceived)
@@ -693,7 +717,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new funsuite.FixtureAnyFunSuite {
+      class SuiteI extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -703,6 +727,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val i = new SuiteI
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repI.testIgnoredReceived)
@@ -711,7 +736,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new funsuite.FixtureAnyFunSuite {
+      class SuiteJ extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -721,6 +746,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         registerIgnoredTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val j = new SuiteJ
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repI.testIgnoredReceived)
@@ -729,7 +755,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new funsuite.FixtureAnyFunSuite {
+      class SuiteK extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -739,6 +765,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         registerIgnoredTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerIgnoredTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val k = new SuiteK
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(repK.testIgnoredReceived)
@@ -882,7 +909,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
 
     it("should allow tests without fixtures to be combined with tests with fixtures") {
 
-      val a = new funsuite.FixtureAnyFunSuite {
+      class SuiteA extends funsuite.FixtureAnyFunSuite {
 
         var theTestWithFixtureWasRun = false
         var theTestWithoutFixtureWasRun = false
@@ -912,6 +939,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
           /* ASSERTION_SUCCEED */
         }
       }
+      val a = new SuiteA
 
       import scala.language.reflectiveCalls
 
@@ -956,7 +984,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
     }
     // SKIP-SCALATESTJS,NATIVE-END
     it("should allow both tests that take fixtures and tests that don't") {
-      val a = new funsuite.FixtureAnyFunSuite {
+      class SuiteA extends funsuite.FixtureAnyFunSuite {
 
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = {
@@ -969,6 +997,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         var takesAFixtureInvoked = false
         test("takes a fixture") { s => takesAFixtureInvoked = true; /* ASSERTION_SUCCEED */ }
       }
+      val a = new SuiteA
 
       import scala.language.reflectiveCalls
 
@@ -979,7 +1008,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
     }
 
     it("should work with test functions whose inferred result type is not Unit") {
-      val a = new funsuite.FixtureAnyFunSuite {
+      class SuiteA extends funsuite.FixtureAnyFunSuite {
 
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = {
@@ -992,6 +1021,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         var takesAFixtureInvoked = false
         test("takes a fixture") { s => takesAFixtureInvoked = true; true; /* ASSERTION_SUCCEED */ }
       }
+      val a = new SuiteA
 
       import scala.language.reflectiveCalls
 
@@ -1004,7 +1034,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
     }
 
     it("should work with ignored tests whose inferred result type is not Unit") {
-      val a = new funsuite.FixtureAnyFunSuite {
+      class SuiteA extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
@@ -1012,6 +1042,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         ignore("test this") { () => theTestThisCalled = true; "hi"; /* ASSERTION_SUCCEED */ }
         ignore("test that") { fixture => theTestThatCalled = true; 42; /* ASSERTION_SUCCEED */ }
       }
+      val a = new SuiteA
 
       import scala.language.reflectiveCalls
 
@@ -1091,7 +1122,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
     }
 
     it("should pass the correct test name in the OneArgTest passed to withFixture") {
-      val a = new funsuite.FixtureAnyFunSuite {
+      class SuiteA extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         var correctTestNameWasPassed = false
         def withFixture(test: OneArgTest): Outcome = {
@@ -1100,6 +1131,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         }
         test("something") { fixture => /* ASSERTION_SUCCEED */ }
       }
+      val a = new SuiteA
 
       import scala.language.reflectiveCalls
 
@@ -1107,7 +1139,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(a.correctTestNameWasPassed)
     }
     it("should pass the correct config map in the OneArgTest passed to withFixture") {
-      val a = new funsuite.FixtureAnyFunSuite {
+      class SuiteA extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         var correctConfigMapWasPassed = false
         def withFixture(test: OneArgTest): Outcome = {
@@ -1116,6 +1148,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         }
         test("something") { fixture => /* ASSERTION_SUCCEED */ }
       }
+      val a = new SuiteA
 
       import scala.language.reflectiveCalls
 
@@ -1252,7 +1285,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
               assert(a == 2)
             }
             assert(e.message == Some("1 did not equal 2"))
-            assert(e.failedCodeFileName == Some("FunSuiteSpec.scala"))
+            assert(e.failedCodeFileName == Some("FixtureFunSuiteSpec.scala"))
             assert(e.failedCodeLineNumber == Some(thisLineNumber - 4))
           }
           registerTest("test 2") { fixture =>
@@ -1262,7 +1295,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
             pending
           }
           registerTest("test 4") { fixture =>
-            cancel
+            cancel()
           }
           registerIgnoredTest("test 5") { fixture =>
             assert(a == 2)
@@ -1313,7 +1346,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         assert(testFailedEvents.size === 1)
         assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
         val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-        assert("FunSuiteSpec.scala" === trce.failedCodeFileName.get)
+        assert("FixtureFunSuiteSpec.scala" === trce.failedCodeFileName.get)
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
         assert(trce.message == Some("Test cannot be nested inside another test."))
       }
@@ -1345,7 +1378,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
         assert(testFailedEvents.size === 1)
         assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
         val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-        assert("FunSuiteSpec.scala" === trce.failedCodeFileName.get)
+        assert("FixtureFunSuiteSpec.scala" === trce.failedCodeFileName.get)
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
         assert(trce.message == Some("Test cannot be nested inside another test."))
       }
@@ -1365,9 +1398,9 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size === 2)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureFunSuiteSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureFunSuiteSpec.scala")
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
     }
   }
@@ -1388,7 +1421,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size === 1)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureFunSuiteSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 8)
     }
     
@@ -1419,7 +1452,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FunSuiteSpec.scala" === trce.failedCodeFileName.get)
+      assert("FixtureFunSuiteSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("A test clause may not appear inside another test clause."))
     }
@@ -1451,7 +1484,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FunSuiteSpec.scala" === trce.failedCodeFileName.get)
+      assert("FixtureFunSuiteSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("An ignore clause may not appear inside a test clause."))
     }
@@ -1466,7 +1499,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
       }
-      assert("FunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureFunSuiteSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
       assert(!e.cause.isDefined)
     }
@@ -1481,7 +1514,7 @@ class FunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTest
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
       }
-      assert("FunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureFunSuiteSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
       assert(!e.cause.isDefined)
     }
