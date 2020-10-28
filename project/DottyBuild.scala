@@ -391,7 +391,8 @@ trait DottyBuild { this: BuildCommons =>
       scalatestFreeSpecTestDotty, 
       scalatestFunSpecTestDotty, 
       scalatestFunSuiteTestDotty, 
-      scalatestPropSpecTestDotty
+      scalatestPropSpecTestDotty, 
+      scalatestWordSpecTestDotty
     )
 
   lazy val scalatestDiagramsTestDotty = project.in(file("dotty/diagrams-test"))
@@ -470,5 +471,16 @@ trait DottyBuild { this: BuildCommons =>
         GenScalaTestDotty.genPropSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
     ).dependsOn(commonTestDotty % "test")                
+
+  lazy val scalatestWordSpecTestDotty = project.in(file("dotty/wordspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDotty)
+    .settings(
+      projectTitle := "ScalaTest WordSpec Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genWordSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDotty % "test")
 
 }

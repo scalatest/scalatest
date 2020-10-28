@@ -65,13 +65,13 @@ class FixtureAsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
 
         "test 4" in { fixture =>
           Future {
-            cancel
+            cancel()
           }
         }
 
         "test 5" ignore { fixture =>
           Future {
-            cancel
+            cancel()
           }
         }
 
@@ -122,11 +122,11 @@ class FixtureAsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
         }
 
         "test 4" in { fixture =>
-          cancel
+          cancel()
         }
 
         "test 5" ignore { fixture =>
-          cancel
+          cancel()
         }
 
         override def newInstance = new ExampleSpec
