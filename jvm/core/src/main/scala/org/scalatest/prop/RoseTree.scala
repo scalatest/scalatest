@@ -115,18 +115,23 @@ def unfold[a](rt: RoseTree[a], indent: String = ""): Unit = {
   roseTrees.foreach(t => unfold(t, s"$indent  "))
 }
 
+case class RoseBush[T](o: T, shr: (T, Randomizer) => (List[RoseTree[T]], Randomizer)) extends RoseTree[T] {
+  val value: T = o
+  def shrinks(rnd: Randomizer): (List[RoseTree[T]], Randomizer) = shr(o, rnd)
+}
+
 def intShr: (Int, Randomizer) => (List[RoseTree[Int]], Randomizer) = { (n: Int, rnd: Randomizer) =>
-  val roseTrees = if (n > 0) (0 to n - 1).toList.reverse.map(x => RoseTree(x, intShr)) else List.empty
+  val roseTrees = if (n > 0) (0 to n - 1).toList.reverse.map(x => RoseBush(x, intShr)) else List.empty
   (roseTrees, rnd)
 }
 
 def dubShr: (Double, Randomizer) => (List[RoseTree[Double]], Randomizer) = { (n: Double, rnd: Randomizer) =>
-  val roseTrees = if (n > 0) (0 to n.toInt - 1).toList.map(_.toDouble).reverse.map(x => RoseTree(x, dubShr)) else List.empty
+  val roseTrees = if (n > 0) (0 to n.toInt - 1).toList.map(_.toDouble).reverse.map(x => RoseBush(x, dubShr)) else List.empty
   (roseTrees, rnd)
 }
 
 def charShr: (Char, Randomizer) => (List[RoseTree[Char]], Randomizer) = { (c: Char, rnd: Randomizer) =>
-  val roseTrees = if (c.toLower > 'a') ('a' to (c - 1).toChar).toList.reverse.map(x => RoseTree(x, charShr)) else List.empty
+  val roseTrees = if (c.toLower > 'a') ('a' to (c - 1).toChar).toList.reverse.map(x => RoseBush(x, charShr)) else List.empty
   (roseTrees, rnd)
 }
 
