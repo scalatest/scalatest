@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.wordspec
 
-import SharedHelpers.{EventRecordingReporter, thisLineNumber}
+import org.scalatest._
+import org.scalatest.SharedHelpers.{EventRecordingReporter, thisLineNumber}
 import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
-import org.scalatest.exceptions.{DuplicateTestNameException, NotAllowedException}
+import org.scalatest.exceptions.{NotAllowedException, DuplicateTestNameException}
 import org.scalactic.Prettifier
 
 import scala.util.Success
 import org.scalatest.funspec.AnyFunSpec
-import org.scalatest.wordspec.{ AsyncWordSpec, AsyncWordSpecLike }
+import org.scalatest.wordspec.AsyncWordSpec
 
-class AsyncWordSpecLikeSpec extends AnyFunSpec {
+class AsyncWordSpecSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 
-  describe("AsyncWordSpecLike") {
+  describe("AsyncWordSpec") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncWordSpecLike with ParallelTestExecution {
+      class ExampleSpec extends AsyncWordSpec with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -94,7 +95,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncWordSpecLike with ParallelTestExecution {
+      class ExampleSpec extends AsyncWordSpec with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -179,7 +180,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends AsyncWordSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -225,12 +226,12 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends AsyncWordSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
         "test 1" in {
-          SleepHelper.sleep(30)
+          SleepHelper.sleep(3000)
           assert(count == 0)
           count = 1
           succeed
@@ -238,7 +239,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
 
         "test 2" in {
           assert(count == 1)
-          SleepHelper.sleep(50)
+          SleepHelper.sleep(5000)
           count = 2
           succeed
         }
@@ -246,7 +247,6 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
         "test 3" in {
           assert(count == 2)
         }
-
       }
 
       val rep = new EventRecordingReporter
@@ -269,7 +269,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends AsyncWordSpec {
 
         "test 1" in {
           Future {
@@ -309,7 +309,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends AsyncWordSpec {
 
         "test 1" in {
           val promise = Promise[Assertion]
@@ -365,7 +365,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends AsyncWordSpec {
 
         // Note we get a StackOverflowError with the following execution
         // context.
@@ -393,7 +393,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends AsyncWordSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -438,7 +438,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends AsyncWordSpec {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -476,7 +476,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
         info(
           "hi there"
         )
@@ -495,7 +495,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in scope body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -521,7 +521,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in test body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -552,7 +552,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by test body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -585,7 +585,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
         note(
           "hi there"
         )
@@ -604,7 +604,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in scope body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -630,7 +630,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in test body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -654,7 +654,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by test body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -680,7 +680,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
         alert(
           "hi there"
         )
@@ -699,7 +699,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in scope body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -725,7 +725,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in test body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -749,7 +749,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by test body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -775,7 +775,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
         markup(
           "hi there"
         )
@@ -794,7 +794,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in scope body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -820,7 +820,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in test body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -851,7 +851,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends AsyncWordSpec  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
@@ -884,7 +884,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside when") {
-      class TestSpec extends AsyncWordSpecLike {
+      class TestSpec extends AsyncWordSpec {
         "a feature" when {
           "test 1" in { succeed }
           "test 1" in { succeed }
@@ -893,7 +893,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -905,7 +905,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand when") {
-      class TestSpec extends AsyncWordSpecLike {
+      class TestSpec extends AsyncWordSpec {
         "a feature" when {}
         it when {
           "test 1" in { succeed }
@@ -915,7 +915,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -927,7 +927,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside should") {
-      class TestSpec extends AsyncWordSpecLike {
+      class TestSpec extends AsyncWordSpec {
         "a feature" should {
           "test 1" in { succeed }
           "test 1" in { succeed }
@@ -936,7 +936,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -948,7 +948,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand should") {
-      class TestSpec extends AsyncWordSpecLike {
+      class TestSpec extends AsyncWordSpec {
         "a feature" should {}
         it should {
           "test 1" in { succeed }
@@ -958,7 +958,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       val e = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -970,7 +970,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside must") {
-      class TestSpec extends AsyncWordSpecLike {
+      class TestSpec extends AsyncWordSpec {
         "a feature" must {
           "test 1" in { succeed }
           "test 1" in { succeed }
@@ -979,7 +979,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -991,7 +991,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand must") {
-      class TestSpec extends AsyncWordSpecLike {
+      class TestSpec extends AsyncWordSpec {
         "a feature" must {}
         it must {
           "test 1" in { succeed }
@@ -1001,7 +1001,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1013,7 +1013,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside that") {
-      class TestSpec extends AsyncWordSpecLike {
+      class TestSpec extends AsyncWordSpec {
         "a feature" that {
           "test 1" in { succeed }
           "test 1" in { succeed }
@@ -1022,7 +1022,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1034,7 +1034,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside which") {
-      class TestSpec extends AsyncWordSpecLike {
+      class TestSpec extends AsyncWordSpec {
         "a feature" which {
           "test 1" in { succeed }
           "test 1" in { succeed }
@@ -1043,7 +1043,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1055,7 +1055,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside can") {
-      class TestSpec extends AsyncWordSpecLike {
+      class TestSpec extends AsyncWordSpec {
         "a feature" can {
           "test 1" in { succeed }
           "test 1" in { succeed }
@@ -1064,7 +1064,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1076,7 +1076,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand can") {
-      class TestSpec extends AsyncWordSpecLike {
+      class TestSpec extends AsyncWordSpec {
         "a feature" can {}
         it can {
           "test 1" in { succeed }
@@ -1086,7 +1086,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1098,7 +1098,7 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends AsyncWordSpecLike {
+      class TestSpec extends AsyncWordSpec {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END

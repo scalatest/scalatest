@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.wordspec
 
 import org.scalatest._
 import SharedHelpers.{EventRecordingReporter, thisLineNumber}
@@ -27,7 +27,7 @@ import scala.util.Success
 import org.scalatest
 import org.scalatest.wordspec
 
-class AsyncWordSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
+class FixtureAsyncWordSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
 
   private val prettifier = Prettifier.default
 
@@ -959,7 +959,7 @@ class AsyncWordSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -983,7 +983,7 @@ class AsyncWordSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1006,7 +1006,7 @@ class AsyncWordSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1030,7 +1030,7 @@ class AsyncWordSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1053,7 +1053,7 @@ class AsyncWordSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1077,7 +1077,7 @@ class AsyncWordSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1100,7 +1100,7 @@ class AsyncWordSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1123,7 +1123,7 @@ class AsyncWordSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1146,7 +1146,7 @@ class AsyncWordSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1170,7 +1170,7 @@ class AsyncWordSpecLikeSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get

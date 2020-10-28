@@ -13,54 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.wordspec
 
+import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 import scala.concurrent.{ExecutionContext, Promise, Future}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
-import org.scalatest.funspec.AsyncFunSpec
-import org.scalatest.wordspec.AsyncWordSpecLike
+import org.scalatest
+import org.scalatest.wordspec
 
-class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
+class FixtureAsyncWordSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
-  describe("AsyncWordSpecLike") {
+  describe("AsyncWordSpec") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncWordSpecLike with ParallelTestExecution {
+      class ExampleSpec extends wordspec.FixtureAsyncWordSpec with ParallelTestExecution {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
 
         val a = 1
 
-        "test 1" in {
+        "test 1" in { fixture =>
           Future {
             assert(a == 1)
           }
         }
 
-        "test 2" in {
+        "test 2" in { fixture =>
           Future {
             assert(a == 2)
           }
         }
 
-        "test 3" in {
+        "test 3" in { fixture =>
           Future {
             pending
           }
         }
 
-        "test 4" in {
+        "test 4" in { fixture =>
           Future {
-            cancel()
+            cancel
           }
         }
 
-        "test 5" ignore {
+        "test 5" ignore { fixture =>
           Future {
-            cancel()
+            cancel
           }
         }
 
@@ -89,28 +94,32 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncWordSpecLike with ParallelTestExecution {
+      class ExampleSpec extends wordspec.FixtureAsyncWordSpec with ParallelTestExecution {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
 
         val a = 1
 
-        "test 1" in {
+        "test 1" in { fixture =>
           assert(a == 1)
         }
 
-        "test 2" in {
+        "test 2" in { fixture =>
           assert(a == 2)
         }
 
-        "test 3" in {
+        "test 3" in { fixture =>
           pending
         }
 
-        "test 4" in {
-          cancel()
+        "test 4" in { fixture =>
+          cancel
         }
 
-        "test 5" ignore {
-          cancel()
+        "test 5" ignore { fixture =>
+          cancel
         }
 
         override def newInstance = new ExampleSpec
@@ -140,9 +149,13 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
 
-        "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        "test 1" in { fixture =>
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -151,7 +164,7 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
           }
         }
 
-        "test 2" in {
+        "test 2" in { fixture =>
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -160,7 +173,7 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
           }
         }
 
-        "test 3" in {
+        "test 3" in { fixture =>
           Future {
             assert(count == 2)
           }
@@ -183,23 +196,27 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
 
-        "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        "test 1" in { fixture =>
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
           Succeeded
         }
 
-        "test 2" in {
+        "test 2" in { fixture =>
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
           Succeeded
         }
 
-        "test 3" in {
+        "test 3" in { fixture =>
           assert(count == 2)
         }
 
@@ -224,16 +241,20 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
 
-        "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        "test 1" in { fixture =>
           Future {
             test1Thread = Some(Thread.currentThread)
             succeed
           }
         }
 
-        "test 2" in {
+        "test 2" in { fixture =>
           Future {
             test2Thread = Some(Thread.currentThread)
             succeed
@@ -267,9 +288,13 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
 
-        "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        "test 1" in { fixture =>
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -286,7 +311,7 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
           }
         }
 
-        "test 2" in {
+        "test 2" in { fixture =>
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -326,11 +351,15 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
 
         // Note we get a StackOverflowError with the following execution
         // context.
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
           xs match {
@@ -338,7 +367,7 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
             case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
           }
 
-        "test 1" in {
+        "test 1" in { fixture =>
           val fut: Future[Int] = sum((1 to 50000).toList)
           fut.map(total => assert(total == 1250025000))
         }
@@ -358,23 +387,27 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
 
-        "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        "test 1" in { fixture =>
           Future {
             SleepHelper.sleep(60)
             succeed
           }
         }
 
-        "test 2" in {
+        "test 2" in { fixture =>
           Future {
             SleepHelper.sleep(30)
             succeed
           }
         }
 
-        "test 3" in {
+        "test 3" in { fixture =>
           Future {
             succeed
           }
@@ -385,9 +418,6 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS,NATIVE-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
 
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }
@@ -405,19 +435,23 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncWordSpecLike {
+      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
 
-        "test 1" in {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        "test 1" in { fixture =>
           SleepHelper.sleep(60)
           succeed
         }
 
-        "test 2" in {
+        "test 2" in { fixture =>
           SleepHelper.sleep(30)
           succeed
         }
 
-        "test 3" in {
+        "test 3" in { fixture =>
           succeed
         }
 
@@ -426,9 +460,6 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS,NATIVE-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
 
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }
@@ -445,7 +476,10 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         info(
           "hi there"
         )
@@ -465,14 +499,16 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in scope body") {
-      class MySuite extends AsyncWordSpecLike  {
-
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         "test feature" should {
           info(
             "hi there"
           )
 
-          "test 1" in { succeed }
+          "test 1" in { fixture => succeed }
         }
       }
       val suite = new MySuite
@@ -490,10 +526,12 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in test body") {
-      class MySuite extends AsyncWordSpecLike  {
-
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         "test feature" should {
-          "test 1" in {
+          "test 1" in { fixture =>
             info("hi there")
             succeed
           }
@@ -520,10 +558,12 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by test body") {
-      class MySuite extends AsyncWordSpecLike  {
-
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         "test feature" should {
-          "test 1" in {
+          "test 1" in { fixture =>
             Future {
               info("hi there")
               succeed
@@ -552,7 +592,10 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         note(
           "hi there"
         )
@@ -572,14 +615,16 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in scope body") {
-      class MySuite extends AsyncWordSpecLike  {
-
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         "test feature" should {
           note(
             "hi there"
           )
 
-          "test 1" in { succeed }
+          "test 1" in { fixture => succeed }
         }
       }
       val suite = new MySuite
@@ -597,10 +642,12 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in test body") {
-      class MySuite extends AsyncWordSpecLike  {
-
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         "test feature" should {
-          "test 1" in {
+          "test 1" in { fixture =>
             note("hi there")
             succeed
           }
@@ -620,10 +667,12 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by test body") {
-      class MySuite extends AsyncWordSpecLike  {
-
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         "test feature" should {
-          "test 1" in {
+          "test 1" in { fixture =>
             Future {
               note("hi there")
               succeed
@@ -645,7 +694,10 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         alert(
           "hi there"
         )
@@ -665,14 +717,16 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in scope body") {
-      class MySuite extends AsyncWordSpecLike  {
-
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         "test feature" should {
           alert(
             "hi there"
           )
 
-          "test 1" in { succeed }
+          "test 1" in { fixture => succeed }
         }
       }
       val suite = new MySuite
@@ -690,10 +744,12 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in test body") {
-      class MySuite extends AsyncWordSpecLike  {
-
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         "test feature" should {
-          "test 1" in {
+          "test 1" in { fixture =>
             alert("hi there")
             succeed
           }
@@ -713,10 +769,12 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by test body") {
-      class MySuite extends AsyncWordSpecLike  {
-
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         "test feature" should {
-          "test 1" in {
+          "test 1" in { fixture =>
             Future {
               alert("hi there")
               succeed
@@ -738,7 +796,10 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends AsyncWordSpecLike  {
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         markup(
           "hi there"
         )
@@ -758,14 +819,16 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in scope body") {
-      class MySuite extends AsyncWordSpecLike  {
-
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         "test feature" should {
           markup(
             "hi there"
           )
 
-          "test 1" in { succeed }
+          "test 1" in { fixture => succeed }
         }
       }
       val suite = new MySuite
@@ -783,10 +846,12 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in test body") {
-      class MySuite extends AsyncWordSpecLike  {
-
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         "test feature" should {
-          "test 1" in {
+          "test 1" in { fixture =>
             markup("hi there")
             succeed
           }
@@ -813,10 +878,12 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
-      class MySuite extends AsyncWordSpecLike  {
-
+      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
         "test feature" should {
-          "test 1" in {
+          "test 1" in { fixture =>
             Future {
               markup("hi there")
               succeed
@@ -845,24 +912,28 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends AsyncWordSpecLike {
+      class TestSpec extends wordspec.FixtureAsyncWordSpec {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
+
         val a = 1
         "feature 1" should {
-          "test A" in {
+          "test A" in { fixture =>
             Future { assert(a == 1) }
           }
         }
         "feature 2" should {
-          "test B" in {
+          "test B" in { fixture =>
             Future { assert(a == 1) }
           }
         }
         "feature 3" should {
-          "test C" in {
+          "test C" in { fixture =>
             Future { assert(a == 1) }
           }
         }

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.wordspec
 
 import org.scalatest._
-import SharedHelpers.{EventRecordingReporter, thisLineNumber}
+import org.scalatest.SharedHelpers.{EventRecordingReporter, thisLineNumber}
 import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
@@ -24,54 +24,50 @@ import org.scalatest.exceptions.{DuplicateTestNameException, NotAllowedException
 import org.scalactic.Prettifier
 
 import scala.util.Success
-import org.scalatest
-import org.scalatest.wordspec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.wordspec.{ AsyncWordSpec, AsyncWordSpecLike }
 
-class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
+class AsyncWordSpecLikeSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 
-  describe("AsyncWordSpec") {
+  describe("AsyncWordSpecLike") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends wordspec.FixtureAsyncWordSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncWordSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         val a = 1
 
-        "test 1" in { fixture =>
+        "test 1" in {
           Future {
             assert(a == 1)
           }
         }
 
-        "test 2" in { fixture =>
+        "test 2" in {
           Future {
             assert(a == 2)
           }
         }
 
-        "test 3" in { fixture =>
+        "test 3" in {
           Future {
             pending
           }
         }
 
-        "test 4" in { fixture =>
+        "test 4" in {
           Future {
-            cancel
+            cancel()
           }
         }
 
-        "test 5" ignore { fixture =>
+        "test 5" ignore {
           Future {
-            cancel
+            cancel()
           }
         }
 
@@ -99,34 +95,30 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends wordspec.FixtureAsyncWordSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncWordSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         val a = 1
 
-        "test 1" in { fixture =>
+        "test 1" in {
           assert(a == 1)
         }
 
-        "test 2" in { fixture =>
+        "test 2" in {
           assert(a == 2)
         }
 
-        "test 3" in { fixture =>
+        "test 3" in {
           pending
         }
 
-        "test 4" in { fixture =>
-          cancel
+        "test 4" in {
+          cancel()
         }
 
-        "test 5" ignore { fixture =>
-          cancel
+        "test 5" ignore {
+          cancel()
         }
 
         override def newInstance = new ExampleSpec
@@ -151,19 +143,48 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
+    it("can be used with is for pending tests that don't return a Future") {
+
+      class ExampleSpec extends AsyncWordSpec {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
+
+        val a = 1
+
+        "test 1" is {
+          pending
+        }
+
+        "test 2" ignore {
+          pending
+        }
+      }
+
+      val rep = new EventRecordingReporter
+      val spec = new ExampleSpec
+      val status = spec.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS,NATIVE-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS,NATIVE-END
+      assert(rep.testStartingEventsReceived.length == 1)
+      assert(rep.testSucceededEventsReceived.length == 0)
+      assert(rep.testFailedEventsReceived.length == 0)
+      assert(rep.testPendingEventsReceived.length == 1)
+      assert(rep.testPendingEventsReceived(0).testName == "test 1")
+      assert(rep.testCanceledEventsReceived.length == 0)
+      assert(rep.testIgnoredEventsReceived.length == 1)
+      assert(rep.testIgnoredEventsReceived(0).testName == "test 2")
+    }
+
     it("should run tests that return Future in serial by default") {
 
       @volatile var count = 0
 
-      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
+      class ExampleSpec extends AsyncWordSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        "test 1" in { fixture =>
+        "test 1" in {
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -172,7 +193,7 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
           }
         }
 
-        "test 2" in { fixture =>
+        "test 2" in {
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -181,7 +202,7 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
           }
         }
 
-        "test 3" in { fixture =>
+        "test 3" in {
           Future {
             assert(count == 2)
           }
@@ -205,29 +226,25 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
+      class ExampleSpec extends AsyncWordSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        "test 1" in { fixture =>
+        "test 1" in {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
           succeed
         }
 
-        "test 2" in { fixture =>
+        "test 2" in {
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
           succeed
         }
 
-        "test 3" in { fixture =>
+        "test 3" in {
           assert(count == 2)
         }
 
@@ -253,20 +270,16 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
+      class ExampleSpec extends AsyncWordSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        "test 1" in { fixture =>
+        "test 1" in {
           Future {
             test1Thread = Some(Thread.currentThread)
             succeed
           }
         }
 
-        "test 2" in { fixture =>
+        "test 2" in {
           Future {
             test2Thread = Some(Thread.currentThread)
             succeed
@@ -297,13 +310,9 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
+      class ExampleSpec extends AsyncWordSpecLike {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        "test 1" in { fixture =>
+        "test 1" in {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -320,7 +329,7 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
           }
         }
 
-        "test 2" in { fixture =>
+        "test 2" in {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -357,15 +366,11 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
+      class ExampleSpec extends AsyncWordSpecLike {
 
         // Note we get a StackOverflowError with the following execution
         // context.
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
           xs match {
@@ -373,7 +378,7 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
             case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
           }
 
-        "test 1" in { fixture =>
+        "test 1" in {
           val fut: Future[Int] = sum((1 to 50000).toList)
           fut.map(total => assert(total == 1250025000))
         }
@@ -389,29 +394,25 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
+      class ExampleSpec extends AsyncWordSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        "test 1" in { fixture =>
+        "test 1" in {
           Future {
             SleepHelper.sleep(60)
             succeed
           }
         }
 
-        "test 2" in { fixture =>
+        "test 2" in {
           Future {
             SleepHelper.sleep(30)
             succeed
           }
         }
 
-        "test 3" in { fixture =>
+        "test 3" in {
           Future {
             succeed
           }
@@ -438,25 +439,21 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends wordspec.FixtureAsyncWordSpec {
+      class ExampleSpec extends AsyncWordSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        "test 1" in { fixture =>
+        "test 1" in {
           SleepHelper.sleep(60)
           succeed
         }
 
-        "test 2" in { fixture =>
+        "test 2" in {
           SleepHelper.sleep(30)
           succeed
         }
 
-        "test 3" in { fixture =>
+        "test 3" in {
           succeed
         }
 
@@ -480,13 +477,7 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
-
-        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncWordSpecLike  {
         info(
           "hi there"
         )
@@ -505,19 +496,16 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in scope body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+      class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
         "test feature" should {
           info(
             "hi there"
           )
 
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
         }
       }
       val suite = new MySuite
@@ -534,15 +522,12 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in test body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+      class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
         "test feature" should {
-          "test 1" in { fixture =>
+          "test 1" in {
             info("hi there")
             succeed
           }
@@ -568,15 +553,12 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by test body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+      class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
         "test feature" should {
-          "test 1" in { fixture =>
+          "test 1" in {
             Future {
               info("hi there")
               succeed
@@ -604,13 +586,7 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
-
-        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncWordSpecLike  {
         note(
           "hi there"
         )
@@ -629,19 +605,16 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in scope body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+      class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
         "test feature" should {
           note(
             "hi there"
           )
 
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
         }
       }
       val suite = new MySuite
@@ -658,15 +631,12 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in test body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+      class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
         "test feature" should {
-          "test 1" in { fixture =>
+          "test 1" in {
             note("hi there")
             succeed
           }
@@ -685,15 +655,12 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by test body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+      class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
         "test feature" should {
-          "test 1" in { fixture =>
+          "test 1" in {
             Future {
               note("hi there")
               succeed
@@ -714,13 +681,7 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
-
-        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncWordSpecLike  {
         alert(
           "hi there"
         )
@@ -739,19 +700,16 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in scope body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+      class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
         "test feature" should {
           alert(
             "hi there"
           )
 
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
         }
       }
       val suite = new MySuite
@@ -768,15 +726,12 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in test body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+      class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
         "test feature" should {
-          "test 1" in { fixture =>
+          "test 1" in {
             alert("hi there")
             succeed
           }
@@ -795,15 +750,12 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by test body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+      class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
         "test feature" should {
-          "test 1" in { fixture =>
+          "test 1" in {
             Future {
               alert("hi there")
               succeed
@@ -824,13 +776,7 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
-
-        //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
+      class MySuite extends AsyncWordSpecLike  {
         markup(
           "hi there"
         )
@@ -849,19 +795,16 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in scope body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+      class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
         "test feature" should {
           markup(
             "hi there"
           )
 
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
         }
       }
       val suite = new MySuite
@@ -878,15 +821,12 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in test body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+      class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
         "test feature" should {
-          "test 1" in { fixture =>
+          "test 1" in {
             markup("hi there")
             succeed
           }
@@ -912,15 +852,12 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
-      class MySuite extends wordspec.FixtureAsyncWordSpec  {
+      class MySuite extends AsyncWordSpecLike  {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
         "test feature" should {
-          "test 1" in { fixture =>
+          "test 1" in {
             Future {
               markup("hi there")
               succeed
@@ -948,18 +885,16 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside when") {
-      class TestSpec extends wordspec.FixtureAsyncWordSpec {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
+      class TestSpec extends AsyncWordSpecLike {
         "a feature" when {
-          "test 1" in { fixture => succeed }
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
+          "test 1" in { succeed }
         }
       }
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -971,19 +906,17 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand when") {
-      class TestSpec extends wordspec.FixtureAsyncWordSpec {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
+      class TestSpec extends AsyncWordSpecLike {
         "a feature" when {}
         it when {
-          "test 1" in { fixture => succeed }
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
+          "test 1" in { succeed }
         }
       }
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -995,18 +928,16 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside should") {
-      class TestSpec extends wordspec.FixtureAsyncWordSpec {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
+      class TestSpec extends AsyncWordSpecLike {
         "a feature" should {
-          "test 1" in { fixture => succeed }
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
+          "test 1" in { succeed }
         }
       }
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1018,19 +949,17 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand should") {
-      class TestSpec extends wordspec.FixtureAsyncWordSpec {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
+      class TestSpec extends AsyncWordSpecLike {
         "a feature" should {}
         it should {
-          "test 1" in { fixture => succeed }
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
+          "test 1" in { succeed }
         }
       }
       val e = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1042,18 +971,16 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside must") {
-      class TestSpec extends wordspec.FixtureAsyncWordSpec {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
+      class TestSpec extends AsyncWordSpecLike {
         "a feature" must {
-          "test 1" in { fixture => succeed }
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
+          "test 1" in { succeed }
         }
       }
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1065,19 +992,17 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand must") {
-      class TestSpec extends wordspec.FixtureAsyncWordSpec {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
+      class TestSpec extends AsyncWordSpecLike {
         "a feature" must {}
         it must {
-          "test 1" in { fixture => succeed }
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
+          "test 1" in { succeed }
         }
       }
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1089,18 +1014,16 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside that") {
-      class TestSpec extends wordspec.FixtureAsyncWordSpec {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
+      class TestSpec extends AsyncWordSpecLike {
         "a feature" that {
-          "test 1" in { fixture => succeed }
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
+          "test 1" in { succeed }
         }
       }
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1112,18 +1035,16 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside which") {
-      class TestSpec extends wordspec.FixtureAsyncWordSpec {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
+      class TestSpec extends AsyncWordSpecLike {
         "a feature" which {
-          "test 1" in { fixture => succeed }
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
+          "test 1" in { succeed }
         }
       }
       val e = intercept[NotAllowedException] {
             new TestSpec
           }
-      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1135,18 +1056,16 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside can") {
-      class TestSpec extends wordspec.FixtureAsyncWordSpec {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
+      class TestSpec extends AsyncWordSpecLike {
         "a feature" can {
-          "test 1" in { fixture => succeed }
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
+          "test 1" in { succeed }
         }
       }
       val e = intercept[NotAllowedException] {
-        new TestSpec
-      }
-      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+            new TestSpec
+          }
+      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1158,19 +1077,17 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand can") {
-      class TestSpec extends wordspec.FixtureAsyncWordSpec {
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
+      class TestSpec extends AsyncWordSpecLike {
         "a feature" can {}
         it can {
-          "test 1" in { fixture => succeed }
-          "test 1" in { fixture => succeed }
+          "test 1" in { succeed }
+          "test 1" in { succeed }
         }
       }
       val e = intercept[NotAllowedException] {
-        new TestSpec
-      }
-      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+            new TestSpec
+          }
+      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1182,28 +1099,24 @@ class AsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends wordspec.FixtureAsyncWordSpec {
+      class TestSpec extends AsyncWordSpecLike {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
         // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
-
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
-
         val a = 1
         "feature 1" should {
-          "test A" in { fixture =>
+          "test A" in {
             Future { assert(a == 1) }
           }
         }
         "feature 2" should {
-          "test B" in { fixture =>
+          "test B" in {
             Future { assert(a == 1) }
           }
         }
         "feature 3" should {
-          "test C" in { fixture =>
+          "test C" in {
             Future { assert(a == 1) }
           }
         }
