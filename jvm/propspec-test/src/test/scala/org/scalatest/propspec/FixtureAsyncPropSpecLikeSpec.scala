@@ -13,51 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*package org.scalatest
+/*package org.scalatest.wordspec
 
+import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
 
 import scala.util.Success
 
-class AsyncPropSpecSpec extends FunSpec {
+class AsyncPropSpecLikeSpec extends org.scalatest.FunSpec {
 
-  describe("AsyncPropSpec") {
+  describe("AsyncPropSpecLike") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncPropSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
         val a = 1
 
-        property("test 1") {
+        property("test 1") { fixture =>
           Future {
             assert(a == 1)
           }
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           Future {
             assert(a == 2)
           }
         }
 
-        property("test 3") {
+        property("test 3") { fixture =>
           Future {
             pending
           }
         }
 
-        property("test 4") {
+        property("test 4") { fixture =>
           Future {
             cancel
           }
         }
 
-        ignore("test 5") {
+        ignore("test 5") { fixture =>
           Future {
             cancel
           }
@@ -87,29 +92,33 @@ class AsyncPropSpecSpec extends FunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
+      class ExampleSpec extends AsyncPropSpecLike with ParallelTestExecution {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
         val a = 1
 
-        property("test 1") {
+        property("test 1") { fixture =>
           assert(a == 1)
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           assert(a == 2)
         }
 
-        property("test 3") {
+        property("test 3") { fixture =>
           pending
         }
 
-        property("test 4") {
+        property("test 4") { fixture =>
           cancel
         }
 
-        ignore("test 5") {
+        ignore("test 5") { fixture =>
           cancel
         }
 
@@ -139,11 +148,15 @@ class AsyncPropSpecSpec extends FunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        property("test 1") {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        property("test 1") { fixture =>
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -152,7 +165,7 @@ class AsyncPropSpecSpec extends FunSpec {
           }
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -161,7 +174,7 @@ class AsyncPropSpecSpec extends FunSpec {
           }
         }
 
-        property("test 3") {
+        property("test 3") { fixture =>
           Future {
             assert(count == 2)
           }
@@ -185,25 +198,29 @@ class AsyncPropSpecSpec extends FunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        property("test 1") {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        property("test 1") { fixture =>
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
           succeed
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
           succeed
         }
 
-        property("test 3") {
+        property("test 3") { fixture =>
           assert(count == 2)
         }
 
@@ -229,16 +246,20 @@ class AsyncPropSpecSpec extends FunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpecLike {
 
-        property("test 1") {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        property("test 1") { fixture =>
           Future {
             test1Thread = Some(Thread.currentThread)
             succeed
           }
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           Future {
             test2Thread = Some(Thread.currentThread)
             succeed
@@ -269,9 +290,13 @@ class AsyncPropSpecSpec extends FunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpecLike {
 
-        property("test 1") {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        property("test 1") { fixture =>
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -288,7 +313,7 @@ class AsyncPropSpecSpec extends FunSpec {
           }
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -325,11 +350,15 @@ class AsyncPropSpecSpec extends FunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpecLike {
 
         // Note we get a StackOverflowError with the following execution
         // context.
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
           xs match {
@@ -337,7 +366,7 @@ class AsyncPropSpecSpec extends FunSpec {
             case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
           }
 
-        property("test 1") {
+        property("test 1") { fixture =>
           val fut: Future[Int] = sum((1 to 50000).toList)
           fut.map(total => assert(total == 1250025000))
         }
@@ -353,25 +382,29 @@ class AsyncPropSpecSpec extends FunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        property("test 1") {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        property("test 1") { fixture =>
           Future {
             SleepHelper.sleep(60)
             succeed
           }
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           Future {
             SleepHelper.sleep(30)
             succeed
           }
         }
 
-        property("test 3") {
+        property("test 3") { fixture =>
           Future {
             succeed
           }
@@ -398,21 +431,25 @@ class AsyncPropSpecSpec extends FunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncPropSpec {
+      class ExampleSpec extends AsyncPropSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
-        property("test 1") {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        property("test 1") { fixture =>
           SleepHelper.sleep(60)
           succeed
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           SleepHelper.sleep(30)
           succeed
         }
 
-        property("test 3") {
+        property("test 3") { fixture =>
           succeed
         }
 

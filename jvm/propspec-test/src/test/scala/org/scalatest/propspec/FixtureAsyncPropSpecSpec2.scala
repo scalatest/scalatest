@@ -13,49 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*package org.scalatest
+/*package org.scalatest.wordspec
 
+import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 import scala.concurrent.{ExecutionContext, Promise, Future}
 import org.scalatest.concurrent.SleepHelper
 
 import scala.util.Success
 
-class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
+class FixtureAsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
-  describe("AsyncPropSpecLike") {
+  describe("AsyncPropSpec") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncPropSpecLike with ParallelTestExecution {
+      class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
 
         val a = 1
 
-        property("test 1") {
+        property("test 1") { fixture =>
           Future {
             assert(a == 1)
           }
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           Future {
             assert(a == 2)
           }
         }
 
-        property("test 3") {
+        property("test 3") { fixture =>
           Future {
             pending
           }
         }
 
-        property("test 4") {
+        property("test 4") { fixture =>
           Future {
             cancel
           }
         }
 
-        ignore("test 5") {
+        ignore("test 5") { fixture =>
           Future {
             cancel
           }
@@ -86,27 +91,31 @@ class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncPropSpecLike with ParallelTestExecution {
+      class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
 
         val a = 1
 
-        property("test 1") {
+        property("test 1") { fixture =>
           assert(a == 1)
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           assert(a == 2)
         }
 
-        property("test 3") {
+        property("test 3") { fixture =>
           pending
         }
 
-        property("test 4") {
+        property("test 4") { fixture =>
           cancel
         }
 
-        ignore("test 5") {
+        ignore("test 5") { fixture =>
           cancel
         }
 
@@ -137,9 +146,13 @@ class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncPropSpecLike {
+      class ExampleSpec extends AsyncPropSpec {
 
-        property("test 1") {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        property("test 1") { fixture =>
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -148,7 +161,7 @@ class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
           }
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -157,7 +170,7 @@ class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
           }
         }
 
-        property("test 3") {
+        property("test 3") { fixture =>
           Future {
             assert(count == 2)
           }
@@ -180,23 +193,27 @@ class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncPropSpecLike {
+      class ExampleSpec extends AsyncPropSpec {
 
-        property("test 1") {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        property("test 1") { fixture =>
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
           Succeeded
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
           Succeeded
         }
 
-        property("test 3") {
+        property("test 3") { fixture =>
           assert(count == 2)
         }
 
@@ -221,16 +238,20 @@ class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncPropSpecLike {
+      class ExampleSpec extends AsyncPropSpec {
 
-        property("test 1") {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        property("test 1") { fixture =>
           Future {
             test1Thread = Some(Thread.currentThread)
             succeed
           }
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           Future {
             test2Thread = Some(Thread.currentThread)
             succeed
@@ -264,9 +285,13 @@ class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends AsyncPropSpecLike {
+      class ExampleSpec extends AsyncPropSpec {
 
-        property("test 1") {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        property("test 1") { fixture =>
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -283,7 +308,7 @@ class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
           }
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -323,11 +348,15 @@ class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends AsyncPropSpecLike {
+      class ExampleSpec extends AsyncPropSpec {
 
         // Note we get a StackOverflowError with the following execution
         // context.
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
           xs match {
@@ -335,7 +364,7 @@ class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
             case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
           }
 
-        property("test 1") {
+        property("test 1") { fixture =>
           val fut: Future[Int] = sum((1 to 50000).toList)
           fut.map(total => assert(total == 1250025000))
         }
@@ -355,23 +384,27 @@ class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncPropSpecLike {
+      class ExampleSpec extends AsyncPropSpec {
 
-        property("test 1") {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        property("test 1") { fixture =>
           Future {
             SleepHelper.sleep(60)
             succeed
           }
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           Future {
             SleepHelper.sleep(30)
             succeed
           }
         }
 
-        property("test 3") {
+        property("test 3") { fixture =>
           Future {
             succeed
           }
@@ -402,19 +435,23 @@ class AsyncPropSpecLikeSpec2 extends AsyncFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends AsyncPropSpecLike {
+      class ExampleSpec extends AsyncPropSpec {
 
-        property("test 1") {
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        property("test 1") { fixture =>
           SleepHelper.sleep(60)
           succeed
         }
 
-        property("test 2") {
+        property("test 2") { fixture =>
           SleepHelper.sleep(30)
           succeed
         }
 
-        property("test 3") {
+        property("test 3") { fixture =>
           succeed
         }
 
