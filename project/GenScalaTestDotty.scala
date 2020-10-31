@@ -490,7 +490,10 @@ object GenScalaTestDotty {
 
     def genPropSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
       copyDir("jvm/propspec-test/src/test/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, 
-        List("PropSpecSpec.scala")
+        List(
+          "PropSpecSpec.scala", 
+          "FixturePropSpecSpec.scala"
+        )
       )
 
     def genWordSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
