@@ -183,28 +183,31 @@ abstract class UnitPropCheckerAsserting {
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
             @tailrec
-            def shrinkLoop(shrinksRemaining: List[RoseTree[A]], nextRnd: Randomizer): PropertyCheckResult = {
+            def shrinkLoop(lastFailedValue: A, lastEx: Throwable, shrinksRemaining: List[RoseTree[A]], rnd: Randomizer): PropertyCheckResult = {
               shrinksRemaining match {
-                case Nil => new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
+                case Nil => 
+                  val shrunkArgsPassed =
+                    List(
+                      if (names.isDefinedAt(0))
+                        PropertyArgument(Some(names(0)), lastFailedValue)
+                      else
+                        PropertyArgument(None, lastFailedValue)
+                    )
+                  new PropertyCheckResult.Failure(succeededCount, Some(lastEx), names, shrunkArgsPassed, initSeed)
                 case shrinkHead :: shrinkTail =>
                   val result: Try[T] = Try { fun(shrinkHead.value) }
                   result match {
-                    case Success(_) => shrinkLoop(shrinkTail, nextRnd)
+                    case Success(_) => 
+                      shrinkLoop(lastFailedValue, lastEx, shrinkTail, rnd)
                     case Failure(shrunkEx) =>
-                      val shrunkArgsPassed =
-                        List(
-                          if (names.isDefinedAt(0))
-                            PropertyArgument(Some(names(0)), shrinkHead.value)
-                          else
-                            PropertyArgument(None, shrinkHead.value)
-                        )
-                      new PropertyCheckResult.Failure(succeededCount, Some(shrunkEx), names, shrunkArgsPassed, initSeed)
+                      val (nextLevelRoseTrees, nextRnd) = shrinkHead.shrinks(rnd)
+                      shrinkLoop(shrinkHead.value, shrunkEx, nextLevelRoseTrees, nextRnd)
                   }
               }
             }
             val (rootRoseTree, rnd2) = genA.shrink(a, rnd)
             val (firstLevelRoseTrees, rnd3) = rootRoseTree.shrinks(rnd2)
-            shrinkLoop(firstLevelRoseTrees.take(100), rnd3)
+            shrinkLoop(a, ex, firstLevelRoseTrees.take(100), rnd3)
         }
       }
 
