@@ -17,7 +17,7 @@ package org.scalatest.enablers
 
 import org.scalactic.{Prettifier, source}
 import org.scalatest.exceptions.{StackDepth, StackDepthException, GeneratorDrivenPropertyCheckFailedException}
-import org.scalatest.prop.{Configuration, PropertyArgument, PropertyCheckResult}
+import org.scalatest.prop.{Configuration, PropertyArgument, PropertyCheckResult, RoseTree}
 import org.scalatest.{FailureMessages, Resources, UnquotedString, Fact, Expectation, Assertion, Succeeded}
 import FailureMessages.decorateToStringValue
 import org.scalactic.anyvals.PosZInt
@@ -183,33 +183,28 @@ abstract class UnitPropCheckerAsserting {
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
             @tailrec
-            def shrinkLoop(shrinksRemaining: List[A]): PropertyCheckResult = {
+            def shrinkLoop(shrinksRemaining: List[RoseTree[A]], nextRnd: Randomizer): PropertyCheckResult = {
               shrinksRemaining match {
                 case Nil => new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
                 case shrinkHead :: shrinkTail =>
-                  val result: Try[T] = Try { fun(shrinkHead) }
+                  val result: Try[T] = Try { fun(shrinkHead.value) }
                   result match {
-                    case Success(_) => shrinkLoop(shrinkTail)
+                    case Success(_) => shrinkLoop(shrinkTail, nextRnd)
                     case Failure(shrunkEx) =>
                       val shrunkArgsPassed =
                         List(
                           if (names.isDefinedAt(0))
-                            PropertyArgument(Some(names(0)), shrinkHead)
+                            PropertyArgument(Some(names(0)), shrinkHead.value)
                           else
-                            PropertyArgument(None, shrinkHead)
+                            PropertyArgument(None, shrinkHead.value)
                         )
                       new PropertyCheckResult.Failure(succeededCount, Some(shrunkEx), names, shrunkArgsPassed, initSeed)
                   }
               }
             }
             val (rootRoseTree, rnd2) = genA.shrink(a, rnd)
-            // For now, just look at the first level of the RoseTree, which
-            // should (except maybe in the case of Option) be the same
-            // values in our old shrink List[A]. Currently I won't use
-            // the next rnd that comes out of here, but later when we
-            // traverse the tree, we will use it.
-            val (firstLevelRoseTrees, _) = rootRoseTree.shrinks(rnd2)
-            shrinkLoop(firstLevelRoseTrees.map(_.value).take(100))
+            val (firstLevelRoseTrees, rnd3) = rootRoseTree.shrinks(rnd2)
+            shrinkLoop(firstLevelRoseTrees.take(100), rnd3)
         }
       }
 
