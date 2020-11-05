@@ -195,7 +195,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
       assert((scopeOpened \ "location" \ "LineInFile" \ "filePathname").text endsWith s"org${sep}scalatest${sep}tools${sep}${fileName}")
     else
-      assert((scopeOpened \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
+      assert((scopeOpened \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES (or property scalactic.fillFilePathnames) to yes at compile time to enable this feature.")
   }
   
   def checkTestStarting(testStarting:Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
@@ -211,7 +211,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
       assert((testStarting \ "location" \ "LineInFile" \ "filePathname").text endsWith s"org${sep}scalatest${sep}tools${sep}${fileName}")
     else
-      assert((testStarting \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
+      assert((testStarting \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES (or property scalactic.fillFilePathnames) to yes at compile time to enable this feature.")
     checkStringOption((testStarting \ "rerunner").text, rerunner)
   }
   
@@ -227,7 +227,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
       assert((testSucceeded \ "location" \ "LineInFile" \ "filePathname").text endsWith s"org${sep}scalatest${sep}tools${sep}${fileName}")
     else
-      assert((testSucceeded \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
+      assert((testSucceeded \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES (or property scalactic.fillFilePathnames) to yes at compile time to enable this feature.")
     checkStringOption((testSucceeded \ "rerunner").text, rerunner)
   }
   
@@ -255,7 +255,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
       assert((testPending \ "location" \ "LineInFile" \ "filePathname").text endsWith s"org${sep}scalatest${sep}tools${sep}${fileName}")
     else
-      assert((testPending \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
+      assert((testPending \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES (or property scalactic.fillFilePathnames) to yes at compile time to enable this feature.")
     checkStringOption((testPending \ "rerunner").text, rerunner)
   }
   
@@ -271,7 +271,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
       assert((testIgnored \ "location" \ "LineInFile" \ "filePathname").text endsWith s"org${sep}scalatest${sep}tools${sep}${fileName}")
     else
-      assert((testIgnored \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
+      assert((testIgnored \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES (or property scalactic.fillFilePathnames) to yes at compile time to enable this feature.")
   }
   
   def checkTestCanceled(testCanceled: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String], 
@@ -287,7 +287,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
       assert((testCanceled \ "location" \ "LineInFile" \ "filePathname").text endsWith s"org${sep}scalatest${sep}tools${sep}${fileName}")
     else
-      assert((testCanceled \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
+      assert((testCanceled \ "location" \ "LineInFile" \ "filePathname").text endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES (or property scalactic.fillFilePathnames) to yes at compile time to enable this feature.")
   }
   
   def checkSuiteStarting(suiteStarting: Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 

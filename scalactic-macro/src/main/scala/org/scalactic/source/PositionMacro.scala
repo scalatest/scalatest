@@ -28,8 +28,11 @@ object PositionMacro {
   import sourceCompatHack._
 
   private[scalactic] lazy val showScalacticFillFilePathnames: Boolean = {
-    val value = System.getenv("SCALACTIC_FILL_FILE_PATHNAMES")
-    value != null && value == "yes"
+    val enabledThroughEnv = System.getenv("SCALACTIC_FILL_FILE_PATHNAMES")
+    val enabledThroughProp = System.getProperty("scalactic.fillFilePathnames")
+
+    (enabledThroughEnv != null && enabledThroughEnv == "yes") ||
+      (enabledThroughProp != null && enabledThroughProp == "yes")
   }
 
   private class PositionMacroImpl(val universe: scala.reflect.api.Universe) {
