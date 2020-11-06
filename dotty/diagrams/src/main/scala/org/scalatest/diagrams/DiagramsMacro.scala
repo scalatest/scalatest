@@ -32,7 +32,7 @@ object DiagramsMacro {
 
     def isXmlSugar(apply: Apply): Boolean = apply.tpe <:< typeOf[scala.xml.Elem]
     def isJavaStatic(tree: Tree): Boolean = tree.symbol.flags.is(Flags.Static)
-    def isImplicitMethodType(tp: Type): Boolean = tp match {
+    def isImplicitMethodType(tp: TypeRepr): Boolean = tp match {
       case tp: MethodType => tp.isImplicit
       case _ => false
     }

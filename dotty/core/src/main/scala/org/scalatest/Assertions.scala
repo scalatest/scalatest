@@ -1295,7 +1295,7 @@ trait Assertions extends TripleEquals  {
    */
   final val succeed: Assertion = Succeeded
 
-  inline def (x: String) stripMargin : String =
+  inline def stripMargin(x: String) : String =
     ${ org.scalatest.Assertions.stripMarginImpl('x) }
 }
 
