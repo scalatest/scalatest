@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.funsuite
 
 import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest._
@@ -25,7 +25,7 @@ import org.scalatest.exceptions.DuplicateTestNameException
 import scala.util.Success
 import org.scalatest
 
-class AsyncFunSuiteSpec extends scalatest.funspec.AnyFunSpec {
+class FixtureAsyncFunSuiteSpec extends scalatest.funspec.AnyFunSpec {
 
   describe("AsyncFunSuite") {
 
@@ -61,13 +61,13 @@ class AsyncFunSuiteSpec extends scalatest.funspec.AnyFunSpec {
 
         test("test 4") { fixture =>
           Future {
-            cancel
+            cancel()
           }
         }
 
         ignore("test 5") { fixture =>
           Future {
-            cancel
+            cancel()
           }
         }
 
@@ -118,11 +118,11 @@ class AsyncFunSuiteSpec extends scalatest.funspec.AnyFunSpec {
         }
 
         test("test 4") { fixture =>
-          cancel
+          cancel()
         }
 
         ignore("test 5") { fixture =>
-          cancel
+          cancel()
         }
 
         override def newInstance = new ExampleSuite
@@ -822,7 +822,7 @@ class AsyncFunSuiteSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
       }
-      assert("AsyncFunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAsyncFunSuiteSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
       assert(!e.cause.isDefined)
     }
@@ -837,7 +837,7 @@ class AsyncFunSuiteSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
       }
-      assert("AsyncFunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAsyncFunSuiteSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
       assert(!e.cause.isDefined)
     }

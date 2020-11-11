@@ -26,7 +26,7 @@ object CompileMacro {
 
   // check that a code snippet compiles
   def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty._
+    import qctx.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkCompile(code: String): Expr[Assertion] =
@@ -42,7 +42,7 @@ object CompileMacro {
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant(code: String))
+                 Literal(Constant.String(code: String))
                )
              ),
              _
@@ -54,7 +54,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant(code: String))
+                 Literal(Constant.String(code: String))
                )
              ),
              _
@@ -85,7 +85,7 @@ object CompileMacro {
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant(code: String))
+                 Literal(Constant.String(code: String))
                )
              ),
              _
@@ -97,7 +97,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant(code: String))
+                 Literal(Constant.String(code: String))
                )
              ),
              _
@@ -140,7 +140,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant(code: String))
+                 Literal(Constant.String(code: String))
                )
              ),
              _

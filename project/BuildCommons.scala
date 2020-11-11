@@ -12,7 +12,7 @@ trait BuildCommons {
 
   val releaseVersion = "3.3.0-SNAP3"
 
-  val previousReleaseVersion = "3.2.0"
+  val previousReleaseVersion = "3.2.3"
 
   def rootProject: Project
 

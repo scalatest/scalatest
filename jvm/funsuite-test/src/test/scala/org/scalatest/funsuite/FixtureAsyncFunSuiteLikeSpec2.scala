@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.funsuite
 
 import scala.concurrent.{ExecutionContext, Promise, Future}
 import org.scalatest._
@@ -23,14 +23,15 @@ import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
 import org.scalatest
+import org.scalatest.funsuite
 
-class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
+class FixtureAsyncFunSuiteLikeSpec2 extends scalatest.funspec.AsyncFunSpec {
 
-  describe("AsyncFunSuite") {
+  describe("AsyncFunSuiteLike") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSuite extends funsuite.FixtureAsyncFunSuite with ParallelTestExecution {
+      class ExampleSuite extends funsuite.FixtureAsyncFunSuiteLike with ParallelTestExecution {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -58,13 +59,13 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
 
         test("test 4") { fixture =>
           Future {
-            cancel
+            cancel()
           }
         }
 
         ignore("test 5") { fixture =>
           Future {
-            cancel
+            cancel()
           }
         }
 
@@ -93,7 +94,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSuite extends funsuite.FixtureAsyncFunSuite with ParallelTestExecution {
+      class ExampleSuite extends funsuite.FixtureAsyncFunSuiteLike with ParallelTestExecution {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -114,11 +115,11 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
         }
 
         test("test 4") { fixture =>
-          cancel
+          cancel()
         }
 
         ignore("test 5") { fixture =>
-          cancel
+          cancel()
         }
 
         override def newInstance = new ExampleSuite
@@ -148,7 +149,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSuite extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSuite extends funsuite.FixtureAsyncFunSuiteLike {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -195,7 +196,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
 
       @volatile var count = 0
 
-      class ExampleSuite extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSuite extends funsuite.FixtureAsyncFunSuiteLike {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -240,7 +241,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
       var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSpec extends funsuite.FixtureAsyncFunSuiteLike {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -287,7 +288,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
       @volatile var test2Thread: Option[Thread] = None
       var onCompleteThread: Option[Thread] = None
 
-      class ExampleSpec extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSpec extends funsuite.FixtureAsyncFunSuiteLike {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -350,7 +351,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
 
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
-      class ExampleSpec extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSpec extends funsuite.FixtureAsyncFunSuiteLike {
 
         // Note we get a StackOverflowError with the following execution
         // context.
@@ -386,7 +387,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
 
     it("should run tests that returns Future and report their result in serial") {
 
-      class ExampleSpec extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSpec extends funsuite.FixtureAsyncFunSuiteLike {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -417,9 +418,6 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS,NATIVE-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
 
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }
@@ -437,7 +435,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
 
     it("should run tests that does not return Future and report their result in serial") {
 
-      class ExampleSpec extends funsuite.FixtureAsyncFunSuite {
+      class ExampleSpec extends funsuite.FixtureAsyncFunSuiteLike {
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -462,9 +460,6 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS,NATIVE-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
 
       val promise = Promise[EventRecordingReporter]
       status whenCompleted { _ => promise.success(rep) }
@@ -481,7 +476,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in main spec body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuiteLike  {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -504,7 +499,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuiteLike  {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -534,7 +529,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an InfoProvided event for an info in Future returned by test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuiteLike  {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -566,7 +561,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in main spec body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuiteLike  {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -589,7 +584,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuiteLike  {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -612,7 +607,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a NoteProvided event for a note in Future returned by test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuiteLike  {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -637,7 +632,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in main spec body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuiteLike  {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -660,7 +655,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuiteLike  {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -683,7 +678,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send an AlertProvided event for an alert in Future returned by test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuiteLike  {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -708,7 +703,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in main spec body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuiteLike  {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -731,7 +726,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuiteLike  {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -761,7 +756,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
-      class MySuite extends funsuite.FixtureAsyncFunSuite  {
+      class MySuite extends funsuite.FixtureAsyncFunSuiteLike  {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
@@ -793,7 +788,7 @@ class AsyncFunSuiteSpec2 extends scalatest.funspec.AsyncFunSpec {
     }
 
     it("should allow other execution context to be used") {
-      class TestSpec extends funsuite.FixtureAsyncFunSuite {
+      class TestSpec extends funsuite.FixtureAsyncFunSuiteLike {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END

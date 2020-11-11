@@ -14,7 +14,7 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 trait JsBuild { this: BuildCommons =>
 
-  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.1.1")
+  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.3.0")
   val sjsPrefix = if (scalaJSVersion.startsWith("1.")) "_sjs1_" else "_sjs0.6_"
 
   lazy val deleteJsDependenciesTask = taskKey[Unit]("Delete JS_DEPENDENCIES")
@@ -235,6 +235,8 @@ trait JsBuild { this: BuildCommons =>
       "-m", "org.scalatest.flatspec",
       "-m", "org.scalatest.freespec",
       "-m", "org.scalatest.funspec",
+      "-m", "org.scalatest.funsuite",
+      "-m", "org.scalatest.propspec",
       "-oDIF"))  
 
   lazy val commonTestJS = project.in(file("js/common-test"))
@@ -331,7 +333,9 @@ trait JsBuild { this: BuildCommons =>
        scalatestFeatureSpecTestJS, 
        scalatestFlatSpecTestJS, 
        scalatestFreeSpecTestJS, 
-       scalatestFunSpecTestJS
+       scalatestFunSpecTestJS, 
+       scalatestFunSuiteTestJS, 
+       scalatestPropSpecTestJS
      )
 
   lazy val scalatestDiagramsTestJS = project.in(file("js/diagrams-test"))
@@ -392,7 +396,31 @@ trait JsBuild { this: BuildCommons =>
           GenScalaTestJS.genFunSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)            
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestFunSuiteTestJS = project.in(file("js/funsuite-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsJS: _*)
+    .settings(
+      projectTitle := "ScalaTest FunSuite Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestJS.genFunSuiteTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)         
+
+  lazy val scalatestPropSpecTestJS = project.in(file("js/propspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsJS: _*)
+    .settings(
+      projectTitle := "ScalaTest PropSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestJS.genPropSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)       
 
   val scalatestJSDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
@@ -475,6 +503,7 @@ trait JsBuild { this: BuildCommons =>
          ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.tryNotASuccess"), // Function in private object FailureMessages.
          ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.eitherLeftValueNotDefined"), // Function in private object FailureMessages.
          ProblemFilters.exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.eitherRightValueNotDefined"), // Function in private object FailureMessages.
+         ProblemFilters.exclude[ReversedMissingMethodProblem]("org.scalatest.EitherValues.convertEitherToValuable") // New implicit conversion function.
        )
      }
     ).settings(osgiSettings: _*).settings(

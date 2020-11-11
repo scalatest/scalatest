@@ -12,7 +12,7 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "0.27.0-RC1")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.0-M1")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
@@ -392,7 +392,9 @@ trait DottyBuild { this: BuildCommons =>
       scalatestFeatureSpecTestDotty, 
       scalatestFlatSpecTestDotty, 
       scalatestFreeSpecTestDotty, 
-      scalatestFunSpecTestDotty
+      scalatestFunSpecTestDotty, 
+      scalatestFunSuiteTestDotty, 
+      scalatestPropSpecTestDotty
     )
 
   lazy val scalatestDiagramsTestDotty = project.in(file("dotty/diagrams-test"))
@@ -448,6 +450,28 @@ trait DottyBuild { this: BuildCommons =>
       sourceGenerators in Test += Def.task {
         GenScalaTestDotty.genFunSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
-    ).dependsOn(commonTestDotty % "test")            
+    ).dependsOn(commonTestDotty % "test")
+
+  lazy val scalatestFunSuiteTestDotty = project.in(file("dotty/funsuite-test"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDotty)
+    .settings(
+      projectTitle := "ScalaTest FunSuite Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFunSuiteTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDotty % "test")
+
+  lazy val scalatestPropSpecTestDotty = project.in(file("dotty/propspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDotty)
+    .settings(
+      projectTitle := "ScalaTest PropSpec Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genPropSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDotty % "test")                
 
 }
