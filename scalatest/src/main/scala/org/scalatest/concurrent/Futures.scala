@@ -344,10 +344,9 @@ trait Futures extends PatienceConfiguration {
      * @param timeout the <code>Timeout</code> configuration parameter
      * @param interval the <code>Interval</code> configuration parameter
      * @return the result of the future once it is ready, if <code>value</code> is defined as a <code>Right</code>
-     * @throws Throwable if once ready, the <code>value</code> of this future is defined as a
-     *       <code>Left</code> (in this case, this method throws that same exception)
-     * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
-     *     the specified timeout has been exceeded
+     * @throws Throwable if once ready, the <code>value</code> of this future is run-aborting exception
+     * @throws TestFailedException if the future is cancelled, expires, is still not ready after
+     *     the specified timeout has been exceeded or is failed with exception that is not run-aborting
      */
     final def futureValue(timeout: Timeout, interval: Interval)(implicit pos: source.Position): T = {
       futureValueImpl(pos)(PatienceConfig(timeout.value, interval.value))
@@ -385,10 +384,9 @@ trait Futures extends PatienceConfiguration {
      * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
      *          <code>interval</code> parameters that are unused by this method
      * @return the result of the future once it is ready, if <code>eitherValue</code> is defined as a <code>Right</code>
-     * @throws Throwable if once ready, the <code>eitherValue</code> of this future is defined as a
-     *       <code>Left</code> (in this case, this method throws that same exception)
-     * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
-     *     the specified timeout has been exceeded
+     * @throws Throwable if once ready, the <code>value</code> of this future is run-aborting exception
+     * @throws TestFailedException if the future is cancelled, expires, is still not ready after
+     *     the specified timeout has been exceeded or is failed with exception that is not run-aborting
      */
     final def futureValue(timeout: Timeout)(implicit config: PatienceConfig, pos: source.Position): T = {
       futureValueImpl(pos)(PatienceConfig(timeout.value, config.interval))
@@ -426,10 +424,9 @@ trait Futures extends PatienceConfiguration {
      * @param config an <code>PatienceConfig</code> object containing <code>timeout</code> and
      *          <code>interval</code> parameters that are unused by this method
      * @return the result of the future once it is ready, if <code>value</code> is defined as a <code>Right</code>
-     * @throws Throwable if once ready, the <code>value</code> of this future is defined as a
-     *       <code>Left</code> (in this case, this method throws that same exception)
-     * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
-     *     the specified timeout has been exceeded
+     * @throws Throwable if once ready, the <code>value</code> of this future is run-aborting exception
+     * @throws TestFailedException if the future is cancelled, expires, is still not ready after
+     *     the specified timeout has been exceeded or is failed with exception that is not run-aborting
      */
     final def futureValue(interval: Interval)(implicit config: PatienceConfig, pos: source.Position): T = {
       futureValueImpl(pos)(PatienceConfig(config.timeout, interval.value))
@@ -467,10 +464,9 @@ trait Futures extends PatienceConfiguration {
      * @param config a <code>PatienceConfig</code> object containing <code>timeout</code> and
      *          <code>interval</code> parameters that are unused by this method
      * @return the result of the future once it is ready, if <code>value</code> is defined as a <code>Right</code>
-     * @throws Throwable if once ready, the <code>value</code> of this future is defined as a
-     *       <code>Left</code> (in this case, this method throws that same exception)
-     * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
-     *     the specified timeout has been exceeded
+     * @throws Throwable if once ready, the <code>value</code> of this future is run-aborting exception
+     * @throws TestFailedException if the future is cancelled, expires, is still not ready after
+     *     the specified timeout has been exceeded or is failed with exception that is not run-aborting
      */
     def futureValue(implicit config: PatienceConfig, pos: source.Position): T = {
       futureValueImpl(pos)(config)
