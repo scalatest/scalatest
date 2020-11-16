@@ -116,10 +116,16 @@ object GenScalaTestNative {
   val genScalaPackages: Map[String, List[String]] =
     Map(
       "org/scalatest" -> (List(
+        "Doc.scala",
+        "DocSpec.scala",
+        "DocSpecLike.scala",
         "DispatchReporter.scala",
         "ConfigMapWrapperSuite.scala",    // skipped because depends on java reflection.
         "JavaClassesWrappers.scala",
         "Shell.scala",
+        "StreamlinedXml.scala",
+        "StreamlinedXmlEquality.scala",
+        "StreamlinedXmlNormMethods.scala",
         "SuiteRerunner.scala",
         "SuiteRerunner.scala",
         "run.scala"

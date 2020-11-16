@@ -16,18 +16,6 @@ trait NativeBuild { this: BuildCommons =>
 
   val scalaNativeVersion = Option(System.getenv("SCALANATIVE_VERSION")).getOrElse("0.4.0-M2")
 
-  lazy val nativeCrossBuildLibraryDependencies = Def.setting {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      // if scala 2.11+ is used, add dependency on scala-xml module
-      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-        Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
-        )
-      case _ =>
-        Seq.empty
-    }
-  }
-
   private lazy val sharedNativeSettings = Seq(
     // This hack calls class directory as "resource" that forces to add all NIRs that was generated
     // by scala-native for classes that has `EnableReflectiveInstantiation` annotation
@@ -166,7 +154,6 @@ trait NativeBuild { this: BuildCommons =>
         name := "scalatest-app",
         organization := "org.scalatest",
         moduleName := "scalatest-app",
-        libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
         libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
         // include the scalactic classes and resources in the jar
         mappings in (Compile, packageBin) ++= mappings.in(scalacticNative, Compile, packageBin).value,
@@ -714,7 +701,6 @@ trait NativeBuild { this: BuildCommons =>
   def sharedTestSettingsNative: Seq[Setting[_]] =
     Seq(
       organization := "org.scalatest",
-      libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
       fork in test := false,
       nativeLinkStubs in Test := true,
