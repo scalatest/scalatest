@@ -29,10 +29,10 @@ object GenAnyVals {
       val macroCode =
         if (dotty)
           s"""
-             |  def apply(value: Expr[$primitiveTypeName])(implicit qctx: QuoteContext): Expr[$typeName] = {
+             |  def apply(value: Expr[$primitiveTypeName])(using Quotes): Expr[$typeName] = {
              |    val notValidMsg = Resources.notValid$typeName
              |    val notLiteralMsg = Resources.notLiteral$typeName
-             |    import qctx.tasty._
+             |    import quotes.reflect._
              |    ensureValid${primitiveTypeName}Literal(value, notValidMsg, notLiteralMsg)(isValid)
              |    '{ $typeName.ensuringValid($$value) }
              |  }
