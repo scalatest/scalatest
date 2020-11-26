@@ -207,9 +207,9 @@ trait CompileTimeAssertions {
       case Literal(intConst) =>
         val literalValue = intConst.value.toString.toInt
         if (!isValid(literalValue))
-          Reporting.error(notValidMsg, Term.of(value).pos)
+          report.error(notValidMsg, Term.of(value).pos)
       case _ =>
-        Reporting.error(notLiteralMsg, Term.of(value).pos)
+        report.error(notLiteralMsg, Term.of(value).pos)
     }
   }
 
@@ -242,9 +242,9 @@ trait CompileTimeAssertions {
       case Literal(longConst) =>
         val literalValue = longConst.value.toString.toLong
         if (!isValid(literalValue))
-          Reporting.error(notValidMsg, Term.of(value).pos)
+          report.error(notValidMsg, Term.of(value).pos)
       case _ =>
-        Reporting.error(notLiteralMsg, Term.of(value).pos)
+        report.error(notLiteralMsg, Term.of(value).pos)
     }
   }
 
@@ -277,9 +277,9 @@ trait CompileTimeAssertions {
       case Literal(floatConst) =>
         val literalValue = floatConst.value.toString.toFloat
         if (!isValid(literalValue))
-          Reporting.error(notValidMsg, Term.of(value).pos)
+          report.error(notValidMsg, Term.of(value).pos)
       case _ =>
-        Reporting.error(notLiteralMsg, Term.of(value).pos)
+        report.error(notLiteralMsg, Term.of(value).pos)
     }
   }
 
@@ -312,9 +312,9 @@ trait CompileTimeAssertions {
       case Literal(doubleConst) =>
         val literalValue = doubleConst.value.toString.toDouble
         if (!isValid(literalValue))
-          Reporting.error(notValidMsg, Term.of(value).pos)
+          report.error(notValidMsg, Term.of(value).pos)
       case _ =>
-        Reporting.error(notLiteralMsg, Term.of(value).pos)
+        report.error(notLiteralMsg, Term.of(value).pos)
     }
   }
 
@@ -347,9 +347,9 @@ trait CompileTimeAssertions {
       case Literal(stringConst) =>
         val literalValue = stringConst.value.toString
         if (!isValid(literalValue))
-          Reporting.error(notValidMsg, Term.of(value).pos)
+          report.error(notValidMsg, Term.of(value).pos)
       case _ =>
-        Reporting.error(notLiteralMsg, Term.of(value).pos)
+        report.error(notLiteralMsg, Term.of(value).pos)
     }
   }
 
@@ -382,9 +382,9 @@ trait CompileTimeAssertions {
       case Literal(charConst) =>
         val literalValue = charConst.value.toString.head
         if (!isValid(literalValue))
-          Reporting.error(notValidMsg, Term.of(value).pos)
+          report.error(notValidMsg, Term.of(value).pos)
       case _ =>
-        Reporting.error(notLiteralMsg, Term.of(value).pos)
+        report.error(notLiteralMsg, Term.of(value).pos)
     }
   }
 }
