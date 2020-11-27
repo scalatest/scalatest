@@ -1,6 +1,6 @@
 -server 
 -Xms512M 
--Xmx4000M 
+-Xmx11G
 -Xss10M
 -XX:+CMSClassUnloadingEnabled 
 -XX:+UseConcMarkSweepGC 
