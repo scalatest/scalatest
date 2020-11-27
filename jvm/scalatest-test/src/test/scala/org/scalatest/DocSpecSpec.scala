@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest.DocSpec.stripMargin
 import org.scalatest.DocSpec.trimMarkup
 import prop.TableDrivenPropertyChecks._
 import org.scalatest.SharedHelpers.EventRecordingReporter
@@ -23,7 +22,6 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers._
 
 class DocSpecSpec extends AnyFunSpec {
-  
   describe("A DocSpec") {
     describe("with no suites inside") {
 
@@ -45,7 +43,7 @@ This is a paragraph later...
           val doc = markup"""
             This is a Title
             ===============
-            
+
             This is a paragraph later...
           """
         }
@@ -65,7 +63,7 @@ This is a paragraph later...
           val doc = markup"""
             This is a Title
             ===============
-   
+
             This is a paragraph later...
           """
         }
@@ -73,10 +71,10 @@ This is a paragraph later...
       val blankLineFirst =
         new DocSpec {
           val doc = markup"""
-            
+
             This is a Title
             ===============
-            
+
             This is a paragraph later...
           """
         }
@@ -88,7 +86,7 @@ This is a paragraph later...
 
             This is a Title
             ===============
-            
+
             This is a paragraph later...
           """
         }
@@ -97,10 +95,10 @@ This is a paragraph later...
       val shortLineFirst =
         new DocSpec {
           val doc = markup"""
-   
+
             This is a Title
             ===============
-            
+
             This is a paragraph later...
           """
         }
@@ -147,7 +145,7 @@ This is a paragraph later...
           wasRun = true
         }
       }
-        
+
       it("should run the nested suite as well as outputing the markup text") {
 
         val nestedSpec = new NestedSpec
@@ -158,8 +156,8 @@ This is a paragraph later...
 
               This is a Title
               ===============
-              
-              This is a nested suite: ${
+
+              This is a nested suite:${
                 nestedSpec
               }
 
@@ -177,7 +175,7 @@ This is a paragraph later...
             |This is a Title
             |===============
             |
-            |This is a nested suite: 
+            |This is a nested suite:
           """.stripMargin)
         assert(mp(0).text === expectedTop)
 
@@ -214,6 +212,8 @@ This is a paragraph later...
   }
 
   describe("The stripMargin method") {
+    import org.scalatest.DocSpec.stripMargin
+
     it("should throw NPE if null passed") {
       a [NullPointerException] should be thrownBy { stripMargin(null) }
     }

@@ -15,14 +15,12 @@
  */
 package org.scalatest
 
+import org.scalatest.Doc.trimMarkup
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.prop.TableDrivenPropertyChecks._
-import org.scalatest.Doc.stripMargin
-import org.scalatest.Doc.trimMarkup
 import matchers.should.Matchers._
 
 class OldDocSpec extends freespec.AnyFreeSpec {
-
   class DocSpecASuite extends Suite
   class DocSpecBSuite extends Suite
 
@@ -172,6 +170,8 @@ println("##### " + indexedList)
     }
   }
   "The stripMargin method" - {
+    import org.scalatest.Doc.stripMargin
+
     "should throw NPE if null passed" in {
       a [NullPointerException] should be thrownBy { stripMargin(null) }
     }
