@@ -1,8 +1,5 @@
--server 
 -Xms512M 
 -Xmx4000M 
 -Xss10M
--XX:+CMSClassUnloadingEnabled 
--XX:+UseConcMarkSweepGC 
 -XX:NewRatio=8
--XX:MaxPermSize=512M
+
