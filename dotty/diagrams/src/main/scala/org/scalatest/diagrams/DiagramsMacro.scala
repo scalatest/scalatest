@@ -77,7 +77,7 @@ object DiagramsMacro {
 
           case Select(This(_), _) => default(expr)
 
-          case x: Select if x.symbol.flags.is(Flags.Object) => default(expr)
+          case x: Select if x.symbol.flags.is(Flags.Module) => default(expr)
 
           case x: Select if isJavaStatic(x) => default(expr)
 
