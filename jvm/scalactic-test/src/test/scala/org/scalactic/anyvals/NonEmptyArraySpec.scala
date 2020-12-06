@@ -145,7 +145,7 @@ class NonEmptyArraySpec extends UnitSpec {
     the [IndexOutOfBoundsException] thrownBy { // In ScalaJs, this throws scala.scalajs.runtime.UndefinedBehaviorError
       val arr5 = NonEmptyArray(1, 2, 3)        // TODO, might be nice to check for that exception on ScalaJS instead of just skipping the check
       arr5(3)
-    } should have message "3"
+    } should (have message "3" or have message "Index 3 out of bounds for length 3")  // message 3 is in jdk8 and older, the new message is used by newer version of jdk.
     // SKIP-SCALATESTJS,NATIVE-END
   }
   it should "have a length method" in {
