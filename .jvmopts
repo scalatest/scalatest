@@ -1,4 +1,3 @@
--server 
 -Xms512M 
 -Xmx10G
 -Xss10M
