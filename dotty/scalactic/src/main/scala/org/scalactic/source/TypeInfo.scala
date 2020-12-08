@@ -26,5 +26,5 @@ class TypeInfo[T](val name: String)
 object TypeInfo {
   def apply[T](name: String): TypeInfo[T] = new TypeInfo[T](name)
 
-  implicit inline def gen[T]: TypeInfo[T] = ${ TypeInfoMacro.genTypeInfo('[T]) }
+  implicit inline def gen[T]: TypeInfo[T] = ${ TypeInfoMacro.genTypeInfo[T] }
 }

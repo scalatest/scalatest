@@ -66,10 +66,8 @@ object Position {
   /**
    * Helper method for Position macro.
    */
-  private def genPosition(implicit qctx: QuoteContext): Expr[Position] = {
-    import qctx.tasty.rootPosition
-
-    val pos = rootPosition
+  private def genPosition(using Quotes): Expr[Position] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = if (showScalacticFillFilePathnames) file.toString else Resources.pleaseDefineScalacticFillFilePathnameEnvVar

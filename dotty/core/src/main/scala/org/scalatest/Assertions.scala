@@ -1344,7 +1344,7 @@ trait Assertions extends TripleEquals  {
 object Assertions extends Assertions {
   import scala.quoted._
 
-  def stripMarginImpl(x: Expr[String])(implicit qctx: QuoteContext): Expr[String] = x match {
+  def stripMarginImpl(x: Expr[String])(using Quotes): Expr[String] = x match {
     case Const(str) => Expr(new scala.collection.immutable.StringOps(str).stripMargin)
     case _ => '{ new scala.collection.immutable.StringOps($x).stripMargin }
   }
