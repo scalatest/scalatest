@@ -7,6 +7,7 @@ import com.typesafe.tools.mima.core.ProblemFilters._
 import com.typesafe.sbt.osgi.OsgiKeys
 import com.typesafe.sbt.osgi.SbtOsgi
 import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
+import org.scalajs.sbtplugin.ScalaJSPlugin
 
 trait DottyBuild { this: BuildCommons =>
 
@@ -15,7 +16,7 @@ trait DottyBuild { this: BuildCommons =>
   lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.0-RC1")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
-    libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
+    //libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
     scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
   )
 
@@ -85,6 +86,64 @@ trait DottyBuild { this: BuildCommons =>
       "Bundle-Vendor" -> "Artima, Inc."
     )
   )
+
+  lazy val scalacticDottyJS = project.in(file("dotty/scalactic.js"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(scalacticDocSettings: _*)
+    .settings(
+      projectTitle := "Scalactic",
+      organization := "org.scalactic",
+      moduleName := "scalactic",
+      initialCommands in console := "import org.scalactic._",
+      packageManagedSources,
+      sourceGenerators in Compile += {
+        Def.task {
+          // From scalactic-macro
+          GenScalacticDotty.genMacroScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAnyVals.genMain((sourceManaged in Compile).value / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, true) ++
+          GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenColCompatHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          // end from scalactic-macro
+          GenScalacticDotty.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenScalacticDotty.genScalaJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenVersions.genScalacticVersions((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      resourceGenerators in Compile += Def.task {
+        GenScalacticDotty.genResource((resourceManaged in Compile).value)
+      }.taskValue,
+      //scalacticDocSourcesSetting,
+      //docTaskSetting,
+      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalactic",
+      "org.scalactic.anyvals",
+      "org.scalactic.exceptions",
+      "org.scalactic.source"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "org.scalactic.*",
+      "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "Scalactic",
+      "Bundle-Description" -> "Scalactic is an open-source library for Scala projects.",
+      "Bundle-DocURL" -> "http://www.scalactic.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestCoreDotty = project.in(file("dotty/core"))
     .enablePlugins(SbtOsgi)
