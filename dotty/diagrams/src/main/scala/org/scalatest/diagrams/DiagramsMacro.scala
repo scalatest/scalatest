@@ -63,7 +63,7 @@ object DiagramsMacro {
               case (arg, ByNameType(_)) =>
                 (diagrams, others :+ arg)
               case (arg, tp) =>
-                if (tp.widen.typeSymbol.show.startsWith("scala.Function")) (diagrams, others :+ arg)
+                if (tp.widen.typeSymbol.fullName.startsWith("scala.Function")) (diagrams, others :+ arg)
                 else (diagrams :+ parse(arg), others)
             }
           }
