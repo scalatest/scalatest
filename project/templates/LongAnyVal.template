@@ -836,7 +836,7 @@ object $typeName$ {
    */
   def ensuringValid(value: Long): $typeName$ =
     if ($typeName$Macro.isValid(value)) new $typeName$(value) else {
-      throw new AssertionError(value + " was not a valid $typeName$")
+      throw new AssertionError(s"\${value.toString()}  was not a valid $typeName$")
     }
 
   /**
@@ -869,7 +869,7 @@ object $typeName$ {
      if ($typeName$Macro.isValid(value))
        Success(new $typeName$(value))
      else
-       Failure(new AssertionError(value + " was not a valid $typeName$"))
+       Failure(new AssertionError(s"\${value.toString()} was not a valid $typeName$"))
 
   /**
    * A validation method that produces a <code>Pass</code>
