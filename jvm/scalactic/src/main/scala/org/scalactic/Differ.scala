@@ -153,9 +153,9 @@ private[scalactic] class GenSetDiffer extends Differ {
 
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
     (a, b) match {
-      case (aSet: scala.collection.GenSet[Any], bSet: scala.collection.GenSet[Any]) =>
-        val missingInRight = aSet.diff(bSet)
-        val missingInLeft = bSet.diff(aSet)
+      case (aSet: scala.collection.GenSet[_], bSet: scala.collection.GenSet[_]) =>
+        val missingInRight = aSet.toList.diff(bSet.toList)
+        val missingInLeft = bSet.toList.diff(aSet.toList)
 
         val shortName = Differ.simpleClassName(aSet)
         if (missingInLeft.isEmpty && missingInRight.isEmpty)
@@ -181,12 +181,14 @@ private[scalactic] class GenMapDiffer[K, V] extends Differ {
 
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair =
     (a, b) match {
-      case (aMap: scala.collection.GenMap[K, V], bMap: scala.collection.GenMap[K, V]) =>
+      case (aWildcardMap: scala.collection.GenMap[_, _], bWildcardMap: scala.collection.GenMap[_, _]) =>
+        val aMap = aWildcardMap.asInstanceOf[scala.collection.GenMap[Any, Any]]
+        val bMap = bWildcardMap.asInstanceOf[scala.collection.GenMap[Any, Any]]
         val leftKeySet = aMap.keySet
         val rightKeySet = bMap.keySet
-        val missingKeyInRight = leftKeySet.diff(rightKeySet)
-        val missingKeyInLeft = rightKeySet.diff(leftKeySet)
-        val intersectKeys = leftKeySet.intersect(rightKeySet)
+        val missingKeyInRight = leftKeySet.toList.diff(rightKeySet.toList)
+        val missingKeyInLeft = rightKeySet.toList.diff(leftKeySet.toList)
+        val intersectKeys = leftKeySet.toList.intersect(rightKeySet.toList)
         val diffSet =
           intersectKeys.flatMap { k =>
             val leftValue = aMap(k)
@@ -288,9 +290,9 @@ private[scalactic] class AnyDiffer extends Differ {
 
     (a, b) match {
       case (s1: String, s2: String) => StringDiffer.difference(s1, s2, prettifier)
-      case (s1: scala.collection.GenMap[Any, Any], s2: scala.collection.GenMap[Any, Any]) => GenMapDiffer.difference(s1, s2, prettifier)
+      case (s1: scala.collection.GenMap[_, _], s2: scala.collection.GenMap[_, _]) => GenMapDiffer.difference(s1, s2, prettifier)
       case (s1: scala.collection.GenSeq[_], s2: scala.collection.GenSeq[_]) => GenSeqDiffer.difference(s1, s2, prettifier)
-      case (s1: scala.collection.GenSet[Any], s2: scala.collection.GenSet[Any]) => GenSetDiffer.difference(s1, s2, prettifier)
+      case (s1: scala.collection.GenSet[_], s2: scala.collection.GenSet[_]) => GenSetDiffer.difference(s1, s2, prettifier)
       // SKIP-SCALATESTNATIVE-START
       case (s1: Product, s2: Product) => ObjectDiffer.diffImpl(s1, s2, prettifier, processed)
       // SKIP-SCALATESTNATIVE-END
