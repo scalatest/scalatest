@@ -230,9 +230,7 @@ object RequirementsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message if requirement failed
    */
-  def require(condition: Expr[Boolean], prettifier: Expr[Prettifier], clue: Expr[Any])(using qctx: QuoteContext): Expr[Unit] = {
-    import qctx.tasty._
-
+  def require(condition: Expr[Boolean], prettifier: Expr[Prettifier], clue: Expr[Any])(using Quotes): Expr[Unit] = {
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ Requirements.requirementsHelper.macroRequire($bool, $clue) }
   }
@@ -244,9 +242,7 @@ object RequirementsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message if requirement failed
    */
-  def requireState(condition: Expr[Boolean], prettifier: Expr[Prettifier], clue: Expr[Any])(using qctx: QuoteContext): Expr[Unit] = {
-    import qctx.tasty._
-
+  def requireState(condition: Expr[Boolean], prettifier: Expr[Prettifier], clue: Expr[Any])(using Quotes): Expr[Unit] = {
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ Requirements.requirementsHelper.macroRequireState($bool, $clue) }
   }
@@ -258,17 +254,17 @@ object RequirementsMacro {
    * @param prettifier <code>Prettifier</code> to be used for error message
    * @return transformed expression that performs the requirement check and throw <code>NullArgumentException</code> with rich error message if requirement failed
    */
-  def requireNonNull(arguments: Expr[Seq[Any]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using qctx: QuoteContext): Expr[Unit] = {
-    import qctx.reflect._
+  def requireNonNull(arguments: Expr[Seq[Any]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Unit] = {
+    import quotes.reflect._
 
     def liftSeq(args: Seq[Expr[String]]): Expr[Seq[String]] = args match {
       case x :: xs  => '{ ($x) +: ${ liftSeq(xs) }  }
       case Nil => '{ Seq(): Seq[String] }
     }
 
-    val argStr: List[Expr[String]] = arguments.unseal.underlyingArgument match {
+    val argStr: List[Expr[String]] = Term.of(arguments).underlyingArgument match {
       case Typed(Repeated(args, _), _) => // only sequence literal
-        args.map(arg => Expr(arg.seal.cast[Any].show))
+        args.map(arg => Expr(arg.asExprOf[Any].show))
       case _ =>
         report.throwError("requireNonNull can only be used with sequence literal, not `seq : _*`")
     }
