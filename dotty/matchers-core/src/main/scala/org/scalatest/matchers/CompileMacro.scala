@@ -25,8 +25,8 @@ import scala.quoted._
 object CompileMacro {
 
   // check that a code snippet compiles
-  def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.reflect._
+  def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+    import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkCompile(code: String): Expr[Assertion] =
@@ -36,7 +36,7 @@ object CompileMacro {
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    self.unseal.underlyingArgument match {
+    Term.of(self).underlyingArgument match {
 
       case Apply(
              Apply(
@@ -68,8 +68,8 @@ object CompileMacro {
   }
 
   // check that a code snippet does not compile
-  def assertNotCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty._
+  def assertNotCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+    import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotCompile(code: String): Expr[Assertion] =
@@ -79,7 +79,7 @@ object CompileMacro {
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    self.unseal.underlyingArgument match {
+    Term.of(self).underlyingArgument match {
 
       case Apply(
              Apply(
@@ -110,8 +110,8 @@ object CompileMacro {
   }
 
   // check that a code snippet does not compile
-  def assertNotTypeCheckImpl(self: Expr[_], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty._
+  def assertNotTypeCheckImpl(self: Expr[_], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+    import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotTypeCheck(code: String): Expr[Assertion] =
@@ -123,7 +123,7 @@ object CompileMacro {
 
     val methodName = shouldOrMust + "Not"
 
-    self.unseal.underlyingArgument match {
+    Term.of(self).underlyingArgument match {
       case Apply(
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
