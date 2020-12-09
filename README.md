@@ -28,11 +28,11 @@ Building ScalaTest
 The followings are needed for building ScalaTest:
 
 *   JDK 8
-*   [SBT 1.2.8](https://www.scala-sbt.org/1.x/docs/Setup.html)
+*   [SBT 1.3.13](https://www.scala-sbt.org/1.x/docs/Setup.html)
 
 use the following SBT options instead:
 
-    SBT_OPTS="-server -Xms512M -Xmx3000M -Xss1M  -XX:+UseConcMarkSweepGC -XX:NewRatio=8"
+    SBT_OPTS="-Xms512M -Xmx3000M -Xss1M -XX:NewRatio=8"
 
 ### Building and Running Tests
 
