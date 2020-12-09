@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*package org.scalatest.fixture
+/*package org.scalatest.wordspec
 
-import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 import scala.concurrent.{ExecutionContext, Promise, Future}
 import org.scalatest.concurrent.SleepHelper
 
 import scala.util.Success
 
-class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
+class AsyncPropSpecSpec2 extends AsyncFunSpec {
 
   describe("AsyncPropSpec") {
 
@@ -30,37 +29,33 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         val a = 1
 
-        property("test 1") { fixture =>
+        property("test 1") {
           Future {
             assert(a == 1)
           }
         }
 
-        property("test 2") { fixture =>
+        property("test 2") {
           Future {
             assert(a == 2)
           }
         }
 
-        property("test 3") { fixture =>
+        property("test 3") {
           Future {
             pending
           }
         }
 
-        property("test 4") { fixture =>
+        property("test 4") {
           Future {
             cancel
           }
         }
 
-        ignore("test 5") { fixture =>
+        ignore("test 5") {
           Future {
             cancel
           }
@@ -93,29 +88,25 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncPropSpec with ParallelTestExecution {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         val a = 1
 
-        property("test 1") { fixture =>
+        property("test 1") {
           assert(a == 1)
         }
 
-        property("test 2") { fixture =>
+        property("test 2") {
           assert(a == 2)
         }
 
-        property("test 3") { fixture =>
+        property("test 3") {
           pending
         }
 
-        property("test 4") { fixture =>
+        property("test 4") {
           cancel
         }
 
-        ignore("test 5") { fixture =>
+        ignore("test 5") {
           cancel
         }
 
@@ -148,11 +139,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncPropSpec {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        property("test 1") { fixture =>
+        property("test 1") {
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -161,7 +148,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
           }
         }
 
-        property("test 2") { fixture =>
+        property("test 2") {
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -170,7 +157,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
           }
         }
 
-        property("test 3") { fixture =>
+        property("test 3") {
           Future {
             assert(count == 2)
           }
@@ -195,25 +182,21 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncPropSpec {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        property("test 1") { fixture =>
+        property("test 1") {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
           Succeeded
         }
 
-        property("test 2") { fixture =>
+        property("test 2") {
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
           Succeeded
         }
 
-        property("test 3") { fixture =>
+        property("test 3") {
           assert(count == 2)
         }
 
@@ -240,18 +223,14 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncPropSpec {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        property("test 1") { fixture =>
+        property("test 1") {
           Future {
             test1Thread = Some(Thread.currentThread)
             succeed
           }
         }
 
-        property("test 2") { fixture =>
+        property("test 2") {
           Future {
             test2Thread = Some(Thread.currentThread)
             succeed
@@ -287,11 +266,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncPropSpec {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        property("test 1") { fixture =>
+        property("test 1") {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -308,7 +283,7 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
           }
         }
 
-        property("test 2") { fixture =>
+        property("test 2") {
           val promise = Promise[Assertion]
           val timer = new java.util.Timer
           timer.schedule(
@@ -354,17 +329,13 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
         // context.
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
         def sum(xs: List[Int]): Future[Int] =
           xs match {
             case Nil => Future.successful(0)
             case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
           }
 
-        property("test 1") { fixture =>
+        property("test 1") {
           val fut: Future[Int] = sum((1 to 50000).toList)
           fut.map(total => assert(total == 1250025000))
         }
@@ -386,25 +357,21 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncPropSpec {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        property("test 1") { fixture =>
+        property("test 1") {
           Future {
             SleepHelper.sleep(60)
             succeed
           }
         }
 
-        property("test 2") { fixture =>
+        property("test 2") {
           Future {
             SleepHelper.sleep(30)
             succeed
           }
         }
 
-        property("test 3") { fixture =>
+        property("test 3") {
           Future {
             succeed
           }
@@ -437,21 +404,17 @@ class AsyncPropSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncPropSpec {
 
-        type FixtureParam = String
-        def withFixture(test: OneArgAsyncTest): FutureOutcome =
-          test("testing")
-
-        property("test 1") { fixture =>
+        property("test 1") {
           SleepHelper.sleep(60)
           succeed
         }
 
-        property("test 2") { fixture =>
+        property("test 2") {
           SleepHelper.sleep(30)
           succeed
         }
 
-        property("test 3") { fixture =>
+        property("test 3") {
           succeed
         }
 

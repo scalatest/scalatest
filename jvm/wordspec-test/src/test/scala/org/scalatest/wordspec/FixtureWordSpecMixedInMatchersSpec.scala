@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.wordspec
 
 import org.scalatest.StringFixture
-import org.scalatest.matchers.should.Matchers._
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.FixtureAnyWordSpec
 
-/*
-This tests that matchers works with WordSpec when matchers are imported,
-something that broke in 2.1.RC1.
-*/
-class WordSpecImportedMatchersSpec extends FixtureAnyWordSpec with StringFixture {
+class FixtureWordSpecMixedInMatchersSpec extends FixtureAnyWordSpec with Matchers with StringFixture {
   "This spec" should {
     "work OK" in { _ =>
       "hello" should startWith ("he")
@@ -33,7 +29,7 @@ class WordSpecImportedMatchersSpec extends FixtureAnyWordSpec with StringFixture
       "hello" should endWith regex (".*o")
       "hello" should include regex ("l*")
     }
-    "still work OK" in { _ =>
+    "still work OK" in { _ => 
       "dude" should not startWith ("he")
       "dude" should not endWith ("lo")
       "dude" should not include ("el")
