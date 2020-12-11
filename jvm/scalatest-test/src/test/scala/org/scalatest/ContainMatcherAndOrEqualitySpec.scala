@@ -26,7 +26,7 @@ class ContainMatcherAndOrEqualitySpec extends AnyFunSpec with Matchers {
 
   private val prettifier = Prettifier.default
   
-  implicit val equality = new Equality[String] {
+  implicit val equality: Equality[String] = new Equality[String] {
     def areEqual(left: String, right: Any) = 
       left.trim == (right match {
         case s: String => s.trim

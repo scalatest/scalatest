@@ -533,7 +533,7 @@ class RequirementsSpec extends funspec.AnyFunSpec with Requirements with OptionV
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
-      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("3."))
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
       else
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
@@ -549,7 +549,7 @@ class RequirementsSpec extends funspec.AnyFunSpec with Requirements with OptionV
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
-      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("3."))
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
       else
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
@@ -1696,7 +1696,7 @@ class RequirementsSpec extends funspec.AnyFunSpec with Requirements with OptionV
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
-      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("3."))
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
       else
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
@@ -1712,7 +1712,7 @@ class RequirementsSpec extends funspec.AnyFunSpec with Requirements with OptionV
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
-      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("3."))
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
       else
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
@@ -2819,7 +2819,7 @@ class RequirementsSpec extends funspec.AnyFunSpec with Requirements with OptionV
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
-      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("3."))
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
       else
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")))
@@ -2835,7 +2835,7 @@ class RequirementsSpec extends funspec.AnyFunSpec with Requirements with OptionV
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
-      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("3."))
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
       else
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)))
@@ -3982,7 +3982,7 @@ class RequirementsSpec extends funspec.AnyFunSpec with Requirements with OptionV
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
-      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("3."))
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
       else
         assert(e.getMessage == commaBut(equaled(3, 3), wasFalse("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(3)" + lineSeparator + "}")) + ", dude")
@@ -3998,7 +3998,7 @@ class RequirementsSpec extends funspec.AnyFunSpec with Requirements with OptionV
       }
       if (ScalacticVersions.BuiltForScalaVersion == "2.12" || ScalacticVersions.BuiltForScalaVersion == "2.13")
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
-      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("0."))
+      else if (ScalacticVersions.BuiltForScalaVersion.startsWith("3."))
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.Predef.println(\"hi\")" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")
       else
         assert(e.getMessage == commaBut(wasTrue("{" + lineSeparator + "  scala.this.Predef.println(\"hi\");" + lineSeparator + "  b.==(5)" + lineSeparator + "}"), didNotEqual(3, 5)) + ", dude")

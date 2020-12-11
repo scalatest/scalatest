@@ -143,7 +143,7 @@ class BeforeAndAfterEachSuite extends AnyFunSuite {
     }
     val a = new MySuite
     val status = a.run(Some("test July"), Args(StubReporter))
-    assert(status.isCompleted)
+    assert(status.isCompleted())
     import OptionValues._
     assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
   }

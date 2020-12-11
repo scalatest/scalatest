@@ -24,15 +24,15 @@ object DiagramsMacro {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def parse(qctx: QuoteContext)(expr: qctx.tasty.Term): qctx.tasty.Term = {
     implicit val qctx2: qctx.type = qctx // TODO qctx should be given
-    import qctx.tasty._
+    import qctx.reflect._
     import util._
 
     type R
     implicit val resTp: quoted.Type[R] = expr.tpe.seal.asInstanceOf[quoted.Type[R]]
 
-    def isXmlSugar(apply: Apply): Boolean = apply.tpe <:< typeOf[scala.xml.Elem]
+    def isXmlSugar(apply: Apply): Boolean = apply.tpe <:< TypeRepr.of[scala.xml.Elem]
     def isJavaStatic(tree: Tree): Boolean = tree.symbol.flags.is(Flags.Static)
-    def isImplicitMethodType(tp: Type): Boolean = tp match {
+    def isImplicitMethodType(tp: TypeRepr): Boolean = tp match {
       case tp: MethodType => tp.isImplicit
       case _ => false
     }
@@ -60,7 +60,7 @@ object DiagramsMacro {
       Expr(expr.pos.startColumn - rootPosition.startColumn)
     }
 
-    def handleArgs(argTps: List[Type], args: List[Term]): (List[Term], List[Term]) =
+    def handleArgs(argTps: List[TypeRepr], args: List[Term]): (List[Term], List[Term]) =
       args.zip(argTps).foldLeft(Nil -> Nil : (List[Term], List[Term])) { case ((diagrams, others), pair) =>
         pair match {
           case (arg, ByNameType(_)) =>

@@ -36,7 +36,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   val plusTestNGVersion = "3.2.2.0"
   val flexmarkVersion = "0.36.8"
 
-  val githubTag = "release-3.2.2" // for scaladoc source urls
+  val githubTag = "release-3.2.3" // for scaladoc source urls
 
   val scalatestDocSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -222,6 +222,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       "-m", "org.scalatest.flatspec",
       "-m", "org.scalatest.freespec",
       "-m", "org.scalatest.funspec",
+      "-m", "org.scalatest.funsuite",
+      "-m", "org.scalatest.propspec",
       "-oDIF",
       "-W", "120", "60",
       "-h", "target/html",
@@ -359,7 +361,9 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
        scalatestFeatureSpecTest, 
        scalatestFlatSpecTest, 
        scalatestFreeSpecTest, 
-       scalatestFunSpecTest
+       scalatestFunSpecTest, 
+       scalatestFunSuiteTest, 
+       scalatestPropSpecTest
      )
 
   lazy val scalatestDiagramsTest = project.in(file("jvm/diagrams-test"))
@@ -395,7 +399,21 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     .settings(sharedTestSettings: _*)
     .settings(
       projectTitle := "ScalaTest FunSpec Test"
-    ).dependsOn(commonTest % "test")        
+    ).dependsOn(commonTest % "test")
+
+  lazy val scalatestFunSuiteTest = project.in(file("jvm/funsuite-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FunSuite Test"
+    ).dependsOn(commonTest % "test")  
+
+  lazy val scalatestPropSpecTest = project.in(file("jvm/propspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest PropSpec Test"
+    ).dependsOn(commonTest % "test")          
 
   lazy val scalatestApp = project.in(file("scalatest-app"))
     .enablePlugins(SbtOsgi)
@@ -642,7 +660,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.tryNotAFailure"), // Function in private object FailureMessages.
           exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.tryNotASuccess"), // Function in private object FailureMessages.
           exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.eitherLeftValueNotDefined"), // Function in private object FailureMessages.
-          exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.eitherRightValueNotDefined") // Function in private object FailureMessages.
+          exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.eitherRightValueNotDefined"), // Function in private object FailureMessages.
+          exclude[ReversedMissingMethodProblem]("org.scalatest.EitherValues.convertEitherToValuable") // New implicit conversion function.
         )
       }
     ).settings(osgiSettings: _*).settings(

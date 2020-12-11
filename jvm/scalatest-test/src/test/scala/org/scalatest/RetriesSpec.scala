@@ -24,6 +24,8 @@ import org.scalatest.matchers.should.Matchers._
 
 class RetriesSpec extends AnyFunSpec {
 
+  import scala.language.postfixOps
+
   describe("The Retries trait") {
     
     describe("offers a withRetryOnFailure method that") {

@@ -3,7 +3,6 @@ import Keys._
 import scalanativecrossproject.ScalaNativeCrossPlugin.autoImport._
 
 import scalanative.sbtplugin.ScalaNativePlugin
-import scalanative.sbtplugin.ScalaNativePluginInternal.NativeTest
 import ScalaNativePlugin.autoImport._
 
 import com.typesafe.sbt.osgi.SbtOsgi
@@ -14,6 +13,8 @@ import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
 import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 trait NativeBuild { this: BuildCommons =>
+
+  val scalaNativeVersion = Option(System.getenv("SCALANATIVE_VERSION")).getOrElse("0.4.0-M2")
 
   lazy val nativeCrossBuildLibraryDependencies = Def.setting {
     CrossVersion.partialVersion(scalaVersion.value) match {
@@ -28,8 +29,18 @@ trait NativeBuild { this: BuildCommons =>
   }
 
   private lazy val sharedNativeSettings = Seq(
-    // scala-native only available for scala 2.11
-    crossScalaVersions := crossScalaVersions.value.filter(_.startsWith("2.11.")),
+    // This hack calls class directory as "resource" that forces to add all NIRs that was generated
+    // by scala-native for classes that has `EnableReflectiveInstantiation` annotation
+    // it requires because otherway all this NIRs is ignored by OSGI
+    // and enduser will has a error like
+    // [info] Linking (2152 ms)
+    // [error] missing symbols:
+    // [error] * M89org.scalatest.tools.FrameworkL29org.scalatest.tools.Framework$SN$ReflectivelyInstantiate$RE
+    // [error]   - from M29org.scalatest.tools.FrameworkIE
+    // [error] * T89org.scalatest.tools.FrameworkL29org.scalatest.tools.Framework$SN$ReflectivelyInstantiate$
+    //
+    // Details: https://github.com/scala-native/scala-native/issues/1930
+    resourceDirectories in Compile += (classDirectory in Compile).value
   )
 
   lazy val scalacticMacroNative = project.in(file("native/scalactic-macro"))
@@ -156,7 +167,7 @@ trait NativeBuild { this: BuildCommons =>
         organization := "org.scalatest",
         moduleName := "scalatest-app",
         libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-        libraryDependencies += "org.scala-native" %%% "test-interface" % "0.4.0-M2",
+        libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
         // include the scalactic classes and resources in the jar
         mappings in (Compile, packageBin) ++= mappings.in(scalacticNative, Compile, packageBin).value,
         // include the scalactic sources in the source jar
@@ -248,7 +259,7 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Core Native",
       organization := "org.scalatest",
       moduleName := "scalatest-core",
-      libraryDependencies += "org.scala-native" %%% "test-interface" % "0.4.0-M2",
+      libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
       sourceGenerators in Compile += {
         Def.task {
           GenScalaTestNative.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -689,11 +700,7 @@ trait NativeBuild { this: BuildCommons =>
       organization := "org.scalactic",
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
-      /*nativeOptimizerDriver in NativeTest := {
-        val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
-        orig.withPasses(orig.passes.filterNot(p => p == pass.DeadBlockElimination || p == pass.GlobalBoxingElimination))
-      },*/
-      nativeLinkStubs in NativeTest := true,
+      nativeLinkStubs in Test := true,
       sourceGenerators in Test += {
         Def.task {
           GenScalacticNative.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
@@ -710,22 +717,8 @@ trait NativeBuild { this: BuildCommons =>
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
       fork in test := false,
-      /*nativeOptimizerDriver in NativeTest := {
-        val orig = tools.OptimizerDriver((nativeConfig in NativeTest).value)
-        orig.withPasses(orig.passes.filterNot(p => p == pass.DeadBlockElimination || p == pass.GlobalBoxingElimination))
-      },
-      nativeOptimizerReporter in NativeTest := new tools.OptimizerReporter {
-        override def onStart(batchId: Int, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
-          println(s"start $batchId")
-        }
-        override def onPass(batchId: Int, passId: Int, pass: scala.scalanative.optimizer.Pass, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
-          println(s"$batchId ${pass.getClass.getSimpleName}")
-        }
-        override def onComplete(batchId: Int, batchDefns: Seq[scalanative.nir.Defn]): Unit = {
-          println(s"end $batchId")
-        }
-      },*/
-      nativeLinkStubs in NativeTest := true,
+      nativeLinkStubs in Test := true,
+      nativeDump in Test := false, 
       testOptions in Test := scalatestTestNativeOptions,
       publishArtifact := false,
       publish := {},
@@ -752,6 +745,15 @@ trait NativeBuild { this: BuildCommons =>
         }*/
     ).dependsOn(scalatestNative % "test", commonTestNative % "test")
      .enablePlugins(ScalaNativePlugin)
+     /*.aggregate(
+       scalatestDiagramsTestNative, 
+       scalatestFeatureSpecTestNative, 
+       scalatestFlatSpecTestNative, 
+       scalatestFreeSpecTestNative, 
+       scalatestFunSpecTestNative, 
+       scalatestFunSuiteTestNative, 
+       scalatestPropSpecTestNative
+    )*/
 
   lazy val scalatestDiagramsTestNative = project.in(file("native/diagrams-test"))
     .settings(sharedSettings ++ sharedNativeSettings)
@@ -813,7 +815,31 @@ trait NativeBuild { this: BuildCommons =>
           GenScalaTestNative.genFunSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)          
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestFunSuiteTestNative = project.in(file("native/funsuite-test"))
+    .settings(sharedSettings ++ sharedNativeSettings)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "ScalaTest FunSuite Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestNative.genFunSuiteTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestPropSpecTestNative = project.in(file("native/propspec-test"))
+    .settings(sharedSettings ++ sharedNativeSettings)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "ScalaTest PropSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestNative.genPropSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestModulesNative = project.in(file("modules/native/modules-aggregation"))
     .settings(sharedSettings ++ sharedNativeSettings)
@@ -835,6 +861,6 @@ trait NativeBuild { this: BuildCommons =>
       scalatestMatchersCoreNative, 
       scalatestShouldMatchersNative, 
       scalatestMustMatchersNative
-    )  
+    )    
 
 }
