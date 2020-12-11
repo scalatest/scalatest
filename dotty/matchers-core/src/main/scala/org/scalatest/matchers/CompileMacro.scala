@@ -42,7 +42,7 @@ object CompileMacro {
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant.String(code: String))
+                 Literal(StringConstant(code))
                )
              ),
              _
@@ -54,7 +54,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant.String(code: String))
+                 Literal(StringConstant(code))
                )
              ),
              _
@@ -85,7 +85,7 @@ object CompileMacro {
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant.String(code: String))
+                 Literal(StringConstant(code))
                )
              ),
              _
@@ -97,7 +97,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant.String(code: String))
+                 Literal(StringConstant(code))
                )
              ),
              _
@@ -140,7 +140,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant.String(code: String))
+                 Literal(StringConstant(code))
                )
              ),
              _
