@@ -100,8 +100,12 @@ trait Inside {
    * @param pf the partial function to use to inspect inside the passed value
    * @throws TestFailedException if the passed partial function is not defined at the passed value
    */
+  // SKIP-DOTTY-START
   def inside[T, U](value: T)(pf: PartialFunction[T, U])(implicit pos: source.Position): U = 
-    Inside.insideImpl(value, pf, pos)
+    Inside.insideWithPos(value, pf, pos)
+  // SKIP-DOTTY-END  
+  //DOTTY-ONLY inline def inside[T, U](value: T)(pf: PartialFunction[T, U]): U = 
+  //DOTTY-ONLY   ${ Inside.insideMacro('{value})('{pf}) }
 }
 
 /**
@@ -142,7 +146,7 @@ object Inside extends Inside {
 
   private val level = new ThreadLocal[Int]
 
-  def insideImpl[T, U](value: T, pf: PartialFunction[T, U], pos: source.Position): U = {
+  def insideWithPos[T, U](value: T, pf: PartialFunction[T, U], pos: source.Position): U = {
 
     def appendInsideMessage(currentMessage: Option[String]) = {
       val st = Thread.currentThread.getStackTrace
@@ -177,5 +181,18 @@ object Inside extends Inside {
       throw new TestFailedException((_: StackDepthException) => Some(Resources.insidePartialFunctionNotDefined(value.toString())), None, pos)
     }
   }
+
+  //DOTTY-ONLY import scala.quoted._
+  //DOTTY-ONLY private[scalatest] def insideMacro[T, U](value: Expr[T])(pf: Expr[PartialFunction[T, U]])(using quotes: Quotes, typeT: Type[T], typeU: Type[U]): Expr[U] = {
+  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
+  //DOTTY-ONLY   val file = pos.sourceFile
+  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
+  //DOTTY-ONLY   //val filePath: String = if (showScalacticFillFilePathnames) file.toString else Resources.pleaseDefineScalacticFillFilePathnameEnvVar
+  //DOTTY-ONLY   val filePath: String = ""//Resources.pleaseDefineScalacticFillFilePathnameEnvVar
+  //DOTTY-ONLY   // Need check `pos.exists` here because https://github.com/lampepfl/dotty/issues/8581
+  //DOTTY-ONLY   val lineNo: Int = if (pos.exists) pos.startLine else -1
+  //DOTTY-ONLY   val position = org.scalactic.source.Position(fileName, filePath, lineNo)
+  //DOTTY-ONLY   '{insideWithPos(${value}, ${pf}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
+  //DOTTY-ONLY }
 
 }
