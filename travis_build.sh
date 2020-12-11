@@ -5,7 +5,7 @@ if [[ "$TRAVIS_JDK_VERSION" == "openjdk6" ]]; then
   SBT_OPTS="-Dsbt.override.build.repos=true -Dsbt.repository.config=./.sbtrepos"
 fi
 
-export SBT_OPTS="$SBT_OPTS -server -Xms2G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+export SBT_OPTS="$SBT_OPTS -Xms2G -Xmx3G -Xss10M -XX:NewRatio=8 -XX:-UseGCOverheadLimit"
 export MODE=$1
 
 if [[ $MODE = 'RegularTests1' ]] ; then

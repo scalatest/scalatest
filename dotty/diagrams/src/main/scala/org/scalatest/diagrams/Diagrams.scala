@@ -158,7 +158,6 @@ trait Diagrams extends Assertions {
   // https://github.com/lampepfl/dotty/pull/8601#pullrequestreview-380646858
   implicit object UseDiagram
 
-  import scala.tasty._
   import scala.quoted._
 
   /**

@@ -200,16 +200,16 @@ trait CompileTimeAssertions {
    * @param notLiteralMsg a <code>String</code> message to include in the exception thrown if the expression is not a literal
    * @param isValid a function used to validate a literal value parsed from the given expression
    */
-  def ensureValidIntLiteral(value: Expr[Int], notValidMsg: String, notLiteralMsg: String)(isValid: Int => Boolean)(implicit qctx: QuoteContext): Unit = {
-    import qctx.reflect._
+  def ensureValidIntLiteral(value: Expr[Int], notValidMsg: String, notLiteralMsg: String)(isValid: Int => Boolean)(using Quotes): Unit = {
+    import quotes.reflect._
 
-    value.unseal.underlyingArgument match {
+    Term.of(value).underlyingArgument match {
       case Literal(intConst) =>
         val literalValue = intConst.value.toString.toInt
         if (!isValid(literalValue))
-          Reporting.error(notValidMsg, value.unseal.pos)
+          Reporting.error(notValidMsg, Term.of(value).pos)
       case _ =>
-        Reporting.error(notLiteralMsg, value.unseal.pos)
+        Reporting.error(notLiteralMsg, Term.of(value).pos)
     }
   }
 
@@ -235,16 +235,16 @@ trait CompileTimeAssertions {
    * @param notLiteralMsg a <code>String</code> message to include in the exception thrown if the expression is not a literal
    * @param isValid a function used to validate a literal value parsed from the given expression
    */
-  def ensureValidLongLiteral(value: Expr[Long], notValidMsg: String, notLiteralMsg: String)(isValid: Long => Boolean)(implicit qctx: QuoteContext): Unit = {
-    import qctx.reflect._
+  def ensureValidLongLiteral(value: Expr[Long], notValidMsg: String, notLiteralMsg: String)(isValid: Long => Boolean)(using Quotes): Unit = {
+    import quotes.reflect._
 
-    value.unseal.underlyingArgument match {
+    Term.of(value).underlyingArgument match {
       case Literal(longConst) =>
         val literalValue = longConst.value.toString.toLong
         if (!isValid(literalValue))
-          Reporting.error(notValidMsg, value.unseal.pos)
+          Reporting.error(notValidMsg, Term.of(value).pos)
       case _ =>
-        Reporting.error(notLiteralMsg, value.unseal.pos)
+        Reporting.error(notLiteralMsg, Term.of(value).pos)
     }
   }
 
@@ -270,16 +270,16 @@ trait CompileTimeAssertions {
    * @param notLiteralMsg a <code>String</code> message to include in the exception thrown if the expression is not a literal
    * @param isValid a function used to validate a literal value parsed from the given expression
    */
-  def ensureValidFloatLiteral(value: Expr[Float], notValidMsg: String, notLiteralMsg: String)(isValid: Float => Boolean)(implicit qctx: QuoteContext): Unit = {
-    import qctx.reflect._
+  def ensureValidFloatLiteral(value: Expr[Float], notValidMsg: String, notLiteralMsg: String)(isValid: Float => Boolean)(using Quotes): Unit = {
+    import quotes.reflect._
 
-    value.unseal.underlyingArgument match {
+    Term.of(value).underlyingArgument match {
       case Literal(floatConst) =>
         val literalValue = floatConst.value.toString.toFloat
         if (!isValid(literalValue))
-          Reporting.error(notValidMsg, value.unseal.pos)
+          Reporting.error(notValidMsg, Term.of(value).pos)
       case _ =>
-        Reporting.error(notLiteralMsg, value.unseal.pos)
+        Reporting.error(notLiteralMsg, Term.of(value).pos)
     }
   }
 
@@ -305,16 +305,16 @@ trait CompileTimeAssertions {
    * @param notLiteralMsg a <code>String</code> message to include in the exception thrown if the expression is not a literal
    * @param isValid a function used to validate a literal value parsed from the given expression
    */
-  def ensureValidDoubleLiteral(value: Expr[Double], notValidMsg: String, notLiteralMsg: String)(isValid: Double => Boolean)(implicit qctx: QuoteContext): Unit = {
-    import qctx.reflect._
+  def ensureValidDoubleLiteral(value: Expr[Double], notValidMsg: String, notLiteralMsg: String)(isValid: Double => Boolean)(using Quotes): Unit = {
+    import quotes.reflect._
 
-    value.unseal.underlyingArgument match {
+    Term.of(value).underlyingArgument match {
       case Literal(doubleConst) =>
         val literalValue = doubleConst.value.toString.toDouble
         if (!isValid(literalValue))
-          Reporting.error(notValidMsg, value.unseal.pos)
+          Reporting.error(notValidMsg, Term.of(value).pos)
       case _ =>
-        Reporting.error(notLiteralMsg, value.unseal.pos)
+        Reporting.error(notLiteralMsg, Term.of(value).pos)
     }
   }
 
@@ -340,16 +340,16 @@ trait CompileTimeAssertions {
    * @param notLiteralMsg a <code>String</code> message to include in the exception thrown if the expression is not a literal
    * @param isValid a function used to validate a literal value parsed from the given expression
    */
-  def ensureValidStringLiteral(value: Expr[String], notValidMsg: String, notLiteralMsg: String)(isValid: String => Boolean)(implicit qctx: QuoteContext): Unit = {
-    import qctx.reflect._
+  def ensureValidStringLiteral(value: Expr[String], notValidMsg: String, notLiteralMsg: String)(isValid: String => Boolean)(using Quotes): Unit = {
+    import quotes.reflect._
 
-    value.unseal.underlyingArgument match {
+    Term.of(value).underlyingArgument match {
       case Literal(stringConst) =>
         val literalValue = stringConst.value.toString
         if (!isValid(literalValue))
-          Reporting.error(notValidMsg, value.unseal.pos)
+          Reporting.error(notValidMsg, Term.of(value).pos)
       case _ =>
-        Reporting.error(notLiteralMsg, value.unseal.pos)
+        Reporting.error(notLiteralMsg, Term.of(value).pos)
     }
   }
 
@@ -375,16 +375,16 @@ trait CompileTimeAssertions {
    * @param notLiteralMsg a <code>String</code> message to include in the exception thrown if the expression is not a literal
    * @param isValid a function used to validate a literal value parsed from the given expression
    */
-  def ensureValidCharLiteral(value: Expr[Char], notValidMsg: String, notLiteralMsg: String)(isValid: Char => Boolean)(implicit qctx: QuoteContext): Unit = {
-    import qctx.reflect._
+  def ensureValidCharLiteral(value: Expr[Char], notValidMsg: String, notLiteralMsg: String)(isValid: Char => Boolean)(using Quotes): Unit = {
+    import quotes.reflect._
 
-    value.unseal.underlyingArgument match {
+    Term.of(value).underlyingArgument match {
       case Literal(charConst) =>
         val literalValue = charConst.value.toString.head
         if (!isValid(literalValue))
-          Reporting.error(notValidMsg, value.unseal.pos)
+          Reporting.error(notValidMsg, Term.of(value).pos)
       case _ =>
-        Reporting.error(notLiteralMsg, value.unseal.pos)
+        Reporting.error(notLiteralMsg, Term.of(value).pos)
     }
   }
 }

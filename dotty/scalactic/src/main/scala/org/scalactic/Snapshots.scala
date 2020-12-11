@@ -220,19 +220,19 @@ object Snapshots extends Snapshots
 
 object SnapshotsMacro {
 
-  def snap(expressions: Expr[Seq[Any]])(using QuoteContext): Expr[SnapshotSeq] = {
-    import qctx.reflect._
+  def snap(expressions: Expr[Seq[Any]])(using Quotes): Expr[SnapshotSeq] = {
+    import quotes.reflect._
 
     def liftSeq(args: Seq[Expr[Snapshot]]): Expr[Seq[Snapshot]] = args match {
       case x :: xs  => '{ ($x) +: ${ liftSeq(xs) }  }
       case Nil => '{ Seq(): Seq[Snapshot] }
     }
 
-    val snapshots: List[Expr[Snapshot]] = expressions.unseal.underlyingArgument match {
+    val snapshots: List[Expr[Snapshot]] = Term.of(expressions).underlyingArgument match {
       case Typed(Repeated(args, _), _) => // only sequence literal
         args.map { arg =>
-          val str = Expr(arg.seal.cast[Any].show)
-          '{ Snapshot($str, ${ arg.seal.cast[Any] }) }
+          val str = Expr(arg.asExpr.show)
+          '{ Snapshot($str, ${ arg.asExpr }) }
         }
       case arg =>
         report.throwError("snap can only be used with sequence literal, not `seq : _*`")

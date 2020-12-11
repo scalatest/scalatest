@@ -656,6 +656,9 @@ object GenScalaTestNative {
     copyDir("jvm/funsuite-test/src/test/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, List.empty)  
 
   def genPropSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
-    copyDir("jvm/propspec-test/src/test/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, List.empty)  
+    copyDir("jvm/propspec-test/src/test/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, List.empty)
+
+  def genWordSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDir("jvm/wordspec-test/src/test/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)    
 
 }

@@ -237,6 +237,7 @@ trait JsBuild { this: BuildCommons =>
       "-m", "org.scalatest.funspec",
       "-m", "org.scalatest.funsuite",
       "-m", "org.scalatest.propspec",
+      "-m", "org.scalatest.wordspec",
       "-oDIF"))  
 
   lazy val commonTestJS = project.in(file("js/common-test"))
@@ -335,7 +336,8 @@ trait JsBuild { this: BuildCommons =>
        scalatestFreeSpecTestJS, 
        scalatestFunSpecTestJS, 
        scalatestFunSuiteTestJS, 
-       scalatestPropSpecTestJS
+       scalatestPropSpecTestJS, 
+       scalatestWordSpecTestJS
      )
 
   lazy val scalatestDiagramsTestJS = project.in(file("js/diagrams-test"))
@@ -420,7 +422,19 @@ trait JsBuild { this: BuildCommons =>
           GenScalaTestJS.genPropSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)       
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestWordSpecTestJS = project.in(file("js/wordspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettingsJS: _*)
+    .settings(
+      projectTitle := "ScalaTest WordSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestJS.genWordSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)         
 
   val scalatestJSDocTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
