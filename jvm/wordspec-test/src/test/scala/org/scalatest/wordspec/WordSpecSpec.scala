@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.wordspec
 
 // elements
-import SharedHelpers._
+import org.scalatest._
+import org.scalatest.SharedHelpers._
 import org.scalatest.events._
 import org.scalactic.Prettifier
 import java.awt.AWTError
@@ -40,7 +41,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
   describe("A WordSpec") {
 
     it("should invoke withFixture from runTest") {
-      val a = new AnyWordSpec {
+      class SpecA extends AnyWordSpec {
         var withFixtureWasInvoked = false
         var testWasInvoked = false
         override def withFixture(test: NoArgTest): Outcome = {
@@ -52,6 +53,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
           /* ASSERTION_SUCCEED */
         }
       }
+      val a = new SpecA
 
       import scala.language.reflectiveCalls
 
@@ -60,7 +62,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(a.testWasInvoked)
     }
     it("should pass the correct test name in the NoArgTest passed to withFixture") {
-      val a = new AnyWordSpec {
+      class SpecA extends AnyWordSpec {
         var correctTestNameWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctTestNameWasPassed = test.name == "do something"
@@ -68,6 +70,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         }
         "do something" in {/* ASSERTION_SUCCEED */}
       }
+      val a = new SpecA
 
       import scala.language.reflectiveCalls
 
@@ -75,7 +78,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(a.correctTestNameWasPassed)
     }
     it("should pass the correct config map in the NoArgTest passed to withFixture") {
-      val a = new AnyWordSpec {
+      class SpecA extends AnyWordSpec {
         var correctConfigMapWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
@@ -83,6 +86,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         }
         "do something" in {/* ASSERTION_SUCCEED */}
       }
+      val a = new SpecA
 
       import scala.language.reflectiveCalls
 
@@ -648,12 +652,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
 
     it("should report as ignored, and not run, tests marked ignored") {
 
-      val a = new AnyWordSpec {
+      class SpecA extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         "test this" in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         "test that" in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val a = new SpecA
 
       import scala.language.reflectiveCalls
 
@@ -663,12 +668,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(a.theTestThisCalled)
       assert(a.theTestThatCalled)
 
-      val b = new AnyWordSpec {
+      class SpecB extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         "test this" ignore { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         "test that" in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val b = new SpecB
 
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB))
@@ -678,12 +684,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!b.theTestThisCalled)
       assert(b.theTestThatCalled)
 
-      val c = new AnyWordSpec {
+      class SpecC extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         "test this" in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         "test that" ignore { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val c = new SpecC
 
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repC))
@@ -695,12 +702,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
 
       // The order I want is order of appearance in the file.
       // Will try and implement that tomorrow. Subtypes will be able to change the order.
-      val d = new AnyWordSpec {
+      class SpecD extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         "test this" ignore { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         "test that" ignore { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val d = new SpecD
 
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD))
@@ -714,12 +722,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
     it("should ignore a test marked as ignored if run is invoked with that testName") {
       // If I provide a specific testName to run, then it should ignore an Ignore on that test
       // method and actually invoke it.
-      val e = new AnyWordSpec {
+      class SpecE extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         "test this" ignore { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         "test that" in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val e = new SpecE
 
       import scala.language.reflectiveCalls
 
@@ -733,12 +742,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
     it("should run only those tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new AnyWordSpec {
+      class SpecA extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         "test that" in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val a = new SpecA
 
       import scala.language.reflectiveCalls
 
@@ -749,12 +759,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new AnyWordSpec {
+      class SpecB extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         "test that" in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val b = new SpecB
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repB.testIgnoredReceived)
@@ -762,12 +773,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new AnyWordSpec {
+      class SpecC extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val c = new SpecC
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repC.testIgnoredReceived)
@@ -775,12 +787,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new AnyWordSpec {
+      class SpecD extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         "test this" taggedAs(mytags.SlowAsMolasses) ignore { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val d = new SpecD
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(repD.testIgnoredReceived)
@@ -788,7 +801,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new AnyWordSpec {
+      class SpecE extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -796,6 +809,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         "test the other" in { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val e = new SpecE
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
                 ConfigMap.empty, None, new Tracker, Set.empty))
@@ -805,7 +819,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new AnyWordSpec {
+      class SpecF extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -813,6 +827,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         "test the other" in { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val f = new SpecF
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
                 ConfigMap.empty, None, new Tracker, Set.empty))
@@ -822,7 +837,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new AnyWordSpec {
+      class SpecG extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -830,6 +845,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         "test the other" ignore { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val g = new SpecG
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
                 ConfigMap.empty, None, new Tracker, Set.empty))
@@ -839,7 +855,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new AnyWordSpec {
+      class SpecH extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -847,6 +863,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         "test the other" in { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val h = new SpecH
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repH.testIgnoredReceived)
@@ -855,7 +872,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, mytags.SlowAsMolasses excluded
-      val i = new AnyWordSpec {
+      class SpecI extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -863,6 +880,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         "test the other" in { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val i = new SpecI
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repI.testIgnoredReceived)
@@ -871,7 +889,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, mytags.SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new AnyWordSpec {
+      class SpecJ extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -879,6 +897,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         "test that" taggedAs(mytags.SlowAsMolasses) ignore { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         "test the other" in { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val j = new SpecJ
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repI.testIgnoredReceived)
@@ -887,7 +906,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new AnyWordSpec {
+      class SpecK extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -895,6 +914,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         "test that" taggedAs(mytags.SlowAsMolasses) ignore { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         "test the other" ignore { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val k = new SpecK
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(repK.testIgnoredReceived)
@@ -906,12 +926,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
     it("should run only those registered tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new AnyWordSpec {
+      class SpecA extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val a = new SpecA
 
       import scala.language.reflectiveCalls
 
@@ -922,12 +943,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new AnyWordSpec {
+      class SpecB extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test that") { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val b = new SpecB
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repB.testIgnoredReceived)
@@ -935,12 +957,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new AnyWordSpec {
+      class SpecC extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val c = new SpecC
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repC.testIgnoredReceived)
@@ -948,12 +971,13 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new AnyWordSpec {
+      class SpecD extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         registerIgnoredTest("test this", mytags.SlowAsMolasses) { theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val d = new SpecD
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(repD.testIgnoredReceived)
@@ -961,7 +985,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new AnyWordSpec {
+      class SpecE extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -969,6 +993,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val e = new SpecE
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
         ConfigMap.empty, None, new Tracker, Set.empty))
@@ -978,7 +1003,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new AnyWordSpec {
+      class SpecF extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -986,6 +1011,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val f = new SpecF
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
         ConfigMap.empty, None, new Tracker, Set.empty))
@@ -995,7 +1021,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new AnyWordSpec {
+      class SpecG extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -1003,6 +1029,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerIgnoredTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val g = new SpecG
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
         ConfigMap.empty, None, new Tracker, Set.empty))
@@ -1012,7 +1039,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new AnyWordSpec {
+      class SpecH extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -1020,6 +1047,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val h = new SpecH
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repH.testIgnoredReceived)
@@ -1028,7 +1056,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, mytags.SlowAsMolasses excluded
-      val i = new AnyWordSpec {
+      class SpecI extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -1036,6 +1064,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         registerTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val i = new SpecI
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repI.testIgnoredReceived)
@@ -1044,7 +1073,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, mytags.SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new AnyWordSpec {
+      class SpecJ extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -1052,6 +1081,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         registerIgnoredTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val j = new SpecJ
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repI.testIgnoredReceived)
@@ -1060,7 +1090,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new AnyWordSpec {
+      class SpecK extends AnyWordSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -1068,6 +1098,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         registerIgnoredTest("test that", mytags.SlowAsMolasses) { theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
         registerIgnoredTest("test the other") { theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
+      val k = new SpecK
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(repK.testIgnoredReceived)
@@ -1332,9 +1363,9 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
       class TestSpec extends AnyWordSpec {
         "a feature" should {
           "succeeded here" in {/* ASSERTION_SUCCEED */}
-          "failed here" in { fail }
+          "failed here" in { fail() }
           "pending here" in { pending }
-          "cancel here" in { cancel }
+          "cancel here" in { cancel() }
           "ignore here" ignore {/* ASSERTION_SUCCEED */}
         }
       }
@@ -1408,7 +1439,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
             pending
           }
           registerTest("test 4") {
-            cancel
+            cancel()
           }
           registerIgnoredTest("test 5") {
             assert(a == 2)

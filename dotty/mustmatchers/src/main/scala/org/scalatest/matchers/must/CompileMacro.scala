@@ -24,15 +24,15 @@ import scala.quoted._
 object CompileMacro {
 
   // used by must compile syntax, delegate to assertCompileImpl to generate code
-  def mustCompileImpl(self: Expr[Matchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
+  def mustCompileImpl(self: Expr[Matchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
     org.scalatest.matchers.CompileMacro.assertCompileImpl(self, compileWord, pos)("must")
 
   // used by mustNot compile syntax, delegate to assertNotCompileImpl to generate code
-  def mustNotCompileImpl(self: Expr[Matchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
+  def mustNotCompileImpl(self: Expr[Matchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
     org.scalatest.matchers.CompileMacro.assertNotCompileImpl(self, compileWord, pos)("must")  
 
   // used by mustNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
-  def mustNotTypeCheckImpl(self: Expr[Matchers#AnyMustWrapper[_]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
+  def mustNotTypeCheckImpl(self: Expr[Matchers#AnyMustWrapper[_]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
     org.scalatest.matchers.CompileMacro.assertNotTypeCheckImpl(self, typeCheckWord, pos)("must")
 
 }

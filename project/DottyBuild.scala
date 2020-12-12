@@ -12,7 +12,7 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.0-M1")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.0-M2")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),
@@ -394,7 +394,8 @@ trait DottyBuild { this: BuildCommons =>
       scalatestFreeSpecTestDotty, 
       scalatestFunSpecTestDotty, 
       scalatestFunSuiteTestDotty, 
-      scalatestPropSpecTestDotty
+      scalatestPropSpecTestDotty, 
+      scalatestWordSpecTestDotty
     )
 
   lazy val scalatestDiagramsTestDotty = project.in(file("dotty/diagrams-test"))
@@ -473,5 +474,16 @@ trait DottyBuild { this: BuildCommons =>
         GenScalaTestDotty.genPropSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
     ).dependsOn(commonTestDotty % "test")                
+
+  lazy val scalatestWordSpecTestDotty = project.in(file("dotty/wordspec-test"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDotty)
+    .settings(
+      projectTitle := "ScalaTest WordSpec Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genWordSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDotty % "test")
 
 }

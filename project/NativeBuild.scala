@@ -752,7 +752,8 @@ trait NativeBuild { this: BuildCommons =>
        scalatestFreeSpecTestNative, 
        scalatestFunSpecTestNative, 
        scalatestFunSuiteTestNative, 
-       scalatestPropSpecTestNative
+       scalatestPropSpecTestNative, 
+       scalatestWordSpecTestNative
     )*/
 
   lazy val scalatestDiagramsTestNative = project.in(file("native/diagrams-test"))
@@ -840,6 +841,18 @@ trait NativeBuild { this: BuildCommons =>
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestWordSpecTestNative = project.in(file("native/wordspec-test"))
+    .settings(sharedSettings ++ sharedNativeSettings)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "ScalaTest WordSpec Test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestNative.genWordSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)  
 
   lazy val scalatestModulesNative = project.in(file("modules/native/modules-aggregation"))
     .settings(sharedSettings ++ sharedNativeSettings)
