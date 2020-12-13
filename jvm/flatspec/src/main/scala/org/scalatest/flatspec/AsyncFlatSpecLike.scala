@@ -45,6 +45,7 @@ import scala.util.Try
  * @author Bill Venners
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
+//SCALATESTNATIVE-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
@@ -1564,17 +1565,17 @@ import resultOfStringPassedToVerb.verb
         new ResultOfStringPassedToVerb(verb, rest) {
 
           def is(testFun: => PendingStatement): Unit = {
-            registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), () => testFun, pos)
+            registerPendingTestToRun(this.verb.trim + " " + this.rest.trim, "is", List(), () => testFun, pos)
           }
             // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
           // to say is (fixture => pending), rather just say is (pending)
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
             val tagList = firstTestTag :: otherTestTags.toList
-            new ResultOfTaggedAsInvocation(verb, rest, tagList) {
+            new ResultOfTaggedAsInvocation(this.verb, this.rest, tagList) {
               // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
               //                                               ^
               def is(testFun: => PendingStatement): Unit = {
-                registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, () => testFun, pos)
+                registerPendingTestToRun(this.verb.trim + " " + this.rest.trim, "is", this.tags, () => testFun, pos)
               }
             }
           }

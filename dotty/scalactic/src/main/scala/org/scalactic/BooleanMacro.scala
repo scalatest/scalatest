@@ -37,18 +37,19 @@ object BooleanMacro {
       "ne",
       "exists") ++ logicOperators
 
-  def parse(condition: Expr[Boolean], prettifier: Expr[Prettifier])(implicit qctx: QuoteContext): Expr[Bool] = {
-    import qctx.tasty.{_, given}
+  def parse(condition: Expr[Boolean], prettifier: Expr[Prettifier])(using Quotes): Expr[Bool] = {
+    import quotes.reflect._
+    import quotes.reflect.ValDef.let
     import util._
 
     def exprStr: String = condition.show
     def defaultCase = '{ Bool.simpleMacroBool($condition, ${Expr(exprStr)}, $prettifier) }
-    def isImplicitMethodType(tp: Type): Boolean = tp match {
+    def isImplicitMethodType(tp: TypeRepr): Boolean = tp match {
       case tp: MethodType => tp.isImplicit
       case _ => false
     }
 
-    def isByNameMethodType(tp: Type): Boolean =  tp.widen match {
+    def isByNameMethodType(tp: TypeRepr): Boolean =  tp.widen match {
       case MethodType(_, ByNameType(_) :: Nil, _) => true
       case _ => false
     }
@@ -81,84 +82,84 @@ object BooleanMacro {
       }
     }
 
-    condition.unseal.underlyingArgument match {
+    Term.of(condition).underlyingArgument match {
       case Apply(sel @ Select(Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil) =>
-        let(lhs) { left =>
-          let(rhs) { right =>
-            let(qual.appliedTo(left).select(sel.symbol).appliedTo(right)) { result =>
-              val l = left.seal
-              val r = right.seal
-              val b = result.seal.cast[Boolean]
+        let(Symbol.spliceOwner, lhs) { left =>
+          let(Symbol.spliceOwner, rhs) { right =>
+            let(Symbol.spliceOwner, qual.appliedTo(left).select(sel.symbol).appliedTo(right)) { result =>
+              val l = left.asExpr
+              val r = right.asExpr
+              val b = result.asExprOf[Boolean]
               val code = '{ Bool.binaryMacroBool($l, ${ Expr(op) }, $r, $b, $prettifier) }
-              code.unseal
+              Term.of(code)
             }
           }
-        }.seal.cast[Bool]
+        }.asExprOf[Bool]
 
       case Apply(sel @ Select(lhs, op), rhs :: Nil) =>
         def binaryDefault =
           if (isByNameMethodType(sel.tpe)) defaultCase
           else if (supportedBinaryOperations.contains(op))
-            let(lhs) { left =>
-              let(rhs) { right =>
+            let(Symbol.spliceOwner, lhs) { left =>
+              let(Symbol.spliceOwner, rhs) { right =>
                 val app = left.select(sel.symbol).appliedTo(right)
-                let(app) { result =>
-                  val l = left.seal
-                  val r = right.seal
-                  val b = result.seal.cast[Boolean]
+                let(Symbol.spliceOwner, app) { result =>
+                  val l = left.asExpr
+                  val r = right.asExpr
+                  val b = result.asExprOf[Boolean]
                   val code = '{ Bool.binaryMacroBool($l, ${Expr(op)}, $r, $b, $prettifier) }
-                  code.unseal
+                  Term.of(code)
                 }
               }
-            }.seal.cast[Bool]
+            }.asExprOf[Bool]
           else defaultCase
 
         op match {
           case "||" =>
-            val left = parse(lhs.seal.cast[Boolean], prettifier)
-            val right = parse(rhs.seal.cast[Boolean], prettifier)
+            val left = parse(lhs.asExprOf[Boolean], prettifier)
+            val right = parse(rhs.asExprOf[Boolean], prettifier)
             '{ $left || $right }
           case "|" =>
-            val left = parse(lhs.seal.cast[Boolean], prettifier)
-            val right = parse(rhs.seal.cast[Boolean], prettifier)
+            val left = parse(lhs.asExprOf[Boolean], prettifier)
+            val right = parse(rhs.asExprOf[Boolean], prettifier)
             '{ $left | $right }
           case "&&" =>
-            val left = parse(lhs.seal.cast[Boolean], prettifier)
-            val right = parse(rhs.seal.cast[Boolean], prettifier)
+            val left = parse(lhs.asExprOf[Boolean], prettifier)
+            val right = parse(rhs.asExprOf[Boolean], prettifier)
             '{ $left && $right }
           case "&" =>
-            val left = parse(lhs.seal.cast[Boolean], prettifier)
-            val right = parse(rhs.seal.cast[Boolean], prettifier)
+            val left = parse(lhs.asExprOf[Boolean], prettifier)
+            val right = parse(rhs.asExprOf[Boolean], prettifier)
             '{ $left & $right }
           case "==" =>
             lhs match {
               case Apply(sel @ Select(lhs0, op @ ("length" | "size")), Nil) =>
-                let(lhs0) { left =>
-                  let(rhs) { right =>
+                let(Symbol.spliceOwner, lhs0) { left =>
+                  let(Symbol.spliceOwner, rhs) { right =>
                     val actual = left.select(sel.symbol).appliedToArgs(Nil)
-                    let(actual) { result =>
-                      val l = left.seal
-                      val r = right.seal
-                      val res = result.seal
+                    let(Symbol.spliceOwner, actual) { result =>
+                      val l = left.asExpr
+                      val r = right.asExpr
+                      val res = result.asExpr
                       val code = '{ Bool.lengthSizeMacroBool($l, ${Expr(op)}, $res, $r, $prettifier) }
-                      code.unseal
+                      Term.of(code)
                     }
                   }
-                }.seal.cast[Bool]
+                }.asExprOf[Bool]
 
               case sel @ Select(lhs0, op @ ("length" | "size")) =>
-                let(lhs0) { left =>
-                  let(rhs) { right =>
+                let(Symbol.spliceOwner, lhs0) { left =>
+                  let(Symbol.spliceOwner, rhs) { right =>
                     val actual = left.select(sel.symbol)
-                    let(actual) { result =>
-                      val l = left.seal
-                      val r = right.seal
-                      val res = result.seal
+                    let(Symbol.spliceOwner, actual) { result =>
+                      val l = left.asExpr
+                      val r = right.asExpr
+                      val res = result.asExpr
                       val code = '{ Bool.lengthSizeMacroBool($l, ${Expr(op)}, $res, $r, $prettifier) }
-                      code.unseal
+                      Term.of(code)
                     }
                   }
-                }.seal.cast[Bool]
+                }.asExprOf[Bool]
 
               case _ =>
                 binaryDefault
@@ -166,16 +167,16 @@ object BooleanMacro {
           case "exists" =>
             rhs match {
               case AnonFunction(rhsInner) => // see the assumption for `rhsInner` in `AnonFunction`
-                let(lhs) { left =>
+                let(Symbol.spliceOwner, lhs) { left =>
                   val app = left.select(sel.symbol).appliedTo(rhs)
-                  let(app) { result =>
-                    val l = left.seal
-                    val r = rhsInner.seal
-                    val res = result.seal.cast[Boolean]
+                  let(Symbol.spliceOwner, app) { result =>
+                    val l = left.asExpr
+                    val r = rhsInner.asExpr
+                    val res = result.asExprOf[Boolean]
                     val code = '{ Bool.existsMacroBool($l, $r, $res, $prettifier) }
-                    code.unseal
+                    Term.of(code)
                   }
-                }.seal.cast[Bool]
+                }.asExprOf[Bool]
               case _ => defaultCase
             }
           case _ =>
@@ -184,55 +185,55 @@ object BooleanMacro {
 
       case Apply(f @ Apply(sel @ Select(Apply(qual, lhs :: Nil), op @ ("===" | "!==")), rhs :: Nil), implicits)
       if isImplicitMethodType(f.tpe) =>
-        let(lhs) { left =>
-          let(rhs) { right =>
+        let(Symbol.spliceOwner, lhs) { left =>
+          let(Symbol.spliceOwner, rhs) { right =>
             val app = qual.appliedTo(left).select(sel.symbol).appliedTo(right).appliedToArgs(implicits)
-            let(app) { result =>
-              val l = left.seal
-              val r = right.seal
-              val b = result.seal.cast[Boolean]
+            let(Symbol.spliceOwner, app) { result =>
+              val l = left.asExpr
+              val r = right.asExpr
+              val b = result.asExprOf[Boolean]
               val code = '{ Bool.binaryMacroBool($l, ${ Expr(op) }, $r, $b, $prettifier) }
-              code.unseal
+              Term.of(code)
             }
           }
-        }.seal.cast[Bool]
+        }.asExprOf[Bool]
 
       case Apply(TypeApply(sel @ Select(lhs, op), targs), rhs :: Nil) =>
-        let(lhs) { left =>
-          let(rhs) { right =>
+        let(Symbol.spliceOwner, lhs) { left =>
+          let(Symbol.spliceOwner, rhs) { right =>
             val app = left.select(sel.symbol).appliedToTypes(targs.map(_.tpe)).appliedTo(right)
-            let(app) { result =>
-              val l = left.seal
-              val r = right.seal
-              val b = result.seal.cast[Boolean]
+            let(Symbol.spliceOwner, app) { result =>
+              val l = left.asExpr
+              val r = right.asExpr
+              val b = result.asExprOf[Boolean]
               val code = '{ Bool.binaryMacroBool($l, ${Expr(op)}, $r, $b, $prettifier) }
-              code.unseal
+              Term.of(code)
             }
           }
-        }.seal.cast[Bool]
+        }.asExprOf[Bool]
 
       case Apply(sel @ Select(lhs, op @ ("isEmpty" | "nonEmpty")), Nil) =>
-        let(lhs) { l =>
-          val res = l.select(sel.symbol).appliedToArgs(Nil).seal.cast[Boolean]
-          '{ Bool.unaryMacroBool(${l.seal}, ${ Expr(op) }, $res, $prettifier) }.unseal
-        }.seal.cast[Bool]
+        let(Symbol.spliceOwner, lhs) { l =>
+          val res = l.select(sel.symbol).appliedToArgs(Nil).asExprOf[Boolean]
+          Term.of('{ Bool.unaryMacroBool(${l.asExpr}, ${ Expr(op) }, $res, $prettifier) })
+        }.asExprOf[Bool]
 
       case Select(left, "unary_!") =>
-        val receiver = parse(left.seal.cast[Boolean], prettifier)
+        val receiver = parse(left.asExprOf[Boolean], prettifier)
         '{ !($receiver) }
 
       case sel @ Select(left, op @ ("isEmpty" | "nonEmpty")) =>
-        let(left) { l =>
-          val res = l.select(sel.symbol).seal.cast[Boolean]
-          '{ Bool.unaryMacroBool(${l.seal}, ${ Expr(op) }, $res, $prettifier) }.unseal
-        }.seal.cast[Bool]
+        let(Symbol.spliceOwner, left) { l =>
+          val res = l.select(sel.symbol).asExprOf[Boolean]
+          Term.of('{ Bool.unaryMacroBool(${l.asExpr}, ${ Expr(op) }, $res, $prettifier) })
+        }.asExprOf[Bool]
 
       case TypeApply(sel @ Select(lhs, "isInstanceOf"), targs) =>
-        let(lhs) { l =>
-          val res = l.select(sel.symbol).appliedToTypeTrees(targs).seal.cast[Boolean]
+        let(Symbol.spliceOwner, lhs) { l =>
+          val res = l.select(sel.symbol).appliedToTypeTrees(targs).asExprOf[Boolean]
           val name = Expr(targs.head.tpe.show)
-          '{ Bool.isInstanceOfMacroBool(${l.seal}, "isInstanceOf", $name, $res, $prettifier) }.unseal
-        }.seal.cast[Bool]
+          Term.of('{ Bool.isInstanceOfMacroBool(${l.asExpr}, "isInstanceOf", $name, $res, $prettifier) })
+        }.asExprOf[Bool]
 
       case Literal(_) =>
         '{ Bool.simpleMacroBool($condition, "", $prettifier) }

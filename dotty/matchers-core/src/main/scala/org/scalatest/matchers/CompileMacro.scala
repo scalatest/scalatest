@@ -25,8 +25,8 @@ import scala.quoted._
 object CompileMacro {
 
   // check that a code snippet compiles
-  def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
+  def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+    import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkCompile(code: String): Expr[Assertion] =
@@ -36,13 +36,13 @@ object CompileMacro {
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    self.unseal.underlyingArgument match {
+    Term.of(self).underlyingArgument match {
 
       case Apply(
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant(code: String))
+                 Literal(Constant.String(code: String))
                )
              ),
              _
@@ -54,7 +54,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant(code: String))
+                 Literal(Constant.String(code: String))
                )
              ),
              _
@@ -63,14 +63,13 @@ object CompileMacro {
         checkCompile(code.toString)
 
       case other =>
-        qctx.error("The '" + shouldOrMust + " compile' syntax only works with String literals.")
-        '{???}
+        report.throwError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
     }
   }
 
   // check that a code snippet does not compile
-  def assertNotCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
+  def assertNotCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+    import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotCompile(code: String): Expr[Assertion] =
@@ -80,13 +79,13 @@ object CompileMacro {
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    self.unseal.underlyingArgument match {
+    Term.of(self).underlyingArgument match {
 
       case Apply(
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant(code: String))
+                 Literal(Constant.String(code: String))
                )
              ),
              _
@@ -98,7 +97,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant(code: String))
+                 Literal(Constant.String(code: String))
                )
              ),
              _
@@ -106,14 +105,13 @@ object CompileMacro {
         checkNotCompile(code)
 
       case other =>
-        qctx.error("The '" + shouldOrMust + " compile' syntax only works with String literals.")
-        '{???}
+        report.throwError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
     }
   }
 
   // check that a code snippet does not compile
-  def assertNotTypeCheckImpl(self: Expr[_], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
+  def assertNotTypeCheckImpl(self: Expr[_], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+    import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotTypeCheck(code: String): Expr[Assertion] =
@@ -125,7 +123,7 @@ object CompileMacro {
 
     val methodName = shouldOrMust + "Not"
 
-    self.unseal.underlyingArgument match {
+    Term.of(self).underlyingArgument match {
       case Apply(
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
@@ -142,7 +140,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant(code: String))
+                 Literal(Constant.String(code: String))
                )
              ),
              _
@@ -151,8 +149,7 @@ object CompileMacro {
         checkNotTypeCheck(code.toString)
 
       case _ =>
-        qctx.error("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
-        '{???}
+        report.throwError("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
     }
   }
 

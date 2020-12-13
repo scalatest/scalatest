@@ -24,15 +24,15 @@ import scala.quoted._
 object CompileMacro {
 
   // used by should compile syntax, delegate to assertCompileImpl to generate code
-  def shouldCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
+  def shouldCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
     org.scalatest.matchers.CompileMacro.assertCompileImpl(self, compileWord, pos)("should")
 
   // used by shouldNot compile syntax, delegate to assertNotCompileImpl to generate code
-  def shouldNotCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
+  def shouldNotCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
     org.scalatest.matchers.CompileMacro.assertNotCompileImpl(self, compileWord, pos)("should")
 
   // used by shouldNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
-  def shouldNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] =
+  def shouldNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
     org.scalatest.matchers.CompileMacro.assertNotTypeCheckImpl(self, typeCheckWord, pos)("should")  
   
 

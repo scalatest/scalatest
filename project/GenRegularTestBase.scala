@@ -15,7 +15,7 @@
 */
 
 import collection.mutable.ListBuffer
-import io.Source
+import scala.io.Source
 import java.io.{File, FileWriter, BufferedWriter}
 
 trait GenRegularTestsBase {
@@ -45,7 +45,7 @@ trait GenRegularTestsBase {
 
   def copyFile(targetBaseDir: File, filePath: String): File = {
     val source = new File(filePath)
-    val targetDir = new File(targetBaseDir, source.getPath.substring("scalatest-test/src/test/scala/".length, source.getPath.lastIndexOf("/")))
+    val targetDir = new File(targetBaseDir, source.getPath.substring("jvm/scalatest-test/src/test/scala/".length, source.getPath.lastIndexOf("/")))
     targetDir.mkdirs()
     val target = new File(targetDir, source.getName)
     copyFile(source, target)
@@ -89,7 +89,7 @@ trait GenRegularTestsBase {
   }
 
   def copyJavaDir(targetBaseDir: File): Seq[File] = {
-    processJavaDir(new File("scalatest-test/src/test/java"), targetBaseDir)
+    processJavaDir(new File("jvm/scalatest-test/src/test/java"), targetBaseDir)
   }
 
   def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {

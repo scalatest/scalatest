@@ -1383,7 +1383,7 @@ private[scalatest] object RefSpec {
         else
           value
           
-      val bytes = Codec.toUTF8(toHash.toArray)
+      val bytes = Codec.toUTF8(toHash)
       val md5 = MessageDigest.getInstance("MD5")
       md5.update(bytes)
       val md5chars = (md5.digest() map (b => (b & 0xFF).toHexString)).mkString

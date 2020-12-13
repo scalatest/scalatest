@@ -22,13 +22,12 @@ import org.scalatest.matchers.dsl.{ResultOfAnTypeInvocation, MatcherWords, Resul
 // import org.scalatest.{UnquotedString, Resources, Suite, FailureMessages, Assertions}
 
 import scala.quoted._
-import scala.tasty._
 
 object TypeMatcherMacro {
 
   //   // Check that no type parameter is specified, if any does, give a friendly compiler warning.
-  def checkTypeParameter(qctx: QuoteContext)(tree: qctx.tasty.Term, methodName: String): Unit = {
-    import qctx.tasty.{_, given}
+  def checkTypeParameter(using Quotes)(tree: quotes.reflect.Term, methodName: String): Unit = {
+    import quotes.reflect._
 
     // TODO#Macros: Select lack unapply
     /*
@@ -49,18 +48,18 @@ object TypeMatcherMacro {
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'shouldBe a [type]' syntax
-  def shouldBeATypeImpl(self: Expr[org.scalatest.matchers.should.Matchers#AnyShouldWrapper[_]], aType: Expr[ResultOfATypeInvocation[_]])(implicit qctx: QuoteContext): Expr[org.scalatest.Assertion] = {
-    import qctx.tasty.{_, given}
-    checkTypeParameter(qctx)(aType.unseal, "a")
+  def shouldBeATypeImpl(self: Expr[org.scalatest.matchers.should.Matchers#AnyShouldWrapper[_]], aType: Expr[ResultOfATypeInvocation[_]])(using Quotes): Expr[org.scalatest.Assertion] = {
+    import quotes.reflect.Term
+    checkTypeParameter(Term.of(aType), "a")
     '{
       org.scalatest.matchers.TypeMatcherHelper.assertAType(($self).leftSideValue, $aType, ($self).prettifier, ($self).pos)
     }
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'shouldBe an [type]' syntax
-  def shouldBeAnTypeImpl(self: Expr[org.scalatest.matchers.should.Matchers#AnyShouldWrapper[_]], anType: Expr[ResultOfAnTypeInvocation[_]])(implicit qctx: QuoteContext): Expr[org.scalatest.Assertion] = {
-    import qctx.tasty.{_, given}
-    checkTypeParameter(qctx)(anType.unseal, "an")
+  def shouldBeAnTypeImpl(self: Expr[org.scalatest.matchers.should.Matchers#AnyShouldWrapper[_]], anType: Expr[ResultOfAnTypeInvocation[_]])(using Quotes): Expr[org.scalatest.Assertion] = {
+    import quotes.reflect.Term
+    checkTypeParameter(Term.of(anType), "an")
     '{
       org.scalatest.matchers.TypeMatcherHelper.assertAnType(($self).leftSideValue, $anType, ($self).prettifier, ($self).pos)
     }

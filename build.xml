@@ -441,7 +441,7 @@
       <scalac destdir="${build.tests}" target="jvm-1.5"
               classpathref="build.test.class.path" deprecation="yes"
               addparams="-feature" fork="true"
-              jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC">
+              jvmargs="${jvmargs}">
         <src path="${scalasrc.test}:${javasrc.test}"/>
         <excludesfile name="${build}/scalac_excludes"/>
       </scalac>
@@ -483,7 +483,7 @@
       <scalac destdir="${build.generated.tests.bin}" target="jvm-1.5"
               classpathref="build.test.class.path" deprecation="yes"
               addparams="-feature" fork="true"
-              jvmargs="-Xmx5120M -Xss1M -XX:+UseConcMarkSweepGC">
+              jvmargs="-Xmx5120M -Xss1M">
         <src path="${build.generated.tests.src}:${build.generated.tests.javasrc}"/>
       </scalac>
     </target>
@@ -678,7 +678,6 @@
     	<mkdir dir="target/html" />
         <scalatest fork="true" runpath="${test.runpath}" parallel="true"
                    haltonfailure="true" tagsToExclude="${tags.to.exclude}">
-            <jvmarg value="-XX:MaxPermSize=512m"/>
             <reporter type="graphic"/>
             <!--<reporter type="dashboard" directory="target/dash" numfiles="3" />-->
             <reporter type="junitxml" directory="target"/>
@@ -709,7 +708,6 @@
 	
 	<target name="run-gentests" depends="compile-gentests,taskdefscalatest">
       <scalatest fork="true" runpath="${build.generated.tests.bin}" parallel="true" haltonfailure="true">
-        <jvmarg value="-XX:MaxPermSize=512m"/>
         <jvmarg value="-Xmx5000M"/>
         <jvmarg value="-Xss10M"/>
 	<reporter type="graphic"/>
@@ -988,7 +986,7 @@
     </target>
 
     <target name="osgi.compile" depends="compile">
-        <scalac srcdir="${osgi-test-src}" destdir="${build.osgi-tests}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" fork="true" jvmargs="${jvmargs} -XX:+UseConcMarkSweepGC"/>
+        <scalac srcdir="${osgi-test-src}" destdir="${build.osgi-tests}" target="jvm-1.5" classpathref="build.test.class.path" deprecation="yes" fork="true" jvmargs="${jvmargs}"/>
     </target>
 
     <target name="osgi.test" depends="osgi.compile,taskdefscalatest,dist">

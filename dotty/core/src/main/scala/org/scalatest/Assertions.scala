@@ -129,7 +129,7 @@ import ArrayHelper.deep
  *
  * <pre class="stHighlight">
  * val attempted = 2
- * assert(attempted == 1, "Execution was attempted " + left + " times instead of 1 time")
+ * assert(attempted == 1, "Execution was attempted " + attempted + " times instead of 1 time")
  * </pre>
  *
  * <p>
@@ -419,6 +419,8 @@ import ArrayHelper.deep
  * @author Bill Venners
  */
 trait Assertions extends TripleEquals  {
+  // https://github.com/lampepfl/dotty/pull/8601#pullrequestreview-380646858
+  implicit object UseDefaultAssertions
 
   //implicit val prettifier = Prettifier.default
 
@@ -467,7 +469,7 @@ trait Assertions extends TripleEquals  {
    * @param condition the boolean condition to assert
    * @throws TestFailedException if the condition is <code>false</code>.
    */
-  inline def assert(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assert(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position, use: UseDefaultAssertions.type): Assertion =
     ${ AssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{""}) }
 
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position, analysis: scala.collection.immutable.IndexedSeq[String]): Throwable =
@@ -526,7 +528,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  inline def assert(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assert(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position, use: UseDefaultAssertions.type): Assertion =
     ${ AssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{clue}) }
 
   /**
@@ -574,7 +576,7 @@ trait Assertions extends TripleEquals  {
    * @param condition the boolean condition to assume
    * @throws TestCanceledException if the condition is <code>false</code>.
    */
-  inline def assume(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assume(inline condition: Boolean)(implicit prettifier: Prettifier, pos: source.Position, use: UseDefaultAssertions.type): Assertion =
     ${ AssertionsMacro.assume('{condition}, '{prettifier}, '{pos}, '{""}) }
 
   /**
@@ -627,7 +629,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestCanceledException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  inline def assume(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion =
+  inline def assume(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position, use: UseDefaultAssertions.type): Assertion =
     ${ AssertionsMacro.assume('{condition}, '{prettifier}, '{pos}, '{clue}) }
 
   /**
@@ -1293,7 +1295,7 @@ trait Assertions extends TripleEquals  {
    */
   final val succeed: Assertion = Succeeded
 
-  inline def (x: String) stripMargin : String =
+  extension (x: String) inline def stripMargin: String =
     ${ org.scalatest.Assertions.stripMarginImpl('x) }
 }
 
@@ -1341,9 +1343,8 @@ trait Assertions extends TripleEquals  {
  */
 object Assertions extends Assertions {
   import scala.quoted._
-  import scala.quoted.matching.Const
 
-  def stripMarginImpl(x: Expr[String])(implicit qctx: QuoteContext): Expr[String] = x match {
+  def stripMarginImpl(x: Expr[String])(using Quotes): Expr[String] = x match {
     case Const(str) => Expr(new scala.collection.immutable.StringOps(str).stripMargin)
     case _ => '{ new scala.collection.immutable.StringOps($x).stripMargin }
   }

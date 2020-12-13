@@ -23,20 +23,16 @@ import scala.quoted._
 object CompileMacro {
 
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
-  def assertTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
-
-    if (!typeChecked.value) '{ Succeeded }
+  def assertTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(using Quotes): Expr[Assertion] = {
+    if (!typeChecked.unliftOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedTypeErrorButGotNone($code)
       throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
     }
   }
 
-  def expectTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
-    import qctx.tasty.{_, given}
-
-    if (typeChecked.value)
+  def expectTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
+    if (typeChecked.unliftOrError)
       '{
           val messageExpr = Resources.expectedTypeErrorButGotNone($code)
           Fact.No(
@@ -68,10 +64,8 @@ object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when both parse and type check succeeded
-  def assertDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
-
-    if (!typeChecked.value) '{ Succeeded }
+  def assertDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(using Quotes): Expr[Assertion] = {
+    if (!typeChecked.unliftOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedCompileErrorButGotNone($code)
       throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
@@ -79,10 +73,8 @@ object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to return Fact (Yes or No).
-  def expectDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
-    import qctx.tasty.{_, given}
-
-    if (typeChecked.value)
+  def expectDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
+    if (typeChecked.unliftOrError)
       '{
           val messageExpr = Resources.expectedCompileErrorButGotNone($code)
           Fact.No(
@@ -114,20 +106,16 @@ object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when either parse or type check fails.
-  def assertCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Assertion] = {
-    import qctx.tasty.{_, given}
-
-    if (typeChecked.value) '{ Succeeded }
+  def assertCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(using Quotes): Expr[Assertion] = {
+    if (typeChecked.unliftOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedNoErrorButGotTypeError("unknown", $code)
       throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
     }
   }
 
-  def expectCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(implicit qctx: QuoteContext): Expr[Fact] = {
-    import qctx.tasty.{_, given}
-
-    if (typeChecked.value)
+  def expectCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
+    if (typeChecked.unliftOrError)
       '{
           val messageExpr = Resources.compiledSuccessfully($code)
           Fact.Yes(

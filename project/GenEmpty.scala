@@ -15,7 +15,7 @@
 */
 
 import scala.annotation.tailrec
-import io.Source
+import scala.io.Source
 import java.io.{File, FileWriter, BufferedWriter}
 
 object GenEmpty {
@@ -36,7 +36,7 @@ object GenEmpty {
   
   def genTest(targetBaseDir: File, version: String, scalaVersion: String): Seq[File] = {
     
-    val sourceBaseDir = new File("scalatest-test/src/test/scala/org/scalatest")
+    val sourceBaseDir = new File("jvm/scalatest-test/src/test/scala/org/scalatest")
 
     targetBaseDir.mkdirs()
     

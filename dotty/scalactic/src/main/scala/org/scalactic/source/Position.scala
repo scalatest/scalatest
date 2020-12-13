@@ -66,13 +66,13 @@ object Position {
   /**
    * Helper method for Position macro.
    */
-  private def genPosition(implicit qctx: QuoteContext): Expr[Position] = {
-    import qctx.tasty.{_, given}
-
-    val file = rootPosition.sourceFile
+  private def genPosition(using Quotes): Expr[Position] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = if (showScalacticFillFilePathnames) file.toString else Resources.pleaseDefineScalacticFillFilePathnameEnvVar
-    val lineNo: Int = rootPosition.startLine
+    // Need check `pos.exists` here because https://github.com/lampepfl/dotty/issues/8581
+    val lineNo: Int = if (pos.exists) pos.startLine else -1
     '{ Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}) }
   }
 

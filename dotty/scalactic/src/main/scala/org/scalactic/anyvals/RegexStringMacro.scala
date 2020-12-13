@@ -42,11 +42,11 @@ object RegexStringMacro {
         (false, "\n" + e.getMessage)
     }
 
-  def apply(value: Expr[String])(implicit qctx: QuoteContext): Expr[RegexString] = {
-    import qctx.tasty.{_, given}
+  def apply(value: Expr[String])(using Quotes): Expr[RegexString] = {
+    import quotes.reflect._
 
     val notValidExceptionMsg: String = {
-      value.unseal match {
+      Term.of(value) match {
           case Literal(stringConst) =>
             checkIsValid(stringConst.value.toString)._2
           case _ =>

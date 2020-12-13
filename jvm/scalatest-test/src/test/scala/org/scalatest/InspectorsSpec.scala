@@ -142,7 +142,7 @@ class InspectorsSpec extends AnyFunSpec with Inspectors with TableDrivenProperty
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         assertThrows[exceptions.TestCanceledException] {
-          forAll(col) { e => cancel }
+          forAll(col) { e => cancel() }
         }  
       }
     }
@@ -491,7 +491,7 @@ class InspectorsSpec extends AnyFunSpec with Inspectors with TableDrivenProperty
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         assertThrows[exceptions.TestCanceledException] {
-          forAtLeast(1, col) { e => cancel }
+          forAtLeast(1, col) { e => cancel() }
         }
       }
     }
@@ -639,7 +639,7 @@ class InspectorsSpec extends AnyFunSpec with Inspectors with TableDrivenProperty
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         assertThrows[exceptions.TestCanceledException] {
-          forAtMost(1, col) { e => cancel }
+          forAtMost(1, col) { e => cancel() }
         }
       }
     }
@@ -892,7 +892,7 @@ class InspectorsSpec extends AnyFunSpec with Inspectors with TableDrivenProperty
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         assertThrows[exceptions.TestCanceledException] {
-          forExactly(1, col) { e => cancel }
+          forExactly(1, col) { e => cancel() }
         }
       }
     }
@@ -1030,7 +1030,7 @@ class InspectorsSpec extends AnyFunSpec with Inspectors with TableDrivenProperty
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
         assertThrows[exceptions.TestCanceledException] {
-          forNo(col) { e => cancel }
+          forNo(col) { e => cancel() }
         }
       }
     }
@@ -1316,7 +1316,7 @@ class InspectorsSpec extends AnyFunSpec with Inspectors with TableDrivenProperty
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
         assertThrows[exceptions.TestCanceledException] {
-          forBetween(2, 4, col) { e => cancel }
+          forBetween(2, 4, col) { e => cancel() }
         }
       }
     }
@@ -1444,7 +1444,7 @@ class InspectorsSpec extends AnyFunSpec with Inspectors with TableDrivenProperty
       forAll(examples) { colFun =>
         val colFun = Set(1, 2, 3)
         assertThrows[exceptions.TestCanceledException] {
-          forEvery(colFun) { e => cancel }
+          forEvery(colFun) { e => cancel() }
         }
       }
     }

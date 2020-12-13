@@ -1559,6 +1559,7 @@ import org.scalatest.{Suite, Finders}
   */
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
+//SCALATESTNATIVE-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 class AnyFunSuite extends AnyFunSuiteLike {
 
   /**

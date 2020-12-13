@@ -28,7 +28,7 @@ import verbs.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
  * Implementation trait for class <code>AnyFlatSpec</code>, which facilitates a
  * &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are combined with text that specifies the behavior the tests verify.
- * 
+ *
  * <p>
  * <a href="AnyFlatSpec.html"><code>AnyFlatSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
@@ -47,6 +47,7 @@ import verbs.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
+//SCALATESTNATIVE-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentSpecMod, "Spec")
@@ -204,7 +205,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>behavior</code> field, see the main documentation 
+   * For more information and examples of the use of the <code>behavior</code> field, see the main documentation
    * for this trait.
    * </p>
    */
@@ -470,7 +471,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>it</code> field, see the main documentation 
+   * For more information and examples of the use of the <code>it</code> field, see the main documentation
    * for this trait.
    * </p>
    */
@@ -613,7 +614,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>it</code> field, see the main documentation 
+   * For more information and examples of the use of the <code>it</code> field, see the main documentation
    * for this trait.
    * </p>
    */
@@ -924,7 +925,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
    * </p>
    */
   protected val ignore = new IgnoreWord
-  
+
   /**
    * Class that supports the registration of tagged tests via the <code>TheyWord</code> instance
    * referenced from <code>AnyFlatSpec</code>'s <code>they</code> field.
@@ -1185,7 +1186,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>it</code> field, see the main documentation 
+   * For more information and examples of the use of the <code>it</code> field, see the main documentation
    * for this trait.
    * </p>
    */
@@ -1328,7 +1329,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of the <code>it</code> field, see the main documentation 
+   * For more information and examples of the use of the <code>it</code> field, see the main documentation
    * for this trait.
    * </p>
    */
@@ -1398,7 +1399,7 @@ import resultOfStringPassedToVerb.verb
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos)
     }
-    
+
     /**
      * Supports the registration of ignored tests in shorthand form.
      *
@@ -1430,7 +1431,7 @@ import resultOfStringPassedToVerb.verb
    */
   protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb): InAndIgnoreMethods =
     new InAndIgnoreMethods(resultOfStringPassedToVerb)
-  
+
   /**
    * Class that supports tagged test registration in shorthand form.
    *
@@ -1562,17 +1563,17 @@ import resultOfStringPassedToVerb.verb
         new ResultOfStringPassedToVerb(verb, rest) {
 
           def is(testFun: => PendingStatement): Unit = {
-            registerTestToRun(verb.trim + " " + rest.trim, "is", List(), () => { testFun; succeed }, pos)
+            registerTestToRun(this.verb.trim + " " + this.rest.trim, "is", List(), () => { testFun; succeed }, pos)
           }
           // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
           // to say is (fixture => pending), rather just say is (pending)
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
             val tagList = firstTestTag :: otherTestTags.toList
-            new ResultOfTaggedAsInvocation(verb, rest, tagList) {
+            new ResultOfTaggedAsInvocation(this.verb, this.rest, tagList) {
               // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
               //                                               ^
               def is(testFun: => PendingStatement): Unit = {
-                registerTestToRun(verb.trim + " " + rest.trim, "is", tags, () => { testFun; succeed }, pos)
+                registerTestToRun(this.verb.trim + " " + this.rest.trim, "is", this.tags, () => { testFun; succeed }, pos)
               }
             }
           }
@@ -1608,7 +1609,7 @@ import resultOfStringPassedToVerb.verb
       }
     }
 
-// TODO: I got a: 
+// TODO: I got a:
 // runsuite:
 // [scalatest] *** RUN ABORTED ***
 // [scalatest]   An exception or error caused a run to abort: Duplicate test name: should return the new exception with the clue string appended, separated by a space char if passed a function that does that (Engine.scala:464)
@@ -1647,12 +1648,12 @@ import resultOfStringPassedToVerb.verb
    * the <code>Set</code> of tags for the test. If this <code>AnyFlatSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
-   * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to 
-   * <code>taggedAs</code>. 
+   * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
+   * <code>taggedAs</code>.
    * </p>
-   * 
+   *
    * <p>
-   * In addition, this trait's implementation will also auto-tag tests with class level annotations.  
+   * In addition, this trait's implementation will also auto-tag tests with class level annotations.
    * For example, if you annotate <code>@Ignore</code> at the class level, all test methods in the class will be auto-annotated with
    * <code>org.scalatest.Ignore</code>.
    * </p>
@@ -1814,7 +1815,7 @@ import resultOfStringPassedToVerb.verb
    * </p>
    */
   protected val behave = new BehaveWord
-  
+
   /**
    * <strong>The <code>styleName</code> lifecycle method has been deprecated and will be removed in a future version of ScalaTest.</strong>
    *

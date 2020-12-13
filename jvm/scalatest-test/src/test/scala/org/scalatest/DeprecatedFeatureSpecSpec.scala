@@ -1169,7 +1169,7 @@ class DeprecatedFeatureSpecSpec extends AnyFunSpec {
           pending
         }
         registerTest("test 4") {
-          cancel
+          cancel()
         }
         registerIgnoredTest("test 5") {
           assert(a == 2)

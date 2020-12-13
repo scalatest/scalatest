@@ -45,8 +45,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, val testSortin
     }
   }
   
-  private val timer = new Timer
-  private var timeoutTask: Option[TimeoutTask] = None
+  private var timeoutTask: Option[(TimeoutTask, Timer)] = None
 
   def doApply(event: Event): Unit = {
     synchronized {
@@ -173,10 +172,14 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, val testSortin
         for (doneEvent<- head.doneEvent) {
           dispatch(doneEvent)
           dispatchToRegisteredSuiteReporter(head.suiteId, doneEvent)
+          // Only remove the suite reporter only if tests completed, don't remove if it is due to timeout.
+          suiteReporterMap -= (head.suiteId)
         }
         slotListBuf = fireReadySuiteEvents(slotListBuf.tail)
         if (slotListBuf.size > 0) 
           scheduleTimeoutTask()
+        else 
+          cancelTimeoutTask()
       }
     }
   }
@@ -212,6 +215,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, val testSortin
         fireSuiteEvents(slot.suiteId)
         dispatch(slot.doneEvent.get)
         dispatchToRegisteredSuiteReporter(slot.suiteId, slot.doneEvent.get)
+        suiteReporterMap -= (slot.suiteId)
     }
     undone
   }
@@ -230,7 +234,6 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, val testSortin
       if (slotIdx >= 0)
         slotListBuf.update(slotIdx, newSlot)
       fireReadyEvents()
-      suiteReporterMap -= (suiteId)
     }
   }
 
@@ -283,23 +286,38 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, val testSortin
   private def scheduleTimeoutTask(): Unit = {
     val head = slotListBuf.head  // Assumes waitingBuffer is non-empty. Put a require there to make that obvious.
     timeoutTask match {
-        case Some(task) => 
-          if (head.suiteId != task.slot.suiteId) {
-            task.cancel()
-            timeoutTask = Some(new TimeoutTask(head)) // Replace the old with the new
-            timer.schedule(timeoutTask.get, testSortingTimeout.millisPart)
+        case Some((oldTask, oldTimer)) => 
+          if (head.suiteId != oldTask.slot.suiteId) {
+            oldTask.cancel()
+            oldTimer.cancel()
+            val (task, timer) = (new TimeoutTask(head), new Timer)
+            timeoutTask = Some((task, timer)) // Replace the old with the new
+            timer.schedule(task, testSortingTimeout.millisPart)
           }
         case None => 
-          timeoutTask = Some(new TimeoutTask(head)) // Just create a new one
-          timer.schedule(timeoutTask.get, testSortingTimeout.millisPart)
+          val (task, timer) = (new TimeoutTask(head), new Timer)
+          timeoutTask = Some((task, timer)) // Just create a new one
+          timer.schedule(task, testSortingTimeout.millisPart)
       }
+  }
+
+  // Also happening inside synchronized block
+  private def cancelTimeoutTask(): Unit = {
+    timeoutTask match { // Waiting buffer is zero, so no timeout needed
+      case Some((task, timer)) => 
+        task.cancel()
+        timer.cancel()
+        timeoutTask = None
+      case None =>
+    }
   }
   
   private def timeout(): Unit = {
     synchronized {
       if (slotListBuf.size > 0) {
         val head = slotListBuf.head
-        if (timeoutTask.get.slot.suiteId == head.suiteId) { // Probably a double check, or just in case there's race condition
+        val (task, _) = timeoutTask.get
+        if (task.slot.suiteId == head.suiteId) { // Probably a double check, or just in case there's race condition
           val newSlot = head.copy(ready = true) // Essentially, if time out, just say that one is ready. This test's events go out, and
           slotListBuf.update(0, newSlot)
         }
