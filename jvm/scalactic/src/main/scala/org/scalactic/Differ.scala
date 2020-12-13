@@ -181,9 +181,7 @@ private[scalactic] class GenMapDiffer[K, V] extends Differ {
 
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair =
     (a, b) match {
-      case (aWildcardMap: scala.collection.GenMap[_, _], bWildcardMap: scala.collection.GenMap[_, _]) =>
-        val aMap = aWildcardMap.asInstanceOf[scala.collection.GenMap[Any, Any]]
-        val bMap = bWildcardMap.asInstanceOf[scala.collection.GenMap[Any, Any]]
+      case (aMap: scala.collection.GenMap[_, _], bMap: scala.collection.GenMap[_, _]) =>
         val leftKeySet = aMap.keySet
         val rightKeySet = bMap.keySet
         val missingKeyInRight = leftKeySet.toList.diff(rightKeySet.toList)
@@ -192,7 +190,13 @@ private[scalactic] class GenMapDiffer[K, V] extends Differ {
         val diffSet =
           intersectKeys.flatMap { k =>
             val leftValue = aMap(k)
-            val rightValue = bMap(k)
+            // This gives a compiler error due to k being a wildcard type:
+            // val rightValue = bMap(k)
+            // Not sure why aMap(k) doesn't give the same error, but regardless, fixing it
+            // by pulling the value out for the key using a == comparison, which for now
+            // works because of universal equality, then assuming the value exists, just
+            // as bMap(k) previously was assuming.
+            val rightValue = bMap.collect { case (nextK, nextV) if nextK == k => nextV }.head
             if (leftValue != rightValue)
               Some(k.toString + ": " + leftValue + " -> " + rightValue)
             else
