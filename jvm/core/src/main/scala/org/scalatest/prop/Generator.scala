@@ -766,6 +766,22 @@ object Generator {
     */
   implicit val intGenerator: Generator[Int] =
     new Generator[Int] {
+
+      case class NextRoseTree(value: Int) extends RoseTree[Int] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Int]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(i: Int, acc: List[RoseTree[Int]]): List[RoseTree[Int]] = {
+            if (i == 0) acc
+            else {
+              val half: Int = i / 2
+              if (half == 0) Rose(0) :: acc
+              else shrinkLoop(half, NextRoseTree(-half) :: NextRoseTree(half) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Int], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(intEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -773,55 +789,16 @@ object Generator {
       def next(szp: SizeParam, edges: List[Int], rnd: Randomizer): (RoseTree[Int], List[Int], Randomizer) = {
         edges match {
           case head :: tail =>
-            val (roseTreeOfInt, rnd2) = shrink(head, rnd)
-            (roseTreeOfInt, tail, rnd2)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (i, rnd2) = rnd.nextInt
-            val (roseTreeOfInt, rnd3) = shrink(i, rnd2)
-            (roseTreeOfInt, Nil, rnd3)
+            (NextRoseTree(i), Nil, rnd2)
         }
       }
       override def toString = "Generator[Int]"
       private val intCanonicals = List(0, 1, -1, 2, -2, 3, -3)
       override def canonicals(rnd: Randomizer): (Iterator[Int], Randomizer) = (intCanonicals.iterator, rnd)
-      // Shrink could be named, newRoseTreeFor(i)
-      override def shrink(i: Int, rnd: Randomizer):  (RoseTree[Int], Randomizer) = {
-        case class IntRose(value: Int) extends RoseTree[Int] {
-          def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Int]], Randomizer) = {
-            @tailrec
-            def shrinkLoop(i: Int, acc: List[RoseTree[Int]]): List[RoseTree[Int]] = {
-              if (i == 0) acc
-              else {
-                val half: Int = i / 2
-                if (half == 0) Rose(0) :: acc
-                else shrinkLoop(half, IntRose(-half) :: IntRose(half) :: acc)
-              }
-            }
-            (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
-          }
-        }
-        // (shrinkLoop(i, Nil).iterator, rnd)
-        val rootRoseTree = new IntRose(i)
-        // This is the problem. Need to use the same algo
-        // where by if we are at 0 already, the smallest then we do an empty list, else we
-        // start with the next smallest, and go from there.
-//          new RoseTree[Int] {
-//            val value: Int = i
-//            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Int]], Randomizer) = {
-//              @tailrec
-//              def shrinkLoop(i: Int, acc: List[Rose[Int]]): List[Rose[Int]] = {
-//                if (i == 0) acc
-//                else {
-//                  val half: Int = i / 2
-//                  if (half == 0) Rose(0) :: acc
-//                  else shrinkLoop(half, Rose(-half) :: Rose(half) :: acc)
-//                }
-//              }
-//              (shrinkLoop(i, Nil).reverse, rndPassedToShrinks)
-//            }
-//          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: Int, rnd: Randomizer):  (RoseTree[Int], Randomizer) = (NextRoseTree(i), rnd)
     }
 
   /**
