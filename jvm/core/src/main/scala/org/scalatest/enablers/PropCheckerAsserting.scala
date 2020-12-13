@@ -29,6 +29,7 @@ import scala.util.{Try, Success, Failure}
 import org.scalatest.exceptions.DiscardedEvaluationException
 import scala.concurrent.Future
 import scala.compat.Platform.EOL
+import org.scalatest.prop.RoseTree
 
 trait PropCheckerAsserting[T] {
 
@@ -183,33 +184,42 @@ abstract class UnitPropCheckerAsserting {
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
             @tailrec
-            def shrinkLoop(shrinksRemaining: List[A]): PropertyCheckResult = {
-              shrinksRemaining match {
-                case Nil => new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
-                case shrinkHead :: shrinkTail =>
-                  val result: Try[T] = Try { fun(shrinkHead) }
+            def shrinkLoop(roseTreesRemaining: List[RoseTree[A]], mostRecentlyFailedRoseTree: RoseTree[A], mostRecentFailureException: Throwable, mostRecentSiblings: List[RoseTree[A]], shrinkLoopRnd: Randomizer, count: Int): PropertyCheckResult = {
+              // println()
+              // println()
+              println("---------------------------------------")
+              println(s"shrinkLoop $count: $roseTreesRemaining\n    $mostRecentlyFailedRoseTree\n   $mostRecentSiblings\n")
+              roseTreesRemaining match {
+                case Nil =>
+                  // println("shrinkLoop: case Nil")
+                  val bestA = mostRecentlyFailedRoseTree.value
+                  println(s"############ BEST A: $bestA")
+                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestA) else PropertyArgument(None, bestA))
+                  println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
+                  val theRes = new PropertyCheckResult.Failure(succeededCount, Some(mostRecentFailureException), names, shrunkArgsPassed, initSeed)
+                  println(s"############ THE RES: $theRes")
+                  theRes
+
+                case roseTreeHead :: roseTreeTail =>
+                  val result: Try[T] = Try { fun(roseTreeHead.value) }
                   result match {
-                    case Success(_) => shrinkLoop(shrinkTail)
+                    case Success(_) =>
+                      // println("shrinkLoop: case roseTreeHead :: roseTreeTail SUCCESS!")
+                      // Back up and try next sibling of most recent failure
+                      shrinkLoop(mostRecentSiblings, mostRecentlyFailedRoseTree, mostRecentFailureException, Nil, shrinkLoopRnd, count + 1)
                     case Failure(shrunkEx) =>
-                      val shrunkArgsPassed =
-                        List(
-                          if (names.isDefinedAt(0))
-                            PropertyArgument(Some(names(0)), shrinkHead)
-                          else
-                            PropertyArgument(None, shrinkHead)
-                        )
-                      new PropertyCheckResult.Failure(succeededCount, Some(shrunkEx), names, shrunkArgsPassed, initSeed)
+                      // println("shrinkLoop: case roseTreeHead :: roseTreeTail FAILURE!")
+                      // Try going deeper into this one, replacing mostRecentlyFailed with this a.
+                      val (nextLevelRoseTrees, nextShrinkLoopRnd) = roseTreeHead.shrinks(shrinkLoopRnd)
+                      // println(s"shrinkLoop EXTRA roseTreeHead: $roseTreeHead\n           EXTRA: ${ roseTreeHead.getClass.getName }\n           EXTRA nextLevelRoseTrees: $nextLevelRoseTrees\n           EXTRA: ${ nextLevelRoseTrees.headOption.map(_.getClass.getName).getOrElse("<empty>") }")
+                      shrinkLoop(nextLevelRoseTrees, roseTreeHead, shrunkEx, roseTreeTail, nextShrinkLoopRnd, count + 1)
                   }
               }
             }
-            val (rootRoseTree, rnd2) = genA.shrink(a, rnd)
-            // For now, just look at the first level of the RoseTree, which
-            // should (except maybe in the case of Option) be the same
-            // values in our old shrink List[A]. Currently I won't use
-            // the next rnd that comes out of here, but later when we
-            // traverse the tree, we will use it.
-            val (firstLevelRoseTrees, _) = rootRoseTree.shrinks(rnd2)
-            shrinkLoop(firstLevelRoseTrees.map(_.value).take(100))
+            println(s"JUST FAILED WITH $roseTreeOfA")
+            val (firstLevelRoseTrees, rnd3) = roseTreeOfA.shrinks(nextNextRnd)
+            println(s"ABOUT TO SHRINKLOOP WITH $firstLevelRoseTrees")
+            shrinkLoop(firstLevelRoseTrees, roseTreeOfA, ex, Nil, rnd3, 0)
         }
       }
 
