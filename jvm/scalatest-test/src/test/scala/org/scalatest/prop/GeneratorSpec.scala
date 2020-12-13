@@ -2844,7 +2844,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (rt18, rnd2)= intGen.shrink(18, rnd1)
         val list8 = rt8.shrinks(Randomizer.default)._1.map(_.value)
         val list18 = rt18.shrinks(Randomizer.default)._1.map(_.value)
-        val listTup = List((8,18), (0,18), (-1,18), (1,18), (-2,18), (2,18), (-4,18), (4,18))
+        val listTup = List((8,18), (4,18), (-4,18), (2,18), (-2,18), (1,18), (-1,18), (0,18))
 // This no longer works this way. For now we'll just use what it is doing.
 //          for {
 //            x <- list8
