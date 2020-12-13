@@ -450,11 +450,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val edges = List(a1, a2, a3, a4, a5)
-        edges should contain (Rose(0))
-        edges should contain (Rose(1))
-        edges should contain (Rose(-1))
-        edges should contain (Rose(Int.MaxValue))
-        edges should contain (Rose(Int.MinValue))
+        edges.map(_.value) should contain (0)
+        edges.map(_.value) should contain (1)
+        edges.map(_.value) should contain (-1)
+        edges.map(_.value) should contain (Int.MaxValue)
+        edges.map(_.value) should contain (Int.MinValue)
       }
       it("should produce Int canonical values") {
         import Generator._
