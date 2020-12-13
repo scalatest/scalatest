@@ -132,7 +132,7 @@ final class $typeName$ private (val value: Int) extends AnyVal {
   /**
    * A string representation of this <code>$typeName$</code>.
    */
-  override def toString: String = "$typeName$(" + value + ")"
+  override def toString: String = s"$typeName$(\${value.toString()})"
 
   /**
    * Converts this <code>$typeName$</code> to a <code>Byte</code>.
@@ -184,7 +184,7 @@ final class $typeName$ private (val value: Int) extends AnyVal {
   /**
    * Converts this <code>$typeName$</code>'s value to a string then concatenates the given string.
    */
-  def +(x: String): String = value + x
+  def +(x: String): String = s"\${value.toString()}\${x.toString()}"
   /**
    * Returns this value bit-shifted left by the specified number of bits,
    * filling in the new right bits with zeroes.
@@ -714,7 +714,7 @@ final class $typeName$ private (val value: Int) extends AnyVal {
   def ensuringValid(f: Int => Int): $typeName$ = {
     val candidateResult: Int = f(value)
     if ($typeName$Macro.isValid(candidateResult)) new $typeName$(candidateResult)
-    else throw new AssertionError(candidateResult + ", the result of applying the passed function to " + value + ", was not a valid $typeName$")
+    else throw new AssertionError(s"\${candidateResult.toString()}, the result of applying the passed function to \${value.toString()}, was not a valid $typeName$")
   }
 }
 
@@ -798,7 +798,7 @@ object $typeName$ {
    */
   def ensuringValid(value: Int): $typeName$ =
     if ($typeName$Macro.isValid(value)) new $typeName$(value) else {
-      throw new AssertionError(value + " was not a valid $typeName$")
+      throw new AssertionError(s"\${value.toString()} was not a valid $typeName$")
     }
 
   /**
@@ -831,7 +831,7 @@ object $typeName$ {
      if ($typeName$Macro.isValid(value))
        Success(new $typeName$(value))
      else
-       Failure(new AssertionError(value + " was not a valid $typeName$"))
+       Failure(new AssertionError(s"\${value.toString()} was not a valid $typeName$"))
 
   /**
    * A validation method that produces a <code>Pass</code>
