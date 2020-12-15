@@ -687,14 +687,15 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
                 Float.MinValue
               else f
             if (n > 1.0f)
-              shrinks.last should be > 0.0f
+              shrinks.head should be > 0.0f
             else if (n < -1.0f)
-              shrinks.last should be < 0.0f
+              shrinks.head should be < 0.0f
             import org.scalatest.Inspectors._
             if (!n.isWhole) {
-              shrinks.last shouldEqual (if (n > 0.0f) n.floor else n.ceil)
+              shrinks.head shouldEqual (if (n > 0.0f) n.floor else n.ceil)
             }
-            val pairs: List[(Float, Float)] = shrinks.zip(shrinks.tail)
+            val revShrinks = shrinks.reverse
+            val pairs: List[(Float, Float)] = revShrinks.zip(revShrinks.tail)
             forAll (pairs) { case (x, y) =>
               assert(x == 0.0f || x == -y || x.abs < y.abs)
             }

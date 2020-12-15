@@ -846,77 +846,73 @@ object Generator {
     */
   implicit val floatGenerator: Generator[Float] =
     new Generator[Float] {
+
+      case class NextRoseTree(value: Float) extends RoseTree[Float] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Float]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(f: Float, acc: List[RoseTree[Float]]): List[RoseTree[Float]] = {
+            if (f == 0.0f) acc
+            else if (f <= 1.0f && f >= -1.0f) Rose(0.0f) :: acc
+            else if (!f.isWhole) {
+              // We need to handle infinity and NaN specially because without it, this method
+              // will go into an infinite loop. The reason is floor and ciel give back the same value
+              // on these values:
+              //
+              // scala> val f = Float.PositiveInfinity
+              // f: Float = Infinity
+              //
+              // scala> f.floor
+              // res1: Float = Infinity
+              //
+              // scala> f.ceil
+              // res3: Float = Infinity
+              //
+              // scala> Float.NaN.floor
+              // res5: Float = NaN
+              //
+              // scala> Float.NaN.ceil
+              // res6: Float = NaN
+              //
+              val n =
+                if (f == Float.PositiveInfinity || f.isNaN)
+                  Float.MaxValue
+                else if (f == Float.NegativeInfinity)
+                  Float.MinValue
+                else f
+                  // Nearest whole numbers closer to zero
+                  val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
+                  shrinkLoop(nearest, Rose(nearestNeg) :: Rose(nearest) :: acc)
+            }
+            else {
+              val sqrt: Float = math.sqrt(f.abs.toDouble).toFloat
+              if (sqrt < 1.0f) Rose(0.0f) :: acc
+              else {
+                val whole: Float = sqrt.floor
+                val negWhole: Float = math.rint((-whole).toDouble).toFloat
+                val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
+                shrinkLoop(first, Rose(first) :: Rose(second) :: acc)
+                }
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Float], Randomizer) = {
         (floatEdges.take(maxLength), rnd)
       }
       def next(szp: SizeParam, edges: List[Float], rnd: Randomizer): (RoseTree[Float], List[Float], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (f, rnd2) = rnd.nextFloat
-            val (roseTreeOfFloat, rnd3) = shrink(f, rnd2)
-            (roseTreeOfFloat, Nil, rnd3)
+            (NextRoseTree(f), Nil, rnd2)
         }
       }
       private val floatCanonicals: List[Float] = List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f)
       override def canonicals(rnd: Randomizer): (Iterator[Float], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(f: Float, rnd: Randomizer): (RoseTree[Float], Randomizer) = {
-        // (shrinkLoop(f, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[Float] {
-            val value: Float = f
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Float]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(f: Float, acc: List[Rose[Float]]): List[Rose[Float]] = {
-                if (f == 0.0f) acc
-                else if (f <= 1.0f && f >= -1.0f) Rose(0.0f) :: acc
-                else if (!f.isWhole) {
-                  // We need to handle infinity and NaN specially because without it, this method
-                  // will go into an infinite loop. The reason is floor and ciel give back the same value
-                  // on these values:
-                  //
-                  // scala> val f = Float.PositiveInfinity
-                  // f: Float = Infinity
-                  //
-                  // scala> f.floor
-                  // res1: Float = Infinity
-                  //
-                  // scala> f.ceil
-                  // res3: Float = Infinity
-                  //
-                  // scala> Float.NaN.floor
-                  // res5: Float = NaN
-                  //
-                  // scala> Float.NaN.ceil
-                  // res6: Float = NaN
-                  //
-                  val n =
-                  if (f == Float.PositiveInfinity || f.isNaN)
-                    Float.MaxValue
-                  else if (f == Float.NegativeInfinity)
-                    Float.MinValue
-                  else f
-                  // Nearest whole numbers closer to zero
-                  val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-                  shrinkLoop(nearest, Rose(nearestNeg) :: Rose(nearest) :: acc)
-                }
-                else {
-                  val sqrt: Float = math.sqrt(f.abs.toDouble).toFloat
-                  if (sqrt < 1.0f) Rose(0.0f) :: acc
-                  else {
-                    val whole: Float = sqrt.floor
-                    val negWhole: Float = math.rint((-whole).toDouble).toFloat
-                    val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
-                    shrinkLoop(first, Rose(first) :: Rose(second) :: acc)
-                  }
-                }
-              }
-              (shrinkLoop(f, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: Float, rnd: Randomizer):  (RoseTree[Float], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[Float]"
     }
 
