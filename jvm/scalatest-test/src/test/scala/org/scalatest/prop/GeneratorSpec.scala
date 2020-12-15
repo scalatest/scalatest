@@ -769,13 +769,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
                 Double.MinValue
               else d
             if (n > 1.0)
-              shrinks.last should be > 0.0
+              shrinks.head should be > 0.0
             else if (n < -1.0)
-              shrinks.last should be < 0.0
+              shrinks.head should be < 0.0
             if (!n.isWhole) {
-              shrinks.last shouldEqual (if (n > 0.0) n.floor else n.ceil)
+              shrinks.head shouldEqual (if (n > 0.0) n.floor else n.ceil)
             }
-            val pairs: List[(Double, Double)] = shrinks.zip(shrinks.tail)
+            val revShrinks = shrinks.reverse
+            val pairs: List[(Double, Double)] = revShrinks.zip(revShrinks.tail)
             import org.scalatest.Inspectors._
             forAll (pairs) { case (x, y) =>
               assert(x == 0.0 || x == -y || x.abs < y.abs)

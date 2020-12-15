@@ -921,77 +921,74 @@ object Generator {
     */
   implicit val doubleGenerator: Generator[Double] =
     new Generator[Double] {
+
+      case class NextRoseTree(value: Double) extends RoseTree[Double] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Double]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(d: Double, acc: List[RoseTree[Double]]): List[RoseTree[Double]] = {
+            if (d == 0.0) acc
+            else if (d <= 1.0 && d >= -1.0) Rose(0.0) :: acc
+            else if (!d.isWhole) {
+              // We need to handle infinity and NaN specially because without it, this method
+              // will go into an infinite loop. The reason is floor and ciel give back the same value
+              // on these values:
+              //
+              // scala> val n = Double.PositiveInfinity
+              // n: Double = Infinity
+              //
+              // scala> n.floor
+              // res0: Double = Infinity
+              //
+              // scala> n.ceil
+              // res1: Double = Infinity
+              //
+              // scala> Double.NaN.floor
+              // res3: Double = NaN
+              //
+              // scala> Double.NaN.ceil
+              // res4: Double = NaN
+              val n =
+                if (d == Double.PositiveInfinity || d.isNaN)
+                  Double.MaxValue
+                else if (d == Double.NegativeInfinity)
+                  Double.MinValue
+                else d
+              // Nearest whole numbers closer to zero
+              // Nearest whole numbers closer to zero
+              val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
+                shrinkLoop(nearest, Rose(nearestNeg) :: Rose(nearest) :: acc)
+            }
+            else {
+              val sqrt: Double = math.sqrt(d.abs)
+              if (sqrt < 1.0) Rose(0.0) :: acc
+              else {
+                val whole: Double = sqrt.floor
+                // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
+                val negWhole: Double = -whole  //math.rint(-whole)
+                val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
+                shrinkLoop(first, Rose(first) :: Rose(second) :: acc)
+              }
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Double], Randomizer) = {
         (doubleEdges.take(maxLength), rnd)
       }
       def next(szp: SizeParam, edges: List[Double], rnd: Randomizer): (RoseTree[Double], List[Double], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (d, rnd2) = rnd.nextDouble
-            val (roseTreeOfDouble, rnd3) = shrink(d, rnd2)
-            (roseTreeOfDouble, Nil, rnd3)
+            (NextRoseTree(d), Nil, rnd2)
         }
       }
       private val doubleCanonicals: List[Double] = List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0)
       override def canonicals(rnd: Randomizer): (Iterator[Double], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(d: Double, rnd: Randomizer): (RoseTree[Double], Randomizer) = {
-        val rootRoseTree =
-          new RoseTree[Double] {
-            val value: Double = d
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Double]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(d: Double, acc: List[Rose[Double]]): List[Rose[Double]] = {
-                if (d == 0.0) acc
-                else if (d <= 1.0 && d >= -1.0) Rose(0.0) :: acc
-                else if (!d.isWhole) {
-                  // We need to handle infinity and NaN specially because without it, this method
-                  // will go into an infinite loop. The reason is floor and ciel give back the same value
-                  // on these values:
-                  //
-                  // scala> val n = Double.PositiveInfinity
-                  // n: Double = Infinity
-                  //
-                  // scala> n.floor
-                  // res0: Double = Infinity
-                  //
-                  // scala> n.ceil
-                  // res1: Double = Infinity
-                  //
-                  // scala> Double.NaN.floor
-                  // res3: Double = NaN
-                  //
-                  // scala> Double.NaN.ceil
-                  // res4: Double = NaN
-                  val n =
-                  if (d == Double.PositiveInfinity || d.isNaN)
-                    Double.MaxValue
-                  else if (d == Double.NegativeInfinity)
-                    Double.MinValue
-                  else d
-                  // Nearest whole numbers closer to zero
-                  // Nearest whole numbers closer to zero
-                  val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-                  shrinkLoop(nearest, Rose(nearestNeg) :: Rose(nearest) :: acc)
-                }
-                else {
-                  val sqrt: Double = math.sqrt(d.abs)
-                  if (sqrt < 1.0) Rose(0.0) :: acc
-                  else {
-                    val whole: Double = sqrt.floor
-                    // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
-                    val negWhole: Double = -whole  //math.rint(-whole)
-                    val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
-                    shrinkLoop(first, Rose(first) :: Rose(second) :: acc)
-                  }
-                }
-              }
-              (shrinkLoop(d, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(d: Double, rnd: Randomizer):  (RoseTree[Double], Randomizer) = (NextRoseTree(d), rnd)
       override def toString = "Generator[Double]"
     }
 
