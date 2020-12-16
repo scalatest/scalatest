@@ -1083,14 +1083,11 @@ object Generator {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosLong]], Randomizer) = {
           @tailrec
           def shrinkLoop(i: PosLong, acc: List[RoseTree[PosLong]]): List[RoseTree[PosLong]] = {
-            if (i == 0) acc
+            val half: Long = i / 2
+            if (half == 0) acc
             else {
-              val half: Long = i / 2
-              if (half == 0) acc
-              else {
-                val posLongHalf = PosLong.ensuringValid(half)
-                shrinkLoop(posLongHalf, Rose(posLongHalf) :: acc)
-              }
+              val posLongHalf = PosLong.ensuringValid(half)
+              shrinkLoop(posLongHalf, Rose(posLongHalf) :: acc)
             }
           }
           (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
