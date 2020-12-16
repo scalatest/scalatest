@@ -993,7 +993,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posLongGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosLong(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosLong(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosZLongs") {
