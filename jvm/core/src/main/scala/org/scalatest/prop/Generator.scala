@@ -677,6 +677,22 @@ object Generator {
     */
   implicit val shortGenerator: Generator[Short] =
     new Generator[Short] {
+
+      case class NextRoseTree(value: Short) extends RoseTree[Short] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Short]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(n: Short, acc: List[RoseTree[Short]]): List[RoseTree[Short]] = {
+            if (n == 0) acc
+            else {
+              val half: Short = (n / 2).toShort
+              if (half == 0) Rose(0.toShort) :: acc
+              else shrinkLoop(half, Rose((-half).toShort) :: Rose(half) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Short], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(shortEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -684,34 +700,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[Short], rnd: Randomizer): (RoseTree[Short], List[Short], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
+            (NextRoseTree(head), tail, rnd)
           case _ =>
             val (s, rnd2) = rnd.nextShort
-            val (roseTreeOfShort, rnd3) = shrink(s, rnd2)
-            (roseTreeOfShort, Nil, rnd3)
+            (NextRoseTree(s), Nil, rnd2)
         }
       }
       private val shortCanonicals: List[Short] = List(0, 1, -1, 2, -2, 3, -3)
       override def canonicals(rnd: Randomizer): (Iterator[Short], Randomizer) = (shortCanonicals.iterator, rnd)
-      override def shrink(n: Short, rnd: Randomizer): (RoseTree[Short], Randomizer) = {
-        val rootRoseTree =
-          new RoseTree[Short] {
-            val value: Short = n
-            def shrinks(rnd: Randomizer): (List[RoseTree[Short]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(n: Short, acc: List[Rose[Short]]): List[Rose[Short]] = {
-                if (n == 0) acc
-                else {
-                  val half: Short = (n / 2).toShort
-                  if (half == 0) Rose(0.toShort) :: acc
-                  else shrinkLoop(half, Rose((-half).toShort) :: Rose(half) :: acc)
-                }
-              }
-              (shrinkLoop(n, Nil), rnd)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: Short, rnd: Randomizer):  (RoseTree[Short], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[Short]"
     }
 

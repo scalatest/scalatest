@@ -382,11 +382,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val edges = List(a1, a2, a3, a4, a5)
-        edges should contain (Rose(0))
-        edges should contain (Rose(1))
-        edges should contain (Rose(-1))
-        edges should contain (Rose(Short.MaxValue))
-        edges should contain (Rose(Short.MinValue))
+        edges.map(_.value) should contain (0)
+        edges.map(_.value) should contain (1)
+        edges.map(_.value) should contain (-1)
+        edges.map(_.value) should contain (Short.MaxValue)
+        edges.map(_.value) should contain (Short.MinValue)
       }
       it("should produce Short canonical values") {
         import Generator._
@@ -405,11 +405,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             shrinks shouldBe empty
           else {
             if (n > 1.toShort)
-              shrinks.last should be > 0.toShort
+              shrinks.head should be > 0.toShort
             else if (n < -1.toShort)
-              shrinks.last should be < 0.toShort
+              shrinks.head should be < 0.toShort
             import org.scalatest.Inspectors._
-            val pairs: List[(Short, Short)] = shrinks.zip(shrinks.tail)
+            val revShrinks = shrinks.reverse
+            val pairs: List[(Short, Short)] = revShrinks.zip(revShrinks.tail)
             forAll (pairs) { case (x, y) =>
               assert(x == 0 || x == -y || x.abs == y.abs / 2)
             }
