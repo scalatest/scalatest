@@ -2704,7 +2704,7 @@ object Generator {
                     new Iterator[String] {
                       private var nextString = s.take(2)
                       def hasNext: Boolean = nextString.length < s.length
-                      def next: String = {
+                      def next(): String = {
                         val result = nextString
                         nextString = s.take(result.length * 2)
                         result
@@ -2781,7 +2781,7 @@ object Generator {
                     new Iterator[List[T]] {
                       private var nextT = xs.take(2)
                       def hasNext: Boolean = nextT.length < xs.length
-                      def next: List[T] = {
+                      def next(): List[T] = {
                         if (!hasNext)
                           throw new NoSuchElementException
                         val result = nextT
@@ -4229,7 +4229,7 @@ object Generator {
                     new Iterator[Vector[T]] {
                       private var nextT = xs.take(2)
                       def hasNext: Boolean = nextT.length < xs.length
-                      def next: Vector[T] = {
+                      def next(): Vector[T] = {
                         if (!hasNext)
                           throw new NoSuchElementException
                         val result = nextT
@@ -4351,7 +4351,7 @@ object Generator {
                     new Iterator[Set[T]] {
                       private var nextT = xs.take(2)
                       def hasNext: Boolean = nextT.size < xs.size
-                      def next: Set[T] = {
+                      def next(): Set[T] = {
                         if (!hasNext)
                           throw new NoSuchElementException
                         val result = nextT
@@ -4470,7 +4470,7 @@ object Generator {
                     new Iterator[SortedSet[T]] {
                       private var nextT = xs.take(2)
                       def hasNext: Boolean = nextT.size < xs.size
-                      def next: SortedSet[T] = {
+                      def next(): SortedSet[T] = {
                         if (!hasNext)
                           throw new NoSuchElementException
                         val result = nextT
@@ -4593,7 +4593,7 @@ object Generator {
                     new Iterator[Map[K, V]] {
                       private var nextT = xsList.take(2)
                       def hasNext: Boolean = nextT.size < xsList.size
-                      def next: Map[K, V] = {
+                      def next(): Map[K, V] = {
                         if (!hasNext)
                           throw new NoSuchElementException
                         val result = nextT
@@ -4712,7 +4712,7 @@ object Generator {
                     new Iterator[SortedMap[K, V]] {
                       private var nextT = xs.take(2)
                       def hasNext: Boolean = nextT.size < xs.size
-                      def next: SortedMap[K, V] = {
+                      def next(): SortedMap[K, V] = {
                         if (!hasNext)
                           throw new NoSuchElementException
                         val result = nextT
