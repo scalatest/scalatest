@@ -854,6 +854,18 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           cur
         }
       }
+
+      def shouldGrowWithForShrink[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {
+        val roseTree: RoseTree[T] = pair._1
+        roseTree.shrinks(Randomizer.default)._1.map(_.value).reverse.reduce { (last, cur) =>
+          // Duplicates not allowed:
+          last should not equal cur
+          val nLast = nOps.abs(conv(last))
+          val nCur = nOps.abs(conv(cur))
+          nLast should be <= nCur
+          cur
+        }
+      }
     }
 
     describe("for PosInts") {
@@ -895,7 +907,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posIntGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosInt(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosInt(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosZInts") {

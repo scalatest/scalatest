@@ -997,6 +997,22 @@ object Generator {
     */
   implicit val posIntGenerator: Generator[PosInt] =
     new Generator[PosInt] {
+
+      case class NextRoseTree(value: PosInt) extends RoseTree[PosInt] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosInt]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(i: PosInt, acc: List[RoseTree[PosInt]]): List[RoseTree[PosInt]] = {
+            val half: Int = i / 2
+            if (half == 0) acc
+            else {
+              val posIntHalf = PosInt.ensuringValid(half)
+              shrinkLoop(posIntHalf, Rose(posIntHalf) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -1004,35 +1020,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[PosInt], rnd: Randomizer): (RoseTree[PosInt], List[PosInt], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+             (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (posInt, rnd2) = rnd.nextPosInt
-            val (roseTreeOfPosInt, rnd3) = shrink(posInt, rnd2)
-            (roseTreeOfPosInt, Nil, rnd3)
+            (NextRoseTree(posInt), Nil, rnd2)
         }
       }
       private val posIntCanonicals = List(1, 2, 3).map(PosInt.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosInt], Randomizer) = (posIntCanonicals.iterator, rnd)
-      override def shrink(i: PosInt, rnd: Randomizer): (RoseTree[PosInt], Randomizer) = {
-        // (shrinkLoop(i, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[PosInt] {
-            val value: PosInt = i
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosInt]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(i: PosInt, acc: List[Rose[PosInt]]): List[Rose[PosInt]] = {
-                val half: Int = i / 2
-                if (half == 0) acc
-                else {
-                  val posIntHalf = PosInt.ensuringValid(half)
-                  shrinkLoop(posIntHalf, Rose(posIntHalf) :: acc)
-                }
-              }
-              (shrinkLoop(i, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: PosInt, rnd: Randomizer):  (RoseTree[PosInt], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosInt]"
     }
 
