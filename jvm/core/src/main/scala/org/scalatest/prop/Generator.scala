@@ -720,6 +720,18 @@ object Generator {
     */
   implicit val charGenerator: Generator[Char] =
     new Generator[Char] {
+
+      case class NextRoseTree(value: Char) extends RoseTree[Char] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Char]], Randomizer) = {
+          def shrinkLoop(c: Char, acc: List[RoseTree[Char]]): List[RoseTree[Char]] = {
+            val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            if (userFriendlyChars.indexOf(c) >= 0) List.empty
+            else userFriendlyChars.toList.map(ufc => NextRoseTree(ufc))
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Char], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(charEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -727,11 +739,10 @@ object Generator {
       def next(szp: SizeParam, edges: List[Char], rnd: Randomizer): (RoseTree[Char], List[Char], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
+            (NextRoseTree(head), tail, rnd)
           case _ =>
             val (c, rnd2) = rnd.nextChar
-            val (roseTreeOfChar, rnd3) = shrink(c, rnd2)
-            (roseTreeOfChar, Nil, rnd3)
+            (NextRoseTree(c), Nil, rnd2)
         }
       }
       override def canonicals(rnd: Randomizer): (Iterator[Char], Randomizer) = {
@@ -746,18 +757,7 @@ object Generator {
         val numericChar = numericChars(numericCharIndex)
         (Iterator(lowerChar, upperChar, numericChar), rnd3)
       }
-      override def shrink(c: Char, rnd: Randomizer): (RoseTree[Char], Randomizer) = {
-        val rootRoseTree =
-          new RoseTree[Char] {
-            val value: Char = c
-            def shrinks(rndPassedToShrink: Randomizer): (List[RoseTree[Char]], Randomizer) = {
-              val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-              if (userFriendlyChars.indexOf(c) >= 0) (List.empty, rndPassedToShrink)
-              else (userFriendlyChars.toList.map(ufc => Rose(ufc)), rndPassedToShrink)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: Char, rnd: Randomizer):  (RoseTree[Char], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[Char]"
     }
 

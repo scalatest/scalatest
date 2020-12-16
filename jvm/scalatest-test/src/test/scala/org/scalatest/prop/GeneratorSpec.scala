@@ -590,8 +590,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (a1: RoseTree[Char], ae1: List[Char], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val edges = List(a1, a2)
-        edges should contain (Rose(Char.MinValue))
-        edges should contain (Rose(Char.MaxValue))
+        edges.map(_.value) should contain (Char.MinValue)
+        edges.map(_.value) should contain (Char.MaxValue)
       }
       it("should produce Char canonical values") {
         import Generator._
@@ -613,7 +613,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           if (c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z')
             shrinks shouldBe empty
           else
-            shrinks shouldEqual expectedChars
+            shrinks.reverse shouldEqual expectedChars
         }
         import org.scalatest.Inspectors
         Inspectors.forAll (expectedChars) { (c: Char) => 
