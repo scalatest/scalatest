@@ -951,7 +951,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZIntGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZInt(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosZInt(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosLongs") {
