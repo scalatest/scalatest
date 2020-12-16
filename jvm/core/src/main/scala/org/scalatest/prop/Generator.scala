@@ -634,6 +634,20 @@ object Generator {
   implicit val byteGenerator: Generator[Byte] =
     new Generator[Byte] {
 
+      case class NextRoseTree(value: Byte) extends RoseTree[Byte] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Byte]], Randomizer) = {
+          def shrinkLoop(n: Byte, acc: List[RoseTree[Byte]]): List[RoseTree[Byte]] = {
+            if (n == 0) acc
+            else {
+              val half: Byte = (n / 2).toByte
+              if (half == 0) Rose(0.toByte) :: acc
+              else shrinkLoop(half, Rose((-half).toByte) :: Rose(half) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Byte], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(byteEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -641,34 +655,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[Byte], rnd: Randomizer): (RoseTree[Byte], List[Byte], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
+            (NextRoseTree(head), tail, rnd)
           case _ =>
             val (b, rnd2) = rnd.nextByte
-            val (roseTreeOfByte, rnd3) = shrink(b, rnd2)
-            (roseTreeOfByte, Nil, rnd3)
+            (NextRoseTree(b), Nil, rnd2)
         }
       }
       private val byteCanonicals: List[Byte] = List(0, 1, -1, 2, -2, 3, -3)
       override def canonicals(rnd: Randomizer): (Iterator[Byte], Randomizer) = (byteCanonicals.iterator, rnd)
-      override def shrink(n: Byte, rnd: Randomizer): (RoseTree[Byte], Randomizer) = {
-        val rootRoseTree =
-          new RoseTree[Byte] {
-            val value: Byte = n
-            def shrinks(rnd: Randomizer): (List[RoseTree[Byte]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(n: Byte, acc: List[Rose[Byte]]): List[Rose[Byte]] = {
-                if (n == 0) acc
-                else {
-                  val half: Byte = (n / 2).toByte
-                  if (half == 0) Rose(0.toByte) :: acc
-                  else shrinkLoop(half, Rose((-half).toByte) :: Rose(half) :: acc)
-                }
-              }
-              (shrinkLoop(n, Nil), rnd)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: Byte, rnd: Randomizer):  (RoseTree[Byte], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[Byte]"
     }
 
