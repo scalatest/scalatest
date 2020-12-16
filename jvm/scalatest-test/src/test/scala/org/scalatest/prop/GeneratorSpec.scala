@@ -1083,7 +1083,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosFloat(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosFloat(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosFiniteFloat") {
