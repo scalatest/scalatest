@@ -806,6 +806,22 @@ object Generator {
     */
   implicit val longGenerator: Generator[Long] =
     new Generator[Long] {
+
+      case class NextRoseTree(value: Long) extends RoseTree[Long] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Long]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(i: Long, acc: List[RoseTree[Long]]): List[RoseTree[Long]] = {
+            if (i == 0) acc
+            else {
+              val half: Long = i / 2
+              if (half == 0) Rose(0L) :: acc
+              else shrinkLoop(half, NextRoseTree(-half) :: NextRoseTree(half) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Long], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(longEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -813,35 +829,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[Long], rnd: Randomizer): (RoseTree[Long], List[Long], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (n, rnd2) = rnd.nextLong
-            val (roseTreeOfLong, rnd3) = shrink(n, rnd2)
-            (roseTreeOfLong, Nil, rnd3)
+            (NextRoseTree(n), Nil, rnd2)
         }
       }
       private val longCanonicals: List[Long] = List(0, 1, -1, 2, -2, 3, -3)
       override def canonicals(rnd: Randomizer): (Iterator[Long], Randomizer) = (longCanonicals.iterator, rnd)
-      override def shrink(n: Long, rnd: Randomizer): (RoseTree[Long], Randomizer) = {
-
-        val rootRoseTree =
-          new RoseTree[Long] {
-            val value: Long = n
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Long]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(n: Long, acc: List[Rose[Long]]): List[Rose[Long]] = {
-                if (n == 0L) acc
-                else {
-                  val half: Long = n / 2
-                  if (half == 0L) Rose(0L) :: acc
-                  else shrinkLoop(half, Rose(-half) :: Rose(half) :: acc)
-                }
-              }
-              (shrinkLoop(n, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: Long, rnd: Randomizer):  (RoseTree[Long], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[Long]"
     }
 
@@ -850,77 +846,73 @@ object Generator {
     */
   implicit val floatGenerator: Generator[Float] =
     new Generator[Float] {
+
+      case class NextRoseTree(value: Float) extends RoseTree[Float] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Float]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(f: Float, acc: List[RoseTree[Float]]): List[RoseTree[Float]] = {
+            if (f == 0.0f) acc
+            else if (f <= 1.0f && f >= -1.0f) Rose(0.0f) :: acc
+            else if (!f.isWhole) {
+              // We need to handle infinity and NaN specially because without it, this method
+              // will go into an infinite loop. The reason is floor and ciel give back the same value
+              // on these values:
+              //
+              // scala> val f = Float.PositiveInfinity
+              // f: Float = Infinity
+              //
+              // scala> f.floor
+              // res1: Float = Infinity
+              //
+              // scala> f.ceil
+              // res3: Float = Infinity
+              //
+              // scala> Float.NaN.floor
+              // res5: Float = NaN
+              //
+              // scala> Float.NaN.ceil
+              // res6: Float = NaN
+              //
+              val n =
+                if (f == Float.PositiveInfinity || f.isNaN)
+                  Float.MaxValue
+                else if (f == Float.NegativeInfinity)
+                  Float.MinValue
+                else f
+                  // Nearest whole numbers closer to zero
+                  val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
+                  shrinkLoop(nearest, Rose(nearestNeg) :: Rose(nearest) :: acc)
+            }
+            else {
+              val sqrt: Float = math.sqrt(f.abs.toDouble).toFloat
+              if (sqrt < 1.0f) Rose(0.0f) :: acc
+              else {
+                val whole: Float = sqrt.floor
+                val negWhole: Float = math.rint((-whole).toDouble).toFloat
+                val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
+                shrinkLoop(first, Rose(first) :: Rose(second) :: acc)
+                }
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Float], Randomizer) = {
         (floatEdges.take(maxLength), rnd)
       }
       def next(szp: SizeParam, edges: List[Float], rnd: Randomizer): (RoseTree[Float], List[Float], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (f, rnd2) = rnd.nextFloat
-            val (roseTreeOfFloat, rnd3) = shrink(f, rnd2)
-            (roseTreeOfFloat, Nil, rnd3)
+            (NextRoseTree(f), Nil, rnd2)
         }
       }
       private val floatCanonicals: List[Float] = List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f)
       override def canonicals(rnd: Randomizer): (Iterator[Float], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(f: Float, rnd: Randomizer): (RoseTree[Float], Randomizer) = {
-        // (shrinkLoop(f, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[Float] {
-            val value: Float = f
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Float]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(f: Float, acc: List[Rose[Float]]): List[Rose[Float]] = {
-                if (f == 0.0f) acc
-                else if (f <= 1.0f && f >= -1.0f) Rose(0.0f) :: acc
-                else if (!f.isWhole) {
-                  // We need to handle infinity and NaN specially because without it, this method
-                  // will go into an infinite loop. The reason is floor and ciel give back the same value
-                  // on these values:
-                  //
-                  // scala> val f = Float.PositiveInfinity
-                  // f: Float = Infinity
-                  //
-                  // scala> f.floor
-                  // res1: Float = Infinity
-                  //
-                  // scala> f.ceil
-                  // res3: Float = Infinity
-                  //
-                  // scala> Float.NaN.floor
-                  // res5: Float = NaN
-                  //
-                  // scala> Float.NaN.ceil
-                  // res6: Float = NaN
-                  //
-                  val n =
-                  if (f == Float.PositiveInfinity || f.isNaN)
-                    Float.MaxValue
-                  else if (f == Float.NegativeInfinity)
-                    Float.MinValue
-                  else f
-                  // Nearest whole numbers closer to zero
-                  val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-                  shrinkLoop(nearest, Rose(nearestNeg) :: Rose(nearest) :: acc)
-                }
-                else {
-                  val sqrt: Float = math.sqrt(f.abs.toDouble).toFloat
-                  if (sqrt < 1.0f) Rose(0.0f) :: acc
-                  else {
-                    val whole: Float = sqrt.floor
-                    val negWhole: Float = math.rint((-whole).toDouble).toFloat
-                    val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
-                    shrinkLoop(first, Rose(first) :: Rose(second) :: acc)
-                  }
-                }
-              }
-              (shrinkLoop(f, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: Float, rnd: Randomizer):  (RoseTree[Float], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[Float]"
     }
 
@@ -929,77 +921,74 @@ object Generator {
     */
   implicit val doubleGenerator: Generator[Double] =
     new Generator[Double] {
+
+      case class NextRoseTree(value: Double) extends RoseTree[Double] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Double]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(d: Double, acc: List[RoseTree[Double]]): List[RoseTree[Double]] = {
+            if (d == 0.0) acc
+            else if (d <= 1.0 && d >= -1.0) Rose(0.0) :: acc
+            else if (!d.isWhole) {
+              // We need to handle infinity and NaN specially because without it, this method
+              // will go into an infinite loop. The reason is floor and ciel give back the same value
+              // on these values:
+              //
+              // scala> val n = Double.PositiveInfinity
+              // n: Double = Infinity
+              //
+              // scala> n.floor
+              // res0: Double = Infinity
+              //
+              // scala> n.ceil
+              // res1: Double = Infinity
+              //
+              // scala> Double.NaN.floor
+              // res3: Double = NaN
+              //
+              // scala> Double.NaN.ceil
+              // res4: Double = NaN
+              val n =
+                if (d == Double.PositiveInfinity || d.isNaN)
+                  Double.MaxValue
+                else if (d == Double.NegativeInfinity)
+                  Double.MinValue
+                else d
+              // Nearest whole numbers closer to zero
+              // Nearest whole numbers closer to zero
+              val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
+                shrinkLoop(nearest, Rose(nearestNeg) :: Rose(nearest) :: acc)
+            }
+            else {
+              val sqrt: Double = math.sqrt(d.abs)
+              if (sqrt < 1.0) Rose(0.0) :: acc
+              else {
+                val whole: Double = sqrt.floor
+                // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
+                val negWhole: Double = -whole  //math.rint(-whole)
+                val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
+                shrinkLoop(first, Rose(first) :: Rose(second) :: acc)
+              }
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Double], Randomizer) = {
         (doubleEdges.take(maxLength), rnd)
       }
       def next(szp: SizeParam, edges: List[Double], rnd: Randomizer): (RoseTree[Double], List[Double], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (d, rnd2) = rnd.nextDouble
-            val (roseTreeOfDouble, rnd3) = shrink(d, rnd2)
-            (roseTreeOfDouble, Nil, rnd3)
+            (NextRoseTree(d), Nil, rnd2)
         }
       }
       private val doubleCanonicals: List[Double] = List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0)
       override def canonicals(rnd: Randomizer): (Iterator[Double], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(d: Double, rnd: Randomizer): (RoseTree[Double], Randomizer) = {
-        val rootRoseTree =
-          new RoseTree[Double] {
-            val value: Double = d
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Double]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(d: Double, acc: List[Rose[Double]]): List[Rose[Double]] = {
-                if (d == 0.0) acc
-                else if (d <= 1.0 && d >= -1.0) Rose(0.0) :: acc
-                else if (!d.isWhole) {
-                  // We need to handle infinity and NaN specially because without it, this method
-                  // will go into an infinite loop. The reason is floor and ciel give back the same value
-                  // on these values:
-                  //
-                  // scala> val n = Double.PositiveInfinity
-                  // n: Double = Infinity
-                  //
-                  // scala> n.floor
-                  // res0: Double = Infinity
-                  //
-                  // scala> n.ceil
-                  // res1: Double = Infinity
-                  //
-                  // scala> Double.NaN.floor
-                  // res3: Double = NaN
-                  //
-                  // scala> Double.NaN.ceil
-                  // res4: Double = NaN
-                  val n =
-                  if (d == Double.PositiveInfinity || d.isNaN)
-                    Double.MaxValue
-                  else if (d == Double.NegativeInfinity)
-                    Double.MinValue
-                  else d
-                  // Nearest whole numbers closer to zero
-                  // Nearest whole numbers closer to zero
-                  val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-                  shrinkLoop(nearest, Rose(nearestNeg) :: Rose(nearest) :: acc)
-                }
-                else {
-                  val sqrt: Double = math.sqrt(d.abs)
-                  if (sqrt < 1.0) Rose(0.0) :: acc
-                  else {
-                    val whole: Double = sqrt.floor
-                    // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
-                    val negWhole: Double = -whole  //math.rint(-whole)
-                    val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
-                    shrinkLoop(first, Rose(first) :: Rose(second) :: acc)
-                  }
-                }
-              }
-              (shrinkLoop(d, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(d: Double, rnd: Randomizer):  (RoseTree[Double], Randomizer) = (NextRoseTree(d), rnd)
       override def toString = "Generator[Double]"
     }
 
@@ -1008,6 +997,22 @@ object Generator {
     */
   implicit val posIntGenerator: Generator[PosInt] =
     new Generator[PosInt] {
+
+      case class NextRoseTree(value: PosInt) extends RoseTree[PosInt] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosInt]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(i: PosInt, acc: List[RoseTree[PosInt]]): List[RoseTree[PosInt]] = {
+            val half: Int = i / 2
+            if (half == 0) acc
+            else {
+              val posIntHalf = PosInt.ensuringValid(half)
+              shrinkLoop(posIntHalf, Rose(posIntHalf) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -1015,35 +1020,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[PosInt], rnd: Randomizer): (RoseTree[PosInt], List[PosInt], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+             (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (posInt, rnd2) = rnd.nextPosInt
-            val (roseTreeOfPosInt, rnd3) = shrink(posInt, rnd2)
-            (roseTreeOfPosInt, Nil, rnd3)
+            (NextRoseTree(posInt), Nil, rnd2)
         }
       }
       private val posIntCanonicals = List(1, 2, 3).map(PosInt.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosInt], Randomizer) = (posIntCanonicals.iterator, rnd)
-      override def shrink(i: PosInt, rnd: Randomizer): (RoseTree[PosInt], Randomizer) = {
-        // (shrinkLoop(i, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[PosInt] {
-            val value: PosInt = i
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosInt]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(i: PosInt, acc: List[Rose[PosInt]]): List[Rose[PosInt]] = {
-                val half: Int = i / 2
-                if (half == 0) acc
-                else {
-                  val posIntHalf = PosInt.ensuringValid(half)
-                  shrinkLoop(posIntHalf, Rose(posIntHalf) :: acc)
-                }
-              }
-              (shrinkLoop(i, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: PosInt, rnd: Randomizer):  (RoseTree[PosInt], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosInt]"
     }
 
@@ -1052,6 +1037,23 @@ object Generator {
     */
   implicit val posZIntGenerator: Generator[PosZInt] =
     new Generator[PosZInt] {
+
+      case class NextRoseTree(value: PosZInt) extends RoseTree[PosZInt] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosZInt]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(i: PosZInt, acc: List[RoseTree[PosZInt]]): List[RoseTree[PosZInt]] = {
+            if (i.value == 0)
+              acc
+            else {
+              val half: Int = i / 2
+              val posIntHalf = PosZInt.ensuringValid(half)
+              shrinkLoop(posIntHalf, Rose(posIntHalf) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -1059,36 +1061,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[PosZInt], rnd: Randomizer): (RoseTree[PosZInt], List[PosZInt], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (posZInt, rnd2) = rnd.nextPosZInt
-            val (roseTreeOfPosZInt, rnd3) = shrink(posZInt, rnd2)
-            (roseTreeOfPosZInt, Nil, rnd3)
+            (NextRoseTree(posZInt), Nil, rnd2)
         }
       }
       private val posZIntCanonicals = List(0, 1, 2, 3).map(PosZInt.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosZInt], Randomizer) = (posZIntCanonicals.iterator, rnd)
-      override def shrink(i: PosZInt, rnd: Randomizer): (RoseTree[PosZInt], Randomizer) = {
-        // (shrinkLoop(i, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[PosZInt] {
-            val value: PosZInt = i
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosZInt]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(i: PosZInt, acc: List[Rose[PosZInt]]): List[Rose[PosZInt]] = {
-                if (i.value == 0)
-                  acc
-                else {
-                  val half: Int = i / 2
-                  val posIntHalf = PosZInt.ensuringValid(half)
-                  shrinkLoop(posIntHalf, Rose(posIntHalf) :: acc)
-                }
-              }
-              (shrinkLoop(i, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: PosZInt, rnd: Randomizer):  (RoseTree[PosZInt], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosZInt]"
     }
 
@@ -1097,6 +1078,22 @@ object Generator {
     */
   implicit val posLongGenerator: Generator[PosLong] =
     new Generator[PosLong] {
+
+      case class NextRoseTree(value: PosLong) extends RoseTree[PosLong] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosLong]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(i: PosLong, acc: List[RoseTree[PosLong]]): List[RoseTree[PosLong]] = {
+            val half: Long = i / 2
+            if (half == 0) acc
+            else {
+              val posLongHalf = PosLong.ensuringValid(half)
+              shrinkLoop(posLongHalf, Rose(posLongHalf) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -1104,36 +1101,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[PosLong], rnd: Randomizer): (RoseTree[PosLong], List[PosLong], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (posLong, rnd2) = rnd.nextPosLong
-            val (roseTreeOfPosLong, rnd3) = shrink(posLong, rnd2)
-            (roseTreeOfPosLong, Nil, rnd3)
+            (NextRoseTree(posLong), Nil, rnd2)
         }
       }
       private val posLongCanonicals = List(1, 2, 3).map(PosLong.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosLong], Randomizer) = (posLongCanonicals.iterator, rnd)
-      override def shrink(i: PosLong, rnd: Randomizer): (RoseTree[PosLong], Randomizer) = {
-        //(shrinkLoop(i, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[PosLong] {
-            val value: PosLong = i
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosLong]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(i: PosLong, acc: List[Rose[PosLong]]): List[Rose[PosLong]] = {
-                val half: Long = i / 2
-                if (half == 0) acc
-                else {
-                  val posLongHalf = PosLong.ensuringValid(half)
-                  shrinkLoop(posLongHalf, Rose(posLongHalf) :: acc)
-                }
-              }
-              (shrinkLoop(i, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-
-      }
+      override def shrink(i: PosLong, rnd: Randomizer):  (RoseTree[PosLong], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosLong]"
     }
 
@@ -1142,6 +1118,23 @@ object Generator {
     */
   implicit val posZLongGenerator: Generator[PosZLong] =
     new Generator[PosZLong] {
+      
+      case class NextRoseTree(value: PosZLong) extends RoseTree[PosZLong] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosZLong]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(i: PosZLong, acc: List[RoseTree[PosZLong]]): List[RoseTree[PosZLong]] = {
+            if (i.value == 0L)
+              acc
+            else {
+              val half: Long = i / 2
+              val posLongHalf = PosZLong.ensuringValid(half)
+              shrinkLoop(posLongHalf, Rose(posLongHalf) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+      
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -1149,36 +1142,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[PosZLong], rnd: Randomizer): (RoseTree[PosZLong], List[PosZLong], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (posZLong, rnd2) = rnd.nextPosZLong
-            val (roseTreeOfPosZLong, rnd3) = shrink(posZLong, rnd2)
-            (roseTreeOfPosZLong, Nil, rnd3)
+            (NextRoseTree(posZLong), Nil, rnd2)
         }
       }
       private val posZLongCanonicals = List(0, 1, 2, 3).map(PosZLong.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosZLong], Randomizer) = (posZLongCanonicals.iterator, rnd)
-      override def shrink(i: PosZLong, rnd: Randomizer): (RoseTree[PosZLong], Randomizer) = {
-        // (shrinkLoop(i, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[PosZLong] {
-            val value: PosZLong = i
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosZLong]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(i: PosZLong, acc: List[Rose[PosZLong]]): List[Rose[PosZLong]] = {
-                if (i.value == 0L)
-                  acc
-                else {
-                  val half: Long = i / 2
-                  val posLongHalf = PosZLong.ensuringValid(half)
-                  shrinkLoop(posLongHalf, Rose(posLongHalf) :: acc)
-                }
-              }
-              (shrinkLoop(i, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: PosZLong, rnd: Randomizer):  (RoseTree[PosZLong], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosZLong]"
     }
 
@@ -1187,6 +1159,33 @@ object Generator {
     */
   implicit val posFloatGenerator: Generator[PosFloat] =
     new Generator[PosFloat] {
+
+      case class NextRoseTree(value: PosFloat) extends RoseTree[PosFloat] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosFloat]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(f: PosFloat, acc: List[RoseTree[PosFloat]]): List[RoseTree[PosFloat]] = {
+            val fv = f.value
+            if (fv == 1.0f) acc
+            else if (fv < 1.0f) Rose(PosFloat(1.0f)) :: acc
+            else if (!fv.isWhole) {
+              val n =
+                if (fv == Float.PositiveInfinity || fv.isNaN)
+                  Float.MaxValue
+                else fv
+              // Nearest whole numbers closer to zero
+              val nearest = PosFloat.ensuringValid(n.floor)
+              shrinkLoop(nearest, Rose(nearest) :: acc)
+            }
+            else {
+              val sqrt: Float = math.sqrt(fv.toDouble).toFloat
+              val whole = PosFloat.ensuringValid(sqrt.floor)
+              shrinkLoop(whole, Rose(whole) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -1194,46 +1193,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[PosFloat], rnd: Randomizer): (RoseTree[PosFloat], List[PosFloat], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
+            (NextRoseTree(head), tail, rnd)
           case _ =>
-            val (posZFloat, rnd2) = rnd.nextPosFloat
-            val (roseTreeOfPosZFloat, rnd3) = shrink(posZFloat, rnd2)
-            (roseTreeOfPosZFloat, Nil, rnd3)
+            val (posFloat, rnd2) = rnd.nextPosFloat
+            (NextRoseTree(posFloat), Nil, rnd2)
         }
       }
       private val posFloatCanonicals: List[PosFloat] = List(1.0f, 2.0f, 3.0f).map(PosFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosFloat], Randomizer) = (posFloatCanonicals.iterator, rnd)
-      override def shrink(f: PosFloat, rnd: Randomizer): (RoseTree[PosFloat], Randomizer) = {
-        //(shrinkLoop(f, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[PosFloat] {
-            val value: PosFloat = f
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosFloat]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(f: PosFloat, acc: List[Rose[PosFloat]]): List[Rose[PosFloat]] = {
-                val fv = f.value
-                if (fv == 1.0f) acc
-                else if (fv < 1.0f) Rose(PosFloat(1.0f)) :: acc
-                else if (!fv.isWhole) {
-                  val n =
-                    if (fv == Float.PositiveInfinity || fv.isNaN)
-                      Float.MaxValue
-                    else fv
-                  // Nearest whole numbers closer to zero
-                  val nearest = PosFloat.ensuringValid(n.floor)
-                  shrinkLoop(nearest, Rose(nearest) :: acc)
-                }
-                else {
-                  val sqrt: Float = math.sqrt(fv.toDouble).toFloat
-                  val whole = PosFloat.ensuringValid(sqrt.floor)
-                  shrinkLoop(whole, Rose(whole) :: acc)
-                }
-              }
-              (shrinkLoop(f, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: PosFloat, rnd: Randomizer):  (RoseTree[PosFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosFloat]"
     }
 
@@ -2736,7 +2704,7 @@ object Generator {
                     new Iterator[String] {
                       private var nextString = s.take(2)
                       def hasNext: Boolean = nextString.length < s.length
-                      def next: String = {
+                      def next(): String = {
                         val result = nextString
                         nextString = s.take(result.length * 2)
                         result
@@ -2813,7 +2781,7 @@ object Generator {
                     new Iterator[List[T]] {
                       private var nextT = xs.take(2)
                       def hasNext: Boolean = nextT.length < xs.length
-                      def next: List[T] = {
+                      def next(): List[T] = {
                         if (!hasNext)
                           throw new NoSuchElementException
                         val result = nextT
@@ -4261,7 +4229,7 @@ object Generator {
                     new Iterator[Vector[T]] {
                       private var nextT = xs.take(2)
                       def hasNext: Boolean = nextT.length < xs.length
-                      def next: Vector[T] = {
+                      def next(): Vector[T] = {
                         if (!hasNext)
                           throw new NoSuchElementException
                         val result = nextT
@@ -4383,7 +4351,7 @@ object Generator {
                     new Iterator[Set[T]] {
                       private var nextT = xs.take(2)
                       def hasNext: Boolean = nextT.size < xs.size
-                      def next: Set[T] = {
+                      def next(): Set[T] = {
                         if (!hasNext)
                           throw new NoSuchElementException
                         val result = nextT
@@ -4502,7 +4470,7 @@ object Generator {
                     new Iterator[SortedSet[T]] {
                       private var nextT = xs.take(2)
                       def hasNext: Boolean = nextT.size < xs.size
-                      def next: SortedSet[T] = {
+                      def next(): SortedSet[T] = {
                         if (!hasNext)
                           throw new NoSuchElementException
                         val result = nextT
@@ -4625,7 +4593,7 @@ object Generator {
                     new Iterator[Map[K, V]] {
                       private var nextT = xsList.take(2)
                       def hasNext: Boolean = nextT.size < xsList.size
-                      def next: Map[K, V] = {
+                      def next(): Map[K, V] = {
                         if (!hasNext)
                           throw new NoSuchElementException
                         val result = nextT
@@ -4744,7 +4712,7 @@ object Generator {
                     new Iterator[SortedMap[K, V]] {
                       private var nextT = xs.take(2)
                       def hasNext: Boolean = nextT.size < xs.size
-                      def next: SortedMap[K, V] = {
+                      def next(): SortedMap[K, V] = {
                         if (!hasNext)
                           throw new NoSuchElementException
                         val result = nextT

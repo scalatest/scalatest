@@ -519,11 +519,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (a4, ae4, ar4) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae3, rnd = ar3)
         val (a5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae4, rnd = ar4)
         val edges = List(a1, a2, a3, a4, a5)
-        edges should contain (Rose(0))
-        edges should contain (Rose(1))
-        edges should contain (Rose(-1))
-        edges should contain (Rose(Long.MaxValue))
-        edges should contain (Rose(Long.MinValue))
+        edges.map(_.value) should contain (0)
+        edges.map(_.value) should contain (1)
+        edges.map(_.value) should contain (-1)
+        edges.map(_.value) should contain (Long.MaxValue)
+        edges.map(_.value) should contain (Long.MinValue)
       }
       it("should produce Long canonical values") {
         import Generator._
@@ -542,11 +542,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             shrinks shouldBe empty
           else {
             if (n > 1L)
-              shrinks.last should be > 0L
+              shrinks.head should be > 0L
             else if (n < -1L)
-              shrinks.last should be < 0L
+              shrinks.head should be < 0L
             import org.scalatest.Inspectors._
-            val pairs: List[(Long, Long)] = shrinks.zip(shrinks.tail)
+            val revShrinks = shrinks.reverse
+            val pairs: List[(Long, Long)] = revShrinks.zip(revShrinks.tail)
             forAll (pairs) { case (x, y) =>
               assert(x == 0 || x == -y || x.abs == y.abs / 2)
             }
@@ -686,14 +687,15 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
                 Float.MinValue
               else f
             if (n > 1.0f)
-              shrinks.last should be > 0.0f
+              shrinks.head should be > 0.0f
             else if (n < -1.0f)
-              shrinks.last should be < 0.0f
+              shrinks.head should be < 0.0f
             import org.scalatest.Inspectors._
             if (!n.isWhole) {
-              shrinks.last shouldEqual (if (n > 0.0f) n.floor else n.ceil)
+              shrinks.head shouldEqual (if (n > 0.0f) n.floor else n.ceil)
             }
-            val pairs: List[(Float, Float)] = shrinks.zip(shrinks.tail)
+            val revShrinks = shrinks.reverse
+            val pairs: List[(Float, Float)] = revShrinks.zip(revShrinks.tail)
             forAll (pairs) { case (x, y) =>
               assert(x == 0.0f || x == -y || x.abs < y.abs)
             }
@@ -767,13 +769,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
                 Double.MinValue
               else d
             if (n > 1.0)
-              shrinks.last should be > 0.0
+              shrinks.head should be > 0.0
             else if (n < -1.0)
-              shrinks.last should be < 0.0
+              shrinks.head should be < 0.0
             if (!n.isWhole) {
-              shrinks.last shouldEqual (if (n > 0.0) n.floor else n.ceil)
+              shrinks.head shouldEqual (if (n > 0.0) n.floor else n.ceil)
             }
-            val pairs: List[(Double, Double)] = shrinks.zip(shrinks.tail)
+            val revShrinks = shrinks.reverse
+            val pairs: List[(Double, Double)] = revShrinks.zip(revShrinks.tail)
             import org.scalatest.Inspectors._
             forAll (pairs) { case (x, y) =>
               assert(x == 0.0 || x == -y || x.abs < y.abs)
@@ -851,6 +854,18 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           cur
         }
       }
+
+      def shouldGrowWithForShrink[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {
+        val roseTree: RoseTree[T] = pair._1
+        roseTree.shrinks(Randomizer.default)._1.map(_.value).reverse.reduce { (last, cur) =>
+          // Duplicates not allowed:
+          last should not equal cur
+          val nLast = nOps.abs(conv(last))
+          val nCur = nOps.abs(conv(cur))
+          nLast should be <= nCur
+          cur
+        }
+      }
     }
 
     describe("for PosInts") {
@@ -892,7 +907,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posIntGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosInt(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosInt(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosZInts") {
@@ -936,7 +951,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZIntGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZInt(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosZInt(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosLongs") {
@@ -978,7 +993,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posLongGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosLong(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosLong(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosZLongs") {
@@ -1022,7 +1037,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZLongGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZLong(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosZLong(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosFloat") {
@@ -1068,7 +1083,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosFloat(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosFloat(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosFiniteFloat") {
