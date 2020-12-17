@@ -641,7 +641,7 @@ object Generator {
             else {
               val half: Byte = (n / 2).toByte
               if (half == 0) Rose(0.toByte) :: acc
-              else shrinkLoop(half, Rose((-half).toByte) :: Rose(half) :: acc)
+              else shrinkLoop(half, NextRoseTree((-half).toByte) :: NextRoseTree(half) :: acc)
             }
           }
           (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
@@ -681,7 +681,7 @@ object Generator {
             else {
               val half: Short = (n / 2).toShort
               if (half == 0) Rose(0.toShort) :: acc
-              else shrinkLoop(half, Rose((-half).toShort) :: Rose(half) :: acc)
+              else shrinkLoop(half, NextRoseTree((-half).toShort) :: NextRoseTree(half) :: acc)
             }
           }
           (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
@@ -718,7 +718,7 @@ object Generator {
           def shrinkLoop(c: Char, acc: List[RoseTree[Char]]): List[RoseTree[Char]] = {
             val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
             if (userFriendlyChars.indexOf(c) >= 0) List.empty
-            else userFriendlyChars.toList.map(ufc => NextRoseTree(ufc))
+            else userFriendlyChars.toList.map(ufc => NextRoseTree(ufc)) // TODO: Inspect this. It is not a loop.
           }
           (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
