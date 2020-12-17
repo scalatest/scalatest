@@ -1555,6 +1555,36 @@ object Generator {
     */
   implicit val posZDoubleGenerator: Generator[PosZDouble] =
     new Generator[PosZDouble] {
+
+      case class NextRoseTree(value: PosZDouble) extends RoseTree[PosZDouble] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosZDouble]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(f: PosZDouble, acc: List[RoseTree[PosZDouble]]): List[RoseTree[PosZDouble]] = {
+            val fv = f.value
+            if (fv == 0.0) acc
+            else if (fv <= 1.0) NextRoseTree(PosZDouble(0.0)) :: acc
+            else if (!fv.isWhole) {
+              val n =
+                if (fv == Double.PositiveInfinity || fv.isNaN)
+                  Double.MaxValue
+                else fv
+              // Nearest whole numbers closer to zero
+              val nearest = PosZDouble.ensuringValid(n.floor)
+              shrinkLoop(nearest, NextRoseTree(nearest) :: acc)
+            }
+            else {
+              val sqrt: Double = math.sqrt(fv)
+              if (sqrt < 1.0) NextRoseTree(PosZDouble(0.0)) :: acc
+              else {
+                val whole = PosZDouble.ensuringValid(sqrt.floor)
+                shrinkLoop(whole, NextRoseTree(whole) :: acc)
+              }
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -1562,49 +1592,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[PosZDouble], rnd: Randomizer): (RoseTree[PosZDouble], List[PosZDouble], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (posZDouble, rnd2) = rnd.nextPosZDouble
-            val (roseTreeOfPosZDouble, rnd3) = shrink(posZDouble, rnd2)
-            (roseTreeOfPosZDouble, Nil, rnd3)
+            (NextRoseTree(posZDouble), Nil, rnd2)
         }
       }
       private val doubleCanonicals: List[PosZDouble] = List(0.0, 1.0, 2.0, 3.0).map(PosZDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosZDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(f: PosZDouble, rnd: Randomizer): (RoseTree[PosZDouble], Randomizer) = {
-        //(shrinkLoop(f, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[PosZDouble] {
-            val value: PosZDouble = f
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosZDouble]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(f: PosZDouble, acc: List[Rose[PosZDouble]]): List[Rose[PosZDouble]] = {
-                val fv = f.value
-                if (fv == 0.0) acc
-                else if (fv <= 1.0) Rose(PosZDouble(0.0)) :: acc
-                else if (!fv.isWhole) {
-                  val n =
-                    if (fv == Double.PositiveInfinity || fv.isNaN)
-                      Double.MaxValue
-                    else fv
-                  // Nearest whole numbers closer to zero
-                  val nearest = PosZDouble.ensuringValid(n.floor)
-                  shrinkLoop(nearest, Rose(nearest) :: acc)
-                }
-                else {
-                  val sqrt: Double = math.sqrt(fv)
-                  if (sqrt < 1.0) Rose(PosZDouble(0.0)) :: acc
-                  else {
-                    val whole = PosZDouble.ensuringValid(sqrt.floor)
-                    shrinkLoop(whole, Rose(whole) :: acc)
-                  }
-                }
-              }
-              (shrinkLoop(f, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: PosZDouble, rnd: Randomizer):  (RoseTree[PosZDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosZDouble]"
     }
 
