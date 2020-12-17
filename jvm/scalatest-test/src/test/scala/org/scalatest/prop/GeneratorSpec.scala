@@ -2020,11 +2020,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             shrinks shouldBe empty
           else {
             if (i > 1)
-              shrinks.last.value should be >= 1
+              shrinks.head.value should be >= 1
             else if (i < -1)
-              shrinks.last.value should be <= 1
+              shrinks.head.value should be <= 1
             import org.scalatest.Inspectors._
-            val pairs: List[(NonZeroInt, NonZeroInt)] = shrinks.zip(shrinks.tail)
+            val revShrinks = shrinks.reverse
+            val pairs: List[(NonZeroInt, NonZeroInt)] = revShrinks.zip(revShrinks.tail)
             forAll (pairs) { case (x, y) =>
               assert(x == -y || x.value.abs == y.value.abs / 2)
             }
