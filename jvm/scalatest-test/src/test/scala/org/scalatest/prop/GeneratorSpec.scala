@@ -1457,7 +1457,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negIntGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegInt(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegInt(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegZInts") {
