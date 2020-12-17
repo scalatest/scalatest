@@ -873,7 +873,7 @@ object Generator {
                 else f
                   // Nearest whole numbers closer to zero
                   val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-                  shrinkLoop(nearest, Rose(nearestNeg) :: Rose(nearest) :: acc)
+                  shrinkLoop(nearest, NextRoseTree(nearestNeg) :: NextRoseTree(nearest) :: acc)
             }
             else {
               val sqrt: Float = math.sqrt(f.abs.toDouble).toFloat
@@ -882,7 +882,7 @@ object Generator {
                 val whole: Float = sqrt.floor
                 val negWhole: Float = math.rint((-whole).toDouble).toFloat
                 val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
-                shrinkLoop(first, Rose(first) :: Rose(second) :: acc)
+                shrinkLoop(first, NextRoseTree(first) :: NextRoseTree(second) :: acc)
                 }
             }
           }
@@ -948,7 +948,7 @@ object Generator {
               // Nearest whole numbers closer to zero
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-                shrinkLoop(nearest, Rose(nearestNeg) :: Rose(nearest) :: acc)
+                shrinkLoop(nearest, NextRoseTree(nearestNeg) :: NextRoseTree(nearest) :: acc)
             }
             else {
               val sqrt: Double = math.sqrt(d.abs)
@@ -958,7 +958,7 @@ object Generator {
                 // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
                 val negWhole: Double = -whole  //math.rint(-whole)
                 val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
-                shrinkLoop(first, Rose(first) :: Rose(second) :: acc)
+                shrinkLoop(first, NextRoseTree(first) :: NextRoseTree(second) :: acc)
               }
             }
           }
@@ -998,7 +998,7 @@ object Generator {
             if (half == 0) acc
             else {
               val posIntHalf = PosInt.ensuringValid(half)
-              shrinkLoop(posIntHalf, Rose(posIntHalf) :: acc)
+              shrinkLoop(posIntHalf, NextRoseTree(posIntHalf) :: acc)
             }
           }
           (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
@@ -1039,7 +1039,7 @@ object Generator {
             else {
               val half: Int = i / 2
               val posIntHalf = PosZInt.ensuringValid(half)
-              shrinkLoop(posIntHalf, Rose(posIntHalf) :: acc)
+              shrinkLoop(posIntHalf, NextRoseTree(posIntHalf) :: acc)
             }
           }
           (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
@@ -1079,7 +1079,7 @@ object Generator {
             if (half == 0) acc
             else {
               val posLongHalf = PosLong.ensuringValid(half)
-              shrinkLoop(posLongHalf, Rose(posLongHalf) :: acc)
+              shrinkLoop(posLongHalf, NextRoseTree(posLongHalf) :: acc)
             }
           }
           (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
@@ -1120,7 +1120,7 @@ object Generator {
             else {
               val half: Long = i / 2
               val posLongHalf = PosZLong.ensuringValid(half)
-              shrinkLoop(posLongHalf, Rose(posLongHalf) :: acc)
+              shrinkLoop(posLongHalf, NextRoseTree(posLongHalf) :: acc)
             }
           }
           (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
@@ -1166,12 +1166,12 @@ object Generator {
                 else fv
               // Nearest whole numbers closer to zero
               val nearest = PosFloat.ensuringValid(n.floor)
-              shrinkLoop(nearest, Rose(nearest) :: acc)
+              shrinkLoop(nearest, NextRoseTree(nearest) :: acc)
             }
             else {
               val sqrt: Float = math.sqrt(fv.toDouble).toFloat
               val whole = PosFloat.ensuringValid(sqrt.floor)
-              shrinkLoop(whole, Rose(whole) :: acc)
+              shrinkLoop(whole, NextRoseTree(whole) :: acc)
             }
           }
           (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
@@ -1213,12 +1213,12 @@ object Generator {
             else if (!fv.isWhole) {
               // Nearest whole numbers closer to zero
               val nearest = PosFiniteFloat.ensuringValid(fv.floor)
-              shrinkLoop(nearest, Rose(nearest) :: acc)
+              shrinkLoop(nearest, NextRoseTree(nearest) :: acc)
             }
             else {
               val sqrt: Float = math.sqrt(fv.toDouble).toFloat
               val whole = PosFiniteFloat.ensuringValid(sqrt.floor)
-              shrinkLoop(whole, Rose(whole) :: acc)
+              shrinkLoop(whole, NextRoseTree(whole) :: acc)
             }
           }
           (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
@@ -1260,7 +1260,7 @@ object Generator {
             else if (!fv.isWhole) {
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (fv > 0.0f) (fv.floor, (-fv).ceil) else (fv.ceil, (-fv).floor)
-              shrinkLoop(FiniteFloat.ensuringValid(nearest), Rose(FiniteFloat.ensuringValid(nearestNeg)) :: Rose(FiniteFloat.ensuringValid(nearest)) :: acc)
+              shrinkLoop(FiniteFloat.ensuringValid(nearest), NextRoseTree(FiniteFloat.ensuringValid(nearestNeg)) :: NextRoseTree(FiniteFloat.ensuringValid(nearest)) :: acc)
             }
             else {
               val sqrt: Float = math.sqrt(fv.abs.toDouble).toFloat
@@ -1269,7 +1269,7 @@ object Generator {
                 val whole: Float = sqrt.floor
                 val negWhole: Float = math.rint((-whole).toDouble).toFloat
                 val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
-                shrinkLoop(FiniteFloat.ensuringValid(first), Rose(FiniteFloat.ensuringValid(first)) :: Rose(FiniteFloat.ensuringValid(second)) :: acc)
+                shrinkLoop(FiniteFloat.ensuringValid(first), NextRoseTree(FiniteFloat.ensuringValid(first)) :: NextRoseTree(FiniteFloat.ensuringValid(second)) :: acc)
               }
             }
           }
