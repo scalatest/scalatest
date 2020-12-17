@@ -1963,7 +1963,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZFiniteDouble(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegZFiniteDouble(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NonZeroInts") {
