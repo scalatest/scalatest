@@ -1633,7 +1633,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegFloat(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegFloat(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegFiniteFloat") {
