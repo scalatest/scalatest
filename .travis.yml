@@ -2,13 +2,13 @@ language: scala
 scala:
   - 2.10.7
   - 2.11.12
-  - 2.12.8
-  - 2.13.0
+  - 2.12.10
+  - 2.13.1
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
-dist: trusty
+dist: xenial
 sudo: true
 
 env:
@@ -21,41 +21,44 @@ env:
     - SCALATEST_GPG_PASSPHASE=tbd
 
   matrix:
-    - MODE=RegularTests1
-    - MODE=RegularTests2
-    - MODE=RegularTests3
-    - MODE=RegularTests4
-    - MODE=RegularTests5
+    - MODE=ScalatestTests
     - MODE=ScalacticTests
-    - MODE=genMustMatchersTests1
-    - MODE=genMustMatchersTests2
-    - MODE=genMustMatchersTests3
-    - MODE=genMustMatchersTests4
-    - MODE=genGenTests
-    - MODE=genTablesTests
-    - MODE=genInspectorsTests
-    - MODE=genInspectorsShorthandsTests1
-    - MODE=genInspectorsShorthandsTests2
-    - MODE=genTheyTests
-    - MODE=genContainTests1
-    - MODE=genContainTests2
-    - MODE=genSortedTests
-    - MODE=genLoneElementTests
-    - MODE=genEmptyTests
-    - MODE=examples
-    - MODE=examplesJS
+    - MODE=ScalacticTestsJS
+    - MODE=ScalatestTestsJS
+#    - MODE=genMustMatchersTests1
+#    - MODE=genMustMatchersTests2
+#    - MODE=genMustMatchersTests3
+#    - MODE=genMustMatchersTests4
+#    - MODE=genGenTests
+#    - MODE=genTablesTests
+#    - MODE=genInspectorsTests
+#    - MODE=genInspectorsShorthandsTests1
+#    - MODE=genInspectorsShorthandsTests2
+#    - MODE=genTheyTests
+#    - MODE=genContainTests1
+#    - MODE=genContainTests2
+#    - MODE=genSortedTests
+#    - MODE=genLoneElementTests
+#    - MODE=genEmptyTests
 
 branches:
   only:
     - 3.0.x
     - 3.1.x
-    - 3.2.x
+    - 3.2.x-new
+
+jobs:
+  include:
+    - scala: 0.21.0-RC1
+      env: MODE=ScalacticDottyTests
+    - scala: 0.21.0-RC1
+      env: MODE=ScalatestDottyTests
 
 script:
   # work around https://github.com/travis-ci/travis-ci/issues/9713
-  - if [[ $JAVA_HOME = *java-6* ]]; then jdk_switcher use openjdk6; fi
+  #- if [[ $JAVA_HOME = *java-6* ]]; then jdk_switcher use openjdk6; fi
   - java -version
-  - ./travis_build.sh $MODE
+  - ./travis_build.sh $MODE 
 
 notifications:
   email:

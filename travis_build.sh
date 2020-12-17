@@ -5,7 +5,7 @@ if [[ "$TRAVIS_JDK_VERSION" == "openjdk6" ]]; then
   SBT_OPTS="-Dsbt.override.build.repos=true -Dsbt.repository.config=./.sbtrepos"
 fi
 
-export SBT_OPTS="$SBT_OPTS -server -Xms2G -Xmx3G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+export SBT_OPTS="$SBT_OPTS -server -Xms2G -Xmx4G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
 export MODE=$1
 
 if [[ $MODE = 'RegularTests1' ]] ; then
@@ -199,6 +199,52 @@ fi
 #
 #  sbt ++$TRAVIS_SCALA_VERSION genSafeStyleTests/test
 #fi
+
+if [[ $MODE = 'ScalatestTests' ]] ; then
+  echo "Doing 'sbt scalatest-test/test'"
+
+  sbt ++$TRAVIS_SCALA_VERSION scalatest-test/test
+fi
+
+if [[ $MODE = 'ScalacticTestsJS' ]] ; then
+  echo "Doing 'sbt scalacticTestJS/test'"
+
+  sudo apt-get install nodejs
+
+  sbt ++$TRAVIS_SCALA_VERSION scalacticTestJS/test
+fi
+
+if [[ $MODE = 'ScalatestTestsJS' ]] ; then
+  echo "Doing 'sbt scalatestTestJS/test'"
+  
+  curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+
+  sudo apt-get install nodejs
+
+  export NODE_OPTIONS="--max_old_space_size=4096"
+
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION scalatestTestJS/test:compile
+
+  export SBT_OPTS="$SBT_OPTS -server -Xms128M -Xmx5G -Xss10M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -XX:NewRatio=8 -XX:MaxPermSize=512M -XX:-UseGCOverheadLimit"
+
+  sbt ++$TRAVIS_SCALA_VERSION scalatestTestJS/test:fastOptJS
+
+  sbt ++$TRAVIS_SCALA_VERSION scalatestTestJS/test
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
+if [[ $MODE = 'ScalacticDottyTests' ]] ; then
+  echo "Doing 'sbt scalacticTestDotty/test'"
+  sbt scalacticTestDotty/test
+fi
+
+if [[ $MODE = 'ScalatestDottyTests' ]] ; then
+  echo "Doing 'sbt scalatestTestDotty/test'"
+  sbt scalatestTestDotty/test
+fi
 
 if [[ $MODE = 'examples' ]] ; then
   echo "Doing 'sbt examples/test'"
