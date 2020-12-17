@@ -2521,6 +2521,14 @@ object Generator {
     */
   implicit val numericCharGenerator: Generator[NumericChar] =
     new Generator[NumericChar] {
+
+      case class NextRoseTree(value: NumericChar) extends RoseTree[NumericChar] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NumericChar]], Randomizer) = {
+          def shrinkLoop(i: NumericChar, acc: List[RoseTree[NumericChar]]): List[RoseTree[NumericChar]] = acc
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NumericChar], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(numericCharEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -2528,12 +2536,13 @@ object Generator {
       def next(szp: SizeParam, edges: List[NumericChar], rnd: Randomizer): (RoseTree[NumericChar], List[NumericChar], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (posZInt, rnd2) = rnd.choosePosZInt(PosZInt.ensuringValid(0), PosZInt.ensuringValid(9))
-            (Rose(NumericChar.ensuringValid((posZInt.value + 48).toChar)), Nil, rnd2)
+            (NextRoseTree(NumericChar.ensuringValid((posZInt.value + 48).toChar)), Nil, rnd2)
         }
       }
+      override def shrink(i: NumericChar, rnd: Randomizer): (RoseTree[NumericChar], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NumericChar]"
     }
 
