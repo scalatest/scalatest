@@ -1179,7 +1179,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZFloat(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosZFloat(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosZFiniteFloat") {
@@ -1227,7 +1227,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZFiniteFloat(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosZFiniteFloat(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosDouble") {
@@ -1273,7 +1273,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosDouble(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosDouble(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosFiniteDouble") {
@@ -1317,7 +1317,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosFiniteDouble(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosFiniteDouble(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosZDouble") {
@@ -1367,7 +1367,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZDouble(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosZDouble(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for PosZFiniteDouble") {
@@ -1415,7 +1415,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZFiniteDouble(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(PosZFiniteDouble(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegInts") {
@@ -1457,7 +1457,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negIntGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegInt(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegInt(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegZInts") {
@@ -1501,7 +1501,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZIntGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZInt(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegZInt(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegLongs") {
@@ -1543,7 +1543,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negLongGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegLong(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegLong(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegZLongs") {
@@ -1587,7 +1587,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZLongGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZLong(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegZLong(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegFloat") {
@@ -1633,7 +1633,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegFloat(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegFloat(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegFiniteFloat") {
@@ -1677,7 +1677,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegFiniteFloat(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegFiniteFloat(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegZFloat") {
@@ -1727,7 +1727,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZFloat(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegZFloat(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegZFiniteFloat") {
@@ -1775,7 +1775,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZFiniteFloat(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegZFiniteFloat(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegDouble") {
@@ -1821,7 +1821,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegDouble(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegDouble(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegFiniteDouble") {
@@ -1865,7 +1865,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegFiniteDouble(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegFiniteDouble(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegZDouble") {
@@ -1915,7 +1915,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZDouble(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegZDouble(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegZFiniteDouble") {
@@ -1963,7 +1963,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZFiniteDouble(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegZFiniteDouble(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NonZeroInts") {
@@ -2020,11 +2020,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             shrinks shouldBe empty
           else {
             if (i > 1)
-              shrinks.last.value should be >= 1
+              shrinks.head.value should be >= 1
             else if (i < -1)
-              shrinks.last.value should be <= 1
+              shrinks.head.value should be <= 1
             import org.scalatest.Inspectors._
-            val pairs: List[(NonZeroInt, NonZeroInt)] = shrinks.zip(shrinks.tail)
+            val revShrinks = shrinks.reverse
+            val pairs: List[(NonZeroInt, NonZeroInt)] = revShrinks.zip(revShrinks.tail)
             forAll (pairs) { case (x, y) =>
               assert(x == -y || x.value.abs == y.value.abs / 2)
             }
@@ -2075,7 +2076,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroLongGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NonZeroLong(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NonZeroLong(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NonZeroFloat") {
@@ -2129,7 +2130,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NonZeroFloat(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NonZeroFloat(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NonZeroFiniteFloat") {
@@ -2179,7 +2180,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NonZeroFiniteFloat(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NonZeroFiniteFloat(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NonZeroDouble") {
@@ -2233,7 +2234,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NonZeroDouble(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NonZeroDouble(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NonZeroFiniteDouble") {
@@ -2283,7 +2284,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NonZeroFiniteDouble(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NonZeroFiniteDouble(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for FiniteFloat") {
@@ -2387,7 +2388,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = finiteDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(FiniteDouble(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(FiniteDouble(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NumericChar") {
