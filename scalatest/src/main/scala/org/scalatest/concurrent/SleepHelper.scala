@@ -15,12 +15,14 @@
  */
 package org.scalatest.concurrent
 
+import scala.concurrent.blocking
+
 private[scalatest] object SleepHelper {
 
   def sleep(millis: Long, nanos: Int): Unit =
-    Thread.sleep(millis, nanos)
+    blocking(Thread.sleep(millis, nanos))
 
   def sleep(millis: Long): Unit =
-    Thread.sleep(millis)
+    blocking(Thread.sleep(millis))
 
 }
