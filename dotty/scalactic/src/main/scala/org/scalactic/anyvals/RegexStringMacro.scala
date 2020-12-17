@@ -46,7 +46,7 @@ object RegexStringMacro {
     import quotes.reflect._
 
     val notValidExceptionMsg: String = {
-      Term.of(value) match {
+      value.asTerm match {
           case Literal(stringConst) =>
             checkIsValid(stringConst.value.toString)._2
           case _ =>

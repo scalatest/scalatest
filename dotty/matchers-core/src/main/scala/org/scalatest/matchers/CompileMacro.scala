@@ -36,7 +36,7 @@ object CompileMacro {
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    Term.of(self).underlyingArgument match {
+    self.asTerm.underlyingArgument match {
 
       case Apply(
              Apply(
@@ -79,7 +79,7 @@ object CompileMacro {
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    Term.of(self).underlyingArgument match {
+    self.asTerm.underlyingArgument match {
 
       case Apply(
              Apply(
@@ -123,7 +123,7 @@ object CompileMacro {
 
     val methodName = shouldOrMust + "Not"
 
-    Term.of(self).underlyingArgument match {
+    self.asTerm.underlyingArgument match {
       case Apply(
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),

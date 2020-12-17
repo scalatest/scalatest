@@ -203,13 +203,13 @@ trait CompileTimeAssertions {
   def ensureValidIntLiteral(value: Expr[Int], notValidMsg: String, notLiteralMsg: String)(isValid: Int => Boolean)(using Quotes): Unit = {
     import quotes.reflect._
 
-    Term.of(value).underlyingArgument match {
+    value.asTerm.underlyingArgument match {
       case Literal(intConst) =>
         val literalValue = intConst.value.toString.toInt
         if (!isValid(literalValue))
-          report.error(notValidMsg, Term.of(value).pos)
+          report.error(notValidMsg, value.asTerm.pos)
       case _ =>
-        report.error(notLiteralMsg, Term.of(value).pos)
+        report.error(notLiteralMsg, value.asTerm.pos)
     }
   }
 
@@ -238,13 +238,13 @@ trait CompileTimeAssertions {
   def ensureValidLongLiteral(value: Expr[Long], notValidMsg: String, notLiteralMsg: String)(isValid: Long => Boolean)(using Quotes): Unit = {
     import quotes.reflect._
 
-    Term.of(value).underlyingArgument match {
+    value.asTerm.underlyingArgument match {
       case Literal(longConst) =>
         val literalValue = longConst.value.toString.toLong
         if (!isValid(literalValue))
-          report.error(notValidMsg, Term.of(value).pos)
+          report.error(notValidMsg, value.asTerm.pos)
       case _ =>
-        report.error(notLiteralMsg, Term.of(value).pos)
+        report.error(notLiteralMsg, value.asTerm.pos)
     }
   }
 
@@ -273,13 +273,13 @@ trait CompileTimeAssertions {
   def ensureValidFloatLiteral(value: Expr[Float], notValidMsg: String, notLiteralMsg: String)(isValid: Float => Boolean)(using Quotes): Unit = {
     import quotes.reflect._
 
-    Term.of(value).underlyingArgument match {
+    value.asTerm.underlyingArgument match {
       case Literal(floatConst) =>
         val literalValue = floatConst.value.toString.toFloat
         if (!isValid(literalValue))
-          report.error(notValidMsg, Term.of(value).pos)
+          report.error(notValidMsg, value.asTerm.pos)
       case _ =>
-        report.error(notLiteralMsg, Term.of(value).pos)
+        report.error(notLiteralMsg, value.asTerm.pos)
     }
   }
 
@@ -308,13 +308,13 @@ trait CompileTimeAssertions {
   def ensureValidDoubleLiteral(value: Expr[Double], notValidMsg: String, notLiteralMsg: String)(isValid: Double => Boolean)(using Quotes): Unit = {
     import quotes.reflect._
 
-    Term.of(value).underlyingArgument match {
+    value.asTerm.underlyingArgument match {
       case Literal(doubleConst) =>
         val literalValue = doubleConst.value.toString.toDouble
         if (!isValid(literalValue))
-          report.error(notValidMsg, Term.of(value).pos)
+          report.error(notValidMsg, value.asTerm.pos)
       case _ =>
-        report.error(notLiteralMsg, Term.of(value).pos)
+        report.error(notLiteralMsg, value.asTerm.pos)
     }
   }
 
@@ -343,13 +343,13 @@ trait CompileTimeAssertions {
   def ensureValidStringLiteral(value: Expr[String], notValidMsg: String, notLiteralMsg: String)(isValid: String => Boolean)(using Quotes): Unit = {
     import quotes.reflect._
 
-    Term.of(value).underlyingArgument match {
+    value.asTerm.underlyingArgument match {
       case Literal(stringConst) =>
         val literalValue = stringConst.value.toString
         if (!isValid(literalValue))
-          report.error(notValidMsg, Term.of(value).pos)
+          report.error(notValidMsg, value.asTerm.pos)
       case _ =>
-        report.error(notLiteralMsg, Term.of(value).pos)
+        report.error(notLiteralMsg, value.asTerm.pos)
     }
   }
 
@@ -378,13 +378,13 @@ trait CompileTimeAssertions {
   def ensureValidCharLiteral(value: Expr[Char], notValidMsg: String, notLiteralMsg: String)(isValid: Char => Boolean)(using Quotes): Unit = {
     import quotes.reflect._
 
-    Term.of(value).underlyingArgument match {
+    value.asTerm.underlyingArgument match {
       case Literal(charConst) =>
         val literalValue = charConst.value.toString.head
         if (!isValid(literalValue))
-          report.error(notValidMsg, Term.of(value).pos)
+          report.error(notValidMsg, value.asTerm.pos)
       case _ =>
-        report.error(notLiteralMsg, Term.of(value).pos)
+        report.error(notLiteralMsg, value.asTerm.pos)
     }
   }
 }
