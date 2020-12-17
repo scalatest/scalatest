@@ -2335,6 +2335,36 @@ object Generator {
     */
   implicit val negZFloatGenerator: Generator[NegZFloat] =
     new Generator[NegZFloat] {
+
+      case class NextRoseTree(value: NegZFloat) extends RoseTree[NegZFloat] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegZFloat]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(f: NegZFloat, acc: List[RoseTree[NegZFloat]]): List[RoseTree[NegZFloat]] = {
+            val fv = f.value
+            if (fv == 0.0f) acc
+            else if (fv >= -1.0f) NextRoseTree(NegZFloat(0.0f)) :: acc
+            else if (!fv.isWhole) {
+              val n =
+                if (fv == Float.NegativeInfinity || fv.isNaN)
+                  Float.MinValue
+                else fv
+              // Nearest whole numbers closer to zero
+              val nearest = NegZFloat.ensuringValid(n.ceil)
+              shrinkLoop(nearest, NextRoseTree(nearest) :: acc)
+            }
+            else {
+              val sqrt: Float = -math.sqrt(fv.abs.toDouble).toFloat
+              if (sqrt > -1.0f) NextRoseTree(NegZFloat(0.0f)) :: acc
+              else {
+                val whole = NegZFloat.ensuringValid(sqrt.ceil)
+                shrinkLoop(whole, NextRoseTree(whole) :: acc)
+              }
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -2342,49 +2372,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[NegZFloat], rnd: Randomizer): (RoseTree[NegZFloat], List[NegZFloat], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (negZFloat, rnd2) = rnd.nextNegZFloat
-            val (roseTreeOfNegZFloat, rnd3) = shrink(negZFloat, rnd2)
-            (roseTreeOfNegZFloat, Nil, rnd3)
+            (NextRoseTree(negZFloat), Nil, rnd2)
         }
       }
       private val floatCanonicals: List[NegZFloat] = List(0.0f, -1.0f, -2.0f, -3.0f).map(NegZFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegZFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(f: NegZFloat, rnd: Randomizer): (RoseTree[NegZFloat], Randomizer) = {
-        //(shrinkLoop(f, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[NegZFloat] {
-            val value: NegZFloat = f
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegZFloat]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(f: NegZFloat, acc: List[Rose[NegZFloat]]): List[Rose[NegZFloat]] = {
-                val fv = f.value
-                if (fv == 0.0f) acc
-                else if (fv >= -1.0f) Rose(NegZFloat(0.0f)) :: acc
-                else if (!fv.isWhole) {
-                  val n =
-                    if (fv == Float.NegativeInfinity || fv.isNaN)
-                      Float.MinValue
-                    else fv
-                  // Nearest whole numbers closer to zero
-                  val nearest = NegZFloat.ensuringValid(n.ceil)
-                  shrinkLoop(nearest, Rose(nearest) :: acc)
-                }
-                else {
-                  val sqrt: Float = -math.sqrt(fv.abs.toDouble).toFloat
-                  if (sqrt > -1.0f) Rose(NegZFloat(0.0f)) :: acc
-                  else {
-                    val whole = NegZFloat.ensuringValid(sqrt.ceil)
-                    shrinkLoop(whole, Rose(whole) :: acc)
-                  }
-                }
-              }
-              (shrinkLoop(f, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: NegZFloat, rnd: Randomizer):  (RoseTree[NegZFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegZFloat]"
     }
 
