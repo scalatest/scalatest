@@ -2103,6 +2103,29 @@ object Generator {
     */
   implicit val negFiniteFloatGenerator: Generator[NegFiniteFloat] =
     new Generator[NegFiniteFloat] {
+
+      case class NextRoseTree(value: NegFiniteFloat) extends RoseTree[NegFiniteFloat] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegFiniteFloat]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(f: NegFiniteFloat, acc: List[RoseTree[NegFiniteFloat]]): List[RoseTree[NegFiniteFloat]] = {
+            val fv = f.value
+            if (fv == -1.0f) acc
+            else if (fv > -1.0f) NextRoseTree(NegFiniteFloat(-1.0f)) :: acc
+            else if (!fv.isWhole) {
+              // Nearest whole numbers closer to zero
+              val nearest = NegFiniteFloat.ensuringValid(fv.ceil)
+              shrinkLoop(nearest, NextRoseTree(nearest) :: acc)
+            }
+            else {
+              val sqrt: Float = -(math.sqrt(fv.abs.toDouble)).toFloat
+              val whole = NegFiniteFloat.ensuringValid(sqrt.ceil)
+              shrinkLoop(whole, NextRoseTree(whole) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegFiniteFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negFiniteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -2110,42 +2133,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[NegFiniteFloat], rnd: Randomizer): (RoseTree[NegFiniteFloat], List[NegFiniteFloat], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (negFiniteFloat, rnd2) = rnd.nextNegFiniteFloat
-            val (roseTreeOfNegFiniteFloat, rnd3) = shrink(negFiniteFloat, rnd2)
-            (roseTreeOfNegFiniteFloat, Nil, rnd3)
+            (NextRoseTree(negFiniteFloat), Nil, rnd2)
         }
       }
       private val negFloatCanonicals: List[NegFiniteFloat] = List(-1.0f, -2.0f, -3.0f).map(NegFiniteFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegFiniteFloat], Randomizer) = (negFloatCanonicals.iterator, rnd)
-      override def shrink(f: NegFiniteFloat, rnd: Randomizer): (RoseTree[NegFiniteFloat], Randomizer) = {
-        //(shrinkLoop(f, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[NegFiniteFloat] {
-            val value: NegFiniteFloat = f
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegFiniteFloat]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(f: NegFiniteFloat, acc: List[Rose[NegFiniteFloat]]): List[Rose[NegFiniteFloat]] = {
-                val fv = f.value
-                if (fv == -1.0f) acc
-                else if (fv > -1.0f) Rose(NegFiniteFloat(-1.0f)) :: acc
-                else if (!fv.isWhole) {
-                  // Nearest whole numbers closer to zero
-                  val nearest = NegFiniteFloat.ensuringValid(fv.ceil)
-                  shrinkLoop(nearest, Rose(nearest) :: acc)
-                }
-                else {
-                  val sqrt: Float = -(math.sqrt(fv.abs.toDouble)).toFloat
-                  val whole = NegFiniteFloat.ensuringValid(sqrt.ceil)
-                  shrinkLoop(whole, Rose(whole) :: acc)
-                }
-              }
-              (shrinkLoop(f, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: NegFiniteFloat, rnd: Randomizer):  (RoseTree[NegFiniteFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegFiniteFloat]"
     }
 
