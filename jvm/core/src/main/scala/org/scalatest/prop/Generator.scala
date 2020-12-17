@@ -1717,6 +1717,34 @@ object Generator {
     */
   implicit val nonZeroFiniteDoubleGenerator: Generator[NonZeroFiniteDouble] =
     new Generator[NonZeroFiniteDouble] {
+
+      case class NextRoseTree(value: NonZeroFiniteDouble) extends RoseTree[NonZeroFiniteDouble] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NonZeroFiniteDouble]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(raw: NonZeroFiniteDouble, acc: List[RoseTree[NonZeroFiniteDouble]]): List[RoseTree[NonZeroFiniteDouble]] = {
+            val d = raw.value
+            if (d <= 1.0 && d >= -1.0) acc
+            else if (!d.isWhole) {
+              // Nearest whole numbers closer to zero
+              val (nearest, nearestNeg) = if (d > 0.0) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
+              shrinkLoop(NonZeroFiniteDouble.ensuringValid(nearest), NextRoseTree(NonZeroFiniteDouble.ensuringValid(nearestNeg)) :: NextRoseTree(NonZeroFiniteDouble.ensuringValid(nearest)) :: acc)
+            }
+            else {
+              val sqrt: Double = math.sqrt(d.abs)
+              if (sqrt < 1.0) acc
+              else {
+                val whole: NonZeroFiniteDouble = NonZeroFiniteDouble.ensuringValid(sqrt.floor)
+                // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
+                val negWhole: NonZeroFiniteDouble = -whole  //math.rint(-whole)
+                val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
+                shrinkLoop(first, NextRoseTree(first) :: NextRoseTree(second) :: acc)
+              }
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -1724,47 +1752,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[NonZeroFiniteDouble], rnd: Randomizer): (RoseTree[NonZeroFiniteDouble], List[NonZeroFiniteDouble], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (nonZeroFiniteDouble, rnd2) = rnd.nextNonZeroFiniteDouble
-            val (roseTreeOfNonZeroFiniteDouble, rnd3) = shrink(nonZeroFiniteDouble, rnd2)
-            (roseTreeOfNonZeroFiniteDouble, Nil, rnd3)
+            (NextRoseTree(nonZeroFiniteDouble), Nil, rnd2)
         }
       }
       private val doubleCanonicals: List[NonZeroFiniteDouble] = List(1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(NonZeroFiniteDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NonZeroFiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(d: NonZeroFiniteDouble, rnd: Randomizer): (RoseTree[NonZeroFiniteDouble], Randomizer) = {
-        //(shrinkLoop(d, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[NonZeroFiniteDouble] {
-            val value: NonZeroFiniteDouble = d
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NonZeroFiniteDouble]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(raw: NonZeroFiniteDouble, acc: List[Rose[NonZeroFiniteDouble]]): List[Rose[NonZeroFiniteDouble]] = {
-                val d = raw.value
-                if (d <= 1.0 && d >= -1.0) acc
-                else if (!d.isWhole) {
-                  // Nearest whole numbers closer to zero
-                  val (nearest, nearestNeg) = if (d > 0.0) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
-                  shrinkLoop(NonZeroFiniteDouble.ensuringValid(nearest), Rose(NonZeroFiniteDouble.ensuringValid(nearestNeg)) :: Rose(NonZeroFiniteDouble.ensuringValid(nearest)) :: acc)
-                }
-                else {
-                  val sqrt: Double = math.sqrt(d.abs)
-                  if (sqrt < 1.0) acc
-                  else {
-                    val whole: NonZeroFiniteDouble = NonZeroFiniteDouble.ensuringValid(sqrt.floor)
-                    // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
-                    val negWhole: NonZeroFiniteDouble = -whole  //math.rint(-whole)
-                    val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
-                    shrinkLoop(first, Rose(first) :: Rose(second) :: acc)
-                  }
-                }
-              }
-              (shrinkLoop(d, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: NonZeroFiniteDouble, rnd: Randomizer):  (RoseTree[NonZeroFiniteDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NonZeroFiniteDouble]"
     }
 
