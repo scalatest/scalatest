@@ -1915,7 +1915,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZDouble(-10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NegZDouble(-10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NegZFiniteDouble") {

@@ -2230,6 +2230,36 @@ object Generator {
     */
   implicit val negZDoubleGenerator: Generator[NegZDouble] =
     new Generator[NegZDouble] {
+
+      case class NextRoseTree(value: NegZDouble) extends RoseTree[NegZDouble] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegZDouble]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(f: NegZDouble, acc: List[RoseTree[NegZDouble]]): List[RoseTree[NegZDouble]] = {
+            val fv = f.value
+            if (fv == 0.0) acc
+            else if (fv >= -1.0) NextRoseTree(NegZDouble(0.0)) :: acc
+            else if (!fv.isWhole) {
+              val n =
+                if (fv == Double.NegativeInfinity || fv.isNaN)
+                  Double.MinValue
+                else fv
+              // Nearest whole numbers closer to zero
+              val nearest = NegZDouble.ensuringValid(n.ceil)
+              shrinkLoop(nearest, NextRoseTree(nearest) :: acc)
+            }
+            else {
+              val sqrt: Double = -math.sqrt(fv.abs)
+              if (sqrt > -1.0) NextRoseTree(NegZDouble(0.0)) :: acc
+              else {
+                val whole = NegZDouble.ensuringValid(sqrt.ceil)
+                shrinkLoop(whole, NextRoseTree(whole) :: acc)
+              }
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegZDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -2237,49 +2267,16 @@ object Generator {
       def next(szp: SizeParam, edges: List[NegZDouble], rnd: Randomizer): (RoseTree[NegZDouble], List[NegZDouble], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (negZDouble, rnd2) = rnd.nextNegZDouble
             val (roseTreeOfNegZDouble, rnd3) = shrink(negZDouble, rnd2)
-            (roseTreeOfNegZDouble, Nil, rnd3)
+            (NextRoseTree(negZDouble), Nil, rnd3)
         }
       }
       private val doubleCanonicals: List[NegZDouble] = List(0.0, -1.0, -2.0, -3.0).map(NegZDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegZDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(f: NegZDouble, rnd: Randomizer): (RoseTree[NegZDouble], Randomizer) = {
-        //(shrinkLoop(f, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[NegZDouble] {
-            val value: NegZDouble = f
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegZDouble]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(f: NegZDouble, acc: List[Rose[NegZDouble]]): List[Rose[NegZDouble]] = {
-                val fv = f.value
-                if (fv == 0.0) acc
-                else if (fv >= -1.0) Rose(NegZDouble(0.0)) :: acc
-                else if (!fv.isWhole) {
-                  val n =
-                    if (fv == Double.NegativeInfinity || fv.isNaN)
-                      Double.MinValue
-                    else fv
-                  // Nearest whole numbers closer to zero
-                  val nearest = NegZDouble.ensuringValid(n.ceil)
-                  shrinkLoop(nearest, Rose(nearest) :: acc)
-                }
-                else {
-                  val sqrt: Double = -math.sqrt(fv.abs)
-                  if (sqrt > -1.0) Rose(NegZDouble(0.0)) :: acc
-                  else {
-                    val whole = NegZDouble.ensuringValid(sqrt.ceil)
-                    shrinkLoop(whole, Rose(whole) :: acc)
-                  }
-                }
-              }
-              (shrinkLoop(f, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: NegZDouble, rnd: Randomizer):  (RoseTree[NegZDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegZDouble]"
     }
 
