@@ -2190,6 +2190,22 @@ object Generator {
     */
   implicit val negLongGenerator: Generator[NegLong] =
     new Generator[NegLong] {
+
+      case class NextRoseTree(value: NegLong) extends RoseTree[NegLong] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegLong]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(i: NegLong, acc: List[RoseTree[NegLong]]): List[RoseTree[NegLong]] = {
+            val half: Long = i / 2
+            if (half == 0) acc
+            else {
+              val negLongHalf = NegLong.ensuringValid(half)
+              shrinkLoop(negLongHalf, NextRoseTree(negLongHalf) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -2197,35 +2213,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[NegLong], rnd: Randomizer): (RoseTree[NegLong], List[NegLong], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (negLong, rnd2) = rnd.nextNegLong
-            val (roseTreeOfNegLong, rnd3) = shrink(negLong, rnd2)
-            (roseTreeOfNegLong, Nil, rnd3)
+            (NextRoseTree(negLong), Nil, rnd2)
         }
       }
       private val negLongCanonicals = List(-1, -2, -3).map(NegLong.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegLong], Randomizer) = (negLongCanonicals.iterator, rnd)
-      override def shrink(i: NegLong, rnd: Randomizer): (RoseTree[NegLong], Randomizer) = {
-        //(shrinkLoop(i, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[NegLong] {
-            val value: NegLong = i
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegLong]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(i: NegLong, acc: List[Rose[NegLong]]): List[Rose[NegLong]] = {
-                val half: Long = i / 2
-                if (half == 0) acc
-                else {
-                  val negLongHalf = NegLong.ensuringValid(half)
-                  shrinkLoop(negLongHalf, Rose(negLongHalf) :: acc)
-                }
-              }
-              (shrinkLoop(i, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: NegLong, rnd: Randomizer):  (RoseTree[NegLong], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegLong]"
     }
 
