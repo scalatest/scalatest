@@ -125,7 +125,7 @@ import scala.collection.immutable.SortedMap
   * values, to see if those also fail. So for example, if a String of length 15 causes a failure, its
   * Generator could try Strings of length 3, and then 1, and then 0, to see if those also cause failure.
   *
-  * You to ''not'' have to implement the [[Generator.shrink]] method, but it is helpful to do so when it makes sense;
+  * You do ''not'' have to implement the [[Generator.shrink]] method, but it is helpful to do so when it makes sense;
   * the test system will use that to produce smaller, easier-to-debug examples when something fails.
   *
   * One important rule: the values returned from `shrink` must always be smaller than -- not equal to --
