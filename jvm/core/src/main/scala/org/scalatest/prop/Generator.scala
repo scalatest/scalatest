@@ -1186,7 +1186,7 @@ object Generator {
         edges match {
           case head :: tail =>
             (NextRoseTree(head), tail, rnd)
-          case _ =>
+          case Nil =>
             val (posFloat, rnd2) = rnd.nextPosFloat
             (NextRoseTree(posFloat), Nil, rnd2)
         }
@@ -1233,7 +1233,7 @@ object Generator {
         edges match {
           case head :: tail =>
             (NextRoseTree(head), tail, rnd)
-          case _ =>
+          case Nil =>
             val (posFiniteFloat, rnd2) = rnd.nextPosFiniteFloat
             (NextRoseTree(posFiniteFloat), Nil, rnd2)
         }
@@ -1285,7 +1285,7 @@ object Generator {
         edges match {
           case head :: tail =>
             (NextRoseTree(head), tail, rnd)
-          case _ =>
+          case Nil =>
             val (finiteFloat, rnd2) = rnd.nextFiniteFloat
             (NextRoseTree(finiteFloat), Nil, rnd2)
         }
@@ -1337,7 +1337,7 @@ object Generator {
         edges match {
           case head :: tail =>
             (NextRoseTree(head), tail, rnd)
-          case _ =>
+          case Nil =>
             val (finiteDouble, rnd2) = rnd.nextFiniteDouble
             (NextRoseTree(finiteDouble), Nil, rnd2)
         }
@@ -1391,7 +1391,7 @@ object Generator {
         edges match {
           case head :: tail =>
             (NextRoseTree(head), tail, rnd)
-          case _ =>
+          case Nil =>
             val (posZFloat, rnd2) = rnd.nextPosZFloat
             (NextRoseTree(posZFloat), Nil, rnd2)
         }
@@ -1441,7 +1441,7 @@ object Generator {
         edges match {
           case head :: tail =>
             (NextRoseTree(head), tail, rnd)
-          case _ =>
+          case Nil =>
             val (posZFiniteFloat, rnd2) = rnd.nextPosZFiniteFloat
             (NextRoseTree(posZFiniteFloat), Nil, rnd2)
         }
@@ -1492,7 +1492,7 @@ object Generator {
         edges match {
           case head :: tail =>
             (NextRoseTree(head), tail, rnd)
-          case _ =>
+          case Nil =>
             val (posDouble, rnd2) = rnd.nextPosDouble
             (NextRoseTree(posDouble), Nil, rnd2)
         }
@@ -1539,7 +1539,7 @@ object Generator {
         edges match {
           case head :: tail =>
             (NextRoseTree(head), tail, rnd)
-          case _ =>
+          case Nil =>
             val (posFiniteDouble, rnd2) = rnd.nextPosFiniteDouble
             (NextRoseTree(posFiniteDouble), Nil, rnd2)
         }
