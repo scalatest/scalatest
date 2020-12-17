@@ -2233,7 +2233,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NonZeroDouble(10000), rnd).shouldGrowWith(_.value)
+        gen.shrink(NonZeroDouble(10000), rnd).shouldGrowWithForShrink(_.value)
       }
     }
     describe("for NonZeroFiniteDouble") {
