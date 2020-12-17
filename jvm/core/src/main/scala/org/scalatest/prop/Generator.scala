@@ -1353,6 +1353,36 @@ object Generator {
     */
   implicit val posZFloatGenerator: Generator[PosZFloat] =
     new Generator[PosZFloat] {
+
+      case class NextRoseTree(value: PosZFloat) extends RoseTree[PosZFloat] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosZFloat]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(f: PosZFloat, acc: List[RoseTree[PosZFloat]]): List[RoseTree[PosZFloat]] = {
+            val fv = f.value
+            if (fv == 0.0f) acc
+            else if (fv <= 1.0f) NextRoseTree(PosZFloat(0.0f)) :: acc
+            else if (!fv.isWhole) {
+              val n =
+                if (fv == Float.PositiveInfinity || fv.isNaN)
+                  Float.MaxValue
+                else fv
+              // Nearest whole numbers closer to zero
+              val nearest = PosZFloat.ensuringValid(n.floor)
+              shrinkLoop(nearest, NextRoseTree(nearest) :: acc)
+            }
+            else {
+              val sqrt: Float = math.sqrt(fv.toDouble).toFloat
+              if (sqrt < 1.0f) NextRoseTree(PosZFloat(0.0f)) :: acc
+              else {
+                val whole = PosZFloat.ensuringValid(sqrt.floor)
+                shrinkLoop(whole, NextRoseTree(whole) :: acc)
+              }
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[PosZFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
@@ -1360,49 +1390,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[PosZFloat], rnd: Randomizer): (RoseTree[PosZFloat], List[PosZFloat], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
+            (NextRoseTree(head), tail, rnd)
           case _ =>
             val (posZFloat, rnd2) = rnd.nextPosZFloat
-            val (roseTreeOfPosZFloat, rnd3) = shrink(posZFloat, rnd2)
-            (roseTreeOfPosZFloat, Nil, rnd3)
+            (NextRoseTree(posZFloat), Nil, rnd2)
         }
       }
       private val floatCanonicals: List[PosZFloat] = List(0.0f, 1.0f, 2.0f, 3.0f).map(PosZFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosZFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(f: PosZFloat, rnd: Randomizer): (RoseTree[PosZFloat], Randomizer) = {
-        //(shrinkLoop(f, Nil).iterator, rnd)
-        val rootRoseTree =
-          new RoseTree[PosZFloat] {
-            val value: PosZFloat = f
-            def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosZFloat]], Randomizer) = {
-              @tailrec
-              def shrinkLoop(f: PosZFloat, acc: List[Rose[PosZFloat]]): List[Rose[PosZFloat]] = {
-                val fv = f.value
-                if (fv == 0.0f) acc
-                else if (fv <= 1.0f) Rose(PosZFloat(0.0f)) :: acc
-                else if (!fv.isWhole) {
-                  val n =
-                    if (fv == Float.PositiveInfinity || fv.isNaN)
-                      Float.MaxValue
-                    else fv
-                  // Nearest whole numbers closer to zero
-                  val nearest = PosZFloat.ensuringValid(n.floor)
-                  shrinkLoop(nearest, Rose(nearest) :: acc)
-                }
-                else {
-                  val sqrt: Float = math.sqrt(fv.toDouble).toFloat
-                  if (sqrt < 1.0f) Rose(PosZFloat(0.0f)) :: acc
-                  else {
-                    val whole = PosZFloat.ensuringValid(sqrt.floor)
-                    shrinkLoop(whole, Rose(whole) :: acc)
-                  }
-                }
-              }
-              (shrinkLoop(f, Nil), rndPassedToShrinks)
-            }
-          }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(i: PosZFloat, rnd: Randomizer):  (RoseTree[PosZFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosZFloat]"
     }
 
