@@ -3246,7 +3246,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val intCanonicals = intCanonicalsIt.toList
         forAll { (xs: SortedSet[Int]) =>
           val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
-          val shrinks: List[SortedSet[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[SortedSet[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
