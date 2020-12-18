@@ -3787,6 +3787,24 @@ object Generator {
     */
   implicit def orGenerator[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] =
     new Generator[G Or B] {
+
+      case class NextRoseTree(value: G Or B) extends RoseTree[G Or B] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[G Or B]], Randomizer) = {
+          value match {
+            case Good(g) => {
+              val (gShrink, nextRnd) = genOfG.shrink(g, rndPassedToShrinks)
+              val (gShrinkShrink, nextNextRnd) = gShrink.shrinks(nextRnd)
+              (gShrinkShrink.map(rt => rt.map(Good(_))), nextNextRnd)
+            }
+            case Bad(b) => {
+              val (bShrink, nextRnd) = genOfB.shrink(b, rndPassedToShrinks)
+              val (bShrinkShrink, nextNextRnd) = bShrink.shrinks(nextRnd)
+              (bShrinkShrink.map(rt => rt.map(Bad(_))), nextNextRnd)
+            }
+          }
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[G Or B], Randomizer) = {
         val (edgesOfG, nextRnd) = genOfG.initEdges(maxLength, rnd)
         val (edgesOfB, nextNextRnd) = genOfB.initEdges(maxLength, nextRnd)
@@ -3817,7 +3835,7 @@ object Generator {
         edges match {
           case head :: tail =>
             (Rose(head), tail, rnd)
-          case _ =>
+          case Nil =>
             val (nextInt, nextRnd) = rnd.nextInt
             if (nextInt % 4 == 0) {
               val (nextRoseTreeOfB, _, nextRnd) = genOfB.next(szp, Nil, rnd)
@@ -3831,18 +3849,7 @@ object Generator {
       }
 
       // Note: I may not need this one, because I mapped the underlying RoseTree in next
-      override def shrink(value: Or[G, B], rnd: Randomizer): (RoseTree[Or[G, B]], Randomizer) = {
-        value match {
-          case Good(g) => {
-            val (gShrink, nextRnd) = genOfG.shrink(g, rnd)
-            (gShrink.map(Good(_)), nextRnd)
-          }
-          case Bad(b) => {
-            val (bShrink, nextRnd) = genOfB.shrink(b, rnd)
-            (bShrink.map(Bad(_)), nextRnd)
-          }
-        }
-      }
+      override def shrink(value: Or[G, B], rnd: Randomizer): (RoseTree[Or[G, B]], Randomizer) = (NextRoseTree(value), rnd)
     }
 
   // Note that this is identical to orGenerator *except* that the sides are reversed:
