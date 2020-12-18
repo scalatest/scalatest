@@ -55,7 +55,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         forAll (lists[Int].havingLengthsBetween(0, 78)) { (xs: List[Int]) =>
           val generator = lists[Int]
           val (shrinkRt, _) = generator.shrink(xs, Randomizer.default)
-          val shrinks: List[List[Int]] = shrinkRt.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[List[Int]] = shrinkRt.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
@@ -187,7 +187,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         forAll (lists[Int].havingLengthsBetween(5, 78)) { (xs: List[Int]) =>
           val generator = lists[Int]
           val (shrinkIt, _) = generator.shrink(xs, Randomizer.default)
-          val shrinks: List[List[Int]] = shrinkIt.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[List[Int]] = shrinkIt.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
