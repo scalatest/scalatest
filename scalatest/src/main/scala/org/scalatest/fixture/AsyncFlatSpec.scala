@@ -144,7 +144,7 @@ package org.scalatest.fixture
  * an [[org.scalatest.Failed org.scalatest.Failed]] wrapping the exception describing
  * the failure. To ensure clean up happens even if a test fails, you should invoke the test function and do the cleanup using
  * <code>complete</code>-<code>lastly</code>, as shown in the previous example. The <code>complete</code>-<code>lastly</code> syntax, defined in <code>CompleteLastly</code>, which is extended by <code>AsyncTestSuite</code>, ensures
- * the second, cleanup block of code is executed, whether the the first block throws an exception or returns a future. If it returns a
+ * the second, cleanup block of code is executed, whether the first block throws an exception or returns a future. If it returns a
  * future, the cleanup will be executed when the future completes.
  * </p>
  *
