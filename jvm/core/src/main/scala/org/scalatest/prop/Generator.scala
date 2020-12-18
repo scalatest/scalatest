@@ -2556,66 +2556,70 @@ object Generator {
   implicit val stringGenerator: Generator[String] =
     new Generator[String] {
       private val stringEdges = List("")
+
+      case class NextRoseTree(value: String) extends RoseTree[String] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[String]], Randomizer) = {
+          val s = value
+          val rootRoseTree =
+            if (value.isEmpty) Rose(value)
+            else
+              new RoseTree[String] {
+                val value: String = s
+
+                def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[String]], Randomizer) = {
+
+                  val lowerAlphaChars = "abcdefghikjlmnopqrstuvwxyz"
+                  val upperAlphaChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                  val numericChars = "0123456789"
+                  val (lowerCharIndex, rnd1) = rndPassedToShrinks.chooseInt(0, lowerAlphaChars.length - 1)
+                  val (upperCharIndex, rnd2) = rnd1.chooseInt(0, upperAlphaChars.length - 1)
+                  val (numericCharIndex, rnd3) = rnd1.chooseInt(0, numericChars.length - 1)
+                  val lowerChar = lowerAlphaChars(lowerCharIndex)
+                  val upperChar = upperAlphaChars(upperCharIndex)
+                  val numericChar = numericChars(numericCharIndex)
+                  val candidateChars: List[Char] = List(lowerChar, upperChar, numericChar) ++ s.distinct.toList
+                  val candidateStrings: List[Rose[String]] = candidateChars.map(c => Rose(c.toString))
+
+                  val lastBatch = {
+                    val it = {
+                      new Iterator[String] {
+                        private var nextString = s.take(2)
+                        def hasNext: Boolean = nextString.length < s.length
+                        def next(): String = {
+                          val result = nextString
+                          nextString = s.take(result.length * 2)
+                          result
+                        }
+                      }
+                    }
+                    it.toList.map(s => Rose(s))
+                  }
+
+                  (List(Rose("")) ++ candidateStrings ++ lastBatch, rnd3)
+                }
+              }
+          rootRoseTree.shrinks(rndPassedToShrinks)    
+          //(rootRoseTree, rnd)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[String], Randomizer) = {
         (stringEdges.take(maxLength), rnd)
       }
       def next(szp: SizeParam, edges: List[String], rnd: Randomizer): (RoseTree[String], List[String], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
-          case _ =>
+            (NextRoseTree(head), tail, rnd)
+          case Nil =>
             val (s, rnd2) = rnd.nextString(szp.size)
-            val (roseTreeOfString, rnd3) = shrink(s, rnd2)
-            (roseTreeOfString, Nil, rnd3)
+            (NextRoseTree(s), Nil, rnd2)
         }
       }
       override def canonicals(rnd: Randomizer): (Iterator[String], Randomizer) = {
         val (canonicalsOfChar, rnd1) = charGenerator.canonicals(rnd)
         (Iterator("") ++ canonicalsOfChar.map(t => s"$t"), rnd1)
       }
-      override def shrink(s: String, rnd: Randomizer): (RoseTree[String], Randomizer) = {
-
-        val rootRoseTree =
-          if (s.isEmpty) Rose(s)
-          else
-            new RoseTree[String] {
-              val value: String = s
-
-              def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[String]], Randomizer) = {
-
-                val lowerAlphaChars = "abcdefghikjlmnopqrstuvwxyz"
-                val upperAlphaChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                val numericChars = "0123456789"
-                val (lowerCharIndex, rnd1) = rndPassedToShrinks.chooseInt(0, lowerAlphaChars.length - 1)
-                val (upperCharIndex, rnd2) = rnd1.chooseInt(0, upperAlphaChars.length - 1)
-                val (numericCharIndex, rnd3) = rnd1.chooseInt(0, numericChars.length - 1)
-                val lowerChar = lowerAlphaChars(lowerCharIndex)
-                val upperChar = upperAlphaChars(upperCharIndex)
-                val numericChar = numericChars(numericCharIndex)
-                val candidateChars: List[Char] = List(lowerChar, upperChar, numericChar) ++ s.distinct.toList
-                val candidateStrings: List[Rose[String]] = candidateChars.map(c => Rose(c.toString))
-
-                val lastBatch = {
-                  val it = {
-                    new Iterator[String] {
-                      private var nextString = s.take(2)
-                      def hasNext: Boolean = nextString.length < s.length
-                      def next(): String = {
-                        val result = nextString
-                        nextString = s.take(result.length * 2)
-                        result
-                      }
-                    }
-                  }
-                  it.toList.map(s => Rose(s))
-                }
-
-                (List(Rose("")) ++ candidateStrings ++ lastBatch, rnd3)
-              }
-            }
-
-        (rootRoseTree, rnd)
-      }
+      override def shrink(s: String, rnd: Randomizer): (RoseTree[String], Randomizer) = (NextRoseTree(s), rnd)
       override def toString = "Generator[String]"
     }
 
