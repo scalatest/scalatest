@@ -3718,6 +3718,31 @@ object Generator {
     */
   implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] =
     new Generator[Option[T]] {
+
+      case class NextRoseTree(value: Option[T]) extends RoseTree[Option[T]] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
+
+          value match {
+            // If there is a real value, shrink that value, and return that and None.
+            case Some(t) =>
+              val optionOfT: Option[T] = value
+              val rootRoseTree =
+                new RoseTree[Option[T]] {
+                  val value: Option[T] = optionOfT
+                  def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
+                    val (topRoseTreeOfT, rnd2) = genOfT.shrink(t, rndPassedToShrinks) // topRoseTreeOfT is a RoseTree[T]
+                    val (nestedRoseTrees, rnd3) = topRoseTreeOfT.shrinks(rnd2) // nestedRoseTrees: List[RoseTree[T]]
+                    ((List(Rose(None: Option[T])) ++ nestedRoseTrees.map(nrt => nrt.map(t => Some(t))): List[RoseTree[Option[T]]]).reverse, rnd3)
+                  }
+                }
+              rootRoseTree.shrinks(rndPassedToShrinks)
+
+            // There's no way to simplify None:
+            case None => (List.empty, rndPassedToShrinks)
+          }
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Option[T]], Randomizer) = {
         // Subtract one from length, and we'll wrap those in Somes. Subtract one so that None can be the first edge.
         val (edgesOfT, nextRnd) = genOfT.initEdges(if (maxLength > 0) PosZInt.ensuringValid((maxLength - 1)) else 0, rnd)
@@ -3735,7 +3760,7 @@ object Generator {
         edges match {
           case head :: tail =>
             (Rose(head), tail, rnd)
-          case _ =>
+          case Nil =>
             val (nextInt, nextRnd) = rnd.nextInt
             if (nextInt % 10 == 0)
               (Rose(None), Nil, nextRnd)
@@ -3746,26 +3771,7 @@ object Generator {
         }
       }
 
-      override def shrink(value: Option[T], rnd: Randomizer): (RoseTree[Option[T]], Randomizer) = {
-        value match {
-          // If there is a real value, shrink that value, and return that and None.
-          case Some(t) =>
-            val optionOfT: Option[T] = value
-            val rootRoseTree =
-              new RoseTree[Option[T]] {
-                val value: Option[T] = optionOfT
-                def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
-                  val (topRoseTreeOfT, rnd2) = genOfT.shrink(t, rndPassedToShrinks) // topRoseTreeOfT is a RoseTree[T]
-                  val (nestedRoseTrees, rnd3) = topRoseTreeOfT.shrinks(rnd2) // nestedRoseTrees: List[RoseTree[T]]
-                  (List(Rose(None: Option[T])) ++ nestedRoseTrees.map(nrt => nrt.map(t => Some(t))), rnd3)
-                }
-              }
-            (rootRoseTree, rnd)
-
-          // There's no way to simplify None:
-          case None => (Rose(value), rnd)
-        }
-      }
+      override def shrink(value: Option[T], rnd: Randomizer): (RoseTree[Option[T]], Randomizer) = (NextRoseTree(value), rnd)
 
       override def toString = "Generator[Option[T]]"
     }
