@@ -4446,6 +4446,57 @@ object Generator {
   implicit def mapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)]): Generator[Map[K, V]] with HavingSize[Map[K, V]] =
     new Generator[Map[K, V]] with HavingSize[Map[K, V]] {
 
+      case class NextRoseTree(value: Map[K, V]) extends RoseTree[Map[K, V]] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Map[K, V]]], Randomizer) = {
+          val xs = value
+          val rootRoseTree = {
+            if (xs.isEmpty) Rose(xs)
+            else {
+              new RoseTree[Map[K, V]] {
+                val value: Map[K, V] = xs
+                def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Map[K, V]]], Randomizer) = {
+                  val (canonicalTsIt, rnd1) = genOfTuple2KV.canonicals(rndPassedToShrinks)
+                  val canonicalTs = canonicalTsIt.toList
+                  // Start with Lists of length one each of which contain one of the canonical values
+                  // of the element type.
+                  val canonicalListOfTsIt: List[Rose[Map[K, V]]] = canonicalTs.map(t => Rose(Map(t)))
+
+                  // Only include distinctListsOfTs if the list to shrink (xs) does not contain
+                  // just one element itself. If it does, then xs will appear in the output, which
+                  // we don't need, since we already know it fails.
+                  val distinctListOfTsIt: List[Rose[Map[K, V]]] =
+                  if (xs.nonEmpty && (xs.size > 1))
+                    for (x <- xs.toList if !canonicalTs.contains(x)) yield Rose(Map(x))
+                  else List.empty
+
+                  // The last batch of candidate shrunken values are just slices of the list starting at
+                  // 0 with size doubling each time.
+                  val lastBatch: List[Rose[Map[K, V]]] = {
+                    val xsList = xs.toList
+                    val it =
+                      new Iterator[Map[K, V]] {
+                        private var nextT = xsList.take(2)
+                        def hasNext: Boolean = nextT.size < xsList.size
+                        def next(): Map[K, V] = {
+                          if (!hasNext)
+                            throw new NoSuchElementException
+                          val result = nextT
+                          nextT = xsList.take(result.size * 2)
+                          result.toMap
+                        }
+                      }
+                    it.toList.map(xs => Rose(xs))
+                  }
+
+                  ((List(Rose(Map.empty[K, V])) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch).reverse, rnd1)
+                }
+              }
+            }
+          }
+          rootRoseTree.shrinks(rndPassedToShrinks)
+        }
+      }
+
       def generatorWithSize(szp: SizeParam): Generator[Map[K, V]] =
         new Generator[Map[K, V]] {
 
@@ -4469,7 +4520,7 @@ object Generator {
           case head :: tail =>
             (Rose(head), tail, rnd)
 
-          case _ =>
+          case Nil =>
             val gen = generatorWithSize(szp)
             gen.next(szp, List.empty, rnd)
         }
@@ -4480,53 +4531,7 @@ object Generator {
         (canonicalsOfKV.map(t => Map(t)), rnd1)
       }
 
-      override def shrink(xs: Map[K, V], rnd: Randomizer): (RoseTree[Map[K, V]], Randomizer) = {
-        val rootRoseTree = {
-          if (xs.isEmpty) Rose(xs)
-          else {
-            new RoseTree[Map[K, V]] {
-              val value: Map[K, V] = xs
-              def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Map[K, V]]], Randomizer) = {
-                val (canonicalTsIt, rnd1) = genOfTuple2KV.canonicals(rnd)
-                val canonicalTs = canonicalTsIt.toList
-                // Start with Lists of length one each of which contain one of the canonical values
-                // of the element type.
-                val canonicalListOfTsIt: List[Rose[Map[K, V]]] = canonicalTs.map(t => Rose(Map(t)))
-
-                // Only include distinctListsOfTs if the list to shrink (xs) does not contain
-                // just one element itself. If it does, then xs will appear in the output, which
-                // we don't need, since we already know it fails.
-                val distinctListOfTsIt: List[Rose[Map[K, V]]] =
-                if (xs.nonEmpty && (xs.size > 1))
-                  for (x <- xs.toList if !canonicalTs.contains(x)) yield Rose(Map(x))
-                else List.empty
-
-                // The last batch of candidate shrunken values are just slices of the list starting at
-                // 0 with size doubling each time.
-                val lastBatch: List[Rose[Map[K, V]]] = {
-                  val xsList = xs.toList
-                  val it =
-                    new Iterator[Map[K, V]] {
-                      private var nextT = xsList.take(2)
-                      def hasNext: Boolean = nextT.size < xsList.size
-                      def next(): Map[K, V] = {
-                        if (!hasNext)
-                          throw new NoSuchElementException
-                        val result = nextT
-                        nextT = xsList.take(result.size * 2)
-                        result.toMap
-                      }
-                    }
-                  it.toList.map(xs => Rose(xs))
-                }
-
-                (List(Rose(Map.empty[K, V])) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch, rnd1)
-              }
-            }
-          }
-        }
-        (rootRoseTree, rnd)
-      }
+      override def shrink(xs: Map[K, V], rnd: Randomizer): (RoseTree[Map[K, V]], Randomizer) = (NextRoseTree(xs), rnd)
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Map[K, V]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Map[K, V]] = {
