@@ -19,6 +19,7 @@ import org.mockito.Mockito.{mock => mockitoMock}
 import reflect.ClassTag
 import org.mockito.stubbing.Answer
 import org.mockito.MockSettings
+import org.mockito.invocation.InvocationOnMock
 
 /**
  * Trait that provides some basic syntax sugar for <a href="http://mockito.org/" target="_blank">Mockito</a>.
@@ -144,6 +145,35 @@ trait MockitoSugar {
    */
   def mock[T <: AnyRef](name: String)(implicit classTag: ClassTag[T]): T = {
     mockitoMock(classTag.runtimeClass.asInstanceOf[Class[T]], name)
+  }
+
+  /**
+   * Helper function to create <code>org.mockito.stubbing.Answer[T]</code> instances in Single-Abstract-Method way.
+   *
+   * <p>
+   * Using the Mockito API directly, you create and use an answer for instance with
+   * <code>mock[T](defaultAnswer: Answer[_])</code> like:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val mockCollaborator = mock[Collaborator](new Answer[Option[_]] {
+   *    override def answer(invocation: InvocationOnMock): Option[_] = None
+   *  })
+   * </pre>
+   *
+   * <p>And SAM-optimizations leads to compiler-error</p>
+   *
+   * <p>
+   * Using this method, you can shorten that to:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * val mockCollaborator = mock[Collaborator](answer({ _ => None }))
+   * </pre>
+   *  TODO: change to (invocation: InvocationOnMock) => f(invocation) when drop Scala-2.10 and Scala-2.11 support.
+   */
+  def answer[T](f: InvocationOnMock => T): Answer[T] = new Answer[T] {
+    override def answer(invocation: InvocationOnMock): T = f(invocation)
   }
 }
 
