@@ -2450,7 +2450,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         forAll { (s: String) =>
           val generator = implicitly[Generator[String]]
           val (shrinkRoseTree, _) = generator.shrink(s, Randomizer.default)
-          val shrinks: List[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (s.isEmpty)
             shrinks shouldBe empty
           else {

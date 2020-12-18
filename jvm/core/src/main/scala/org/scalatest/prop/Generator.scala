@@ -2595,11 +2595,10 @@ object Generator {
                     it.toList.map(s => Rose(s))
                   }
 
-                  (List(Rose("")) ++ candidateStrings ++ lastBatch, rnd3)
+                  ((List(Rose("")) ++ candidateStrings ++ lastBatch).reverse, rnd3)
                 }
               }
-          rootRoseTree.shrinks(rndPassedToShrinks)    
-          //(rootRoseTree, rnd)
+          rootRoseTree.shrinks(rndPassedToShrinks)
         }
       }
 
