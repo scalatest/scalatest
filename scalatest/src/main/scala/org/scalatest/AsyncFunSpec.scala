@@ -445,7 +445,7 @@ package org.scalatest
  * <p>
  * In other words, <code>recoverToExpectionIf</code> is to
  * <a href="Assertions.html#interceptMethod"><code>intercept</code></a> as
- * <code>recovertToSucceededIf</code> is to <a href="Assertions.html#assertThrowsMethod"><code>assertThrows</code></a>. The first one allows you to
+ * <code>recoverToSucceededIf</code> is to <a href="Assertions.html#assertThrowsMethod"><code>assertThrows</code></a>. The first one allows you to
  * perform further assertions on the expected exception. The second one gives you a result type that will satisfy the type checker
  * at the end of the test body. Here's an example showing <code>recoverToExceptionIf</code> in the REPL:
  * </p>
