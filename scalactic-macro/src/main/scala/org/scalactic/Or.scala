@@ -340,7 +340,7 @@ import scala.collection.mutable.Builder
  * def parsePerson(inputName: String, inputAge: String): Person Or Every[ErrorMessage] = {
  *   val name = parseName(inputName)
  *   val age = parseAge(inputAge)
- *   withGood(name, age) { Person(_, _) }
+ *   withGood(name, age) { Person }
  * }
  * </pre>
  *
