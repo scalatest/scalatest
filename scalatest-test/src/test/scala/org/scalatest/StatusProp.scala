@@ -25,6 +25,8 @@ import org.scalatest.tools.SuiteRunner
 import SharedHelpers._
 import org.scalatest.refspec.RefSpec
 
+import scala.util.{Failure, Success, Try}
+
 class StatusProp extends AllSuiteProp {
   
   type FixtureServices = StatusFixtureServices
@@ -123,6 +125,94 @@ class StatusProp extends AllSuiteProp {
         assert(!status.succeeds, "status.succeeds should be false after distributor.execute(), but we got false")
       }
       else Succeeded
+    }
+  }
+
+  val testIllegalArgumentException = new IllegalArgumentException("test")
+
+  def statelessStatus =
+    Table(
+      ("status", "expectedValue"),
+      (SucceededStatus, Some(Success(true))),
+      (FailedStatus, Some(Success(false))),
+      (AbortedStatus(testIllegalArgumentException), Some(Failure(testIllegalArgumentException)))
+    )
+
+  import scala.language.reflectiveCalls
+
+  type StatefulStatusType = {
+    def whenCompleted(callback: Try[Boolean] => Unit)
+    def setCompleted()
+    def isCompleted: Boolean
+    // SKIP-SCALATESTJS-START
+    def succeeds(): Boolean
+    // SKIP-SCALATESTJS-END
+    def setFailed()
+    // SKIP-SCALATESTJS-START
+    def waitUntilCompleted()
+    // SKIP-SCALATESTJS-END
+  }
+
+  def statefulStatus =
+    Table[StatefulStatusType](
+      "status",
+      new ScalaTestStatefulStatus,
+      new StatefulStatus
+    )
+
+  test("Stateless status should invoke a function registered with whenCompleted, passing a correct value") {
+    forAll(statelessStatus) { case (status, expectedValue) =>
+      @volatile var callbackInvoked = false
+      @volatile var value: Option[Try[Boolean]] = None
+
+      // register callback
+      status.whenCompleted { st =>
+        callbackInvoked = true
+        value = Some(st)
+      }
+
+      // ensure it was executed
+      assert(callbackInvoked)
+      assert(value == expectedValue)
+    }
+  }
+
+  test("Stateful status should invoke function registered with whenCompleted, passing over succeeded value if status.setCompleted() is called without status.setFailed()") {
+    forAll(statefulStatus) { status =>
+      @volatile var callbackInvoked = false
+      @volatile var value: Option[Try[Boolean]] = None
+
+      // register callback
+      status.whenCompleted { st =>
+        callbackInvoked = true
+        value = Some(st)
+      }
+
+      status.setCompleted()
+
+      // ensure it was executed
+      assert(callbackInvoked)
+      assert(value == Some(Success(true)))
+    }
+  }
+
+  test("Stateful status should invoke function registered with whenCompleted, passing over failed value if status.setCompleted() is called after status.setFailed()") {
+    forAll(statefulStatus) { status =>
+      @volatile var callbackInvoked = false
+      @volatile var value: Option[Try[Boolean]] = None
+
+      // register callback
+      status.whenCompleted { st =>
+        callbackInvoked = true
+        value = Some(st)
+      }
+
+      status.setFailed()
+      status.setCompleted()
+
+      // ensure it was executed
+      assert(callbackInvoked)
+      assert(value == Some(Success(false)))
     }
   }
 }
