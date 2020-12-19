@@ -5390,6 +5390,30 @@ If it doesn't show up for a while, please delete this comment.
         } // A contrived property check to do something with the generator
       }
     }
+    "offer a lazily method that wraps any Generator and offers its same services lazily" in {
+      // The lazily combinator will be able to solve infinte loops when defining
+      // generators for recursive data structions.
+      // First, make sure it is lazy:
+      var executedTheDef: Boolean = false
+      def aGenOfInt: Generator[Int] = {
+        executedTheDef = true
+        implicitly[Generator[Int]]
+      }
+      val lazyGen: Generator[Int] = lazily(aGenOfInt)
+      executedTheDef shouldBe false
+      val i = lazyGen.sample
+      executedTheDef shouldBe true
+
+      // These will be used by the subsequent assertions
+      val stableRnd = Randomizer.default
+      val eagerGen = implicitly[Generator[Int]]
+
+      // Then check the initEdges method
+      // maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = (Nil, rnd)
+      val (lazyEdges, _) = lazyGen.initEdges(100, stableRnd)
+      val (eagerEdges, _) = eagerGen.initEdges(100, stableRnd)
+      lazyEdges shouldEqual eagerEdges
+    }
   }
 }
 
