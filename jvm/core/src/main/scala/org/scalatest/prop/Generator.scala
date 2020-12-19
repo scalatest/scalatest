@@ -483,7 +483,7 @@ trait Generator[T] { thisGeneratorOfT =>
     *
     * @return a generated value of type [[T]]
     */
-  def sample: T = {
+  final def sample: T = {
     val rnd = Randomizer.default
     val maxSize = PosZInt(100)
     val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 100, inclusive
@@ -500,7 +500,7 @@ trait Generator[T] { thisGeneratorOfT =>
     * @param length the number of values to generate
     * @return a List of size `length`, of randomly-generated values
     */
-  def samples(length: PosInt): List[T] = {
+  final def samples(length: PosInt): List[T] = {
     @tailrec
     def loop(count: Int, rnd: Randomizer, acc: List[T]): List[T] = {
       if (count == length.value) acc
