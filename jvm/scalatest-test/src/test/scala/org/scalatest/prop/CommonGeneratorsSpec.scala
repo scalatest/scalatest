@@ -5413,6 +5413,11 @@ If it doesn't show up for a while, please delete this comment.
       val (lazyEdges, _) = lazyGen.initEdges(100, stableRnd)
       val (eagerEdges, _) = eagerGen.initEdges(100, stableRnd)
       lazyEdges shouldEqual eagerEdges
+
+      // (Iterator[T], Randomizer)
+      val (lazyCanonicalsIt, _) = lazyGen.canonicals(stableRnd)
+      val (eagerCanonicalsIt, _) = eagerGen.canonicals(stableRnd)
+      lazyCanonicalsIt.toList shouldEqual eagerCanonicalsIt.toList
     }
   }
 }

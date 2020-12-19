@@ -2455,6 +2455,8 @@ trait CommonGenerators {
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = underlying.initEdges(maxLength, rnd)
 
+      override def canonicals(rnd: Randomizer): (Iterator[T], Randomizer) = underlying.canonicals(rnd)
+
       // gens contains, for each distribution pair, weight generators.
       def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (RoseTree[T], List[T], Randomizer) = {
         gen.next(szp, edges, rnd)
