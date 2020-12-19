@@ -2557,6 +2557,7 @@ object Generator {
     new Generator[String] {
       private val stringEdges = List("")
 
+      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: String) extends RoseTree[String] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[String]], Randomizer) = {
           val s = value
@@ -2634,6 +2635,7 @@ object Generator {
     new Generator[List[T]] with HavingLength[List[T]] { outerGenOfListOfT =>
       private val listEdges = List(Nil)
 
+      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: List[T]) extends RoseTree[List[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[List[T]]], Randomizer) = {
           val xs = value
@@ -3719,6 +3721,7 @@ object Generator {
   implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] =
     new Generator[Option[T]] {
 
+      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: Option[T]) extends RoseTree[Option[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
 
@@ -3788,6 +3791,7 @@ object Generator {
   implicit def orGenerator[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] =
     new Generator[G Or B] {
 
+      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: G Or B) extends RoseTree[G Or B] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[G Or B]], Randomizer) = {
           value match {
@@ -3866,6 +3870,7 @@ object Generator {
   implicit def eitherGenerator[L, R](implicit genOfL: Generator[L], genOfR: Generator[R]): Generator[Either[L, R]] =
     new Generator[Either[L, R]] {
 
+      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: Either[L, R]) extends RoseTree[Either[L, R]] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Either[L, R]]], Randomizer) = {
           value match {
@@ -4088,6 +4093,7 @@ object Generator {
   implicit def vectorGenerator[T](implicit genOfT: Generator[T]): Generator[Vector[T]] with HavingLength[Vector[T]] =
     new Generator[Vector[T]] with HavingLength[Vector[T]] {
 
+      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: Vector[T]) extends RoseTree[Vector[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Vector[T]]], Randomizer) = {
           val xs = value
@@ -4216,6 +4222,7 @@ object Generator {
   implicit def setGenerator[T](implicit genOfT: Generator[T]): Generator[Set[T]] with HavingSize[Set[T]] =
     new Generator[Set[T]] with HavingSize[Set[T]] {
 
+      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: Set[T]) extends RoseTree[Set[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Set[T]]], Randomizer) = {
           val xs = value
@@ -4340,6 +4347,7 @@ object Generator {
   implicit def sortedSetGenerator[T](implicit genOfT: Generator[T], ordering: Ordering[T]): Generator[SortedSet[T]] with HavingSize[SortedSet[T]] =
     new Generator[SortedSet[T]] with HavingSize[SortedSet[T]] {
 
+      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: SortedSet[T]) extends RoseTree[SortedSet[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[SortedSet[T]]], Randomizer) = {
           val xs = value
@@ -4466,6 +4474,7 @@ object Generator {
   implicit def mapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)]): Generator[Map[K, V]] with HavingSize[Map[K, V]] =
     new Generator[Map[K, V]] with HavingSize[Map[K, V]] {
 
+      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: Map[K, V]) extends RoseTree[Map[K, V]] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Map[K, V]]], Randomizer) = {
           val xs = value
@@ -4593,6 +4602,7 @@ object Generator {
   implicit def sortedMapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)], ordering: Ordering[K]): Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] =
     new Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] {
 
+      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: SortedMap[K, V]) extends RoseTree[SortedMap[K, V]] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[SortedMap[K, V]]], Randomizer) = {
           val xs = value
