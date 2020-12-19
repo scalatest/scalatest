@@ -2461,6 +2461,14 @@ trait CommonGenerators {
       def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (RoseTree[T], List[T], Randomizer) = {
         gen.next(szp, edges, rnd)
       }
+
+      override def map[U](f: T => U): Generator[U] = underlying.map(f)
+
+      override def flatMap[U](f: T => Generator[U]): Generator[U] = underlying.flatMap(f)
+
+      override def filter(p: T => Boolean): Generator[T] = underlying.filter(p)
+
+      override def withFilter(p: T => Boolean): Generator[T] = underlying.withFilter(p)
     }
   }
 }
