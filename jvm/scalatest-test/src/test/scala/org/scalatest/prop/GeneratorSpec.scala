@@ -2450,7 +2450,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         forAll { (s: String) =>
           val generator = implicitly[Generator[String]]
           val (shrinkRoseTree, _) = generator.shrink(s, Randomizer.default)
-          val shrinks: List[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (s.isEmpty)
             shrinks shouldBe empty
           else {
@@ -2701,7 +2701,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val intCanonicals = intCanonicalsIt.toList
       forAll { (xs: F[Int]) =>
         val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
-        val shrinks: List[F[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinks: List[F[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
         if (xs.isEmpty)
           shrinks shouldBe empty
         else {
@@ -3068,7 +3068,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Set[T] edge values first in random order") {
         val gen = Generator.setGenerator[Int]
-        val (a1: Rose[Set[Int]], ae1: List[Set[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Set.empty[Int], Set(1, 2), Set(3, 4, 5)), rnd = Randomizer.default)
+        val (a1: RoseTree[Set[Int]], ae1: List[Set[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Set.empty[Int], Set(1, 2), Set(3, 4, 5)), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -3246,7 +3246,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val intCanonicals = intCanonicalsIt.toList
         forAll { (xs: SortedSet[Int]) =>
           val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
-          val shrinks: List[SortedSet[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[SortedSet[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
@@ -3401,7 +3401,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val tupleCanonicals = tupleCanonicalsIt.toList
         forAll { (xs: Map[PosInt, Int]) =>
           val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
-          val shrinks: List[Map[PosInt, Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Map[PosInt, Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
@@ -3561,7 +3561,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val tupleCanonicals = tupleCanonicalsIt.toList
         forAll { (xs: SortedMap[PosInt, Int]) =>
           val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
-          val shrinks: List[SortedMap[PosInt, Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[SortedMap[PosInt, Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
