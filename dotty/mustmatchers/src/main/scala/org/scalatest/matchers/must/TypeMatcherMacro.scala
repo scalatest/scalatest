@@ -50,7 +50,7 @@ object TypeMatcherMacro {
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'mustBe a [type]' syntax
   def mustBeATypeImpl(self: Expr[org.scalatest.matchers.must.Matchers#AnyMustWrapper[_]], aType: Expr[ResultOfATypeInvocation[_]])(using Quotes): Expr[org.scalatest.Assertion] = {
     import quotes.reflect._
-    checkTypeParameter(Term.of(aType), "a")
+    checkTypeParameter(aType.asTerm, "a")
     '{
       org.scalatest.matchers.TypeMatcherHelper.assertAType(($self).leftSideValue, $aType, ($self).prettifier, ($self).pos)
     }
@@ -59,7 +59,7 @@ object TypeMatcherMacro {
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAnType, used by 'mustBe an [type]' syntax
   def mustBeAnTypeImpl(self: Expr[org.scalatest.matchers.must.Matchers#AnyMustWrapper[_]], anType: Expr[ResultOfAnTypeInvocation[_]])(using Quotes): Expr[org.scalatest.Assertion] = {
     import quotes.reflect._
-    checkTypeParameter(Term.of(anType), "an")
+    checkTypeParameter(anType.asTerm, "an")
     '{
       org.scalatest.matchers.TypeMatcherHelper.assertAnType(($self).leftSideValue, $anType, ($self).prettifier, ($self).pos)
     }
