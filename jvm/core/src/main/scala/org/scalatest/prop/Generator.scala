@@ -3735,7 +3735,9 @@ object Generator {
                   def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
                     val (topRoseTreeOfT, rnd2) = genOfT.shrink(t, rndPassedToShrinks) // topRoseTreeOfT is a RoseTree[T]
                     val (nestedRoseTrees, rnd3) = topRoseTreeOfT.shrinks(rnd2) // nestedRoseTrees: List[RoseTree[T]]
-                    ((List(Rose(None: Option[T])) ++ nestedRoseTrees.map(nrt => nrt.map(t => Some(t))): List[RoseTree[Option[T]]]).reverse, rnd3)
+                    val noneList: List[RoseTree[Option[T]]] = List(Rose(None))
+                    val nestedList: List[RoseTree[Option[T]]] = nestedRoseTrees.map(nrt => nrt.map(t => Some(t): Option[T]))
+                    ((noneList ++ nestedList).reverse, rnd3)
                   }
                 }
               rootRoseTree.shrinks(rndPassedToShrinks)
@@ -3798,12 +3800,12 @@ object Generator {
             case Good(g) => {
               val (gShrink, nextRnd) = genOfG.shrink(g, rndPassedToShrinks)
               val (gShrinkShrink, nextNextRnd) = gShrink.shrinks(nextRnd)
-              (gShrinkShrink.map(rt => rt.map(Good(_))), nextNextRnd)
+              (gShrinkShrink.map(rt => rt.map(Good(_) : G Or B)), nextNextRnd)
             }
             case Bad(b) => {
               val (bShrink, nextRnd) = genOfB.shrink(b, rndPassedToShrinks)
               val (bShrinkShrink, nextNextRnd) = bShrink.shrinks(nextRnd)
-              (bShrinkShrink.map(rt => rt.map(Bad(_))), nextNextRnd)
+              (bShrinkShrink.map(rt => rt.map(Bad(_) : G Or B)), nextNextRnd)
             }
           }
         }
@@ -3877,12 +3879,12 @@ object Generator {
             case Right(r) => {
               val (rShrink, nextRnd) = genOfR.shrink(r, rndPassedToShrinks)
               val (rShrinkShrink, nextNextRnd) = rShrink.shrinks(nextRnd)
-              (rShrinkShrink.map(rt => rt.map(Right(_))), nextNextRnd)
+              (rShrinkShrink.map(rt => rt.map(Right(_): Either[L, R])), nextNextRnd)
             }
             case Left(l) => {
               val (lShrink, nextRnd) = genOfL.shrink(l, rndPassedToShrinks)
               val (lShrinkShrink, nextNextRnd) = lShrink.shrinks(nextRnd)
-              (lShrinkShrink.map(rt => rt.map(Left(_))), nextNextRnd)
+              (lShrinkShrink.map(rt => rt.map(Left(_): Either[L, R])), nextNextRnd)
             }
           }
         }
