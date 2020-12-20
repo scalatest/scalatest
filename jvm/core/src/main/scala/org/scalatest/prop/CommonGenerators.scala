@@ -2448,6 +2448,29 @@ trait CommonGenerators {
         }
       }
     }
+
+  def lazily[T](gen: => Generator[T]): Generator[T] = {
+    new Generator[T] {
+      private lazy val underlying: Generator[T] = gen
+
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = underlying.initEdges(maxLength, rnd)
+
+      override def canonicals(rnd: Randomizer): (Iterator[T], Randomizer) = underlying.canonicals(rnd)
+
+      // gens contains, for each distribution pair, weight generators.
+      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (RoseTree[T], List[T], Randomizer) = {
+        gen.next(szp, edges, rnd)
+      }
+
+      override def map[U](f: T => U): Generator[U] = underlying.map(f)
+
+      override def flatMap[U](f: T => Generator[U]): Generator[U] = underlying.flatMap(f)
+
+      override def filter(p: T => Boolean): Generator[T] = underlying.filter(p)
+
+      override def withFilter(p: T => Boolean): Generator[T] = underlying.withFilter(p)
+    }
+  }
 }
 
 /**
