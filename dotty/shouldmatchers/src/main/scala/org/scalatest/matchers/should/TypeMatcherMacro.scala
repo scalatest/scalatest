@@ -16,6 +16,8 @@
 package org.scalatest.matchers.should
 
 import org.scalatest.matchers.dsl.{ResultOfAnTypeInvocation, MatcherWords, ResultOfATypeInvocation, ResultOfNotWordForAny}
+import org.scalactic.source.Position
+import org.scalactic.Prettifier
 
 // //import org.scalatest.words.{FactResultOfAnTypeInvocation, FactResultOfATypeInvocation}
 // import org.scalactic.Prettifier
@@ -48,20 +50,20 @@ object TypeMatcherMacro {
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'shouldBe a [type]' syntax
-  def shouldBeATypeImpl(self: Expr[org.scalatest.matchers.should.Matchers#AnyShouldWrapper[_]], aType: Expr[ResultOfATypeInvocation[_]])(using Quotes): Expr[org.scalatest.Assertion] = {
+  def shouldBeATypeImpl[T](leftSideValue: Expr[T], aType: Expr[ResultOfATypeInvocation[_]], pos: Expr[Position], prettifier: Expr[Prettifier])(using Quotes, Type[T]): Expr[org.scalatest.Assertion] = {
     import quotes.reflect._
     checkTypeParameter(aType.asTerm, "a")
     '{
-      org.scalatest.matchers.TypeMatcherHelper.assertAType(($self).leftSideValue, $aType, ($self).prettifier, ($self).pos)
+      org.scalatest.matchers.TypeMatcherHelper.assertAType($leftSideValue, $aType, $prettifier, $pos)
     }
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'shouldBe an [type]' syntax
-  def shouldBeAnTypeImpl(self: Expr[org.scalatest.matchers.should.Matchers#AnyShouldWrapper[_]], anType: Expr[ResultOfAnTypeInvocation[_]])(using Quotes): Expr[org.scalatest.Assertion] = {
+  def shouldBeAnTypeImpl[T](leftSideValue: Expr[T], anType: Expr[ResultOfAnTypeInvocation[_]], pos: Expr[Position], prettifier: Expr[Prettifier])(using Quotes, Type[T]): Expr[org.scalatest.Assertion] = {
     import quotes.reflect._
     checkTypeParameter(anType.asTerm, "an")
     '{
-      org.scalatest.matchers.TypeMatcherHelper.assertAnType(($self).leftSideValue, $anType, ($self).prettifier, ($self).pos)
+      org.scalatest.matchers.TypeMatcherHelper.assertAnType($leftSideValue, $anType, $prettifier, $pos)
     }
   }
 

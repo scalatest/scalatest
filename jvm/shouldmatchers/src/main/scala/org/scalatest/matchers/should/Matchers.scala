@@ -7184,7 +7184,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def shouldBe(aType: ResultOfATypeInvocation[_]): Assertion = macro TypeMatcherMacro.shouldBeATypeImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY extension [T](leftSideValue: T)(using pos: source.Position, prettifier: Prettifier) inline def shouldBe(aType: ResultOfATypeInvocation[_]): Assertion = ???//${ org.scalatest.matchers.should.TypeMatcherMacro.shouldBeATypeImpl('{this}, '{aType}) }
+    //DOTTY-ONLY extension [T](leftSideValue: T)(using pos: source.Position, prettifier: Prettifier) inline def shouldBe(aType: ResultOfATypeInvocation[_]): Assertion = ${ org.scalatest.matchers.should.TypeMatcherMacro.shouldBeATypeImpl('{leftSideValue}, '{aType}, '{pos}, '{prettifier}) }
 
     /**
      * This method enables syntax such as the following:
@@ -7197,7 +7197,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def shouldBe(anType: ResultOfAnTypeInvocation[_]): Assertion = macro TypeMatcherMacro.shouldBeAnTypeImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY extension [T](leftSideValue: T)(using pos: source.Position, prettifier: Prettifier) inline def shouldBe(anType: ResultOfAnTypeInvocation[_]): Assertion = ???//${ org.scalatest.matchers.should.TypeMatcherMacro.shouldBeAnTypeImpl('{this}, '{anType}) }
+    //DOTTY-ONLY extension [T](leftSideValue: T)(using pos: source.Position, prettifier: Prettifier) inline def shouldBe(anType: ResultOfAnTypeInvocation[_]): Assertion = ${ org.scalatest.matchers.should.TypeMatcherMacro.shouldBeAnTypeImpl('{leftSideValue}, '{anType}, '{pos}, '{prettifier}) }
 
     /**
      * This method enables syntax such as the following:
