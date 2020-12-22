@@ -36,13 +36,13 @@ object CompileMacro {
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    Term.of(self).underlyingArgument match {
+    self.asTerm.underlyingArgument match {
 
       case Apply(
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant.String(code: String))
+                 Literal(StringConstant(code))
                )
              ),
              _
@@ -54,7 +54,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant.String(code: String))
+                 Literal(StringConstant(code))
                )
              ),
              _
@@ -79,13 +79,13 @@ object CompileMacro {
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    Term.of(self).underlyingArgument match {
+    self.asTerm.underlyingArgument match {
 
       case Apply(
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant.String(code: String))
+                 Literal(StringConstant(code))
                )
              ),
              _
@@ -97,7 +97,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant.String(code: String))
+                 Literal(StringConstant(code))
                )
              ),
              _
@@ -123,7 +123,7 @@ object CompileMacro {
 
     val methodName = shouldOrMust + "Not"
 
-    Term.of(self).underlyingArgument match {
+    self.asTerm.underlyingArgument match {
       case Apply(
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
@@ -140,7 +140,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant.String(code: String))
+                 Literal(StringConstant(code))
                )
              ),
              _

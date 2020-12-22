@@ -24,7 +24,7 @@ object CompileMacro {
 
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
   def assertTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(using Quotes): Expr[Assertion] = {
-    if (!typeChecked.unliftOrError) '{ Succeeded }
+    if (!typeChecked.valueOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedTypeErrorButGotNone($code)
       throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
@@ -32,7 +32,7 @@ object CompileMacro {
   }
 
   def expectTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
-    if (typeChecked.unliftOrError)
+    if (typeChecked.valueOrError)
       '{
           val messageExpr = Resources.expectedTypeErrorButGotNone($code)
           Fact.No(
@@ -65,7 +65,7 @@ object CompileMacro {
 
   // parse and type check a code snippet, generate code to throw TestFailedException when both parse and type check succeeded
   def assertDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(using Quotes): Expr[Assertion] = {
-    if (!typeChecked.unliftOrError) '{ Succeeded }
+    if (!typeChecked.valueOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedCompileErrorButGotNone($code)
       throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
@@ -74,7 +74,7 @@ object CompileMacro {
 
   // parse and type check a code snippet, generate code to return Fact (Yes or No).
   def expectDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
-    if (typeChecked.unliftOrError)
+    if (typeChecked.valueOrError)
       '{
           val messageExpr = Resources.expectedCompileErrorButGotNone($code)
           Fact.No(
@@ -107,7 +107,7 @@ object CompileMacro {
 
   // parse and type check a code snippet, generate code to throw TestFailedException when either parse or type check fails.
   def assertCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(using Quotes): Expr[Assertion] = {
-    if (typeChecked.unliftOrError) '{ Succeeded }
+    if (typeChecked.valueOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedNoErrorButGotTypeError("unknown", $code)
       throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
@@ -115,7 +115,7 @@ object CompileMacro {
   }
 
   def expectCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
-    if (typeChecked.unliftOrError)
+    if (typeChecked.valueOrError)
       '{
           val messageExpr = Resources.compiledSuccessfully($code)
           Fact.Yes(

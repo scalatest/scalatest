@@ -12,7 +12,7 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.0-M2")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.0-M3")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     libraryDependencies := libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)),

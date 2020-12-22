@@ -52,7 +52,7 @@ object TypeMatcherMacro {
     import quotes.reflect._
 
     // check type parameter
-    checkTypeParameter(Term.of(aType), "a")
+    checkTypeParameter(aType.asTerm, "a")
 
     /**
      * Generate AST that does the following code:
@@ -67,7 +67,7 @@ object TypeMatcherMacro {
     import quotes.reflect._
 
     // check type parameter
-    checkTypeParameter(Term.of(anType), "an")
+    checkTypeParameter(anType.asTerm, "an")
 
     /**
      * Generate AST that does the following code:
@@ -82,7 +82,7 @@ object TypeMatcherMacro {
     import quotes.reflect._
 
     // check type parameter
-    checkTypeParameter(Term.of(aType), "a")
+    checkTypeParameter(aType.asTerm, "a")
 
     /**
      * Generate AST that does the following code:
@@ -97,7 +97,7 @@ object TypeMatcherMacro {
     import quotes.reflect._
 
     // check type parameter
-    checkTypeParameter(Term.of(anType), "an")
+    checkTypeParameter(anType.asTerm, "an")
 
     /**
      * Generate AST that does the following code:
@@ -207,7 +207,7 @@ object TypeMatcherMacro {
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.assertATypeShouldBeTrue
   def assertATypeShouldBeTrueImpl(self: Expr[ResultOfNotWordForAny[_]], aType: Expr[ResultOfATypeInvocation[_]])(using Quotes): Expr[org.scalatest.Assertion] = {
     import quotes.reflect._
-    checkTypeParameter(Term.of(aType), "a")
+    checkTypeParameter(aType.asTerm, "a")
     '{
       TypeMatcherHelper.assertATypeShouldBeTrue(($self).left, $aType, ($self).shouldBeTrue, ($self).prettifier, ($self).pos)
     }
@@ -216,7 +216,7 @@ object TypeMatcherMacro {
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.assertAnTypeShouldBeTrue
   def assertAnTypeShouldBeTrueImpl(self: Expr[ResultOfNotWordForAny[_]], anType: Expr[ResultOfAnTypeInvocation[_]])(using Quotes): Expr[org.scalatest.Assertion] = {
     import quotes.reflect._
-    checkTypeParameter(Term.of(anType), "an")
+    checkTypeParameter(anType.asTerm, "an")
     '{
       TypeMatcherHelper.assertAnTypeShouldBeTrue(($self).left, $anType, ($self).shouldBeTrue, ($self).prettifier, ($self).pos)
     }

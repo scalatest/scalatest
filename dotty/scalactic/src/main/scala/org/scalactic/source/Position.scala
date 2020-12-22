@@ -72,8 +72,7 @@ object Position {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = filePathnames(file.toString)
-    // Need check `pos.exists` here because https://github.com/lampepfl/dotty/issues/8581
-    val lineNo: Int = if (pos.exists) pos.startLine else -1
+    val lineNo: Int = pos.startLine
     '{ Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}) }
   }
 
