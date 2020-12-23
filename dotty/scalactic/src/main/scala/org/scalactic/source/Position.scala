@@ -58,10 +58,11 @@ object Position {
    */
   implicit inline def here: Position = ${ genPosition }
 
-  private[scalactic] lazy val showScalacticFillFilePathnames: Boolean = {
-    val value = System.getenv("SCALACTIC_FILL_FILE_PATHNAMES")
-    value != null && value == "yes"
-  }
+  private[scalactic] lazy val showScalacticFillFilePathnames: Boolean = 
+    Option(System.getenv("SCALACTIC_FILL_FILE_PATHNAMES")) == Some("yes")
+
+  private[org] def filePathnames(path: String): String = 
+    if (showScalacticFillFilePathnames) path else Resources.pleaseDefineScalacticFillFilePathnameEnvVar
 
   /**
    * Helper method for Position macro.
@@ -70,7 +71,7 @@ object Position {
     val pos = quotes.reflect.Position.ofMacroExpansion
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = if (showScalacticFillFilePathnames) file.toString else Resources.pleaseDefineScalacticFillFilePathnameEnvVar
+    val filePath: String = filePathnames(file.toString)
     val lineNo: Int = pos.startLine
     '{ Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}) }
   }
