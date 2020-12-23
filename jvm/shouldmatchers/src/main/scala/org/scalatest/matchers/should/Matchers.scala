@@ -7803,6 +7803,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   }
   // SKIP-DOTTY-END
 
+  // SKIP-DOTTY-START
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
    * the matchers DSL.
@@ -7815,6 +7816,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    */
   final class RegexWrapper(regex: Regex) {
+  // SKIP-DOTTY-END  
 
     /**
      * This method enables syntax such as the following:
@@ -7824,7 +7826,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                         ^
      * </pre>
      */
+    // SKIP-DOTTY-START 
     def withGroup(group: String): RegexWithGroups =
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY extension (regex: Regex) def withGroup(group: String): RegexWithGroups =
       new RegexWithGroups(regex, IndexedSeq(group))
 
     /**
@@ -7835,9 +7840,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                            ^
      * </pre>
      */
+    // SKIP-DOTTY-START 
     def withGroups(groups: String*): RegexWithGroups =
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY extension (regex: Regex) def withGroups(groups: String*): RegexWithGroups =
       new RegexWithGroups(regex, IndexedSeq(groups: _*))
+  // SKIP-DOTTY-START
   }
+  // SKIP-DOTTY-END
 
   // SKIP-DOTTY-START 
   /**
@@ -7851,13 +7861,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * to enable <code>should</code> methods to be invokable on that object.
    */
   implicit def convertToStringShouldWrapper(o: String)(implicit pos: source.Position, prettifier: Prettifier): StringShouldWrapper = new StringShouldWrapper(o, pos, prettifier)
-  // SKIP-DOTTY-END
 
   /**
    * Implicitly converts an object of type <code>scala.util.matching.Regex</code> to a <code>RegexWrapper</code>,
    * to enable <code>withGroup</code> and <code>withGroups</code> methods to be invokable on that object.
    */
   implicit def convertToRegexWrapper(o: Regex): RegexWrapper = new RegexWrapper(o)
+  // SKIP-DOTTY-END
 
   /**
    * This method enables syntax such as the following:
