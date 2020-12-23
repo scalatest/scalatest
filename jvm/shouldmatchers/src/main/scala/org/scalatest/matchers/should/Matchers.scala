@@ -7701,8 +7701,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
+  // SKIP-DOTTY-START 
   final class StringShouldWrapper(val leftSideString: String, pos: source.Position, prettifier: Prettifier) extends AnyShouldWrapper(leftSideString, pos, prettifier) with StringShouldWrapperForVerb {
-
+  // SKIP-DOTTY-END
     /**
      * This method enables syntax such as the following:
      *
@@ -7711,7 +7712,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                          ^
      * </pre>
      */
+    // SKIP-DOTTY-START 
     def withGroup(group: String): RegexWithGroups =
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) def withGroup(group: String): RegexWithGroups =
       new RegexWithGroups(leftSideString.r, IndexedSeq(group))
 
     /**
@@ -7722,7 +7726,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                             ^
      * </pre>
      */
+    // SKIP-DOTTY-START 
     def withGroups(groups: String*): RegexWithGroups =
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) def withGroups(groups: String*): RegexWithGroups =
       new RegexWithGroups(leftSideString.r, IndexedSeq(groups: _*))
 
     /**
@@ -7733,7 +7740,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
+    // SKIP-DOTTY-START 
     def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = {
       new ResultOfFullyMatchWordForString(leftSideString, true, prettifier, pos)
     }
 
@@ -7745,7 +7755,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
+    // SKIP-DOTTY-START 
     def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString =
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString =
       new ResultOfFullyMatchWordForString(leftSideString, false, prettifier, pos)
 
     /**
@@ -7759,7 +7772,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldCompileImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldCompileImpl('{this}, '{compileWord})('{pos}) }
+    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) inline def should(compileWord: CompileWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldCompileImpl('{leftSideString}, '{compileWord})('{pos}) }
 
     /**
      * This method enables syntax such as the following:
@@ -7772,7 +7785,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotCompileImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldNotCompileImpl('{this}, '{compileWord})('{pos}) }
+    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) inline def shouldNot(compileWord: CompileWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldNotCompileImpl('{leftSideString}, '{compileWord})('{pos}) }
 
     /**
      * This method enables syntax such as the following:
@@ -7785,136 +7798,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotTypeCheckImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldNotTypeCheckImpl('{this}, '{typeCheckWord})('{pos}) }
-
-/*
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should include regex ("hi")
-     *        ^
-     * </pre>
-     */
-    def should(includeWord: IncludeWord): ResultOfIncludeWordForString = {
-      new ResultOfIncludeWordForString(leftSideString, true)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should startWith regex ("hello")
-     *        ^
-     * </pre>
-     */
-    def should(startWithWord: StartWithWord): ResultOfStartWithWordForString = {
-      new ResultOfStartWithWordForString(leftSideString, true)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should endWith regex ("world")
-     *        ^
-     * </pre>
-     */
-    def should(endWithWord: EndWithWord): ResultOfEndWithWordForString = {
-      new ResultOfEndWithWordForString(leftSideString, true)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
-     *        ^
-     * </pre>
-     */
-    def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = {
-      new ResultOfFullyMatchWordForString(leftSideString, true)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should not have length (3)
-     *        ^
-     * </pre>
-     */
-    override def should(notWord: NotWord): ResultOfNotWordForString = {
-      new ResultOfNotWordForString(leftSideString, false)
-    }
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should fullyMatch regex ("a(b*)c" withGroup "bb")
-     *                                          ^
-     * </pre>
-     */
-    def withGroup(group: String): RegexWithGroups =
-      new RegexWithGroups(leftSideString.r, IndexedSeq(group))
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string should fullyMatch regex ("a(b*)(c*)" withGroups ("bb", "cc"))
-     *                                             ^
-     * </pre>
-     */
-    def withGroups(groups: String*): RegexWithGroups =
-      new RegexWithGroups(leftSideString.r, IndexedSeq(groups: _*))
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string shouldNot fullyMatch regex ("""(-)?(\d+)(\.\d*)?""")
-     *        ^
-     * </pre>
-     */
-    def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString =
-      new ResultOfFullyMatchWordForString(leftSideString, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string shouldNot startWith regex ("hello")
-     *        ^
-     * </pre>
-     */
-    def shouldNot(startWithWord: StartWithWord): ResultOfStartWithWordForString =
-      new ResultOfStartWithWordForString(leftSideString, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string shouldNot endWith regex ("world")
-     *        ^
-     * </pre>
-     */
-    def shouldNot(endWithWord: EndWithWord): ResultOfEndWithWordForString =
-      new ResultOfEndWithWordForString(leftSideString, false)
-
-    /**
-     * This method enables syntax such as the following:
-     *
-     * <pre class="stHighlight">
-     * string shouldNot include regex ("hi")
-     *        ^
-     * </pre>
-     */
-    def shouldNot(includeWord: IncludeWord): ResultOfIncludeWordForString =
-      new ResultOfIncludeWordForString(leftSideString, false)
-*/
+    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) inline def shouldNot(typeCheckWord: TypeCheckWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldNotTypeCheckImpl('{leftSideString}, '{typeCheckWord})('{pos}) }
+  // SKIP-DOTTY-START
   }
+  // SKIP-DOTTY-END
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -7952,19 +7839,19 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       new RegexWithGroups(regex, IndexedSeq(groups: _*))
   }
 
+  // SKIP-DOTTY-START 
   /**
    * Implicitly converts an object of type <code>T</code> to a <code>AnyShouldWrapper[T]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  // SKIP-DOTTY-START 
   implicit def convertToAnyShouldWrapper[T](o: T)(implicit pos: source.Position, prettifier: Prettifier): AnyShouldWrapper[T] = new AnyShouldWrapper(o, pos, prettifier)
-  // SKIP-DOTTY-END
 
   /**
    * Implicitly converts an object of type <code>java.lang.String</code> to a <code>StringShouldWrapper</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
   implicit def convertToStringShouldWrapper(o: String)(implicit pos: source.Position, prettifier: Prettifier): StringShouldWrapper = new StringShouldWrapper(o, pos, prettifier)
+  // SKIP-DOTTY-END
 
   /**
    * Implicitly converts an object of type <code>scala.util.matching.Regex</code> to a <code>RegexWrapper</code>,
