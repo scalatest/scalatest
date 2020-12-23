@@ -38,27 +38,7 @@ object CompileMacro {
 
     self.asTerm.underlyingArgument match {
 
-      case Apply(
-             Apply(
-               Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
-               List(
-                 Literal(StringConstant(code))
-               )
-             ),
-             _
-           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
-        // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
-        checkCompile(code.toString)
-
-      case Apply(
-             Apply(
-               Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
-               List(
-                 Literal(StringConstant(code))
-               )
-             ),
-             _
-           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
+      case Literal(StringConstant(code)) =>  
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
         checkCompile(code.toString)
 
@@ -81,28 +61,9 @@ object CompileMacro {
 
     self.asTerm.underlyingArgument match {
 
-      case Apply(
-             Apply(
-               Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
-               List(
-                 Literal(StringConstant(code))
-               )
-             ),
-             _
-           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
+      case Literal(StringConstant(code)) =>  
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
-        checkNotCompile(code)
-
-      case Apply(
-             Apply(
-               Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
-               List(
-                 Literal(StringConstant(code))
-               )
-             ),
-             _
-           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
-        checkNotCompile(code)
+        checkNotCompile(code.toString)
 
       case other =>
         report.throwError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
