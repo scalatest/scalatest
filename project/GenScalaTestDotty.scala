@@ -241,8 +241,6 @@ object GenScalaTestDotty {
         "FilterProp.scala", // skipped because does not compile yet 
         "FilterSpec.scala", // skipped because does not compile yet 
         "InheritedTagProp.scala", // skipped because does not compile yet 
-        "InsideMixinSpec.scala", // skipped because tests failed 
-        "InsideSpec.scala", // skipped because tests failed
         "InspectorsForMapSpec.scala", // skipped because tests failed 
         "InspectorShorthandsSpec.scala", // skipped because does not compile yet 
         "InspectorsSpec.scala", // skipped because tests failed 
