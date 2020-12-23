@@ -7761,6 +7761,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString =
       new ResultOfFullyMatchWordForString(leftSideString, false, prettifier, pos)
 
+    //DOTTY-ONLY import scala.compiletime.testing.typeChecks  
+
     /**
      * This method enables syntax such as the following:
      *
@@ -7772,7 +7774,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldCompileImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) inline def should(compileWord: CompileWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldCompileImpl('{leftSideString}, '{compileWord})('{pos}) }
+    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) inline def should(compileWord: CompileWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldCompileImpl('{leftSideString}, '{typeChecks(leftSideString)}, '{compileWord})('{pos}) }
 
     /**
      * This method enables syntax such as the following:
@@ -7785,7 +7787,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotCompileImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) inline def shouldNot(compileWord: CompileWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldNotCompileImpl('{leftSideString}, '{compileWord})('{pos}) }
+    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) inline def shouldNot(compileWord: CompileWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldNotCompileImpl('{leftSideString}, '{typeChecks(leftSideString)}, '{compileWord})('{pos}) }
 
     /**
      * This method enables syntax such as the following:
@@ -7798,7 +7800,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotTypeCheckImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) inline def shouldNot(typeCheckWord: TypeCheckWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldNotTypeCheckImpl('{leftSideString}, '{typeCheckWord})('{pos}) }
+    //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) inline def shouldNot(typeCheckWord: TypeCheckWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldNotTypeCheckImpl('{leftSideString}, '{typeChecks(leftSideString)}, '{typeCheckWord})('{pos}) }
   // SKIP-DOTTY-START
   }
   // SKIP-DOTTY-END

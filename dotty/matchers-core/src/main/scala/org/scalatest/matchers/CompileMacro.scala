@@ -25,12 +25,12 @@ import scala.quoted._
 object CompileMacro {
 
   // check that a code snippet compiles
-  def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+  def assertCompileImpl[T](self: Expr[T], typeChecked: Expr[Boolean], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
     import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkCompile(code: String): Expr[Assertion] =
-      if (/*typeChecks(code)*/ true) '{ Succeeded } // FIXME
+      if (typeChecked.valueOrError) '{ Succeeded } // FIXME
       else '{
         val messageExpr = Resources.expectedNoErrorButGotTypeError("", ${ Expr(code) })
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
@@ -48,12 +48,12 @@ object CompileMacro {
   }
 
   // check that a code snippet does not compile
-  def assertNotCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+  def assertNotCompileImpl[T](self: Expr[T], typeChecked: Expr[Boolean], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
     import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotCompile(code: String): Expr[Assertion] =
-      if (/*!typeChecks(code)*/ true) '{ Succeeded } // FIXME
+      if (!typeChecked.valueOrError) '{ Succeeded } // FIXME
       else '{
         val messageExpr = Resources.expectedCompileErrorButGotNone(${ Expr(code) })
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
@@ -71,12 +71,12 @@ object CompileMacro {
   }
 
   // check that a code snippet does not compile
-  def assertNotTypeCheckImpl(self: Expr[_], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+  def assertNotTypeCheckImpl(self: Expr[_], typeChecked: Expr[Boolean], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
     import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotTypeCheck(code: String): Expr[Assertion] =
-      if (/*!typeChecks(code)*/ true) '{ Succeeded } // FIXME
+      if (!typeChecked.valueOrError) '{ Succeeded } // FIXME
       else '{
         val messageExpr = Resources.expectedTypeErrorButGotNone(${ Expr(code) })
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)

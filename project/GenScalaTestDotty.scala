@@ -313,7 +313,7 @@ object GenScalaTestDotty {
         "ShouldBeSortedSpec.scala", // skipped because does not compile yet 
         "ShouldBeSymbolSpec.scala", // skipped because does not compile yet 
         "ShouldBeThrownBySpec.scala", // skipped because does not compile yet 
-        "ShouldCompileSpec.scala", // skipped because tests failed 
+        //"ShouldCompileSpec.scala", // skipped because tests failed 
         "ShouldContainElementNewSpec.scala", // skipped because does not compile yet 
         "ShouldContainElementSpec.scala", // skipped because does not compile yet  
         "ShouldEqualEqualitySpec.scala", // skipped because does not compile yet 
