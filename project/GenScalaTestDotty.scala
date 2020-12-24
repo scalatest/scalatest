@@ -353,9 +353,6 @@ object GenScalaTestDotty {
     ) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
         List(
-          "ConductorFixtureDeprecatedSuite.scala",  // skipped because Conductors not supported.
-          "ConductorMethodsDeprecatedSuite.scala",   // skipped because Conductors not supported.
-          "ConductorDeprecatedSuite.scala",   // skipped because Conductors not supported.
           "EventuallySpec.scala",   // skipped because Eventually not supported.
           "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
           "DeprecatedIntegrationPatienceSpec.scala",
