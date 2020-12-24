@@ -353,7 +353,6 @@ object GenScalaTestDotty {
     ) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
         List(
-          "EventuallySpec.scala",   // skipped because Eventually not supported.
           "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
           "DeprecatedIntegrationPatienceSpec.scala",
           "JavaFuturesSpec.scala",      // skipped because depends on java futures
