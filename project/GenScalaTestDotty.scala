@@ -311,7 +311,6 @@ object GenScalaTestDotty {
         "ShouldBeSortedSpec.scala", // skipped because does not compile yet 
         "ShouldBeSymbolSpec.scala", // skipped because does not compile yet 
         "ShouldBeThrownBySpec.scala", // skipped because does not compile yet 
-        //"ShouldCompileSpec.scala", // skipped because tests failed 
         "ShouldContainElementNewSpec.scala", // skipped because does not compile yet 
         "ShouldContainElementSpec.scala", // skipped because does not compile yet  
         "ShouldEqualEqualitySpec.scala", // skipped because does not compile yet 
@@ -354,7 +353,6 @@ object GenScalaTestDotty {
     ) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
         List(
-          "WaitersSpec.scala",    // skipped because Waiters not supported.
           "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions (deprecated name for Waiters) not supported.
           "ConductorFixtureSuite.scala",  // skipped because Conductors not supported.
           "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
