@@ -264,7 +264,6 @@ object GenScalaTestDotty {
         "ListShouldContainTheSameElementsAsSpec.scala", // skipped because does not compile yet 
         "ListShouldContainTheSameElementsInOrderAsSpec.scala", // skipped because does not compile yet 
         "MatchersSerializableSpec.scala", // skipped because does not compile yet 
-        "MatchersSpec.scala", // skipped because does not compile yet 
         "MatcherStackDepthSpec.scala", // skipped because does not compile yet 
         "MethodSuiteExamples.scala", // skipped because does not compile yet 
         "MethodSuiteProp.scala", // skipped because does not compile yet 
