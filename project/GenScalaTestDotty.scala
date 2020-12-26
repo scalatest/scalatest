@@ -358,10 +358,9 @@ object GenScalaTestDotty {
           "JavaFuturesSpec.scala",      // skipped because depends on java futures
           "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
           "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
-          "TimeoutsSpec.scala",            // skipped because Timeouts not supported.
-          "UltimatelySpec.scala",   // skipped because Eventually not supported.
+          //"TimeoutsSpec.scala",            // skipped because Timeouts not supported.
           "TimeLimitsSpec.scala",  // skipped because failed with line number tests.
-          "ScalaFuturesSpec.scala",  // skipped because failed with line number tests.
+          //"ScalaFuturesSpec.scala",  // skipped because failed with line number tests.
         )) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, 
         List(
