@@ -353,14 +353,11 @@ object GenScalaTestDotty {
     ) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
         List(
-          "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
-          "DeprecatedIntegrationPatienceSpec.scala",
+          //"DeprecatedIntegrationPatienceSpec.scala",
           "JavaFuturesSpec.scala",      // skipped because depends on java futures
           "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
           "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
-          //"TimeoutsSpec.scala",            // skipped because Timeouts not supported.
           "TimeLimitsSpec.scala",  // skipped because failed with line number tests.
-          //"ScalaFuturesSpec.scala",  // skipped because failed with line number tests.
         )) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, 
         List(
