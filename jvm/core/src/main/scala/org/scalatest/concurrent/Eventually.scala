@@ -466,7 +466,6 @@ object Eventually extends Eventually {
   //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
   //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
   //DOTTY-ONLY   val lineNo: Int = pos.startLine
-  //DOTTY-ONLY   val position = org.scalactic.source.Position(fileName, filePath, lineNo)
   //DOTTY-ONLY   '{callRetry(${retrying}, ${timeout}, ${interval}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}), ${fun})}
   //DOTTY-ONLY }
 
