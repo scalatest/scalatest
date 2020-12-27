@@ -624,11 +624,11 @@ object Futures extends Futures {
 
   //DOTTY-ONLY import scala.quoted._
 
-  //DOTTY-ONLY final def workaroundWhenReadyImpl[T, U](futures: Futures)(future: Any, fun: Any, timeout: Span, interval: Span, pos: source.Position): U = 
+  //DOTTY-ONLY final def workaroundWhenReadyImpl[T, U](futures: Futures)(future: Futures#FutureConcept[T], fun: Any, timeout: Span, interval: Span, pos: source.Position): U = 
   //DOTTY-ONLY   whenReadyImpl(futures)(future.asInstanceOf[futures.FutureConcept[T]], fun.asInstanceOf[T => U], timeout, interval, pos)
 
   //DOTTY-ONLY // Ideally, we can use future: Expr[futures.FutureConcept[T]] and fun Expr[T => U] here, can't get it to work so we have the above workaroundWhenReadyImpl that takes Any.
-  //DOTTY-ONLY private[concurrent] def whenReadyMacro[T, U](futures: Expr[Futures], future: Expr[Any], fun: Expr[Any], timeout: Expr[Span], interval: Expr[Span])(using quotes: Quotes): Expr[U] = {
+  //DOTTY-ONLY private[concurrent] def whenReadyMacro[T, U](futures: Expr[Futures], future: Expr[Futures#FutureConcept[T]], fun: Expr[Any], timeout: Expr[Span], interval: Expr[Span])(using quotes: Quotes, typeT: Type[T]): Expr[U] = {
   //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
   //DOTTY-ONLY   val file = pos.sourceFile
   //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
