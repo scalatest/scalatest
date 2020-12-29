@@ -244,24 +244,10 @@ object GenScalaTestDotty {
         "InspectorsForMapSpec.scala", // skipped because tests failed 
         "InspectorShorthandsSpec.scala", // skipped because does not compile yet 
         "InspectorsSpec.scala", // skipped because tests failed 
-        "ListShouldContainAllElementsOfSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainAllOfSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainAtLeastOneElementOfSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainAtLeastOneOfSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainAtMostOneElementOfSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainAtMostOneOfSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainInOrderElementsOfSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainInOrderOnlySpec.scala", // skipped because does not compile yet 
-        "ListShouldContainInOrderSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainNoElementsOfSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainNoneOfSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainOneElementOfSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainOneOfSpec.scala", // skipped because does not compile yet 
         "ListShouldContainOnlyLogicalAndSpec.scala", // skipped because does not compile yet 
         "ListShouldContainOnlyLogicalOrSpec.scala", // skipped because does not compile yet 
         "ListShouldContainOnlySpec.scala", // skipped because does not compile yet 
         "ListShouldContainSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainTheSameElementsAsSpec.scala", // skipped because does not compile yet 
         "ListShouldContainTheSameElementsInOrderAsSpec.scala", // skipped because does not compile yet 
         "MatchersSerializableSpec.scala", // skipped because does not compile yet 
         "MatcherStackDepthSpec.scala", // skipped because does not compile yet 

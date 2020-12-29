@@ -342,10 +342,13 @@ The bottom two don't, but still I don't want to support that in general.
         intercept[TestFailedException] {
           all (hiLists) should contain atLeastOneOf ("ho", "he")
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should contain atLeastOneOf ("HI", "HE")
-        intercept[TestFailedException] {
-          all (hiLists) should contain atLeastOneOf ("hi", "he")
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should contain atLeastOneOf ("HI", "HE")
+          intercept[TestFailedException] {
+            all (hiLists) should contain atLeastOneOf ("hi", "he")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -412,10 +415,13 @@ The bottom two don't, but still I don't want to support that in general.
         intercept[TestFailedException] {
           all (hiLists) should (contain atLeastOneOf ("HI", "HE"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should (contain atLeastOneOf ("HI", "HE"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain atLeastOneOf ("hi", "he"))
+        
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should (contain atLeastOneOf ("HI", "HE"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain atLeastOneOf ("hi", "he"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {
