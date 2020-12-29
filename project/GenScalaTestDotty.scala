@@ -281,7 +281,6 @@ object GenScalaTestDotty {
         "ParallelTestExecutionOrderExamples.scala", // skipped because does not compile yet 
         "ParallelTestExecutionParallelSuiteExamples.scala", // skipped because does not compile yet 
         "ParallelTestExecutionProp.scala", // skipped because does not compile yet 
-        "ParallelTestExecutionSpec.scala", // skipped because does not compile yet 
         "ParallelTestExecutionSuiteTimeoutExamples.scala", // skipped because does not compile yet 
         "ParallelTestExecutionTestTimeoutExamples.scala", // skipped because does not compile yet 
         "PrivateMethodTesterSpec.scala", // skipped because does not compile yet 
