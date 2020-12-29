@@ -30,7 +30,7 @@ import org.scalatest.propspec.AnyPropSpec
 import org.scalatest.wordspec.AnyWordSpec
 
 trait OrderExpectedResults extends EventHelpers {
-  def assertOrderTest(events: List[Event])
+  def assertOrderTest(events: List[Event]): Unit
 }
 
 object ParallelTestExecutionOrderExamples extends Tables {

@@ -21,7 +21,7 @@ import org.scalatest.events.Event
 trait ParallelSuites extends EventHelpers {
   def suite1: Suite
   def suite2: Suite
-  def assertParallelSuites(events: List[Event])
+  def assertParallelSuites(events: List[Event]): Unit
 }
 
 object ParallelTestExecutionParallelSuiteExamples extends Tables {
