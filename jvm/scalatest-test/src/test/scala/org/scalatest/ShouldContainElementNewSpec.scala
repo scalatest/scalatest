@@ -44,25 +44,27 @@ class ShouldContainElementNewSpec extends AnyFunSpec with Explicitly {
       e1.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
       e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
 
-      implicit val e = new Equality[Int] {
-        def areEqual(a: Int, b: Any): Boolean = a != b
-      }
-      
-      val e2 = intercept[TestFailedException] {
-        Vector(2, 2) should contain (2)
-      }
-      Vector(2, 2) should not contain (2)
+      {
+        implicit val e = new Equality[Int] {
+          def areEqual(a: Int, b: Any): Boolean = a != b
+        }
+        
+        val e2 = intercept[TestFailedException] {
+          Vector(2, 2) should contain (2)
+        }
+        Vector(2, 2) should not contain (2)
 
-      e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+        e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
 
-      (Vector(2, 2) should contain (2)) (decided by defaultEquality[Int])
-      val e3 = intercept[TestFailedException] {
-        (Vector(2, 2) should not contain (2)) (decided by defaultEquality[Int])
+        (Vector(2, 2) should contain (2)) (decided by defaultEquality[Int])
+        val e3 = intercept[TestFailedException] {
+          (Vector(2, 2) should not contain (2)) (decided by defaultEquality[Int])
+        }
+
+        e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
+        e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-
-      e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
-      e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
     }
 
     it("should use an Equality of the element type of the left-hand \"holder\" on a String") {
@@ -75,25 +77,27 @@ class ShouldContainElementNewSpec extends AnyFunSpec with Explicitly {
       e1.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
       e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
 
-      implicit val e = new Equality[Char] {
-        def areEqual(a: Char, b: Any): Boolean = a != b
-      }
-      
-      val e2 = intercept[TestFailedException] {
-        "22" should contain ('2')
-      }
-      "22" should not contain ('2')
+      {
+        implicit val e = new Equality[Char] {
+          def areEqual(a: Char, b: Any): Boolean = a != b
+        }
+        
+        val e2 = intercept[TestFailedException] {
+          "22" should contain ('2')
+        }
+        "22" should not contain ('2')
 
-      e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+        e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
 
-      ("22" should contain ('2')) (decided by defaultEquality[Char])
-      val e3 = intercept[TestFailedException] {
-        ("22" should not contain ('2')) (decided by defaultEquality[Char])
+        ("22" should contain ('2')) (decided by defaultEquality[Char])
+        val e3 = intercept[TestFailedException] {
+          ("22" should not contain ('2')) (decided by defaultEquality[Char])
+        }
+
+        e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
+        e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-
-      e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
-      e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
     }
 
     it("should use an Equality of the element type of the left-hand \"holder\" on an Array") {
@@ -106,25 +110,27 @@ class ShouldContainElementNewSpec extends AnyFunSpec with Explicitly {
       e1.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
       e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
 
-      implicit val e = new Equality[Int] {
-        def areEqual(a: Int, b: Any): Boolean = a != b
-      }
-      
-      val e2 = intercept[TestFailedException] {
-        Array(2, 2) should contain (2)
-      }
-      Array(2, 2) should not contain (2)
+      {
+        implicit val e = new Equality[Int] {
+          def areEqual(a: Int, b: Any): Boolean = a != b
+        }
+        
+        val e2 = intercept[TestFailedException] {
+          Array(2, 2) should contain (2)
+        }
+        Array(2, 2) should not contain (2)
 
-      e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+        e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
 
-      (Array(2, 2) should contain (2)) (decided by defaultEquality[Int])
-      val e3 = intercept[TestFailedException] {
-        (Array(2, 2) should not contain (2)) (decided by defaultEquality[Int])
+        (Array(2, 2) should contain (2)) (decided by defaultEquality[Int])
+        val e3 = intercept[TestFailedException] {
+          (Array(2, 2) should not contain (2)) (decided by defaultEquality[Int])
+        }
+
+        e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
+        e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-
-      e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
-      e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
@@ -141,25 +147,27 @@ class ShouldContainElementNewSpec extends AnyFunSpec with Explicitly {
       e1.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
       e1.failedCodeLineNumber should be (Some(thisLineNumber - 4))
 
-      implicit val e = new Equality[Int] {
-        def areEqual(a: Int, b: Any): Boolean = a != b
+      {
+        implicit val e = new Equality[Int] {
+          def areEqual(a: Int, b: Any): Boolean = a != b
+        }
+
+        val e2 = intercept[TestFailedException] {
+          javaSet should contain (2)
+        }
+        javaSet should not contain (2)
+
+        e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
+        e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+
+        (javaSet should contain (2)) (decided by defaultEquality[Int])
+        val e3 = intercept[TestFailedException] {
+          (javaSet should not contain (2)) (decided by defaultEquality[Int])
+        }
+
+        e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
+        e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
-
-      val e2 = intercept[TestFailedException] {
-        javaSet should contain (2)
-      }
-      javaSet should not contain (2)
-
-      e2.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
-      e2.failedCodeLineNumber should be (Some(thisLineNumber - 5))
-
-      (javaSet should contain (2)) (decided by defaultEquality[Int])
-      val e3 = intercept[TestFailedException] {
-        (javaSet should not contain (2)) (decided by defaultEquality[Int])
-      }
-
-      e3.failedCodeFileName should be (Some("ShouldContainElementNewSpec.scala"))
-      e3.failedCodeLineNumber should be (Some(thisLineNumber - 4))
     }
     // SKIP-SCALATESTJS,NATIVE-END
   }
