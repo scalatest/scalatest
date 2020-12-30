@@ -366,7 +366,11 @@ trait DottyBuild { this: BuildCommons =>
     Seq(
       organization := "org.scalatest",
       libraryDependencies ++= scalatestLibraryDependencies,
-      //libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= 
+        Seq(
+          "org.scalatestplus" %% "testng-6-7" % plusTestNGVersion % "test",
+          "org.scalatestplus" %% "junit-4-13" % plusJUnitVersion % "test"
+        ),
       testOptions in Test := scalatestTestOptions,
       logBuffered in Test := false,
       //fork in Test := true,

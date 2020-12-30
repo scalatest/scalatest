@@ -191,7 +191,6 @@ object GenScalaTestDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
       List(
-        "AllSuiteProp.scala", // skipped because does not compile yet
         "AMatcherSpec.scala", // skipped because does not compile yet 
         "AnMatcherSpec.scala",  // skipped because does not compile yet
         "AnyValMatchersSpec.scala",  // skipped because does not compile yet
@@ -235,13 +234,8 @@ object GenScalaTestDotty {
         "ListShouldContainSpec.scala", // skipped because does not compile yet 
         "MatchersSerializableSpec.scala", // skipped because does not compile yet 
         "MatcherStackDepthSpec.scala", // skipped because does not compile yet 
-        "MethodSuiteExamples.scala", // skipped because does not compile yet 
-        "MethodSuiteProp.scala", // skipped because does not compile yet 
         "NoElementsOfContainMatcherEqualitySpec.scala", // skipped because does not compile yet 
         "NoneOfContainMatcherEqualitySpec.scala", // skipped because does not compile yet 
-        //"OptionShouldContainOneOfLogicalAndSpec.scala", // skipped because does not compile yet 
-        //"OptionShouldContainOneOfLogicalOrSpec.scala", // skipped because does not compile yet 
-        //"OptionShouldContainOneOfSpec.scala", // skipped because does not compile yet 
         "OptionShouldContainSpec.scala", // skipped because does not compile yet 
         "OutcomeSpec.scala", // skipped because does not compile yet 
         "PrivateMethodTesterSpec.scala", // skipped because does not compile yet 

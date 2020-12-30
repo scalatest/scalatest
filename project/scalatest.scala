@@ -32,10 +32,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
 
-  val plusJUnitVersion = "3.2.2.0"
-  val plusTestNGVersion = "3.2.2.0"
-  val flexmarkVersion = "0.36.8"
-
   val githubTag = "release-3.2.3" // for scaladoc source urls
 
   val scalatestDocSourceUrl =
