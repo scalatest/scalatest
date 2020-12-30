@@ -34,7 +34,7 @@ class ArgsSpec extends wordspec.AnyWordSpec {
       val sty = Set.empty[String]
       
       val invalidCombos =
-        Table(
+        Table[Reporter, Stopper, Filter, ConfigMap, Option[Distributor], Tracker, Set[String]](
           ("reporter", "stopper", "filter", "configMap", "distributor", "tracker", "chosenStyles"),
           (      null,       stp,      flt,         cnf,           dst,       trk,            sty),
           (       rep,      null,      flt,         cnf,           dst,       trk,            sty),
