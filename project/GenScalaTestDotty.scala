@@ -239,9 +239,9 @@ object GenScalaTestDotty {
         "MethodSuiteProp.scala", // skipped because does not compile yet 
         "NoElementsOfContainMatcherEqualitySpec.scala", // skipped because does not compile yet 
         "NoneOfContainMatcherEqualitySpec.scala", // skipped because does not compile yet 
-        "OptionShouldContainOneOfLogicalAndSpec.scala", // skipped because does not compile yet 
-        "OptionShouldContainOneOfLogicalOrSpec.scala", // skipped because does not compile yet 
-        "OptionShouldContainOneOfSpec.scala", // skipped because does not compile yet 
+        //"OptionShouldContainOneOfLogicalAndSpec.scala", // skipped because does not compile yet 
+        //"OptionShouldContainOneOfLogicalOrSpec.scala", // skipped because does not compile yet 
+        //"OptionShouldContainOneOfSpec.scala", // skipped because does not compile yet 
         "OptionShouldContainSpec.scala", // skipped because does not compile yet 
         "OutcomeSpec.scala", // skipped because does not compile yet 
         "PrivateMethodTesterSpec.scala", // skipped because does not compile yet 
