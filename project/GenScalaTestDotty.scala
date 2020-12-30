@@ -191,8 +191,6 @@ object GenScalaTestDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
       List(
-        //"AnMatcherSpec.scala",  // skipped because does not compile yet
-        "AnyValMatchersSpec.scala",  // skipped because does not compile yet
         "AppendedCluesSpec.scala", // skipped because does not compile yet 
         "ArgsSpec.scala",  // skipped because does not compile yet
         "BeforeAndAfterAllConfigMapSpec.scala", // skipped because does not compile yet 
