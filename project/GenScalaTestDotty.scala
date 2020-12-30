@@ -218,9 +218,6 @@ object GenScalaTestDotty {
         "DeprecatedTestDataProp.scala", // skipped because does not compile yet 
         "DeprecatedTestNameProp.scala", // skipped because does not compile yet 
         "DirectAssertionsSpec.scala", // skipped because does not compile yet 
-        "EveryShouldContainAllElementsOfSpec.scala", // skipped because does not compile yet 
-        "EveryShouldContainAllOfSpec.scala", // skipped because does not compile yet 
-        "EveryShouldContainAtLeastOneElementOfSpec.scala", // skipped because does not compile yet 
         "EveryShouldContainAtLeastOneOfSpec.scala", // skipped because does not compile yet 
         "EveryShouldContainAtMostOneElementOfSpec.scala", // skipped because does not compile yet 
         "EveryShouldContainAtMostOneOfSpec.scala", // skipped because does not compile yet 
