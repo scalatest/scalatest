@@ -218,13 +218,10 @@ object GenScalaTestDotty {
         "DeprecatedTestDataProp.scala", // skipped because does not compile yet 
         "DeprecatedTestNameProp.scala", // skipped because does not compile yet 
         "DirectAssertionsSpec.scala", // skipped because does not compile yet 
-        "EveryShouldContainOneOfSpec.scala", // skipped because does not compile yet 
         "EveryShouldContainOnlyLogicalAndSpec.scala", // skipped because tests failed
         "EveryShouldContainOnlyLogicalOrSpec.scala", // skipped because tests failed 
         "EveryShouldContainOnlySpec.scala", // skipped because does not compile yet 
         "EveryShouldContainSpec.scala", // skipped because does not compile yet 
-        "EveryShouldContainTheSameElementsAsSpec.scala", // skipped because does not compile yet 
-        "EveryShouldContainTheSameElementsInOrderAsSpec.scala", // skipped because does not compile yet 
         "FactSpec.scala", // skipped because does not compile yet 
         "FilterProp.scala", // skipped because does not compile yet 
         "FilterSpec.scala", // skipped because does not compile yet 
