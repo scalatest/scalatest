@@ -198,7 +198,6 @@ object GenScalaTestDotty {
         "EveryShouldContainOnlySpec.scala", // skipped because does not compile yet 
         "EveryShouldContainSpec.scala", // skipped because does not compile yet 
         "FactSpec.scala", // skipped because does not compile yet 
-        "FilterProp.scala", // skipped because does not compile yet 
         "FilterSpec.scala", // skipped because does not compile yet 
         "InheritedTagProp.scala", // skipped because does not compile yet 
         "InspectorsForMapSpec.scala", // skipped because tests failed 
@@ -256,8 +255,6 @@ object GenScalaTestDotty {
         "StreamlinedXmlEqualitySpec.scala", // skipped because does not compile yet 
         "StreamlinedXmlNormMethodsSpec.scala", // skipped because does not compile yet 
         "StreamlinedXmlSpec.scala", // skipped because does not compile yet 
-        "SuiteExamples.scala", // skipped because does not compile yet 
-        "SuiteProp.scala", // skipped because does not compile yet 
         "SuiteSpec.scala", // skipped because does not compile yet 
         "SuiteSuite.scala", // skipped because does not compile yet 
         "TestColonEscapeProp.scala", // skipped because does not compile yet 
