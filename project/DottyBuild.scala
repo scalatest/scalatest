@@ -385,7 +385,9 @@ trait DottyBuild { this: BuildCommons =>
     .settings(sharedTestSettingsDotty)
     .settings(
       projectTitle := "ScalaTest Test",
+      javaSourceManaged := target.value / "java",
       sourceGenerators in Test += Def.task {
+        GenRegularTests4.genJava((javaSourceManaged in Compile).value) ++
         GenScalaTestDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
     ).dependsOn(commonTestDotty % "test").aggregate(
