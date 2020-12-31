@@ -198,7 +198,6 @@ object GenScalaTestDotty {
         "EveryShouldContainOnlySpec.scala", // skipped because does not compile yet 
         "EveryShouldContainSpec.scala", // skipped because does not compile yet 
         "FactSpec.scala", // skipped because does not compile yet 
-        "FilterSpec.scala", // skipped because does not compile yet 
         "InheritedTagProp.scala", // skipped because does not compile yet 
         "InspectorsForMapSpec.scala", // skipped because tests failed 
         "InspectorShorthandsSpec.scala", // skipped because does not compile yet 
