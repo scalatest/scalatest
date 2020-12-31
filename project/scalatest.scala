@@ -198,6 +198,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       "-m", "org.scalactic.enablers",
       "-m", "org.scalatest.fixture",
       "-m", "org.scalatest.concurrent",
+      "-m", "org.scalatest.deprecated",
       "-m", "org.scalatest.events",
       "-m", "org.scalatest.prop",
       "-m", "org.scalatest.tools",
