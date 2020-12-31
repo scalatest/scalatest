@@ -35,7 +35,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.propspec.AnyPropSpec
 import org.scalatest.wordspec.AnyWordSpec
 
-trait DeprecatedSuiteTimeoutSetting { s: ParallelTestExecution =>
+trait DeprecatedSuiteTimeoutSetting { s: ParallelTestExecution with Suite =>
   override abstract def sortingTimeout: Span = Span(300, Millis)
 }
 
@@ -46,7 +46,7 @@ trait DeprecatedSuiteTimeoutSuites extends EventHelpers {
   val holdingTestName: String
   val holdingScopeClosedName: Option[String]
   val holdUntilEventCount: Int
-  def assertSuiteTimeoutTest(events: List[Event])
+  def assertSuiteTimeoutTest(events: List[Event]): Unit
 }
 
 class DeprecatedSuiteHoldingReporter(dispatch: Reporter, holdingSuiteId: String, holdingTestName: String, holdingScopeClosedName: Option[String]) extends CatchReporter {

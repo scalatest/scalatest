@@ -192,10 +192,6 @@ object GenScalaTestDotty {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
       List(
         "DeprecatedFeatureSpecSpec.scala", // skipped because does not compile yet 
-        "DeprecatedParallelTestExecutionInfoExamples.scala", // skipped because does not compile yet 
-        "DeprecatedParallelTestExecutionOrderExamples.scala", // skipped because does not compile yet 
-        "DeprecatedParallelTestExecutionSuiteTimeoutExamples.scala", // skipped because does not compile yet 
-        "DeprecatedParallelTestExecutionTestTimeoutExamples.scala", // skipped because does not compile yet 
         "DeprecatedStatusProp.scala", // skipped because does not compile yet 
         "DeprecatedStopOnFailureProp.scala", // skipped because does not compile yet 
         "DeprecatedTestDataProp.scala", // skipped because does not compile yet 
