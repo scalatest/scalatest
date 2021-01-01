@@ -207,8 +207,7 @@ object GenScalaTestDotty {
         "ListShouldContainSpec.scala", // skipped because does not compile yet 
         "MatchersSerializableSpec.scala", // skipped because does not compile yet 
         "MatcherStackDepthSpec.scala", // skipped because does not compile yet 
-        //"NoElementsOfContainMatcherEqualitySpec.scala", // skipped because does not compile yet 
-        "NoneOfContainMatcherEqualitySpec.scala", // skipped because does not compile yet 
+        //"NoneOfContainMatcherEqualitySpec.scala", // skipped because does not compile yet 
         "OptionShouldContainSpec.scala", // skipped because does not compile yet 
         "OutcomeSpec.scala", // skipped because does not compile yet 
         "PrivateMethodTesterSpec.scala", // skipped because does not compile yet 
