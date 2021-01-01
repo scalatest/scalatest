@@ -229,7 +229,6 @@ object GenScalaTestDotty {
         "ShouldMatchPatternSpec.scala", // skipped because does not compile yet 
         "ShouldNotBeThrownBySpec.scala", // skipped because does not compile yet 
         "ShouldNotTypeCheckSpec.scala", // skipped because tests failed 
-        "ShouldSizeSpec.scala", // skipped because does not compile yet 
         "ShouldStructuralLengthSpec.scala", // skipped because does not compile yet 
         "ShouldStructuralSizeSpec.scala", // skipped because does not compile yet 
         "ShouldTripleEqualsEqualitySpec.scala", // skipped because does not compile yet 
