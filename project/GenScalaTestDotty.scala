@@ -210,8 +210,6 @@ object GenScalaTestDotty {
         "OptionShouldContainSpec.scala", // skipped because does not compile yet 
         "PrivateMethodTesterSpec.scala", // skipped because does not compile yet 
         "PropertyFunSuite.scala", // skipped because does not compile yet 
-        "PropSpecSpec.scala", // skipped because does not compile yet  
-        "RecoverMethodsSpec.scala", // skipped because does not compile yet 
         "RefSpecSpec.scala", // skipped because does not compile yet 
         "SequentialNestedSuiteExecutionSpec.scala", // skipped because does not compile yet 
         "SeveredStackTracesFailureSpec.scala", // skipped because tests failed 
