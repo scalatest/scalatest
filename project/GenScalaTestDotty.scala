@@ -224,7 +224,6 @@ object GenScalaTestDotty {
         "ShouldBeShorthandSpec.scala", // skipped because does not compile yet 
         "ShouldBeSymbolSpec.scala", // skipped because does not compile yet 
         "ShouldBeThrownBySpec.scala", // skipped because does not compile yet 
-        "ShouldEqualEqualitySpec.scala", // skipped because does not compile yet 
         "ShouldHavePropertiesSpec.scala", // skipped because does not compile yet 
         "ShouldLengthSizeSpec.scala", // skipped because does not compile yet 
         "ShouldLengthSpec.scala", // skipped because does not compile yet 
