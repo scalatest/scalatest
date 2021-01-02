@@ -138,9 +138,6 @@ object GenScalaTestDotty {
         "DiagrammedExpr.scala",             // Re-implemented
         "Expectations.scala",               // Re-implemented
         "ExpectationsMacro.scala",          // Re-implemented
-        "StreamlinedXml.scala",             // Hmm, not sure what to do with XML support, let's ask.
-        "StreamlinedXmlEquality.scala",     // Hmm, not sure what to do with XML support, let's ask.
-        "StreamlinedXmlNormMethods.scala"   // Hmm, not sure what to do with XML support, let's ask.
       ), 
       "org/scalatest/concurrent" -> List.empty, 
       "org/scalatest/diagrams" -> List(
@@ -231,10 +228,6 @@ object GenScalaTestDotty {
         "ShouldNotTypeCheckSpec.scala", // skipped because tests failed 
         "StatefulStatusSpec.scala", // skipped because does not compile yet 
         "StatusSpec.scala", // skipped because does not compile yet 
-        //"StopOnFailureProp.scala", // skipped because does not compile yet 
-        "StreamlinedXmlEqualitySpec.scala", // skipped because does not compile yet 
-        "StreamlinedXmlNormMethodsSpec.scala", // skipped because does not compile yet 
-        "StreamlinedXmlSpec.scala", // skipped because does not compile yet 
         "SuiteSpec.scala", // skipped because does not compile yet 
         "SuiteSuite.scala", // skipped because does not compile yet 
         "TestColonEscapeProp.scala", // skipped because does not compile yet 
