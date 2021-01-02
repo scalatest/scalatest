@@ -32,6 +32,6 @@ class TestLocationJUnitSuite extends JUnitSuite with TestLocationServices {
   
   @Test
   def testFail(): Unit = { 
-    fail
+    fail()
   }
 }
