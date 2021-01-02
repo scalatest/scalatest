@@ -76,7 +76,7 @@ class StepwiseNestedSuiteExecutionSpec extends AnyFunSpec {
           //SCALATESTJS,NATIVE-ONLY val distributor2 = new TestConcurrentDistributor()
 
           val stpStatus = stp.run(None, Args(SilentReporter, distributor = Some(distributor2)))
-          assert(stpStatus.isCompleted) // When a stepwise execution returns, the whole thing should be completed already, even though some of it may have run in parallel
+          assert(stpStatus.isCompleted()) // When a stepwise execution returns, the whole thing should be completed already, even though some of it may have run in parallel
           assert(!stp.superRunNestedSuitesWasInvoked )
           assert(!stp.distributorWasDefined)
           assert(stp.distributorWasPropagated)
