@@ -229,7 +229,7 @@ object GenScalaTestDotty {
         "StatefulStatusSpec.scala", // skipped because does not compile yet 
         "StatusSpec.scala", // skipped because does not compile yet 
         "SuiteSuite.scala", // skipped because does not compile yet 
-        "TestNameProp.scala", // skipped because does not compile yet 
+        //"TestNameProp.scala", // skipped because does not compile yet 
         "TypeCheckedAssertionsSpec.scala", // skipped because does not compile yet 
       )
     ) ++ 
