@@ -231,8 +231,7 @@ object GenScalaTestDotty {
         "ShouldNotTypeCheckSpec.scala", // skipped because tests failed 
         "StatefulStatusSpec.scala", // skipped because does not compile yet 
         "StatusSpec.scala", // skipped because does not compile yet 
-        //"StepwiseNestedSuiteExecutionSpec.scala", // skipped because does not compile yet 
-        "StopOnFailureProp.scala", // skipped because does not compile yet 
+        //"StopOnFailureProp.scala", // skipped because does not compile yet 
         "StreamlinedXmlEqualitySpec.scala", // skipped because does not compile yet 
         "StreamlinedXmlNormMethodsSpec.scala", // skipped because does not compile yet 
         "StreamlinedXmlSpec.scala", // skipped because does not compile yet 
