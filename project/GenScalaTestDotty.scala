@@ -302,7 +302,6 @@ object GenScalaTestDotty {
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
         List(
-          "DiscoverySuiteSuite.scala",  // skipped because failing test.
           "FilterReporterSpec.scala",  // skipped because does not compile yet.
           "FrameworkSuite.scala", // skipped because hang when tests execute.
           "ScalaTestFrameworkSuite.scala", // skipped because does not compile yet.
@@ -312,7 +311,8 @@ object GenScalaTestDotty {
           "SuiteSortingReporterSpec.scala",  // skipped because does not compile yet.
           "TestSortingReporterSpec.scala" // skipped because does not compile yet.
         )
-      )
+      ) ++ 
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools/scalasbt", "org/scalatest/tools/scalasbt", targetDir, List.empty)
     }
 
     def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
