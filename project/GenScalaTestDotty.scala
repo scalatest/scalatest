@@ -306,7 +306,6 @@ object GenScalaTestDotty {
           "ScalaTestRunnerSuite.scala", // skipped because does not compile yet.
           "SuiteDiscoveryHelperSuite.scala",  // skipped because does not compile yet.
           "XmlSocketReporterSpec.scala", // skipped because tests failed execute.
-          "SuiteSortingReporterSpec.scala",  // skipped because does not compile yet.
           "TestSortingReporterSpec.scala" // skipped because does not compile yet.
         )
       ) ++ 
