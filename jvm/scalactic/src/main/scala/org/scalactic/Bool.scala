@@ -409,28 +409,28 @@ private[scalactic] class AndBool(bool1: Bool, bool2: => Bool, val prettifier: Pr
    *
    * @return <code>Vector</code> that contains <code>bool1.negatedFailureMessage</code> and <code>bool2.midSentenceFailureMessage</code>
    */
-  def failureMessageArgs = Vector(bool1.negatedFailureMessage, bool2.midSentenceFailureMessage)
+  def failureMessageArgs = Vector(UnquotedString(bool1.negatedFailureMessage), UnquotedString(bool2.midSentenceFailureMessage))
 
   /**
    * Arguments to construct final negated failure message with raw message returned from <code>rawNegatedFailureMessage</code>.
    *
    * @return <code>Vector</code> that contains <code>bool1.negatedFailureMessage</code> and <code>bool2.midSentenceNegatedFailureMessage</code>
    */
-  def negatedFailureMessageArgs = Vector(bool1.negatedFailureMessage, bool2.midSentenceNegatedFailureMessage)
+  def negatedFailureMessageArgs = Vector(UnquotedString(bool1.negatedFailureMessage), UnquotedString(bool2.midSentenceNegatedFailureMessage))
 
   /**
    * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.
    *
    * @return <code>Vector</code> that contains <code>bool1.midSentenceNegatedFailureMessage</code> and <code>bool2.midSentenceFailureMessage</code>
    */
-  def midSentenceFailureMessageArgs = Vector(bool1.midSentenceNegatedFailureMessage, bool2.midSentenceFailureMessage)
+  def midSentenceFailureMessageArgs = Vector(UnquotedString(bool1.midSentenceNegatedFailureMessage), UnquotedString(bool2.midSentenceFailureMessage))
 
   /**
    * Arguments to construct final negated mid sentence failure message with raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>.
    *
    * @return <code>Vector</code> that contains <code>bool1.midSentenceNegatedFailureMessage</code> and <code>bool2.midSentenceNegatedFailureMessage</code>
    */
-  def midSentenceNegatedFailureMessageArgs = Vector(bool1.midSentenceNegatedFailureMessage, bool2.midSentenceNegatedFailureMessage)
+  def midSentenceNegatedFailureMessageArgs = Vector(UnquotedString(bool1.midSentenceNegatedFailureMessage), UnquotedString(bool2.midSentenceNegatedFailureMessage))
 }
 
 /**
@@ -479,28 +479,28 @@ private[scalactic] class OrBool(bool1: Bool, bool2: => Bool, val prettifier: Pre
    *
    * @return <code>Vector</code> that contains <code>bool1.failureMessage</code> and <code>bool2.midSentenceFailureMessage</code>
    */
-  def failureMessageArgs = Vector(bool1.failureMessage, bool2.midSentenceFailureMessage)
+  def failureMessageArgs = Vector(UnquotedString(bool1.failureMessage), UnquotedString(bool2.midSentenceFailureMessage))
 
   /**
    * Arguments to construct final negated failure message with raw message returned from <code>rawNegatedFailureMessage</code>.
    *
    * @return <code>Vector</code> that contains <code>bool1.failureMessage</code> and <code>bool2.midSentenceNegatedFailureMessage</code>
    */
-  def negatedFailureMessageArgs = Vector(bool1.failureMessage, bool2.midSentenceNegatedFailureMessage)
+  def negatedFailureMessageArgs = Vector(UnquotedString(bool1.failureMessage), UnquotedString(bool2.midSentenceNegatedFailureMessage))
 
   /**
    * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.
    *
    * @return <code>Vector</code> that contains <code>bool1.midSentenceFailureMessage</code> and <code>bool2.midSentenceFailureMessage</code>
    */
-  def midSentenceFailureMessageArgs = Vector(bool1.midSentenceFailureMessage, bool2.midSentenceFailureMessage)
+  def midSentenceFailureMessageArgs = Vector(UnquotedString(bool1.midSentenceFailureMessage), UnquotedString(bool2.midSentenceFailureMessage))
 
   /**
    * Arguments to construct final negated mid sentence failure message with raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>.
    *
    * @return <code>Vector</code> that contains <code>bool1.midSentenceFailureMessage</code> and <code>bool2.midSentenceNegatedFailureMessage</code>
    */
-  def midSentenceNegatedFailureMessageArgs = Vector(bool1.midSentenceFailureMessage, bool2.midSentenceNegatedFailureMessage)
+  def midSentenceNegatedFailureMessageArgs = Vector(UnquotedString(bool1.midSentenceFailureMessage), UnquotedString(bool2.midSentenceNegatedFailureMessage))
 }
 
 private[scalactic] class NotBool(bool: Bool, val prettifier: Prettifier) extends Bool {
