@@ -306,7 +306,6 @@ object GenScalaTestDotty {
           "ScalaTestRunnerSuite.scala", // skipped because does not compile yet.
           "SuiteDiscoveryHelperSuite.scala",  // skipped because does not compile yet.
           "XmlSocketReporterSpec.scala", // skipped because tests failed execute.
-          "TestSortingReporterSpec.scala" // skipped because does not compile yet.
         )
       ) ++ 
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools/scalasbt", "org/scalatest/tools/scalasbt", targetDir, List.empty)
