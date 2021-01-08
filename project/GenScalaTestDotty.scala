@@ -138,6 +138,7 @@ object GenScalaTestDotty {
         "DiagrammedExpr.scala",             // Re-implemented
         "Expectations.scala",               // Re-implemented
         "ExpectationsMacro.scala",          // Re-implemented
+        "Inspectors.scala",                 // Re-implemented without path-dependent type
       ), 
       "org/scalatest/concurrent" -> List.empty, 
       "org/scalatest/diagrams" -> List(
@@ -145,7 +146,9 @@ object GenScalaTestDotty {
         "DiagramsMacro.scala"
       ), 
       "org/scalatest/exceptions" -> List.empty, 
-      "org/scalatest/enablers" -> List.empty, 
+      "org/scalatest/enablers" -> List(
+        "InspectorAsserting.scala"     // Re-implemented without path-dependent type
+      ), 
       "org/scalatest/events" -> List.empty, 
       "org/scalatest/fixture" -> List.empty, 
       "org/scalatest/featurespec" -> List.empty, 
