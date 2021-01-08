@@ -61,17 +61,11 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
     FailureMessages.wasLessThanOrEqualTo(prettifier, left, right)
 
   def commaAnd(left: String, right: String): String =
-  // SKIP-DOTTY-START
     FailureMessages.commaAnd(prettifier, UnquotedString(left), UnquotedString(right))
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY FailureMessages.commaAnd(prettifier, left, right)
-
+  
   def commaBut(left: String, right: String): String =
-  // SKIP-DOTTY-START
     FailureMessages.commaBut(prettifier, UnquotedString(left), UnquotedString(right))
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY FailureMessages.commaBut(prettifier, left, right)
-
+  
   def wasFalse(left: String): String =
     left + " was false"
 

@@ -30,7 +30,7 @@ import org.scalatest.propspec.AnyPropSpec
 import org.scalatest.wordspec.AnyWordSpec
 
 trait InfoExpectedResults extends EventHelpers {
-  def assertBeforeAfterInfo(events: List[Event])
+  def assertBeforeAfterInfo(events: List[Event]): Unit
 }
 
 object ParallelTestExecutionInfoExamples extends Tables {

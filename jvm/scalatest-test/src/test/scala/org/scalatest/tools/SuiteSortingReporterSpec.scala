@@ -55,17 +55,17 @@ class SuiteSortingReporterSpec extends AnyFunSpec with Matchers with EventHelper
 
     val tracker = new Tracker()
 
-    reporter(SuiteStarting(tracker.nextOrdinal, spec1.suiteName, spec1.suiteId, Some(spec1.getClass.getName), None))
+    reporter(SuiteStarting(tracker.nextOrdinal(), spec1.suiteName, spec1.suiteId, Some(spec1.getClass.getName), None))
 
     spec1.run(None, Args(reporter, tracker = tracker, distributedSuiteSorter = dss))
-    reporter(SuiteStarting(tracker.nextOrdinal, spec2.suiteName, spec2.suiteId, Some(spec2.getClass.getName), None))
+    reporter(SuiteStarting(tracker.nextOrdinal(), spec2.suiteName, spec2.suiteId, Some(spec2.getClass.getName), None))
     spec2.run(None, Args(reporter, tracker = tracker, distributedSuiteSorter = dss))
     spec1.batch = 1
     spec1.run(None, Args(reporter, tracker = tracker, distributedSuiteSorter = dss))
-    reporter(SuiteCompleted(tracker.nextOrdinal, spec1.suiteName, spec1.suiteId, Some(spec1.getClass.getName), None))
+    reporter(SuiteCompleted(tracker.nextOrdinal(), spec1.suiteName, spec1.suiteId, Some(spec1.getClass.getName), None))
     spec2.batch = 1
     spec2.run(None, Args(reporter, tracker = tracker, distributedSuiteSorter = dss))
-    reporter(SuiteCompleted(tracker.nextOrdinal, spec2.suiteName, spec2.suiteId, Some(spec2.getClass.getName), None))
+    reporter(SuiteCompleted(tracker.nextOrdinal(), spec2.suiteName, spec2.suiteId, Some(spec2.getClass.getName), None))
   }
 
   describe("The RunInSpurtsSpec classes") {
@@ -341,16 +341,16 @@ class SuiteSortingReporterSpec extends AnyFunSpec with Matchers with EventHelper
       
       val tracker = new Tracker()
       
-      dispatch(SuiteStarting(tracker.nextOrdinal, "suite1", "suite1", Some("suite1 class name")))
-      dispatch(SuiteStarting(tracker.nextOrdinal, "suite2", "suite2", Some("suite2 class name")))
-      dispatch(TestStarting(tracker.nextOrdinal, "suite2", "suite2", Some("suite2 class name"), "Suite 2 Test", "Suite 2 Test"))
-      dispatch(SuiteCompleted(tracker.nextOrdinal, "suite2", "suite2", Some("suite2 class name")))
-      dispatch(TestStarting(tracker.nextOrdinal, "suite1", "suite1", Some("suite1 class name"), "Suite 1 Test", "Suite 1 Test"))
-      dispatch(TestSucceeded(tracker.nextOrdinal, "suite1", "suite1", Some("suite1 class name"), "Suite 1 Test", "Suite 1 Test", Vector.empty))
-      dispatch(TestSucceeded(tracker.nextOrdinal, "suite2", "suite2", Some("suite2 class name"), "Suite 2 Test", "Suite 2 Test", Vector.empty))
+      dispatch(SuiteStarting(tracker.nextOrdinal(), "suite1", "suite1", Some("suite1 class name")))
+      dispatch(SuiteStarting(tracker.nextOrdinal(), "suite2", "suite2", Some("suite2 class name")))
+      dispatch(TestStarting(tracker.nextOrdinal(), "suite2", "suite2", Some("suite2 class name"), "Suite 2 Test", "Suite 2 Test"))
+      dispatch(SuiteCompleted(tracker.nextOrdinal(), "suite2", "suite2", Some("suite2 class name")))
+      dispatch(TestStarting(tracker.nextOrdinal(), "suite1", "suite1", Some("suite1 class name"), "Suite 1 Test", "Suite 1 Test"))
+      dispatch(TestSucceeded(tracker.nextOrdinal(), "suite1", "suite1", Some("suite1 class name"), "Suite 1 Test", "Suite 1 Test", Vector.empty))
+      dispatch(TestSucceeded(tracker.nextOrdinal(), "suite2", "suite2", Some("suite2 class name"), "Suite 2 Test", "Suite 2 Test", Vector.empty))
       
       Thread.sleep(1500) // Wait for the SuiteSortingReporter timeout, which is 1 second (set above)
-      dispatch(SuiteCompleted(tracker.nextOrdinal, "suite1", "suite1", Some("suite1 class name"), None))
+      dispatch(SuiteCompleted(tracker.nextOrdinal(), "suite1", "suite1", Some("suite1 class name"), None))
       
       val recordedEvents = recordingReporter.eventsReceived
       assert(recordedEvents.size === 8)

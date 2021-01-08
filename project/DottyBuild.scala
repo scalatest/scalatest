@@ -366,7 +366,11 @@ trait DottyBuild { this: BuildCommons =>
     Seq(
       organization := "org.scalatest",
       libraryDependencies ++= scalatestLibraryDependencies,
-      //libraryDependencies ++= scalatestTestLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= 
+        Seq(
+          "org.scalatestplus" %% "testng-6-7" % plusTestNGVersion % "test",
+          "org.scalatestplus" %% "junit-4-13" % plusJUnitVersion % "test"
+        ),
       testOptions in Test := scalatestTestOptions,
       logBuffered in Test := false,
       //fork in Test := true,
@@ -381,7 +385,9 @@ trait DottyBuild { this: BuildCommons =>
     .settings(sharedTestSettingsDotty)
     .settings(
       projectTitle := "ScalaTest Test",
+      javaSourceManaged := target.value / "java",
       sourceGenerators in Test += Def.task {
+        GenRegularTests4.genJava((javaSourceManaged in Compile).value) ++
         GenScalaTestDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
     ).dependsOn(commonTestDotty % "test").aggregate(

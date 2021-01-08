@@ -35,7 +35,7 @@ class FilterReporterSpec extends AnyFunSpec {
     test("failed test") {
       info("failed info")
       markup("failed markup")
-      fail
+      fail()
     }
     test("pending test") {
       info("pending info")
@@ -45,7 +45,7 @@ class FilterReporterSpec extends AnyFunSpec {
     test("canceled test") {
       info("canceled info")
       markup("canceled markup")
-      cancel
+      cancel()
     }
   }
   

@@ -246,10 +246,13 @@ class OptionShouldContainOneElementOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiSomes) should contain oneElementOf Seq("ho", "he")
         }
-        implicit val ise = upperCaseEquality
-        all (hiSomes) should contain oneElementOf Seq("HI", "HE")
-        intercept[TestFailedException] {
-          all (hiSomes) should contain oneElementOf Seq("hi", "he")
+
+        {
+          implicit val ise = upperCaseEquality
+          all (hiSomes) should contain oneElementOf Seq("HI", "HE")
+          intercept[TestFailedException] {
+            all (hiSomes) should contain oneElementOf Seq("hi", "he")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -311,10 +314,13 @@ class OptionShouldContainOneElementOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiSomes) should (contain oneElementOf Seq("HI", "HE"))
         }
-        implicit val ise = upperCaseEquality
-        all (hiSomes) should (contain oneElementOf Seq("HI", "HE"))
-        intercept[TestFailedException] {
-          all (hiSomes) should (contain oneElementOf Seq("hi", "he"))
+
+        {
+          implicit val ise = upperCaseEquality
+          all (hiSomes) should (contain oneElementOf Seq("HI", "HE"))
+          intercept[TestFailedException] {
+            all (hiSomes) should (contain oneElementOf Seq("hi", "he"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {

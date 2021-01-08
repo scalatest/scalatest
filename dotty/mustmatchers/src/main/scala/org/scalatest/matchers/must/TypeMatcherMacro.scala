@@ -17,6 +17,9 @@ package org.scalatest.matchers.must
 
 import org.scalatest.matchers.dsl.{ResultOfAnTypeInvocation, MatcherWords, ResultOfATypeInvocation, ResultOfNotWordForAny}
 
+import org.scalactic.source.Position
+import org.scalactic.Prettifier
+
 // //import org.scalatest.words.{FactResultOfAnTypeInvocation, FactResultOfATypeInvocation}
 // import org.scalactic.Prettifier
 // import org.scalatest.{UnquotedString, Resources, Suite, FailureMessages, Assertions}
@@ -48,20 +51,20 @@ object TypeMatcherMacro {
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'mustBe a [type]' syntax
-  def mustBeATypeImpl(self: Expr[org.scalatest.matchers.must.Matchers#AnyMustWrapper[_]], aType: Expr[ResultOfATypeInvocation[_]])(using Quotes): Expr[org.scalatest.Assertion] = {
+  def mustBeATypeImpl[T](leftSideValue: Expr[T], aType: Expr[ResultOfATypeInvocation[_]], pos: Expr[Position], prettifier: Expr[Prettifier])(using Quotes, Type[T]): Expr[org.scalatest.Assertion] = {
     import quotes.reflect._
     checkTypeParameter(aType.asTerm, "a")
     '{
-      org.scalatest.matchers.TypeMatcherHelper.assertAType(($self).leftSideValue, $aType, ($self).prettifier, ($self).pos)
+      org.scalatest.matchers.TypeMatcherHelper.assertAType($leftSideValue, $aType, $prettifier, $pos)
     }
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAnType, used by 'mustBe an [type]' syntax
-  def mustBeAnTypeImpl(self: Expr[org.scalatest.matchers.must.Matchers#AnyMustWrapper[_]], anType: Expr[ResultOfAnTypeInvocation[_]])(using Quotes): Expr[org.scalatest.Assertion] = {
+  def mustBeAnTypeImpl[T](leftSideValue: Expr[T], anType: Expr[ResultOfAnTypeInvocation[_]], pos: Expr[Position], prettifier: Expr[Prettifier])(using Quotes, Type[T]): Expr[org.scalatest.Assertion] = {
     import quotes.reflect._
     checkTypeParameter(anType.asTerm, "an")
     '{
-      org.scalatest.matchers.TypeMatcherHelper.assertAnType(($self).leftSideValue, $anType, ($self).prettifier, ($self).pos)
+      org.scalatest.matchers.TypeMatcherHelper.assertAnType($leftSideValue, $anType, $prettifier, $pos)
     }
   }
 
