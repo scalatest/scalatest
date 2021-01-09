@@ -219,8 +219,9 @@ trait Inspectors {
    * @tparam C the type of collection
    *
    */
-  def forAll[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAll[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    //asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    ${ Inspectors.forAllMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   /**
@@ -636,7 +637,23 @@ trait Inspectors {
  * an alternative to mixing it in. One use case is to import <code>Inspectors</code>'s members so you can use
  * them in the Scala interpreter.
  */
-object Inspectors extends Inspectors
+object Inspectors extends Inspectors {
+
+  def forAllImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  import scala.quoted._
+
+  private[scalatest] def forAllMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAllImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+}
 
 private[scalatest] object InspectorsHelper {
 
