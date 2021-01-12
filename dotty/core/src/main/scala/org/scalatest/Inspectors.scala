@@ -219,8 +219,8 @@ trait Inspectors {
    * @tparam C the type of collection
    *
    */
-  def forAll[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAll[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forAllMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   /**
@@ -241,8 +241,8 @@ trait Inspectors {
     * @tparam MAP subtype of <code>java.util.Map</code>
     *
     */
-  def forAll[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAll[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forAllForMapMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -264,8 +264,8 @@ trait Inspectors {
    * @tparam JMAP subtype of <code>java.util.Map</code>
    *
    */
-  def forAll[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAll[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forAllForJMapMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -284,8 +284,8 @@ trait Inspectors {
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    *
    */
-  def forAll[ASSERTION, RESULT](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAll[ASSERTION, RESULT](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forAllForStringMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   /**
@@ -299,8 +299,8 @@ trait Inspectors {
    * @tparam C the type of collection
    *
    */
-  def forAtLeast[E, C[_], ASSERTION, RESULT](min: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAtLeast[E, C[_], ASSERTION, RESULT](min: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forAtLeastMacro('{min}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   /**
@@ -315,8 +315,8 @@ trait Inspectors {
     * @tparam MAP subtype of <code>scala.collection.GenMap</code>
     *
     */
-  def forAtLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](min: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAtLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](min: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forAtLeastForMapMacro('{min}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -332,8 +332,8 @@ trait Inspectors {
    * @tparam JMAP subtype of <code>java.util.Map</code>
    *
    */
-  def forAtLeast[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](min: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V],JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAtLeast[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](min: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V],JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forAtLeastForJMapMacro('{min}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -346,8 +346,8 @@ trait Inspectors {
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    *
    */
-  def forAtLeast[ASSERTION, RESULT](min: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAtLeast[ASSERTION, RESULT](min: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forAtLeastForStringMacro('{min}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   private def shouldIncludeIndex[T, R](xs: GenTraversable[T]) = xs.isInstanceOf[GenSeq[T]]
@@ -362,8 +362,8 @@ trait Inspectors {
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    */
-  def forAtMost[E, C[_], ASSERTION, RESULT](max: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAtMost[E, C[_], ASSERTION, RESULT](max: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forAtMostMacro('{max}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   /**
@@ -377,8 +377,8 @@ trait Inspectors {
     * @tparam V the type of value in the <code>scala.collection.GenMap</code>
     * @tparam MAP subtype of <code>scala.collection.GenMap</code>
     */
-  def forAtMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](max: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAtMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](max: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forAtMostForMapMacro('{max}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -393,8 +393,8 @@ trait Inspectors {
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](max: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](max: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forAtMostForJMapMacro('{max}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -406,8 +406,8 @@ trait Inspectors {
    * @param fun the inspection function
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
-  def forAtMost[ASSERTION, RESULT](max: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forAtMost[ASSERTION, RESULT](max: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forAtMostForStringMacro('{max}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   /**
@@ -420,8 +420,8 @@ trait Inspectors {
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    */
-  def forExactly[E, C[_], ASSERTION, RESULT](succeededCount: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forExactly[E, C[_], ASSERTION, RESULT](succeededCount: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forExactlyMacro('{succeededCount}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   /**
@@ -435,8 +435,8 @@ trait Inspectors {
     * @tparam V the type of value in the <code>scala.collection.GenMap</code>
     * @tparam MAP subtype of <code>scala.collection.GenMap</code>
     */
-  def forExactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](succeededCount: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forExactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](succeededCount: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forExactlyForMapMacro('{succeededCount}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -451,8 +451,8 @@ trait Inspectors {
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forExactlyForJMapMacro('{succeededCount}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -464,26 +464,26 @@ trait Inspectors {
    * @param fun the inspection function
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
-  def forExactly[ASSERTION, RESULT](succeededCount: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forExactly[ASSERTION, RESULT](succeededCount: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forExactlyForStringMacro('{succeededCount}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   
-  private[scalatest] def forNo[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  private[scalatest] inline def forNo[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forNoMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
-  private[scalatest] def forNo[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  private[scalatest] inline def forNo[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forNoForMapMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
-  private[scalatest] def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  private[scalatest] inline def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forNoForJMapMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
-  private[scalatest] def forNo[ASSERTION, RESULT](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  private[scalatest] inline def forNo[ASSERTION, RESULT](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forNoForStringMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   /**
@@ -497,8 +497,8 @@ trait Inspectors {
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    */
-  def forBetween[E, C[_], ASSERTION, RESULT](from: Int, upTo: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forBetween[E, C[_], ASSERTION, RESULT](from: Int, upTo: Int, xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forBetweenMacro('{from}, '{upTo}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   /**
@@ -513,8 +513,8 @@ trait Inspectors {
     * @tparam V the type of value in the <code>scala.collection.GenMap</code>
     * @tparam MAP subtype of <code>scala.collection.GenMap</code>
     */
-  def forBetween[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forBetween[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forBetweenForMapMacro('{from}, '{upTo}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -530,8 +530,8 @@ trait Inspectors {
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forBetweenForJMapMacro('{from}, '{upTo}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -544,8 +544,8 @@ trait Inspectors {
    * @param fun the inspection function
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
-  def forBetween[ASSERTION, RESULT](from: Int, upTo: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forBetween[ASSERTION, RESULT](from: Int, upTo: Int, xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forBetweenForStringMacro('{from}, '{upTo}, '{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   /**
@@ -564,8 +564,8 @@ trait Inspectors {
    * @tparam E the type of element in the collection
    * @tparam C the type of collection
    */
-  def forEvery[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forEvery[E, C[_], ASSERTION, RESULT](xs: C[E])(fun: E => ASSERTION)(implicit collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forEveryMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   /**
@@ -585,8 +585,8 @@ trait Inspectors {
     * @tparam V the type of value in the <code>scala.collection.GenMap</code>
     * @tparam MAP subtype of <code>scala.collection.GenMap</code>
     */
-  def forEvery[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forEvery[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V])(fun: ((K, V)) => ASSERTION)(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forEveryForMapMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -607,8 +607,8 @@ trait Inspectors {
    * @tparam V the type of value in the <code>java.util.Map</code>
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
-  def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => ASSERTION)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forEveryForJMapMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -626,8 +626,8 @@ trait Inspectors {
    * @param fun the inspection function
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
-  def forEvery[ASSERTION, RESULT](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  inline def forEvery[ASSERTION, RESULT](xs: String)(fun: Char => ASSERTION)(implicit collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier): RESULT = {
+    ${ Inspectors.forEveryForStringMacro('{xs})('{fun}, '{collecting}, '{asserting}, '{prettifier}) }
   }
 }
 
@@ -636,7 +636,375 @@ trait Inspectors {
  * an alternative to mixing it in. One use case is to import <code>Inspectors</code>'s members so you can use
  * them in the Scala interpreter.
  */
-object Inspectors extends Inspectors
+object Inspectors extends Inspectors {
+
+  import scala.quoted._
+
+  def forAllImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forAllMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAllImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forAllForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forAllForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAllForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forAllForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forAllForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAllForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forAllForStringImpl[ASSERTION, RESULT](xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forAllForStringMacro[ASSERTION, RESULT](xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAllForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forAtLeastImpl[E, C[_], ASSERTION, RESULT](min: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forAtLeastMacro[E, C[_], ASSERTION, RESULT](min: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAtLeastImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forAtLeastForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](min: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forAtLeastForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](min: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAtLeastForMapImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forAtLeastForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](min: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forAtLeastForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](min: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAtLeastForJMapImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forAtLeastForStringImpl[ASSERTION, RESULT](min: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forAtLeastForStringMacro[ASSERTION, RESULT](min: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAtLeastForStringImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forAtMostImpl[E, C[_], ASSERTION, RESULT](max: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forAtMostMacro[E, C[_], ASSERTION, RESULT](max: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAtMostImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forAtMostForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](max: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forAtMostForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](max: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAtMostForMapImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forAtMostForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](max: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forAtMostForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](max: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAtMostForJMapImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forAtMostForStringImpl[ASSERTION, RESULT](max: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forAtMostForStringMacro[ASSERTION, RESULT](max: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forAtMostForStringImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forExactlyImpl[E, C[_], ASSERTION, RESULT](succeededCount: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forExactlyMacro[E, C[_], ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forExactlyImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forExactlyForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](succeededCount: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forExactlyForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forExactlyForMapImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forExactlyForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](succeededCount: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forExactlyForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forExactlyForJMapImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forExactlyForStringImpl[ASSERTION, RESULT](succeededCount: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forExactlyForStringMacro[ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forExactlyForStringImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forNoImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forNoMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forNoImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forNoForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forNoForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forNoForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forNoForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forNoForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forNoForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forNoForStringImpl[ASSERTION, RESULT](xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forNoForStringMacro[ASSERTION, RESULT](xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forNoForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forBetweenImpl[E, C[_], ASSERTION, RESULT](from: Int, upTo: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forBetweenMacro[E, C[_], ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forBetweenImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forBetweenForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forBetweenForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forBetweenForMapImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forBetweenForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forBetweenForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forBetweenForJMapImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forBetweenForStringImpl[ASSERTION, RESULT](from: Int, upTo: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forBetweenForStringMacro[ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forBetweenForStringImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forEveryImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forEveryMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forEveryImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forEveryForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forEveryForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forEveryForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forEveryForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forEveryForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forEveryForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+  def forEveryForStringImpl[ASSERTION, RESULT](xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
+    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+  }
+
+  private[scalatest] def forEveryForStringMacro[ASSERTION, RESULT](xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine
+    '{ forEveryForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+  }
+
+}
 
 private[scalatest] object InspectorsHelper {
 
