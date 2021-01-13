@@ -201,7 +201,6 @@ object GenScalaTestDotty {
         "ListShouldContainOnlyLogicalAndSpec.scala", // skipped because does not compile yet 
         "ListShouldContainOnlyLogicalOrSpec.scala", // skipped because does not compile yet 
         "ListShouldContainOnlySpec.scala", // skipped because does not compile yet 
-        "ListShouldContainSpec.scala", // skipped because does not compile yet 
         "MatchersSerializableSpec.scala", // skipped because does not compile yet 
         "MatcherStackDepthSpec.scala", // skipped because does not compile yet 
         "OptionShouldContainSpec.scala", // skipped because does not compile yet 
