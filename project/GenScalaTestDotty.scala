@@ -237,10 +237,7 @@ object GenScalaTestDotty {
           "TimeLimitsSpec.scala",  // skipped because failed with line number tests.
         )) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, 
-        List(
-          "ExampleCancelInNestedSuite.scala" // skipped because does not compile yet.
-        )) ++
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
         List(
           //"TestLocationJUnit3Suite.scala",
