@@ -239,7 +239,6 @@ object GenScalaTestDotty {
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, 
         List(
           "PropCheckerAssertingAsyncSpec.scala", // skipped for failing tests.
-          "PropCheckerAssertingSpec.scala" // skipped for failing tests.
         )) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, 
         List(
