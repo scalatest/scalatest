@@ -274,7 +274,26 @@ object GenScalaTestDotty {
           "GeneratorSpec.scala", 
           "OverrideImplicitConfigurationSuite.scala"
         )) ++
-      /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++*/
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, 
+        List(
+          "DeprecatedFirstTestIgnoredExamples.scala", 
+          "DeprecatedSecondTestIgnoredExamples.scala", 
+          "DeprecatedInfoInsideTestFiredAfterTestExamples.scala", 
+          "DeprecatedTwoSlowTestsExample.scala", 
+          "DeprecatedTwoSlowAndOneWeakTestExamples.scala", 
+          "DeprecatedTwoTestsIgnoredExamples.scala", 
+          "FirstTestIgnoredExamples.scala", 
+          "InfoInsideTestFiredAfterTestExamples.scala", 
+          "PathSuiteMatrix.scala", 
+          "PathBeforeAndAfterExamples.scala", 
+          "PathListBufferExamples.scala", 
+          "OnlyFirstTestExecutedOnCreationExamples.scala", 
+          "SecondTestIgnoredExamples.scala", 
+          "SuiteMatrix.scala", 
+          "TwoSlowAndOneWeakTestExamples.scala", 
+          "TwoTestsIgnoredExamples.scala", 
+          "TwoSlowTestsExample.scala"
+        )) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, 
         List(
           "TypeMatcherMacroSpec.scala", // skipped because does not compile yet.
