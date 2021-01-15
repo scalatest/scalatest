@@ -259,7 +259,6 @@ object GenScalaTestDotty {
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, 
         List(
           "StackDepthExceptionSpec.scala", // skipped because does not compile yet.
-          "PayloadSpec.scala" // skipped because does not compile yet.
         )) ++
       /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
         List(
