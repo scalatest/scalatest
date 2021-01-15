@@ -268,8 +268,13 @@ object GenScalaTestDotty {
           "FunSpecSpec.scala",  // skipped because does not compile yet.
           "FreeSpecSpec.scala" // skipped because does not compile yet.
         )) ++
-      /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++*/
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, 
+        List(
+          "CommonGeneratorsSpec.scala", 
+          "GeneratorSpec.scala", 
+          "OverrideImplicitConfigurationSuite.scala"
+        )) ++
+      /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++*/
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, 
         List(
           "TypeMatcherMacroSpec.scala", // skipped because does not compile yet.
