@@ -309,10 +309,13 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain noneOf ("hi", "he")
         }
-        implicit val ise = upperCaseEquality
-        all (hiLists) should contain noneOf ("hi", "he")
-        intercept[TestFailedException] {
-          all (hiLists) should contain noneOf ("HI", "HE")
+
+        {
+          implicit val ise = upperCaseEquality
+          all (hiLists) should contain noneOf ("hi", "he")
+          intercept[TestFailedException] {
+            all (hiLists) should contain noneOf ("HI", "HE")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -359,10 +362,13 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should (contain noneOf ("hi", "he"))
         }
-        implicit val ise = upperCaseEquality
-        all (hiLists) should (contain noneOf ("hi", "he"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain noneOf ("HI", "HE"))
+
+        {
+          implicit val ise = upperCaseEquality
+          all (hiLists) should (contain noneOf ("hi", "he"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain noneOf ("HI", "HE"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {

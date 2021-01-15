@@ -316,10 +316,13 @@ class EveryShouldContainAtMostOneOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain atMostOneOf ("hi", "he")
         }
-        implicit val use = upperCaseStringEquality
-        all (hiLists) should contain atMostOneOf ("HI", "HO")
-        intercept[TestFailedException] {
-          all (hiLists) should contain atMostOneOf ("HI", "HE")
+
+        {
+          implicit val use = upperCaseStringEquality
+          all (hiLists) should contain atMostOneOf ("HI", "HO")
+          intercept[TestFailedException] {
+            all (hiLists) should contain atMostOneOf ("HI", "HE")
+          }
         }
       }
 
@@ -369,10 +372,13 @@ class EveryShouldContainAtMostOneOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should (contain atMostOneOf ("hi", "he"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should (contain atMostOneOf ("HI", "HO"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain atMostOneOf ("HI", "HE"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should (contain atMostOneOf ("HI", "HO"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain atMostOneOf ("HI", "HE"))
+          }
         }
       }
 

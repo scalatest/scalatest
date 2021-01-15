@@ -267,10 +267,13 @@ class EveryShouldContainTheSameElementsAsSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain theSameElementsAs Set("ho", "hi")
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should contain theSameElementsAs Set("HE", "HI")
-        intercept[TestFailedException] {
-          all (hiLists) should contain theSameElementsAs Set("HO", "HI")
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should contain theSameElementsAs Set("HE", "HI")
+          intercept[TestFailedException] {
+            all (hiLists) should contain theSameElementsAs Set("HO", "HI")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -310,10 +313,13 @@ class EveryShouldContainTheSameElementsAsSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should (contain theSameElementsAs Set("ho", "hi"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should (contain theSameElementsAs Set("HE", "HI"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain theSameElementsAs Set("HO", "HI"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should (contain theSameElementsAs Set("HE", "HI"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain theSameElementsAs Set("HO", "HI"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {

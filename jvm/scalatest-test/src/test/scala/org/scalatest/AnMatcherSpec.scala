@@ -102,7 +102,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           List.empty[Int] should be an oddLengthList
         }
-        e.message should be (Some(List.empty[Int] + " was not an odd length list"))
+        e.message should be (Some(s"${List.empty[Int].toString()} was not an odd length list"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -115,7 +115,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           List(1, 2, 3) should not be an (oddLengthList)
         }
-        e.message should be (Some(List(1, 2, 3) + " was an odd length list"))
+        e.message should be (Some(s"${List(1, 2, 3).toString()} was an odd length list"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -133,7 +133,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           Set.empty[Int] should be an oddSizeSet
         }
-        e.message should be (Some(Set.empty[Int] + " was not an odd size set"))
+        e.message should be (Some(s"${Set.empty[Int].toString()} was not an odd size set"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -146,7 +146,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           Set(1, 2, 3) should not be an (oddSizeSet)
         }
-        e.message should be (Some(Set(1, 2, 3) + " was an odd size set"))
+        e.message should be (Some(s"${Set(1, 2, 3).toString()} was an odd size set"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -196,7 +196,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           Map.empty[Int, String] should be an oddSizeMap
         }
-        e.message should be (Some(Map.empty[Int, String].toString + " was not an odd size map"))
+        e.message should be (Some(s"${Map.empty[Int, String].toString()} was not an odd size map"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -235,7 +235,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should be an oddSizeList
         }
-        e.message should be (Some(left  + " was not an odd size list"))
+        e.message should be (Some(s"${left.toString()} was not an odd size list"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -249,7 +249,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should not be an (oddSizeList)
         }
-        e.message should be (Some(left + " was an odd size list"))
+        e.message should be (Some(s"${left.toString()} was an odd size list"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -274,7 +274,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should be an oddSizeSet
         }
-        e.message should be (Some(left  + " was not an odd size set"))
+        e.message should be (Some(s"${left.toString()} was not an odd size set"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -288,7 +288,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should not be an (oddSizeSet)
         }
-        e.message should be (Some(left + " was an odd size set"))
+        e.message should be (Some(s"${left.toString()} was an odd size set"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -313,7 +313,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should be an oddSizeMap
         }
-        e.message should be (Some(left + " was not an odd size map"))
+        e.message should be (Some(s"${left.toString()} was not an odd size map"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -327,7 +327,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should not be an (oddSizeMap)
         }
-        e.message should be (Some(decorateToStringValue(prettifier, left) + " was an odd size map"))
+        e.message should be (Some(s"${decorateToStringValue(prettifier, left)} was an odd size map"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -349,7 +349,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           tom should be an oldMan
         }
-        e.message should be (Some(tom + " was not an old man"))
+        e.message should be (Some(s"${tom.toString()} was not an old man"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -363,7 +363,7 @@ class AnMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           tom should not be an (oldMan)
         }
-        e.message should be (Some(tom + " was an old man"))
+        e.message should be (Some(s"${tom.toString()} was an old man"))
         e.failedCodeFileName should be (Some("AnMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }

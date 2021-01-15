@@ -10,9 +10,13 @@ trait BuildCommons {
     scalaVersion := crossScalaVersions.value.head,
   )
 
-  val releaseVersion = "3.2.3"
+  val releaseVersion = "3.2.4"
 
-  val previousReleaseVersion = "3.2.2"
+  val previousReleaseVersion = "3.2.3"
+
+  val plusJUnitVersion = "3.2.3.0"
+  val plusTestNGVersion = "3.2.3.0"
+  val flexmarkVersion = "0.36.8"
 
   def rootProject: Project
 

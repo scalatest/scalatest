@@ -34,8 +34,8 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.propspec.AnyPropSpec
 import org.scalatest.wordspec.AnyWordSpec
 
-trait TestTimeoutExpectedResults extends EventHelpers { s: ParallelTestExecution =>
-  def assertTestTimeoutTest(events: List[Event])
+trait TestTimeoutExpectedResults extends EventHelpers { s: ParallelTestExecution with Suite =>
+  def assertTestTimeoutTest(events: List[Event]): Unit
   val holdTestSucceededName: String
   val holdUntilEventCount: Int
   override def sortingTimeout: Span = Span(300, Millis)

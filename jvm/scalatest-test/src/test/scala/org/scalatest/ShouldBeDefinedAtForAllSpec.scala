@@ -23,16 +23,16 @@ import org.scalatest.matchers.should.Matchers._
 class ShouldBeDefinedAtForAllSpec extends AnyFunSpec {
   
   def wasDefinedAt(left: Any, right: Any): String = 
-    left + " was defined at " + right
+    s"${left.toString()} was defined at ${right.toString()}"
     
   def wasNotDefinedAt(left: Any, right: Any): String = 
-    left + " was not defined at " + right
+    s"${left.toString()} was not defined at ${right.toString()}"
       
   def equaled(left: Any, right: Any): String = 
-    left + " equaled " + right
+    s"${left.toString()} equaled ${right.toString()}"
       
   def didNotEqual(left: Any, right: Any): String = 
-    left + " did not equal " + right
+    s"${left.toString()} did not equal ${right.toString()}"
   
   def errorMessage(index: Int, message: String, lineNumber: Int, left: Any): String = 
     "'all' inspection failed, because: \n" +

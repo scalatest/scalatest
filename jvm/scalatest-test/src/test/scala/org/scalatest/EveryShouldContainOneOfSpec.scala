@@ -331,10 +331,13 @@ class EveryShouldContainOneOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain oneOf ("ho", "he")
         }
-        implicit val ise = upperCaseEquality
-        all (hiLists) should contain oneOf ("HI", "HE")
-        intercept[TestFailedException] {
-          all (hiLists) should contain oneOf ("hi", "he")
+
+        {
+          implicit val ise = upperCaseEquality
+          all (hiLists) should contain oneOf ("HI", "HE")
+          intercept[TestFailedException] {
+            all (hiLists) should contain oneOf ("hi", "he")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -382,10 +385,13 @@ class EveryShouldContainOneOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should (contain oneOf ("ho", "he"))
         }
-        implicit val ise = upperCaseEquality
-        all (hiLists) should (contain oneOf ("HI", "HE"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain oneOf ("hi", "he"))
+
+        {
+          implicit val ise = upperCaseEquality
+          all (hiLists) should (contain oneOf ("HI", "HE"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain oneOf ("hi", "he"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {
