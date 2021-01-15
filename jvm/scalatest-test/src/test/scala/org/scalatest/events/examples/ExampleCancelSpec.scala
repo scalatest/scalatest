@@ -22,7 +22,7 @@ import org.scalatest.funspec.AnyFunSpec
 class ExampleCancelSpec extends AnyFunSpec {
   
   it("should be canceled") {
-    cancel
+    cancel()
   }
   
 }
