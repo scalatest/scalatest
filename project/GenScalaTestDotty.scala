@@ -236,10 +236,7 @@ object GenScalaTestDotty {
           "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
           "TimeLimitsSpec.scala",  // skipped because failed with line number tests.
         )) ++
-      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, 
-        List(
-          "PropCheckerAssertingAsyncSpec.scala", // skipped for failing tests.
-        )) ++
+      copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, 
         List(
           "ExampleCancelSpec.scala", // skipped because does not compile yet.
