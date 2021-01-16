@@ -24,6 +24,7 @@ import scala.util.matching.Regex
 import java.lang.reflect.Field
 import org.scalactic.{source, Prettifier}
 import org.scalatest.UnquotedString
+import org.scalatest.matchers.dsl.ResultOfThrownByApplication
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -333,6 +334,36 @@ private[scalatest] object MatchersHelper {
       }
     }
   }
+
+  def checkThrownBy(clazz: Class[_], thrownBy: ResultOfThrownByApplication, pos: source.Position): Assertion = {
+    val caught = try {
+      thrownBy.execute()
+      None
+    }
+    catch {
+      case u: Throwable => Some(u)
+    }
+    if (caught.isEmpty) {
+      val message = Resources.exceptionExpected(clazz.getName)
+      indicateFailure(message, None, pos)
+    } else {
+      val u = caught.get
+      if (!clazz.isAssignableFrom(u.getClass)) {
+        val s = Resources.wrongException(clazz.getName, u.getClass.getName)
+        indicateFailure(s, Some(u), pos)
+      } else indicateSuccess(Resources.exceptionThrown(u.getClass.getName))
+    }
+  }
+
+  //DOTTY-ONLY import scala.quoted._
+  //DOTTY-ONLY def checkThrownByMacro(clazz: Expr[Class[_]], thrownBy: Expr[ResultOfThrownByApplication])(using quotes: Quotes): Expr[Assertion] = {
+  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
+  //DOTTY-ONLY   val file = pos.sourceFile
+  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
+  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine
+  //DOTTY-ONLY   '{checkThrownBy(${clazz}, ${thrownBy}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
+  //DOTTY-ONLY }
 
   def indicateSuccess(message: => String): Assertion = Succeeded
 

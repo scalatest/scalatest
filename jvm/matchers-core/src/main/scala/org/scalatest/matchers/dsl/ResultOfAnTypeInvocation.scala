@@ -18,6 +18,7 @@ package org.scalatest.matchers.dsl
 import org.scalatest.Resources
 import org.scalatest.matchers.MatchersHelper.indicateSuccess
 import org.scalatest.matchers.MatchersHelper.indicateFailure
+import org.scalatest.matchers.MatchersHelper.checkThrownBy
 import org.scalactic._
 
 import scala.reflect.ClassTag
@@ -66,27 +67,12 @@ final class ResultOfAnTypeInvocation[T](val clazzTag: ClassTag[T]) {
    *                       ^
    * </pre>
    **/
-  def shouldBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
-    
-    val caught = try {
-      thrownBy.execute()
-      None
-    }
-    catch {
-      case u: Throwable => Some(u)
-    }
-
-    if (caught.isEmpty) {
-      val message = Resources.exceptionExpected(clazz.getName)
-      indicateFailure(message, None, pos)
-    } else {
-      val u = caught.get
-      if (!clazz.isAssignableFrom(u.getClass)) {
-        val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-        indicateFailure(s, Some(u), pos)
-      } else indicateSuccess(Resources.exceptionThrown(u.getClass.getName))
-    }
-  }
+  // SKIP-DOTTY-START 
+  def shouldBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
+    checkThrownBy(clazz, thrownBy, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def shouldBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier): org.scalatest.Assertion =   
+  //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkThrownByMacro('{clazz}, '{thrownBy}) }  
 
   /**
    * This method enables the following syntax:
@@ -146,27 +132,12 @@ final class ResultOfAnTypeInvocation[T](val clazzTag: ClassTag[T]) {
    *                       ^
    * </pre>
    **/
-  def mustBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
-
-    val caught = try {
-      thrownBy.execute()
-      None
-    }
-    catch {
-      case u: Throwable => Some(u)
-    }
-
-    if (caught.isEmpty) {
-      val message = Resources.exceptionExpected(clazz.getName)
-      indicateFailure(message, None, pos)
-    } else {
-      val u = caught.get
-      if (!clazz.isAssignableFrom(u.getClass)) {
-        val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-        indicateFailure(s, Some(u), pos)
-      } else indicateSuccess(Resources.exceptionThrown(u.getClass.getName))
-    }
-  }
+  // SKIP-DOTTY-START 
+  def mustBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = 
+    checkThrownBy(clazz, thrownBy, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def mustBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier): org.scalatest.Assertion = 
+  //DOTTY-ONLY   ${ org.scalatest.matchers.MatchersHelper.checkThrownByMacro('{clazz}, '{thrownBy}) }
 
   /**
    * This method enables the following syntax:
