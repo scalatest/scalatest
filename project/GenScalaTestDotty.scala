@@ -219,7 +219,6 @@ object GenScalaTestDotty {
         "ShouldNotBeThrownBySpec.scala", // skipped because does not compile yet 
         "ShouldNotTypeCheckSpec.scala", // skipped because tests failed 
         "StatefulStatusSpec.scala", // skipped because does not compile yet 
-        "StatusSpec.scala", // skipped because does not compile yet 
       )
     ) ++ 
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, 
