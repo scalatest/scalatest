@@ -87,9 +87,13 @@ private[scalatest] object MatchersHelper {
 
     (fieldOption, methodOption, getMethodOption) match {
 
-      case (_, Some(method), _) => Some(method.invoke(objectWithProperty, Array[AnyRef](): _*))
+      case (_, Some(method), _) => 
+        //DOTTY-ONLY method.setAccessible(true)
+        Some(method.invoke(objectWithProperty, Array[AnyRef](): _*))
 
-      case (_, None, Some(getMethod)) => Some(getMethod.invoke(objectWithProperty, Array[AnyRef](): _*))
+      case (_, None, Some(getMethod)) => 
+        //DOTTY-ONLY getMethod.setAccessible(true)
+        Some(getMethod.invoke(objectWithProperty, Array[AnyRef](): _*))
 
       case (Some(field), None, None) => Some(field.get(objectWithProperty))
 
