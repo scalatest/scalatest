@@ -210,7 +210,6 @@ object GenScalaTestDotty {
         "ShouldHavePropertiesSpec.scala", // skipped because does not compile yet 
         "ShouldLengthSpec.scala", // skipped because does not compile yet 
         "ShouldMatchPatternSpec.scala", // skipped because does not compile yet 
-        "ShouldNotBeThrownBySpec.scala", // skipped because does not compile yet 
         "ShouldNotTypeCheckSpec.scala", // skipped because tests failed  
       )
     ) ++ 
