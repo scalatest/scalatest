@@ -202,13 +202,11 @@ object GenScalaTestDotty {
         "SeveredStackTracesFailureSpec.scala", // skipped because tests failed 
         "SeveredStackTracesSpec.scala", // skipped because tests failed 
         "ShellSuite.scala", // skipped because does not compile yet 
-        //"ShorthandShouldNotBeThrownBySpec.scala", // skipped because does not compile yet 
         "ShouldBeAnSymbolSpec.scala", // skipped because does not compile yet 
         "ShouldBeAnTypeSpec.scala", // skipped because does not compile yet
         "ShouldBeASymbolSpec.scala", // skipped because does not compile yet  
         "ShouldBeATypeSpec.scala", // skipped because does not compile yet 
         "ShouldBeSymbolSpec.scala", // skipped because does not compile yet 
-        "ShouldBeThrownBySpec.scala", // skipped because does not compile yet 
         "ShouldHavePropertiesSpec.scala", // skipped because does not compile yet 
         "ShouldLengthSpec.scala", // skipped because does not compile yet 
         "ShouldMatchPatternSpec.scala", // skipped because does not compile yet 

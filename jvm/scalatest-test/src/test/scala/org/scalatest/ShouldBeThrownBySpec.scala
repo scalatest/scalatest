@@ -40,7 +40,7 @@ class ShouldBeThrownBySpec extends AnyFunSpec {
   def hadMessageInsteadOfExpectedMessage(left: Throwable, actualMessage: String, expectedMessage: String) : String = 
     FailureMessages.hadMessageInsteadOfExpectedMessage(prettifier, left, actualMessage, expectedMessage)
 
-  class TestException(message: String) extends Exception(message)
+  class TestException(msg: String) extends Exception(msg)
   
   describe("a [Exception] should") {
     
