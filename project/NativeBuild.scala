@@ -21,7 +21,7 @@ trait NativeBuild { this: BuildCommons =>
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
+          "org.scala-lang.modules" %% "scala-xml" % "1.3.0"
         )
       case _ =>
         Seq.empty
@@ -259,6 +259,7 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Core Native",
       organization := "org.scalatest",
       moduleName := "scalatest-core",
+      libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
       sourceGenerators in Compile += {
         Def.task {
