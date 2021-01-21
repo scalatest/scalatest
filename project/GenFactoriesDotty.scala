@@ -1146,7 +1146,7 @@ $endif$
      * </pre>
      */
     inline def be(anType: ResultOfAnTypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] =
-      \${ MatcherFactory$arity$.andNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{this}, '{anType}) }
+      \${ MatcherFactory$arity$.andNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{thisAndNotWord: MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]#AndNotWord}, '{anType}) }
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2441,7 +2441,7 @@ $endif$
      * </pre>
      */
     inline def be(anType: ResultOfAnTypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] =
-      \${ MatcherFactory$arity$.orNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{this}, '{anType}) }
+      \${ MatcherFactory$arity$.orNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{thisOrNotWord: MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]#OrNotWord}, '{anType}) }
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
