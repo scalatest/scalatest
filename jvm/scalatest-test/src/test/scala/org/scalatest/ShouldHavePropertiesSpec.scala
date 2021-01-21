@@ -39,7 +39,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
       it("should do nothing if there's just one property and it matches") {
         book should have (title ("A Tale of Two Cities"))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should have ('title ("A Tale of Two Cities"))
+        book should have (Symbol("title") ("A Tale of Two Cities"))
         // SKIP-SCALATESTJS,NATIVE-END
       }
 
@@ -51,9 +51,9 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         )
         // SKIP-SCALATESTJS,NATIVE-START
         book should have (
-          'title ("A Tale of Two Cities"),
-          'author ("Dickens"),
-          'pubYear (1859)
+          Symbol("title") ("A Tale of Two Cities"),
+          Symbol("author") ("Dickens"),
+          Symbol("pubYear") (1859)
         )
         // SKIP-SCALATESTJS,NATIVE-END
       }
@@ -61,7 +61,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
       it("should do nothing if there's just one property and it does not match, when used with not") {
         book should not have (title ("One Hundred Years of Solitude"))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should not have ('title ("One Hundred Years of Solitude"))
+        book should not have (Symbol("title") ("One Hundred Years of Solitude"))
         // SKIP-SCALATESTJS,NATIVE-END
       }
 
@@ -79,8 +79,8 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         )
         // SKIP-SCALATESTJS,NATIVE-START
         book should not have (
-          'title ("Moby Dick"),
-          'author ("Melville")
+          Symbol("title") ("Moby Dick"),
+          Symbol("author") ("Melville")
         )
         // SKIP-SCALATESTJS,NATIVE-END
 
@@ -91,8 +91,8 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         )
         // SKIP-SCALATESTJS,NATIVE-START
         book should not have (
-          'title ("Moby Dick"),
-          'author ("Dickens")
+          Symbol("title") ("Moby Dick"),
+          Symbol("author") ("Dickens")
         )
         // SKIP-SCALATESTJS,NATIVE-END
 
@@ -103,8 +103,8 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         )
         // SKIP-SCALATESTJS,NATIVE-START
         book should not have (
-          'title ("A Tale of Two Cities"),
-          'author ("Melville")
+          Symbol("title") ("A Tale of Two Cities"),
+          Symbol("author") ("Melville")
         )
         // SKIP-SCALATESTJS,NATIVE-END
       }
@@ -113,8 +113,8 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         book should (have (title ("A Tale of Two Cities")) and (have (author ("Dickens"))))
         book should (have (title ("A Tale of Two Cities")) and have (author ("Dickens")))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should (have ('title ("A Tale of Two Cities")) and (have ('author ("Dickens"))))
-        book should (have ('title ("A Tale of Two Cities")) and have ('author ("Dickens")))
+        book should (have (Symbol("title") ("A Tale of Two Cities")) and (have (Symbol("author") ("Dickens"))))
+        book should (have (Symbol("title") ("A Tale of Two Cities")) and have (Symbol("author") ("Dickens")))
         // SKIP-SCALATESTJS,NATIVE-END
       }
 
@@ -124,24 +124,24 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         book should (have (title ("A Tale of Two Cities")) or (have (author ("Dickens"))))
         book should (have (title ("A Tale of Two Cities")) or have (author ("Dickens")))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should (have ('title ("A Tale of Two Cities")) or (have ('author ("Dickens"))))
-        book should (have ('title ("A Tale of Two Cities")) or have ('author ("Dickens")))
+        book should (have (Symbol("title") ("A Tale of Two Cities")) or (have (Symbol("author") ("Dickens"))))
+        book should (have (Symbol("title") ("A Tale of Two Cities")) or have (Symbol("author") ("Dickens")))
         // SKIP-SCALATESTJS,NATIVE-END
 
         // first true
         book should (have (title ("A Tale of Two Cities")) or (have (author ("Melville"))))
         book should (have (title ("A Tale of Two Cities")) or have (author ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should (have ('title ("A Tale of Two Cities")) or (have ('author ("Melville"))))
-        book should (have ('title ("A Tale of Two Cities")) or have ('author ("Melville")))
+        book should (have (Symbol("title") ("A Tale of Two Cities")) or (have (Symbol("author") ("Melville"))))
+        book should (have (Symbol("title") ("A Tale of Two Cities")) or have (Symbol("author") ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-END
 
         // second true
         book should (have (title ("Moby Dick")) or (have (author ("Dickens"))))
         book should (have (title ("Moby Dick")) or have (author ("Dickens")))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should (have ('title ("Moby Dick")) or (have ('author ("Dickens"))))
-        book should (have ('title ("Moby Dick")) or have ('author ("Dickens")))
+        book should (have (Symbol("title") ("Moby Dick")) or (have (Symbol("author") ("Dickens"))))
+        book should (have (Symbol("title") ("Moby Dick")) or have (Symbol("author") ("Dickens")))
         // SKIP-SCALATESTJS,NATIVE-END
       }
 
@@ -152,9 +152,9 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         book should (not have (title ("Moby Dick")) and not (have (author ("Melville"))))
         book should (not have (title ("Moby Dick")) and not have (author ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should (not have ('title ("Moby Dick")) and (not have ('author ("Melville"))))
-        book should (not have ('title ("Moby Dick")) and not (have ('author ("Melville"))))
-        book should (not have ('title ("Moby Dick")) and not have ('author ("Melville")))
+        book should (not have (Symbol("title") ("Moby Dick")) and (not have (Symbol("author") ("Melville"))))
+        book should (not have (Symbol("title") ("Moby Dick")) and not (have (Symbol("author") ("Melville"))))
+        book should (not have (Symbol("title") ("Moby Dick")) and not have (Symbol("author") ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-END
 
         // multiple properties
@@ -162,9 +162,9 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         book should (not have (title ("Moby Dick"), pubYear (1859)) and not (have (pubYear (1859), author ("Melville"))))
         book should (not have (title ("Moby Dick"), pubYear (1859)) and not have (pubYear (1859), author ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should (not have ('title ("Moby Dick"), pubYear (1859)) and (not have ('pubYear (1859), 'author ("Melville"))))
-        book should (not have ('title ("Moby Dick"), pubYear (1859)) and not (have ('pubYear (1859), 'author ("Melville"))))
-        book should (not have ('title ("Moby Dick"), pubYear (1859)) and not have ('pubYear (1859), 'author ("Melville")))
+        book should (not have (Symbol("title") ("Moby Dick"), pubYear (1859)) and (not have (Symbol("pubYear") (1859), Symbol("author") ("Melville"))))
+        book should (not have (Symbol("title") ("Moby Dick"), pubYear (1859)) and not (have (Symbol("pubYear") (1859), Symbol("author") ("Melville"))))
+        book should (not have (Symbol("title") ("Moby Dick"), pubYear (1859)) and not have (Symbol("pubYear") (1859), Symbol("author") ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-END
       }
 
@@ -176,9 +176,9 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         book should (not have (title ("Moby Dick")) or not (have (author ("Melville"))))
         book should (not have (title ("Moby Dick")) or not have (author ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should (not have ('title ("Moby Dick")) or (not have ('author ("Melville"))))
-        book should (not have ('title ("Moby Dick")) or not (have ('author ("Melville"))))
-        book should (not have ('title ("Moby Dick")) or not have ('author ("Melville")))
+        book should (not have (Symbol("title") ("Moby Dick")) or (not have (Symbol("author") ("Melville"))))
+        book should (not have (Symbol("title") ("Moby Dick")) or not (have (Symbol("author") ("Melville"))))
+        book should (not have (Symbol("title") ("Moby Dick")) or not have (Symbol("author") ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-END
 
         // multiple properties
@@ -186,9 +186,9 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         book should (not have (title ("Moby Dick"), pubYear (1859)) or not (have (pubYear (1859), author ("Melville"))))
         book should (not have (title ("Moby Dick"), pubYear (1859)) or not have (pubYear (1859), author ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should (not have ('title ("Moby Dick"), pubYear (1859)) or (not have ('pubYear (1859), 'author ("Melville"))))
-        book should (not have ('title ("Moby Dick"), pubYear (1859)) or not (have ('pubYear (1859), 'author ("Melville"))))
-        book should (not have ('title ("Moby Dick"), pubYear (1859)) or not have ('pubYear (1859), 'author ("Melville")))
+        book should (not have (Symbol("title") ("Moby Dick"), pubYear (1859)) or (not have (Symbol("pubYear") (1859), Symbol("author") ("Melville"))))
+        book should (not have (Symbol("title") ("Moby Dick"), pubYear (1859)) or not (have (Symbol("pubYear") (1859), Symbol("author") ("Melville"))))
+        book should (not have (Symbol("title") ("Moby Dick"), pubYear (1859)) or not have (Symbol("pubYear") (1859), Symbol("author") ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-END
 
         // first true
@@ -197,9 +197,9 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         book should (not have (title ("Moby Dick")) or not (have (author ("Dickens"))))
         book should (not have (title ("Moby Dick")) or not have (author ("Dickens")))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should (not have ('title ("Moby Dick")) or (not have ('author ("Dickens"))))
-        book should (not have ('title ("Moby Dick")) or not (have ('author ("Dickens"))))
-        book should (not have ('title ("Moby Dick")) or not have ('author ("Dickens")))
+        book should (not have (Symbol("title") ("Moby Dick")) or (not have (Symbol("author") ("Dickens"))))
+        book should (not have (Symbol("title") ("Moby Dick")) or not (have (Symbol("author") ("Dickens"))))
+        book should (not have (Symbol("title") ("Moby Dick")) or not have (Symbol("author") ("Dickens")))
         // SKIP-SCALATESTJS,NATIVE-END
 
         // multiple properties
@@ -207,9 +207,9 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         book should (not have (title ("Moby Dick"), pubYear (1859)) or not (have (pubYear (1859), author ("Dickens"))))
         book should (not have (title ("Moby Dick"), pubYear (1859)) or not have (pubYear (1859), author ("Dickens")))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should (not have ('title ("Moby Dick"), pubYear (1859)) or (not have ('pubYear (1859), 'author ("Dickens"))))
-        book should (not have ('title ("Moby Dick"), pubYear (1859)) or not (have ('pubYear (1859), 'author ("Dickens"))))
-        book should (not have ('title ("Moby Dick"), pubYear (1859)) or not have ('pubYear (1859), 'author ("Dickens")))
+        book should (not have (Symbol("title") ("Moby Dick"), pubYear (1859)) or (not have (Symbol("pubYear") (1859), Symbol("author") ("Dickens"))))
+        book should (not have (Symbol("title") ("Moby Dick"), pubYear (1859)) or not (have (Symbol("pubYear") (1859), Symbol("author") ("Dickens"))))
+        book should (not have (Symbol("title") ("Moby Dick"), pubYear (1859)) or not have (Symbol("pubYear") (1859), Symbol("author") ("Dickens")))
         // SKIP-SCALATESTJS,NATIVE-END
 
         // second true
@@ -218,9 +218,9 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         book should (not have (title ("A Tale of Two Cities")) or not (have (author ("Melville"))))
         book should (not have (title ("A Tale of Two Cities")) or not have (author ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should (not have ('title ("A Tale of Two Cities")) or (not have ('author ("Melville"))))
-        book should (not have ('title ("A Tale of Two Cities")) or not (have ('author ("Melville"))))
-        book should (not have ('title ("A Tale of Two Cities")) or not have ('author ("Melville")))
+        book should (not have (Symbol("title") ("A Tale of Two Cities")) or (not have (Symbol("author") ("Melville"))))
+        book should (not have (Symbol("title") ("A Tale of Two Cities")) or not (have (Symbol("author") ("Melville"))))
+        book should (not have (Symbol("title") ("A Tale of Two Cities")) or not have (Symbol("author") ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-END
 
         // multiple properties
@@ -228,16 +228,16 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         book should (not have (title ("A Tale of Two Cities"), pubYear (1859)) or not (have (pubYear (1859), author ("Melville"))))
         book should (not have (title ("A Tale of Two Cities"), pubYear (1859)) or not have (pubYear (1859), author ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-START
-        book should (not have ('title ("A Tale of Two Cities"), pubYear (1859)) or (not have ('pubYear (1859), 'author ("Melville"))))
-        book should (not have ('title ("A Tale of Two Cities"), pubYear (1859)) or not (have ('pubYear (1859), 'author ("Melville"))))
-        book should (not have ('title ("A Tale of Two Cities"), pubYear (1859)) or not have ('pubYear (1859), 'author ("Melville")))
+        book should (not have (Symbol("title") ("A Tale of Two Cities"), pubYear (1859)) or (not have (Symbol("pubYear") (1859), Symbol("author") ("Melville"))))
+        book should (not have (Symbol("title") ("A Tale of Two Cities"), pubYear (1859)) or not (have (Symbol("pubYear") (1859), Symbol("author") ("Melville"))))
+        book should (not have (Symbol("title") ("A Tale of Two Cities"), pubYear (1859)) or not have (Symbol("pubYear") (1859), Symbol("author") ("Melville")))
         // SKIP-SCALATESTJS,NATIVE-END
       }
 
       // SKIP-SCALATESTJS,NATIVE-START
       it("should throw TestFailedException if trying to check for a non existent property") {
         val thrown = the [TestFailedException] thrownBy {
-          new Object should have ('nonExistentProperty ("something"))
+          new Object should have (Symbol("nonExistentProperty") ("something"))
         }
         thrown.getMessage should equal("have nonExistentProperty (something) used with an object that had no public field or method named nonExistentProperty or getNonExistentProperty")
       }
@@ -252,7 +252,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught2 = intercept[TestFailedException] {
-          book should have ('author ("Gibson"))
+          book should have (Symbol("author") ("Gibson"))
         }
         assert(caught2.getMessage === "The author property had value \"Dickens\", instead of its expected value \"Gibson\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -273,7 +273,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         val caught2 = intercept[TestFailedException] {
           book should have (
             title ("A Tale of Two Cities"),
-            'author ("Gibson"),
+            Symbol("author") ("Gibson"),
             pubYear (1859)
           )
         }
@@ -281,9 +281,9 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         val caught3 = intercept[TestFailedException] {
           book should have (
-            'title ("A Tale of Two Cities"),
-            'author ("Dickens"),
-            'pubYear (1959)
+            Symbol("title") ("A Tale of Two Cities"),
+            Symbol("author") ("Dickens"),
+            Symbol("pubYear") (1959)
           )
         }
         assert(caught3.getMessage === "The pubYear property had value 1859, instead of its expected value 1959, on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
@@ -299,7 +299,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught2 = intercept[TestFailedException] {
-          book should not have ('author ("Dickens"))
+          book should not have (Symbol("author") ("Dickens"))
         }
         assert(caught2.getMessage === "The author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -360,12 +360,12 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught3 = intercept[TestFailedException] {
-          book should (have ('title ("A Tale of Two Cities")) and (have ('author ("Melville"))))
+          book should (have (Symbol("title") ("A Tale of Two Cities")) and (have (Symbol("author") ("Melville"))))
         }
         assert(caught3.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had value \"Dickens\", instead of its expected value \"Melville\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
 
         val caught4 = intercept[TestFailedException] {
-          book should (have ('title ("A Tale of Two Cities")) and have ('author ("Melville")))
+          book should (have (Symbol("title") ("A Tale of Two Cities")) and have (Symbol("author") ("Melville")))
         }
         assert(caught4.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had value \"Dickens\", instead of its expected value \"Melville\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -383,12 +383,12 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught13 = intercept[TestFailedException] {
-          book should (have ('title ("Moby Dick")) and (have ('author ("Dickens"))))
+          book should (have (Symbol("title") ("Moby Dick")) and (have (Symbol("author") ("Dickens"))))
         }
         assert(caught13.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
 
         val caught14 = intercept[TestFailedException] {
-          book should (have ('title ("Moby Dick")) and have ('author ("Dickens")))
+          book should (have (Symbol("title") ("Moby Dick")) and have (Symbol("author") ("Dickens")))
         }
         assert(caught14.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -406,12 +406,12 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught23 = intercept[TestFailedException] {
-          book should (have ('title ("Moby Dick")) and (have ('author ("Melville"))))
+          book should (have (Symbol("title") ("Moby Dick")) and (have (Symbol("author") ("Melville"))))
         }
         assert(caught23.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
 
         val caught24 = intercept[TestFailedException] {
-          book should (have ('title ("Moby Dick")) and have ('author ("Melville")))
+          book should (have (Symbol("title") ("Moby Dick")) and have (Symbol("author") ("Melville")))
         }
         assert(caught24.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -432,12 +432,12 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught23 = intercept[TestFailedException] {
-          book should (have ('title ("Moby Dick")) or (have ('author ("Melville"))))
+          book should (have (Symbol("title") ("Moby Dick")) or (have (Symbol("author") ("Melville"))))
         }
         assert(caught23.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had value \"Dickens\", instead of its expected value \"Melville\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
 
         val caught24 = intercept[TestFailedException] {
-          book should (have ('title ("Moby Dick")) or have ('author ("Melville")))
+          book should (have (Symbol("title") ("Moby Dick")) or have (Symbol("author") ("Melville")))
         }
         assert(caught24.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had value \"Dickens\", instead of its expected value \"Melville\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -458,12 +458,12 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught3 = intercept[TestFailedException] {
-          book should (not have ('title ("A Tale of Two Cities")) and not (have ('author ("Melville"))))
+          book should (not have (Symbol("title") ("A Tale of Two Cities")) and not (have (Symbol("author") ("Melville"))))
         }
         assert(caught3.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
 
         val caught4 = intercept[TestFailedException] {
-          book should (not have ('title ("A Tale of Two Cities")) and not have ('author ("Melville")))
+          book should (not have (Symbol("title") ("A Tale of Two Cities")) and not have (Symbol("author") ("Melville")))
         }
         assert(caught4.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -475,7 +475,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught6 = intercept[TestFailedException] {
-          book should (not have ('title ("A Tale of Two Cities")) and (not have ('author ("Melville"))))
+          book should (not have (Symbol("title") ("A Tale of Two Cities")) and (not have (Symbol("author") ("Melville"))))
         }
         assert(caught6.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -493,12 +493,12 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught13 = intercept[TestFailedException] {
-          book should (not have ('title ("Moby Dick")) and (not have ('author ("Dickens"))))
+          book should (not have (Symbol("title") ("Moby Dick")) and (not have (Symbol("author") ("Dickens"))))
         }
         assert(caught13.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
 
         val caught14 = intercept[TestFailedException] {
-          book should (not have ('title ("Moby Dick")) and not have ('author ("Dickens")))
+          book should (not have (Symbol("title") ("Moby Dick")) and not have (Symbol("author") ("Dickens")))
         }
         assert(caught14.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -510,7 +510,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught16 = intercept[TestFailedException] {
-          book should (not have ('title ("Moby Dick")) and (not have ('author ("Dickens"))))
+          book should (not have (Symbol("title") ("Moby Dick")) and (not have (Symbol("author") ("Dickens"))))
         }
         assert(caught16.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -528,12 +528,12 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught23 = intercept[TestFailedException] {
-          book should (not have ('title ("A Tale of Two Cities")) and (not have ('author ("Dickens"))))
+          book should (not have (Symbol("title") ("A Tale of Two Cities")) and (not have (Symbol("author") ("Dickens"))))
         }
         assert(caught23.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
 
         val caught24 = intercept[TestFailedException] {
-          book should (not have ('title ("A Tale of Two Cities")) and not have ('author ("Dickens")))
+          book should (not have (Symbol("title") ("A Tale of Two Cities")) and not have (Symbol("author") ("Dickens")))
         }
         assert(caught24.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -545,7 +545,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught26 = intercept[TestFailedException] {
-          book should (not have ('title ("A Tale of Two Cities")) and (not (have ('author ("Dickens")))))
+          book should (not have (Symbol("title") ("A Tale of Two Cities")) and (not (have (Symbol("author") ("Dickens")))))
         }
         assert(caught26.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -566,12 +566,12 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught23 = intercept[TestFailedException] {
-          book should (not have ('title ("A Tale of Two Cities")) or (not have ('author ("Dickens"))))
+          book should (not have (Symbol("title") ("A Tale of Two Cities")) or (not have (Symbol("author") ("Dickens"))))
         }
         assert(caught23.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
 
         val caught24 = intercept[TestFailedException] {
-          book should (not have ('title ("A Tale of Two Cities")) or not have ('author ("Dickens")))
+          book should (not have (Symbol("title") ("A Tale of Two Cities")) or not have (Symbol("author") ("Dickens")))
         }
         assert(caught24.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -583,7 +583,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught26 = intercept[TestFailedException] {
-          book should (not have ('title ("A Tale of Two Cities")) or (not have ('author ("Dickens"))))
+          book should (not have (Symbol("title") ("A Tale of Two Cities")) or (not have (Symbol("author") ("Dickens"))))
         }
         assert(caught26.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
         // SKIP-SCALATESTJS,NATIVE-END
@@ -626,7 +626,7 @@ hard to read. Better to have people pull things out and then just do a non-neste
 
       it("should work with length not a symbol without anything special, in case someone forgets you don't need the parens with length") {
 
-        implicit val bookLength = new Length[Book] { def lengthOf(book: Book) = book.length }
+        implicit val bookLength: Length[Book] = new Length[Book] { def lengthOf(book: Book) = book.length }
 
         val caught1 = intercept[TestFailedException] {
           book should have (length (43))
@@ -639,7 +639,7 @@ hard to read. Better to have people pull things out and then just do a non-neste
 
         case class Sizey(val size: Int)
 
-        implicit val sizeOfSizey = new Size[Sizey] { def sizeOf(sizey: Sizey) = sizey.size }
+        implicit val sizeOfSizey: Size[Sizey] = new Size[Sizey] { def sizeOf(sizey: Sizey) = sizey.size }
 
         val caught1 = intercept[TestFailedException] {
           (new Sizey(7)) should have (size (43))
@@ -650,7 +650,7 @@ hard to read. Better to have people pull things out and then just do a non-neste
 
       it("should work with length and other have property matchers") {
 
-        implicit val bookLength = new Length[Book] { def lengthOf(book: Book) = book.length }
+        implicit val bookLength: Length[Book] = new Length[Book] { def lengthOf(book: Book) = book.length }
         book should have (length (45) (of [Book]), title ("A Tale of Two Cities"))
         book should have (title ("A Tale of Two Cities"), length (45) (of [Book]))
 
@@ -659,7 +659,7 @@ hard to read. Better to have people pull things out and then just do a non-neste
       }
       it("should work with size and other have property matchers") {
 
-        implicit val bookLength = new Size[Book] { def sizeOf(book: Book) = book.length }
+        implicit val bookLength: Size[Book] = new Size[Book] { def sizeOf(book: Book) = book.length }
         book should have (size (45) (of [Book]), title ("A Tale of Two Cities"))
         book should have (title ("A Tale of Two Cities"), size (45) (of [Book]))
 
@@ -668,7 +668,7 @@ hard to read. Better to have people pull things out and then just do a non-neste
       }
       it("should work with message and other have property matchers") {
 
-        implicit val bookMessaging = new Messaging[Book] { def messageOf(book: Book) = book.title.toUpperCase }
+        implicit val bookMessaging: Messaging[Book] = new Messaging[Book] { def messageOf(book: Book) = book.title.toUpperCase }
         book should have (message ("A TALE OF TWO CITIES") (of [Book]), title ("A Tale of Two Cities"))
         book should have (title ("A Tale of Two Cities"), message ("A TALE OF TWO CITIES") (of [Book]))
 
