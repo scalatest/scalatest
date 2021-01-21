@@ -851,7 +851,7 @@ $endif$
    *
    * @author Bill Venners
    */
-  final class AndNotWord(prettifier: Prettifier, pos: source.Position) {
+  final class AndNotWord(prettifier: Prettifier, pos: source.Position) { thisAndNotWord =>
 
     /**
      * Get the <code>MatcherFactory</code> instance, currently used by macro only.
@@ -1135,8 +1135,8 @@ $endif$
      * </pre>
      */
     inline def be(aType: ResultOfATypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] =
-      \${ MatcherFactory$arity$.andNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{this}, '{aType}) }
-
+      \${ MatcherFactory$arity$.andNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{thisAndNotWord: MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]#AndNotWord}, '{aType}) }
+0
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -2146,7 +2146,7 @@ $endif$
    *
    * @author Bill Venners
    */
-  final class OrNotWord(prettifier: Prettifier, pos: source.Position) {
+  final class OrNotWord(prettifier: Prettifier, pos: source.Position) { thisOrNotWord =>
 
     /**
      * Get the <code>MatcherFactory</code> instance, currently used by macro.
@@ -2430,7 +2430,7 @@ $endif$
      * </pre>
      */
     inline def be(aType: ResultOfATypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] =
-      \${ MatcherFactory$arity$.orNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{this}, '{aType}) }
+      \${ MatcherFactory$arity$.orNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{thisOrNotWord: MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]#OrNotWord}, '{aType}) }
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
