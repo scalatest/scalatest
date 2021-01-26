@@ -1849,8 +1849,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      **/
-    inline def matchPattern(right: PartialFunction[Any, _]) =
-      ${ MatchPatternMacro.andNotMatchPatternMatcher('{this}, '{right}) }
+    inline def matchPattern(inline right: PartialFunction[Any, _]) =
+      ${ MatchPatternMacro.andNotMatchPatternMatcher('{thisAndNotWord: Matcher[T]#AndNotWord}, '{right}) }
   }
 
   /**
@@ -3131,8 +3131,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                 ^
      * </pre>
      **/
-    inline def matchPattern(right: PartialFunction[Any, _]) =
-      ${ MatchPatternMacro.orNotMatchPatternMatcher('{this}, '{right}) }
+    inline def matchPattern(inline right: PartialFunction[Any, _]) =
+      ${ MatchPatternMacro.orNotMatchPatternMatcher('{thisOrNotWord: Matcher[T]#OrNotWord}, '{right}) }
   }
 
   /**
