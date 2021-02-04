@@ -212,7 +212,7 @@ object GenScalaTestDotty {
     ) ++
       copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
         List(
-          "JavaFuturesSpec.scala",      // skipped because depends on java futures
+          //"JavaFuturesSpec.scala",      // skipped because depends on java futures
           "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
           "TimeLimitsSpec.scala",  // skipped because failed with line number tests.
         )) ++

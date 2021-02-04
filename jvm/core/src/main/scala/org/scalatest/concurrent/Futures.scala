@@ -472,7 +472,10 @@ trait Futures extends PatienceConfiguration {
      * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
      *     the specified timeout has been exceeded
      */
-    def futureValue(implicit config: PatienceConfig, pos: source.Position): T = {
+    // SKIP-DOTTY-START 
+    def futureValue()(implicit config: PatienceConfig, pos: source.Position): T = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def futureValue()(implicit config: PatienceConfig, pos: source.Position): T = {  
       futureValueImpl(pos)(config)
     }
 
