@@ -192,7 +192,7 @@ object GenScalaTestDotty {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
       List(
         "DeprecatedFeatureSpecSpec.scala", // skipped because does not compile yet 
-        "DirectAssertionsSpec.scala", // skipped because does not compile yet 
+        //"DirectAssertionsSpec.scala", // skipped because does not compile yet 
         "EveryShouldContainOnlyLogicalAndSpec.scala", // skipped because tests failed
         "EveryShouldContainOnlyLogicalOrSpec.scala", // skipped because tests failed 
         "EveryShouldContainOnlySpec.scala", // skipped because does not compile yet 
