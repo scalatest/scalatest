@@ -35,7 +35,7 @@ private[scalatest] object MatchPatternMacro {
        }
 
      expr.asTerm match {
-       case Inlined(_, _, Block(List(DefDef(_, _, _, _, Some(Match(_, caseDefList)))), _)) =>
+       case Inlined(_, _, Block(List(DefDef(_, _, _, Some(Match(_, caseDefList)))), _)) =>
          caseDefList.foreach {
            case CaseDef(pat, _, body) if !defaultCase(pat) => // case definition, and not default case
              body match {
