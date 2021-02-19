@@ -14,8 +14,8 @@ trait BuildCommons {
 
   val previousReleaseVersion = "3.2.3"
 
-  val plusJUnitVersion = "3.2.3.0"
-  val plusTestNGVersion = "3.2.3.0"
+  val plusJUnitVersion = "3.2.4.0"
+  val plusTestNGVersion = "3.2.4.0"
   val flexmarkVersion = "0.36.8"
 
   def rootProject: Project

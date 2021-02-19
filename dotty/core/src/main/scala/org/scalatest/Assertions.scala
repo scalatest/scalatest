@@ -662,7 +662,7 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should not type check
    */
-  inline def assertTypeError(inline code: String)(implicit pos: source.Position): Assertion =
+  transparent inline def assertTypeError(inline code: String)(implicit pos: source.Position): Assertion =
     ${ CompileMacro.assertTypeErrorImpl('code, '{typeChecks(code)}, '{ pos }) }
 
   /**
@@ -694,7 +694,7 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should not type check
    */
-  inline def assertDoesNotCompile(inline code: String)(implicit pos: source.Position): Assertion =
+  transparent inline def assertDoesNotCompile(inline code: String)(implicit pos: source.Position): Assertion =
     ${ CompileMacro.assertDoesNotCompileImpl('code, '{typeChecks(code)}, 'pos) }
 
   /**
@@ -716,7 +716,7 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should compile
    */
-  inline def assertCompiles(inline code: String)(implicit pos: source.Position): Assertion =
+  transparent inline def assertCompiles(inline code: String)(implicit pos: source.Position): Assertion =
     ${ CompileMacro.assertCompilesImpl('code, '{typeChecks(code)}, 'pos) }
 
   /**

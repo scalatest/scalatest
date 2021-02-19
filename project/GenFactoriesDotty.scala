@@ -1528,8 +1528,8 @@ $endif$
      *                         ^
      * </pre>
      */
-    inline def matchPattern(right: PartialFunction[Any, _]) =
-      \${ MatcherFactory$arity$.andNotMatchPattern('{this}, '{right}) }
+    inline def matchPattern(inline right: PartialFunction[Any, _]) =
+      \${ MatcherFactory$arity$.andNotMatchPattern('{thisAndNotWord: MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]#AndNotWord}, '{right}) }
   }
                     """
 
@@ -2823,8 +2823,8 @@ $endif$
      *                        ^
      * </pre>
      */
-    inline def matchPattern(right: PartialFunction[Any, _]) =
-      \${ MatcherFactory$arity$.orNotMatchPattern('{this}, '{right}) }
+    inline def matchPattern(inline right: PartialFunction[Any, _]) =
+      \${ MatcherFactory$arity$.orNotMatchPattern('{thisOrNotWord: MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]#OrNotWord}, '{right}) }
   }
 
   /**
@@ -2913,11 +2913,13 @@ object MatcherFactory$arity$ {
   }
 
   def andNotMatchPattern[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#AndNotWord], right: Expr[PartialFunction[Any, _]])(using Quotes, $typeConstructorsWithType$): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+    org.scalatest.matchers.MatchPatternMacro.checkCaseDefinitions(right)
     val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher(\$right) }
     '{ (\$self).owner.and(\$notMatcher) }
   }
 
   def orNotMatchPattern[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#OrNotWord], right: Expr[PartialFunction[Any, _]])(using Quotes, $typeConstructorsWithType$): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+    org.scalatest.matchers.MatchPatternMacro.checkCaseDefinitions(right)
     val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher(\$right) }
     '{ (\$self).owner.or(\$notMatcher) }
   }

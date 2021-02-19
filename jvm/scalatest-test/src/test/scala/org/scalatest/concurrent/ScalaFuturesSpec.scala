@@ -165,7 +165,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
 
       it("should just return the result if the future completes normally") {
         val futureIsNow = alreadySucceededFuture
-        futureIsNow.futureValue should equal ("hi")
+        futureIsNow.futureValue() should equal ("hi")
       }
 
       it("should eventually blow up with a TFE if the future is never ready") {
@@ -173,7 +173,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
         var count = 0
         val neverReadyCountingFuture = newNeverReadyCountingFuture { count += 1 }
         val caught = the [TestFailedException] thrownBy {
-          neverReadyCountingFuture.futureValue
+          neverReadyCountingFuture.futureValue()
         }
 
         caught.message.value should be (Resources.wasNeverReady("150 milliseconds"))
@@ -185,7 +185,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
       it("should eventually blow up with a serialized TestFailedException") {
         val objectOutputStream: ObjectOutputStream = new ObjectOutputStream(new ByteArrayOutputStream())
         val caught = the [TestFailedException] thrownBy {
-          neverReadyFuture.futureValue
+          neverReadyFuture.futureValue()
         }
 
         noException should be thrownBy objectOutputStream.writeObject(caught)
@@ -216,7 +216,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
       it("should by default query a never-ready future for at least 1 second") {
         var startTime = System.currentTimeMillis
         a [TestFailedException] should be thrownBy {
-          neverReadyFuture.futureValue
+          neverReadyFuture.futureValue()
         }
         (System.currentTimeMillis - startTime).toInt should be >= (150)
       }
@@ -226,7 +226,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
 
         var startTime = System.currentTimeMillis
         a [TestFailedException] should be thrownBy {
-          neverReadyFuture.futureValue
+          neverReadyFuture.futureValue()
         }
         (System.currentTimeMillis - startTime).toInt should be >= (1500)
       }
@@ -259,7 +259,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
         }
         val caught =
           intercept[TestFailedException] {
-            reFuture.futureValue
+            reFuture.futureValue()
           }
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
         caught.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
@@ -276,7 +276,7 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
           promise.future
         }
         intercept[VirtualMachineError] {
-          vmeFuture.futureValue
+          vmeFuture.futureValue()
         }
       }
       // SKIP-SCALATESTJS,NATIVE-END
@@ -284,14 +284,14 @@ class ScalaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with S
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
         val tpeFuture = FutureOfScala.failed(new TestPendingException)  
         intercept[TestPendingException] {
-          tpeFuture.futureValue
+          tpeFuture.futureValue()
         }
       }
 
       it("should allow TestCanceledException, which does not normally cause a test to fail, through immediately when thrown") {
         val tpeFuture = FutureOfScala.failed(new TestCanceledException(0))  
         intercept[TestCanceledException] {
-          tpeFuture.futureValue
+          tpeFuture.futureValue()
         }
       }
     }

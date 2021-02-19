@@ -138,7 +138,7 @@ class JavaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with Ja
         try {
           val futureIsNow = execSvc.submit(new Sleeper(Span(0, Millis)))
 
-          futureIsNow.futureValue should equal("hi")
+          futureIsNow.futureValue() should equal("hi")
         }
         finally {
           execSvc.shutdown()
@@ -153,7 +153,7 @@ class JavaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with Ja
           val canceledFuture = execSvc.submit(task)
           canceledFuture.cancel(true)
           val caught = the [TestFailedException] thrownBy {
-            canceledFuture.futureValue
+            canceledFuture.futureValue()
           }
           caught.message.value should be(Resources.futureWasCanceled)
           withClue(caught.getStackTrace().mkString("", EOL, EOL)) {
@@ -173,7 +173,7 @@ class JavaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with Ja
           val task = new CallableTask(new Sleeper(Span(2, Seconds)))
           val neverReadyFuture = execSvc.submit(task)
           val caught = the [TestFailedException] thrownBy {
-            neverReadyFuture.futureValue
+            neverReadyFuture.futureValue()
           }
 
           caught.message.value should be(Resources.wasNeverReady(1, UnquotedString("15 milliseconds")))
@@ -221,7 +221,7 @@ class JavaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with Ja
           val task = new CallableTask(new Sleeper(Span(2, Seconds)))
           val neverReadyFuture = execSvc.submit(task)
           a [TestFailedException] should be thrownBy {
-            neverReadyFuture.futureValue
+            neverReadyFuture.futureValue()
           }
           (System.currentTimeMillis - startTime).toInt should be >= (150)
         }
@@ -235,7 +235,7 @@ class JavaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with Ja
         val task = new ThrowingTask(new RuntimeException("oops"))
         val caught =
           intercept[TestFailedException] {
-            task.futureValue
+            task.futureValue()
           }
         caught.failedCodeLineNumber.value should equal(thisLineNumber - 2)
         caught.failedCodeFileName.value should be("JavaFuturesSpec.scala")
@@ -248,7 +248,7 @@ class JavaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with Ja
         val task = new ThrowingTask(new VirtualMachineError {})
         val caught =
           intercept[VirtualMachineError] {
-            task.futureValue
+            task.futureValue()
           }
       }
 
@@ -256,7 +256,7 @@ class JavaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with Ja
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
         val task = new ThrowingTask(new TestPendingException)
           intercept[TestPendingException] {
-            task.futureValue
+            task.futureValue()
           }
       }
     }

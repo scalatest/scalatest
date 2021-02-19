@@ -68,7 +68,7 @@ object BooleanMacro {
       def unapply(t: Term): Option[Term] = t match {
         case Block(
           ddef @
-            DefDef(_, Nil, (ValDef(name, _, _) :: Nil) :: Nil, _,
+            DefDef(_, (ValDef(name, _, _) :: Nil) :: Nil, _,
               Some(Apply(Select(lhs, "=="), rhs :: Nil))
             ) :: Nil,
           clos
