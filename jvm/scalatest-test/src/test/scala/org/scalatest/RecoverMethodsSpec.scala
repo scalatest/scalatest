@@ -46,13 +46,13 @@ class RecoverMethodsSpec extends AnyFunSpec with RecoverMethods with ScalaFuture
         recoverToExceptionIf[MyException] {
           Future { throw myEx }
         }
-      assert(futureMyEx.futureValue() eq myEx)
+      assert(futureMyEx.futureValue eq myEx)
       val myExSub = new MyExceptionSubClass
       val futureMyExSub =
         recoverToExceptionIf[MyException] {
           Future { throw myExSub }
         }
-      assert(futureMyExSub.futureValue() eq myExSub)
+      assert(futureMyExSub.futureValue eq myExSub)
       // Try with a trait
       trait MyTrait {
         def someRandomMethod: Int = 42
@@ -65,13 +65,13 @@ class RecoverMethodsSpec extends AnyFunSpec with RecoverMethods with ScalaFuture
       // Make sure the result type is the type passed in, so I can
       // not cast and still invoke any method on it I want
       val futureInt = futureCaught map { caught => caught.someRandomMethod }
-      assert(futureInt.futureValue() == 42)
+      assert(futureInt.futureValue == 42)
     }
 
     it("should fail with TFE if no exception is thrown") {
       val futureTfe =
         recoverToExceptionIf[IllegalArgumentException] { Future { "hi" } }
-      assert(futureTfe.failed.futureValue().isInstanceOf[TestFailedException])
+      assert(futureTfe.failed.futureValue.isInstanceOf[TestFailedException])
     }
 
     it("should return the caught exception") {
@@ -80,7 +80,7 @@ class RecoverMethodsSpec extends AnyFunSpec with RecoverMethods with ScalaFuture
         recoverToExceptionIf[RuntimeException] {
           Future { throw e }
         }
-      assert(futureResult.futureValue() eq e)
+      assert(futureResult.futureValue eq e)
     }
 
     describe("when the bit of code throws the wrong exception") {
@@ -90,7 +90,7 @@ class RecoverMethodsSpec extends AnyFunSpec with RecoverMethods with ScalaFuture
           recoverToExceptionIf[IllegalArgumentException] {
             Future { throw wrongException }
           }
-        val caught = futureCaught.failed.futureValue()
+        val caught = futureCaught.failed.futureValue
         assert(caught.isInstanceOf[TestFailedException])
         assert(caught.getCause eq wrongException)
       }
@@ -106,13 +106,13 @@ class RecoverMethodsSpec extends AnyFunSpec with RecoverMethods with ScalaFuture
         recoverToSucceededIf[MyException] {
           Future { throw myEx }
         }
-      assert(futureMyEx.futureValue() eq Succeeded)
+      assert(futureMyEx.futureValue eq Succeeded)
       val myExSub = new MyExceptionSubClass
       val futureMyExSub =
         recoverToSucceededIf[MyException] {
           Future { throw myExSub }
         }
-      assert(futureMyExSub.futureValue() eq Succeeded)
+      assert(futureMyExSub.futureValue eq Succeeded)
       // Try with a trait
       trait MyTrait {
         def someRandomMethod: Int = 42
@@ -122,7 +122,7 @@ class RecoverMethodsSpec extends AnyFunSpec with RecoverMethods with ScalaFuture
         recoverToSucceededIf[MyTrait] {
           Future { throw new AnotherException }
         }
-      assert(futureCaught.futureValue() eq Succeeded)
+      assert(futureCaught.futureValue eq Succeeded)
     }
 
     it("should return Succeeded") {
@@ -131,13 +131,13 @@ class RecoverMethodsSpec extends AnyFunSpec with RecoverMethods with ScalaFuture
         recoverToSucceededIf[RuntimeException] {
           Future { throw e }
         }
-      assert(futureResult.futureValue() eq Succeeded)
+      assert(futureResult.futureValue eq Succeeded)
     }
 
     it("should fail with TFE if no exception is thrown") {
       val futureTfe =
         recoverToSucceededIf[IllegalArgumentException] { Future { "hi" } }
-      assert(futureTfe.failed.futureValue().isInstanceOf[TestFailedException])
+      assert(futureTfe.failed.futureValue.isInstanceOf[TestFailedException])
     }
 
     describe("when the bit of code throws the wrong exception") {
@@ -147,7 +147,7 @@ class RecoverMethodsSpec extends AnyFunSpec with RecoverMethods with ScalaFuture
           recoverToSucceededIf[IllegalArgumentException] {
             Future { throw wrongException }
           }
-        val caught = futureCaught.failed.futureValue()
+        val caught = futureCaught.failed.futureValue
         assert(caught.isInstanceOf[TestFailedException])
         assert(caught.getCause eq wrongException)
       }
