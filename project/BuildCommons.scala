@@ -6,11 +6,11 @@ import scala.io.Source
 trait BuildCommons {
 
   lazy val scalaVersionsSettings: Seq[Setting[_]] = Seq(
-    crossScalaVersions := Seq("2.13.4", "2.12.12", "2.11.12", "2.10.7"),
+    crossScalaVersions := Seq("2.13.4", "2.12.13", "2.11.12", "2.10.7"),
     scalaVersion := crossScalaVersions.value.head,
   )
 
-  val releaseVersion = "3.2.4"
+  val releaseVersion = "3.2.5"
 
   val previousReleaseVersion = "3.2.3"
 
