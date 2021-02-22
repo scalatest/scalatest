@@ -2745,11 +2745,6 @@ object Generator {
         val canonicals = canonicalsOfT.map(t => PrettyFunction0(t))
         (canonicals, nextRnd)
       }
-      override def shrink(f: () => T, rnd: Randomizer): (RoseTree[() => T], Randomizer) = {
-        val (shrinksOfT, nextRnd) = genOfT.shrink(f(), rnd)
-        val shrinks = shrinksOfT.map(t => (PrettyFunction0(t): () => T)) // TODO: This type ascription can be removed if I make RoseTree covariant
-        (shrinks, nextRnd)
-      }
     }
   }
 
