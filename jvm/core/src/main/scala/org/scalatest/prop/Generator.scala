@@ -2698,9 +2698,6 @@ object Generator {
           override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) =
             if (from <= 1) outerGenOfListOfT.canonicals(rnd) else (Iterator.empty, rnd)
           // TODO: Shrink can go from from up to xs length
-          override def shrink(xs: List[T], rnd: Randomizer): (RoseTree[List[T]], Randomizer) = {
-            outerGenOfListOfT.shrink(xs, rnd)
-          }
           override def toString = s"Generator[List[T] /* having lengths between $from and $to (inclusive) */]"
         }
       }
