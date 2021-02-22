@@ -3884,9 +3884,6 @@ object Generator {
             }
         }
       }
-
-      // Note: I may not need this one, because I mapped the underlying RoseTree in next
-      override def shrink(value: Either[L, R], rnd: Randomizer): (RoseTree[Either[L, R]], Randomizer) = (NextRoseTree(value), rnd)
     }
 
   /**
