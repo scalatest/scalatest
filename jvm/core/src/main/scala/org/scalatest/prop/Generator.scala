@@ -663,7 +663,6 @@ object Generator {
       }
       private val byteCanonicals: List[Byte] = List(0, 1, -1, 2, -2, 3, -3)
       override def canonicals(rnd: Randomizer): (Iterator[Byte], Randomizer) = (byteCanonicals.iterator, rnd)
-      override def shrink(i: Byte, rnd: Randomizer):  (RoseTree[Byte], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[Byte]"
     }
 
@@ -703,7 +702,6 @@ object Generator {
       }
       private val shortCanonicals: List[Short] = List(0, 1, -1, 2, -2, 3, -3)
       override def canonicals(rnd: Randomizer): (Iterator[Short], Randomizer) = (shortCanonicals.iterator, rnd)
-      override def shrink(i: Short, rnd: Randomizer):  (RoseTree[Short], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[Short]"
     }
 
@@ -749,7 +747,6 @@ object Generator {
         val numericChar = numericChars(numericCharIndex)
         (Iterator(lowerChar, upperChar, numericChar), rnd3)
       }
-      override def shrink(i: Char, rnd: Randomizer):  (RoseTree[Char], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[Char]"
     }
 
@@ -790,7 +787,6 @@ object Generator {
       override def toString = "Generator[Int]"
       private val intCanonicals = List(0, 1, -1, 2, -2, 3, -3)
       override def canonicals(rnd: Randomizer): (Iterator[Int], Randomizer) = (intCanonicals.iterator, rnd)
-      override def shrink(i: Int, rnd: Randomizer):  (RoseTree[Int], Randomizer) = (NextRoseTree(i), rnd)
     }
 
   /**
@@ -829,7 +825,6 @@ object Generator {
       }
       private val longCanonicals: List[Long] = List(0, 1, -1, 2, -2, 3, -3)
       override def canonicals(rnd: Randomizer): (Iterator[Long], Randomizer) = (longCanonicals.iterator, rnd)
-      override def shrink(i: Long, rnd: Randomizer):  (RoseTree[Long], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[Long]"
     }
 
@@ -904,7 +899,6 @@ object Generator {
       }
       private val floatCanonicals: List[Float] = List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f)
       override def canonicals(rnd: Randomizer): (Iterator[Float], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(i: Float, rnd: Randomizer):  (RoseTree[Float], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[Float]"
     }
 
@@ -980,7 +974,6 @@ object Generator {
       }
       private val doubleCanonicals: List[Double] = List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0)
       override def canonicals(rnd: Randomizer): (Iterator[Double], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(d: Double, rnd: Randomizer):  (RoseTree[Double], Randomizer) = (NextRoseTree(d), rnd)
       override def toString = "Generator[Double]"
     }
 
@@ -1020,7 +1013,6 @@ object Generator {
       }
       private val posIntCanonicals = List(1, 2, 3).map(PosInt.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosInt], Randomizer) = (posIntCanonicals.iterator, rnd)
-      override def shrink(i: PosInt, rnd: Randomizer):  (RoseTree[PosInt], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosInt]"
     }
 
@@ -1061,7 +1053,6 @@ object Generator {
       }
       private val posZIntCanonicals = List(0, 1, 2, 3).map(PosZInt.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosZInt], Randomizer) = (posZIntCanonicals.iterator, rnd)
-      override def shrink(i: PosZInt, rnd: Randomizer):  (RoseTree[PosZInt], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosZInt]"
     }
 
@@ -1101,7 +1092,6 @@ object Generator {
       }
       private val posLongCanonicals = List(1, 2, 3).map(PosLong.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosLong], Randomizer) = (posLongCanonicals.iterator, rnd)
-      override def shrink(i: PosLong, rnd: Randomizer):  (RoseTree[PosLong], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosLong]"
     }
 
@@ -1142,7 +1132,6 @@ object Generator {
       }
       private val posZLongCanonicals = List(0, 1, 2, 3).map(PosZLong.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosZLong], Randomizer) = (posZLongCanonicals.iterator, rnd)
-      override def shrink(i: PosZLong, rnd: Randomizer):  (RoseTree[PosZLong], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosZLong]"
     }
 
@@ -1193,7 +1182,6 @@ object Generator {
       }
       private val posFloatCanonicals: List[PosFloat] = List(1.0f, 2.0f, 3.0f).map(PosFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosFloat], Randomizer) = (posFloatCanonicals.iterator, rnd)
-      override def shrink(i: PosFloat, rnd: Randomizer):  (RoseTree[PosFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosFloat]"
     }
 
@@ -1240,7 +1228,6 @@ object Generator {
       }
       private val posFloatCanonicals: List[PosFiniteFloat] = List(1.0f, 2.0f, 3.0f).map(PosFiniteFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosFiniteFloat], Randomizer) = (posFloatCanonicals.iterator, rnd)
-      override def shrink(i: PosFiniteFloat, rnd: Randomizer):  (RoseTree[PosFiniteFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosFiniteFloat]"
     }
 
@@ -1292,7 +1279,6 @@ object Generator {
       }
       private val floatCanonicals: List[FiniteFloat] = List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f).map(FiniteFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[FiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(i: FiniteFloat, rnd: Randomizer):  (RoseTree[FiniteFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[FiniteFloat]"
     }
 
@@ -1344,7 +1330,6 @@ object Generator {
       }
       private val doubleCanonicals: List[FiniteDouble] = List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(FiniteDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[FiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(i: FiniteDouble, rnd: Randomizer):  (RoseTree[FiniteDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[FiniteDouble]"
     }
 
@@ -1398,7 +1383,6 @@ object Generator {
       }
       private val floatCanonicals: List[PosZFloat] = List(0.0f, 1.0f, 2.0f, 3.0f).map(PosZFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosZFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(i: PosZFloat, rnd: Randomizer):  (RoseTree[PosZFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosZFloat]"
     }
 
@@ -1448,7 +1432,6 @@ object Generator {
       }
       private val floatCanonicals: List[PosZFiniteFloat] = List(0.0f, 1.0f, 2.0f, 3.0f).map(PosZFiniteFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosZFiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(i: PosZFiniteFloat, rnd: Randomizer):  (RoseTree[PosZFiniteFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosZFiniteFloat]"
     }
 
@@ -1499,7 +1482,6 @@ object Generator {
       }
       private val posDoubleCanonicals: List[PosDouble] = List(1.0, 2.0, 3.0).map(PosDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosDouble], Randomizer) = (posDoubleCanonicals.iterator, rnd)
-      override def shrink(i: PosDouble, rnd: Randomizer):  (RoseTree[PosDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosDouble]"
     }
 
@@ -1546,7 +1528,6 @@ object Generator {
       }
       private val posDoubleCanonicals: List[PosFiniteDouble] = List(1.0, 2.0, 3.0).map(PosFiniteDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosFiniteDouble], Randomizer) = (posDoubleCanonicals.iterator, rnd)
-      override def shrink(i: PosFiniteDouble, rnd: Randomizer):  (RoseTree[PosFiniteDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosFiniteDouble]"
     }
 
@@ -1600,7 +1581,6 @@ object Generator {
       }
       private val doubleCanonicals: List[PosZDouble] = List(0.0, 1.0, 2.0, 3.0).map(PosZDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosZDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(i: PosZDouble, rnd: Randomizer):  (RoseTree[PosZDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosZDouble]"
     }
 
@@ -1650,7 +1630,6 @@ object Generator {
       }
       private val doubleCanonicals: List[PosZFiniteDouble] = List(0.0, 1.0, 2.0, 3.0).map(PosZFiniteDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[PosZFiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(i: PosZFiniteDouble, rnd: Randomizer):  (RoseTree[PosZFiniteDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[PosZFiniteDouble]"
     }
 
@@ -1708,7 +1687,6 @@ object Generator {
       }
       private val doubleCanonicals: List[NonZeroDouble] = List(1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(NonZeroDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NonZeroDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(i: NonZeroDouble, rnd: Randomizer):  (RoseTree[NonZeroDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NonZeroDouble]"
     }
 
@@ -1760,7 +1738,6 @@ object Generator {
       }
       private val doubleCanonicals: List[NonZeroFiniteDouble] = List(1.0, -1.0, 2.0, -2.0, 3.0, -3.0).map(NonZeroFiniteDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NonZeroFiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(i: NonZeroFiniteDouble, rnd: Randomizer):  (RoseTree[NonZeroFiniteDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NonZeroFiniteDouble]"
     }
 
@@ -1819,7 +1796,6 @@ object Generator {
       }
       private val floatCanonicals: List[NonZeroFloat] = List(1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f).map(NonZeroFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NonZeroFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(i: NonZeroFloat, rnd: Randomizer):  (RoseTree[NonZeroFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NonZeroFloat]"
     }
 
@@ -1871,7 +1847,6 @@ object Generator {
       }
       private val floatCanonicals: List[NonZeroFiniteFloat] = List(1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f).map(NonZeroFiniteFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NonZeroFiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(i: NonZeroFiniteFloat, rnd: Randomizer):  (RoseTree[NonZeroFiniteFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NonZeroFiniteFloat]"
     }
 
@@ -1909,7 +1884,6 @@ object Generator {
       override def toString = "Generator[NonZeroInt]"
       private val nonZeroIntCanonicals = List(NonZeroInt(1), NonZeroInt(-1), NonZeroInt(2), NonZeroInt(-2), NonZeroInt(3), NonZeroInt(-3))
       override def canonicals(rnd: Randomizer): (Iterator[NonZeroInt], Randomizer) = (nonZeroIntCanonicals.iterator, rnd)
-      override def shrink(i: NonZeroInt, rnd: Randomizer):  (RoseTree[NonZeroInt], Randomizer) = (NextRoseTree(i), rnd)
     }
 
   /**
@@ -1945,7 +1919,6 @@ object Generator {
       }
       private val nonZeroLongCanonicals = List(1, -1, 2, -2, 3, -3).map(NonZeroLong.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NonZeroLong], Randomizer) = (nonZeroLongCanonicals.iterator, rnd)
-      override def shrink(i: NonZeroLong, rnd: Randomizer):  (RoseTree[NonZeroLong], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NonZeroLong]"
     }
 
@@ -1996,7 +1969,6 @@ object Generator {
       }
       private val negDoubleCanonicals: List[NegDouble] = List(-1.0, -2.0, -3.0).map(NegDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegDouble], Randomizer) = (negDoubleCanonicals.iterator, rnd)
-      override def shrink(i: NegDouble, rnd: Randomizer):  (RoseTree[NegDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegDouble]"
     }
 
@@ -2043,7 +2015,6 @@ object Generator {
       }
       private val negDoubleCanonicals: List[NegFiniteDouble] = List(-1.0, -2.0, -3.0).map(NegFiniteDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegFiniteDouble], Randomizer) = (negDoubleCanonicals.iterator, rnd)
-      override def shrink(i: NegFiniteDouble, rnd: Randomizer):  (RoseTree[NegFiniteDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegFiniteDouble]"
     }
 
@@ -2094,7 +2065,6 @@ object Generator {
       }
       private val negFloatCanonicals: List[NegFloat] = List(-1.0f, -2.0f, -3.0f).map(NegFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegFloat], Randomizer) = (negFloatCanonicals.iterator, rnd)
-      override def shrink(i: NegFloat, rnd: Randomizer):  (RoseTree[NegFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegFloat]"
     }
 
@@ -2141,7 +2111,6 @@ object Generator {
       }
       private val negFloatCanonicals: List[NegFiniteFloat] = List(-1.0f, -2.0f, -3.0f).map(NegFiniteFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegFiniteFloat], Randomizer) = (negFloatCanonicals.iterator, rnd)
-      override def shrink(i: NegFiniteFloat, rnd: Randomizer):  (RoseTree[NegFiniteFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegFiniteFloat]"
     }
 
@@ -2181,7 +2150,6 @@ object Generator {
       }
       private val negIntCanonicals = List(-1, -2, -3).map(NegInt.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegInt], Randomizer) = (negIntCanonicals.iterator, rnd)
-      override def shrink(i: NegInt, rnd: Randomizer):  (RoseTree[NegInt], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegInt]"
     }
 
@@ -2221,7 +2189,6 @@ object Generator {
       }
       private val negLongCanonicals = List(-1, -2, -3).map(NegLong.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegLong], Randomizer) = (negLongCanonicals.iterator, rnd)
-      override def shrink(i: NegLong, rnd: Randomizer):  (RoseTree[NegLong], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegLong]"
     }
 
@@ -2276,7 +2243,6 @@ object Generator {
       }
       private val doubleCanonicals: List[NegZDouble] = List(0.0, -1.0, -2.0, -3.0).map(NegZDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegZDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(i: NegZDouble, rnd: Randomizer):  (RoseTree[NegZDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegZDouble]"
     }
 
@@ -2326,7 +2292,6 @@ object Generator {
       }
       private val doubleCanonicals: List[NegZFiniteDouble] = List(0.0, -1.0, -2.0, -3.0).map(NegZFiniteDouble.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegZFiniteDouble], Randomizer) = (doubleCanonicals.iterator, rnd)
-      override def shrink(i: NegZFiniteDouble, rnd: Randomizer):  (RoseTree[NegZFiniteDouble], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegZFiniteDouble]"
     }
 
@@ -2380,7 +2345,6 @@ object Generator {
       }
       private val floatCanonicals: List[NegZFloat] = List(0.0f, -1.0f, -2.0f, -3.0f).map(NegZFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegZFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(i: NegZFloat, rnd: Randomizer):  (RoseTree[NegZFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegZFloat]"
     }
 
@@ -2430,7 +2394,6 @@ object Generator {
       }
       private val floatCanonicals: List[NegZFiniteFloat] = List(0.0f, -1.0f, -2.0f, -3.0f).map(NegZFiniteFloat.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegZFiniteFloat], Randomizer) = (floatCanonicals.iterator, rnd)
-      override def shrink(i: NegZFiniteFloat, rnd: Randomizer):  (RoseTree[NegZFiniteFloat], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegZFiniteFloat]"
     }
 
@@ -2471,7 +2434,6 @@ object Generator {
       }
       private val negZIntCanonicals = List(0, -1, -2, -3).map(NegZInt.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegZInt], Randomizer) = (negZIntCanonicals.iterator, rnd)
-      override def shrink(i: NegZInt, rnd: Randomizer): (RoseTree[NegZInt], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegZInt]"
     }
 
@@ -2512,7 +2474,6 @@ object Generator {
       }
       private val negZLongCanonicals = List(0, -1, -2, -3).map(NegZLong.ensuringValid(_))
       override def canonicals(rnd: Randomizer): (Iterator[NegZLong], Randomizer) = (negZLongCanonicals.iterator, rnd)
-      override def shrink(i: NegZLong, rnd: Randomizer): (RoseTree[NegZLong], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NegZLong]"
     }
 
@@ -2542,7 +2503,6 @@ object Generator {
             (NextRoseTree(NumericChar.ensuringValid((posZInt.value + 48).toChar)), Nil, rnd2)
         }
       }
-      override def shrink(i: NumericChar, rnd: Randomizer): (RoseTree[NumericChar], Randomizer) = (NextRoseTree(i), rnd)
       override def toString = "Generator[NumericChar]"
     }
 
@@ -2619,7 +2579,6 @@ object Generator {
         val (canonicalsOfChar, rnd1) = charGenerator.canonicals(rnd)
         (Iterator("") ++ canonicalsOfChar.map(t => s"$t"), rnd1)
       }
-      override def shrink(s: String, rnd: Randomizer): (RoseTree[String], Randomizer) = (NextRoseTree(s), rnd)
       override def toString = "Generator[String]"
     }
 
@@ -2702,7 +2661,6 @@ object Generator {
         (canonicalsOfT.map(t => List(t)), rnd1)
       }
 
-      override def shrink(xs: List[T], rnd: Randomizer): (RoseTree[List[T]], Randomizer) = (NextRoseTree(xs), rnd)
       override def toString = "Generator[List[T]]"
       def havingSize(size: PosZInt): Generator[List[T]] = { // TODO: add with HavingLength again
         // No edges and no shrinking. Since they said they want a list of a particular length,
@@ -2714,9 +2672,6 @@ object Generator {
           def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (RoseTree[List[T]], List[List[T]], Randomizer) =
             outerGenOfListOfT.next(SizeParam(PosZInt(0), szp.maxSize, size), edges, rnd) // TODO: SizeParam(size, size, size)?
           override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
-          override def shrink(xs: List[T], rnd: Randomizer): (RoseTree[List[T]], Randomizer) = {
-            (NextRoseTree(xs), rnd)
-          }
           override def toString = s"Generator[List[T] /* having length $size */]"
         }
       }
@@ -2755,9 +2710,6 @@ object Generator {
           def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (RoseTree[List[T]], List[List[T]], Randomizer) =
             outerGenOfListOfT.next(f(szp), edges, rnd)
           override def canonicals(rnd: Randomizer): (Iterator[List[T]], Randomizer) = (Iterator.empty, rnd)
-          override def shrink(xs: List[T], rnd: Randomizer): (RoseTree[List[T]], Randomizer) = {
-            (NextRoseTree(xs), rnd)
-          }
           override def toString = s"Generator[List[T] /* having lengths determined by a function */]"
         }
     }
@@ -3775,9 +3727,6 @@ object Generator {
             }
         }
       }
-
-      override def shrink(value: Option[T], rnd: Randomizer): (RoseTree[Option[T]], Randomizer) = (NextRoseTree(value), rnd)
-
       override def toString = "Generator[Option[T]]"
     }
 
@@ -4183,8 +4132,6 @@ object Generator {
         (canonicalsOfT.map(t => Vector(t)), rnd1)
       }
 
-      override def shrink(xs: Vector[T], rnd: Randomizer): (RoseTree[Vector[T]], Randomizer) = (NextRoseTree(xs), rnd)
-
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Vector[T]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Vector[T]] = {
@@ -4308,7 +4255,6 @@ object Generator {
         val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
         (canonicalsOfT.map(t => Set(t)), rnd1)
       }
-      override def shrink(xs: Set[T], rnd: Randomizer): (RoseTree[Set[T]], Randomizer) = (NextRoseTree(xs), rnd)
 
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Set[T]] = generatorWithSize(SizeParam(len, 0, len))
@@ -4433,7 +4379,6 @@ object Generator {
         val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
         (canonicalsOfT.map(t => SortedSet(t)), rnd1)
       }
-      override def shrink(xs: SortedSet[T], rnd: Randomizer): (RoseTree[SortedSet[T]], Randomizer) = (NextRoseTree(xs), rnd)
 
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[SortedSet[T]] = generatorWithSize(SizeParam(len, 0, len))
@@ -4562,7 +4507,6 @@ object Generator {
         (canonicalsOfKV.map(t => Map(t)), rnd1)
       }
 
-      override def shrink(xs: Map[K, V], rnd: Randomizer): (RoseTree[Map[K, V]], Randomizer) = (NextRoseTree(xs), rnd)
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Map[K, V]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Map[K, V]] = {
@@ -4686,8 +4630,6 @@ object Generator {
         val (canonicalsOfKV, rnd1) = genOfTuple2KV.canonicals(rnd)
         (canonicalsOfKV.map(t => SortedMap(t)), rnd1)
       }
-
-      override def shrink(xs: SortedMap[K, V], rnd: Randomizer): (RoseTree[SortedMap[K, V]], Randomizer) = (NextRoseTree(xs), rnd)
 
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[SortedMap[K, V]] = generatorWithSize(SizeParam(len, 0, len))
