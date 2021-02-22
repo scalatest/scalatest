@@ -610,13 +610,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         canonicals(1) should (be >= 'A' and be <= 'Z')
         canonicals(2) should (be >= '0' and be <= '9')
       }
-      // TODO: Fix this test
-      ignore("should shrink Chars by trying selected printable characters") {
+      it("should shrink Chars by trying selected printable characters") {
         import GeneratorDrivenPropertyChecks._
         val expectedChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toList
         val generator = implicitly[Generator[Char]]
-        forAll { (c: Char) =>
-          val (shrinkRoseTree, _) = generator.shrink(c, Randomizer.default)
+        forAll { (shrinkRoseTree: RoseTree[Char]) =>
+          val c = shrinkRoseTree.value
           val shrinks: List[Char] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z')
