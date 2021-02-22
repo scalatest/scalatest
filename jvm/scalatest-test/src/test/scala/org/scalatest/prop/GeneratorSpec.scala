@@ -679,12 +679,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f)
       }
-      // TODO: Fix this test
-      ignore("should shrink Floats by dropping the fraction part then repeatedly 'square-rooting' and negating") {
+      it("should shrink Floats by dropping the fraction part then repeatedly 'square-rooting' and negating") {
         import GeneratorDrivenPropertyChecks._
-        forAll { (f: Float) =>
-          val generator = implicitly[Generator[Float]]
-          val (shrinkRoseTree, _) = generator.shrink(f, Randomizer.default)
+        forAll { (shrinkRoseTree: RoseTree[Float]) =>
+          val f = shrinkRoseTree.value
           val shrinks: List[Float] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (f == 0.0f) {
@@ -760,13 +758,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0)
       }
-      // TODO: Fix this test
-      ignore("should shrink Doubles by dropping the fraction part then repeatedly 'square-rooting' and negating") {
+      it("should shrink Doubles by dropping the fraction part then repeatedly 'square-rooting' and negating") {
         import GeneratorDrivenPropertyChecks._
   // try with -173126.1489439121
-        forAll { (d: Double) =>
-          val generator = implicitly[Generator[Double]]
-          val (shrinkRoseTree, _) = generator.shrink(d, Randomizer.default)
+        forAll { (shrinkRoseTree: RoseTree[Byte]) =>
+          val d = shrinkRoseTree.value
           val shrinks: List[Double] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (d == 0.0) {
