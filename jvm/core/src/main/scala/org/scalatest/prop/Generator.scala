@@ -3695,6 +3695,7 @@ object Generator {
         }
       }
 
+      // TODO: Ah, maybe edges should return List[RoseTree[Option[T]], Randomizer] instead. Then it could be shrunken.
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Option[T]], Randomizer) = {
         // Subtract one from length, and we'll wrap those in Somes. Subtract one so that None can be the first edge.
         val (edgesOfT, nextRnd) = genOfT.initEdges(if (maxLength > 0) PosZInt.ensuringValid((maxLength - 1)) else 0, rnd)
@@ -3712,8 +3713,8 @@ object Generator {
         edges match {
           case head :: tail =>
             (Rose(head), tail, rnd) // This means I won't shrink an edge if wrapped in an Option, which is a bit odd but OK for now. UUU
-          case Nil =>
-            val (nextInt, nextRnd) = rnd.nextInt
+          case Nil =>               // This I think can be shrunken if we add a shrinkValue method to Generator (the old shrink method).
+            val (nextInt, nextRnd) = rnd.nextInt // Actually maybe not, because can't map/flatMap shrinkValue. Oh, maybe edges should
             if (nextInt % 100 == 0) // let every hundredth value or so be a None
               (Rose(None), Nil, nextRnd) // No need to shrink None.
             else {
