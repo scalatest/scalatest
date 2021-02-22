@@ -1790,7 +1790,7 @@ object Generator {
             (NextRoseTree(head), tail, rnd)
           case Nil =>
             val (nonZeroFloat, rnd2) = rnd.nextNonZeroFloat
-            val (roseTreeOfNonZeroFloat, rnd3) = shrink(nonZeroFloat, rnd2)
+            val (roseTreeOfNonZeroFloat, rnd3) = (NextRoseTree(nonZeroFloat), rnd2)
             (NextRoseTree(nonZeroFloat), Nil, rnd3)
         }
       }
@@ -2237,7 +2237,7 @@ object Generator {
             (NextRoseTree(head), tail, rnd)
           case Nil =>
             val (negZDouble, rnd2) = rnd.nextNegZDouble
-            val (roseTreeOfNegZDouble, rnd3) = shrink(negZDouble, rnd2)
+            val (roseTreeOfNegZDouble, rnd3) = (NextRoseTree(negZDouble), rnd2)
             (NextRoseTree(negZDouble), Nil, rnd3)
         }
       }
