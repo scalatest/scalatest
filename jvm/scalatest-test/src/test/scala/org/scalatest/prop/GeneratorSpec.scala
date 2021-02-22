@@ -2477,12 +2477,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (s5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = r4)
         s5.value.length shouldBe 100
       }
-      // TODO: Fix this test
-      ignore("should shrink Strings using strategery") {
+      it("should shrink Strings using strategery") {
         import GeneratorDrivenPropertyChecks._
-        forAll { (s: String) =>
-          val generator = implicitly[Generator[String]]
-          val (shrinkRoseTree, _) = generator.shrink(s, Randomizer.default)
+        forAll { (shrinkRoseTree: RoseTree[String]) =>
+          val s = shrinkRoseTree.value
           val shrinks: List[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (s.isEmpty)
             shrinks shouldBe empty
