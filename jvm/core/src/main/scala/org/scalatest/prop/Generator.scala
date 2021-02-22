@@ -866,9 +866,9 @@ object Generator {
                 else if (f == Float.NegativeInfinity)
                   Float.MinValue
                 else f
-                  // Nearest whole numbers closer to zero
-                  val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-                  shrinkLoop(nearest, NextRoseTree(nearestNeg) :: NextRoseTree(nearest) :: acc)
+              // Nearest whole numbers closer to zero
+              val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
+              shrinkLoop(nearest, NextRoseTree(nearestNeg) :: NextRoseTree(nearest) :: acc)
             }
             else {
               val sqrt: Float = math.sqrt(f.abs.toDouble).toFloat
@@ -878,7 +878,7 @@ object Generator {
                 val negWhole: Float = math.rint((-whole).toDouble).toFloat
                 val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
                 shrinkLoop(first, NextRoseTree(first) :: NextRoseTree(second) :: acc)
-                }
+              }
             }
           }
           (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
@@ -1293,20 +1293,20 @@ object Generator {
           @tailrec
           def shrinkLoop(f: FiniteDouble, acc: List[RoseTree[FiniteDouble]]): List[RoseTree[FiniteDouble]] = {
             val fv = f.value
-            if (fv == 0.0f) acc
-            else if (fv <= 1.0f && fv >= -1.0f) Rose(FiniteDouble(0.0f)) :: acc
+            if (fv == 0.0) acc
+            else if (fv <= 1.0 && fv >= -1.0) Rose(FiniteDouble(0.0)) :: acc
             else if (!fv.isWhole) {
               // Nearest whole numbers closer to zero
-              val (nearest, nearestNeg) = if (fv > 0.0f) (fv.floor, (-fv).ceil) else (fv.ceil, (-fv).floor)
+              val (nearest, nearestNeg) = if (fv > 0.0) (fv.floor, (-fv).ceil) else (fv.ceil, (-fv).floor)
               shrinkLoop(FiniteDouble.ensuringValid(nearest), NextRoseTree(FiniteDouble.ensuringValid(nearestNeg)) :: NextRoseTree(FiniteDouble.ensuringValid(nearest)) :: acc)
             }
-            else {
+            else { // YYY this seems wrong that it is usingn Float
               val sqrt: Float = math.sqrt(fv.abs.toDouble).toFloat
-              if (sqrt < 1.0f) Rose(FiniteDouble(0.0f)) :: acc
+              if (sqrt < 1.0) Rose(FiniteDouble(0.0)) :: acc
               else {
-                val whole: Float = sqrt.floor
-                val negWhole: Float = math.rint((-whole).toDouble).toFloat
-                val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
+                val whole: Double = sqrt.floor
+                val negWhole: Double = math.rint((-whole).toDouble)
+                val (first, second) = if (f > 0.0) (negWhole, whole) else (whole, negWhole)
                 shrinkLoop(FiniteDouble.ensuringValid(first), NextRoseTree(FiniteDouble.ensuringValid(first)) :: NextRoseTree(FiniteDouble.ensuringValid(second)) :: acc)
               }
             }
@@ -3665,7 +3665,10 @@ object Generator {
   implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] =
     new Generator[Option[T]] {
 
-      // TODO This only uses Roses. Check that we don't need RoseTrees.
+      // Unused currently. But this is what made me realize we may actually want a shrink
+      // method on Generator that can be passed a value, so that we can shrink edges
+      // inside something like Option generator (and either, or, etc.). Maybe call it
+      // shrinkValue so that the name looks different.
       case class NextRoseTree(value: Option[T]) extends RoseTree[Option[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
 
@@ -3708,15 +3711,15 @@ object Generator {
       def next(szp: SizeParam, edges: List[Option[T]], rnd: Randomizer): (RoseTree[Option[T]], List[Option[T]], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
+            (Rose(head), tail, rnd) // This means I won't shrink an edge if wrapped in an Option, which is a bit odd but OK for now. UUU
           case Nil =>
             val (nextInt, nextRnd) = rnd.nextInt
-            if (nextInt % 10 == 0)
-              (Rose(None), Nil, nextRnd)
+            if (nextInt % 100 == 0) // let every hundredth value or so be a None
+              (Rose(None), Nil, nextRnd) // No need to shrink None.
             else {
               val (nextRoseTreeOfT, _, nextNextRnd) = genOfT.next(szp, Nil, nextRnd)
               (nextRoseTreeOfT.map(nextT => Some(nextT)), Nil, nextNextRnd)
-            }
+            }  // Decided not to have None in shrinks since None is in edges. Can change that later if desired.
         }
       }
       override def toString = "Generator[Option[T]]"

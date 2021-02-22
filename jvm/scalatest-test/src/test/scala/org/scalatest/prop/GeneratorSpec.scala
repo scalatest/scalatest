@@ -2533,7 +2533,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           case None => "None"
         }
 
-        classified.portions("None") should be (0.1 +- 0.03)
+        classified.portions("None") should be (0.01 +- 0.008)
       }
 
       it("should use the base type for edges") {
@@ -2563,20 +2563,41 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         optCanon.filter(_.isDefined).map(_.get) should contain theSameElementsAs intCanon.toList
       }
 
-      // TODO: Fix this test
-      ignore("should use the base type for shrinking") {
-        import Generator._
-        val baseGen = intGenerator
-        val gen = optionGenerator[Int]
+      it("should use the base type for shrinking plus add a None") {
+        import org.scalatest.OptionValues._
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[Option[Int]]) =>
+          val optI = shrinkRoseTree.value
+          val shrinks: List[Option[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          // shrinks.last shouldBe None
+          // Decided to not bother with having None at the end of the shrink line, because it is an edge and
+          // one out of every 100 or so regular.
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (optI.isEmpty)
+            shrinks shouldBe empty
+          else {
+            val i = optI.get
+            if (i == 0)
+              shrinks shouldBe List(None)
+            else {
+              if (i > 1)
+                shrinks.head.value should be > 0
+              else if (i < -1)
+                shrinks.head.value should be < 0
 
-        val rnd = Randomizer.default
-        val (intShrinkRoseTree, _) = baseGen.shrink(10000, rnd)
-        val (optShrinkRoseTree, _) = gen.shrink(Some(10000), rnd)
-        val intShrink = intShrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
-        val optShrink = optShrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
-
-        optShrink should contain (None)
-        optShrink.filter(_.isDefined).map(_.get) should contain theSameElementsAs(intShrink)
+              import org.scalatest.Inspectors._
+              val revShrinks = shrinks.reverse
+              val pairs: List[(Option[Int], Option[Int])] = revShrinks.zip(revShrinks.tail)
+              forAll(pairs) {
+                case (Some(x), Some(y)) =>
+                  assert(x == 0 || x == -y || x.abs == y.abs / 2)
+                case (None, Some(_)) => succeed
+                case (Some(_), None) => fail("None was ahead of a Some in shrinks (i.e., before being reversed)")
+                case (None, None) => fail("None showed up twice in shrinks")
+              }
+            }
+          }
+        }
       }
 
       it("should not try to shrink None") {
