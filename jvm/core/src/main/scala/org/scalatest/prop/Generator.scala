@@ -444,7 +444,7 @@ trait Generator[T] { thisGeneratorOfT =>
     * @return a Tuple of the shrunk values and the next [[Randomizer]]
     */
   def shrink(value: T, rnd: Randomizer): (RoseTree[T], Randomizer) = (Rose(value), rnd)
-
+// XXX
   /**
     * Some simple, "ordinary" values of type [[T]].
     *
@@ -3802,9 +3802,6 @@ object Generator {
             }
         }
       }
-
-      // Note: I may not need this one, because I mapped the underlying RoseTree in next
-      override def shrink(value: Or[G, B], rnd: Randomizer): (RoseTree[Or[G, B]], Randomizer) = (NextRoseTree(value), rnd)
     }
 
   // Note that this is identical to orGenerator *except* that the sides are reversed:

@@ -2695,6 +2695,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         classification.percentages("Left").value should be (25 +- 2)
       }
 
+      // TODO. Why does this not fail? Make sure it is correct.
       it("should use the base types to shrink") {
         import Generator._
         val rGen = intGenerator
