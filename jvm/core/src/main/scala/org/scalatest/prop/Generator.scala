@@ -3815,22 +3815,22 @@ object Generator {
     new Generator[Either[L, R]] {
 
       // TODO This only uses Roses. Check that we don't need RoseTrees.
-      case class NextRoseTree(value: Either[L, R]) extends RoseTree[Either[L, R]] {
-        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Either[L, R]]], Randomizer) = {
-          value match {
-            case Right(r) => {
-              val (rShrink, nextRnd) = genOfR.shrink(r, rndPassedToShrinks)
-              val (rShrinkShrink, nextNextRnd) = rShrink.shrinks(nextRnd)
-              (rShrinkShrink.map(rt => rt.map(Right(_): Either[L, R])), nextNextRnd)
-            }
-            case Left(l) => {
-              val (lShrink, nextRnd) = genOfL.shrink(l, rndPassedToShrinks)
-              val (lShrinkShrink, nextNextRnd) = lShrink.shrinks(nextRnd)
-              (lShrinkShrink.map(rt => rt.map(Left(_): Either[L, R])), nextNextRnd)
-            }
-          }
-        }
-      }
+//      case class NextRoseTree(value: Either[L, R]) extends RoseTree[Either[L, R]] {
+//        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Either[L, R]]], Randomizer) = {
+//          value match {
+//            case Right(r) => {
+//              val (rShrink, nextRnd) = genOfR.shrink(r, rndPassedToShrinks)
+//              val (rShrinkShrink, nextNextRnd) = rShrink.shrinks(nextRnd)
+//              (rShrinkShrink.map(rt => rt.map(Right(_): Either[L, R])), nextNextRnd)
+//            }
+//            case Left(l) => {
+//              val (lShrink, nextRnd) = genOfL.shrink(l, rndPassedToShrinks)
+//              val (lShrinkShrink, nextNextRnd) = lShrink.shrinks(nextRnd)
+//              (lShrinkShrink.map(rt => rt.map(Left(_): Either[L, R])), nextNextRnd)
+//            }
+//          }
+//        }
+//      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Either[L, R]], Randomizer) = {
         val (edgesOfL, nextRnd) = genOfL.initEdges(maxLength, rnd)
