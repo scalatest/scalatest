@@ -3669,31 +3669,31 @@ object Generator {
       // method on Generator that can be passed a value, so that we can shrink edges
       // inside something like Option generator (and either, or, etc.). Maybe call it
       // shrinkValue so that the name looks different.
-      case class NextRoseTree(value: Option[T]) extends RoseTree[Option[T]] {
-        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
-
-          value match {
-            // If there is a real value, shrink that value, and return that and None.
-            case Some(t) =>
-              val optionOfT: Option[T] = value
-              val rootRoseTree =
-                new RoseTree[Option[T]] {
-                  val value: Option[T] = optionOfT
-                  def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
-                    val (topRoseTreeOfT, rnd2) = genOfT.shrink(t, rndPassedToShrinks) // topRoseTreeOfT is a RoseTree[T]
-                    val (nestedRoseTrees, rnd3) = topRoseTreeOfT.shrinks(rnd2) // nestedRoseTrees: List[RoseTree[T]]
-                    val noneList: List[RoseTree[Option[T]]] = List(Rose(None))
-                    val nestedList: List[RoseTree[Option[T]]] = nestedRoseTrees.map(nrt => nrt.map(t => Some(t): Option[T]))
-                    ((noneList ++ nestedList).reverse, rnd3)
-                  }
-                }
-              rootRoseTree.shrinks(rndPassedToShrinks)
-
-            // There's no way to simplify None:
-            case None => (List.empty, rndPassedToShrinks)
-          }
-        }
-      }
+//      case class NextRoseTree(value: Option[T]) extends RoseTree[Option[T]] {
+//        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
+//
+//          value match {
+//            // If there is a real value, shrink that value, and return that and None.
+//            case Some(t) =>
+//              val optionOfT: Option[T] = value
+//              val rootRoseTree =
+//                new RoseTree[Option[T]] {
+//                  val value: Option[T] = optionOfT
+//                  def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
+//                    val (topRoseTreeOfT, rnd2) = genOfT.shrink(t, rndPassedToShrinks) // topRoseTreeOfT is a RoseTree[T]
+//                    val (nestedRoseTrees, rnd3) = topRoseTreeOfT.shrinks(rnd2) // nestedRoseTrees: List[RoseTree[T]]
+//                    val noneList: List[RoseTree[Option[T]]] = List(Rose(None))
+//                    val nestedList: List[RoseTree[Option[T]]] = nestedRoseTrees.map(nrt => nrt.map(t => Some(t): Option[T]))
+//                    ((noneList ++ nestedList).reverse, rnd3)
+//                  }
+//                }
+//              rootRoseTree.shrinks(rndPassedToShrinks)
+//
+//            // There's no way to simplify None:
+//            case None => (List.empty, rndPassedToShrinks)
+//          }
+//        }
+//      }
 
       // TODO: Ah, maybe edges should return List[RoseTree[Option[T]], Randomizer] instead. Then it could be shrunken.
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Option[T]], Randomizer) = {
@@ -3739,22 +3739,22 @@ object Generator {
     new Generator[G Or B] {
 
       // TODO This only uses Roses. Check that we don't need RoseTrees.
-      case class NextRoseTree(value: G Or B) extends RoseTree[G Or B] {
-        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[G Or B]], Randomizer) = {
-          value match {
-            case Good(g) => {
-              val (gShrink, nextRnd) = genOfG.shrink(g, rndPassedToShrinks)
-              val (gShrinkShrink, nextNextRnd) = gShrink.shrinks(nextRnd)
-              (gShrinkShrink.map(rt => rt.map(Good(_) : G Or B)), nextNextRnd)
-            }
-            case Bad(b) => {
-              val (bShrink, nextRnd) = genOfB.shrink(b, rndPassedToShrinks)
-              val (bShrinkShrink, nextNextRnd) = bShrink.shrinks(nextRnd)
-              (bShrinkShrink.map(rt => rt.map(Bad(_) : G Or B)), nextNextRnd)
-            }
-          }
-        }
-      }
+//      case class NextRoseTree(value: G Or B) extends RoseTree[G Or B] {
+//        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[G Or B]], Randomizer) = {
+//          value match {
+//            case Good(g) => {
+//              val (gShrink, nextRnd) = genOfG.shrink(g, rndPassedToShrinks)
+//              val (gShrinkShrink, nextNextRnd) = gShrink.shrinks(nextRnd)
+//              (gShrinkShrink.map(rt => rt.map(Good(_) : G Or B)), nextNextRnd)
+//            }
+//            case Bad(b) => {
+//              val (bShrink, nextRnd) = genOfB.shrink(b, rndPassedToShrinks)
+//              val (bShrinkShrink, nextNextRnd) = bShrink.shrinks(nextRnd)
+//              (bShrinkShrink.map(rt => rt.map(Bad(_) : G Or B)), nextNextRnd)
+//            }
+//          }
+//        }
+//      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[G Or B], Randomizer) = {
         val (edgesOfG, nextRnd) = genOfG.initEdges(maxLength, rnd)

@@ -2563,7 +2563,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         optCanon.filter(_.isDefined).map(_.get) should contain theSameElementsAs intCanon.toList
       }
 
-      it("should use the base type for shrinking plus add a None") {
+      it("should use the base type for shrinking, without producing None") {
         import org.scalatest.OptionValues._
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Option[Int]]) =>
