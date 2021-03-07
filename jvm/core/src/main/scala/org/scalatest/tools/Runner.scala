@@ -1038,6 +1038,10 @@ object Runner {
   // use different numbers. So this is a "global" count in Runner.
   private val atomicThreadCounter = new AtomicInteger
 
+  private[scalatest] def loadJUnitWrapperClass(loader: ClassLoader) = loader.loadClass("org.scalatestplus.junit.JUnitWrapperSuite")
+
+  private[scalatest] def loadTestNGWrapperClass(loader: ClassLoader) = loader.loadClass("org.scalatestplus.testng.TestNGWrapperSuite")
+
   private[scalatest] def doRunRunRunDaDoRunRun(
     dispatch: DispatchReporter,
     suitesList: List[SuiteParam],
@@ -1204,8 +1208,7 @@ object Runner {
             if (junitsList.isEmpty)
               List.empty
             else {
-              // TODO: should change the class name to org.scalatestplus.junit.JUnitWrapperSuite after we move junit out.
-              val junitWrapperClass = loader.loadClass("org.scalatest.junit.JUnitWrapperSuite")
+              val junitWrapperClass = loadJUnitWrapperClass(loader)
               val junitWrapperClassConstructor = junitWrapperClass.getDeclaredConstructor(classOf[String], classOf[ClassLoader])
               for (junitClassName <- junitsList)
                 yield SuiteConfig(junitWrapperClassConstructor.newInstance(junitClassName, loader).asInstanceOf[Suite], emptyDynaTags, false, true) // JUnit suite should exclude nested suites
@@ -1213,8 +1216,7 @@ object Runner {
 
           val testNGWrapperSuiteList: List[SuiteConfig] =
             if (!testNGList.isEmpty) {
-              // TODO: should change the class name to org.scalatestplus.testng.TestNGWrapperSuite after we move junit out.
-              val testngWrapperClass = loader.loadClass("org.scalatest.testng.TestNGWrapperSuite")
+              val testngWrapperClass = loadTestNGWrapperClass(loader)
               val testngWrapperClassConstructor = testngWrapperClass.getDeclaredConstructor(classOf[List[String]])
               List(SuiteConfig(testngWrapperClassConstructor.newInstance(testNGList).asInstanceOf[Suite], emptyDynaTags, false, true)) // TestNG suite should exclude nested suites
             }
