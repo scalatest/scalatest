@@ -61,6 +61,7 @@ object Messaging {
 
   //DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
 
+  // SKIP-DOTTY-START
   /**
    * Enable <code>Messaging</code> implementation for <code>java.lang.Throwable</code>
    *
@@ -69,17 +70,18 @@ object Messaging {
    */
   implicit def messagingNatureOfThrowable[EX <: Throwable]: Messaging[EX] = 
     new Messaging[EX] {
-      def messageOf(exception: EX): String = exception.getMessage
+      def messageOf(exception: EX): String = exception.getMessage()
     }
 
   import scala.language.reflectiveCalls
+  // SKIP-DOTTY-END
 
   /**
    * Provides <code>Messaging</code> implementation for any arbitrary object with a <code>message()</code> method that returns <code>String</code>
    *
    * @tparam T any type that has a <code>message()</code> method that returns <code>String</code>
    * @return <code>Messaging[T]</code> that supports <code>T</code> in <code>have message</code> syntax
-   */
+   */ 
   implicit def messagingNatureOfAnyRefWithMessageMethod[T <: AnyRef { def message(): String}]: Messaging[T] = 
     new Messaging[T] {
       def messageOf(obj: T): String = obj.message()

@@ -50,14 +50,14 @@ class ParallelTestExecutionProp extends AnyFunSuite {
     def executeInOrder(): Unit = {
       for ((suite, args, status) <- buf) {
         suite.run(None, args)
-        if (!status.isCompleted)
+        if (!status.isCompleted())
           status.setCompleted()
       }
     }
     def executeInReverseOrder(): Unit = {
       for ((suite, args, status) <- buf.reverse) {
         suite.run(None, args)
-        if (!status.isCompleted)
+        if (!status.isCompleted())
           status.setCompleted()
       }
     }
@@ -83,14 +83,14 @@ class ParallelTestExecutionProp extends AnyFunSuite {
     def executeInOrder(): Unit = {
       for ((suite, args, status) <- buf) {
         suite.run(None, args)
-        if (!status.isCompleted)
+        if (!status.isCompleted())
           status.setCompleted()
       }
     }
     def executeInReverseOrder(): Unit = {
       for ((suite, args, status) <- buf.reverse) {
         suite.run(None, args)
-        if (!status.isCompleted)
+        if (!status.isCompleted())
           status.setCompleted()
       }
     }
@@ -140,17 +140,17 @@ class ParallelTestExecutionProp extends AnyFunSuite {
     val holdingReporter = new SuiteHoldingReporter(suiteSortingReporter, suite1.suiteId, suites.holdingTestName, suites.holdingScopeClosedName)
     val distributor = new ControlledOrderDistributor
     val tracker = new Tracker()
-    holdingReporter(SuiteStarting(tracker.nextOrdinal, suite1.suiteName, suite1.suiteId, Some(suite1.getClass.getName), None))
-    holdingReporter(SuiteStarting(tracker.nextOrdinal, suite2.suiteName, suite2.suiteId, Some(suite2.getClass.getName), None))
+    holdingReporter(SuiteStarting(tracker.nextOrdinal(), suite1.suiteName, suite1.suiteId, Some(suite1.getClass.getName), None))
+    holdingReporter(SuiteStarting(tracker.nextOrdinal(), suite2.suiteName, suite2.suiteId, Some(suite2.getClass.getName), None))
     suite1.run(None, Args(holdingReporter, distributor = Some(distributor), distributedSuiteSorter = Some(suiteSortingReporter)))
     suite2.run(None, Args(holdingReporter, distributor = Some(distributor), distributedSuiteSorter = Some(suiteSortingReporter)))
-    holdingReporter(SuiteCompleted(tracker.nextOrdinal, suite2.suiteName, suite2.suiteId, Some(suite2.getClass.getName), None))
+    holdingReporter(SuiteCompleted(tracker.nextOrdinal(), suite2.suiteName, suite2.suiteId, Some(suite2.getClass.getName), None))
     fun(distributor)
     eventually(timeout(suite1.sortingTimeout.scaledBy(3.0))) {
       assert(recordingReporter.eventsReceived.size === suites.holdUntilEventCount)
     }
     holdingReporter.fireHoldEvents()
-    holdingReporter(SuiteCompleted(tracker.nextOrdinal, suite1.suiteName, suite1.suiteId, Some(suite1.getClass.getName), None))
+    holdingReporter(SuiteCompleted(tracker.nextOrdinal(), suite1.suiteName, suite1.suiteId, Some(suite1.getClass.getName), None))
     recordingReporter.eventsReceived
   }
   // SKIP-SCALATESTJS,NATIVE-END
@@ -160,12 +160,12 @@ class ParallelTestExecutionProp extends AnyFunSuite {
     val suiteSortingReporter = new SuiteSortingReporter(recordingReporter, Span((Suite.defaultTestSortingReporterTimeoutInSeconds * 1000) + 1000, Millis), System.err)
     val distributor = new ControlledOrderDistributor
     val tracker = new Tracker()
-    suiteSortingReporter(SuiteStarting(tracker.nextOrdinal, suite1.suiteName, suite1.suiteId, Some(suite1.getClass.getName), None))
-    suiteSortingReporter(SuiteStarting(tracker.nextOrdinal, suite2.suiteName, suite2.suiteId, Some(suite2.getClass.getName), None))
+    suiteSortingReporter(SuiteStarting(tracker.nextOrdinal(), suite1.suiteName, suite1.suiteId, Some(suite1.getClass.getName), None))
+    suiteSortingReporter(SuiteStarting(tracker.nextOrdinal(), suite2.suiteName, suite2.suiteId, Some(suite2.getClass.getName), None))
     suite1.run(None, Args(suiteSortingReporter, distributor = Some(distributor), distributedSuiteSorter = Some(suiteSortingReporter)))
     suite2.run(None, Args(suiteSortingReporter, distributor = Some(distributor), distributedSuiteSorter = Some(suiteSortingReporter)))
-    suiteSortingReporter(SuiteCompleted(tracker.nextOrdinal, suite2.suiteName, suite2.suiteId, Some(suite2.getClass.getName), None))
-    suiteSortingReporter(SuiteCompleted(tracker.nextOrdinal, suite1.suiteName, suite1.suiteId, Some(suite1.getClass.getName), None))
+    suiteSortingReporter(SuiteCompleted(tracker.nextOrdinal(), suite2.suiteName, suite2.suiteId, Some(suite2.getClass.getName), None))
+    suiteSortingReporter(SuiteCompleted(tracker.nextOrdinal(), suite1.suiteName, suite1.suiteId, Some(suite1.getClass.getName), None))
     fun(distributor)
     recordingReporter.eventsReceived
   }
@@ -173,9 +173,9 @@ class ParallelTestExecutionProp extends AnyFunSuite {
   test("ParallelTestExecution should have the events reported in correct order when tests are executed in parallel") {
     import ParallelTestExecutionOrderExamples._
     forAll(orderExamples) { example =>
-      val inOrderEvents = withDistributor(example, _.executeInOrder)
+      val inOrderEvents = withDistributor(example, _.executeInOrder())
       example.assertOrderTest(inOrderEvents)
-      val reverseOrderEvents = withDistributor(example, _.executeInReverseOrder)
+      val reverseOrderEvents = withDistributor(example, _.executeInReverseOrder())
       example.assertOrderTest(reverseOrderEvents)
     }
   }
@@ -183,9 +183,9 @@ class ParallelTestExecutionProp extends AnyFunSuite {
   test("ParallelTestExecution should have InfoProvided fired from before and after block in correct order when tests are executed in parallel") {
     import ParallelTestExecutionInfoExamples._
     forAll(infoExamples) { example =>
-      val inOrderEvents = withDistributor(example, _.executeInOrder)
+      val inOrderEvents = withDistributor(example, _.executeInOrder())
       example.assertBeforeAfterInfo(inOrderEvents)
-      val reverseOrderEvents = withDistributor(example, _.executeInReverseOrder)
+      val reverseOrderEvents = withDistributor(example, _.executeInReverseOrder())
       example.assertBeforeAfterInfo(reverseOrderEvents)
     }
   }
@@ -194,9 +194,9 @@ class ParallelTestExecutionProp extends AnyFunSuite {
   test("ParallelTestExecution should have the blocking test's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired", Retryable) {
     import ParallelTestExecutionTestTimeoutExamples._
     forAll(testTimeoutExamples) { example =>
-      val inOrderEvents = withTestHoldingDistributor(example, _.executeInOrder)
+      val inOrderEvents = withTestHoldingDistributor(example, _.executeInOrder())
       example.assertTestTimeoutTest(inOrderEvents)
-      val reverseOrderEvents = withTestHoldingDistributor(example, _.executeInReverseOrder)
+      val reverseOrderEvents = withTestHoldingDistributor(example, _.executeInReverseOrder())
       example.assertTestTimeoutTest(reverseOrderEvents)
     }
   }
@@ -205,7 +205,7 @@ class ParallelTestExecutionProp extends AnyFunSuite {
   test("ParallelTestExecution should have the events reported in correct order when multiple suite's tests are executed in parallel") {
     import ParallelTestExecutionParallelSuiteExamples._
     forAll(parallelExamples) { example =>
-      val inOrderEvents = withSuiteDistributor(example.suite1, example.suite2, _.executeInOrder)
+      val inOrderEvents = withSuiteDistributor(example.suite1, example.suite2, _.executeInOrder())
       example.assertParallelSuites(inOrderEvents)
       //val reverseOrderEvents = withSuiteDistributor(example.suite1, example.suite2, _.executeInReverseOrder)
       //example.assertParallelSuites(reverseOrderEvents)
@@ -216,7 +216,7 @@ class ParallelTestExecutionProp extends AnyFunSuite {
   test("ParallelTestExecution should have the blocking suite's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired") {
     import ParallelTestExecutionSuiteTimeoutExamples._
     forAll(suiteTimeoutExamples) { example =>
-      val events = withSuiteHoldingDistributor(example, _.executeInOrder)
+      val events = withSuiteHoldingDistributor(example, _.executeInOrder())
       example.assertSuiteTimeoutTest(events)
     }
   }

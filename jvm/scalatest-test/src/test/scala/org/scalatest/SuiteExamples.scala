@@ -57,7 +57,7 @@ trait SuiteExamples extends Tables {
   def fixtureWordSpec: wordspec.FixtureAnyWordSpec with FixtureServices
 
   def examples =
-    Table(
+    Table[Suite with FixtureServices](
       "suite",
       // SKIP-SCALATESTJS,NATIVE-START
       junit3Suite,

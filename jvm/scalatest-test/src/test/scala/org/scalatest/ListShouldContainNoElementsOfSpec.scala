@@ -276,10 +276,13 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain noElementsOf Seq("hi", "he")
         }
-        implicit val ise = upperCaseEquality
-        all (hiLists) should contain noElementsOf Seq("hi", "he")
-        intercept[TestFailedException] {
-          all (hiLists) should contain noElementsOf Seq("HI", "HE")
+
+        {
+          implicit val ise = upperCaseEquality
+          all (hiLists) should contain noElementsOf Seq("hi", "he")
+          intercept[TestFailedException] {
+            all (hiLists) should contain noElementsOf Seq("HI", "HE")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -321,10 +324,13 @@ class ListShouldContainNoElementsOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should (contain noElementsOf Seq("hi", "he"))
         }
-        implicit val ise = upperCaseEquality
-        all (hiLists) should (contain noElementsOf Seq("hi", "he"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain noElementsOf Seq("HI", "HE"))
+
+        {
+          implicit val ise = upperCaseEquality
+          all (hiLists) should (contain noElementsOf Seq("hi", "he"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain noElementsOf Seq("HI", "HE"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {

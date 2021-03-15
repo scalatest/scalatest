@@ -25,40 +25,20 @@ import scala.quoted._
 object CompileMacro {
 
   // check that a code snippet compiles
-  def assertCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+  def assertCompileImpl[T](self: Expr[T], typeChecked: Expr[Boolean], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
     import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkCompile(code: String): Expr[Assertion] =
-      if (/*typeChecks(code)*/ true) '{ Succeeded } // FIXME
+      if (typeChecked.valueOrError) '{ Succeeded }
       else '{
         val messageExpr = Resources.expectedNoErrorButGotTypeError("", ${ Expr(code) })
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    Term.of(self).underlyingArgument match {
+    self.asTerm.underlyingArgument match {
 
-      case Apply(
-             Apply(
-               Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
-               List(
-                 Literal(Constant.String(code: String))
-               )
-             ),
-             _
-           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
-        // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
-        checkCompile(code.toString)
-
-      case Apply(
-             Apply(
-               Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
-               List(
-                 Literal(Constant.String(code: String))
-               )
-             ),
-             _
-           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
+      case Literal(StringConstant(code)) =>  
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
         checkCompile(code.toString)
 
@@ -68,41 +48,22 @@ object CompileMacro {
   }
 
   // check that a code snippet does not compile
-  def assertNotCompileImpl[T](self: Expr[T], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+  def assertNotCompileImpl[T](self: Expr[T], typeChecked: Expr[Boolean], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
     import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotCompile(code: String): Expr[Assertion] =
-      if (/*!typeChecks(code)*/ true) '{ Succeeded } // FIXME
+      if (!typeChecked.valueOrError) '{ Succeeded }
       else '{
         val messageExpr = Resources.expectedCompileErrorButGotNone(${ Expr(code) })
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
       }
 
-    Term.of(self).underlyingArgument match {
+    self.asTerm.underlyingArgument match {
 
-      case Apply(
-             Apply(
-               Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
-               List(
-                 Literal(Constant.String(code: String))
-               )
-             ),
-             _
-           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
+      case Literal(StringConstant(code)) =>  
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
-        checkNotCompile(code)
-
-      case Apply(
-             Apply(
-               Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
-               List(
-                 Literal(Constant.String(code: String))
-               )
-             ),
-             _
-           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
-        checkNotCompile(code)
+        checkNotCompile(code.toString)
 
       case other =>
         report.throwError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
@@ -110,12 +71,12 @@ object CompileMacro {
   }
 
   // check that a code snippet does not compile
-  def assertNotTypeCheckImpl(self: Expr[_], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+  def assertNotTypeCheckImpl(self: Expr[_], typeChecked: Expr[Boolean], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
     import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotTypeCheck(code: String): Expr[Assertion] =
-      if (/*!typeChecks(code)*/ true) '{ Succeeded } // FIXME
+      if (!typeChecked.valueOrError) '{ Succeeded }
       else '{
         val messageExpr = Resources.expectedTypeErrorButGotNone(${ Expr(code) })
         throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
@@ -123,7 +84,7 @@ object CompileMacro {
 
     val methodName = shouldOrMust + "Not"
 
-    Term.of(self).underlyingArgument match {
+    self.asTerm.underlyingArgument match {
       case Apply(
              Apply(
                Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
@@ -140,7 +101,7 @@ object CompileMacro {
              Apply(
                Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
                List(
-                 Literal(Constant.String(code: String))
+                 Literal(StringConstant(code))
                )
              ),
              _

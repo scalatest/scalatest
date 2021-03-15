@@ -294,10 +294,13 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         intercept[TestFailedException] {
           all (hiLists) should contain inOrderElementsOf Seq("hi", "ho")
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should contain inOrderElementsOf Seq("HI", "HE")
-        intercept[TestFailedException] {
-          all (hiLists) should contain inOrderElementsOf Seq("HI", "HO")
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should contain inOrderElementsOf Seq("HI", "HE")
+          intercept[TestFailedException] {
+            all (hiLists) should contain inOrderElementsOf Seq("HI", "HO")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -349,10 +352,13 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
         intercept[TestFailedException] {
           all (hiLists) should (contain inOrderElementsOf Seq("he", "hi"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should (contain inOrderElementsOf Seq("HI", "HE"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain inOrderElementsOf Seq("HI", "HO"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should (contain inOrderElementsOf Seq("HI", "HE"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain inOrderElementsOf Seq("HI", "HO"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {

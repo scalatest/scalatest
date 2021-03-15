@@ -54,7 +54,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
         pending
       }
       def `test cancel`: Unit = {
-        cancel
+        cancel()
       }
       @Ignore
       def `test ignore`: Unit = {

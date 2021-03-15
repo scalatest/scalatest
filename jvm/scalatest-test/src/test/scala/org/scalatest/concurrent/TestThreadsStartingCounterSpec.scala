@@ -24,9 +24,9 @@ class TestThreadsStartingCounterSpec extends wordspec.FixtureAnyWordSpec with Ma
     "wait if one or more threads have called increment that haven't yet called decrement" in { conductor => import conductor._
       val counter = new TestThreadsStartingCounter
       thread {
-        counter.increment
+        counter.increment()
         waitForBeat(1)
-        counter.decrement
+        counter.decrement()
       }
       thread {
         counter.waitUntilAllTestThreadsHaveStarted()
@@ -38,8 +38,8 @@ class TestThreadsStartingCounterSpec extends wordspec.FixtureAnyWordSpec with Ma
     "go right ahead if the same number of threads have called increment and decrement" in { conductor => import conductor._
       val counter = new TestThreadsStartingCounter
       thread {
-        counter.increment
-        counter.decrement
+        counter.increment()
+        counter.decrement()
         beat should be (0) // Failed with: 1 was not equal to 0
       }
       thread {
