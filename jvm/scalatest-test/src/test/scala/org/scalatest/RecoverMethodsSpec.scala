@@ -31,9 +31,9 @@ import org.scalatest.funspec.AnyFunSpec
 class RecoverMethodsSpec extends AnyFunSpec with RecoverMethods with ScalaFutures {
 
   // SKIP-SCALATESTJS-START
-  implicit val execCtx = scala.concurrent.ExecutionContext.Implicits.global
+  implicit val execCtx: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY implicit val execCtx = org.scalatest.concurrent.TestExecutionContext.runNow
+  //SCALATESTJS-ONLY implicit val execCtx: ExecutionContext = org.scalatest.concurrent.TestExecutionContext.runNow
 
   val fileName: String = "RecoverMethodsSpec.scala"
 

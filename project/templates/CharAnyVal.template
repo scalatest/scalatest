@@ -121,7 +121,7 @@ final class $typeName$ private (val value: Char) extends AnyVal {
   /**
    * A string representation of this <code>$typeName$</code>.
    */
-  override def toString: String = "$typeName$('" + value + "')"
+  override def toString: String = s"$typeName$('\${value.toString()}')"
 
   /**
    * Converts this <code>$typeName$</code> to a <code>Byte</code>.
@@ -184,7 +184,7 @@ final class $typeName$ private (val value: Char) extends AnyVal {
   /**
    * Prepends this <code>$typeName$</code>'s value to a string.
    */
-  def +(x: String): String = value + x
+  def +(x: String): String = s"\${value.toString()}\${x.toString()}"
 
   /**
    * Returns this value bit-shifted left by the specified number of bits,
@@ -623,7 +623,7 @@ object NumericChar {
    */
   def ensuringValid(value: Char): $typeName$ =
     if ($typeName$Macro.isValid(value)) new $typeName$(value) else {
-      throw new AssertionError(value + " was not a valid $typeName$")
+      throw new AssertionError(s"\${value.toString()} was not a valid $typeName$")
     }
 
   import scala.language.experimental.macros
@@ -796,7 +796,7 @@ object NumericChar {
    */
    def tryingValid(value: Char): Try[NumericChar] =
      if (NumericCharMacro.isValid(value)) Success(new NumericChar(value))
-     else Failure(new AssertionError(value + " was not a valid NumericChar"))
+     else Failure(new AssertionError(s"\${value.toString()} was not a valid NumericChar"))
 
   /**
    * A factory method that produces a <code>NumericChar</code> given a

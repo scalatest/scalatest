@@ -21,6 +21,6 @@ class SuiteWithFailedCanceledTests extends funsuite.AnyFunSuite {
   test("success") {}
   ignore("ignored") {}
   test("pending") { pending }
-  test("failed") { fail }
-  test("canceled") { cancel }
+  test("failed") { fail() }
+  test("canceled") { cancel() }
 }

@@ -422,19 +422,19 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
         val caught1 = intercept[TestFailedException] {
           set1 should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === set1 + " had size 2, and " + set1 + " had size 2")
+        assert(caught1.getMessage === s"${set1.toString()} had size 2, and ${set1.toString()} had size 2")
 
         val set2 = mutable.Set(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === set2 + " had size 2, and " + set2 + " had size 2")
+        assert(caught2.getMessage === s"${set2.toString()} had size 2, and ${set2.toString()} had size 2")
 
         val set3 = mutable.Set(1, 2)
         val caught3 = intercept[TestFailedException] {
           set3 should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === set3 + " had size 2, and " + set3 + " had size 2")
+        assert(caught3.getMessage === s"${set3.toString()} had size 2, and ${set3.toString()} had size 2")
       }
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -694,17 +694,17 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === HashSet(1, 2) + " had size 2, and " + HashSet(1, 2) + " had size 2")
+        assert(caught1.getMessage ===  s"${HashSet(1, 2).toString()} had size 2, and ${HashSet(1, 2).toString()} had size 2")
 
         val caught2 = intercept[TestFailedException] {
           HashSet(1, 2) should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === HashSet(1, 2) + " had size 2, and " + HashSet(1, 2) + " had size 2")
+        assert(caught2.getMessage === s"${HashSet(1, 2).toString()} had size 2, and ${HashSet(1, 2).toString()} had size 2")
 
         val caught3 = intercept[TestFailedException] {
           HashSet(1, 2) should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === HashSet(1, 2) + " had size 2, and " + HashSet(1, 2) + " had size 2")
+        assert(caught3.getMessage === s"${HashSet(1, 2).toString()} had size 2, and ${HashSet(1, 2).toString()} had size 2")
       }
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -838,19 +838,19 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
         val caught1 = intercept[TestFailedException] {
           set1 should { not { have size (2) } or not { have size (2) }}
         }
-        assert(caught1.getMessage === set1 + " had size 2, and " + set1 + " had size 2")
+        assert(caught1.getMessage === s"${set1.toString()} had size 2, and ${set1.toString()} had size 2")
 
         val set2 = mutable.HashSet(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should ((not have size (2)) or (not have size (2)))
         }
-        assert(caught2.getMessage === set2 + " had size 2, and " + set2 + " had size 2")
+        assert(caught2.getMessage === s"${set2.toString()} had size 2, and ${set2.toString()} had size 2")
 
         val set3 = mutable.HashSet(1, 2)
         val caught3 = intercept[TestFailedException] {
           set3 should (not have size (2) or not have size (2))
         }
-        assert(caught3.getMessage === set3 + " had size 2, and " + set3 + " had size 2")
+        assert(caught3.getMessage === s"${set3.toString()} had size 2, and ${set3.toString()} had size 2")
       }
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -2116,7 +2116,7 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
       }
       val obj = new Sizey(2)
   
-      implicit val sizeOfSizey =
+      implicit val sizeOfSizey: Size[Sizey] =
         new Size[Sizey] {
           def sizeOf(o: Sizey): Long = o.size()
         }
@@ -2252,7 +2252,7 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
       }
       val obj = new Sizey(2)
 
-      implicit val sizeOfSizey =
+      implicit val sizeOfSizey: Size[Sizey] =
         new Size[Sizey] {
           def sizeOf(o: Sizey): Long = o.size
         }
@@ -2388,7 +2388,7 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
       }
       val obj = new Sizey(2)
 
-      implicit val sizeOfSizey =
+      implicit val sizeOfSizey: Size[Sizey] =
         new Size[Sizey] {
           def sizeOf(o: Sizey): Long = o.size
         }
@@ -2524,7 +2524,7 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
       }
       val obj = new Sizey(2)
 
-      implicit val sizeOfSizey =
+      implicit val sizeOfSizey: Size[Sizey] =
         new Size[Sizey] {
           def sizeOf(o: Sizey): Long = o.getSize()
         }
@@ -2660,7 +2660,7 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
       }
       val obj = new Sizey(2)
 
-      implicit val sizeOfSizey =
+      implicit val sizeOfSizey: Size[Sizey] =
         new Size[Sizey] {
           def sizeOf(o: Sizey): Long = o.getSize
         }
@@ -2796,7 +2796,7 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
       }
       val obj = new Sizey(2)
 
-      implicit val sizeOfSizey =
+      implicit val sizeOfSizey: Size[Sizey] =
         new Size[Sizey] {
           def sizeOf(o: Sizey): Long = o.getSize
         }
@@ -2932,7 +2932,7 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
       }
       val obj = new Sizey(2)
 
-      implicit val sizeOfSizey =
+      implicit val sizeOfSizey: Size[Sizey] =
         new Size[Sizey] {
           def sizeOf(o: Sizey): Long = o.size()
         }
@@ -3074,7 +3074,7 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
       }
       val obj = new Sizey(2)
 
-      implicit val sizeOfSizey =
+      implicit val sizeOfSizey: Size[Sizey] =
         new Size[Sizey] {
           def sizeOf(o: Sizey): Long = o.size
         }
@@ -3214,7 +3214,7 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
       }
       val obj = new Sizey(2)
 
-      implicit val sizeOfSizey =
+      implicit val sizeOfSizey: Size[Sizey] =
         new Size[Sizey] {
           def sizeOf(o: Sizey): Long = o.size
         }
@@ -3352,7 +3352,7 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
       }
       val obj = new Sizey(2)
 
-      implicit val sizeOfSizey =
+      implicit val sizeOfSizey: Size[Sizey] =
         new Size[Sizey] {
           def sizeOf(o: Sizey): Long = o.getSize()
         }
@@ -3492,7 +3492,7 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
       }
       val obj = new Sizey(2)
 
-      implicit val sizeOfSizey =
+      implicit val sizeOfSizey: Size[Sizey] =
         new Size[Sizey] {
           def sizeOf(o: Sizey): Long = o.getSize
         }
@@ -3632,7 +3632,7 @@ class ShouldSizeSpec extends AnyFunSpec with PropertyChecks with ReturnsNormally
       }
       val obj = new Sizey(2)
 
-      implicit val sizeOfSizey =
+      implicit val sizeOfSizey: Size[Sizey] =
         new Size[Sizey] {
           def sizeOf(o: Sizey): Long = o.getSize
         }

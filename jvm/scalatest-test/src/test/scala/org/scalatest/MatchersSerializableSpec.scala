@@ -60,7 +60,7 @@ class MatchersSerializableSpec extends AnyFunSpec {
           def exists: Boolean = true
           override def toString = "NotFileMock"
         }
-        (new NotFileMock) should be a 'file
+        (new NotFileMock) should be a Symbol("file")
       }
       serializeRoundtrip(e)
     }
@@ -73,7 +73,7 @@ class MatchersSerializableSpec extends AnyFunSpec {
           def exists: Boolean = true
           override def toString = "NotFileMock"
         }
-        (new NotFileMock) should be an 'file
+        (new NotFileMock) should be an Symbol("file")
       }
       serializeRoundtrip(e)
     }

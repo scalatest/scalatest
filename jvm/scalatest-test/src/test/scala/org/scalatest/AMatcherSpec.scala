@@ -102,7 +102,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           List.empty[Int] should be a positiveLengthList
         }
-        e.message should be (Some(List.empty[Int] + " was not a positive length list"))
+        e.message should be (Some(s"${List.empty[Int].toString()} was not a positive length list"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -115,7 +115,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           List(1, 2, 3) should not be a (positiveLengthList)
         }
-        e.message should be (Some(List(1, 2, 3) + " was a positive length list"))
+        e.message should be (Some(s"${List(1, 2, 3).toString()} was a positive length list"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -133,7 +133,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           Set.empty[Int] should be a positiveSizeSet
         }
-        e.message should be (Some(Set.empty[Int] + " was not a positive size set"))
+        e.message should be (Some(s"${Set.empty[Int].toString()} was not a positive size set"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -146,7 +146,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           Set(1, 2, 3) should not be a (positiveSizeSet)
         }
-        e.message should be (Some(Set(1, 2, 3) + " was a positive size set"))
+        e.message should be (Some(s"${Set(1, 2, 3).toString()} was a positive size set"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -195,7 +195,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           Map.empty[Int, String] should be a positiveSizeMap
         }
-        e.message should be (Some(Map.empty[Int, String].toString + " was not a positive size map"))
+        e.message should be (Some(s"${Map.empty[Int, String].toString()} was not a positive size map"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -234,7 +234,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should be a positiveSizeList
         }
-        e.message should be (Some(left  + " was not a positive size list"))
+        e.message should be (Some(s"${left.toString()} was not a positive size list"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -248,7 +248,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should not be a (positiveSizeList)
         }
-        e.message should be (Some(left + " was a positive size list"))
+        e.message should be (Some(s"${left.toString()} was a positive size list"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -273,7 +273,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should be a positiveSizeSet
         }
-        e.message should be (Some(left  + " was not a positive size set"))
+        e.message should be (Some(s"${left.toString()} was not a positive size set"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -287,7 +287,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should not be a (positiveSizeSet)
         }
-        e.message should be (Some(left + " was a positive size set"))
+        e.message should be (Some(s"${left.toString()} was a positive size set"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -312,7 +312,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should be a positiveSizeMap
         }
-        e.message should be (Some(left + " was not a positive size map"))
+        e.message should be (Some(s"${left.toString()} was not a positive size map"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -326,7 +326,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           left should not be a (positiveSizeMap)
         }
-        e.message should be (Some(decorateToStringValue(prettifier, left) + " was a positive size map"))
+        e.message should be (Some(s"${decorateToStringValue(prettifier, left)} was a positive size map"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -348,7 +348,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           tom should be a youngMan
         }
-        e.message should be (Some(tom + " was not a young man"))
+        e.message should be (Some(s"${tom.toString()} was not a young man"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -362,7 +362,7 @@ class AMatcherSpec extends funspec.AnyFunSpec {
         val e = intercept[exceptions.TestFailedException] {
           tom should not be a (youngMan)
         }
-        e.message should be (Some(tom + " was a young man"))
+        e.message should be (Some(s"${tom.toString()} was a young man"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }

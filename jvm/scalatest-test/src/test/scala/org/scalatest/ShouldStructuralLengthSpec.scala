@@ -85,7 +85,7 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should have length (3)
         }
-        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length, 3))
+        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length(), 3))
         forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
   
@@ -93,7 +93,7 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should have length (-2)
         }
-        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length, -2))
+        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length(), -2))
         forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
   
@@ -102,17 +102,17 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should { have length (5) and (have length (2 - 1)) }
         }
-        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length, 5))
+        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length(), 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have length (5)) and (have length (2 - 1)))
         }
-        assert(caught2.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length, 5))
+        assert(caught2.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length(), 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have length (5) and have length (2 - 1))
         }
-        assert(caught3.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length, 5))
+        assert(caught3.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length(), 5))
       }
   
       it("should throw an assertion error when object length doesn't match and used in a logical-or expression") {
@@ -120,17 +120,17 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should { have length (55) or (have length (22)) }
         }
-        assert(caught1.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.length, 55), hadLengthInsteadOfExpectedLength(obj, obj.length, 22)))
+        assert(caught1.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.length(), 55), hadLengthInsteadOfExpectedLength(obj, obj.length(), 22)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have length (55)) or (have length (22)))
         }
-        assert(caught2.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.length, 55), hadLengthInsteadOfExpectedLength(obj, obj.length, 22)))
+        assert(caught2.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.length(), 55), hadLengthInsteadOfExpectedLength(obj, obj.length(), 22)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have length (55) or have length (22))
         }
-        assert(caught3.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.length, 55), hadLengthInsteadOfExpectedLength(obj, obj.length, 22)))
+        assert(caught3.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.length(), 55), hadLengthInsteadOfExpectedLength(obj, obj.length(), 22)))
       }
   
       it("should throw an assertion error when object length matches and used in a logical-and expression with not") {
@@ -138,17 +138,17 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should { not { have length (3) } and not { have length (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.length, 3), hadLength(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.length(), 3), hadLength(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should { { not have length (3) } and { not have length (2) }}
         }
-        assert(caught2.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.length, 3), hadLength(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.length(), 3), hadLength(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have length (3) and not have length (2))
         }
-        assert(caught3.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.length, 3), hadLength(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.length(), 3), hadLength(obj, 2)))
       }
   
       it("should throw an assertion error when object length matches and used in a logical-or expression with not") {
@@ -473,7 +473,7 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should have length (3)
         }
-        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength, 3))
+        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 3))
         forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
@@ -481,7 +481,7 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should have length (-2)
         }
-        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength, -2))
+        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength(), -2))
         forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -490,17 +490,17 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should { have length (5) and (have length (2 - 1)) }
         }
-        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength, 5))
+        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have length (5)) and (have length (2 - 1)))
         }
-        assert(caught2.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength, 5))
+        assert(caught2.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have length (5) and have length (2 - 1))
         }
-        assert(caught3.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength, 5))
+        assert(caught3.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 5))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-or expression") {
@@ -508,17 +508,17 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should { have length (55) or (have length (22)) }
         }
-        assert(caught1.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.getLength, 55), hadLengthInsteadOfExpectedLength(obj, obj.getLength, 22)))
+        assert(caught1.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 55), hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 22)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have length (55)) or (have length (22)))
         }
-        assert(caught2.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.getLength, 55), hadLengthInsteadOfExpectedLength(obj, obj.getLength, 22)))
+        assert(caught2.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 55), hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 22)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have length (55) or have length (22))
         }
-        assert(caught3.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.getLength, 55), hadLengthInsteadOfExpectedLength(obj, obj.getLength, 22)))
+        assert(caught3.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 55), hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 22)))
       }
 
       it("should throw an assertion error when object length matches and used in a logical-and expression with not") {
@@ -526,17 +526,17 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should { not { have length (3) } and not { have length (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.getLength, 3), hadLength(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 3), hadLength(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should { { not have length (3) } and { not have length (2) }}
         }
-        assert(caught2.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.getLength, 3), hadLength(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 3), hadLength(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have length (3) and not have length (2))
         }
-        assert(caught3.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.getLength, 3), hadLength(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 3), hadLength(obj, 2)))
       }
 
       it("should throw an assertion error when object length matches and used in a logical-or expression with not") {
@@ -870,7 +870,7 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should have length (3)
         }
-        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length, 3))
+        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length(), 3))
         forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
@@ -878,7 +878,7 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should have length (-2)
         }
-        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length, -2))
+        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length(), -2))
         forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -887,17 +887,17 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should { have length (5) and (have length (2 - 1)) }
         }
-        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length, 5))
+        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length(), 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have length (5)) and (have length (2 - 1)))
         }
-        assert(caught2.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length, 5))
+        assert(caught2.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length(), 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have length (5) and have length (2 - 1))
         }
-        assert(caught3.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length, 5))
+        assert(caught3.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.length(), 5))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-or expression") {
@@ -905,17 +905,17 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should { have length (55) or (have length (22)) }
         }
-        assert(caught1.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.length, 55), hadLengthInsteadOfExpectedLength(obj, obj.length, 22)))
+        assert(caught1.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.length(), 55), hadLengthInsteadOfExpectedLength(obj, obj.length(), 22)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have length (55)) or (have length (22)))
         }
-        assert(caught2.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.length, 55), hadLengthInsteadOfExpectedLength(obj, obj.length, 22)))
+        assert(caught2.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.length(), 55), hadLengthInsteadOfExpectedLength(obj, obj.length(), 22)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have length (55) or have length (22))
         }
-        assert(caught3.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.length, 55), hadLengthInsteadOfExpectedLength(obj, obj.length, 22)))
+        assert(caught3.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.length(), 55), hadLengthInsteadOfExpectedLength(obj, obj.length(), 22)))
       }
 
       it("should throw an assertion error when object length matches and used in a logical-and expression with not") {
@@ -923,17 +923,17 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should { not { have length (3) } and not { have length (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.length, 3), hadLength(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.length(), 3), hadLength(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should { { not have length (3) } and { not have length (2) }}
         }
-        assert(caught2.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.length, 3), hadLength(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.length(), 3), hadLength(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have length (3) and not have length (2))
         }
-        assert(caught3.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.length, 3), hadLength(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.length(), 3), hadLength(obj, 2)))
       }
 
       it("should throw an assertion error when object length matches and used in a logical-or expression with not") {
@@ -1271,7 +1271,7 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should have length (3)
         }
-        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength, 3))
+        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 3))
         forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (len + 1)))
       }
 
@@ -1279,7 +1279,7 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should have length (-2)
         }
-        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength, -2))
+        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength(), -2))
         forAll((len: Int) => assertThrows[TestFailedException](new Lengthy(len) should have length (if ((len == 0) || (len == MIN_VALUE)) -1 else -len)))
       }
 
@@ -1288,17 +1288,17 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should { have length (5) and (have length (2 - 1)) }
         }
-        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength, 5))
+        assert(caught1.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 5))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have length (5)) and (have length (2 - 1)))
         }
-        assert(caught2.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength, 5))
+        assert(caught2.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 5))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have length (5) and have length (2 - 1))
         }
-        assert(caught3.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength, 5))
+        assert(caught3.getMessage === hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 5))
       }
 
       it("should throw an assertion error when object length doesn't match and used in a logical-or expression") {
@@ -1306,17 +1306,17 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should { have length (55) or (have length (22)) }
         }
-        assert(caught1.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.getLength, 55), hadLengthInsteadOfExpectedLength(obj, obj.getLength, 22)))
+        assert(caught1.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 55), hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 22)))
 
         val caught2 = intercept[TestFailedException] {
           obj should ((have length (55)) or (have length (22)))
         }
-        assert(caught2.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.getLength, 55), hadLengthInsteadOfExpectedLength(obj, obj.getLength, 22)))
+        assert(caught2.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 55), hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 22)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (have length (55) or have length (22))
         }
-        assert(caught3.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.getLength, 55), hadLengthInsteadOfExpectedLength(obj, obj.getLength, 22)))
+        assert(caught3.getMessage === commaAnd(hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 55), hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 22)))
       }
 
       it("should throw an assertion error when object length matches and used in a logical-and expression with not") {
@@ -1324,17 +1324,17 @@ class ShouldStructuralLengthSpec extends AnyFunSpec with PropertyChecks with Ret
         val caught1 = intercept[TestFailedException] {
           obj should { not { have length (3) } and not { have length (2) }}
         }
-        assert(caught1.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.getLength, 3), hadLength(obj, 2)))
+        assert(caught1.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 3), hadLength(obj, 2)))
 
         val caught2 = intercept[TestFailedException] {
           obj should { { not have length (3) } and { not have length (2) }}
         }
-        assert(caught2.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.getLength, 3), hadLength(obj, 2)))
+        assert(caught2.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 3), hadLength(obj, 2)))
 
         val caught3 = intercept[TestFailedException] {
           obj should (not have length (3) and not have length (2))
         }
-        assert(caught3.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.getLength, 3), hadLength(obj, 2)))
+        assert(caught3.getMessage === commaBut(hadLengthInsteadOfExpectedLength(obj, obj.getLength(), 3), hadLength(obj, 2)))
       }
 
       it("should throw an assertion error when object length matches and used in a logical-or expression with not") {

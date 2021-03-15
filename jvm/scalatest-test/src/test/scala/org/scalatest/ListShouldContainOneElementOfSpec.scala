@@ -321,10 +321,13 @@ class ListShouldContainOneElementOfSpec extends AnyFunSpec with Matchers {
         intercept[TestFailedException] {
           all (hiLists) should contain oneElementOf Seq("ho", "he")
         }
-        implicit val ise = upperCaseEquality
-        all (hiLists) should contain oneElementOf Seq("HI", "HE")
-        intercept[TestFailedException] {
-          all (hiLists) should contain oneElementOf Seq("hi", "he")
+
+        {
+          implicit val ise = upperCaseEquality
+          all (hiLists) should contain oneElementOf Seq("HI", "HE")
+          intercept[TestFailedException] {
+            all (hiLists) should contain oneElementOf Seq("hi", "he")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -386,10 +389,13 @@ class ListShouldContainOneElementOfSpec extends AnyFunSpec with Matchers {
         intercept[TestFailedException] {
           all (hiLists) should (contain oneElementOf Seq("ho", "he"))
         }
-        implicit val ise = upperCaseEquality
-        all (hiLists) should (contain oneElementOf Seq("HI", "HE"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain oneElementOf Seq("hi", "he"))
+
+        {
+          implicit val ise = upperCaseEquality
+          all (hiLists) should (contain oneElementOf Seq("HI", "HE"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain oneElementOf Seq("hi", "he"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {

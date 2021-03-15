@@ -56,11 +56,12 @@ trait Retrying[T] {
   */
 object Retrying {
 
-  private lazy val scheduler: ScheduledExecutorService = {
+  private def createScheduler(): ScheduledExecutorService = {
     val threadFactory = new ThreadFactory {
       val inner = Executors.defaultThreadFactory()
       def newThread(runnable: Runnable) = {
         val thread = inner.newThread(runnable)
+        thread.setName("ScalaTest-retrying")
         thread.setDaemon(true)
         thread
       }
@@ -111,7 +112,10 @@ object Retrying {
                     }
                   }
 
+                val scheduler = createScheduler()
                 scheduler.schedule(task, chillTime, TimeUnit.MILLISECONDS)
+                scheduler.shutdown()
+
                 promise.future
               }
               else { // Timed out so return a failed Future
