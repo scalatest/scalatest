@@ -156,6 +156,7 @@ class ShouldLengthSpec extends AnyFunSpec with PropertyChecks with ReturnsNormal
         assert(caught3.getMessage === "\"hi\" had length 2, and \"hi\" had length 2")
       }
 
+      // SKIP-DOTTY-START
       it("should give good error messages when more than two clauses are used with logical connectors") {
 
         val caught1 = intercept[TestFailedException] {
@@ -168,6 +169,7 @@ class ShouldLengthSpec extends AnyFunSpec with PropertyChecks with ReturnsNormal
         }
         assert(caught2.getMessage === "\"hi\" had length 2, and \"hi\" equaled \"hi\", and \"[hi]\" did not equal \"[frog]\"")
       }
+      // SKIP-DOTTY-END
     }
 
     describe("on Array") {
@@ -569,7 +571,7 @@ class ShouldLengthSpec extends AnyFunSpec with PropertyChecks with ReturnsNormal
       }
       val obj = new Lengthy(2)
   
-      implicit val lengthOfLengthy =
+      implicit val lengthOfLengthy: Length[Lengthy] =
         new Length[Lengthy] {
           def lengthOf(o: Lengthy): Long = o.length()
         }
@@ -703,7 +705,7 @@ class ShouldLengthSpec extends AnyFunSpec with PropertyChecks with ReturnsNormal
       }
       val obj = new Lengthy(2)
 
-      implicit val lengthOfLengthy =
+      implicit val lengthOfLengthy: Length[Lengthy] =
         new Length[Lengthy] {
           def lengthOf(o: Lengthy): Long = o.length
         }
@@ -837,7 +839,7 @@ class ShouldLengthSpec extends AnyFunSpec with PropertyChecks with ReturnsNormal
       }
       val obj = new Lengthy(2)
 
-      implicit val lengthOfLengthy =
+      implicit val lengthOfLengthy: Length[Lengthy] =
         new Length[Lengthy] {
           def lengthOf(o: Lengthy): Long = o.length
         }
@@ -971,7 +973,7 @@ class ShouldLengthSpec extends AnyFunSpec with PropertyChecks with ReturnsNormal
       }
       val obj = new Lengthy(2)
 
-      implicit val lengthOfLengthy =
+      implicit val lengthOfLengthy: Length[Lengthy] =
         new Length[Lengthy] {
           def lengthOf(o: Lengthy): Long = o.getLength()
         }
@@ -1105,7 +1107,7 @@ class ShouldLengthSpec extends AnyFunSpec with PropertyChecks with ReturnsNormal
       }
       val obj = new Lengthy(2)
 
-      implicit val lengthOfLengthy =
+      implicit val lengthOfLengthy: Length[Lengthy] =
         new Length[Lengthy] {
           def lengthOf(o: Lengthy): Long = o.getLength
         }
@@ -1239,7 +1241,7 @@ class ShouldLengthSpec extends AnyFunSpec with PropertyChecks with ReturnsNormal
       }
       val obj = new Lengthy(2)
 
-      implicit val lengthOfLengthy =
+      implicit val lengthOfLengthy: Length[Lengthy] =
         new Length[Lengthy] {
           def lengthOf(o: Lengthy): Long = o.getLength
         }
@@ -2210,7 +2212,7 @@ class ShouldLengthSpec extends AnyFunSpec with PropertyChecks with ReturnsNormal
       }
       val obj = new Lengthy(2)
 
-      implicit val lengthOfLengthy =
+      implicit val lengthOfLengthy: Length[Lengthy] with Size[Lengthy] =
         new Length[Lengthy] with Size[Lengthy] {
           def lengthOf(o: Lengthy): Long = o.length
           def sizeOf(o: Lengthy): Long = o.size
@@ -2416,7 +2418,7 @@ class ShouldLengthSpec extends AnyFunSpec with PropertyChecks with ReturnsNormal
       import java.net.DatagramPacket
       val dp = new DatagramPacket(Array(0x0, 0x1, 0x2, 0x3), 4)
       dp.getLength
-      implicit val lengthOfDatagramPacket =
+      implicit val lengthOfDatagramPacket: Length[DatagramPacket] =
         new Length[DatagramPacket] {
           def lengthOf(dp: DatagramPacket): Long = dp.getLength
         }
@@ -2424,7 +2426,7 @@ class ShouldLengthSpec extends AnyFunSpec with PropertyChecks with ReturnsNormal
       dp should not have length (99)
       import java.awt.image.DataBufferByte
       val db = new DataBufferByte(4)
-      implicit val sizeOfDataBufferByte =
+      implicit val sizeOfDataBufferByte: Length[DataBufferByte] =
         new Length[DataBufferByte] {
           def lengthOf(db: DataBufferByte): Long = db.getSize
         }

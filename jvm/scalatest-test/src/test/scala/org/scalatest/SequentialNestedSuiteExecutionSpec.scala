@@ -75,7 +75,7 @@ class SequentialNestedSuiteExecutionSpec extends AnyFunSpec {
           //SCALATESTJS,NATIVE-ONLY val distributor2 = new TestConcurrentDistributor()
 
           val seqStatus = seq.run(None, Args(SilentReporter, distributor = Some(distributor2)))
-          assert(seqStatus.isCompleted) // When a seqential execution returns, the whole thing should be completed already
+          assert(seqStatus.isCompleted()) // When a seqential execution returns, the whole thing should be completed already
           assert(!seq.distributorWasDefined)
           assert(!seq.distributorWasPropagated)
           assert(seq.lastNestedSuiteWasRunAfterFirst)

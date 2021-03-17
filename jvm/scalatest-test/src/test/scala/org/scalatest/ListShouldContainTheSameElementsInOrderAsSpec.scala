@@ -278,10 +278,13 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain theSameElementsInOrderAs ListBuffer("hi", "ho")
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HE")
-        intercept[TestFailedException] {
-          all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HO")
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HE")
+          intercept[TestFailedException] {
+            all (hiLists) should contain theSameElementsInOrderAs ListBuffer("HI", "HO")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -330,10 +333,13 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("he", "hi"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HE"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HO"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HE"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain theSameElementsInOrderAs ListBuffer("HI", "HO"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {

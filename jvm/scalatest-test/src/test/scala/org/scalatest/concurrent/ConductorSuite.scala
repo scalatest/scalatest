@@ -26,6 +26,7 @@ import time.{Millis, Span}
 import org.scalatest.funsuite
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
+import scala.language.postfixOps
 
 class ConductorSuite extends AnyFunSuite with Matchers with Conductors with SeveredStackTraces {
 
@@ -47,14 +48,14 @@ class ConductorSuite extends AnyFunSuite with Matchers with Conductors with Seve
 
   test("if conduct has been called, conductingHasBegun should return true") {
     val conductor = new Conductor
-    conductor.conduct
+    conductor.conduct()
     conductor.conductingHasBegun should be (true)
   }
 
   test("if thread {} is called after the test has been conducted, it throws an NotAllowedException" +
            "with a detail message that explains the problem") {
     val conductor = new Conductor
-    conductor.conduct
+    conductor.conduct()
     val caught =
       intercept[NotAllowedException] {
         conductor.threadNamed("name") { 1 should be (1) }
@@ -69,7 +70,7 @@ class ConductorSuite extends AnyFunSuite with Matchers with Conductors with Seve
   test("if thread(String) {} is called after the test has been conducted, it throws NotAllowedException" +
           "with a detail message that explains the problem"){
     val conductor = new Conductor    
-    conductor.conduct
+    conductor.conduct()
     val caught =
       intercept[NotAllowedException] {
         conductor.threadNamed("name") { 1 should be (1) }
@@ -113,7 +114,7 @@ class ConductorSuite extends AnyFunSuite with Matchers with Conductors with Seve
         case None => fail("Didn't produce a file name and line number string: ", caught)
       }
     }
-    finally conductor.conduct
+    finally conductor.conduct()
   }
 
   test("waitForBeat throws NotAllowedException if is called with zero or a negative number") {
@@ -168,7 +169,7 @@ class ConductorSuite extends AnyFunSuite with Matchers with Conductors with Seve
     a.run(None, Args(rep))
     val tf = rep.testFailedEventsReceived
     tf.size should === (1)
-    tf.head.throwable should be ('defined)
+    tf.head.throwable should be (defined)
     tf.head.throwable.get should be theSameInstanceAs e
   }
 
@@ -355,7 +356,7 @@ class ConductorSuite extends AnyFunSuite with Matchers with Conductors with Seve
     a.run(None, Args(rep))
     val tf = rep.testFailedEventsReceived
     tf.size should === (1)
-    tf.head.throwable should be ('defined)
+    tf.head.throwable should be (defined)
     tf.head.throwable.get should be theSameInstanceAs e
   }
 
@@ -380,7 +381,7 @@ class ConductorSuite extends AnyFunSuite with Matchers with Conductors with Seve
     a.run(None, Args(rep))
     val tf = rep.testFailedEventsReceived
     tf.size should === (1)
-    tf.head.throwable should be ('defined)
+    tf.head.throwable should be (defined)
     tf.head.throwable.get should be theSameInstanceAs e
   }
 
@@ -405,7 +406,7 @@ class ConductorSuite extends AnyFunSuite with Matchers with Conductors with Seve
     a.run(None, Args(rep))
     val tf = rep.testFailedEventsReceived
     tf.size should === (1)
-    tf.head.throwable should be ('defined)
+    tf.head.throwable should be (defined)
     tf.head.throwable.get should be theSameInstanceAs e
   }
 }

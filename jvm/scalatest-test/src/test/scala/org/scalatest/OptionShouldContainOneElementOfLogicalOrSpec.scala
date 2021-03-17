@@ -234,14 +234,17 @@ class OptionShouldContainOneElementOfLogicalOrSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiSomes) should (contain oneElementOf Seq("HI", "HE") or contain oneElementOf Seq("HI", "HE"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiSomes) should (contain oneElementOf Seq("HI", "HE") or contain oneElementOf Seq("HI", "HE"))
-        all (hiSomes) should (contain oneElementOf Seq("hi", "he") or contain oneElementOf Seq("HI", "HE"))
-        all (hiSomes) should (contain oneElementOf Seq("HI", "HE") or contain oneElementOf Seq("hi", "he"))
-        val e1 = intercept[TestFailedException] {
-          all (hiSomes) should (contain oneElementOf Seq("hi", "he") or contain oneElementOf Seq("hi", "he"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiSomes) should (contain oneElementOf Seq("HI", "HE") or contain oneElementOf Seq("HI", "HE"))
+          all (hiSomes) should (contain oneElementOf Seq("hi", "he") or contain oneElementOf Seq("HI", "HE"))
+          all (hiSomes) should (contain oneElementOf Seq("HI", "HE") or contain oneElementOf Seq("hi", "he"))
+          val e1 = intercept[TestFailedException] {
+            all (hiSomes) should (contain oneElementOf Seq("hi", "he") or contain oneElementOf Seq("hi", "he"))
+          }
+          checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")) + ", and " + FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")) + ", and " + FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
       it("should use an explicitly provided Equality") {
         (all (hiSomes) should (contain oneElementOf Seq("HI", "HE") or contain oneElementOf Seq("HI", "HE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -283,14 +286,17 @@ class OptionShouldContainOneElementOfLogicalOrSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiSomes) should (be (Some("ho")) or contain oneElementOf Seq("HI", "HE"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiSomes) should (be (Some("hi")) or contain oneElementOf Seq("HI", "HE"))
-        all (hiSomes) should (be (Some("he")) or contain oneElementOf Seq("HI", "HE"))
-        all (hiSomes) should (be (Some("hi")) or contain oneElementOf Seq("hi", "he"))
-        val e1 = intercept[TestFailedException] {
-          all (hiSomes) should (be (Some("he")) or contain oneElementOf Seq("hi", "he"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiSomes) should (be (Some("hi")) or contain oneElementOf Seq("HI", "HE"))
+          all (hiSomes) should (be (Some("he")) or contain oneElementOf Seq("HI", "HE"))
+          all (hiSomes) should (be (Some("hi")) or contain oneElementOf Seq("hi", "he"))
+          val e1 = intercept[TestFailedException] {
+            all (hiSomes) should (be (Some("he")) or contain oneElementOf Seq("hi", "he"))
+          }
+          checkMessageStackDepth(e1, allErrMsg(0, "Some(\"hi\") was not equal to Some(\"he\"), and " + FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"hi\") was not equal to Some(\"he\"), and " + FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
       it("should use an explicitly provided Equality") {
         (all (hiSomes) should (be (Some("hi")) or contain oneElementOf Seq("HI", "HE"))) (decided by upperCaseStringEquality)

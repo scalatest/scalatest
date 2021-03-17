@@ -21,21 +21,11 @@ import org.scalatest.funspec
 
 
 class StatusSpec extends funspec.FixtureAnyFunSpec {
-  
-  protected type FixtureParam = { 
-    def setCompleted()
-    def isCompleted(): Boolean
-    // SKIP-SCALATESTJS,NATIVE-START
-    def succeeds(): Boolean
-    // SKIP-SCALATESTJS,NATIVE-END
-    def setFailed()
-    // SKIP-SCALATESTJS,NATIVE-START
-    def waitUntilCompleted()
-    // SKIP-SCALATESTJS,NATIVE-END
-  }
+ 
+  protected type FixtureParam = StatefulStatus
   
    override protected def withFixture(test: OneArgTest): Outcome = {
-     val status1 = new ScalaTestStatefulStatus
+     val status1 = new StatefulStatus
      test(status1) match {
        case Succeeded =>
          val status2 = new StatefulStatus
@@ -60,14 +50,14 @@ class StatusSpec extends funspec.FixtureAnyFunSpec {
     it("should return true for succeeds() after completes() is called without fails()") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
-      assert(status.succeeds)
+      assert(status.succeeds())
     }
     
     it("should return false for succeeds() after completes is called after fails()") { status =>
       import scala.language.reflectiveCalls
       status.setFailed()
       status.setCompleted()
-      assert(!status.succeeds)
+      assert(!status.succeeds())
     }
     
     it("waitUntilCompleted should not block after completes() is called") { status =>
@@ -116,7 +106,7 @@ class StatusSpec extends funspec.FixtureAnyFunSpec {
       status.setFailedWith(e)
       status.setCompleted()
       val t = intercept[IllegalArgumentException] {
-        status.succeeds
+        status.succeeds()
       }
       assert(e eq t)
     }
@@ -454,7 +444,7 @@ class StatusSpec extends funspec.FixtureAnyFunSpec {
       status.setFailedWith(e)
       status.setCompleted()
       val t = intercept[IllegalArgumentException] {
-        status.succeeds
+        status.succeeds()
       }
       assert(e eq t)
     }

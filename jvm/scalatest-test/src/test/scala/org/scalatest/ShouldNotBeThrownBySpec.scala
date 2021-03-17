@@ -39,7 +39,7 @@ class ShouldNotBeThrownBySpec extends AnyFunSpec {
   
   describe("the [Exception] 'should not have message' syntax should") {
 
-    class TestException(message: String) extends Exception(message)
+    class TestException(msg: String) extends Exception(msg)
     
     it("do nothing when 'should have message' exception's message not equal expected") {
       the [TestException] thrownBy {

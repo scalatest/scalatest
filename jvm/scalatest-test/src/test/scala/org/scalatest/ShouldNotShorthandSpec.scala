@@ -172,34 +172,34 @@ class ShouldNotShorthandSpec extends AnyFunSpec with EmptyMocks with BookPropert
 
     // SKIP-SCALATESTJS,NATIVE-START
     it("should work with symbol") {
-      notEmptyMock shouldNot { be ('empty) }
-      notEmptyMock shouldNot be ('empty)
-      isNotEmptyMock shouldNot { be ('empty) }
-      isNotEmptyMock shouldNot be ('empty)
+      notEmptyMock shouldNot { be (Symbol("empty")) }
+      notEmptyMock shouldNot be (Symbol("empty"))
+      isNotEmptyMock shouldNot { be (Symbol("empty")) }
+      isNotEmptyMock shouldNot be (Symbol("empty"))
 
       val ex1 = intercept[TestFailedException] {
-        noPredicateMock shouldNot { be ('empty) }
+        noPredicateMock shouldNot { be (Symbol("empty")) }
       }
       assert(ex1.message === Some("NoPredicateMock has neither an empty nor an isEmpty method"))
       assert(ex1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(ex1.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val ex2 = intercept[TestFailedException] {
-        noPredicateMock shouldNot (be ('full))
+        noPredicateMock shouldNot (be (Symbol("full")))
       }
       assert(ex2.message === Some("NoPredicateMock has neither a full nor an isFull method"))
       assert(ex2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(ex2.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val ex3 = intercept[TestFailedException] {
-        noPredicateMock shouldNot be ('empty)
+        noPredicateMock shouldNot be (Symbol("empty"))
       }
       assert(ex3.message === Some("NoPredicateMock has neither an empty nor an isEmpty method"))
       assert(ex3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(ex3.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val ex4 = intercept[TestFailedException] {
-        noPredicateMock shouldNot be ('full)
+        noPredicateMock shouldNot be (Symbol("full"))
       }
       assert(ex4.message === Some("NoPredicateMock has neither a full nor an isFull method"))
       assert(ex4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))

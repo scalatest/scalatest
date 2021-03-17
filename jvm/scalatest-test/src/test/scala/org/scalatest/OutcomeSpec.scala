@@ -126,7 +126,7 @@ class OutcomeSpec extends AnyFunSpec {
           assert(tfe.cause === None)
           assert(tfe.failedCodeFileName === Some(fileName))
           assert(tfe.failedCodeLineNumber === Some(thisLineNumber - 6))
-        case _ => fail(failed.exception + " was not a TestFailedException")
+        case _ => fail(s"${failed.exception.toString()} was not a TestFailedException")
       }
     } 
     it("should offer an apply factory method that takes (and simply holds) an exception") {
@@ -143,7 +143,7 @@ class OutcomeSpec extends AnyFunSpec {
           assert(tfe.getCause eq ex)
           assert(tfe.failedCodeFileName === Some(fileName))
           assert(tfe.failedCodeLineNumber === Some(thisLineNumber - 6))
-        case _ => fail(failed.exception + " was not a TestFailedException")
+        case _ => fail(s"${failed.exception.toString()} was not a TestFailedException")
       }
     }
     it("should offer an apply factory method that takes a message") {
@@ -154,7 +154,7 @@ class OutcomeSpec extends AnyFunSpec {
           assert(tfe.cause === None)
           assert(tfe.failedCodeFileName === Some(fileName))
           assert(tfe.failedCodeLineNumber === Some(thisLineNumber - 6))
-        case _ => fail(failed.exception + " was not a TestFailedException")
+        case _ => fail(s"${failed.exception.toString()} was not a TestFailedException")
       }
     }
     it("should offer an apply factory method that takes a message and an exception, simply holding the exception") {
@@ -166,7 +166,7 @@ class OutcomeSpec extends AnyFunSpec {
           assert(tfe.cause === Some(ex))
           assert(tfe.failedCodeFileName === Some(fileName))
           assert(tfe.failedCodeLineNumber === Some(thisLineNumber - 6))
-        case _ => fail(failed.exception + " was not a TestFailedException")
+        case _ => fail(s"${failed.exception.toString()} was not a TestFailedException")
       }
     }
     it("should throw IAE from its apply factory methods if TestCanceledException is passed") {
@@ -215,7 +215,7 @@ class OutcomeSpec extends AnyFunSpec {
           assert(tce.cause === None)
           assert(tce.failedCodeFileName === Some(fileName))
           assert(tce.failedCodeLineNumber === Some(thisLineNumber - 6))
-        case _ => fail(canceled.exception + " was not a TestCanceledException")
+        case _ => fail(s"${canceled.exception.toString()} was not a TestCanceledException")
       }
     }
     it("should offer an apply factory method that takes and holds a TCE, but wraps any other exception in a new TCE") {
@@ -247,7 +247,7 @@ class OutcomeSpec extends AnyFunSpec {
           assert(tfe.getCause eq ex)
           assert(tfe.failedCodeFileName === Some(fileName))
           assert(tfe.failedCodeLineNumber === Some(thisLineNumber - 6))
-        case _ => fail(canceled.exception + " was not a TestCanceledException")
+        case _ => fail(s"${canceled.exception.toString()} was not a TestCanceledException")
       }
     }
     it("should offer an apply factory method that takes a message") {
@@ -258,7 +258,7 @@ class OutcomeSpec extends AnyFunSpec {
           assert(tfe.cause === None)
           assert(tfe.failedCodeFileName === Some(fileName))
           assert(tfe.failedCodeLineNumber === Some(thisLineNumber - 6))
-        case _ => fail(canceled.exception + " was not a TestCanceledException")
+        case _ => fail(s"${canceled.exception.toString()} was not a TestCanceledException")
       }
     }
     it("should offer an apply factory method that takes a message and an exception (simply holding the exception)") {
@@ -270,7 +270,7 @@ class OutcomeSpec extends AnyFunSpec {
           assert(tfe.cause === Some(ex))
           assert(tfe.failedCodeFileName === Some(fileName))
           assert(tfe.failedCodeLineNumber === Some(thisLineNumber - 6))
-        case _ => fail(canceled.exception + " was not a TestCanceledException")
+        case _ => fail(s"${canceled.exception.toString()} was not a TestCanceledException")
       }
     }
   }

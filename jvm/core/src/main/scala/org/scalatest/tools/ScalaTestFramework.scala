@@ -315,7 +315,7 @@ class ScalaTestFramework extends SbtFramework {
    * Returns an <code>org.scalatools.testing.Runner</code> that will load test classes via the passed <code>testLoader</code>
    * and direct output from running the tests to the passed array of <code>Logger</code>s.
    */
-  def testRunner(testLoader: ClassLoader, loggers: Array[Logger]) = {
+  def testRunner(testLoader: ClassLoader, loggers: Array[Logger]): ScalaTestRunner = {
     new ScalaTestRunner(testLoader, loggers)
   }
   

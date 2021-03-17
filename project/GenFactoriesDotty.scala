@@ -851,7 +851,7 @@ $endif$
    *
    * @author Bill Venners
    */
-  final class AndNotWord(prettifier: Prettifier, pos: source.Position) {
+  final class AndNotWord(prettifier: Prettifier, pos: source.Position) { thisAndNotWord =>
 
     /**
      * Get the <code>MatcherFactory</code> instance, currently used by macro only.
@@ -1135,8 +1135,8 @@ $endif$
      * </pre>
      */
     inline def be(aType: ResultOfATypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] =
-      \${ MatcherFactory$arity$.andNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{this}, '{aType}) }
-
+      \${ MatcherFactory$arity$.andNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{thisAndNotWord: MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]#AndNotWord}, '{aType}) }
+0
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
      *
@@ -1146,7 +1146,7 @@ $endif$
      * </pre>
      */
     inline def be(anType: ResultOfAnTypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] =
-      \${ MatcherFactory$arity$.andNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{this}, '{anType}) }
+      \${ MatcherFactory$arity$.andNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{thisAndNotWord: MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]#AndNotWord}, '{anType}) }
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -1528,8 +1528,8 @@ $endif$
      *                         ^
      * </pre>
      */
-    inline def matchPattern(right: PartialFunction[Any, _]) =
-      \${ MatcherFactory$arity$.andNotMatchPattern('{this}, '{right}) }
+    inline def matchPattern(inline right: PartialFunction[Any, _]) =
+      \${ MatcherFactory$arity$.andNotMatchPattern('{thisAndNotWord: MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]#AndNotWord}, '{right}) }
   }
                     """
 
@@ -2146,7 +2146,7 @@ $endif$
    *
    * @author Bill Venners
    */
-  final class OrNotWord(prettifier: Prettifier, pos: source.Position) {
+  final class OrNotWord(prettifier: Prettifier, pos: source.Position) { thisOrNotWord =>
 
     /**
      * Get the <code>MatcherFactory</code> instance, currently used by macro.
@@ -2430,7 +2430,7 @@ $endif$
      * </pre>
      */
     inline def be(aType: ResultOfATypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] =
-      \${ MatcherFactory$arity$.orNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{this}, '{aType}) }
+      \${ MatcherFactory$arity$.orNotATypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{thisOrNotWord: MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]#OrNotWord}, '{aType}) }
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2441,7 +2441,7 @@ $endif$
      * </pre>
      */
     inline def be(anType: ResultOfAnTypeInvocation[_]): MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$] =
-      \${ MatcherFactory$arity$.orNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{this}, '{anType}) }
+      \${ MatcherFactory$arity$.orNotAnTypeMatcherFactory$arity$[SC, $commaSeparatedTCNs$]('{thisOrNotWord: MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]#OrNotWord}, '{anType}) }
 
     /**
      * This method enables the following syntax given a <code>MatcherFactory$arity$</code>:
@@ -2823,8 +2823,8 @@ $endif$
      *                        ^
      * </pre>
      */
-    inline def matchPattern(right: PartialFunction[Any, _]) =
-      \${ MatcherFactory$arity$.orNotMatchPattern('{this}, '{right}) }
+    inline def matchPattern(inline right: PartialFunction[Any, _]) =
+      \${ MatcherFactory$arity$.orNotMatchPattern('{thisOrNotWord: MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]#OrNotWord}, '{right}) }
   }
 
   /**
@@ -2913,11 +2913,13 @@ object MatcherFactory$arity$ {
   }
 
   def andNotMatchPattern[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#AndNotWord], right: Expr[PartialFunction[Any, _]])(using Quotes, $typeConstructorsWithType$): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+    org.scalatest.matchers.MatchPatternMacro.checkCaseDefinitions(right)
     val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher(\$right) }
     '{ (\$self).owner.and(\$notMatcher) }
   }
 
   def orNotMatchPattern[SC: Type, $typeConstructors$](self: Expr[MatcherFactory$arity$[SC & AnyRef, $commaSeparatedTCNs$]#OrNotWord], right: Expr[PartialFunction[Any, _]])(using Quotes, $typeConstructorsWithType$): Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
+    org.scalatest.matchers.MatchPatternMacro.checkCaseDefinitions(right)
     val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher(\$right) }
     '{ (\$self).owner.or(\$notMatcher) }
   }

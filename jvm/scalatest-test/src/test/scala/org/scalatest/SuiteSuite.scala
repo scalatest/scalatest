@@ -335,7 +335,7 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
 }
 
 @DoNotDiscover
-class `My Test` extends RefSpec {}
+class `MyTest` extends RefSpec {}
 @DoNotDiscover
 class NormalSuite extends RefSpec
 @DoNotDiscover

@@ -37,34 +37,43 @@ class ShouldEqualEqualitySpec extends AnyFunSpec {
       () should equal (())
       () shouldEqual ()
       () should not equal (7)
-      implicit val e = new Equality[Unit] {
-        def areEqual(a: Unit, b: Any): Boolean = a != b
+
+      {
+        implicit val e = new Equality[Unit] {
+          def areEqual(a: Unit, b: Any): Boolean = a != b
+        }
+        () should not equal (())
+        () should equal (7)
+        () shouldEqual 7
       }
-      () should not equal (())
-      () should equal (7)
-      () shouldEqual 7
     }
     it("for String") {
       "hi" should equal ("hi")
       "hi" shouldEqual "hi"
       "hi" should not equal ("ho")
-      implicit val e = new Equality[String] {
-        def areEqual(a: String, b: Any): Boolean = a != b
+
+      {
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        "hi" should not equal ("hi")
+        "hi" should equal ("ho")
+        "hi" shouldEqual "ho"
       }
-      "hi" should not equal ("hi")
-      "hi" should equal ("ho")
-      "hi" shouldEqual "ho"
     }
     it("for Numeric") {
       3 should equal (3)
       3 shouldEqual 3
       3 should not equal (4)
-      implicit val e = new Equality[Int] {
-        def areEqual(a: Int, b: Any): Boolean = a != b
+
+      {
+        implicit val e = new Equality[Int] {
+          def areEqual(a: Int, b: Any): Boolean = a != b
+        }
+        3 should not equal (3)
+        3 should equal (4)
+        3 shouldEqual 4
       }
-      3 should not equal (3)
-      3 should equal (4)
-      3 shouldEqual 4
     }
     describe("for Map") {
       it("with default equality") {
@@ -173,12 +182,15 @@ class ShouldEqualEqualitySpec extends AnyFunSpec {
       Person("Joe") should equal (Person("Joe"))
       Person("Joe") shouldEqual Person("Joe")
       Person("Joe") should not equal (Person("Sally"))
-      implicit val e = new Equality[Person] {
-        def areEqual(a: Person, b: Any): Boolean = a != b
+
+      {
+        implicit val e = new Equality[Person] {
+          def areEqual(a: Person, b: Any): Boolean = a != b
+        }
+        Person("Joe") should not equal (Person("Joe"))
+        Person("Joe") should equal (Person("Sally"))
+        Person("Joe") shouldEqual Person("Sally")
       }
-      Person("Joe") should not equal (Person("Joe"))
-      Person("Joe") should equal (Person("Sally"))
-      Person("Joe") shouldEqual Person("Sally")
     }
     describe("for Traversable") {
       it("with default equality") {
@@ -513,12 +525,15 @@ class ShouldEqualEqualitySpec extends AnyFunSpec {
       Array(1, 2, 3) should equal (Array(1, 2, 3))
       Array(1, 2, 3) shouldEqual Array(1, 2, 3)
       Array(1, 2, 3) should not equal (Array(1, 2, 4))
-      implicit val e = new Equality[Array[Int]] {
-        def areEqual(a: Array[Int], b: Any): Boolean = deep(a) != deep(b.asInstanceOf[Array[Int]])
+
+      {
+        implicit val e = new Equality[Array[Int]] {
+          def areEqual(a: Array[Int], b: Any): Boolean = deep(a) != deep(b.asInstanceOf[Array[Int]])
+        }
+        Array(1, 2, 3) should not equal (Array(1, 2, 3))
+        Array(1, 2, 3) should equal (Array(1, 2, 4))
+        Array(1, 2, 3) shouldEqual Array(1, 2, 4)
       }
-      Array(1, 2, 3) should not equal (Array(1, 2, 3))
-      Array(1, 2, 3) should equal (Array(1, 2, 4))
-      Array(1, 2, 3) shouldEqual Array(1, 2, 4)
     }
     // SKIP-SCALATESTJS,NATIVE-START
     describe("for Java List") {

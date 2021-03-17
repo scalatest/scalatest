@@ -478,10 +478,13 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain only ("ho", "hi")
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should contain only ("HE", "HI")
-        intercept[TestFailedException] {
-          all (hiLists) should contain only ("HO", "HI")
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should contain only ("HE", "HI")
+          intercept[TestFailedException] {
+            all (hiLists) should contain only ("HO", "HI")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -564,10 +567,13 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should (contain only ("ho", "hi"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should (contain only ("HE", "HI"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain only ("HO", "HI"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should (contain only ("HE", "HI"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain only ("HO", "HI"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {

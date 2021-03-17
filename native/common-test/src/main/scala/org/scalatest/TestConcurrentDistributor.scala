@@ -18,5 +18,5 @@ class TestConcurrentDistributor extends Distributor {
     status
   }
 
-  def waitUntilDone() = Unit
+  def waitUntilDone() = ()
 }

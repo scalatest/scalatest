@@ -53,7 +53,7 @@ class ShouldBeSortedLogicalOrSpec extends AnyFunSpec {
     "in " + decorateToStringValue(prettifier, left)
     
   case class Student(name: String, scores: Int)
-  implicit val studentOrdering = new Ordering[Student] {
+  implicit val studentOrdering: Ordering[Student] = new Ordering[Student] {
     def compare(a: Student, b: Student) = a.scores compare b.scores
   }
   
@@ -142,8 +142,11 @@ class ShouldBeSortedLogicalOrSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           outOfOrderInts should (be (sorted) or be (orderedInts))
         }
-        implicit val imp = trueSortable
-        outOfOrderInts should (be (sorted) or be (orderedInts))
+
+        {
+          implicit val imp = trueSortable
+          outOfOrderInts should (be (sorted) or be (orderedInts))
+        }
       }
       
       it("should use explicitly specified Sortable") {
@@ -212,8 +215,11 @@ class ShouldBeSortedLogicalOrSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           orderedInts should (not be (sorted) or not be (orderedInts))
         }
-        implicit val imp = falseSortable
-        orderedInts should (not be (sorted) or not be (orderedInts))
+
+        {
+          implicit val imp = falseSortable
+          orderedInts should (not be (sorted) or not be (orderedInts))
+        }
       }
       
       it("should use explicitly specified Sortable") {
@@ -294,8 +300,11 @@ class ShouldBeSortedLogicalOrSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all(List(outOfOrderInts)) should (be (sorted) or be (orderedInts))
         }
-        implicit val imp = trueSortable
-        all(List(outOfOrderInts)) should (be (sorted) or be (orderedInts))
+
+        {
+          implicit val imp = trueSortable
+          all(List(outOfOrderInts)) should (be (sorted) or be (orderedInts))
+        }
       }
       
       it("should use explicitly specified Sortable") {
@@ -372,8 +381,11 @@ class ShouldBeSortedLogicalOrSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all(List(orderedInts)) should (not be (sorted) or not be (orderedInts))
         }
-        implicit val imp = falseSortable
-        all(List(orderedInts)) should (not be (sorted) or not be (orderedInts))
+
+        {
+          implicit val imp = falseSortable
+          all(List(orderedInts)) should (not be (sorted) or not be (orderedInts))
+        }
       }
       
       it("should use explicitly specified Sortable") {
