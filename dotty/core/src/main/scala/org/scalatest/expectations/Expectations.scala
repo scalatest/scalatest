@@ -111,13 +111,13 @@ private[scalatest] trait Expectations {
   inline def expect(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact =
     ${ ExpectationsMacro.expect('{expression})('{prettifier}, '{pos}) }
 
-  inline def expectDoesNotCompile(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
+  transparent inline def expectDoesNotCompile(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
     ${ CompileMacro.expectDoesNotCompileImpl('code, '{typeChecks(code)}, 'prettifier, 'pos) }
 
-  inline def expectCompiles(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
+  transparent inline def expectCompiles(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
     ${ CompileMacro.expectCompilesImpl('code, '{typeChecks(code)}, 'prettifier, 'pos) }
 
-  inline def expectTypeError(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
+  transparent inline def expectTypeError(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
     ${ CompileMacro.expectTypeErrorImpl('code, '{typeChecks(code)}, 'prettifier, 'pos) }
 
   import scala.language.implicitConversions

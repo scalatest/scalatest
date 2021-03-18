@@ -21,23 +21,10 @@ import org.scalatest.funspec
 
 class StatefulStatusSpec extends funspec.FixtureAnyFunSpec {
 
-  protected type FixtureParam = {
-    def setCompleted()
-    def isCompleted(): Boolean
-    // SKIP-SCALATESTJS,NATIVE-START
-    def succeeds(): Boolean
-    // SKIP-SCALATESTJS,NATIVE-END
-    def setFailed()
-    // SKIP-SCALATESTJS,NATIVE-START
-    def waitUntilCompleted()
-    // SKIP-SCALATESTJS,NATIVE-END
-    def whenCompleted(f: Try[Boolean] => Unit)
-    def setFailedWith(ex: Throwable): Unit
-    def unreportedException: Option[Throwable]
-  }
+  protected type FixtureParam = StatefulStatus
 
    override protected def withFixture(test: OneArgTest): Outcome = {
-     val status1 = new ScalaTestStatefulStatus
+     val status1 = new StatefulStatus
      test(status1) match {
        case Succeeded =>
          val status2 = new StatefulStatus
@@ -62,14 +49,14 @@ class StatefulStatusSpec extends funspec.FixtureAnyFunSpec {
     it("should return true for succeeds() after setCompleted() is called without setFailed()") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
-      assert(status.succeeds)
+      assert(status.succeeds())
     }
 
     it("should return false for succeeds() after setCompleted() is called after setFailed()") { status =>
       import scala.language.reflectiveCalls
       status.setFailed()
       status.setCompleted()
-      assert(!status.succeeds)
+      assert(!status.succeeds())
     }
     // SKIP-SCALATESTJS,NATIVE-END
 

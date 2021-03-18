@@ -283,16 +283,19 @@ class OptionShouldContainOneElementOfLogicalAndSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiSomes) should (contain oneElementOf Seq("ho", "he") and contain oneElementOf Seq("hi", "he"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiSomes) should (contain oneElementOf Seq("HI", "HE") and contain oneElementOf Seq("HI", "HE"))
-        val e1 = intercept[TestFailedException] {
-          all (hiSomes) should (contain oneElementOf Seq("hi", "he") and contain oneElementOf Seq("ho", "he"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiSomes) should (contain oneElementOf Seq("HI", "HE") and contain oneElementOf Seq("HI", "HE"))
+          val e1 = intercept[TestFailedException] {
+            all (hiSomes) should (contain oneElementOf Seq("hi", "he") and contain oneElementOf Seq("ho", "he"))
+          }
+          checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
+          val e2 = intercept[TestFailedException] {
+            all (hiSomes) should (contain oneElementOf Seq("HI", "HE") and contain oneElementOf Seq("hi", "he"))
+          }
+          checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.containedOneElementOf(prettifier, hiSomes(0), Seq("HI", "HE")) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
-        val e2 = intercept[TestFailedException] {
-          all (hiSomes) should (contain oneElementOf Seq("HI", "HE") and contain oneElementOf Seq("hi", "he"))
-        }
-        checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.containedOneElementOf(prettifier, hiSomes(0), Seq("HI", "HE")) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
       it("should use an explicitly provided Equality") {
         (all (hiSomes) should (contain oneElementOf Seq("HI", "HE") and contain oneElementOf Seq("HI", "HE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -345,16 +348,19 @@ class OptionShouldContainOneElementOfLogicalAndSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiSomes) should (be (Some("ho")) and contain oneElementOf Seq("HI", "HE"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiSomes) should (be (Some("hi")) and contain oneElementOf Seq("HI", "HE"))
-        val e1 = intercept[TestFailedException] {
-          all (hiSomes) should (be (Some("ho")) and contain oneElementOf Seq("HI", "HE"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiSomes) should (be (Some("hi")) and contain oneElementOf Seq("HI", "HE"))
+          val e1 = intercept[TestFailedException] {
+            all (hiSomes) should (be (Some("ho")) and contain oneElementOf Seq("HI", "HE"))
+          }
+          checkMessageStackDepth(e1, allErrMsg(0, "Some(\"hi\") was not equal to Some(\"ho\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
+          val e2 = intercept[TestFailedException] {
+            all (hiSomes) should (be (Some("hi")) and contain oneElementOf Seq("hi", "he"))
+          }
+          checkMessageStackDepth(e2, allErrMsg(0, "Some(\"hi\") was equal to Some(\"hi\"), but " + FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"hi\") was not equal to Some(\"ho\")", thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
-        val e2 = intercept[TestFailedException] {
-          all (hiSomes) should (be (Some("hi")) and contain oneElementOf Seq("hi", "he"))
-        }
-        checkMessageStackDepth(e2, allErrMsg(0, "Some(\"hi\") was equal to Some(\"hi\"), but " + FailureMessages.didNotContainOneElementOf(prettifier, hiSomes(0), Seq("hi", "he")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
       it("should use an explicitly provided Equality") {
         (all (hiSomes) should (be (Some("hi")) and contain oneElementOf Seq("HI", "HE"))) (decided by upperCaseStringEquality)

@@ -1179,7 +1179,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    *
    * @author Bill Venners
    */
-  final class AndNotWord {
+  final class AndNotWord { thisAndNotWord =>
 
     /**
      * Get the <code>Matcher</code> instance, currently used by macro only.
@@ -1455,7 +1455,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     inline def be(aType: ResultOfATypeInvocation[_]): Matcher[T] =
-      ${ TypeMatcherMacro.andNotATypeMatcher('{this}, '{aType}) }
+      ${ TypeMatcherMacro.andNotATypeMatcher('{thisAndNotWord: Matcher[T]#AndNotWord}, '{aType}) }
 
     /**
      * This method enables the following syntax:
@@ -1466,7 +1466,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     inline def be(anType: ResultOfAnTypeInvocation[_]): Matcher[T] =
-      ${ TypeMatcherMacro.andNotAnTypeMatcher('{this}, '{anType}) }
+      ${ TypeMatcherMacro.andNotAnTypeMatcher('{thisAndNotWord: Matcher[T]#AndNotWord}, '{anType}) }
 
     /**
      * This method enables the following syntax:
@@ -1849,8 +1849,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                  ^
      * </pre>
      **/
-    inline def matchPattern(right: PartialFunction[Any, _]) =
-      ${ MatchPatternMacro.andNotMatchPatternMatcher('{this}, '{right}) }
+    inline def matchPattern(inline right: PartialFunction[Any, _]) =
+      ${ MatchPatternMacro.andNotMatchPatternMatcher('{thisAndNotWord: Matcher[T]#AndNotWord}, '{right}) }
   }
 
   /**
@@ -2464,7 +2464,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    *
    * @author Bill Venners
    */
-  final class OrNotWord {
+  final class OrNotWord { thisOrNotWord =>
 
     /**
      * Get the <code>Matcher</code> instance, currently used by macro only.
@@ -2738,7 +2738,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     inline def be(aType: ResultOfATypeInvocation[_]): Matcher[T] =
-      ${ TypeMatcherMacro.orNotATypeMatcher('{this}, '{aType}) }
+      ${ TypeMatcherMacro.orNotATypeMatcher('{thisOrNotWord: Matcher[T]#OrNotWord}, '{aType}) }
 
     /**
      * This method enables the following syntax:
@@ -2749,7 +2749,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      **/
     inline def be(anType: ResultOfAnTypeInvocation[_]): Matcher[T] =
-      ${ TypeMatcherMacro.orNotAnTypeMatcher('{this}, '{anType}) }
+      ${ TypeMatcherMacro.orNotAnTypeMatcher('{thisOrNotWord: Matcher[T]#OrNotWord}, '{anType}) }
 
     /**
      * This method enables the following syntax:
@@ -3131,8 +3131,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                 ^
      * </pre>
      **/
-    inline def matchPattern(right: PartialFunction[Any, _]) =
-      ${ MatchPatternMacro.orNotMatchPatternMatcher('{this}, '{right}) }
+    inline def matchPattern(inline right: PartialFunction[Any, _]) =
+      ${ MatchPatternMacro.orNotMatchPatternMatcher('{thisOrNotWord: Matcher[T]#OrNotWord}, '{right}) }
   }
 
   /**

@@ -316,10 +316,13 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain allOf ("ho", "hi")
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should contain allOf ("HE", "HI")
-        intercept[TestFailedException] {
-          all (hiLists) should contain allOf ("HO", "HI")
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should contain allOf ("HE", "HI")
+          intercept[TestFailedException] {
+            all (hiLists) should contain allOf ("HO", "HI")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -366,10 +369,13 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should (contain allOf ("ho", "hi"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should (contain allOf ("HE", "HI"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain allOf ("HO", "HI"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should (contain allOf ("HE", "HI"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain allOf ("HO", "HI"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {

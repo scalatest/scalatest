@@ -31,6 +31,8 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class LocationSuiteProp extends SuiteProp
 {
+  type FixtureServices = TestLocationServices
+
   test("All suite types should have correct location in SuiteStarting, SuiteCompleted, SuiteAborted and TestFailed event.") {
     forAll(examples) { suite =>
       val reporter = new EventRecordingReporter
@@ -40,8 +42,6 @@ class LocationSuiteProp extends SuiteProp
       suite.allChecked
     }
   }
-  
-  type FixtureServices = TestLocationServices
 
   // SKIP-SCALATESTJS,NATIVE-START
   def junit3Suite = new TestLocationJUnit3Suite
@@ -75,7 +75,7 @@ class LocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSuite extends AnyFunSuite {
-      test("fail") { fail }
+      test("fail") { fail() }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
   }
@@ -104,7 +104,7 @@ class LocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSuite extends StringFixtureFunSuite {
-      test("fail") { () => fail }
+      test("fail") { () => fail() }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
   } 
@@ -133,7 +133,7 @@ class LocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSuite extends AnyFunSpec {
-      it("fail") { fail }
+      it("fail") { fail() }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
   }
@@ -162,7 +162,7 @@ class LocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSuite extends AnyFunSpec {
-      it("fail") { fail }
+      it("fail") { fail() }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
   }
@@ -195,7 +195,7 @@ class LocationSuiteProp extends SuiteProp
     class FailNestedSuite extends AnyFeatureSpec {
       Feature("feature") { 
         Scenario("fail") {
-          fail
+          fail()
         }
       }
     }
@@ -231,7 +231,7 @@ class LocationSuiteProp extends SuiteProp
     class FailNestedSuite extends StringFixtureFeatureSpec {
       Feature("feature") { 
         Scenario("fail") {
-          () => fail
+          () => fail()
         }
       }
     }
@@ -263,7 +263,7 @@ class LocationSuiteProp extends SuiteProp
     }
     class FailNestedSuite extends AnyFlatSpec {
       "Test" should "fail" in {
-        fail
+        fail()
       }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
@@ -295,7 +295,7 @@ class LocationSuiteProp extends SuiteProp
     }
     class FailNestedSuite extends StringFixtureFlatSpec { 
       "Test" should "fail" in { param =>
-        fail
+        fail()
       }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
@@ -329,7 +329,7 @@ class LocationSuiteProp extends SuiteProp
     class FailNestedSuite extends AnyFreeSpec { 
       "Test" - {
         "should fail" in {
-          fail
+          fail()
         }
       }
     }
@@ -365,7 +365,7 @@ class LocationSuiteProp extends SuiteProp
     class FailNestedSuite extends StringFixtureFreeSpec { 
       "Test" - {
         "should fail" in { param =>
-          fail
+          fail()
         }
       }
     }
@@ -397,7 +397,7 @@ class LocationSuiteProp extends SuiteProp
     }
     class FailNestedSuite extends AnyPropSpec { 
       property("Test should fail") {
-        fail
+        fail()
       }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
@@ -429,7 +429,7 @@ class LocationSuiteProp extends SuiteProp
     }
     class FailNestedSuite extends StringFixturePropSpec { 
       property("Test should fail") { param =>
-        fail
+        fail()
       }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
@@ -463,7 +463,7 @@ class LocationSuiteProp extends SuiteProp
     class FailNestedSuite extends AnyWordSpec { 
       "Test" should {
         "fail" in {
-          fail
+          fail()
         }
       }
     }
@@ -499,7 +499,7 @@ class LocationSuiteProp extends SuiteProp
     class FailNestedSuite extends StringFixtureWordSpec { 
       "Test" should {
         "fail" in { param =>
-          fail
+          fail()
         }
       }
     }
@@ -531,7 +531,7 @@ class LocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSpec extends RefSpec {
-      def `test fail`: Unit = { fail }
+      def `test fail`: Unit = { fail() }
     }
     override def nestedSuites = Vector(new NestedSpec, new AbortNestedSpec, new FailNestedSpec)
   }

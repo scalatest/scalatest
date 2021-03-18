@@ -6,3 +6,4 @@ scalatest.js/target/
 .idea/
 .DS_Store
 lowered.hnir
+.bsp/

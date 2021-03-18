@@ -24,38 +24,47 @@ private[scalatest] object MatchPatternMacro {
 //   /**
 //    * Check the case definition AST, raise an compiler error if the body is not empty.
 //    */
-//   def checkCaseDefinitions(context: Context)(tree: context.Tree): Unit = {
-//     import context.universe._
+   def checkCaseDefinitions(expr: Expr[PartialFunction[Any, _]])(using quotes: Quotes): Unit = {
+     import quotes.reflect._
+     
+     // Check if it is a default case
+     def defaultCase(t: Tree): Boolean =
+       t match {
+         case Bind(defaultCaseTermName, Ident(_)) if defaultCaseTermName == "defaultCase$" => true  // default case
+         case _ => false // not default case
+       }
 
-//     // Check if it is a default case
-//     def defaultCase(t: Tree): Boolean =
-//       t match {
-//         case Bind(defaultCaseTermName, Ident(nme.WILDCARD)) if defaultCaseTermName.decoded == "defaultCase$" => true  // default case
-//         case _ => false // not default case
-//       }
+     expr.asTerm match {
+       case Inlined(_, _, Block(List(DefDef(_, _, _, Some(Match(_, caseDefList)))), _)) =>
+         caseDefList.foreach {
+           case CaseDef(pat, _, body) if !defaultCase(pat) => // case definition, and not default case
+             body match {
+               case Block(List(),Literal(UnitConstant())) => // ok, empty body
+               case _ => report.error(Resources.nonEmptyMatchPatternCase, body.pos)
+             }
 
-//     tree match {
-//       case Typed(Block(List(ClassDef(_, _, _, Template(_, _, List(_, DefDef(_, applyOrElseTermName, _, _, _, Match(_, caseDefList)), _)))), _), _) if applyOrElseTermName.decoded == "applyOrElse" =>
-//         // We got a case definition list, let's go through them to check
-//         caseDefList.foreach {
-//           case CaseDef(pat, _, body) if !defaultCase(pat) => // case definition, and not default case
-//             body match {
-//               case Literal(Constant(())) => // ok, empty body
-//               case _ => context.abort(body.pos, Resources.nonEmptyMatchPatternCase)  // not empty body, raise compiler error
-//             }
+           case _ => // other thing, just do nothing
+         }
 
-//           case _ => // other thing, just do nothing
-//         }
-
-//       case _ => // other thing, just do nothing
-//     }
-//   }
+       case _ => // other thing, just do nothing
+     }
+   }
 
   // Do checking on case definition and generate AST that returns a match pattern matcher
   def matchPatternMatcher(right: Expr[PartialFunction[Any, _]])(using Quotes): Expr[Matcher[Any]] = {
-    // checkCaseDefinitions(context)(tree)
+    import quotes.reflect._
+    
+    checkCaseDefinitions(right)
 
     '{ MatchPatternHelper.matchPatternMatcher($right) }
+  }
+
+  def notMatchPatternMatcher(right: Expr[PartialFunction[Any, _]])(using Quotes): Expr[Matcher[Any]] = {
+    import quotes.reflect._
+    
+    checkCaseDefinitions(right)
+
+    '{ MatchPatternHelper.notMatchPatternMatcher($right) }
   }
 
   /**
@@ -64,17 +73,19 @@ private[scalatest] object MatchPatternMacro {
    * org.scalatest.matchers.MatchPatternHelper.checkMatchPattern(left, right)
    */
   def matchPattern(left: Expr[ResultOfNotWordForAny[_]], right: Expr[PartialFunction[Any, _]])(using Quotes): Expr[Unit] = {
-    // checkCaseDefinitions(context)(tree)
+    checkCaseDefinitions(right)
 
     '{ MatchPatternHelper.checkMatchPattern($left, $right) }
   }
 
   def andNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#AndNotWord], right: Expr[PartialFunction[Any, _]])(using Quotes): Expr[Matcher[T]] = {
+    checkCaseDefinitions(right)
     val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher($right) }
     '{ ($self).owner.and($notMatcher) }
   }
 
   def orNotMatchPatternMatcher[T:Type](self: Expr[Matcher[T]#OrNotWord], right: Expr[PartialFunction[Any, _]])(using Quotes): Expr[Matcher[T]] = {
+    checkCaseDefinitions(right)
     val notMatcher = '{ MatchPatternHelper.notMatchPatternMatcher($right) }
     '{ ($self).owner.or($notMatcher) }
   }

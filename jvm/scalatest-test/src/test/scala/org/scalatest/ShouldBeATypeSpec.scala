@@ -292,6 +292,7 @@ class ShouldBeATypeSpec extends AnyFunSpec with Matchers {
 
     it("should do nothing if should do nothing if LHS is false for both specified RHS, when used in a logical-and expression with not") { 
       
+      val test = not be a [String] and not be a [String]
       aTaleOfTwoCities should (not be a [String] and not be a [String])
       aTaleOfTwoCities should (not be aTaleOfThreeCities and not be a [String])
       aTaleOfTwoCities should (not be a [String] and not be aTaleOfThreeCities)

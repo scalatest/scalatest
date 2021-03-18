@@ -87,4 +87,14 @@ class RunnerSpec extends AnyFunSpec with PrivateMethodTester {
     assert(1 === events.filter(_.isInstanceOf[AlertProvided]).size)
   }
 
+  it("should load JUnit wrapper suite class correctly") {
+    val clazz = Runner.loadJUnitWrapperClass(Runner.getClass().getClassLoader())
+    assert(clazz.getName == "org.scalatestplus.junit.JUnitWrapperSuite")
+  }
+
+  it("should load TestNG wrapper suite class correctly") {
+    val clazz = Runner.loadTestNGWrapperClass(Runner.getClass().getClassLoader())
+    assert(clazz.getName == "org.scalatestplus.testng.TestNGWrapperSuite")
+  }
+
 }

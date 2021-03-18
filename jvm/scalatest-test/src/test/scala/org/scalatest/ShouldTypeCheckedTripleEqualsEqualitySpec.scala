@@ -36,29 +36,38 @@ class ShouldTypeCheckedTripleEqualsEqualitySpec extends AnyFunSpec with NonImpli
     it("for Any") {
       () should === (())
       // () should !== (7) // Does not compile if type checked
-      implicit val e = new Equality[Unit] {
-        def areEqual(a: Unit, b: Any): Boolean = a != b
+      
+      {
+        implicit val e = new Equality[Unit] {
+          def areEqual(a: Unit, b: Any): Boolean = a != b
+        }
+        () should !== (())
+        // () should === (7) // Does not compile if type checked
       }
-      () should !== (())
-      // () should === (7) // Does not compile if type checked
     }
     it("for String") {
       "hi" should === ("hi")
       "hi" should !== ("ho")
-      implicit val e = new Equality[String] {
-        def areEqual(a: String, b: Any): Boolean = a != b
+
+      {
+        implicit val e = new Equality[String] {
+          def areEqual(a: String, b: Any): Boolean = a != b
+        }
+        "hi" should !== ("hi")
+        "hi" should === ("ho")
       }
-      "hi" should !== ("hi")
-      "hi" should === ("ho")
     }
     it("for Numeric") {
       3 should === (3)
       3 should !== (4)
-      implicit val e = new Equality[Int] {
-        def areEqual(a: Int, b: Any): Boolean = a != b
+
+      {
+        implicit val e = new Equality[Int] {
+          def areEqual(a: Int, b: Any): Boolean = a != b
+        }
+        3 should !== (3)
+        3 should === (4)
       }
-      3 should !== (3)
-      3 should === (4)
     }
     describe("for Map") {
       it("with default equality") {
@@ -154,11 +163,14 @@ class ShouldTypeCheckedTripleEqualsEqualitySpec extends AnyFunSpec with NonImpli
       case class Person(name: String)
       Person("Joe") should === (Person("Joe"))
       Person("Joe") should !== (Person("Sally"))
-      implicit val e = new Equality[Person] {
-        def areEqual(a: Person, b: Any): Boolean = a != b
+
+      {
+        implicit val e = new Equality[Person] {
+          def areEqual(a: Person, b: Any): Boolean = a != b
+        }
+        Person("Joe") should !== (Person("Joe"))
+        Person("Joe") should === (Person("Sally"))
       }
-      Person("Joe") should !== (Person("Joe"))
-      Person("Joe") should === (Person("Sally"))
     }
     describe("for Traversable") {
       it("with default equality") {
@@ -460,11 +472,14 @@ class ShouldTypeCheckedTripleEqualsEqualitySpec extends AnyFunSpec with NonImpli
     it("for Array") {
       Array(1, 2, 3) should === (Array(1, 2, 3))
       Array(1, 2, 3) should !== (Array(1, 2, 4))
-      implicit val e = new Equality[Array[Int]] {
-        def areEqual(a: Array[Int], b: Any): Boolean = deep(a) != deep(b.asInstanceOf[Array[Int]])
+
+      {
+        implicit val e = new Equality[Array[Int]] {
+          def areEqual(a: Array[Int], b: Any): Boolean = deep(a) != deep(b.asInstanceOf[Array[Int]])
+        }
+        Array(1, 2, 3) should !== (Array(1, 2, 3))
+        Array(1, 2, 3) should === (Array(1, 2, 4))
       }
-      Array(1, 2, 3) should !== (Array(1, 2, 3))
-      Array(1, 2, 3) should === (Array(1, 2, 4))
     }
     // SKIP-SCALATESTJS,NATIVE-START
     describe("for Java List") {

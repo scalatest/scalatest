@@ -266,10 +266,13 @@ The bottom two don't, but still I don't want to support that in general.
         intercept[TestFailedException] {
           all (hiSomes) should contain oneOf ("ho", "he")
         }
-        implicit val ise = upperCaseEquality
-        all (hiSomes) should contain oneOf ("HI", "HE")
-        intercept[TestFailedException] {
-          all (hiSomes) should contain oneOf ("hi", "he")
+
+        {
+          implicit val ise = upperCaseEquality
+          all (hiSomes) should contain oneOf ("HI", "HE")
+          intercept[TestFailedException] {
+            all (hiSomes) should contain oneOf ("hi", "he")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -336,10 +339,13 @@ The bottom two don't, but still I don't want to support that in general.
         intercept[TestFailedException] {
           all (hiSomes) should (contain oneOf ("HI", "HE"))
         }
-        implicit val ise = upperCaseEquality
-        all (hiSomes) should (contain oneOf ("HI", "HE"))
-        intercept[TestFailedException] {
-          all (hiSomes) should (contain oneOf ("hi", "he"))
+
+        {
+          implicit val ise = upperCaseEquality
+          all (hiSomes) should (contain oneOf ("HI", "HE"))
+          intercept[TestFailedException] {
+            all (hiSomes) should (contain oneOf ("hi", "he"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {

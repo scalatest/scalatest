@@ -1091,7 +1091,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    *                   ^
    * </pre>
    **/
-  inline def matchPattern(right: PartialFunction[Any, _]) =
+  inline def matchPattern(inline right: PartialFunction[Any, _]) =
     ${ MatchPatternMacro.matchPattern('{this}, '{right}) }
 
   /**

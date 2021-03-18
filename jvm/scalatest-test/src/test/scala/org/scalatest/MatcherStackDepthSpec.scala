@@ -376,6 +376,7 @@ class MatcherStackDepthSpec extends AnyFunSuite with Matchers {
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
+  // SKIP-DOTTY-START
   test("new { def isEmpty = false} shouldBe empty") {
     val e = intercept[exceptions.TestFailedException] {
       new { def isEmpty = false} shouldBe empty
@@ -383,6 +384,7 @@ class MatcherStackDepthSpec extends AnyFunSuite with Matchers {
     e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
+  // SKIP-DOTTY-END
 
   // Working with "containers" 
 
@@ -871,7 +873,7 @@ class MatcherStackDepthSpec extends AnyFunSuite with Matchers {
   test("javaCollection should be ('empty)") {
     val e = intercept[exceptions.TestFailedException] {
       val javaCollection = List(1, 2, 3, 4, 5).asJava
-      javaCollection should be ('empty)
+      javaCollection should be (Symbol("empty"))
     }
     e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -880,7 +882,7 @@ class MatcherStackDepthSpec extends AnyFunSuite with Matchers {
   test("javaMap should be ('empty)") {
     val e = intercept[exceptions.TestFailedException] {
       val javaMap = Map("a" -> 1, "bee" -> 2).asJava
-      javaMap should be ('empty)
+      javaMap should be (Symbol("empty"))
     }
     e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))

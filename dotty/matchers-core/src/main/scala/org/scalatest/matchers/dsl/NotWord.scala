@@ -293,8 +293,8 @@ final class NotWord {
    *                    ^
    * </pre>
    **/
-  inline def matchPattern(right: PartialFunction[Any, _]): Matcher[Any] =
-    MatchPatternHelper.notMatchPatternMatcher(right)
+  inline def matchPattern(inline right: PartialFunction[Any, _]): Matcher[Any] =
+    ${ org.scalatest.matchers.MatchPatternMacro.notMatchPatternMatcher('{right}) }
 
   /**
    * This method enables the following syntax:

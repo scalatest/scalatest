@@ -289,10 +289,13 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain atMostOneElementOf Seq("hi", "he")
         }
-        implicit val use = upperCaseStringEquality
-        all (hiLists) should contain atMostOneElementOf Seq("HI", "HO")
-        intercept[TestFailedException] {
-          all (hiLists) should contain atMostOneElementOf Seq("HI", "HE")
+
+        {
+          implicit val use = upperCaseStringEquality
+          all (hiLists) should contain atMostOneElementOf Seq("HI", "HO")
+          intercept[TestFailedException] {
+            all (hiLists) should contain atMostOneElementOf Seq("HI", "HE")
+          }
         }
       }
 
@@ -336,10 +339,13 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should (contain atMostOneElementOf Seq("hi", "he"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should (contain atMostOneElementOf Seq("HI", "HO"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain atMostOneElementOf Seq("HI", "HE"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should (contain atMostOneElementOf Seq("HI", "HO"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain atMostOneElementOf Seq("HI", "HE"))
+          }
         }
       }
 

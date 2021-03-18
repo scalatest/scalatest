@@ -145,7 +145,7 @@ final class $typeName$ private (val value: Long) extends AnyVal {
   /**
    * A string representation of this <code>$typeName$</code>.
    */
-  override def toString: String = "$typeName$(" + value + "L)"
+  override def toString: String = s"$typeName$(\${value}L)"
 
   /**
    * Converts this <code>$typeName$</code> to a <code>Byte</code>.
@@ -199,7 +199,7 @@ final class $typeName$ private (val value: Long) extends AnyVal {
   /**
    * Converts this <code>$typeName$</code>'s value to a string then concatenates the given string.
    */
-  def +(x: String): String = value + x
+  def +(x: String): String = s"\${value.toString()}\$x"
 
   /**
    * Returns this value bit-shifted left by the specified number of bits,
@@ -744,7 +744,7 @@ final class $typeName$ private (val value: Long) extends AnyVal {
   def ensuringValid(f: Long => Long): $typeName$ = {
     val candidateResult: Long = f(value)
     if ($typeName$Macro.isValid(candidateResult)) new $typeName$(candidateResult)
-    else throw new AssertionError(candidateResult + ", the result of applying the passed function to " + value + ", was not a valid $typeName$")
+    else throw new AssertionError(s"\${candidateResult.toString()}, the result of applying the passed function to \${value.toString()}, was not a valid $typeName$")
   }
 }
 
@@ -836,7 +836,7 @@ object $typeName$ {
    */
   def ensuringValid(value: Long): $typeName$ =
     if ($typeName$Macro.isValid(value)) new $typeName$(value) else {
-      throw new AssertionError(value + " was not a valid $typeName$")
+      throw new AssertionError(s"\${value.toString()}  was not a valid $typeName$")
     }
 
   /**
@@ -869,7 +869,7 @@ object $typeName$ {
      if ($typeName$Macro.isValid(value))
        Success(new $typeName$(value))
      else
-       Failure(new AssertionError(value + " was not a valid $typeName$"))
+       Failure(new AssertionError(s"\${value.toString()} was not a valid $typeName$"))
 
   /**
    * A validation method that produces a <code>Pass</code>

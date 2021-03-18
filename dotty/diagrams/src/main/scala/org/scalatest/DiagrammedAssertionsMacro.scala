@@ -36,7 +36,7 @@ object DiagrammedAssertionsMacro {
     val endLine = macroPos.endLine // Get the expression last line number
 
     if (startLine == endLine) // Only use diagram macro if it is one line, where startLine will be equaled to endLine
-      DiagramsMacro.transform(helper, condition, pos, clue, macroPos.sourceCode)
+      DiagramsMacro.transform(helper, condition, pos, clue, macroPos.sourceCode.get)
     else // otherwise we'll just fallback to use BooleanMacro
       AssertionsMacro.transform(fallback, condition, prettifier, pos, clue)
   }
