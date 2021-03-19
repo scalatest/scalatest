@@ -2824,16 +2824,17 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val xs = List.empty[Int]
         lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
       }
-      // TODO: Fix this test
-      ignore("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a List of size 1") {
+      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a List of size 1") {
         val lstGen = implicitly[Generator[List[Int]]]
         val canonicalLists = List(0, 1, -1, 2, -2, 3, -3).map(i => List(i))
         val expectedLists = List(List.empty[Int]) ++ canonicalLists
         val nonCanonical = List(99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
+        // pass in nonCanonical as only edge case so the generator will generate rose tree with the specified value.
+        lstGen.next(SizeParam(1, 0, 1), List(nonCanonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
         val canonical = List(3)
         // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
+        // pass in canonical as only edge case so the generator will generate rose tree with the specified value.
+        lstGen.next(SizeParam(1, 0, 1), List(canonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a List of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[List[Int]]]
@@ -3065,16 +3066,17 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val xs = Vector.empty[Int]
         lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1 shouldBe empty
       }
-      // TODO: Fix this test
-      ignore("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Vector of size 1") {
+      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Vector of size 1") {
         val lstGen = implicitly[Generator[Vector[Int]]]
         val canonicalLists = Vector(0, 1, -1, 2, -2, 3, -3).map(i => Vector(i))
         val expectedLists = Vector(Vector.empty[Int]) ++ canonicalLists
         val nonCanonical = Vector(99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        // We control the intended generated rosetree value by passing the intended value as the only edge case.
+        lstGen.next(SizeParam(1, 0, 1), List(nonCanonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
         val canonical = Vector(3)
         // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        // We control the intended generated rosetree value by passing the intended value as the only edge case.
+        lstGen.next(SizeParam(1, 0, 1), List(canonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a Vector of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Vector[Int]]]
@@ -3183,16 +3185,17 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val xs = Set.empty[Int]
         lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
-      // TOOD: Fix this test
-      ignore("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Set of size 1") {
+      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Set of size 1") {
         val lstGen = implicitly[Generator[Set[Int]]]
         val canonicalLists = Vector(0, 1, -1, 2, -2, 3, -3).map(i => Set(i))
         val expectedLists = Vector(Set.empty[Int]) ++ canonicalLists
         val nonCanonical = Set(99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        // We control the intended generated rosetree value by passing the intended value as the only edge case.
+        lstGen.next(SizeParam(1, 0, 1), List(nonCanonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
         val canonical = Set(3)
         // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        // We control the intended generated rosetree value by passing the intended value as the only edge case.
+        lstGen.next(SizeParam(1, 0, 1), List(canonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a Set of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Set[Int]]]
