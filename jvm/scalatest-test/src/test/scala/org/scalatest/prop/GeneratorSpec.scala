@@ -2754,7 +2754,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
       val intCanonicals = intCanonicalsIt.toList
       forAll { (xs: F[Int]) =>
-        val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
+        // pass in List(xs) as only edge case so the generator will generate rose tree with the specified value.
+        val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)
         val shrinks: List[F[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
         if (xs.isEmpty)
           shrinks shouldBe empty
@@ -2815,8 +2816,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val xss = List(List(100, 200, 300, 400, 300))
         lstGen.shrink(xss, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should not contain xss
       }
-      // TODO: Fix this test
-      ignore("should shrink Lists using strategery") {
+      it("should shrink Lists using strategery") {
         shrinkByStrategery[List](List)
       }
       it("should return an empty Iterator when asked to shrink a List of size 0") {
@@ -3056,8 +3056,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           v.length shouldBe 5
         }
       }
-      // TODO: Fix this test
-      ignore("should shrink Vectors using strategery") {
+      it("should shrink Vectors using strategery") {
         shrinkByStrategery[Vector](Vector)
       }
 
@@ -3176,8 +3175,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         }
       }
 
-      // TODO:
-      ignore("should shrink Sets using strategery") {
+      it("should shrink Sets using strategery") {
         shrinkByStrategery[Set](Set)
       }
       it("should return an empty Iterator when asked to shrink a Set of size 0") {
