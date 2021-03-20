@@ -2939,8 +2939,6 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           t1 should equal (e1 +- 1)
           t2 should equal (e2)
         } 
-
-        //shTupRt1.map(_.value) shouldEqual expected  
       }
       it("should be able to transform a tuple generator to a case class generator") {
         val tupGen: Generator[(String, Int)] = Generator.tuple2Generator[String, Int]
@@ -3257,13 +3255,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1, a2, a3, a4, a5).map(_.value) should contain theSameElementsAs List(b1, b2, b3, b4, b5).map(_.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce SortedSet[T] edge values first in random order") {
         val gen = Generator.sortedSetGenerator[Int]
-        val (a1: Rose[SortedSet[Int]], ae1: List[SortedSet[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedSet.empty[Int], SortedSet(1, 2), SortedSet(3, 4, 5)), rnd = Randomizer.default)
+        val (a1: RoseTree[SortedSet[Int]], ae1: List[SortedSet[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedSet.empty[Int], SortedSet(1, 2), SortedSet(3, 4, 5)), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -3312,8 +3310,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         }
       }
 
-      // TODO: Fix this test
-      ignore("should shrink SortedSets using strategery") {
+      it("should shrink SortedSets using strategery") {
         // Due to what I can only assume is an oversight in the standard library, SortedSet's
         // companion object is not a GenericCompanion, so we can't use the common function here:
         import GeneratorDrivenPropertyChecks._
@@ -3322,11 +3319,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
         val intCanonicals = intCanonicalsIt.toList
         forAll { (xs: SortedSet[Int]) =>
-          val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
+          val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)
           val shrinks: List[SortedSet[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
+            shrinks should not be empty
+
             // First one should be the empty list
             shrinks(0) shouldBe empty
 

@@ -4342,9 +4342,9 @@ object Generator {
 
           def next(ignoredSzp: org.scalatest.prop.SizeParam, edges: List[SortedSet[T]], rnd: org.scalatest.prop.Randomizer): (RoseTree[SortedSet[T]], List[SortedSet[T]], org.scalatest.prop.Randomizer) = {
             @scala.annotation.tailrec
-            def loop(targetSize: Int, result: SortedSet[T], rnd: org.scalatest.prop.Randomizer): (Rose[SortedSet[T]], List[SortedSet[T]], org.scalatest.prop.Randomizer) =
+            def loop(targetSize: Int, result: SortedSet[T], rnd: org.scalatest.prop.Randomizer): (RoseTree[SortedSet[T]], List[SortedSet[T]], org.scalatest.prop.Randomizer) =
               if (result.size == targetSize)
-                (Rose(result), edges, rnd)
+                (NextRoseTree(result), edges, rnd)
               else {
                 val (nextRoseTreeOfT, nextEdges, nextRnd) = genOfT.next(szp, List.empty, rnd)
                 loop(targetSize, result + nextRoseTreeOfT.value, nextRnd)
@@ -4358,7 +4358,7 @@ object Generator {
       def next(szp: org.scalatest.prop.SizeParam, edges: List[SortedSet[T]],rnd: org.scalatest.prop.Randomizer): (RoseTree[SortedSet[T]], List[SortedSet[T]], org.scalatest.prop.Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
+            (NextRoseTree(head), tail, rnd)
           case _ =>
             val gen = generatorWithSize(szp)
             gen.next(szp, List.empty, rnd)
@@ -4382,7 +4382,7 @@ object Generator {
           def next(szp: org.scalatest.prop.SizeParam, edges: List[SortedSet[T]], rnd: org.scalatest.prop.Randomizer): (RoseTree[SortedSet[T]], List[SortedSet[T]], org.scalatest.prop.Randomizer) = {
             edges match {
               case head :: tail =>
-                (Rose(head), tail, rnd)
+                (NextRoseTree(head), tail, rnd)
               case _ =>
                 val s = f(szp)
                 val gen = generatorWithSize(s)
