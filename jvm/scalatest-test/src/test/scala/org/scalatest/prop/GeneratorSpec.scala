@@ -2912,21 +2912,29 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
     }
     describe("for Tuple2s") {
-      // TODO: Fix this test
-      ignore("should offer a tuple2 generator") {
+      it("should offer a tuple2 generator") {
         val gen = implicitly[Generator[(Int, Int)]]
         val intGen = implicitly[Generator[Int]]
-        val (rt8, rnd1) = intGen.shrink(8, Randomizer.default)
-        val (rt18, rnd2)= intGen.shrink(18, rnd1)
-        val list8 = rt8.shrinks(Randomizer.default)._1.map(_.value)
-        val list18 = rt18.shrinks(Randomizer.default)._1.map(_.value)
-        val listTup = List((8,18), (4,18), (-4,18), (2,18), (-2,18), (1,18), (-1,18), (0,18))
-// This no longer works this way. For now we'll just use what it is doing.
-//          for {
-//            x <- list8
-//            y <- list18
-//          } yield (x, y)
-        gen.shrink((8, 18), rnd2)._1.shrinks(Randomizer.default)._1.map(_.value) shouldEqual listTup
+        val rnd = Randomizer.default
+        val (intRt1, _, intRnd1) = intGen.next(SizeParam(0, 8, 8), Nil, rnd)
+        val (intRt2, _, intRnd2) = intGen.next(SizeParam(0, 18, 18), Nil, intRnd1)
+
+        val (tupRt1, _, tupRnd1) = gen.next(SizeParam(0, 18, 18), Nil, rnd)
+        
+        tupRt1.value._1 shouldEqual intRt1.value
+        tupRt1.value._2 shouldEqual intRt2.value
+
+        val (shIntRt1, shIntRnd1) = intRt1.shrinks(rnd)
+        val (shIntRt2, shIntRnd2) = intRt2.shrinks(shIntRnd1)
+        val (shTupRt1, shTupRnd1) = tupRt1.shrinks(rnd)
+
+        val shIntHeadValueX2 = shIntRt1.head.value * 2
+        val expected = 
+          shIntRt2.map { v2 =>
+            (shIntHeadValueX2, v2.value)
+          }
+
+        shTupRt1.map(_.value) shouldEqual expected  
       }
       it("should be able to transform a tuple generator to a case class generator") {
         val tupGen: Generator[(String, Int)] = Generator.tuple2Generator[String, Int]
