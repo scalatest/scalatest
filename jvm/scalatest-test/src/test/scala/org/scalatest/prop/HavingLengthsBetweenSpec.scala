@@ -54,7 +54,8 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         val intCanonicals = intCanonicalsIt.toList
         forAll (lists[Int].havingLengthsBetween(0, 78)) { (xs: List[Int]) =>
           val generator = lists[Int]
-          val (shrinkRt, _) = generator.shrink(xs, Randomizer.default)
+          // pass in List(xs) as only edge case so the generator will generate rose tree with the specified value.
+          val (shrinkRt, _, _) = generator.next(SizeParam(1, 1, 1), List(xs), Randomizer.default) //generator.shrink(xs, Randomizer.default)
           val shrinks: List[List[Int]] = shrinkRt.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
@@ -97,11 +98,17 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         val lstGen = lists[Int].havingLengthsBetween(0, 88)
         val canonicalLists = List(0, 1, -1, 2, -2, 3, -3).map(i => List(i))
         val expectedLists = List(List.empty[Int]) ++ canonicalLists
-        val nonCanonical = List(99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
-        val canonical = List(3)
+        
+        val singleElementLstGen = lists[Int].havingLength(1)
+
+        // pass in List(99) as only edge case so the generator will generate rose tree with the specified value.
+        val (rtNonCanonical, _, _) = singleElementLstGen.next(SizeParam(1, 1, 1), List(List(99)), Randomizer.default)
+        rtNonCanonical.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
+        
+        // pass in List(3) as only edge case so the generator will generate rose tree with the specified value.
+        val (rtCanonical, _, _) = singleElementLstGen.next(SizeParam(1, 1, 1), List(List(3)), Randomizer.default)
         // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
+        rtCanonical.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a List of size 2 that includes canonicals") {
         import CommonGenerators.lists
@@ -186,8 +193,9 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         val intCanonicals = intCanonicalsIt.toList
         forAll (lists[Int].havingLengthsBetween(5, 78)) { (xs: List[Int]) =>
           val generator = lists[Int]
-          val (shrinkIt, _) = generator.shrink(xs, Randomizer.default)
-          val shrinks: List[List[Int]] = shrinkIt.shrinks(Randomizer.default)._1.map(_.value).reverse
+          // pass in List(xs) as only edge case so the generator will generate rose tree with the specified value.
+          val (shrinkRt, _, _) = generator.next(SizeParam(1, 1, 1), List(xs), Randomizer.default)
+          val shrinks: List[List[Int]] = shrinkRt.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
@@ -229,11 +237,16 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         val lstGen = lists[Int].havingLengthsBetween(5, 88)
         val canonicalLists = List(0, 1, -1, 2, -2, 3, -3).map(i => List(i))
         val expectedLists = List(List.empty[Int]) ++ canonicalLists
-        val nonCanonical = List(99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
-        val canonical = List(3)
-        // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
+
+        val singleElementLstGen = lists[Int].havingLength(1)
+        
+        // pass in List(99) as only edge case so the generator will generate rose tree with the specified value.
+        val (rtNonCanonical, _, _) = singleElementLstGen.next(SizeParam(1, 1, 1), List(List(99)), Randomizer.default)
+        rtNonCanonical.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
+        
+        // pass in List(3) as only edge case so the generator will generate rose tree with the specified value.
+        val (rtCanonical, _, _) = singleElementLstGen.next(SizeParam(1, 1, 1), List(List(3)), Randomizer.default)
+        rtCanonical.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a List of size 2 that includes canonicals") {
         import CommonGenerators.lists
