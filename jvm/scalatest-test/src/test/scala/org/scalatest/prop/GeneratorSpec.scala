@@ -3515,8 +3515,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val xs = Map.empty[PosInt, Int]
         lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
-      // TODO: Fix this test
-      ignore("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Map of size 1") {
+      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Map of size 1") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
         val canonicalLists =
           for {
@@ -3526,10 +3525,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             yield Map(PosInt.ensuringValid(k) -> v)
         val expectedLists = Vector(Map.empty[PosInt, Int]) ++ canonicalLists
         val nonCanonical = Map(PosInt(99) -> 99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(nonCanonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
         val canonical = Map(PosInt(3) -> 3)
         // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(canonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a Map of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
