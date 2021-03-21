@@ -4437,7 +4437,7 @@ object Generator {
 
                   // The last batch of candidate shrunken values are just slices of the list starting at
                   // 0 with size doubling each time.
-                  val lastBatch: List[Rose[Map[K, V]]] = {
+                  val lastBatch: List[RoseTree[Map[K, V]]] = {
                     val xsList = xs.toList
                     val it =
                       new Iterator[Map[K, V]] {
@@ -4451,10 +4451,10 @@ object Generator {
                           result.toMap
                         }
                       }
-                    it.toList.map(xs => Rose(xs))
+                    it.toList.map(xs => NextRoseTree(xs))
                   }
 
-                  ((List(Rose(Map.empty[K, V])) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch).reverse, rnd1)
+                  ((List(NextRoseTree(Map.empty[K, V])) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch).reverse, rnd1)
                 }
               }
             }
@@ -4468,9 +4468,9 @@ object Generator {
 
           def next(ignoredSzp: org.scalatest.prop.SizeParam, edges: List[Map[K, V]], rnd: org.scalatest.prop.Randomizer): (RoseTree[Map[K, V]], List[Map[K, V]], org.scalatest.prop.Randomizer) = {
             @scala.annotation.tailrec
-            def loop(targetSize: Int, result: Map[K, V], rnd: org.scalatest.prop.Randomizer): (Rose[Map[K, V]], List[Map[K, V]], org.scalatest.prop.Randomizer) =
+            def loop(targetSize: Int, result: Map[K, V], rnd: org.scalatest.prop.Randomizer): (RoseTree[Map[K, V]], List[Map[K, V]], org.scalatest.prop.Randomizer) =
               if (result.size == targetSize)
-                (Rose(result), edges, rnd)
+                (NextRoseTree(result), edges, rnd)
               else {
                 val (nextRoseTreeOfT, nextEdges, nextRnd) = genOfTuple2KV.next (szp, List.empty, rnd)
                 loop(targetSize, result + nextRoseTreeOfT.value, nextRnd)
@@ -4484,7 +4484,7 @@ object Generator {
       def next(szp: org.scalatest.prop.SizeParam, edges: List[Map[K, V]], rnd: org.scalatest.prop.Randomizer): Tuple3[RoseTree[Map[K, V]], List[Map[K, V]], org.scalatest.prop.Randomizer] = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
+            (NextRoseTree(head), tail, rnd)
 
           case Nil =>
             val gen = generatorWithSize(szp)
