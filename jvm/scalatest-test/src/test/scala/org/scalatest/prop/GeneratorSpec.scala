@@ -21,6 +21,7 @@ import scala.collection.immutable.SortedSet
 import scala.collection.immutable.SortedMap
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.Inspectors.{forAll => inspectAll}
 
 class GeneratorSpec extends AnyFunSpec with Matchers {
 
@@ -2912,21 +2913,32 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
     }
     describe("for Tuple2s") {
-      // TODO: Fix this test
-      ignore("should offer a tuple2 generator") {
+      it("should offer a tuple2 generator") {
         val gen = implicitly[Generator[(Int, Int)]]
         val intGen = implicitly[Generator[Int]]
-        val (rt8, rnd1) = intGen.shrink(8, Randomizer.default)
-        val (rt18, rnd2)= intGen.shrink(18, rnd1)
-        val list8 = rt8.shrinks(Randomizer.default)._1.map(_.value)
-        val list18 = rt18.shrinks(Randomizer.default)._1.map(_.value)
-        val listTup = List((8,18), (4,18), (-4,18), (2,18), (-2,18), (1,18), (-1,18), (0,18))
-// This no longer works this way. For now we'll just use what it is doing.
-//          for {
-//            x <- list8
-//            y <- list18
-//          } yield (x, y)
-        gen.shrink((8, 18), rnd2)._1.shrinks(Randomizer.default)._1.map(_.value) shouldEqual listTup
+        val rnd = Randomizer.default
+        val (intRt1, _, intRnd1) = intGen.next(SizeParam(0, 8, 8), Nil, rnd)
+        val (intRt2, _, intRnd2) = intGen.next(SizeParam(0, 18, 18), Nil, intRnd1)
+
+        val (tupRt1, _, tupRnd1) = gen.next(SizeParam(0, 18, 18), Nil, rnd)
+        
+        tupRt1.value._1 shouldEqual intRt1.value
+        tupRt1.value._2 shouldEqual intRt2.value
+
+        val (shIntRt1, shIntRnd1) = intRt1.shrinks(rnd)
+        val (shIntRt2, shIntRnd2) = intRt2.shrinks(shIntRnd1)
+        val (shTupRt1, shTupRnd1) = tupRt1.shrinks(rnd)
+
+        val shIntHeadValueX2 = shIntRt1.head.value * 2
+        val expected = 
+          shIntRt2.map { v2 =>
+            (shIntHeadValueX2, v2.value)
+          }
+
+        inspectAll(shTupRt1.map(_.value).zip(expected)) { case ((t1, t2), (e1, e2)) =>
+          t1 should equal (e1 +- 1)
+          t2 should equal (e2)
+        } 
       }
       it("should be able to transform a tuple generator to a case class generator") {
         val tupGen: Generator[(String, Int)] = Generator.tuple2Generator[String, Int]
@@ -3243,13 +3255,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1, a2, a3, a4, a5).map(_.value) should contain theSameElementsAs List(b1, b2, b3, b4, b5).map(_.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce SortedSet[T] edge values first in random order") {
         val gen = Generator.sortedSetGenerator[Int]
-        val (a1: Rose[SortedSet[Int]], ae1: List[SortedSet[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedSet.empty[Int], SortedSet(1, 2), SortedSet(3, 4, 5)), rnd = Randomizer.default)
+        val (a1: RoseTree[SortedSet[Int]], ae1: List[SortedSet[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedSet.empty[Int], SortedSet(1, 2), SortedSet(3, 4, 5)), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -3298,8 +3310,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         }
       }
 
-      // TODO: Fix this test
-      ignore("should shrink SortedSets using strategery") {
+      it("should shrink SortedSets using strategery") {
         // Due to what I can only assume is an oversight in the standard library, SortedSet's
         // companion object is not a GenericCompanion, so we can't use the common function here:
         import GeneratorDrivenPropertyChecks._
@@ -3308,11 +3319,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
         val intCanonicals = intCanonicalsIt.toList
         forAll { (xs: SortedSet[Int]) =>
-          val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
+          val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)
           val shrinks: List[SortedSet[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
+            shrinks should not be empty
+
             // First one should be the empty list
             shrinks(0) shouldBe empty
 
@@ -3345,16 +3358,15 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val xs = SortedSet.empty[Int]
         lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
-      // TODO: Fix this test
-      ignore("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Set of size 1") {
+      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Set of size 1") {
         val lstGen = implicitly[Generator[SortedSet[Int]]]
         val canonicalLists = Vector(0, 1, -1, 2, -2, 3, -3).map(i => SortedSet(i))
         val expectedLists = Vector(SortedSet.empty[Int]) ++ canonicalLists
         val nonCanonical = SortedSet(99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(nonCanonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
         val canonical = SortedSet(3)
         // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(canonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a SortedSet of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[SortedSet[Int]]]
@@ -3402,13 +3414,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1, a2, a3, a4, a5).map(_.value) should contain theSameElementsAs List(b1, b2, b3, b4, b5).map(_.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce Map[K, V] edge values first in random order") {
         val gen = Generator.mapGenerator[Int, String]
-        val (a1: Rose[Map[Int, String]], ae1: List[Map[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Map.empty[Int, String], Map(1 -> "one", 2 -> "two"), Map(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
+        val (a1: RoseTree[Map[Int, String]], ae1: List[Map[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Map.empty[Int, String], Map(1 -> "one", 2 -> "two"), Map(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -3457,19 +3469,20 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         }
       }
 
-      // TODO: Fix this test
-      ignore("should shrink Maps using strategery") {
+      it("should shrink Maps using strategery") {
         import GeneratorDrivenPropertyChecks._
         val generator = implicitly[Generator[Map[PosInt, Int]]]
         val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
         val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
         val tupleCanonicals = tupleCanonicalsIt.toList
         forAll { (xs: Map[PosInt, Int]) =>
-          val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
+          val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)
           val shrinks: List[Map[PosInt, Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
+            shrinks should not be empty
+
             // First one should be the empty list
             shrinks(0) shouldBe empty
 
@@ -3502,8 +3515,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val xs = Map.empty[PosInt, Int]
         lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
-      // TODO: Fix this test
-      ignore("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Map of size 1") {
+      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Map of size 1") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
         val canonicalLists =
           for {
@@ -3513,10 +3525,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             yield Map(PosInt.ensuringValid(k) -> v)
         val expectedLists = Vector(Map.empty[PosInt, Int]) ++ canonicalLists
         val nonCanonical = Map(PosInt(99) -> 99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(nonCanonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
         val canonical = Map(PosInt(3) -> 3)
         // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(canonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a Map of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
@@ -3564,13 +3576,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1, a2, a3, a4, a5).map(_.value) should contain theSameElementsAs List(b1, b2, b3, b4, b5).map(_.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce SortedMap[K, V] edge values first in random order") {
         val gen = Generator.sortedMapGenerator[Int, String]
-        val (a1: Rose[SortedMap[Int, String]], ae1: List[SortedMap[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedMap.empty[Int, String], SortedMap(1 -> "one", 2 -> "two"), SortedMap(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
+        val (a1: RoseTree[SortedMap[Int, String]], ae1: List[SortedMap[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedMap.empty[Int, String], SortedMap(1 -> "one", 2 -> "two"), SortedMap(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -3619,15 +3631,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         }
       }
 
-      // TODO: Fix this test.
-      ignore("should shrink SortedMaps using strategery") {
+      it("should shrink SortedMaps using strategery") {
         import GeneratorDrivenPropertyChecks._
         val generator = implicitly[Generator[SortedMap[PosInt, Int]]]
         val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
         val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
         val tupleCanonicals = tupleCanonicalsIt.toList
         forAll { (xs: SortedMap[PosInt, Int]) =>
-          val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
+          val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)
           val shrinks: List[SortedMap[PosInt, Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
@@ -3664,8 +3675,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val xs = SortedMap.empty[PosInt, Int]
         lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
-      // TODO: Fix this test
-      ignore("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a SortedMap of size 1") {
+      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a SortedMap of size 1") {
         val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
         val canonicalLists =
           for {
@@ -3675,10 +3685,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             yield SortedMap(PosInt.ensuringValid(k) -> v)
         val expectedLists = Vector(SortedMap.empty[PosInt, Int]) ++ canonicalLists
         val nonCanonical = SortedMap(PosInt(99) -> 99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(nonCanonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
         val canonical = SortedMap(PosInt(3) -> 3)
         // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(canonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a SortedMap of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
