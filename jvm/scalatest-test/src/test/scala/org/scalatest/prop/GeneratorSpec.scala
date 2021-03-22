@@ -73,13 +73,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       tupCanonicals shouldBe expectedTupCanonicals
     }
-    it("should offer a flatMap method that composes canonicals methods and offers a shrink that uses the canonicals methods") {
+    it("should offer a flatMap method that composes canonicals methods") {
 
       import Generator._
 
-      val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
+      val rnd = Randomizer.default
+      val (intCanonicalsIt, _) = intGenerator.canonicals(rnd)
       val intCanonicals = intCanonicalsIt.toList
-      val (doubleCanonicalsIt, _) = doubleGenerator.canonicals(Randomizer.default)
+      val (doubleCanonicalsIt, _) = doubleGenerator.canonicals(rnd)
       val doubleCanonicals = doubleCanonicalsIt.toList
       val expectedTupCanonicals: List[(Int, Double)] =
         for {
@@ -92,12 +93,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           i <- intGenerator
           d <- doubleGenerator
         }  yield (i, d)
-      val (tupShrinkRoseTree, _, _) = tupGen.next(SizeParam(1, 0, 1), List((100, 100.0)), Randomizer.default)
-      val (tupCanonicalsIt, _) = tupGen.canonicals(Randomizer.default)
-      val tupShrink = tupShrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+      val (tupCanonicalsIt, _) = tupGen.canonicals(rnd)
       val tupCanonicals = tupCanonicalsIt.toList
 
-      tupShrink shouldBe expectedTupCanonicals
       tupCanonicals shouldBe expectedTupCanonicals
     }
     it("should offer a filter method so that pattern matching can be used in for expressions with Generator generators") {
