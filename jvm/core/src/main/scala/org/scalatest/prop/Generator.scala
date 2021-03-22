@@ -3759,23 +3759,22 @@ object Generator {
   implicit def eitherGenerator[L, R](implicit genOfL: Generator[L], genOfR: Generator[R]): Generator[Either[L, R]] =
     new Generator[Either[L, R]] {
 
-      // TODO This only uses Roses. Check that we don't need RoseTrees.
-//      case class NextRoseTree(value: Either[L, R]) extends RoseTree[Either[L, R]] {
-//        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Either[L, R]]], Randomizer) = {
-//          value match {
-//            case Right(r) => {
-//              val (rShrink, nextRnd) = genOfR.shrink(r, rndPassedToShrinks)
-//              val (rShrinkShrink, nextNextRnd) = rShrink.shrinks(nextRnd)
-//              (rShrinkShrink.map(rt => rt.map(Right(_): Either[L, R])), nextNextRnd)
-//            }
-//            case Left(l) => {
-//              val (lShrink, nextRnd) = genOfL.shrink(l, rndPassedToShrinks)
-//              val (lShrinkShrink, nextNextRnd) = lShrink.shrinks(nextRnd)
-//              (lShrinkShrink.map(rt => rt.map(Left(_): Either[L, R])), nextNextRnd)
-//            }
-//          }
-//        }
-//      }
+      case class NextRoseTree(value: Either[L, R]) extends RoseTree[Either[L, R]] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Either[L, R]]], Randomizer) = {
+          value match {
+            case Right(r) => {
+              val (rightRt, _, nextRnd) = genOfR.next(SizeParam(1, 0, 1), List(r), rndPassedToShrinks)
+              val (rShrink, nextNextRnd) = rightRt.shrinks(nextRnd)
+              (rShrink.map(rt => rt.map(Right(_): Either[L, R])), nextNextRnd)
+            }
+            case Left(l) => {
+              val (leftRt, _, nextRnd) = genOfL.next(SizeParam(1, 0, 1), List(l), rndPassedToShrinks)
+              val (lShrink, nextNextRnd) = leftRt.shrinks(nextRnd)
+              (lShrink.map(rt => rt.map(Left(_): Either[L, R])), nextNextRnd)
+            }
+          }
+        }
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Either[L, R]], Randomizer) = {
         val (edgesOfL, nextRnd) = genOfL.initEdges(maxLength, rnd)
@@ -3806,7 +3805,7 @@ object Generator {
       def next(szp: SizeParam, edges: List[Either[L, R]], rnd: Randomizer): (RoseTree[Either[L, R]], List[Either[L, R]], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
+            (NextRoseTree(head), tail, rnd)
           case Nil =>
             val (nextInt, nextRnd) = rnd.nextInt
             if (nextInt % 4 == 0) {
