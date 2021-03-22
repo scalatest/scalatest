@@ -2944,7 +2944,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val tupGen: Generator[(String, Int)] = Generator.tuple2Generator[String, Int]
         case class Person(name: String, age: Int)
         val persons = for (tup <- tupGen) yield Person(tup._1, tup._2)
-        val (rt, _, _) = persons.next(SizeParam(1, 0, 1), List(Person("Harry Potter", 32)), Randomizer.default)
+        val (rt, _, _) = persons.next(SizeParam(1, 0, 1), List.empty, Randomizer.default)
         rt.shrinks(Randomizer.default)._1 should not be empty
       }
     }
