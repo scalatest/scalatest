@@ -2894,8 +2894,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val function0s = Generator.function0Generator[Int]
         import GeneratorDrivenPropertyChecks._
         forAll (ints) { (i: Int) =>
-          val (intShrinksRt, _, rnd1) = ints.next(SizeParam(1, 0, 1), List(i), Randomizer.default)
-          val (function0ShrinksRt, _, _) = function0s.next(SizeParam(1, 0, 1), List(() => i), rnd1)
+          val rnd = Randomizer(i)
+          val (intShrinksRt, _, rnd1) = ints.next(SizeParam(1, 0, 1), List.empty, rnd)
+          val (function0ShrinksRt, _, _) = function0s.next(SizeParam(1, 0, 1), List.empty, rnd)
           val intShrinks = intShrinksRt.shrinks(Randomizer.default)._1.map(_.value)
           val function0Shrinks = function0ShrinksRt.shrinks(Randomizer.default)._1.map(_.value)
           function0Shrinks.map(f => f()) should contain theSameElementsAs intShrinks
