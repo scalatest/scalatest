@@ -233,18 +233,6 @@ trait Generator[T] { thisGeneratorOfT =>
         val (cansOfT, nextRnd) = thisGeneratorOfT.canonicals(rnd)
         (cansOfT.map(f), nextRnd)
       }
-      override def shrink(value: U, rnd: Randomizer): (RoseTree[U], Randomizer) = {
-        val u: U = value
-        val roseTree =
-          new RoseTree[U] {
-            val value: U = u
-            def shrinks(rnd: Randomizer): (List[RoseTree[U]], Randomizer) = {
-              val (it, rnd2) = canonicals(rnd)
-              (it.map(nxtU => Rose(nxtU)).toList, rnd2)
-            }
-          }
-        (roseTree, rnd)
-      }
     }
 
   /**
@@ -341,21 +329,6 @@ trait Generator[T] { thisGeneratorOfT =>
 
         (cansOfT.flatMap(getCanonicals), currentRnd)
       }
-
-      // First I'll write this to be Roses of the canonicals, in case there are tests that
-      // I can ensure still pass. After that, I'll rewrite to correctly compose the shrink methods.
-      override def shrink(value: U, rnd: Randomizer): (RoseTree[U], Randomizer) = {
-        val u = value
-        val roseTree =
-          new RoseTree[U] {
-            val value: U = u
-            def shrinks(rndPassedToShrink: Randomizer): (List[RoseTree[U]], Randomizer) = {
-              val (it, rnd2) = canonicals(rndPassedToShrink)
-              (it.map(nxtU => Rose(nxtU)).toList, rnd2)
-            }
-          }
-        (roseTree, rnd)
-      }
     }
   }
 
@@ -408,7 +381,7 @@ trait Generator[T] { thisGeneratorOfT =>
           val nextT = nextRoseTreeOfT.value
           if (!(f(nextT))) loop(count + 1, nextNextEdges, nextNextRnd)
           else {
-            val (roseTreeOfT, lastRnd) = thisGeneratorOfT.shrink(nextT, nextNextRnd)
+            val (roseTreeOfT, _, lastRnd) = thisGeneratorOfT.next(SizeParam(1, 0, 1), List(nextT), nextNextRnd)
             (roseTreeOfT, nextNextEdges, lastRnd)
           }
         }
@@ -416,34 +389,6 @@ trait Generator[T] { thisGeneratorOfT =>
       }
     }
 
-  /**
-    * Given a value of type T, produce some smaller/simpler values if that makes sense.
-    *
-    * When a property evaluation fails, the test system tries to simplify the failing case, to make
-    * debugging easier. How this simplification works depends on the type of Generator. For example,
-    * if it is a Generator of Lists, it might try with shorter Lists; if it is a Generator of
-    * Strings, it might try with shorter Strings.
-    *
-    * The critical rule is that the values returned from `shrink` must be smaller/simpler than
-    * the passed-in value, and '''must not''' include the passed-in value. This is to ensure
-    * that the simplification process will always complete, and not go into an infinite loop.
-    *
-    * This function receives a [[Randomizer]], in case there is a random element to the
-    * simplification process. If you use the [[Randomizer]], you should return the next one;
-    * if not, simply return the passed-in one.
-    *
-    * You do not have to implement this function. If you do not, it will return an empty
-    * Iterator, and the test system will not try to simplify failing values of this type.
-    *
-    * This function returns a Tuple. The first element should be an [[Iterator]] that returns
-    * simplified values, and is empty when there are no more. The second element is the
-    * next [[Randomizer]], as discussed above.
-    *
-    * @param value a value that failed property evaluation
-    * @param rnd a [[Randomizer]] to use, if you need random data for the shrinking process
-    * @return a Tuple of the shrunk values and the next [[Randomizer]]
-    */
-  def shrink(value: T, rnd: Randomizer): (RoseTree[T], Randomizer) = (Rose(value), rnd)
 // XXX
   /**
     * Some simple, "ordinary" values of type [[T]].

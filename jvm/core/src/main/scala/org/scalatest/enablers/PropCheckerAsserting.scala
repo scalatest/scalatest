@@ -786,7 +786,7 @@ trait FuturePropCheckerAsserting {
                   }
               }
             }
-            val (rootRoseTree, rnd2) = genA.shrink(a, rnd)
+            val (rootRoseTree, _, rnd2) = genA.next(SizeParam(1, 0, 1), List(a), rnd)
             // For now, just look at the first level of the RoseTree, which
             // should (except maybe in the case of Option) be the same
             // values in our old shrink List[A]. Currently I won't use

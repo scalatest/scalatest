@@ -65,7 +65,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val expectedTupCanonicals = intCanonicalsIt.map(i => ('A', i)).toList
 
       val tupGen = for (i <- intGenerator) yield ('A', i)
-      val (tupShrinkRoseTree, _) = tupGen.shrink(('A', 100), Randomizer.default)
+      val (tupShrinkRoseTree, _, _) = tupGen.next(SizeParam(1, 0, 1), List(('A', 100)), Randomizer.default)
       val (tupCanonicalsIt, _) = tupGen.canonicals(Randomizer.default)
       val tupShrink = tupShrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
       val tupCanonicals = tupCanonicalsIt.toList
@@ -92,7 +92,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           i <- intGenerator
           d <- doubleGenerator
         }  yield (i, d)
-      val (tupShrinkRoseTree, _) = tupGen.shrink((100, 100.0), Randomizer.default)
+      val (tupShrinkRoseTree, _, _) = tupGen.next(SizeParam(1, 0, 1), List((100, 100.0)), Randomizer.default)
       val (tupCanonicalsIt, _) = tupGen.canonicals(Randomizer.default)
       val tupShrink = tupShrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
       val tupCanonicals = tupCanonicalsIt.toList
@@ -626,7 +626,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         }
         import org.scalatest.Inspectors
         Inspectors.forAll (expectedChars) { (c: Char) =>
-          val (shrinkRoseTree, _) = generator.shrink(c, Randomizer.default)
+          val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(c), Randomizer.default)
           val shrinks: List[Char] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks shouldBe empty
         }
@@ -2606,7 +2606,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = optionGenerator[Int]
         val rnd = Randomizer.default
 
-        val (optShrink, _) = gen.shrink(None, rnd)
+        val (optShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(None), rnd)
 
         assert(optShrink.shrinks(Randomizer.default)._1.isEmpty)
       }
@@ -2665,10 +2665,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = orGenerator[Int, Long]
 
         val rnd = Randomizer.default
-        val (gShrink, _) = gGen.shrink(1000, rnd)
-        val (bShrink, _) = bGen.shrink(2000L, rnd)
-        val (orGoodShrink, _) = gen.shrink(Good(1000), rnd)
-        val (orBadShrink, _) = gen.shrink(Bad(2000L), rnd)
+        val (gShrink, _, _) = gGen.next(SizeParam(1, 0, 1), List(1000), rnd)
+        val (bShrink, _, _) = bGen.next(SizeParam(1, 0, 1), List(2000L), rnd)
+        val (orGoodShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Good(1000)), rnd)
+        val (orBadShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Bad(2000L)), rnd)
 
         orGoodShrink.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs(gShrink.shrinks(Randomizer.default)._1.map(_.value).map(Good(_)).toList)
         orBadShrink.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs(bShrink.shrinks(Randomizer.default)._1.map(_.value).map(Bad(_)).toList)
@@ -2725,10 +2725,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = eitherGenerator[Long, Int]
 
         val rnd = Randomizer.default
-        val (rShrink, _) = rGen.shrink(1000, rnd)
-        val (lShrink, _) = lGen.shrink(2000L, rnd)
-        val (eitherRightShrink, _) = gen.shrink(Right(1000), rnd)
-        val (eitherLeftShrink, _) = gen.shrink(Left(2000L), rnd)
+        val (rShrink, _, _) = rGen.next(SizeParam(1, 0, 1), List(1000), rnd)
+        val (lShrink, _, _) = lGen.next(SizeParam(1, 0, 1), List(2000L), rnd)
+        val (eitherRightShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Right(1000)), rnd)
+        val (eitherLeftShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Left(2000L)), rnd)
 
         eitherRightShrink.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs(rShrink.shrinks(Randomizer.default)._1.map(_.value).map(Right(_)).toList)
         eitherLeftShrink.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs(lShrink.shrinks(Randomizer.default)._1.map(_.value).map(Left(_)).toList)
@@ -2815,7 +2815,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should not exhibit this bug in List shrinking") {
         val lstGen = implicitly[Generator[List[List[Int]]]]
         val xss = List(List(100, 200, 300, 400, 300))
-        lstGen.shrink(xss, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should not contain xss
+        lstGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should not contain xss
       }
       it("should shrink Lists using strategery") {
         shrinkByStrategery[List](List)
@@ -2823,7 +2823,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty Iterator when asked to shrink a List of size 0") {
         val lstGen = implicitly[Generator[List[Int]]]
         val xs = List.empty[Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
       }
       it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a List of size 1") {
         val lstGen = implicitly[Generator[List[Int]]]
@@ -2839,7 +2839,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a List of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[List[Int]]]
-        val shrinkees = lstGen.shrink(List(3, 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(List(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed list-to-shink even if that list has a power of 2 length") {
@@ -2848,7 +2848,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         // for example, that that one doesn't show up in the shrinks output, because it would be the original list-to-shrink.
         val lstGen = implicitly[Generator[List[Int]]]
         val listToShrink = List.fill(16)(99)
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a list generator whose canonical method uses the canonical method of the underlying T") {
@@ -2896,8 +2896,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val function0s = Generator.function0Generator[Int]
         import GeneratorDrivenPropertyChecks._
         forAll (ints) { (i: Int) =>
-          val (intShrinksRt, rnd1) = ints.shrink(i, Randomizer.default)
-          val (function0ShrinksRt, _) = function0s.shrink(() => i, rnd1)
+          val (intShrinksRt, _, rnd1) = ints.next(SizeParam(1, 0, 1), List(i), Randomizer.default)
+          val (function0ShrinksRt, _, _) = function0s.next(SizeParam(1, 0, 1), List(() => i), rnd1)
           val intShrinks = intShrinksRt.shrinks(Randomizer.default)._1.map(_.value)
           val function0Shrinks = function0ShrinksRt.shrinks(Randomizer.default)._1.map(_.value)
           function0Shrinks.map(f => f()) should contain theSameElementsAs intShrinks
@@ -2944,7 +2944,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val tupGen: Generator[(String, Int)] = Generator.tuple2Generator[String, Int]
         case class Person(name: String, age: Int)
         val persons = for (tup <- tupGen) yield Person(tup._1, tup._2)
-        val (rt, _) = persons.shrink(Person("Harry Potter", 32), Randomizer.default)
+        val (rt, _, _) = persons.next(SizeParam(1, 0, 1), List(Person("Harry Potter", 32)), Randomizer.default)
         rt.shrinks(Randomizer.default)._1 should not be empty
       }
     }
@@ -3076,7 +3076,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty Iterator when asked to shrink a Vector of size 0") {
         val lstGen = implicitly[Generator[Vector[Int]]]
         val xs = Vector.empty[Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1 shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1 shouldBe empty
       }
       it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Vector of size 1") {
         val lstGen = implicitly[Generator[Vector[Int]]]
@@ -3092,7 +3092,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a Vector of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Vector[Int]]]
-        val shrinkees = lstGen.shrink(Vector(3, 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed list-to-shink even if that list has a power of 2 length") {
@@ -3101,7 +3101,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         // for example, that that one doesn't show up in the shrinks output, because it would be the original list-to-shrink.
         val lstGen = implicitly[Generator[Vector[Int]]]
         val listToShrink = Vector.fill(16)(99)
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Vector generator whose canonical method uses the canonical method of the underlying T") {
@@ -3195,7 +3195,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty Iterator when asked to shrink a Set of size 0") {
         val lstGen = implicitly[Generator[Set[Int]]]
         val xs = Set.empty[Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
       it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Set of size 1") {
         val lstGen = implicitly[Generator[Set[Int]]]
@@ -3211,7 +3211,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a Set of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Set[Int]]]
-        val shrinkees = lstGen.shrink(Set(3, 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Set(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed set-to-shink even if that set has a power of 2 length") {
@@ -3222,7 +3222,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listToShrink: Set[Int] = (Set.empty[Int] /: (1 to 16)) { (set, n) =>
           set + n
         }
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Set generator whose canonical method uses the canonical method of the underlying T") {
@@ -3356,7 +3356,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty Iterator when asked to shrink a SortedSet of size 0") {
         val lstGen = implicitly[Generator[SortedSet[Int]]]
         val xs = SortedSet.empty[Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
       it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Set of size 1") {
         val lstGen = implicitly[Generator[SortedSet[Int]]]
@@ -3370,7 +3370,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a SortedSet of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[SortedSet[Int]]]
-        val shrinkees = lstGen.shrink(SortedSet(3, 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(SortedSet(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed set-to-shink even if that set has a power of 2 length") {
@@ -3381,7 +3381,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listToShrink: SortedSet[Int] = (SortedSet.empty[Int] /: (1 to 16)) { (set, n) =>
           set + n
         }
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Set generator whose canonical method uses the canonical method of the underlying T") {
@@ -3513,7 +3513,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty Iterator when asked to shrink a Map of size 0") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
         val xs = Map.empty[PosInt, Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
       it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Map of size 1") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
@@ -3532,7 +3532,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a Map of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
-        val shrinkees = lstGen.shrink(Map(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Map(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed map-to-shink even if that set has a power of 2 length") {
@@ -3543,7 +3543,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listToShrink: Map[PosInt, Int] = (Map.empty[PosInt, Int] /: (1 to 16)) { (map, n) =>
           map + (PosInt.ensuringValid(n) -> n)
         }
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Map generator whose canonical method uses the canonical method of the underlying types") {
@@ -3673,7 +3673,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty Iterator when asked to shrink a SortedMap of size 0") {
         val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
         val xs = SortedMap.empty[PosInt, Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
       it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a SortedMap of size 1") {
         val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
@@ -3692,7 +3692,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a SortedMap of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
-        val shrinkees = lstGen.shrink(SortedMap(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(SortedMap(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed SortedMap-to-shink even if that SortedMap has a power of 2 length") {
@@ -3703,7 +3703,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listToShrink: SortedMap[PosInt, Int] = (SortedMap.empty[PosInt, Int] /: (1 to 16)) { (map, n) =>
           map + (PosInt.ensuringValid(n) -> n)
         }
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a SortedMap generator whose canonical method uses the canonical method of the underlying types") {
