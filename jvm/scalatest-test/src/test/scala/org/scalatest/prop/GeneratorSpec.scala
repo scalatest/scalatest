@@ -57,20 +57,20 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       a2.value shouldEqual b2.value
       a3.value shouldEqual b3.value
     }
-    it("should offer a map method that composes canonicals methods and offers a shrink that uses the canonicals methods") {
+    it("should offer a map method that composes canonicals methods") {
 
       import Generator._
 
-      val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
-      val expectedTupCanonicals = intCanonicalsIt.map(i => ('A', i)).toList
+      val rnd = Randomizer.default
+      val (intCanonicalsIt, nextRnd) = intGenerator.canonicals(rnd)
+      val (charRt, _, _) = charGenerator.next(SizeParam(1, 0, 1), List.empty, nextRnd)
+      val charValue = charRt.value
+      val expectedTupCanonicals = intCanonicalsIt.map(i => (charValue, i)).toList
 
-      val tupGen = for (i <- intGenerator) yield ('A', i)
-      val (tupShrinkRoseTree, _, _) = tupGen.next(SizeParam(1, 0, 1), List(('A', 100)), Randomizer.default)
-      val (tupCanonicalsIt, _) = tupGen.canonicals(Randomizer.default)
-      val tupShrink = tupShrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+      val tupGen = for (i <- intGenerator) yield (charValue, i)
+      val (tupCanonicalsIt, _) = tupGen.canonicals(rnd)
       val tupCanonicals = tupCanonicalsIt.toList
 
-      tupShrink shouldBe expectedTupCanonicals
       tupCanonicals shouldBe expectedTupCanonicals
     }
     it("should offer a flatMap method that composes canonicals methods and offers a shrink that uses the canonicals methods") {
