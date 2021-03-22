@@ -3684,22 +3684,22 @@ object Generator {
     new Generator[G Or B] {
 
       // TODO This only uses Roses. Check that we don't need RoseTrees.
-//      case class NextRoseTree(value: G Or B) extends RoseTree[G Or B] {
-//        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[G Or B]], Randomizer) = {
-//          value match {
-//            case Good(g) => {
-//              val (gShrink, nextRnd) = genOfG.shrink(g, rndPassedToShrinks)
-//              val (gShrinkShrink, nextNextRnd) = gShrink.shrinks(nextRnd)
-//              (gShrinkShrink.map(rt => rt.map(Good(_) : G Or B)), nextNextRnd)
-//            }
-//            case Bad(b) => {
-//              val (bShrink, nextRnd) = genOfB.shrink(b, rndPassedToShrinks)
-//              val (bShrinkShrink, nextNextRnd) = bShrink.shrinks(nextRnd)
-//              (bShrinkShrink.map(rt => rt.map(Bad(_) : G Or B)), nextNextRnd)
-//            }
-//          }
-//        }
-//      }
+      case class NextRoseTree(value: G Or B) extends RoseTree[G Or B] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[G Or B]], Randomizer) = {
+          value match {
+            case Good(g) => {
+              val (goodRt, _, nextRnd) = genOfG.next(SizeParam(1, 0, 1), List(g), rndPassedToShrinks)
+              val (gShrink, nextNextRnd) = goodRt.shrinks(nextRnd)
+              (gShrink.map(rt => rt.map(Good(_) : G Or B)), nextNextRnd)
+            }
+            case Bad(b) => {
+              val (badRt, _, nextRnd) = genOfB.next(SizeParam(1, 0, 1), List(b), rndPassedToShrinks)
+              val (bShrink, nextNextRnd) = badRt.shrinks(nextRnd)
+              (bShrink.map(rt => rt.map(Bad(_) : G Or B)), nextNextRnd)
+            }
+          }
+        }
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[G Or B], Randomizer) = {
         val (edgesOfG, nextRnd) = genOfG.initEdges(maxLength, rnd)
@@ -3730,7 +3730,7 @@ object Generator {
       def next(szp: SizeParam, edges: List[G Or B], rnd: Randomizer): (RoseTree[G Or B], List[G Or B], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
+            (NextRoseTree(head), tail, rnd)
           case Nil =>
             val (nextInt, nextRnd) = rnd.nextInt
             if (nextInt % 4 == 0) {
