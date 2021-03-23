@@ -462,6 +462,17 @@ trait DottyBuild { this: BuildCommons =>
     OsgiKeys.exportPackage := Seq("org.scalatest.matchers.must"),
   ).dependsOn(scalatestMatchersCoreDotty)
 
+  lazy val scalatestMustMatchersDottyJS = project.in(file("dotty/mustmatchers.js"))
+    .scalatestSubModule(
+      "scalatest-mustmatchers",
+      "ScalaTest Must Matchers DottyJS ",
+      (targetDir, version, scalaVersion) =>
+        GenMatchers.genMainForDotty(targetDir / "org" / "scalatest", version, scalaVersion) ++ 
+        GenScalaTestDotty.genMustMatchersScalaJS(targetDir, version, scalaVersion)
+    ).settings(
+    OsgiKeys.exportPackage := Seq("org.scalatest.matchers.must"),
+  ).dependsOn(scalatestMatchersCoreDottyJS).enablePlugins(ScalaJSPlugin)
+
   lazy val scalatestModulesDotty = project.in(file("modules/dotty/modules-aggregation"))
     .settings(sharedSettings: _*)
     .settings(

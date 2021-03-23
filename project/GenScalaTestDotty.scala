@@ -200,6 +200,9 @@ object GenScalaTestDotty {
   def genShouldMatchersScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("dotty/shouldmatchers/src/main/scala/org/scalatest/matchers/should", "org/scalatest/matchers/should", targetDir, List.empty)
 
+  def genMustMatchersScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDir("dotty/mustmatchers/src/main/scala/org/scalatest/matchers/must", "org/scalatest/matchers/must", targetDir, List.empty)  
+
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
       List(
