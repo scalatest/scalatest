@@ -141,6 +141,7 @@ lazy val scalatestWordSpecDottyJS = ScalatestBuild.scalatestWordSpecDottyJS
 lazy val scalatestDiagramsDotty = ScalatestBuild.scalatestDiagramsDotty
 lazy val scalatestDiagramsDottyJS = ScalatestBuild.scalatestDiagramsDottyJS
 lazy val scalatestMatchersCoreDotty = ScalatestBuild.scalatestMatchersCoreDotty
+lazy val scalatestMatchersCoreDottyJS = ScalatestBuild.scalatestMatchersCoreDottyJS
 lazy val scalatestShouldMatchersDotty = ScalatestBuild.scalatestShouldMatchersDotty
 lazy val scalatestMustMatchersDotty = ScalatestBuild.scalatestMustMatchersDotty
 lazy val scalatestModulesDotty = ScalatestBuild.scalatestModulesDotty
