@@ -355,6 +355,9 @@ trait DottyBuild { this: BuildCommons =>
   lazy val scalatestFlatSpecDotty = project.in(file("dotty/flatspec"))
     .scalatestStyleModule("flatspec", "ScalaTest FlatSpec Dotty")
 
+  lazy val scalatestFlatSpecDottyJS = project.in(file("dotty/flatspec.js"))
+    .scalatestStyleModuleJS("flatspec", "ScalaTest FlatSpec Dotty JS")  
+
   lazy val scalatestFreeSpecDotty = project.in(file("dotty/freespec"))
     .scalatestStyleModule("freespec", "ScalaTest FreeSpec Dotty")
 
