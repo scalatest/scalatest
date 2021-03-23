@@ -2,6 +2,7 @@ lazy val commonTest = ScalatestBuild.commonTest
 lazy val commonTestJS = ScalatestBuild.commonTestJS
 lazy val commonTestNative = ScalatestBuild.commonTestNative
 lazy val commonTestDotty = ScalatestBuild.commonTestDotty
+lazy val commonTestDottyJS = ScalatestBuild.commonTestDottyJS
 lazy val scalacticMacro = ScalatestBuild.scalacticMacro
 lazy val scalacticMacroJS = ScalatestBuild.scalacticMacroJS
 lazy val scalacticMacroNative = ScalatestBuild.scalacticMacroNative

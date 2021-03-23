@@ -570,7 +570,7 @@ trait DottyBuild { this: BuildCommons =>
       scalatestMatchersCoreDottyJS, 
       scalatestShouldMatchersDottyJS, 
       scalatestMustMatchersDottyJS
-    )  
+    ).enablePlugins(ScalaJSPlugin) 
 
   private lazy val noPublishSettings = Seq(
     publishArtifact := false,
@@ -591,6 +591,20 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
       noPublishSettings,
     ).dependsOn(scalacticDotty, LocalProject("scalatestDotty"))
+
+  lazy val commonTestDottyJS = project.in(file("dotty/common-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(
+      projectTitle := "Common test classes used by scalactic and scalatest",
+      libraryDependencies ++= crossBuildTestLibraryDependencies.value,
+      sourceGenerators in Compile += Def.task {
+        GenCommonTestDotty.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+        GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+        GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      noPublishSettings,
+    ).dependsOn(scalacticDottyJS, LocalProject("scalatestDottyJS")).enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticTestDotty = project.in(file("dotty/scalactic-test"))
     .settings(sharedSettings: _*)
