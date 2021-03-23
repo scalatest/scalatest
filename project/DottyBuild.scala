@@ -533,6 +533,45 @@ trait DottyBuild { this: BuildCommons =>
       scalatestMustMatchersDotty
     )
 
+  lazy val scalatestDottyJS = project.in(file("dotty/scalatest.js"))
+    .scalatestModule("scalatest", "ScalaTest Dotty JS")
+    .settings(
+      // Little trick to get rid of bnd error when publish.
+      sourceGenerators in Compile += Def.task {
+        (crossTarget.value / "classes").mkdirs()
+        Seq.empty[File]
+      }.taskValue,
+      OsgiKeys.privatePackage := Seq.empty, 
+    ).dependsOn(
+      scalatestCoreDottyJS, 
+      scalatestFeatureSpecDottyJS, 
+      scalatestFlatSpecDottyJS, 
+      scalatestFreeSpecDottyJS, 
+      scalatestFunSuiteDottyJS, 
+      scalatestFunSpecDottyJS, 
+      scalatestPropSpecDottyJS, 
+      scalatestRefSpecDottyJS, 
+      scalatestWordSpecDottyJS, 
+      scalatestDiagramsDottyJS, 
+      scalatestMatchersCoreDottyJS, 
+      scalatestShouldMatchersDottyJS, 
+      scalatestMustMatchersDottyJS
+    ).aggregate(
+      scalatestCoreDottyJS, 
+      scalatestFeatureSpecDottyJS, 
+      scalatestFlatSpecDottyJS, 
+      scalatestFreeSpecDottyJS, 
+      scalatestFunSuiteDottyJS, 
+      scalatestFunSpecDottyJS, 
+      scalatestPropSpecDottyJS, 
+      scalatestRefSpecDottyJS, 
+      scalatestWordSpecDottyJS, 
+      scalatestDiagramsDottyJS, 
+      scalatestMatchersCoreDottyJS, 
+      scalatestShouldMatchersDottyJS, 
+      scalatestMustMatchersDottyJS
+    )  
+
   private lazy val noPublishSettings = Seq(
     publishArtifact := false,
     publish := {},
