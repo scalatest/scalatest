@@ -8,6 +8,7 @@ import com.typesafe.sbt.osgi.OsgiKeys
 import com.typesafe.sbt.osgi.SbtOsgi
 import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLinkerConfig, jsEnv}
 
 trait DottyBuild { this: BuildCommons =>
 
@@ -600,6 +601,7 @@ trait DottyBuild { this: BuildCommons =>
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += Def.task {
         GenCommonTestDotty.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+        GenCommonTestDotty.genScalaJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
         GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
         GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,
@@ -615,7 +617,7 @@ trait DottyBuild { this: BuildCommons =>
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest,
           "-oDIF",
-          "-W", "120", "60")),
+          "-W", "120", "60")),    
       logBuffered in Test := false,
       noPublishSettings,
       sourceGenerators in Test += Def.task {
@@ -623,6 +625,29 @@ trait DottyBuild { this: BuildCommons =>
         GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)*/
       }.taskValue
     ).dependsOn(scalacticDotty, scalatestDotty % "test", commonTestDotty % "test")
+
+  lazy val scalacticTestDottyJS = project.in(file("dotty/scalactic-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(
+      projectTitle := "Scalactic Test JS",
+      organization := "org.scalactic",
+      scalaJSLinkerConfig ~= { _.withOptimizer(false) },
+      testOptions in Test ++=
+        Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
+      jsEnv := {
+        import org.scalajs.jsenv.nodejs.NodeJSEnv
+        new NodeJSEnv(
+          NodeJSEnv.Config()
+            .withArgs(List("--max_old_space_size=3000")))
+      },    
+      logBuffered in Test := false,
+      noPublishSettings,
+      /*sourceGenerators in Test += Def.task {
+        GenScalacticDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value) /*++
+        GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)*/
+      }.taskValue*/
+    ).dependsOn(scalacticDottyJS, scalatestDottyJS % "test", commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
 
   def sharedTestSettingsDotty: Seq[Setting[_]] = 
     Seq(
