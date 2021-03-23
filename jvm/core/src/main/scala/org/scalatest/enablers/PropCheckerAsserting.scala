@@ -762,9 +762,9 @@ trait FuturePropCheckerAsserting {
 
     private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => Future[T]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedA: Option[A])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedA: Option[RoseTree[A]])
 
-      def shrunkenFuture(future: Future[PropertyCheckResult], a: A, rnd: Randomizer): Future[PropertyCheckResult] =
+      def shrunkenFuture(future: Future[PropertyCheckResult], aRoseTree: RoseTree[A], rnd: Randomizer): Future[PropertyCheckResult] =
         future.flatMap {
           case pcr @ PropertyCheckResult.Failure(succeededCount, optEx, _, argsPassed, initSeed) => 
             def shrinkLoop(shrinksRemaining: List[A]): Future[PropertyCheckResult] = {
@@ -786,14 +786,13 @@ trait FuturePropCheckerAsserting {
                   }
               }
             }
-            val (rootRoseTree, rnd2) = genA.shrink(a, rnd)
             // For now, just look at the first level of the RoseTree, which
             // should (except maybe in the case of Option) be the same
             // values in our old shrink List[A]. Currently I won't use
             // the next rnd that comes out of here, but later when we
             // traverse the tree, we will use it.
-            val (firstLevelRoseTrees, _) = rootRoseTree.shrinks(rnd2)
-            shrinkLoop(firstLevelRoseTrees.map(_.value).take(100))
+            val (firstLevelRoseTrees, _) = aRoseTree.shrinks(rnd)
+            shrinkLoop(firstLevelRoseTrees.reverse.map(_.value).take(100))
           case pcr => Future.successful(pcr)
         }
 
@@ -835,7 +834,7 @@ trait FuturePropCheckerAsserting {
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)), Some(a))
+                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)), Some(roseTreeOfA))
 
             }
           } recover {
@@ -847,7 +846,7 @@ trait FuturePropCheckerAsserting {
                 AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             case ex: Throwable =>
-              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some(a))
+              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some(roseTreeOfA))
           } flatMap { result =>
             if (result.result.isDefined)
               Future.successful(result)
@@ -870,7 +869,7 @@ trait FuturePropCheckerAsserting {
               loop(result.succeededCount, result.discardedCount, result.edges, result.rnd, result.initialSizes, initSeed)
 
           case ex: Throwable =>
-            val result = AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some(a))
+            val result = AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some(roseTreeOfA))
             Future.successful(result)
         }
       }
@@ -883,8 +882,8 @@ trait FuturePropCheckerAsserting {
 
       loop(0, 0, initEdges, afterEdgesRnd, initialSizes, initSeed).flatMap { accResult =>
         accResult match {
-          case AccumulatedResult(_, _, _, rnd, _, Some(candidate), Some(a)) =>
-            shrunkenFuture(Future.successful(candidate), a, rnd)
+          case AccumulatedResult(_, _, _, rnd, _, Some(candidate), Some(roseTreeOfA)) =>
+            shrunkenFuture(Future.successful(candidate), roseTreeOfA, rnd)
           case _ =>
             Future.successful(accResult.result.get)
         }

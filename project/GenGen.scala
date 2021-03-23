@@ -3600,15 +3600,6 @@ $okayAssertions$
       |  override def map[Z](f: ($lastType$) => Z): Generator[Z] = underlying.map(f)
       |  override def flatMap[Z](f: ($lastType$) => Generator[Z]): Generator[Z] = underlying.flatMap(f)
       |  override def canonicals(rnd: Randomizer): (Iterator[$lastType$], Randomizer) = underlying.canonicals(rnd)
-      |  override def shrink(lastValue: $lastType$, rnd0: Randomizer): (RoseTree[$lastType$], Randomizer) = {
-      |    val ($initLower$) = $lastToInitName$(lastValue)
-      |    $initShrinks$
-      |    val roseTreeOf$lastType$: RoseTree[$lastType$] = // TODO: check about the problem with streams and memory leaks, or do this a different way
-      |      for {
-      |        $initShrinkArrows$
-      |      } yield $initToLastName$($initLower$)
-      |    (roseTreeOf$lastType$, rnd$arity$)
-      |  }
       |}
     """.stripMargin
 
@@ -3629,12 +3620,8 @@ $okayAssertions$
       val lastType = alphaUpper.last.toString
       val initGensDecls = alpha.init.map(a => "genOf" + a.toString.toUpperCase + ": Generator[" + a.toString.toUpperCase + "]").mkString(", \n")
       val initGenArrows = alpha.init.map(a => a + " <- genOf" + a.toString.toUpperCase).mkString("\n")
-      val initShrinks = alpha.init.zipWithIndex.map { case (a, idx) =>
-        "val (roseTreeOf" + a.toString.toUpperCase + ", rnd" + (idx + 1) + ") = genOf" + a.toString.toUpperCase + ".shrink(" + a + ", rnd" + idx + ")"
-      }.mkString("\n")
       val initStreams = alpha.init.map(a => "val streamOf" + a.toString.toUpperCase + ": Stream[" + a.toString.toUpperCase + "] = itOf" + a.toString.toUpperCase + ".toStream").mkString("\n")
-      val initShrinkArrows = alpha.init.map(a => a + " <- roseTreeOf" + a.toString.toUpperCase).mkString("\n")
-
+      
       val targetFile = new File(targetDir, "GeneratorFor" + i + ".scala")
 
       if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
@@ -3653,10 +3640,7 @@ $okayAssertions$
         st.setAttribute("lastType", lastType)
         st.setAttribute("initGensDecls", initGensDecls)
         st.setAttribute("initGenArrows", initGenArrows)
-        st.setAttribute("initShrinks", initShrinks)
         st.setAttribute("initStreams", initStreams)
-        st.setAttribute("initShrinkArrows", initShrinkArrows)
-
         bw.write(st.toString)
 
         bw.flush()

@@ -45,7 +45,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         import CommonGenerators.lists
         val lstGen = lists[List[Int]].havingLengthsBetween(0, 77)
         val xss = List(List(100, 200, 300, 400, 300))
-        lstGen.shrink(xss, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should not contain xss
+        lstGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should not contain xss
       }
       it("should shrink Lists using strategery") {
         import GeneratorDrivenPropertyChecks._
@@ -91,7 +91,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         import CommonGenerators.lists
         val lstGen = lists[Int].havingLengthsBetween(0, 99)
         val xs = List.empty[Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
       }
       it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a List of size 1") {
         import CommonGenerators.lists
@@ -113,7 +113,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
       it("should return an Iterator that does not repeat canonicals when asked to shrink a List of size 2 that includes canonicals") {
         import CommonGenerators.lists
         val lstGen = lists[Int].havingLengthsBetween(0, 66)
-        val shrinkees = lstGen.shrink(List(3, 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(List(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed list-to-shink even if that list has a power of 2 length") {
@@ -123,7 +123,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         import CommonGenerators.lists
         val lstGen = lists[Int].havingLengthsBetween(0, 77)
         val listToShrink = List.fill(16)(99)
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a list generator whose canonical method uses the canonical method of the underlying T if min is 0 or 1") {
@@ -184,7 +184,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         import CommonGenerators.lists
         val lstGen = lists[List[Int]].havingLengthsBetween(5, 77)
         val xss = List(List(100, 200, 300, 400, 300))
-        lstGen.shrink(xss, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should not contain xss
+        lstGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should not contain xss
       }
       it("should shrink Lists using strategery") {
         import GeneratorDrivenPropertyChecks._
@@ -230,7 +230,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         import CommonGenerators.lists
         val lstGen = lists[Int].havingLengthsBetween(5, 99)
         val xs = List.empty[Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
       }
       it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a List of size 1") {
         import CommonGenerators.lists
@@ -251,7 +251,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
       it("should return an Iterator that does not repeat canonicals when asked to shrink a List of size 2 that includes canonicals") {
         import CommonGenerators.lists
         val lstGen = lists[Int].havingLengthsBetween(5, 66)
-        val shrinkees = lstGen.shrink(List(3, 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(List(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed list-to-shink even if that list has a power of 2 length") {
@@ -261,7 +261,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         import CommonGenerators.lists
         val lstGen = lists[Int].havingLengthsBetween(5, 77)
         val listToShrink = List.fill(16)(99)
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a list generator whose canonical method is empty if from is greater than 1") {
