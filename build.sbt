@@ -121,6 +121,7 @@ lazy val scalatestShouldMatchersNative = ScalatestBuild.scalatestShouldMatchersN
 lazy val scalatestMustMatchersNative = ScalatestBuild.scalatestMustMatchersNative
 lazy val scalatestModulesNative = ScalatestBuild.scalatestModulesNative
 lazy val scalatestCoreDotty = ScalatestBuild.scalatestCoreDotty
+lazy val scalatestCoreDottyJS = ScalatestBuild.scalatestCoreDottyJS
 lazy val scalatestFeatureSpecDotty = ScalatestBuild.scalatestFeatureSpecDotty
 lazy val scalatestFlatSpecDotty = ScalatestBuild.scalatestFlatSpecDotty
 lazy val scalatestFreeSpecDotty = ScalatestBuild.scalatestFreeSpecDotty

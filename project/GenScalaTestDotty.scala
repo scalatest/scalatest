@@ -188,6 +188,11 @@ object GenScalaTestDotty {
       copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
     }.toList
 
+  def genScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDir("dotty/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
+    copyDir("dotty/core/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDir("dotty/core/src/main/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty)  
+
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
       List(
