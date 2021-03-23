@@ -336,10 +336,21 @@ trait DottyBuild { this: BuildCommons =>
         .settings(
           OsgiKeys.exportPackage := Seq(s"org.scalatest.$style"),
         ).dependsOn(scalatestCoreDotty)
+
+    /** common settings for all scalatest js `style` modules such as `featurespec`, `funsuite`,.. */
+    def scalatestStyleModuleJS(style: String, title: String): Project =
+      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty(style))
+        .settings(
+          OsgiKeys.exportPackage := Seq(s"org.scalatest.$style"),
+        ).dependsOn(scalatestCoreDottyJS).enablePlugins(ScalaJSPlugin)
+        
   }
   
   lazy val scalatestFeatureSpecDotty = project.in(file("dotty/featurespec"))
     .scalatestStyleModule("featurespec", "ScalaTest FeatureSpec Dotty")
+
+  lazy val scalatestFeatureSpecDottyJS = project.in(file("dotty/featurespec.js"))
+    .scalatestStyleModuleJS("featurespec", "ScalaTest FeatureSpec Dotty JS")  
 
   lazy val scalatestFlatSpecDotty = project.in(file("dotty/flatspec"))
     .scalatestStyleModule("flatspec", "ScalaTest FlatSpec Dotty")
