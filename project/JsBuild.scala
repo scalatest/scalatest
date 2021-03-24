@@ -261,11 +261,8 @@ trait JsBuild { this: BuildCommons =>
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
-      scalaJSLinkerConfig ~= { _.withOptimizer(false).withSemantics(_.withStrictFloats(true)) },
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
-      //jsEnv := NodeJSEnv(executable = "node").value,
-      //jsEnv := PhantomJSEnv().value,
       jsEnv := {
         import org.scalajs.jsenv.nodejs.NodeJSEnv
         new NodeJSEnv(
