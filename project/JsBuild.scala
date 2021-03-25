@@ -14,7 +14,7 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 trait JsBuild { this: BuildCommons =>
 
-  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.3.0")
+  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.5.0")
   val sjsPrefix = if (scalaJSVersion.startsWith("1.")) "_sjs1_" else "_sjs0.6_"
 
   lazy val deleteJsDependenciesTask = taskKey[Unit]("Delete JS_DEPENDENCIES")
@@ -261,11 +261,8 @@ trait JsBuild { this: BuildCommons =>
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
-      scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
-      //jsEnv := NodeJSEnv(executable = "node").value,
-      //jsEnv := PhantomJSEnv().value,
       jsEnv := {
         import org.scalajs.jsenv.nodejs.NodeJSEnv
         new NodeJSEnv(
@@ -314,6 +311,7 @@ trait JsBuild { this: BuildCommons =>
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest Test",
+      scalaJSLinkerConfig ~= { _.withOptimizer(false).withSemantics(_.withStrictFloats(true)) },
       sourceGenerators in Test += {
         Def.task {
           GenScalaTestJS.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
