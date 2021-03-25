@@ -236,7 +236,7 @@ trait DottyBuild { this: BuildCommons =>
       libraryDependencies ++= scalatestLibraryDependencies,
       packageManagedSources,
       sourceGenerators in Compile += Def.task {
-        GenModulesDotty.genScalaTestCore((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+        GenModulesDotty.genScalaTestCoreJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
         GenScalaTestDotty.genScalaJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
         GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
         ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
@@ -252,8 +252,7 @@ trait DottyBuild { this: BuildCommons =>
           GenScalaTestDotty.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,
       sourceGenerators in Compile += Def.task {
-        GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
-        GenCompatibleClasses.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
+        GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
         //GenSafeStyles.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
       }.taskValue,
       //scalatestJSDocTaskSetting,
