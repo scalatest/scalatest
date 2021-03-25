@@ -638,7 +638,7 @@ trait DottyBuild { this: BuildCommons =>
         new NodeJSEnv(
           NodeJSEnv.Config()
             .withArgs(List("--max_old_space_size=3000")))
-      },    
+      }, 
       logBuffered in Test := false,
       noPublishSettings,
       /*sourceGenerators in Test += Def.task {
