@@ -94,7 +94,4 @@ object GenCommonTestDotty {
         List("ExampleLikeSpecs.scala"), targetDir)*/
   }
 
-  def genScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("dotty/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty)
-
 }

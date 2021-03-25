@@ -600,7 +600,6 @@ trait DottyBuild { this: BuildCommons =>
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += Def.task {
         GenCommonTestDotty.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
-        GenCommonTestDotty.genScalaJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
         GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
         GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,
