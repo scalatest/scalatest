@@ -116,9 +116,25 @@ object GenScalacticDotty {
     copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
 
   def genScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir,
+      List(
+        "BooleanMacro.scala", // Re-implemented
+        "Requirements.scala", // Re-implemented
+        "Snapshots.scala"     // Re-implemented
+      )
+    ) ++
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic/exceptions", "org/scalactic/exceptions", targetDir, List.empty) ++
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir,
+      List(
+        "Position.scala",  // Re-implemented
+        "TypeInfo.scala",  // Re-implemented
+        "ObjectMeta.scala"    // Re-implemented in scala-js
+      )) ++
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) ++
-    copyDir("dotty/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)    
+    copyDir("dotty/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++ 
+    copyDir("js/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
 
   def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("jvm/scalactic-macro/src/main/scala/org/scalactic", "org/scalactic", targetDir,
