@@ -339,7 +339,7 @@ trait DottyBuild { this: BuildCommons =>
 
     /** common settings for all scalatest js `style` modules such as `featurespec`, `funsuite`,.. */
     def scalatestStyleModuleJS(style: String, title: String): Project =
-      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty(style))
+      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty.applyJS(style))
         .settings(
           OsgiKeys.exportPackage := Seq(s"org.scalatest.$style"),
         ).dependsOn(scalatestCoreDottyJS).enablePlugins(ScalaJSPlugin)
@@ -639,6 +639,8 @@ trait DottyBuild { this: BuildCommons =>
           NodeJSEnv.Config()
             .withArgs(List("--max_old_space_size=3000")))
       }, 
+      parallelExecution in Test := false,
+      fork in Test := false,
       logBuffered in Test := false,
       noPublishSettings,
       /*sourceGenerators in Test += Def.task {
