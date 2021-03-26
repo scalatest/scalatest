@@ -598,7 +598,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += Def.task {
-        GenCommonTestDotty.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+        GenCommonTestDotty.genMainJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
         GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
         GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,
@@ -642,10 +642,10 @@ trait DottyBuild { this: BuildCommons =>
       fork in Test := false,
       logBuffered in Test := false,
       noPublishSettings,
-      /*sourceGenerators in Test += Def.task {
-        GenScalacticDotty.genTest((sourceManaged in Test).value, version.value, scalaVersion.value) /*++
+      sourceGenerators in Test += Def.task {
+        GenScalacticDotty.genTestJS((sourceManaged in Test).value, version.value, scalaVersion.value) /*++
         GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)*/
-      }.taskValue*/
+      }.taskValue
     ).dependsOn(scalacticDottyJS, scalatestDottyJS % "test", commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
 
   def sharedTestSettingsDotty: Seq[Setting[_]] = 

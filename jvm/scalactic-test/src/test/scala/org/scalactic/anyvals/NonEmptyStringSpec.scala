@@ -176,6 +176,7 @@ class NonEmptyStringSpec extends UnitSpec {
   /*
    companion method not relevant. Has an empty and other GenTraverable stuff.
   */
+  // SKIP-DOTTY-START
   it should "have an compose method, inherited from PartialFunction" in {
     val fn: Int => Char = NonEmptyString("123").compose((idx: Int) => (idx + 1).toChar)
     fn(-1) shouldBe '1'
@@ -183,6 +184,7 @@ class NonEmptyStringSpec extends UnitSpec {
     fn(1) shouldBe '3'
     //fn(2) shouldBe '4'
   }
+  // SKIP-DOTTY-END
   it should "have a contains method" in {
     val e = NonEmptyString("123")
     e.contains('5') shouldBe false

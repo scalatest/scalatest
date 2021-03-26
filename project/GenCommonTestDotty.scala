@@ -80,6 +80,62 @@ object GenCommonTestDotty {
     }
   }
 
+  private def uncommentJsExportJS(line: String): String =
+    if (line.trim.startsWith("//DOTTY-ONLY "))
+      line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
+    else if (line.trim.startsWith("//DOTTY-ONLY "))
+      line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
+    else if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26)
+    else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
+      line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)  
+    else
+      line
+
+  private def transformLineJS(line: String): String =
+    uncommentJsExportJS(line)
+
+  private def copyFileJS(sourceFile: File, destFile: File): File = {
+    val destWriter = new BufferedWriter(new FileWriter(destFile))
+    try {
+      val lines = Source.fromFile(sourceFile).getLines.toList
+      var skipMode = false
+      for (line <- lines) {
+        if (line.trim == "// SKIP-DOTTY-START" || line.trim == "// SKIP-DOTTY-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-DOTTY-END" || line.trim == "// SKIP-DOTTY-END")
+          skipMode = false
+        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTJS-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTJS-END")
+          skipMode = false  
+        else if (!skipMode) {
+          destWriter.write(transformLineJS(line))
+          destWriter.newLine()
+        }
+      }
+      destFile
+    }
+    finally {
+      destWriter.flush()
+      destWriter.close()
+      println("Copied " + destFile.getAbsolutePath)
+    }
+  }
+
+  def copyDirJS(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
+    val packageDir = new File(targetDir, packageDirName)
+    packageDir.mkdirs()
+    val sourceDir = new File(sourceDirName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
+      val destFile = new File(packageDir, sourceFile.getName)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFileJS(sourceFile, destFile)
+
+      destFile
+    }
+  }
+
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyFiles("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir,
       List(
@@ -93,5 +149,31 @@ object GenCommonTestDotty {
       copyDir("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
         List("ExampleLikeSpecs.scala"), targetDir)*/
   }
+
+  def genMainJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyDirJS("dotty/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
+    /*copyFiles("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, 
+      List("ExampleLikeSpecs.scala")) ++  */
+    copyDirJS("jvm/common-test/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDirJS("jvm/common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty)
+  }
+
+  /*copyFiles("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest",
+      List(
+        "SharedHelpers.scala",
+        "mytags.scala",
+        "StubReporter.scala",
+        "LineNumberMacro.scala",
+        "LineNumberHelper.scala",
+        "ReturnsNormallyThrowsAssertion.scala",
+        "BookPropertyMatchers.scala",
+        "EmptyMocks.scala",
+        "FileMocks.scala",
+        "StringFixture.scala"
+      ), targetDir) ++
+    copyFiles("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
+      List("ExampleLikeSpecs.scala"), targetDir) ++
+    copyDir("jvm/common-test/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDir("jvm/common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty)*/
 
 }

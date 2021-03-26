@@ -319,7 +319,6 @@ object GenScalaTestDotty {
         //"AnsiColor.scala",
         "AnsiReset.scala",
         "ColorBar.scala",
-        "ConcurrentDistributor.scala",
         "DashboardReporter.scala",
         "DiscoverySuite.scala",
         "Durations.scala",
