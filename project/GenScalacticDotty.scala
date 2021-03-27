@@ -151,19 +151,6 @@ object GenScalacticDotty {
     }
   }
 
-  def copyDirJSS(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
-    val packageDir = new File(targetDir, packageDirName)
-    packageDir.mkdirs()
-    val sourceDir = new File(sourceDirName)
-    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
-      val destFile = new File(packageDir, sourceFile.getName)
-      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
-        copyFileJS(sourceFile, destFile)
-
-      destFile
-    }
-  }
-
   def copyResourceDir(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
@@ -210,7 +197,7 @@ object GenScalacticDotty {
     copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) ++
-    copyDir("dotty/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++ 
+    copyDirJS("dotty/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++ 
     copyDir("js/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
 
   def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
@@ -263,11 +250,11 @@ object GenScalacticDotty {
         "TripleEqualsSpec.for210",  // Old staff, we shall delete this soon.
         "FutureSugarSpec.scala"     // instability, occasional timeout in CI
       )) ++
-    /*copyDirJS("jvm/scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
+    copyDirJS("jvm/scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
       List(
         "OddIntMacro.scala",  // not used, scala2 macros
         "OddInt.scala"        // not used, scala2 macros
-      )) ++*/
+      )) ++
     copyDirJS("jvm/scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
 
 }
