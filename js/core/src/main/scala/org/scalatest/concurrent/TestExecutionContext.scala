@@ -20,7 +20,7 @@ import scala.concurrent.ExecutionContextExecutor
 
 object TestExecutionContext {
 
-  implicit lazy val runNow =
+  implicit lazy val runNow: ExecutionContextExecutor =
     new ExecutionContextExecutor {
       def execute(runnable: Runnable): Unit = {
         try {

@@ -151,9 +151,16 @@ object GenCommonTestDotty {
   }
 
   def genMainJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyDirJS("dotty/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
+    copyFiles("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir,
+      List(
+        "mytags.scala", 
+        "StubReporter.scala"
+      )
+    ) ++
+    copyDirJS("dotty/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List("TestConcurrentDistributor.scala")) ++
     /*copyFiles("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, 
       List("ExampleLikeSpecs.scala")) ++  */
+    copyDirJS("js/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++  
     copyDirJS("jvm/common-test/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDirJS("jvm/common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty)
   }

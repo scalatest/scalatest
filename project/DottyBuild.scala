@@ -397,7 +397,17 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestStyleModule("diagrams", "ScalaTest Diagrams Dotty")
 
   lazy val scalatestDiagramsDottyJS = project.in(file("dotty/diagrams.js"))
-    .scalatestStyleModuleJS("diagrams", "ScalaTest Diagrams Dotty JS")  
+    .scalatestSubModule(
+      "diagrams", 
+      "ScalaTest Diagrams Dotty JS", 
+      (targetDir, version, scalaVersion) =>
+        GenScalaTestDotty.genDiagramsScalaJS(targetDir / "org" / "scalatest", version, scalaVersion)
+    ).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest", 
+        "org.scalatest.diagrams"
+      ),
+    ).dependsOn(scalatestCoreDottyJS).enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestMatchersCoreDotty = project.in(file("dotty/matchers-core"))
     .scalatestSubModule(
@@ -419,7 +429,7 @@ trait DottyBuild { this: BuildCommons =>
       "scalatest-matchers-core",
       "ScalaTest Matchers Core Dotty JS",
       (targetDir, version, scalaVersion) => {
-        GenModulesDotty.genScalaTestMatchersCore(targetDir, version, scalaVersion) ++
+        GenModulesDotty.genScalaTestMatchersCoreJS(targetDir, version, scalaVersion) ++
         GenScalaTestDotty.genMatchersCoreScalaJS(targetDir, version, scalaVersion) ++
         GenFactoriesDotty.genMain(targetDir / "org" / "scalatest" / "matchers" / "dsl", version, scalaVersion)
       }
@@ -444,7 +454,7 @@ trait DottyBuild { this: BuildCommons =>
       "scalatest-shouldmatchers",
       "ScalaTest Should Matchers Dotty JS",
       (targetDir, version, scalaVersion) => {
-        GenModulesDotty.genScalaTestShouldMatchers(targetDir, version, scalaVersion) ++ 
+        GenModulesDotty.genScalaTestShouldMatchersJS(targetDir, version, scalaVersion) ++ 
         GenScalaTestDotty.genShouldMatchersScalaJS(targetDir, version, scalaVersion)
       }
     ).settings(
@@ -466,7 +476,7 @@ trait DottyBuild { this: BuildCommons =>
       "scalatest-mustmatchers",
       "ScalaTest Must Matchers DottyJS ",
       (targetDir, version, scalaVersion) =>
-        GenMatchers.genMainForDotty(targetDir / "org" / "scalatest", version, scalaVersion) ++ 
+        GenMatchers.genMainForDottyJS(targetDir / "org" / "scalatest", version, scalaVersion) ++ 
         GenScalaTestDotty.genMustMatchersScalaJS(targetDir, version, scalaVersion)
     ).settings(
     OsgiKeys.exportPackage := Seq("org.scalatest.matchers.must"),
@@ -686,6 +696,89 @@ trait DottyBuild { this: BuildCommons =>
       scalatestPropSpecTestDotty, 
       scalatestWordSpecTestDotty
     )
+
+  def scalatestTestDottyJSOptions =
+    Seq(Tests.Argument(TestFrameworks.ScalaTest,
+      "-l", "org.scalatest.tags.Slow",
+      "-m", "org.scalatest",
+      "-m", "org.scalactic",
+      "-m", "org.scalactic.anyvals",
+      "-m", "org.scalactic.algebra",
+      "-m", "org.scalactic.enablers",
+      "-m", "org.scalatest.fixture",
+      "-m", "org.scalatest.concurrent",
+      "-m", "org.scalatest.events",
+      "-m", "org.scalatest.prop",
+      "-m", "org.scalatest.tools",
+      "-m", "org.scalatest.matchers",
+      "-m", "org.scalatest.matchers",
+      "-m", "org.scalatest.matchers.should",
+      "-m", "org.scalatest.matchers.must",
+      "-m", "org.scalatest.matchers.dsl",
+      "-m", "org.scalatest.verbs",
+      "-m", "org.scalatest.suiteprop",
+      "-m", "org.scalatest.path",
+      "-m", "org.scalatest.exceptions",
+      "-m", "org.scalatest.time",
+      "-m", "org.scalatest.words",
+      "-m", "org.scalatest.enablers",
+      "-m", "org.scalatest.expectations",
+      "-m", "org.scalatest.diagrams",
+      "-m", "org.scalatest.featurespec",
+      "-m", "org.scalatest.flatspec",
+      "-m", "org.scalatest.freespec",
+      "-m", "org.scalatest.funspec",
+      "-m", "org.scalatest.funsuite",
+      "-m", "org.scalatest.propspec",
+      "-m", "org.scalatest.wordspec",
+      "-oDIF"))    
+
+  def sharedTestSettingsDottyJS: Seq[Setting[_]] = 
+    Seq(
+      organization := "org.scalatest",
+      //jsDependencies += RuntimeDOM % "test",
+      scalaJSLinkerConfig ~= { _.withOptimizer(false) },
+      //jsEnv := NodeJSEnv(executable = "node").value,
+      //jsEnv := PhantomJSEnv().value,
+      jsEnv := {
+        import org.scalajs.jsenv.nodejs.NodeJSEnv
+        new NodeJSEnv(
+          NodeJSEnv.Config()
+            .withArgs(List(/*"--max_new_space_size=3000", */"--max_old_space_size=3000")))
+      },
+      //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
+      testOptions in Test := scalatestTestDottyJSOptions,
+      parallelExecution in Test := false,
+      fork in Test := false,
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {},
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
+    )  
+
+  lazy val scalatestTestDottyJS = project.in(file("dotty/scalatest-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest Test",
+      scalaJSLinkerConfig ~= { _.withOptimizer(false).withSemantics(_.withStrictFloats(true)) },
+      sourceGenerators in Test += Def.task {
+        //GenRegularTests4.genJava((javaSourceManaged in Compile).value) ++
+        GenScalaTestDotty.genTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(scalacticDottyJS, scalatestDottyJS % "test", commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
+     /*.aggregate(
+       scalatestDiagramsTestDottyJS, 
+       scalatestFeatureSpecTestDottyJS, 
+       scalatestFlatSpecTestDottyJS, 
+       scalatestFreeSpecTestDottyJS, 
+       scalatestFunSpecTestDottyJS, 
+       scalatestFunSuiteTestDottyJS, 
+       scalatestPropSpecTestDottyJS, 
+       scalatestWordSpecTestDottyJS
+     )*/.enablePlugins(ScalaJSPlugin)
+
 
   lazy val scalatestDiagramsTestDotty = project.in(file("dotty/diagrams-test"))
     .settings(sharedSettings: _*)

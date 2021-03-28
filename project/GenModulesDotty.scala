@@ -119,5 +119,15 @@ object GenModulesDotty {
     )
   )
 
+  val genScalaTestMatchersCoreJS: GenFn = applyJS(
+    "matchers-core",
+    Seq(
+      "org/scalatest/matchers",
+      "org/scalatest/matchers/dsl"
+    )
+  )
+
   val genScalaTestShouldMatchers: GenFn = apply("shouldmatchers", Seq("org/scalatest/matchers/should"))
+
+  val genScalaTestShouldMatchersJS: GenFn = applyJS("shouldmatchers", Seq("org/scalatest/matchers/should"))
 }

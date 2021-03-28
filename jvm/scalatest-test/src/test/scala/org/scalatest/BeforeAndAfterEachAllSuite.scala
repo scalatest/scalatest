@@ -30,7 +30,7 @@ class BeforeAndAfterEachAllSuite extends AnyFunSuite {
   // SKIP-SCALATESTJS-START
   implicit def executionContext: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY implicit def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+  //SCALATESTJS-ONLY implicit def executionContext: scala.concurrent.ExecutionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
   class TheSuper extends AnyFunSpec {
     var runTestWasCalled = false
