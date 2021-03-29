@@ -634,16 +634,31 @@ object GenScalaTestDotty {
         "SpanSugarSpec.scala" // skipped because does not compile yet.
       )
     ) ++
-    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) /*++
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
-        "FrameworkSuite.scala", // skipped because hang when tests execute.
-        "ScalaTestRunnerSuite.scala", // skipped because does not compile yet.
-        "SuiteDiscoveryHelperSuite.scala",  // skipped because does not compile yet.
-        "XmlSocketReporterSpec.scala", // skipped because tests failed execute.
+        "DashboardReporterSpec.scala",
+        "DiscoverySuiteSuite.scala",
+        "FilterReporterSpec.scala",
+        "FrameworkSuite.scala",
+        "HtmlReporterSpec.scala",
+        "JUnitXmlReporterSuite.scala",
+        "MemoryReporterSuite.scala",
+        "RunnerSpec.scala",
+        "SbtCommandParserSpec.scala",
+        "ScalaTestAntTaskSpec.scala",
+        "ScalaTestFrameworkSuite.scala",
+        "ScalaTestRunnerSuite.scala",
+        "SomeApiClass.scala",
+        "SomeApiClassRunner.scala",
+        "SomeApiSubClass.scala",
+        "StringReporterAlertSpec.scala",
+        "StringReporterSuite.scala",
+        "StringReporterSummarySpec.scala",
+        "SuiteDiscoveryHelperSuite.scala",
+        "XmlSocketReporterSpec.scala"
       )
-    ) ++ 
-    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/tools/scalasbt", "org/scalatest/tools/scalasbt", targetDir, List.empty)*/
+    )
   }
 
   def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
