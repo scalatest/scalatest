@@ -6,7 +6,7 @@ import scala.io.Source
 trait BuildCommons {
 
   lazy val scalaVersionsSettings: Seq[Setting[_]] = Seq(
-    crossScalaVersions := Seq("2.13.4", "2.12.13", "2.11.12", "2.10.7"),
+    crossScalaVersions := Seq("2.13.5", "2.12.13", "2.11.12", "2.10.7"),
     scalaVersion := crossScalaVersions.value.head,
   )
 
@@ -16,12 +16,12 @@ trait BuildCommons {
       "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
     )
 
-  val releaseVersion = "3.2.6"
+  val releaseVersion = "3.2.7"
 
-  val previousReleaseVersion = "3.2.5"
+  val previousReleaseVersion = "3.2.6"
 
-  val plusJUnitVersion = "3.2.5.0"
-  val plusTestNGVersion = "3.2.5.0"
+  val plusJUnitVersion = "3.2.6.0"
+  val plusTestNGVersion = "3.2.6.0"
   val flexmarkVersion = "0.36.8"
 
   def rootProject: Project

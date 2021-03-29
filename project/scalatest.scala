@@ -32,7 +32,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
 
-  val githubTag = "release-3.2.3" // for scaladoc source urls
+  val githubTag = "release-3.2.7" // for scaladoc source urls
 
   val scalatestDocSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
