@@ -7399,9 +7399,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     // SKIP-SCALATESTJS,NATIVE-END 
+    // SKIP-SCALATESTJS,NATIVE-START
     // SKIP-DOTTY-START 
     def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-END
+    // SKIP-SCALATESTJS,NATIVE-END
     // SKIP-SCALATESTJS,NATIVE-START
     //DOTTY-ONLY extension [T](leftSideValue: T)(using pos: source.Position, prettifier: Prettifier) def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), symbol, false, true, prettifier, pos)
@@ -7421,9 +7423,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     // SKIP-SCALATESTJS,NATIVE-END
+    // SKIP-SCALATESTJS,NATIVE-START
     // SKIP-DOTTY-START 
     def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-END
+    // SKIP-SCALATESTJS,NATIVE-END
     // SKIP-SCALATESTJS,NATIVE-START
     //DOTTY-ONLY extension [T](leftSideValue: T)(using pos: source.Position, prettifier: Prettifier) def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAWordApplication.symbol, true, true, prettifier, pos)
@@ -7448,9 +7452,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     // SKIP-SCALATESTJS,NATIVE-END
+    // SKIP-SCALATESTJS,NATIVE-START
     // SKIP-DOTTY-START 
     def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
     // SKIP-DOTTY-END
+    // SKIP-SCALATESTJS,NATIVE-END
     // SKIP-SCALATESTJS,NATIVE-START
     //DOTTY-ONLY extension [T](leftSideValue: T)(using pos: source.Position, prettifier: Prettifier) def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAnWordApplication.symbol, true, false, prettifier, pos)
