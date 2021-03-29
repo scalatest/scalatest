@@ -628,14 +628,14 @@ object GenScalaTestDotty {
         "TypeMatcherMacroSpec.scala", // skipped because does not compile yet.
         "MatcherProducersSpec.scala" // skipped because does not compile yet.
       )
-    ) /*++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, 
+    ) ++
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, 
       List(
         "SpanSugarSpec.scala" // skipped because does not compile yet.
       )
     ) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) /*++
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
         "FrameworkSuite.scala", // skipped because hang when tests execute.
         "ScalaTestRunnerSuite.scala", // skipped because does not compile yet.
@@ -643,7 +643,7 @@ object GenScalaTestDotty {
         "XmlSocketReporterSpec.scala", // skipped because tests failed execute.
       )
     ) ++ 
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools/scalasbt", "org/scalatest/tools/scalasbt", targetDir, List.empty)*/
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/tools/scalasbt", "org/scalatest/tools/scalasbt", targetDir, List.empty)*/
   }
 
   def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
