@@ -538,11 +538,11 @@ object GenScalaTestDotty {
         "SeveredStackTracesFailureSpec.scala" // skipped because stack trace isn't really helpful after linked in different js env like node.
       )
     ) ++ 
-    /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, 
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, 
       List(
         "DirectExpectationsSpec.scala"
       )
-    ) ++ */
+    ) ++ 
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, 
       List(
         "WaitersSpec.scala",    // skipped because Waiters not supported.
