@@ -563,17 +563,17 @@ object GenScalaTestDotty {
         "UltimatelySpec.scala"   // skipped because Eventually not supported.
       )
     ) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) /*++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
       List(
-        //"TestLocationJUnit3Suite.scala",
-        //"TestLocationJUnitSuite.scala",
-        //"TestLocationTestNGSuite.scala",
-        //"TestLocationMethodJUnit3Suite.scala",
-        //"TestLocationMethodJUnitSuite.scala",
-        //"TestLocationMethodTestNGSuite.scala",
-        //"LocationMethodSuiteProp.scala", 
+        "TestLocationJUnit3Suite.scala", // Not supported by scala-js
+        "TestLocationJUnitSuite.scala", // Not supported by scala-js
+        "TestLocationTestNGSuite.scala", // Not supported by scala-js
+        "TestLocationMethodJUnit3Suite.scala", // Not supported by scala-js
+        "TestLocationMethodJUnitSuite.scala", // Not supported by scala-js
+        "TestLocationMethodTestNGSuite.scala", // Not supported by scala-js
+        "LocationMethodSuiteProp.scala", // Not supported by scala-js
         "LocationSuiteProp.scala", // skipped because does not compile yet.
         "ScopePendingProp.scala", // skipped because does not compile yet.
         "LocationSpec.scala",  // skipped because does not compile yet.
@@ -583,7 +583,7 @@ object GenScalaTestDotty {
         "DeprecatedLocationSuiteProp.scala", // skipped because does not compile yet.
         "DeprecatedLocationFunctionSuiteProp.scala" // skipped because does not compile yet.
       )
-    ) ++
+    ) /*++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
