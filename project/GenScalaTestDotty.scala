@@ -562,8 +562,8 @@ object GenScalaTestDotty {
         "TimeoutsSpec.scala",            // skipped because Timeouts not supported.
         "UltimatelySpec.scala"   // skipped because Eventually not supported.
       )
-    ) /*++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    ) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) /*++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
       List(
