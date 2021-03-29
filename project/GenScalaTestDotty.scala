@@ -584,7 +584,7 @@ object GenScalaTestDotty {
         "DeprecatedLocationFunctionSuiteProp.scala" // skipped because does not compile yet.
       )
     ) ++
-    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) /*++
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "SpecSpec.scala",     // skipped because depends on java reflections
@@ -595,7 +595,7 @@ object GenScalaTestDotty {
         "StackSpec.scala",  // skipped because does not compile yet.
         "FunSpecSpec.scala",  // skipped because does not compile yet.
         "FreeSpecSpec.scala" // skipped because does not compile yet.
-      )) ++
+      )) /*++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, 
       List(
         "CommonGeneratorsSpec.scala", 
