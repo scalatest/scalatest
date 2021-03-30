@@ -398,7 +398,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestDiagramsDottyJS = project.in(file("dotty/diagrams.js"))
     .scalatestSubModule(
-      "diagrams", 
+      "scalatest-diagrams", 
       "ScalaTest Diagrams Dotty JS", 
       (targetDir, version, scalaVersion) =>
         GenScalaTestDotty.genDiagramsScalaJS(targetDir / "org" / "scalatest", version, scalaVersion)
