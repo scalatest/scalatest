@@ -609,14 +609,17 @@ class RegexStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
           regStr.value.toCharArray
       }
     }
+    // SKIP-DOTTY-END
     it("should offer toLowerCase methods that are consistent with String") {
       forAll { (regStr: RegexString) =>
         regStr.toLowerCase shouldEqual
           regStr.value.toLowerCase
 
         // SKIP-SCALATESTJS,NATIVE-START
+        // SKIP-DOTTY-START
         regStr.toLowerCase(Locale.getDefault) shouldEqual
           regStr.value.toLowerCase(Locale.getDefault)
+        // SKIP-DOTTY-END  
         // SKIP-SCALATESTJS,NATIVE-END
       }
     }
@@ -626,11 +629,14 @@ class RegexStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
           regStr.value.toUpperCase
 
         // SKIP-SCALATESTJS,NATIVE-START
+        // SKIP-DOTTY-START
         regStr.toUpperCase(Locale.getDefault) shouldEqual
           regStr.value.toUpperCase(Locale.getDefault)
+        // SKIP-DOTTY-END
         // SKIP-SCALATESTJS,NATIVE-END
       }
     }
+    // SKIP-DOTTY-START
     it("should offer a trim method that is consistent with String") {
       forAll { (regStr: RegexString) =>
         regStr.trim shouldEqual
