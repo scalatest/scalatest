@@ -33,7 +33,7 @@ class ShouldExistSpec extends AnyFunSpec {
   //SCALATESTJS,NATIVE-ONLY trait File { def exists: Boolean }
   //SCALATESTJS,NATIVE-ONLY val existFile = new File { val exists: Boolean = true }
   //SCALATESTJS,NATIVE-ONLY val imaginaryFile = new File { val exists: Boolean = false }
-  //SCALATESTJS,NATIVE-ONLY implicit val fileExistence = new org.scalatest.enablers.Existence[File] { def exists(file: File): Boolean = file.exists }
+  //SCALATESTJS,NATIVE-ONLY implicit val fileExistence: org.scalatest.enablers.Existence[File] = new org.scalatest.enablers.Existence[File] { def exists(file: File): Boolean = file.exists }
   
   val fileName = "ShouldExistSpec.scala"
   

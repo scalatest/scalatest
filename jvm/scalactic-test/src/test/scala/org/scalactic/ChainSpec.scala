@@ -1036,8 +1036,8 @@ class ChainSpec extends UnitSpec {
   it should "have a scanRight method" in {
     Chain(1).scanRight(0)(_ + _) shouldBe Chain(1, 0)
     Chain(1, 2, 3).scanRight(0)(_ + _) shouldBe Chain(6, 5, 3, 0)
-    Chain(1, 2, 3).scanRight("z")(_ + _) shouldBe Chain("123z", "23z", "3z", "z")
-    Chain(0).scanRight("z")(_ + _) shouldBe Chain("0z", "z")
+    Chain(1, 2, 3).scanRight("z")(_.toString() + _) shouldBe Chain("123z", "23z", "3z", "z")
+    Chain(0).scanRight("z")(_.toString() + _) shouldBe Chain("0z", "z")
   }
   it should "have a segmentLength method" in {
     Chain(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ > 7, 0) shouldBe 0

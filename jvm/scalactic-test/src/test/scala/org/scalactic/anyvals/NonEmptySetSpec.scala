@@ -544,14 +544,14 @@ class NonEmptySetSpec extends UnitSpec {
   it should "have a scanLeft method" in {
     NonEmptySet(1).scanLeft(0)(_ + _) shouldBe NonEmptySet(0, 1)
     NonEmptySet(1, 2, 3).scanLeft(0)(_ + _) shouldBe NonEmptySet(0, 2, 5, 6)
-    NonEmptySet(1, 2, 3).scanLeft("z")(_ + _) shouldBe NonEmptySet("z", "z2", "z23", "z231")
-    NonEmptySet(0).scanLeft("z")(_ + _) shouldBe NonEmptySet("z", "z0")
+    NonEmptySet(1, 2, 3).scanLeft("z")(_.toString + _.toString) shouldBe NonEmptySet("z", "z2", "z23", "z231")
+    NonEmptySet(0).scanLeft("z")(_.toString + _.toString) shouldBe NonEmptySet("z", "z0")
   }
   it should "have a scanRight method" in {
     NonEmptySet(1).scanRight(0)(_ + _) shouldBe NonEmptySet(1, 0)
     NonEmptySet(1, 2, 3).scanRight(0)(_ + _) shouldBe NonEmptySet(6, 4, 1, 0)
-    NonEmptySet(1, 2, 3).scanRight("z")(_ + _) shouldBe NonEmptySet("231z", "31z", "1z", "z")
-    NonEmptySet(0).scanRight("z")(_ + _) shouldBe NonEmptySet("0z", "z")
+    NonEmptySet(1, 2, 3).scanRight("z")(_.toString + _.toString) shouldBe NonEmptySet("231z", "31z", "1z", "z")
+    NonEmptySet(0).scanRight("z")(_.toString + _.toString) shouldBe NonEmptySet("0z", "z")
   }
   // it should "have a seq method" is pending
   it should "have a size method" in {

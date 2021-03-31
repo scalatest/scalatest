@@ -42,7 +42,7 @@ private class SbtReporter(suiteId: String, fullyQualifiedName: String, fingerpri
       case None => new OptionalThrowable
     }
 
-  override def apply(event: Event) {
+  override def apply(event: Event): Unit = {
     report(event)
     event match {
       // the results of running an actual test
