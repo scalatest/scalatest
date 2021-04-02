@@ -14,7 +14,7 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.0-RC1")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.0-RC2")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
@@ -267,17 +267,18 @@ trait DottyBuild { this: BuildCommons =>
     ).settings(osgiSettings: _*).settings(
     OsgiKeys.exportPackage := Seq(
       "org.scalatest", 
-        "org.scalatest.concurrent",  
-        "org.scalatest.enablers",  
-        "org.scalatest.exceptions",  
-        "org.scalatest.events", 
-        "org.scalatest.fixture",  
-        "org.scalatest.prop", 
-        "org.scalatest.tags", 
-        "org.scalatest.tagobjects", 
-        "org.scalatest.time", 
-        "org.scalatest.tools",  
-        "org.scalatest.verbs"
+      "org.scalatest.compatible", 
+      "org.scalatest.concurrent",  
+      "org.scalatest.enablers",  
+      "org.scalatest.exceptions",  
+      "org.scalatest.events", 
+      "org.scalatest.fixture",  
+      "org.scalatest.prop", 
+      "org.scalatest.tags", 
+      "org.scalatest.tagobjects", 
+      "org.scalatest.time", 
+      "org.scalatest.tools",  
+      "org.scalatest.verbs"
     ),
     OsgiKeys.importPackage := Seq(
       "org.scalatest.*",
@@ -398,7 +399,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestDiagramsDottyJS = project.in(file("dotty/diagrams.js"))
     .scalatestSubModule(
-      "diagrams", 
+      "scalatest-diagrams", 
       "ScalaTest Diagrams Dotty JS", 
       (targetDir, version, scalaVersion) =>
         GenScalaTestDotty.genDiagramsScalaJS(targetDir / "org" / "scalatest", version, scalaVersion)

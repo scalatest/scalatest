@@ -32,16 +32,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
 
-  val githubTag = "release-3.2.7" // for scaladoc source urls
-
-  val scalatestDocSourceUrl =
-    "https://github.com/scalatest/scalatest/tree/"+ githubTag +
-    "/scalatest/€{FILE_PATH}.scala"
-
-  val scalacticDocSourceUrl =
-    "https://github.com/scalatest/scalatest/tree/"+ githubTag +
-      "/scalactic/€{FILE_PATH}.scala"
-
   def envVar(name: String): Option[String] =
     try {
       Some(sys.env(name))
@@ -143,7 +133,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   def scalaXmlDependency(theScalaVersion: String): Seq[ModuleID] =
     CrossVersion.partialVersion(theScalaVersion) match {
       case Some((scalaEpoch, scalaMajor)) if scalaEpoch == 3 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.0.0-M5"))
+        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.0.0-RC1"))
       case Some((scalaEpoch, scalaMajor)) if scalaEpoch == 2 && scalaMajor >= 11 =>
         Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
       case other =>
@@ -546,6 +536,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         }.taskValue
       },
       scalatestDocSettings,
+      scalatestDocSourcesSetting,
       unmanagedResourceDirectories in Compile += baseDirectory.value / "scalatest" / "src" / "main" / "resources",
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
@@ -1735,6 +1726,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
                          baseDirectory.value,
                          file(".").getCanonicalFile),
                      docsrcDir.value)
+
+  val scalatestDocSourceUrl =
+    s"https://github.com/scalatest/releases-source/$releaseVersion/scalatest€{FILE_PATH}.scala"
+
+  val scalacticDocSourceUrl =
+    s"https://github.com/scalatest/releases-source/$releaseVersion/scalactic€{FILE_PATH}.scala"
 
   val scalatestDocScalacOptionsSetting =
     scalacOptions in (Compile, doc) :=
