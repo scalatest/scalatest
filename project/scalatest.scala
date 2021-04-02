@@ -1728,10 +1728,10 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
                      docsrcDir.value)
 
   val scalatestDocSourceUrl =
-    s"https://github.com/scalatest/releases-source/$releaseVersion/scalatest€{FILE_PATH}.scala"
+    s"https://github.com/scalatest/releases-source/blob/main/$releaseVersion/scalatest€{FILE_PATH}.scala"
 
   val scalacticDocSourceUrl =
-    s"https://github.com/scalatest/releases-source/$releaseVersion/scalactic€{FILE_PATH}.scala"
+    s"https://github.com/scalatest/releases-source/blob/main/$releaseVersion/scalactic€{FILE_PATH}.scala"
 
   val scalatestDocScalacOptionsSetting =
     scalacOptions in (Compile, doc) :=
