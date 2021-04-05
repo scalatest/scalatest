@@ -547,6 +547,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
                            (javaSource in Compile).value),
                        docsrcDir.value), 
       scalatestDocSettings,
+      docTaskSetting,
       unmanagedResourceDirectories in Compile += baseDirectory.value / "scalatest" / "src" / "main" / "resources",
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
