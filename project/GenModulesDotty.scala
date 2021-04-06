@@ -3,7 +3,7 @@ import scala.io.Source
 
 object GenModulesDotty {
 
-  private def uncommentJsExport(line: String): String =
+  /*private def uncommentJsExport(line: String): String =
     if (line.trim.startsWith("//DOTTY-ONLY "))
       line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
     else if (line.trim.startsWith("//DOTTY-ONLY "))
@@ -49,7 +49,7 @@ object GenModulesDotty {
 
       destFile
     }
-  }
+  }*/
   
   /** (targetDir, version, scalaVersion) => generated files */
   type GenFn = (File, String, String) => Seq[File]
@@ -58,7 +58,7 @@ object GenModulesDotty {
     GenScalaTestDotty.genScalaPackages
       .filter { case (packagePath, _) => packagePaths.contains(packagePath) }
       .flatMap { case (packagePath, skipList) =>
-        copyDir(s"jvm/$moduleDirName/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+        GenScalaTestDotty.copyDir(s"jvm/$moduleDirName/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
       }.toList
   }
   
@@ -83,6 +83,34 @@ object GenModulesDotty {
     )
   )
 
+  def applyJS(moduleDirName: String, packagePaths: Seq[String]): GenFn = (targetDir, version, scalaVersion) => {
+    GenScalaTestDotty.genScalaPackagesJS
+      .filter { case (packagePath, _) => packagePaths.contains(packagePath) }
+      .flatMap { case (packagePath, skipList) =>
+        GenScalaTestDotty.copyDirJS(s"jvm/$moduleDirName/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+      }.toList
+  }
+  
+  def applyJS(style: String): GenFn = applyJS(style, Seq(s"org/scalatest/$style"))
+
+  val genScalaTestCoreJS: GenFn = applyJS(
+    "core",
+    Seq(
+      "org/scalatest",
+      "org/scalatest/compatible",
+      "org/scalatest/concurrent",
+      "org/scalatest/enablers",
+      "org/scalatest/exceptions",
+      "org/scalatest/events",
+      "org/scalatest/fixture",
+      "org/scalatest/prop",
+      "org/scalatest/tagobjects",
+      "org/scalatest/tags",
+      "org/scalatest/time",
+      "org/scalatest/verbs",
+    )
+  )
+
   val genScalaTestMatchersCore: GenFn = apply(
     "matchers-core",
     Seq(
@@ -91,5 +119,15 @@ object GenModulesDotty {
     )
   )
 
+  val genScalaTestMatchersCoreJS: GenFn = applyJS(
+    "matchers-core",
+    Seq(
+      "org/scalatest/matchers",
+      "org/scalatest/matchers/dsl"
+    )
+  )
+
   val genScalaTestShouldMatchers: GenFn = apply("shouldmatchers", Seq("org/scalatest/matchers/should"))
+
+  val genScalaTestShouldMatchersJS: GenFn = applyJS("shouldmatchers", Seq("org/scalatest/matchers/should"))
 }

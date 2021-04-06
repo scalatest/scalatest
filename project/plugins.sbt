@@ -4,7 +4,7 @@ addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.1")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-osgi" % "0.9.6")
 
-val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.3.0")
+val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.5.0")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
 
@@ -18,4 +18,4 @@ addSbtPlugin("org.scala-native" % "sbt-scala-native" % scalaNativeVersion)
 
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.7.0")
 
-addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.5.1")
+addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.5.3")

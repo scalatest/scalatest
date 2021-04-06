@@ -617,14 +617,14 @@ class NonEmptyMapSpec extends UnitSpec {
   it should "have a scanLeft method" in {
     NonEmptyMap(1 -> "1").scanLeft(0)(_ + _._1) shouldBe List(0, 1)
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").scanLeft(0)(_ + _._1) shouldBe List(0, 2, 5, 6)
-    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").scanLeft("z")(_ + _._2) shouldBe List("z", "z2", "z23", "z231")
-    NonEmptyMap(0 -> "0").scanLeft("z")(_ + _._2) shouldBe List("z", "z0")
+    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").scanLeft("z")(_.toString + _._2.toString) shouldBe List("z", "z2", "z23", "z231")
+    NonEmptyMap(0 -> "0").scanLeft("z")(_ .toString+ _._2.toString) shouldBe List("z", "z0")
   }
   it should "have a scanRight method" in {
     NonEmptyMap(1 -> "1").scanRight(0)(_._1 + _) shouldBe List(1, 0)
     NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").scanRight(0)(_._1 + _) shouldBe List(6, 4, 1, 0)
-    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").scanRight("z")(_._2 + _) shouldBe List("231z", "31z", "1z", "z")
-    NonEmptyMap(0 -> "0").scanRight("z")(_._2 + _) shouldBe List("0z", "z")
+    NonEmptyMap(1 -> "1", 2 -> "2", 3 -> "3").scanRight("z")(_._2.toString + _.toString) shouldBe List("231z", "31z", "1z", "z")
+    NonEmptyMap(0 -> "0").scanRight("z")(_._2.toString + _.toString) shouldBe List("0z", "z")
   }
   // it should "have a seq method" is pending
   it should "have a size method" in {

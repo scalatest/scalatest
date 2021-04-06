@@ -1029,14 +1029,14 @@ class NonEmptyListSpec extends UnitSpec {
   it should "have a scanLeft method" in {
     NonEmptyList(1).scanLeft(0)(_ + _) shouldBe NonEmptyList(0, 1)
     NonEmptyList(1, 2, 3).scanLeft(0)(_ + _) shouldBe NonEmptyList(0, 1, 3, 6)
-    NonEmptyList(1, 2, 3).scanLeft("z")(_ + _) shouldBe NonEmptyList("z", "z1", "z12", "z123")
-    NonEmptyList(0).scanLeft("z")(_ + _) shouldBe NonEmptyList("z", "z0")
+    NonEmptyList(1, 2, 3).scanLeft("z")(_.toString + _.toString) shouldBe NonEmptyList("z", "z1", "z12", "z123")
+    NonEmptyList(0).scanLeft("z")(_.toString + _.toString) shouldBe NonEmptyList("z", "z0")
   }
   it should "have a scanRight method" in {
     NonEmptyList(1).scanRight(0)(_ + _) shouldBe NonEmptyList(1, 0)
     NonEmptyList(1, 2, 3).scanRight(0)(_ + _) shouldBe NonEmptyList(6, 5, 3, 0)
-    NonEmptyList(1, 2, 3).scanRight("z")(_ + _) shouldBe NonEmptyList("123z", "23z", "3z", "z")
-    NonEmptyList(0).scanRight("z")(_ + _) shouldBe NonEmptyList("0z", "z")
+    NonEmptyList(1, 2, 3).scanRight("z")(_.toString + _.toString) shouldBe NonEmptyList("123z", "23z", "3z", "z")
+    NonEmptyList(0).scanRight("z")(_.toString + _.toString) shouldBe NonEmptyList("0z", "z")
   }
   it should "have a segmentLength method" in {
     NonEmptyList(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ > 7, 0) shouldBe 0
