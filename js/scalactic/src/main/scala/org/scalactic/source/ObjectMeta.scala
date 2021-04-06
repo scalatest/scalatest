@@ -66,7 +66,7 @@ object ObjectMeta {
       }    
 
       Some((filterDollarNumberAtTheEnd(decodedKey10), value))
-    }.flatten.toMap
+    }.toList.flatten.toMap
 
     new ObjectMeta {
 

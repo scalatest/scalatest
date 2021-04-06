@@ -3,7 +3,7 @@ package org.scalatest
 import _root_.org.scalatest.tools.SuiteRunner
 
 class TestConcurrentDistributor extends Distributor {
-  def apply(suite: Suite, tracker: Tracker) {
+  def apply(suite: Suite, tracker: Tracker): Status = {
     throw new UnsupportedOperationException("Please use apply with args.")
   }
 

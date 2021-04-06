@@ -164,7 +164,7 @@ Before publishing any patch release, binary compatibility with previous version 
     $ sbt ++2.10.7 scalatestShouldMatchersJS/package scalatestShouldMatchersJS/mimaReportBinaryIssues
     $ sbt ++2.10.7 scalatestMustMatchersJS/package scalatestMustMatchersJS/mimaReportBinaryIssues
 
-    $ export SCALAJS_VERSION=1.3.0
+    $ export SCALAJS_VERSION=1.5.0
     $ sbt ++2.11.12 scalactic/package scalactic/mimaReportBinaryIssues
     $ sbt ++2.11.12 scalatestCore/package scalatestCore/mimaReportBinaryIssues
     $ sbt ++2.11.12 scalatestFeatureSpec/package scalatestFeatureSpec/mimaReportBinaryIssues
@@ -221,33 +221,33 @@ Before publishing any patch release, binary compatibility with previous version 
     $ sbt ++2.12.13 scalatestShouldMatchersJS/package scalatestShouldMatchersJS/mimaReportBinaryIssues
     $ sbt ++2.12.13 scalatestMustMatchersJS/package scalatestMustMatchersJS/mimaReportBinaryIssues
 
-    $ sbt ++2.13.4 scalactic/package scalactic/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestCore/package scalatestCore/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestFeatureSpec/package scalatestFeatureSpec/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestFlatSpec/package scalatestFlatSpec/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestFreeSpec/package scalatestFreeSpec/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestFunSuite/package scalatestFunSuite/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestFunSpec/package scalatestFunSpec/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestPropSpec/package scalatestPropSpec/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestRefSpec/package scalatestRefSpec/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestWordSpec/package scalatestWordSpec/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestDiagrams/package scalatestDiagrams/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestMatchersCore/package scalatestMatchersCore/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestShouldMatchers/package scalatestShouldMatchers/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestMustMatchers/package scalatestMustMatchers/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalacticJS/package scalacticJS/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestCoreJS/package scalatestCoreJS/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestFeatureSpecJS/package scalatestFeatureSpecJS/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestFlatSpecJS/package scalatestFlatSpecJS/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestFreeSpecJS/package scalatestFreeSpecJS/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestFunSuiteJS/package scalatestFunSuiteJS/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestFunSpecJS/package scalatestFunSpecJS/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestPropSpecJS/package scalatestPropSpecJS/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestWordSpecJS/package scalatestWordSpecJS/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestDiagramsJS/package scalatestDiagramsJS/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestMatchersCoreJS/package scalatestMatchersCoreJS/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestShouldMatchersJS/package scalatestShouldMatchersJS/mimaReportBinaryIssues
-    $ sbt ++2.13.4 scalatestMustMatchersJS/package scalatestMustMatchersJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalactic/package scalactic/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestCore/package scalatestCore/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestFeatureSpec/package scalatestFeatureSpec/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestFlatSpec/package scalatestFlatSpec/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestFreeSpec/package scalatestFreeSpec/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestFunSuite/package scalatestFunSuite/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestFunSpec/package scalatestFunSpec/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestPropSpec/package scalatestPropSpec/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestRefSpec/package scalatestRefSpec/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestWordSpec/package scalatestWordSpec/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestDiagrams/package scalatestDiagrams/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestMatchersCore/package scalatestMatchersCore/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestShouldMatchers/package scalatestShouldMatchers/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestMustMatchers/package scalatestMustMatchers/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalacticJS/package scalacticJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestCoreJS/package scalatestCoreJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestFeatureSpecJS/package scalatestFeatureSpecJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestFlatSpecJS/package scalatestFlatSpecJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestFreeSpecJS/package scalatestFreeSpecJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestFunSuiteJS/package scalatestFunSuiteJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestFunSpecJS/package scalatestFunSpecJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestPropSpecJS/package scalatestPropSpecJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestWordSpecJS/package scalatestWordSpecJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestDiagramsJS/package scalatestDiagramsJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestMatchersCoreJS/package scalatestMatchersCoreJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestShouldMatchersJS/package scalatestShouldMatchersJS/mimaReportBinaryIssues
+    $ sbt ++2.13.5 scalatestMustMatchersJS/package scalatestMustMatchersJS/mimaReportBinaryIssues
 
 To publish scalatest modules for jvm, js, native and dotty, use the following commands: 
 
