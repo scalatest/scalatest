@@ -471,7 +471,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(0, 1, -1, 2, -2, 3, -3)
       }
-      it("should shrink Ints by repeatedly halving and negating") {
+      it("should shrink Ints by dividing current value by 2 and minus 1") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Int]) =>
           val i = shrinkRoseTree.value
@@ -480,16 +480,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           if (i == 0)
             shrinks shouldBe empty
           else {
+            shrinks should have length 2
+            shrinks(0) shouldBe (i / 2)
             if (i > 1)
-              shrinks.head should be > 0
-            else if (i < -1)
-              shrinks.head should be < 0
-            import org.scalatest.Inspectors._
-            val revShrinks = shrinks.reverse
-            val pairs: List[(Int, Int)] = revShrinks.zip(revShrinks.tail)
-            forAll (pairs) { case (x, y) =>
-              assert(x == 0 || x == -y || x.abs == y.abs / 2)
-            }
+              shrinks(1) shouldBe (i - 1)
+            else
+              shrinks(1) shouldBe (i + 1)
           }
         }
       }
@@ -2579,21 +2575,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             if (i == 0)
               shrinks shouldBe List(None)
             else {
+              shrinks should have length 2
+              shrinks(0) shouldBe (Some(i / 2))
               if (i > 1)
-                shrinks.head.value should be > 0
-              else if (i < -1)
-                shrinks.head.value should be < 0
-
-              import org.scalatest.Inspectors._
-              val revShrinks = shrinks.reverse
-              val pairs: List[(Option[Int], Option[Int])] = revShrinks.zip(revShrinks.tail)
-              forAll(pairs) {
-                case (Some(x), Some(y)) =>
-                  assert(x == 0 || x == -y || x.abs == y.abs / 2)
-                case (None, Some(_)) => succeed
-                case (Some(_), None) => fail("None was ahead of a Some in shrinks (i.e., before being reversed)")
-                case (None, None) => fail("None showed up twice in shrinks")
-              }
+                shrinks(1) shouldBe (Some(i - 1))
+              else
+                shrinks(1) shouldBe (Some(i + 1))
             }
           }
         }
