@@ -25,17 +25,18 @@ trait RoseTree[T] { thisRoseTreeOfT =>
   def shrinks(rnd: Randomizer): (List[RoseTree[T]], Randomizer)
 
   def depthFirstShrinks(fun: T => Boolean, rnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
-    def shrinkLoop(lastFailure: RoseTree[T], pending: List[RoseTree[T]], currentRnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
+    def shrinkLoop(lastFailure: RoseTree[T], pending: List[RoseTree[T]], processed: Set[T] , currentRnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
       pending match {
         case head :: tail => 
           if (!fun(head.value)) {
             // If the function fail, we got a new failure value, and we'll go one level deeper.
             val (headChildrenRTs, nextRnd) = head.shrinks(currentRnd)
-            shrinkLoop(head, headChildrenRTs, nextRnd)
+            val newProceesed = processed + head.value
+            shrinkLoop(head, headChildrenRTs.filter(rt => !newProceesed.contains(rt.value)), newProceesed,  nextRnd)
           }
           else {
             // The function call succeeded, let's continue to try the sibling.
-            shrinkLoop(lastFailure, tail, currentRnd)
+            shrinkLoop(lastFailure, tail, processed + head.value, currentRnd)
           }
 
         case Nil => // No more further sibling to try, return the last failure
@@ -43,7 +44,7 @@ trait RoseTree[T] { thisRoseTreeOfT =>
       }
     }
     val (firstLevelShrinks, nextRnd) = shrinks(rnd)
-    shrinkLoop(this, firstLevelShrinks, nextRnd)
+    shrinkLoop(this, firstLevelShrinks, Set(value), nextRnd)
   }
 
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
