@@ -43,6 +43,16 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val rt2 = charRoseTree('e')
       rt.flatMap(n => rt2.map(c => (n.toString + "!", (c - 1).toChar))).value shouldBe (("10!", 'd'))
     }
+    it("should offer a depthFirstShrinks method") {
+      import RoseTreeSpec._
+
+      val rt = intRoseTree(72)
+      rt.value shouldBe 72
+
+      val (shrinks, _) = rt.depthFirstShrinks(_ < 12, Randomizer.default)
+      shrinks should have length 1
+      shrinks(0).value shouldBe 12
+    }
   }
   describe("A Rose") {
     it("should have a toString that gives the value") {

@@ -24,6 +24,28 @@ trait RoseTree[T] { thisRoseTreeOfT =>
   // won't take long, so no need to make this a lazy val.
   def shrinks(rnd: Randomizer): (List[RoseTree[T]], Randomizer)
 
+  def depthFirstShrinks(fun: T => Boolean, rnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
+    def shrinkLoop(lastFailure: RoseTree[T], pending: List[RoseTree[T]], currentRnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
+      pending match {
+        case head :: tail => 
+          if (!fun(head.value)) {
+            // If the function fail, we got a new failure value, and we'll go one level deeper.
+            val (headChildrenRTs, nextRnd) = head.shrinks(currentRnd)
+            shrinkLoop(head, headChildrenRTs, nextRnd)
+          }
+          else {
+            // The function call succeeded, let's continue to try the sibling.
+            shrinkLoop(lastFailure, tail, currentRnd)
+          }
+
+        case Nil => // No more further sibling to try, return the last failure
+          (List(lastFailure), currentRnd)
+      }
+    }
+    val (firstLevelShrinks, nextRnd) = shrinks(rnd)
+    shrinkLoop(this, firstLevelShrinks, nextRnd)
+  }
+
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
   // for each shrunken Char, we'll get the one (Char, Int).
   def map[U](f: T => U): RoseTree[U] = {
