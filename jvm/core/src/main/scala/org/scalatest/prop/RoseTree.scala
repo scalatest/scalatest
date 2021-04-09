@@ -15,6 +15,8 @@
  */
 package org.scalatest.prop
 
+import scala.annotation.tailrec
+
 trait RoseTree[T] { thisRoseTreeOfT =>
 
   val value: T
@@ -25,6 +27,7 @@ trait RoseTree[T] { thisRoseTreeOfT =>
   def shrinks(rnd: Randomizer): (List[RoseTree[T]], Randomizer)
 
   def depthFirstShrinks(fun: T => Boolean, rnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
+    @tailrec
     def shrinkLoop(lastFailure: RoseTree[T], pending: List[RoseTree[T]], processed: Set[T] , currentRnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
       pending match {
         case head :: tail => 
