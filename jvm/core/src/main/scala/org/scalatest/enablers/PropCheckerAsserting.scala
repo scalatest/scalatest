@@ -183,43 +183,27 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            @tailrec
-            def shrinkLoop(roseTreesRemaining: List[RoseTree[A]], mostRecentlyFailedRoseTree: RoseTree[A], mostRecentFailureException: Throwable, mostRecentSiblings: List[RoseTree[A]], shrinkLoopRnd: Randomizer, count: Int): PropertyCheckResult = {
-              // println()
-              // println()
-              println("---------------------------------------")
-              println(s"shrinkLoop $count: $roseTreesRemaining\n    $mostRecentlyFailedRoseTree\n   $mostRecentSiblings\n")
-              roseTreesRemaining match {
-                case Nil =>
-                  // println("shrinkLoop: case Nil")
-                  val bestA = mostRecentlyFailedRoseTree.value
-                  println(s"############ BEST A: $bestA")
-                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestA) else PropertyArgument(None, bestA))
-                  println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
-                  val theRes = new PropertyCheckResult.Failure(succeededCount, Some(mostRecentFailureException), names, shrunkArgsPassed, initSeed)
-                  println(s"############ THE RES: $theRes")
-                  theRes
-
-                case roseTreeHead :: roseTreeTail =>
-                  val result: Try[T] = Try { fun(roseTreeHead.value) }
+            // Let's shrink the failing value
+            val (shrunkRtOfA, errOpt, _) = 
+              roseTreeOfA.depthFirstShrinks(
+                value => {
+                  val result: Try[T] = Try { fun(value) }
                   result match {
-                    case Success(_) =>
-                      // println("shrinkLoop: case roseTreeHead :: roseTreeTail SUCCESS!")
-                      // Back up and try next sibling of most recent failure
-                      shrinkLoop(mostRecentSiblings, mostRecentlyFailedRoseTree, mostRecentFailureException, Nil, shrinkLoopRnd, count + 1)
-                    case Failure(shrunkEx) =>
-                      // println("shrinkLoop: case roseTreeHead :: roseTreeTail FAILURE!")
-                      // Try going deeper into this one, replacing mostRecentlyFailed with this a.
-                      val (nextLevelRoseTrees, nextShrinkLoopRnd) = roseTreeHead.shrinks(shrinkLoopRnd)
-                      // println(s"shrinkLoop EXTRA roseTreeHead: $roseTreeHead\n           EXTRA: ${ roseTreeHead.getClass.getName }\n           EXTRA nextLevelRoseTrees: $nextLevelRoseTrees\n           EXTRA: ${ nextLevelRoseTrees.headOption.map(_.getClass.getName).getOrElse("<empty>") }")
-                      shrinkLoop(nextLevelRoseTrees, roseTreeHead, shrunkEx, roseTreeTail, nextShrinkLoopRnd, count + 1)
+                    case Success(_) => (true, None)
+                    case Failure(shrunkEx) => (false, Some(shrunkEx))
                   }
-              }
-            }
-            println(s"JUST FAILED WITH $roseTreeOfA")
-            val (firstLevelRoseTrees, rnd3) = roseTreeOfA.shrinks(nextNextRnd)
-            println(s"ABOUT TO SHRINKLOOP WITH $firstLevelRoseTrees")
-            shrinkLoop(firstLevelRoseTrees, roseTreeOfA, ex, Nil, rnd3, 0)
+                }, 
+                nextNextRnd
+              )
+
+            // We'll use the head of the shrunk value if available, if not we'll just use back roseTreeOfA
+            val bestA = shrunkRtOfA.headOption.getOrElse(roseTreeOfA).value
+            println(s"############ BEST A: $bestA")
+            val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestA) else PropertyArgument(None, bestA))
+            println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
+            val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
+            println(s"############ THE RES: $theRes")
+            theRes
         }
       }
 
