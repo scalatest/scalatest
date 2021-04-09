@@ -278,7 +278,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
       // include the macro sources in the main source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacro, Compile, packageSrc).value,
-      scalacticDocSourcesSetting,
+      sources in (Compile, doc) :=
+        genDocSources((sources in Compile).value ++ (sources in scalacticMacro in Compile).value,
+          Seq((sourceManaged in Compile).value,
+            baseDirectory.value,
+            file(".").getCanonicalFile),
+          docsrcDir.value), 
       docTaskSetting,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
@@ -535,8 +540,14 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           GenMatchers.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
+      sources in (Compile, doc) :=
+        genDocSources((sources in Compile).value,
+                       Seq((sourceManaged in Compile).value,
+                           (scalaSource in Compile).value, 
+                           (javaSource in Compile).value),
+                       docsrcDir.value), 
       scalatestDocSettings,
-      scalatestDocSourcesSetting,
+      docTaskSetting,
       unmanagedResourceDirectories in Compile += baseDirectory.value / "scalatest" / "src" / "main" / "resources",
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
@@ -1711,30 +1722,14 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     GenSafeStyles.genTest(new File(testTargetDir, "scala/gensafestyles"), theVersion, theScalaVersion)
   }*/
 
-  val scalacticDocSourcesSetting =
-    sources in (Compile, doc) :=
-      genDocSources((sources in Compile).value ++ (sources in scalacticMacro in Compile).value,
-        Seq((sourceManaged in Compile).value,
-          baseDirectory.value,
-          file(".").getCanonicalFile),
-        docsrcDir.value)
-
-  val scalatestDocSourcesSetting =
-     sources in (Compile, doc) :=
-       genDocSources((sources in Compile).value,
-                     Seq((sourceManaged in Compile).value,
-                         baseDirectory.value,
-                         file(".").getCanonicalFile),
-                     docsrcDir.value)
-
   val scalatestDocSourceUrl =
-    s"https://github.com/scalatest/releases-source/$releaseVersion/scalatest€{FILE_PATH}.scala"
+    s"https://github.com/scalatest/releases-source/blob/main/scalatest/${releaseVersion}€{FILE_PATH}.scala"
 
   val scalacticDocSourceUrl =
-    s"https://github.com/scalatest/releases-source/$releaseVersion/scalactic€{FILE_PATH}.scala"
+    s"https://github.com/scalatest/releases-source/blob/main/scalactic/$releaseVersion€{FILE_PATH}.scala"
 
   val scalatestDocScalacOptionsSetting =
-    scalacOptions in (Compile, doc) :=
+    scalacOptions in (Compile, doc) := {
       Seq[String](
         // -Ymacro-no-expand is not supported (or needed) under 2.13. In case we want
         // to run Scaladoc under 2.12 again, this is the line that is required:
@@ -1743,6 +1738,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         "-sourcepath", docsrcDir.value.getAbsolutePath,
         "-doc-title", projectTitle.value +" "+ releaseVersion,
         "-doc-source-url", scalatestDocSourceUrl)
+    }
 
   val scalacticDocScalacOptionsSetting =
     scalacOptions in (Compile, doc) :=
