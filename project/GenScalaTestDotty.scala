@@ -177,7 +177,7 @@ object GenScalaTestDotty {
   }
 
   def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyResourceDir("jvm/core/src/main/html", "html", targetDir, List.empty) ++
+    copyResourceDir("scalatest-doc/src/main/html", "html", targetDir, List.empty) ++
     copyResourceDir("jvm/core/src/main/resources/images", "images", targetDir, List.empty) ++
     copyResourceDir("jvm/core/src/main/resources/org/scalatest", "org/scalatest", targetDir, List.empty)
   }
