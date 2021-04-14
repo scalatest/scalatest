@@ -77,7 +77,7 @@ private[scalatest] trait TimerTask extends Runnable {
 
   var handle: Option[SetTimeoutHandle] = None
 
-  def run()
+  def run(): Unit
 
   def cancel(): Unit = {
     handle match {

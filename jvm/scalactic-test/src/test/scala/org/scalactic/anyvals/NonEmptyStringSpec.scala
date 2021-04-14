@@ -176,6 +176,7 @@ class NonEmptyStringSpec extends UnitSpec {
   /*
    companion method not relevant. Has an empty and other GenTraverable stuff.
   */
+  // SKIP-DOTTY-START
   it should "have an compose method, inherited from PartialFunction" in {
     val fn: Int => Char = NonEmptyString("123").compose((idx: Int) => (idx + 1).toChar)
     fn(-1) shouldBe '1'
@@ -183,6 +184,7 @@ class NonEmptyStringSpec extends UnitSpec {
     fn(1) shouldBe '3'
     //fn(2) shouldBe '4'
   }
+  // SKIP-DOTTY-END
   it should "have a contains method" in {
     val e = NonEmptyString("123")
     e.contains('5') shouldBe false
@@ -370,9 +372,9 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123").foldLeft(1)(_ + _.toString.toInt) shouldBe 7
   }
   it should "have a foldRight method" in {
-    NonEmptyString("1").foldRight("0")(_ + _) shouldBe "10"
-    NonEmptyString("1").foldRight("1")(_ + _) shouldBe "11"
-    NonEmptyString("123").foldRight("0")(_ + _) shouldBe "1230"
+    NonEmptyString("1").foldRight("0")(_ + _.toString) shouldBe "10"
+    NonEmptyString("1").foldRight("1")(_ + _.toString) shouldBe "11"
+    NonEmptyString("123").foldRight("0")(_ + _.toString) shouldBe "1230"
     NonEmptyString("123").foldRight(1)(_.toString.toInt + _) shouldBe 7
   }
   it should "have a forall method" in {
@@ -914,11 +916,11 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("0").scanLeft("z")(_ + _) shouldBe Vector("z", "z0")
   }
   it should "have a scanRight method" in {
-    NonEmptyString("1").scanRight("0")(_ + _) shouldBe Vector("10", "0")
-    NonEmptyString("123").scanRight("0")(_ + _) shouldBe Vector("1230", "230", "30", "0")
+    NonEmptyString("1").scanRight("0")(_.toString + _) shouldBe Vector("10", "0")
+    NonEmptyString("123").scanRight("0")(_.toString + _) shouldBe Vector("1230", "230", "30", "0")
     NonEmptyString("123").scanRight(0)(_.toString.toInt + _) shouldBe Vector(6, 5, 3, 0)
-    NonEmptyString("123").scanRight("z")(_ + _) shouldBe Vector("123z", "23z", "3z", "z")
-    NonEmptyString("0").scanRight("z")(_ + _) shouldBe Vector("0z", "z")
+    NonEmptyString("123").scanRight("z")(_.toString + _) shouldBe Vector("123z", "23z", "3z", "z")
+    NonEmptyString("0").scanRight("z")(_.toString + _) shouldBe Vector("0z", "z")
   }
   it should "have a segmentLength method" in {
     NonEmptyString("1234566789").segmentLength(_.toString.toInt > 7, 0) shouldBe 0

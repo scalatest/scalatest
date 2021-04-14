@@ -220,7 +220,7 @@ trait GenResourcesJSVM extends GenResources {
         |
         |def formatString(rawString: String, args: Array[Any]): String = {
         |  args.zipWithIndex.foldLeft(rawString) { case (result, (arg, idx)) =>
-        |    result.replaceAllLiterally("{" + idx + "}", arg + "")
+        |    result.replaceAllLiterally(s"{$$idx}", arg.toString())
         |  }
         |}
         |
@@ -252,9 +252,9 @@ trait GenResourcesJSVM extends GenResources {
         "final val " + kv.key + " = raw" + kv.key.capitalize
       else
         "def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = \n" +
-        "  raw" + kv.key.capitalize + (for (i <- 0 until paramCount) yield ".replaceAllLiterally(\"{" + i + "}\", param" + i + " + \"\")").mkString + "\n"
+        "  raw" + kv.key.capitalize + (for (i <- 0 until paramCount) yield ".replaceAllLiterally(\"{" + i + "}\", param" + i + ".toString())").mkString + "\n"
         /*"object " + kv.key + " { \ndef apply(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = \n" +
-        "  raw" + kv.key.capitalize + (for (i <- 0 until paramCount) yield ".replaceAllLiterally(\"{" + i + "}\", param" + i + " + \"\")").mkString + "\n" +
+        "  raw" + kv.key.capitalize + (for (i <- 0 until paramCount) yield s".replaceAllLiterally(\"{i + "}\", param" + i + " + \"\")").mkString + "\n" +
         "}"*/
     )
     /*"def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = \n" +
