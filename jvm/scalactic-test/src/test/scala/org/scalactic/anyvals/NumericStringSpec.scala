@@ -1571,7 +1571,7 @@ class NumericStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers
       }
     }
     it("should offer a scanRight method consistent with StringOps") {
-      def sum(c1: Char, s: String) = c1 + s
+      def sum(c1: Char, s: String) = c1.toString + s
 
       forAll { (numStr: NumericString) =>
         numStr.scanRight("0")(sum) shouldEqual
