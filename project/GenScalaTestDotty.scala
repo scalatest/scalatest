@@ -75,17 +75,18 @@ object GenScalaTestDotty {
     val destWriter = new BufferedWriter(new FileWriter(destFile))
     try {
       val lines = Source.fromFile(sourceFile).getLines.toList
-      var skipMode = false
+      var skipDottyMode = false
+      var skipJSMode = false
       for (line <- lines) {
-        if (line.trim == "// SKIP-DOTTY-START" || line.trim == "// SKIP-DOTTY-START")
-          skipMode = true
-        else if (line.trim == "// SKIP-DOTTY-END" || line.trim == "// SKIP-DOTTY-END")
-          skipMode = false
-        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTJS-START")
-          skipMode = true
-        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTJS-END")
-          skipMode = false  
-        else if (!skipMode) {
+        if (!skipJSMode && line.trim == "// SKIP-DOTTY-START")
+          skipDottyMode = true
+        else if (!skipJSMode && line.trim == "// SKIP-DOTTY-END")
+          skipDottyMode = false
+        else if (!skipDottyMode && (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTJS-START"))
+          skipJSMode = true
+        else if (!skipDottyMode && (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTJS-END"))
+          skipJSMode = false  
+        else if (!skipDottyMode && !skipJSMode) {
           destWriter.write(transformLineJS(line))
           destWriter.newLine()
         }
@@ -671,6 +672,9 @@ object GenScalaTestDotty {
 
   def genFeatureSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)
+
+  def genFeatureSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDirJS("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)  
 
   def genFlatSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, 

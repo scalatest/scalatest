@@ -770,8 +770,8 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
     ).dependsOn(scalacticDottyJS, scalatestDottyJS % "test", commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
      .aggregate(
-       scalatestDiagramsTestDottyJS/*, 
-       scalatestFeatureSpecTestDottyJS, 
+       scalatestDiagramsTestDottyJS, 
+       scalatestFeatureSpecTestDottyJS/*, 
        scalatestFlatSpecTestDottyJS, 
        scalatestFreeSpecTestDottyJS, 
        scalatestFunSpecTestDottyJS, 
@@ -799,9 +799,9 @@ trait DottyBuild { this: BuildCommons =>
     .settings(
       projectTitle := "ScalaTest Diagrams Test",
       sourceGenerators in Test += Def.task {
-        GenScalaTestDotty.genDiagramsTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+        GenScalaTestDotty.genDiagramsTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
-    ).dependsOn(commonTestDotty % "test").enablePlugins(ScalaJSPlugin)
+    ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFeatureSpecTestDotty = project.in(file("dotty/featurespec-test"))
     .settings(sharedSettings: _*)
@@ -813,6 +813,17 @@ trait DottyBuild { this: BuildCommons =>
         GenScalaTestDotty.genFeatureSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
     ).dependsOn(commonTestDotty % "test")
+
+  lazy val scalatestFeatureSpecTestDottyJS = project.in(file("dotty/featurespec-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest FeatureSpec Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFeatureSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFlatSpecTestDotty = project.in(file("dotty/flatspec-test"))
     .settings(sharedSettings: _*)
