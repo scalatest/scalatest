@@ -681,7 +681,14 @@ object GenScalaTestDotty {
       List(
         "FlatSpecImportedMatchersSpec.scala"
       )
-    )    
+    )
+
+  def genFlatSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDirJS("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, 
+      List(
+        "FlatSpecImportedMatchersSpec.scala"
+      )
+    )      
 
   def genFreeSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/freespec-test/src/test/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, 
