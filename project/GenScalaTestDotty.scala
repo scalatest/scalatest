@@ -432,8 +432,7 @@ object GenScalaTestDotty {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, 
       List(
         "CommonGeneratorsSpec.scala", 
-        "GeneratorSpec.scala", 
-        "OverrideImplicitConfigurationSuite.scala"
+        "GeneratorSpec.scala"
       )) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, 
       List(
@@ -587,8 +586,7 @@ object GenScalaTestDotty {
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, 
       List(
         "CommonGeneratorsSpec.scala", 
-        "GeneratorSpec.scala", 
-        "OverrideImplicitConfigurationSuite.scala"
+        "GeneratorSpec.scala"
       )) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, 
       List(
