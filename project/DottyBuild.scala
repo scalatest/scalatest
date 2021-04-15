@@ -769,16 +769,16 @@ trait DottyBuild { this: BuildCommons =>
         GenScalaTestDotty.genTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
     ).dependsOn(scalacticDottyJS, scalatestDottyJS % "test", commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
-     /*.aggregate(
-       scalatestDiagramsTestDottyJS, 
+     .aggregate(
+       scalatestDiagramsTestDottyJS/*, 
        scalatestFeatureSpecTestDottyJS, 
        scalatestFlatSpecTestDottyJS, 
        scalatestFreeSpecTestDottyJS, 
        scalatestFunSpecTestDottyJS, 
        scalatestFunSuiteTestDottyJS, 
        scalatestPropSpecTestDottyJS, 
-       scalatestWordSpecTestDottyJS
-     )*/.enablePlugins(ScalaJSPlugin)
+       scalatestWordSpecTestDottyJS*/
+     ).enablePlugins(ScalaJSPlugin)
 
 
   lazy val scalatestDiagramsTestDotty = project.in(file("dotty/diagrams-test"))
@@ -791,6 +791,17 @@ trait DottyBuild { this: BuildCommons =>
         GenScalaTestDotty.genDiagramsTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
     ).dependsOn(commonTestDotty % "test")
+
+  lazy val scalatestDiagramsTestDottyJS = project.in(file("dotty/diagrams-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest Diagrams Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genDiagramsTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDotty % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFeatureSpecTestDotty = project.in(file("dotty/featurespec-test"))
     .settings(sharedSettings: _*)

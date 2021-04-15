@@ -661,6 +661,14 @@ object GenScalaTestDotty {
       )
     )
 
+  def genDiagramsTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDirJS("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, 
+      List(
+        "DiagramsSpec.scala", // skipped because tests failed execute.
+        "DirectDiagrammedAssertionsSpec.scala" // skipped because tests failed execute.
+      )
+    )  
+
   def genFeatureSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)
 
