@@ -709,7 +709,14 @@ object GenScalaTestDotty {
       List(
         "FixtureFunSpecSpec.scala" // skipped because tests failed
       )
-    )    
+    )
+
+  def genFunSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDirJS("jvm/funspec-test/src/test/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, 
+      List(
+        "FixtureFunSpecSpec.scala" // skipped because tests failed
+      )
+    )      
 
   def genFunSuiteTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/funsuite-test/src/test/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, 
