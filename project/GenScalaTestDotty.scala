@@ -667,18 +667,10 @@ object GenScalaTestDotty {
     copyDirJS("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)  
 
   def genFlatSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, 
-      List(
-        "FlatSpecImportedMatchersSpec.scala"
-      )
-    )
+    copyDir("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, List.empty)
 
   def genFlatSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDirJS("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, 
-      List(
-        "FlatSpecImportedMatchersSpec.scala"
-      )
-    )      
+    copyDirJS("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, List.empty)      
 
   def genFreeSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/freespec-test/src/test/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, 
