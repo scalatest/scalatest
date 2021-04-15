@@ -579,11 +579,13 @@ object GenScalaTestDotty {
       )
     ) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
-    /*copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
-        "SpecSpec.scala",     // skipped because depends on java reflections
+        "AsyncTestDataFixtureSpec.scala",  // skipped because does not compile yet.
+        "NoArgSpec.scala",  // skipped because tests failed.
+        "DeprecatedFeatureSpecSpec.scala",  // skipped because tests failed.
         "SuiteSpec.scala"    // skipped because depends on java reflections
-      )) ++ */
+      )) ++ 
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, 
       List(
         "StackSpec.scala",  // skipped because does not compile yet.
