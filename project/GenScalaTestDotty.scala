@@ -429,9 +429,7 @@ object GenScalaTestDotty {
       List(
         "AsyncTestDataFixtureSpec.scala",  // skipped because does not compile yet.
         "NoArgSpec.scala",  // skipped because tests failed.
-        "DeprecatedFeatureSpecSpec.scala",  // skipped because tests failed.
-        "SpecSpec.scala",     // skipped because depends on java reflections
-        "SuiteSpec.scala"    // skipped because depends on java reflections
+        "DeprecatedFeatureSpecSpec.scala"  // skipped because tests failed.
       )) ++ 
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, 
       List(
