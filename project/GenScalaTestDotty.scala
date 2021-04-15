@@ -455,12 +455,7 @@ object GenScalaTestDotty {
         "TwoSlowTestsExample.scala"
       )
     ) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, 
-      List(
-        "TypeMatcherMacroSpec.scala", // skipped because does not compile yet.
-        "MatcherProducersSpec.scala" // skipped because does not compile yet.
-      )
-    ) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, 
       List(
         "SpanSugarSpec.scala" // skipped because does not compile yet.
@@ -609,12 +604,7 @@ object GenScalaTestDotty {
         "TwoSlowTestsExample.scala"
       )
     ) ++
-    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, 
-      List(
-        "TypeMatcherMacroSpec.scala", // skipped because does not compile yet.
-        "MatcherProducersSpec.scala" // skipped because does not compile yet.
-      )
-    ) ++
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, 
       List(
         "SpanSugarSpec.scala" // skipped because does not compile yet.
