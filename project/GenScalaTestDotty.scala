@@ -726,6 +726,14 @@ object GenScalaTestDotty {
       )
     )
 
+  def genFunSuiteTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDirJS("jvm/funsuite-test/src/test/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, 
+      List(
+        "FunSuiteSpec.scala", 
+        "FixtureFunSuiteSpec.scala"
+      )
+    )  
+
   def genPropSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/propspec-test/src/test/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, 
       List(
