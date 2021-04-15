@@ -388,7 +388,6 @@ object GenScalaTestDotty {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
       List(
         "DeprecatedFeatureSpecSpec.scala", // skipped because does not compile yet 
-        //"DirectAssertionsSpec.scala", // skipped because does not compile yet 
         "EveryShouldContainOnlyLogicalAndSpec.scala", // skipped because tests failed
         "EveryShouldContainOnlyLogicalOrSpec.scala", // skipped because tests failed 
         "EveryShouldContainOnlySpec.scala", // skipped because does not compile yet 
@@ -407,13 +406,6 @@ object GenScalaTestDotty {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
       List(
-        //"TestLocationJUnit3Suite.scala",
-        //"TestLocationJUnitSuite.scala",
-        //"TestLocationTestNGSuite.scala",
-        //"TestLocationMethodJUnit3Suite.scala",
-        //"TestLocationMethodJUnitSuite.scala",
-        //"TestLocationMethodTestNGSuite.scala",
-        //"LocationMethodSuiteProp.scala", 
         "LocationSuiteProp.scala", // skipped because does not compile yet.
         "ScopePendingProp.scala", // skipped because does not compile yet.
         "LocationSpec.scala",  // skipped because does not compile yet.
