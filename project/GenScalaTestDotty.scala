@@ -400,11 +400,7 @@ object GenScalaTestDotty {
         "ShouldNotTypeCheckSpec.scala", // skipped because tests failed  
       )
     ) ++ 
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, 
-      List(
-        "DirectExpectationsSpec.scala"
-      )
-    ) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
@@ -538,11 +534,7 @@ object GenScalaTestDotty {
         "SeveredStackTracesFailureSpec.scala" // skipped because stack trace isn't really helpful after linked in different js env like node.
       )
     ) ++ 
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, 
-      List(
-        "DirectExpectationsSpec.scala"
-      )
-    ) ++ 
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++ 
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, 
       List(
         "WaitersSpec.scala",    // skipped because Waiters not supported.

@@ -491,6 +491,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
         assert(!fact.isVacuousYes)
       }
 
+      // SKIP-DOTTY-START
       it("should return No with correct fact message when type check failed") {
         val fact = org.scalatest.expectations.Expectations.expectCompiles("val a: String = 2")
         assert(fact.isInstanceOf[Fact.Leaf])
@@ -511,6 +512,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
 
         assert(!fact.isVacuousYes)
       }
+      // SKIP-DOTTY-END
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
@@ -532,6 +534,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
         assert(!fact.isVacuousYes)
       }
 
+      // SKIP-DOTTY-START
       it("should return No with correct fact message when type check failed") {
         val fact =
           org.scalatest.expectations.Expectations.expectCompiles(
@@ -571,6 +574,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
           ))
         assert(!fact.isVacuousYes)
       }
+      // SKIP-DOTTY-END
     }
   }
 
@@ -594,6 +598,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
         assert(!fact.isVacuousYes)
       }
 
+      // SKIP-DOTTY-START
       it("should return No with correct fact message when parse failed") {
         val fact = org.scalatest.expectations.Expectations.expectTypeError("println(\"test)")
         assert(fact.isInstanceOf[Fact.Leaf])
@@ -604,6 +609,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("unclosed string literal", "println(\"test)"))
         assert(!fact.isVacuousYes)
       }
+      // SKIP-DOTTY-END
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
@@ -642,6 +648,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
         assert(!fact.isVacuousYes)
       }
 
+      // SKIP-DOTTY-START
       it("should return No with correct fact message when parse failed ") {
         val fact =
           org.scalatest.expectations.Expectations.expectTypeError(
@@ -663,6 +670,7 @@ class DirectExpectationsSpec extends AnyFunSpec {
           ))
         assert(!fact.isVacuousYes)
       }
+      // SKIP-DOTTY-END
     }
   }
 }
