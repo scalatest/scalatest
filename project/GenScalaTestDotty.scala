@@ -742,6 +742,14 @@ object GenScalaTestDotty {
       )
     )
 
+  def genPropSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDirJS("jvm/propspec-test/src/test/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, 
+      List(
+        "PropSpecSpec.scala", 
+        "FixturePropSpecSpec.scala"
+      )
+    )  
+
   def genWordSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/wordspec-test/src/test/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, 
       List(

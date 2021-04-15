@@ -775,8 +775,8 @@ trait DottyBuild { this: BuildCommons =>
        scalatestFlatSpecTestDottyJS, 
        scalatestFreeSpecTestDottyJS, 
        scalatestFunSpecTestDottyJS, 
-       scalatestFunSuiteTestDottyJS/*, 
-       scalatestPropSpecTestDottyJS, 
+       scalatestFunSuiteTestDottyJS, 
+       scalatestPropSpecTestDottyJS/*, 
        scalatestWordSpecTestDottyJS*/
      ).enablePlugins(ScalaJSPlugin)
 
@@ -922,7 +922,18 @@ trait DottyBuild { this: BuildCommons =>
       sourceGenerators in Test += Def.task {
         GenScalaTestDotty.genPropSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
-    ).dependsOn(commonTestDotty % "test")                
+    ).dependsOn(commonTestDotty % "test")
+
+  lazy val scalatestPropSpecTestDottyJS = project.in(file("dotty/propspec-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest PropSpec Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genPropSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)             
 
   lazy val scalatestWordSpecTestDotty = project.in(file("dotty/wordspec-test"))
     .settings(sharedSettings: _*)
