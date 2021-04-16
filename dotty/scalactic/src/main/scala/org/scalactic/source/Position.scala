@@ -70,7 +70,7 @@ object Position {
   private def genPosition(using Quotes): Expr[Position] = {
     val pos = quotes.reflect.Position.ofMacroExpansion
     val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
+    val fileName: String = Option(file.jpath).map(_.getFileName.toString).getOrElse("<unknown>")
     val filePath: String = filePathnames(file.toString)
     val lineNo: Int = pos.startLine
     '{ Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}) }
