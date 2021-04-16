@@ -6541,11 +6541,12 @@ class AssertionsSpec extends AnyFunSpec {
         assertResult("hi") { n1 }
       }
       val a1 = Array(1, 2, 3)
+      val aNull: Array[Int] = null
       intercept[TestFailedException] {
-        assertResult(n1) { a1 }
+        assertResult(aNull) { a1 }
       }
       intercept[TestFailedException] {
-        assertResult(a1) { n1 }
+        assertResult(a1) { aNull }
       }
       val a = "hi"
       val e1 = intercept[TestFailedException] {
@@ -6608,11 +6609,12 @@ class AssertionsSpec extends AnyFunSpec {
         assertResult("hi", "a clue") { n1 }
       }
       val a1 = Array(1, 2, 3)
+      val aNull: Array[Int] = null
       intercept[TestFailedException] {
-        assertResult(n1, "a clue") { a1 }
+        assertResult(aNull, "a clue") { a1 }
       }
       intercept[TestFailedException] {
-        assertResult(a1, "a clue") { n1 }
+        assertResult(a1, "a clue") { aNull }
       }
       val a = "hi"
       val e1 = intercept[TestFailedException] {
