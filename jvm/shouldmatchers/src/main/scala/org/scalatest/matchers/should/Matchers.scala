@@ -5533,7 +5533,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
+    // SKIP-DOTTY-START 
     def shouldBe(right: Any): Assertion = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def shouldBe[R](right: R)(implicit caneq: scala.CanEqual[T, R]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (e != right) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)

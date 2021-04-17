@@ -50,4 +50,33 @@
 
    }
 
+   describe("mustBe matcher for inspector shortand syntax") {
+
+     it("should allow 2 unrelated types when strictEquality is not enabled") {
+       assertCompiles(
+         """
+         case class Apple(size: Int)
+         case class Orange(size: Int)
+         val x = Apple(42)
+         val y = Orange(42)
+         all(List(x)) mustBe y
+         """  
+       )
+     }
+
+     it("should not allow 2 unrelated types when strictEquality is enabled") {
+       assertDoesNotCompile(
+         """
+         import scala.language.strictEquality
+         case class Apple(size: Int)
+         case class Orange(size: Int)
+         val x = Apple(42)
+         val y = Orange(42)
+         all(List(x)) mustBe y
+         """  
+       )
+     }
+
+   }
+
  }
