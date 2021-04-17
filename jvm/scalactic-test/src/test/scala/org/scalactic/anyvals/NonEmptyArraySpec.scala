@@ -982,7 +982,7 @@ class NonEmptyArraySpec extends UnitSpec {
   }
   it should "have a reverseIterator method" in {
     NonEmptyArray(3).reverseIterator.toStream shouldBe Stream(3)
-    NonEmptyArray(1, 2, 3).reverseIterator.toArray shouldBe Stream(3, 2, 1)
+    NonEmptyArray(1, 2, 3).reverseIterator.toStream shouldBe Stream(3, 2, 1)
   }
   it should "have a reverseMap method" in {
     NonEmptyArray(3).reverseMap(_ + 1) shouldBe NonEmptyArray(4)
