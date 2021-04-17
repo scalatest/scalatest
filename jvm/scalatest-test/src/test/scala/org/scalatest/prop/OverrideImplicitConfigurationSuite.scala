@@ -18,7 +18,7 @@ class ConfigExplicitOverrideInClass extends AnyFunSuite with Matchers with Confi
 }
 
 class ConfigurationImplicitOverrideInClassTest extends AnyFunSuite with Matchers with Configuration with GetImplicitConfig {
-  implicit val classImplicit = PropertyCheckConfiguration(minSuccessful = 42)
+  implicit val classImplicit: PropertyCheckConfiguration = PropertyCheckConfiguration(minSuccessful = 42)
   test("configuration implicit override in class") {
     assert(getImplicitConfig().minSuccessful.value == 42)
   }
@@ -26,7 +26,7 @@ class ConfigurationImplicitOverrideInClassTest extends AnyFunSuite with Matchers
 
 class ConfigurationImplicitOverrideInTestTest extends AnyFunSuite with Matchers with Configuration with GetImplicitConfig {
   test("configuration implicit override in test") {
-    implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 42)
+    implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration(minSuccessful = 42)
     assert(getImplicitConfig().minSuccessful.value == 42)
   }
 }

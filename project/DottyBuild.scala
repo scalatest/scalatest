@@ -772,7 +772,7 @@ trait DottyBuild { this: BuildCommons =>
         GenScalaTestDotty.genTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
     ).dependsOn(scalacticDottyJS, scalatestDottyJS % "test", commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
-     /*.aggregate(
+     .aggregate(
        scalatestDiagramsTestDottyJS, 
        scalatestFeatureSpecTestDottyJS, 
        scalatestFlatSpecTestDottyJS, 
@@ -781,7 +781,7 @@ trait DottyBuild { this: BuildCommons =>
        scalatestFunSuiteTestDottyJS, 
        scalatestPropSpecTestDottyJS, 
        scalatestWordSpecTestDottyJS
-     )*/.enablePlugins(ScalaJSPlugin)
+     ).enablePlugins(ScalaJSPlugin)
 
 
   lazy val scalatestDiagramsTestDotty = project.in(file("dotty/diagrams-test"))
@@ -795,6 +795,17 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
     ).dependsOn(commonTestDotty % "test")
 
+  lazy val scalatestDiagramsTestDottyJS = project.in(file("dotty/diagrams-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest Diagrams Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genDiagramsTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
+
   lazy val scalatestFeatureSpecTestDotty = project.in(file("dotty/featurespec-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -805,6 +816,17 @@ trait DottyBuild { this: BuildCommons =>
         GenScalaTestDotty.genFeatureSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
     ).dependsOn(commonTestDotty % "test")
+
+  lazy val scalatestFeatureSpecTestDottyJS = project.in(file("dotty/featurespec-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest FeatureSpec Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFeatureSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFlatSpecTestDotty = project.in(file("dotty/flatspec-test"))
     .settings(sharedSettings: _*)
@@ -817,6 +839,17 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
     ).dependsOn(commonTestDotty % "test")
 
+  lazy val scalatestFlatSpecTestDottyJS = project.in(file("dotty/flatspec-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest FlatSpec Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFlatSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
+
   lazy val scalatestFreeSpecTestDotty = project.in(file("dotty/freespec-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -827,6 +860,17 @@ trait DottyBuild { this: BuildCommons =>
         GenScalaTestDotty.genFreeSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
     ).dependsOn(commonTestDotty % "test")
+
+  lazy val scalatestFreeSpecTestDottyJS = project.in(file("dotty/freespec-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest FreeSpec Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFreeSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFunSpecTestDotty = project.in(file("dotty/funspec-test"))
     .settings(sharedSettings: _*)
@@ -839,6 +883,17 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
     ).dependsOn(commonTestDotty % "test")
 
+  lazy val scalatestFunSpecTestDottyJS = project.in(file("dotty/funspec-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest FunSpec Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFunSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
+
   lazy val scalatestFunSuiteTestDotty = project.in(file("dotty/funsuite-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -850,6 +905,17 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
     ).dependsOn(commonTestDotty % "test")
 
+  lazy val scalatestFunSuiteTestDottyJS = project.in(file("dotty/funsuite-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest FunSuite Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFunSuiteTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
+
   lazy val scalatestPropSpecTestDotty = project.in(file("dotty/propspec-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
@@ -859,7 +925,18 @@ trait DottyBuild { this: BuildCommons =>
       sourceGenerators in Test += Def.task {
         GenScalaTestDotty.genPropSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
-    ).dependsOn(commonTestDotty % "test")                
+    ).dependsOn(commonTestDotty % "test")
+
+  lazy val scalatestPropSpecTestDottyJS = project.in(file("dotty/propspec-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest PropSpec Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genPropSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)             
 
   lazy val scalatestWordSpecTestDotty = project.in(file("dotty/wordspec-test"))
     .settings(sharedSettings: _*)
@@ -871,5 +948,16 @@ trait DottyBuild { this: BuildCommons =>
         GenScalaTestDotty.genWordSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
     ).dependsOn(commonTestDotty % "test")
+
+  lazy val scalatestWordSpecTestDottyJS = project.in(file("dotty/wordspec-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest WordSpec Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genWordSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin) 
 
 }

@@ -120,7 +120,7 @@ object GenScalaTestJS {
   }
 
   def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyResourceDir("jvm/core/src/main/html", "html", targetDir, List.empty)
+    copyResourceDir("scalatest-doc/src/main/html", "html", targetDir, List.empty)
   }
 
   val genScalaPackages: Map[String, List[String]] = 
@@ -181,6 +181,7 @@ object GenScalaTestJS {
         //"ParsedArgs.scala",
         "PrintReporter.scala",
         "ProgressBarPanel.scala",
+        "PrettyPrinter.scala", 
         //"ReporterConfigParam.scala",
         "ReporterConfiguration.scala",
         "ReporterFactory.scala",
@@ -204,7 +205,8 @@ object GenScalaTestJS {
         //"SuiteRunner.scala",
         "TestSpec.scala",
         "XmlReporter.scala",
-        "XmlSocketReporter.scala"
+        "XmlSocketReporter.scala", 
+        "XmlUtility.scala"
       ), 
       "org/scalatest/exceptions" -> List(
         "StackDepthExceptionHelper.scala"

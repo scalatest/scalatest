@@ -35,7 +35,7 @@ import sbt.file
 import sbt.IO.createDirectory
 
 object JavaTagDocumenter {
-  val docsrcDir = "target/docsrc"
+  val docsrcDir = "scalatest-doc/target/docsrc"
 
   //
   // Splits java file's contents into two pieces: a top and body.
@@ -150,7 +150,7 @@ object JavaTagDocumenter {
       val className = filename.replaceFirst("""\.java$""", "")
       val sep = File.separator
       val relativeDir =
-        srcFile.getParent.replaceFirst(".*"+ sep +"main"+ sep +"java"+ sep, "")
+        srcFile.getParent.replaceFirst(".*"+ sep +"target"+ sep +"java"+ sep, "")
       val destFile =
         file(docsrcDir + sep + relativeDir + sep + className +".scala")
 
@@ -179,7 +179,7 @@ object JavaTagDocumenter {
           writer.close()
         }
       }
-      destFile
+      new File(destFile.getAbsolutePath)
     }
   }
 }
