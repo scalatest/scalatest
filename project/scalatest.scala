@@ -639,7 +639,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
          ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
          GenGen.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-         GenCompatibleClasses.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
+         GenCompatibleClasses.genMain((sourceManaged in Compile).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value) ++ 
+         GenSafeStyles.genCore((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value, false)
        }.taskValue
       },
       scalatestDocSettings,
@@ -694,6 +695,11 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           Seq.empty[File]
         }.taskValue
       },
+      sourceGenerators in Compile += {
+        Def.task {
+          GenSafeStyles.genFeatureSpec((sourceManaged in Compile).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, false)
+        }
+      },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
@@ -727,6 +733,11 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
+      },
+      sourceGenerators in Compile += {
+        Def.task {
+          GenSafeStyles.genFlatSpec((sourceManaged in Compile).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, false)
+        }
       },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
@@ -762,6 +773,11 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           Seq.empty[File]
         }.taskValue
       },
+      sourceGenerators in Compile += {
+        Def.task {
+          GenSafeStyles.genFreeSpec((sourceManaged in Compile).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, false)
+        }
+      },
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
@@ -796,6 +812,11 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           Seq.empty[File]
         }.taskValue
       },
+      sourceGenerators in Compile += {
+        Def.task {
+          GenSafeStyles.genFunSuite((sourceManaged in Compile).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, false)
+        }
+      }, 
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
