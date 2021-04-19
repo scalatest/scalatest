@@ -7780,7 +7780,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     //DOTTY-ONLY extension (leftSideString: String)(using pos: source.Position, prettifier: Prettifier) def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString =
       new ResultOfFullyMatchWordForString(leftSideString, false, prettifier, pos)
 
-    //DOTTY-ONLY import scala.compiletime.testing.typeChecks  
+    //DOTTY-ONLY import scala.compiletime.testing.{typeChecks,typeCheckErrors}
 
     /**
      * This method enables syntax such as the following:
@@ -7819,7 +7819,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotTypeCheckImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY extension (inline leftSideString: String)(using pos: source.Position, prettifier: Prettifier) transparent inline def shouldNot(typeCheckWord: TypeCheckWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldNotTypeCheckImpl('{leftSideString}, '{typeChecks(leftSideString)}, '{typeCheckWord})('{pos}) }
+    //DOTTY-ONLY extension (inline leftSideString: String)(using pos: source.Position, prettifier: Prettifier) transparent inline def shouldNot(typeCheckWord: TypeCheckWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldNotTypeCheckImpl('{leftSideString}, '{typeCheckErrors(leftSideString)}, '{typeCheckWord})('{pos}) }
   // SKIP-DOTTY-START
   }
   // SKIP-DOTTY-END
