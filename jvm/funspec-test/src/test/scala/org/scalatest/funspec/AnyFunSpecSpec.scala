@@ -45,7 +45,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.funspec.AnyFunSpec
 
-class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
+class AnyFunSpecSpec extends AnyFreeSpec with GivenWhenThen {
 
   private val prettifier = Prettifier.default
 
@@ -1066,9 +1066,9 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size == 2)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get == "FunSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get == "AnyFunSpecSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get == thisLineNumber - 13)
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get == "FunSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get == "AnyFunSpecSpec.scala")
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get == thisLineNumber - 11)
     }
   }
@@ -1090,9 +1090,9 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size == 2)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get == "FunSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get == "AnyFunSpecSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get == thisLineNumber - 13)
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get == "FunSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get == "AnyFunSpecSpec.scala")
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get == thisLineNumber - 11)
     }
     
@@ -1126,7 +1126,7 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       assert(testFailedEvents.size == 1)
       assert(testFailedEvents(0).throwable.get.getClass() == classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FunSpecSpec.scala" == trce.failedCodeFileName.get)
+      assert("AnyFunSpecSpec.scala" == trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get == thisLineNumber - 24)
       assert(trce.message == Some("An it clause may not appear inside another it or they clause."))
     }
@@ -1159,7 +1159,7 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       assert(testFailedEvents.size == 1)
       assert(testFailedEvents(0).throwable.get.getClass() == classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FunSpecSpec.scala" == trce.failedCodeFileName.get)
+      assert("AnyFunSpecSpec.scala" == trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get == thisLineNumber - 24)
       assert(trce.message == Some("An ignore clause may not appear inside an it or a they clause."))
     }
@@ -1192,7 +1192,7 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       assert(testFailedEvents.size == 1)
       assert(testFailedEvents(0).throwable.get.getClass() == classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FunSpecSpec.scala" == trce.failedCodeFileName.get)
+      assert("AnyFunSpecSpec.scala" == trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get == thisLineNumber - 24)
       assert(trce.message == Some("A they clause may not appear inside another it or they clause."))
     }
@@ -1225,7 +1225,7 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       assert(testFailedEvents.size == 1)
       assert(testFailedEvents(0).throwable.get.getClass() == classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FunSpecSpec.scala" == trce.failedCodeFileName.get)
+      assert("AnyFunSpecSpec.scala" == trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get == thisLineNumber - 24)
       assert(trce.message == Some("An ignore clause may not appear inside an it or a they clause."))
     }
@@ -1238,7 +1238,7 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
             assert(a == 2)
           }
           assert(e.message == Some("1 did not equal 2"))
-          assert(e.failedCodeFileName == Some("FunSpecSpec.scala"))
+          assert(e.failedCodeFileName == Some("AnyFunSpecSpec.scala"))
           assert(e.failedCodeLineNumber == Some(thisLineNumber - 4))
         }
         registerTest("test 2") {
@@ -1300,7 +1300,7 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       assert(testFailedEvents.size == 1)
       assert(testFailedEvents(0).throwable.get.getClass() == classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FunSpecSpec.scala" == trce.failedCodeFileName.get)
+      assert("AnyFunSpecSpec.scala" == trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get == thisLineNumber - 24)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
@@ -1333,7 +1333,7 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       assert(testFailedEvents.size == 1)
       assert(testFailedEvents(0).throwable.get.getClass() == classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FunSpecSpec.scala" == trce.failedCodeFileName.get)
+      assert("AnyFunSpecSpec.scala" == trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get == thisLineNumber - 24)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
@@ -1349,7 +1349,7 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       val e = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("AnyFunSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause))
 
@@ -1357,7 +1357,7 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       val causeThrowable = e.cause.get
       assert(causeThrowable.isInstanceOf[TestFailedException])
       val cause = causeThrowable.asInstanceOf[TestFailedException]
-      assert("FunSpecSpec.scala" == cause.failedCodeFileName.get)
+      assert("AnyFunSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
       assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
@@ -1372,7 +1372,7 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       val e = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("AnyFunSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause))
 
@@ -1380,7 +1380,7 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       val causeThrowable = e.cause.get
       assert(causeThrowable.isInstanceOf[TestCanceledException])
       val cause = causeThrowable.asInstanceOf[TestCanceledException]
-      assert("FunSpecSpec.scala" == cause.failedCodeFileName.get)
+      assert("AnyFunSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
       assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
@@ -1395,7 +1395,7 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       val e = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("AnyFunSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 8)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1410,14 +1410,14 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
     "should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope" in {
       class TestSpec extends AnyFunSpec {
         describe("a feature") {
-          it("test 1") {}
-          it("test 1") {}
+          it("test 1") {/* ASSERTION_SUCCEED */}
+          it("test 1") {/* ASSERTION_SUCCEED */}
         }
       }
       val e = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("AnyFunSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
