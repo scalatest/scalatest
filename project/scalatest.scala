@@ -850,7 +850,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           (new File(crossTarget.value, "classes")).mkdirs()
           Seq.empty[File]
         }.taskValue
-      },
+      }, 
+      sourceGenerators in Compile += {
+        Def.task {
+          GenSafeStyles.genFunSpec((sourceManaged in Compile).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, false)
+        }
+      }, 
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
@@ -885,6 +890,11 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           Seq.empty[File]
         }.taskValue
       },
+      sourceGenerators in Compile += {
+        Def.task {
+          GenSafeStyles.genPropSpec((sourceManaged in Compile).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, false)
+        }
+      }, 
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
@@ -953,6 +963,11 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           Seq.empty[File]
         }.taskValue
       },
+      sourceGenerators in Compile += {
+        Def.task {
+          GenSafeStyles.genWordSpec((sourceManaged in Compile).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, false)
+        }
+      }, 
       scalatestDocSettings,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")

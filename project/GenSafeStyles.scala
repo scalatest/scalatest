@@ -88,23 +88,7 @@ object GenSafeStyles {
 
       /*
 
-      translateFile(targetDir, "SafeFunSpecLike.scala", "scalatest/src/main/scala/org/scalatest/FunSpecLike.scala", scalaVersion, scalaJS, translateLine("FunSpec")),
-      translateFile(targetDir, "SafeFunSpec.scala", "scalatest/src/main/scala/org/scalatest/FunSpec.scala", scalaVersion, scalaJS, translateLine("FunSpec")),
-
-      translateFile(targetDir, "SafePropSpecLike.scala", "scalatest/src/main/scala/org/scalatest/PropSpecLike.scala", scalaVersion, scalaJS, translateLine("PropSpec")),
-      translateFile(targetDir, "SafePropSpec.scala", "scalatest/src/main/scala/org/scalatest/PropSpec.scala", scalaVersion, scalaJS, translateLine("PropSpec")),
-
-      translateFile(targetDir, "SafeWordSpecLike.scala", "scalatest/src/main/scala/org/scalatest/WordSpecLike.scala", scalaVersion, scalaJS, translateLine("WordSpec")),
-      translateFile(targetDir, "SafeWordSpec.scala", "scalatest/src/main/scala/org/scalatest/WordSpec.scala", scalaVersion, scalaJS, translateLine("WordSpec")),
-
-      translateFile(safeFixtureDir, "SafeFunSpecLike.scala", "scalatest/src/main/scala/org/scalatest/fixture/FunSpecLike.scala", scalaVersion, scalaJS, translateLine("FunSpec")),
-      translateFile(safeFixtureDir, "SafeFunSpec.scala", "scalatest/src/main/scala/org/scalatest/fixture/FunSpec.scala", scalaVersion, scalaJS, translateLine("FunSpec")),
-
-      translateFile(safeFixtureDir, "SafePropSpecLike.scala", "scalatest/src/main/scala/org/scalatest/fixture/PropSpecLike.scala", scalaVersion, scalaJS, translateLine("PropSpec")),
-      translateFile(safeFixtureDir, "SafePropSpec.scala", "scalatest/src/main/scala/org/scalatest/fixture/PropSpec.scala", scalaVersion, scalaJS, translateLine("PropSpec")),
-
-      translateFile(safeFixtureDir, "SafeWordSpecLike.scala", "scalatest/src/main/scala/org/scalatest/fixture/WordSpecLike.scala", scalaVersion, scalaJS, translateLine("WordSpec")),
-      translateFile(safeFixtureDir, "SafeWordSpec.scala", "scalatest/src/main/scala/org/scalatest/fixture/WordSpec.scala", scalaVersion, scalaJS, translateLine("WordSpec"))*/
+      */
     )
   }
 
@@ -149,6 +133,39 @@ object GenSafeStyles {
       translateFile(targetDir, "SafeFreeSpec.scala", "jvm/freespec/src/main/scala/org/scalatest/freespec/AnyFreeSpec.scala", scalaVersion, scalaJS, translateLine("AnyFreeSpec")),
       translateFile(targetDir, "FixtureSafeFreeSpecLike.scala", "jvm/freespec/src/main/scala/org/scalatest/freespec/FixtureAnyFreeSpecLike.scala", scalaVersion, scalaJS, translateLine("AnyFreeSpec")),
       translateFile(targetDir, "FixtureSafeFreeSpec.scala", "jvm/freespec/src/main/scala/org/scalatest/freespec/FixtureAnyFreeSpec.scala", scalaVersion, scalaJS, translateLine("AnyFreeSpec")),
+    )
+  }
+
+  def genFunSpec(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
+    targetDir.mkdirs()
+
+    Seq(
+      translateFile(targetDir, "SafeFunSpecLike.scala", "jvm/funspec/src/main/scala/org/scalatest/funspec/AnyFunSpecLike.scala", scalaVersion, scalaJS, translateLine("AnyFunSpec")),
+      translateFile(targetDir, "SafeFunSpec.scala", "jvm/funspec/src/main/scala/org/scalatest/funspec/AnyFunSpec.scala", scalaVersion, scalaJS, translateLine("AnyFunSpec")),
+      translateFile(targetDir, "FixtureSafeFunSpecLike.scala", "jvm/funspec/src/main/scala/org/scalatest/funspec/FixtureAnyFunSpecLike.scala", scalaVersion, scalaJS, translateLine("AnyFunSpec")),
+      translateFile(targetDir, "FixtureSafeFunSpec.scala", "jvm/funspec/src/main/scala/org/scalatest/funspec/FixtureAnyFunSpec.scala", scalaVersion, scalaJS, translateLine("AnyFunSpec")),
+    )
+  }
+
+  def genPropSpec(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
+    targetDir.mkdirs()
+
+    Seq(
+      translateFile(targetDir, "SafePropSpecLike.scala", "jvm/propspec/src/main/scala/org/scalatest/propspec/AnyPropSpecLike.scala", scalaVersion, scalaJS, translateLine("AnyPropSpec")),
+      translateFile(targetDir, "SafePropSpec.scala", "jvm/propspec/src/main/scala/org/scalatest/propspec/AnyPropSpec.scala", scalaVersion, scalaJS, translateLine("AnyPropSpec")),
+      translateFile(targetDir, "FixtureSafePropSpecLike.scala", "jvm/propspec/src/main/scala/org/scalatest/propspec/FixtureAnyPropSpecLike.scala", scalaVersion, scalaJS, translateLine("AnyPropSpec")),
+      translateFile(targetDir, "FixtureSafePropSpec.scala", "jvm/propspec/src/main/scala/org/scalatest/propspec/FixtureAnyPropSpec.scala", scalaVersion, scalaJS, translateLine("AnyPropSpec")),
+    )
+  }
+
+  def genWordSpec(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
+    targetDir.mkdirs()
+
+    Seq(
+      translateFile(targetDir, "SafeWordSpecLike.scala", "jvm/wordspec/src/main/scala/org/scalatest/wordspec/AnyWordSpecLike.scala", scalaVersion, scalaJS, translateLine("AnyWordSpec")),
+      translateFile(targetDir, "SafeWordSpec.scala", "jvm/wordspec/src/main/scala/org/scalatest/wordspec/AnyWordSpec.scala", scalaVersion, scalaJS, translateLine("AnyWordSpec")),
+      translateFile(targetDir, "FixtureSafeWordSpecLike.scala", "jvm/wordspec/src/main/scala/org/scalatest/wordspec/FixtureAnyWordSpecLike.scala", scalaVersion, scalaJS, translateLine("AnyWordSpec")),
+      translateFile(targetDir, "FixtureSafeWordSpec.scala", "jvm/wordspec/src/main/scala/org/scalatest/wordspec/FixtureAnyWordSpec.scala", scalaVersion, scalaJS, translateLine("AnyWordSpec"))
     )
   }
 
