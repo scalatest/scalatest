@@ -399,7 +399,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     .settings(sharedSettings: _*)
     .settings(sharedTestSettings: _*)
     .settings(
-      projectTitle := "ScalaTest FunSuite Test"
+      projectTitle := "ScalaTest FunSuite Test", 
+      sourceGenerators in Test += {
+        Def.task {
+          GenSafeStyles.genFunSuiteTest((sourceManaged in Compile).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, false)
+        }
+      },  
     ).dependsOn(commonTest % "test")  
 
   lazy val scalatestPropSpecTest = project.in(file("jvm/propspec-test"))

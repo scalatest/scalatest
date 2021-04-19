@@ -27,7 +27,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.funsuite.AnyFunSuite
 
-class FunSuiteSpec extends AnyFunSpec {
+class AnyFunSuiteSpec extends AnyFunSpec {
 
   describe("A FunSuite") {
 
@@ -1308,7 +1308,7 @@ class FunSuiteSpec extends AnyFunSpec {
               assert(a == 2)
             }
             assert(e.message == Some("1 did not equal 2"))
-            assert(e.failedCodeFileName == Some("FunSuiteSpec.scala"))
+            assert(e.failedCodeFileName == Some("AnyFunSuiteSpec.scala"))
             assert(e.failedCodeLineNumber == Some(thisLineNumber - 4))
           }
           registerTest("test 2") {
@@ -1368,7 +1368,7 @@ class FunSuiteSpec extends AnyFunSpec {
         assert(testFailedEvents.size === 1)
         assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
         val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-        assert("FunSuiteSpec.scala" === trce.failedCodeFileName.get)
+        assert("AnyFunSuiteSpec.scala" === trce.failedCodeFileName.get)
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
         assert(trce.message == Some("Test cannot be nested inside another test."))
       }
@@ -1399,7 +1399,7 @@ class FunSuiteSpec extends AnyFunSpec {
         assert(testFailedEvents.size === 1)
         assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
         val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-        assert("FunSuiteSpec.scala" === trce.failedCodeFileName.get)
+        assert("AnyFunSuiteSpec.scala" === trce.failedCodeFileName.get)
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
         assert(trce.message == Some("Test cannot be nested inside another test."))
       }
@@ -1418,9 +1418,9 @@ class FunSuiteSpec extends AnyFunSpec {
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size === 2)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "AnyFunSuiteSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "AnyFunSuiteSpec.scala")
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
     }
   }
@@ -1436,7 +1436,7 @@ class FunSuiteSpec extends AnyFunSpec {
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size === 1)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "AnyFunSuiteSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 8)
     }
     
@@ -1466,7 +1466,7 @@ class FunSuiteSpec extends AnyFunSpec {
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FunSuiteSpec.scala" === trce.failedCodeFileName.get)
+      assert("AnyFunSuiteSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("A test clause may not appear inside another test clause."))
     }
@@ -1497,33 +1497,33 @@ class FunSuiteSpec extends AnyFunSpec {
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FunSuiteSpec.scala" === trce.failedCodeFileName.get)
+      assert("AnyFunSuiteSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("An ignore clause may not appear inside a test clause."))
     }
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected") {
       class TestSpec extends AnyFunSuite {
-        test("test 1") {}
-        test("test 1") {}
+        test("test 1") {/* ASSERTION_SUCCEED */}
+        test("test 1") {/* ASSERTION_SUCCEED */}
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
       }
-      assert("FunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert("AnyFunSuiteSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
       assert(!e.cause.isDefined)
     }
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected using ignore") {
       class TestSpec extends AnyFunSuite {
-        test("test 1") {}
-        ignore("test 1") {}
+        test("test 1") {/* ASSERTION_SUCCEED */}
+        ignore("test 1") {/* ASSERTION_SUCCEED */}
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
       }
-      assert("FunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert("AnyFunSuiteSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
       assert(!e.cause.isDefined)
     }

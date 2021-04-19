@@ -26,14 +26,14 @@ object GenSafeStyles {
     line.replaceAllLiterally("with TestRegistration", "with SafeTestRegistration")
         .replaceAllLiterally("with org.scalatest.FixtureTestRegistration", "with org.scalatest.FixtureSafeTestRegistration")
         .replaceAllLiterally("Any /* Assertion */", "Assertion")
-        .replaceAllLiterally(traitName, "Safe" + traitName)
+        .replaceAllLiterally(traitName, "Safe" + (if (traitName.startsWith("Any")) traitName.drop(3) else traitName))
         .replaceAllLiterally("Resources.concurrentSafe" + traitName + "Mod", "Resources.concurrent" + traitName + "Mod")
         .replaceAllLiterally("Resources.concurrentFixtureSafe" + traitName + "Mod", "Resources.concurrentFixture" + traitName + "Mod")
         //.replaceAllLiterally("final override val styleName: String = \"org.scalatest.Safe" + traitName + "\"", "final override val styleName: String = \"org.scalatest." + traitName + "\"")
         .replaceAllLiterally("@Finders(Array(\"org.scalatest.finders.Safe" + traitName + "Finder\"))", "@Finders(Array(\"org.scalatest.finders." + traitName + "Finder\"))")
 
   def translateTestLine(traitName: String)(line: String): String =
-    line.replaceAllLiterally(traitName, "Safe" + traitName)
+    line.replaceAllLiterally(traitName, "Safe" + traitName.drop(3))
     .replaceAllLiterally("/* ASSERTION_SUCCEED */", "succeed")
 
   def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, translateFun: String => String): File = {
@@ -169,14 +169,6 @@ object GenSafeStyles {
     )
   }
 
-  /*def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    genMainImpl(targetDir, version, scalaVersion, false)
-  }
-
-  def genMainForScalaJS(targetDir: File, version: String, scalaVersion: String) {
-    genMainImpl(targetDir, version, scalaVersion, true)
-  }*/
-
   def genTestImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
     targetDir.mkdirs()
 
@@ -184,7 +176,6 @@ object GenSafeStyles {
     fixtureDir.mkdirs()
 
     Seq(
-      translateFile(targetDir, "SafeFunSuiteSpec.scala", "scalatest-test/src/test/scala/org/scalatest/FunSuiteSpec.scala", scalaVersion, scalaJS, translateTestLine("FunSuite")),
       translateFile(targetDir, "SafeFunSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/FunSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FunSpec")),
       translateFile(targetDir, "SafeFunSpecSuite.scala", "scalatest-test/src/test/scala/org/scalatest/FunSpecSuite.scala", scalaVersion, scalaJS, translateTestLine("FunSpec")),
       translateFile(targetDir, "SafeFeatureSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/FeatureSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FeatureSpec")),
@@ -200,6 +191,14 @@ object GenSafeStyles {
       translateFile(fixtureDir, "SafeFreeSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FreeSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FreeSpec")),
       translateFile(fixtureDir, "SafePropSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/PropSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("PropSpec")),
       translateFile(fixtureDir, "SafeWordSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/WordSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("WordSpec"))
+    )
+  }
+
+  def genFunSuiteTest(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
+    targetDir.mkdirs()
+
+    Seq(
+      translateFile(targetDir, "SafeFunSuiteSpec.scala", "jvm/funsuite-test/src/test/scala/org/scalatest/funsuite/AnyFunSuiteSpec.scala", scalaVersion, scalaJS, translateTestLine("AnyFunSuite")),
     )
   }
 
