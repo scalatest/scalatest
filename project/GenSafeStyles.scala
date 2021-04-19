@@ -85,10 +85,6 @@ object GenSafeStyles {
     Seq(
       translateFile(targetDir, "SafeTestRegistration.scala", "jvm/core/src/main/scala/org/scalatest/TestRegistration.scala", scalaVersion, scalaJS, translateLine("TestRegistration")),
       translateFile(targetDir, "FixtureSafeTestRegistration.scala", "jvm/core/src/main/scala/org/scalatest/FixtureTestRegistration.scala", scalaVersion, scalaJS, translateLine("TestRegistration")),
-
-      /*
-
-      */
     )
   }
 
@@ -184,7 +180,6 @@ object GenSafeStyles {
       translateFile(targetDir, "SafePropSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/PropSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("PropSpec")),
       translateFile(targetDir, "SafeWordSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/WordSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("WordSpec")),
 
-      translateFile(fixtureDir, "SafeFunSuiteSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FunSuiteSpec.scala", scalaVersion, scalaJS, translateTestLine("FunSuite")),
       translateFile(fixtureDir, "SafeFunSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FunSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FunSpec")),
       translateFile(fixtureDir, "SafeFeatureSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FeatureSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FeatureSpec")),
       translateFile(fixtureDir, "SafeFlatSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FlatSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FlatSpec")),
@@ -199,6 +194,7 @@ object GenSafeStyles {
 
     Seq(
       translateFile(targetDir, "SafeFunSuiteSpec.scala", "jvm/funsuite-test/src/test/scala/org/scalatest/funsuite/AnyFunSuiteSpec.scala", scalaVersion, scalaJS, translateTestLine("AnyFunSuite")),
+      translateFile(targetDir, "FixtureSafeFunSuiteSpec.scala", "jvm/funsuite-test/src/test/scala/org/scalatest/funsuite/FixtureAnyFunSuiteSpec.scala", scalaVersion, scalaJS, translateTestLine("AnyFunSuite")),
     )
   }
 

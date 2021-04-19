@@ -25,7 +25,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest
 import org.scalatest.funsuite
 
-class FixtureFunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTester*/ {
+class FixtureAnyFunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMethodTester*/ {
 
   describe("A fixture.FunSuite") {
     it("should return the test names in order of registration from testNames") {
@@ -1285,7 +1285,7 @@ class FixtureFunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMet
               assert(a == 2)
             }
             assert(e.message == Some("1 did not equal 2"))
-            assert(e.failedCodeFileName == Some("FixtureFunSuiteSpec.scala"))
+            assert(e.failedCodeFileName == Some("FixtureAnyFunSuiteSpec.scala"))
             assert(e.failedCodeLineNumber == Some(thisLineNumber - 4))
           }
           registerTest("test 2") { fixture =>
@@ -1346,7 +1346,7 @@ class FixtureFunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMet
         assert(testFailedEvents.size === 1)
         assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
         val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-        assert("FixtureFunSuiteSpec.scala" === trce.failedCodeFileName.get)
+        assert("FixtureAnyFunSuiteSpec.scala" === trce.failedCodeFileName.get)
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
         assert(trce.message == Some("Test cannot be nested inside another test."))
       }
@@ -1378,7 +1378,7 @@ class FixtureFunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMet
         assert(testFailedEvents.size === 1)
         assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
         val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-        assert("FixtureFunSuiteSpec.scala" === trce.failedCodeFileName.get)
+        assert("FixtureAnyFunSuiteSpec.scala" === trce.failedCodeFileName.get)
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
         assert(trce.message == Some("Test cannot be nested inside another test."))
       }
@@ -1398,9 +1398,9 @@ class FixtureFunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMet
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size === 2)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureFunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureAnyFunSuiteSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureFunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureAnyFunSuiteSpec.scala")
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
     }
   }
@@ -1421,7 +1421,7 @@ class FixtureFunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMet
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size === 1)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureFunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureAnyFunSuiteSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 8)
     }
     
@@ -1452,7 +1452,7 @@ class FixtureFunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMet
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FixtureFunSuiteSpec.scala" === trce.failedCodeFileName.get)
+      assert("FixtureAnyFunSuiteSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("A test clause may not appear inside another test clause."))
     }
@@ -1484,7 +1484,7 @@ class FixtureFunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMet
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FixtureFunSuiteSpec.scala" === trce.failedCodeFileName.get)
+      assert("FixtureAnyFunSuiteSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("An ignore clause may not appear inside a test clause."))
     }
@@ -1493,13 +1493,13 @@ class FixtureFunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMet
       class TestSpec extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        test("test 1") { fixture => }
-        test("test 1") { fixture => }
+        test("test 1") { fixture => /* ASSERTION_SUCCEED */ }
+        test("test 1") { fixture => /* ASSERTION_SUCCEED */ }
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
       }
-      assert("FixtureFunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAnyFunSuiteSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
       assert(!e.cause.isDefined)
     }
@@ -1508,13 +1508,13 @@ class FixtureFunSuiteSpec extends scalatest.funspec.AnyFunSpec /*with PrivateMet
       class TestSpec extends funsuite.FixtureAnyFunSuite {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        test("test 1") { fixture => }
-        ignore("test 1") { fixture => }
+        test("test 1") { fixture => /* ASSERTION_SUCCEED */ }
+        ignore("test 1") { fixture => /* ASSERTION_SUCCEED */ }
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
       }
-      assert("FixtureFunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAnyFunSuiteSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
       assert(!e.cause.isDefined)
     }
