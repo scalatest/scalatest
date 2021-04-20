@@ -6650,4 +6650,10 @@ class AssertionsSpec extends AnyFunSpec {
       assert(assertResult(2, "clue") { x + 1 } eq Succeeded)
     }
   }
+
+  describe("The Assertions") {
+    it("should not break stripMargin") {
+      assert("foo".stripMargin('!') == "foo") 
+    }    
+  }
 }
