@@ -362,7 +362,8 @@ trait JsBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FlatSpec Test",
       sourceGenerators in Test += {
         Def.task {
-          GenScalaTestJS.genFlatSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+          GenScalaTestJS.genFlatSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genFlatSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
@@ -570,7 +571,8 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       Compile / sourceGenerators += {
         Def.task {
-          GenModulesJS.genScalaTestFlatSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+          GenModulesJS.genScalaTestFlatSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFlatSpec((sourceManaged in Compile).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
