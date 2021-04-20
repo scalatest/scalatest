@@ -949,7 +949,7 @@ trait Assertions extends TripleEquals  {
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  def assertResult(expected: Any, clue: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = {
+  def assertResult[L, R](expected: L, clue: Any)(actual: R)(implicit prettifier: Prettifier, pos: source.Position, caneq: scala.CanEqual[L, R]): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(prettifier, exp, act)
@@ -970,7 +970,7 @@ trait Assertions extends TripleEquals  {
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  def assertResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = {
+  def assertResult[L, R](expected: L)(actual: R)(implicit prettifier: Prettifier, pos: source.Position, caneq: scala.CanEqual[L, R]): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(prettifier, exp, act)

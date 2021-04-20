@@ -68,6 +68,8 @@ class InspectorsSpec extends AnyFunSpec with Inspectors with TableDrivenProperty
       }
     }
     
+    // This does not compile anymore in dotty after CanEqual is added to shouldBe, as the forAll returns Unit trying to compare to Succeeded.
+    // SKIP-DOTTY-START
     ignore("should, when passed a Fact, convert that Fact to an Assertion") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
       import expectations.Expectations._
 
@@ -79,6 +81,7 @@ class InspectorsSpec extends AnyFunSpec with Inspectors with TableDrivenProperty
       tfe.failedCodeFileName should be (Some("InspectorsSpec.scala"))
       tfe.failedCodeLineNumber should be (Some( thisLineNumber - 3))
     }
+    // SKIP-DOTTY-END
     
     it("should throw TestFailedException with correct stack depth and message when at least one element failed") {
       forAll(examples) { colFun => 
