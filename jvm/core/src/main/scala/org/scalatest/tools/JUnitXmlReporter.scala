@@ -371,7 +371,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
         <system-err><![CDATA[]]></system-err>
       </testsuite>
 
-    val prettified = (new xml.PrettyPrinter(76, 2)).format(xmlVal)
+    val prettified = (new PrettyPrinter(76, 2, true)).format(xmlVal)
 
     // scala xml strips out the <![CDATA[]]> elements, so restore them here
     val withCDATA =
