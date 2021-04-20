@@ -165,16 +165,6 @@ object GenSafeStyles {
     )
   }
 
-  def genTestImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
-    targetDir.mkdirs()
-
-    val fixtureDir = new File(targetDir, "fixture")
-    fixtureDir.mkdirs()
-
-    Seq(
-    )
-  }
-
   def genFunSuiteTest(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
     targetDir.mkdirs()
 
@@ -237,9 +227,5 @@ object GenSafeStyles {
       translateFile(targetDir, "SafeWordSpecSpec.scala", "jvm/wordspec-test/src/test/scala/org/scalatest/wordspec/AnyWordSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("AnyWordSpec")),
       translateFile(targetDir, "FixtureSafeWordSpecSpec.scala", "jvm/wordspec-test/src/test/scala/org/scalatest/wordspec/FixtureAnyWordSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("AnyWordSpec"))
     )
-  }
-
-  def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    genTestImpl(targetDir, version, scalaVersion, false)
   }
 }
