@@ -431,7 +431,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     .settings(sharedSettings: _*)
     .settings(sharedTestSettings: _*)
     .settings(
-      projectTitle := "ScalaTest PropSpec Test"
+      projectTitle := "ScalaTest PropSpec Test", 
+      sourceGenerators in Test += {
+        Def.task {
+          GenSafeStyles.genPropSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, false)
+        }
+      }, 
     ).dependsOn(commonTest % "test")
 
   lazy val scalatestWordSpecTest = project.in(file("jvm/wordspec-test"))

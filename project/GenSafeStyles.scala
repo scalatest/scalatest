@@ -172,11 +172,7 @@ object GenSafeStyles {
     fixtureDir.mkdirs()
 
     Seq(
-      
-      translateFile(targetDir, "SafePropSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/PropSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("PropSpec")),
       translateFile(targetDir, "SafeWordSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/WordSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("WordSpec")),
-
-      translateFile(fixtureDir, "SafePropSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/PropSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("PropSpec")),
       translateFile(fixtureDir, "SafeWordSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/WordSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("WordSpec"))
     )
   }
@@ -224,6 +220,15 @@ object GenSafeStyles {
     Seq(
       translateFile(targetDir, "SafeFreeSpecSpec.scala", "jvm/freespec-test/src/test/scala/org/scalatest/freespec/AnyFreeSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("AnyFreeSpec")),
       translateFile(targetDir, "FixtureSafeFreeSpecSpec.scala", "jvm/freespec-test/src/test/scala/org/scalatest/freespec/FixtureAnyFreeSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("AnyFreeSpec")),
+    )
+  }
+
+  def genPropSpecTest(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
+    targetDir.mkdirs()
+
+    Seq(
+      translateFile(targetDir, "SafePropSpecSpec.scala", "jvm/propspec-test/src/test/scala/org/scalatest/propspec/AnyPropSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("AnyPropSpec")),
+      translateFile(targetDir, "FixtureSafePropSpecSpec.scala", "jvm/propspec-test/src/test/scala/org/scalatest/propspec/FixtureAnyPropSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("AnyPropSpec")),
     )
   }
 
