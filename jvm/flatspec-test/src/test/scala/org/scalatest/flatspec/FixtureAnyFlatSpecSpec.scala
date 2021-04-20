@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.flatspec
 
 import org.scalatest._
 import SharedHelpers._
@@ -26,9 +26,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest
 import org.scalatest.flatspec
 
-object SlowTest extends Tag("SlowTest")
-
-class FlatSpecSpec extends scalatest.funspec.AnyFunSpec {
+class FitxureAnyFlatSpecSpec extends scalatest.funspec.AnyFunSpec {
 
   describe("A fixture.FlatSpec ") {
     it("A fixture.Spec should return the test names in order of registration from testNames") {
@@ -1719,7 +1717,7 @@ class FlatSpecSpec extends scalatest.funspec.AnyFunSpec {
             assert(a == 2)
           }
           assert(e.message == Some("1 did not equal 2"))
-          assert(e.failedCodeFileName == Some("FlatSpecSpec.scala"))
+          assert(e.failedCodeFileName == Some("FixtureAnyFlatSpecSpec.scala"))
           assert(e.failedCodeLineNumber == Some(thisLineNumber - 4))
         }
         registerTest("test 2") { fixture =>
@@ -1767,9 +1765,9 @@ class FlatSpecSpec extends scalatest.funspec.AnyFunSpec {
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size === 2)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FlatSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureAnyFlatSpecSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FlatSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureAnyFlatSpecSpec.scala")
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
     }
   }
@@ -1792,9 +1790,9 @@ class FlatSpecSpec extends scalatest.funspec.AnyFunSpec {
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size === 2)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FlatSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureAnyFlatSpecSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 12)
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FlatSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureAnyFlatSpecSpec.scala")
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
     }
     
@@ -1826,7 +1824,7 @@ class FlatSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FlatSpecSpec.scala" === trce.failedCodeFileName.get)
+      assert("FixtureAnyFlatSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("An in clause may not appear inside another in or is clause."))
     }
@@ -1859,7 +1857,7 @@ class FlatSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FlatSpecSpec.scala" === trce.failedCodeFileName.get)
+      assert("FixtureAnyFlatSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("An ignore clause may not appear inside an in or an is clause."))
     }
@@ -1892,7 +1890,7 @@ class FlatSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FlatSpecSpec.scala" === trce.failedCodeFileName.get)
+      assert("FixtureAnyFlatSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
@@ -1925,7 +1923,7 @@ class FlatSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("FlatSpecSpec.scala" === trce.failedCodeFileName.get)
+      assert("FixtureAnyFlatSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
@@ -1935,13 +1933,13 @@ class FlatSpecSpec extends scalatest.funspec.AnyFunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         behavior of "a feature"
-        it should "test 1" in { fixture => }
-        it should "test 1" in { fixture => }
+        it should "test 1" in { fixture => /* ASSERTION_SUCCEED */}
+        it should "test 1" in { fixture => /* ASSERTION_SUCCEED */}
       }
       val e = intercept[DuplicateTestNameException] {
         new TestSpec
       }
-      assert("FlatSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("FixtureAnyFlatSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
       assert(!e.cause.isDefined)
     }

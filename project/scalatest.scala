@@ -383,7 +383,12 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     .settings(sharedSettings: _*)
     .settings(sharedTestSettings: _*)
     .settings(
-      projectTitle := "ScalaTest FlatSpec Test"
+      projectTitle := "ScalaTest FlatSpec Test", 
+      sourceGenerators in Test += {
+        Def.task {
+          GenSafeStyles.genFlatSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, false)
+        }
+      },
     ).dependsOn(commonTest % "test")
 
   lazy val scalatestFreeSpecTest = project.in(file("jvm/freespec-test"))
