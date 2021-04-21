@@ -396,7 +396,8 @@ trait NativeBuild { this: BuildCommons =>
       moduleName := "scalatest-freespec",
       sourceGenerators in Compile += {
         Def.task {
-          GenModulesNative.genScalaTestFreeSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+          GenModulesNative.genScalaTestFreeSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFreeSpec((sourceManaged in Compile).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -807,7 +808,8 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FreeSpec Test",
       sourceGenerators in Test += {
         Def.task {
-          GenScalaTestNative.genFreeSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+          GenScalaTestNative.genFreeSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFreeSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
