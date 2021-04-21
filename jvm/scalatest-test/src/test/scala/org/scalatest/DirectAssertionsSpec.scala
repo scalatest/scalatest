@@ -6426,11 +6426,12 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assertResult("hi") { n1 }
       }
       val a1 = Array(1, 2, 3)
+      val aNull: Array[Int] = null
       intercept[TestFailedException] {
-        org.scalatest.Assertions.assertResult(n1) { a1 }
+        org.scalatest.Assertions.assertResult(aNull) { a1 }
       }
       intercept[TestFailedException] {
-        org.scalatest.Assertions.assertResult(a1) { n1 }
+        org.scalatest.Assertions.assertResult(a1) { aNull }
       }
       val a = "hi"
       val e1 = intercept[TestFailedException] {
@@ -6493,11 +6494,12 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assertResult("hi", "a clue") { n1 }
       }
       val a1 = Array(1, 2, 3)
+      val aNull: Array[Int] = null
       intercept[TestFailedException] {
-        org.scalatest.Assertions.assertResult(n1, "a clue") { a1 }
+        org.scalatest.Assertions.assertResult(aNull, "a clue") { a1 }
       }
       intercept[TestFailedException] {
-        org.scalatest.Assertions.assertResult(a1, "a clue") { n1 }
+        org.scalatest.Assertions.assertResult(a1, "a clue") { aNull }
       }
       val a = "hi"
       val e1 = intercept[TestFailedException] {
