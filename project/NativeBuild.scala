@@ -750,7 +750,7 @@ trait NativeBuild { this: BuildCommons =>
         }*/
     ).dependsOn(scalatestNative % "test", commonTestNative % "test")
      .enablePlugins(ScalaNativePlugin)
-     /*.aggregate(
+     .aggregate(
        scalatestDiagramsTestNative, 
        scalatestFeatureSpecTestNative, 
        scalatestFlatSpecTestNative, 
@@ -759,7 +759,7 @@ trait NativeBuild { this: BuildCommons =>
        scalatestFunSuiteTestNative, 
        scalatestPropSpecTestNative, 
        scalatestWordSpecTestNative
-    )*/
+    )
 
   lazy val scalatestDiagramsTestNative = project.in(file("native/diagrams-test"))
     .settings(sharedSettings ++ sharedNativeSettings)
