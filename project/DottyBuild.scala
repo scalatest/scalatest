@@ -244,7 +244,8 @@ trait DottyBuild { this: BuildCommons =>
         ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
         ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)  ++
         GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-        GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+        GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+        GenSafeStyles.genCore((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value, true)
       }.taskValue,
       javaSourceManaged := target.value / "java",
       managedSourceDirectories in Compile += javaSourceManaged.value,
@@ -829,7 +830,11 @@ trait DottyBuild { this: BuildCommons =>
     .settings(
       projectTitle := "ScalaTest FeatureSpec Test",
       sourceGenerators in Test += Def.task {
-        GenScalaTestDotty.genFeatureSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+        GenScalaTestDotty.genFeatureSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value) ++ 
+        GenSafeStyles.genFeatureSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true).filter { f =>
+          f.getName != "FixtureSafeFeatureSpecSpec.scala" && 
+          f.getName != "SafeFeatureSpecSpec.scala"
+        }
       }.taskValue,
     ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
 
@@ -855,7 +860,11 @@ trait DottyBuild { this: BuildCommons =>
     .settings(
       projectTitle := "ScalaTest FlatSpec Test",
       sourceGenerators in Test += Def.task {
-        GenScalaTestDotty.genFlatSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+        GenScalaTestDotty.genFlatSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value) ++ 
+        GenSafeStyles.genFlatSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true).filter { f =>
+          f.getName != "FixtureSafeFlatSpecSpec.scala" && 
+          f.getName != "SafeFlatSpecSpec.scala"
+        }
       }.taskValue,
     ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
 
@@ -881,7 +890,11 @@ trait DottyBuild { this: BuildCommons =>
     .settings(
       projectTitle := "ScalaTest FreeSpec Test",
       sourceGenerators in Test += Def.task {
-        GenScalaTestDotty.genFreeSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+        GenScalaTestDotty.genFreeSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value) ++ 
+        GenSafeStyles.genFreeSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true).filter { f =>
+          f.getName != "FixtureSafeFreeSpecSpec.scala" && 
+          f.getName != "SafeFreeSpecSpec.scala"
+        }
       }.taskValue,
     ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
 
@@ -907,7 +920,11 @@ trait DottyBuild { this: BuildCommons =>
     .settings(
       projectTitle := "ScalaTest FunSpec Test",
       sourceGenerators in Test += Def.task {
-        GenScalaTestDotty.genFunSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+        GenScalaTestDotty.genFunSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value) ++ 
+        GenSafeStyles.genFunSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true).filter { f =>
+          f.getName != "FixtureSafeFunSpecSpec.scala" && 
+          f.getName != "SafeFunSpecSpec.scala"
+        }
       }.taskValue,
     ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
 
@@ -933,7 +950,11 @@ trait DottyBuild { this: BuildCommons =>
     .settings(
       projectTitle := "ScalaTest FunSuite Test",
       sourceGenerators in Test += Def.task {
-        GenScalaTestDotty.genFunSuiteTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+        GenScalaTestDotty.genFunSuiteTestJS((sourceManaged in Test).value, version.value, scalaVersion.value) ++ 
+        GenSafeStyles.genFunSuiteTest((sourceManaged in Compile).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true).filter { f =>
+          f.getName != "FixtureSafeFunSuiteSpec.scala" && 
+          f.getName != "SafeFunSuiteSpec.scala"
+        }
       }.taskValue,
     ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
 
@@ -959,7 +980,11 @@ trait DottyBuild { this: BuildCommons =>
     .settings(
       projectTitle := "ScalaTest PropSpec Test",
       sourceGenerators in Test += Def.task {
-        GenScalaTestDotty.genPropSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+        GenScalaTestDotty.genPropSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value) ++ 
+        GenSafeStyles.genPropSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true).filter { f =>
+          f.getName != "FixtureSafePropSpecSpec.scala" && 
+          f.getName != "SafePropSpecSpec.scala"
+        }
       }.taskValue,
     ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)             
 
@@ -985,7 +1010,11 @@ trait DottyBuild { this: BuildCommons =>
     .settings(
       projectTitle := "ScalaTest WordSpec Test",
       sourceGenerators in Test += Def.task {
-        GenScalaTestDotty.genWordSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+        GenScalaTestDotty.genWordSpecTestJS((sourceManaged in Test).value, version.value, scalaVersion.value) ++ 
+        GenSafeStyles.genWordSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true).filter { f =>
+          f.getName != "FixtureSafeWordSpecSpec.scala" && 
+          f.getName != "SafeWordSpecSpec.scala"
+        }
       }.taskValue,
     ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin) 
 
