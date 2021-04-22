@@ -426,7 +426,8 @@ trait NativeBuild { this: BuildCommons =>
       moduleName := "scalatest-funsuite",
       sourceGenerators in Compile += {
         Def.task {
-          GenModulesNative.genScalaTestFunSuite((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+          GenModulesNative.genScalaTestFunSuite((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFunSuite((sourceManaged in Compile).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -833,7 +834,8 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FunSuite Test",
       sourceGenerators in Test += {
         Def.task {
-          GenScalaTestNative.genFunSuiteTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+          GenScalaTestNative.genFunSuiteTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFunSuiteTest((sourceManaged in Test).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
