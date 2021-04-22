@@ -702,7 +702,7 @@ object GenScalaTestDotty {
   def genFunSuiteTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDirJS("jvm/funsuite-test/src/test/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, 
       List(
-        "FunSuiteSpec.scala", 
+        "AnyFunSuiteSpec.scala", 
         "FixtureAnyFunSuiteSpec.scala"
       )
     )  
@@ -747,7 +747,7 @@ object GenScalaTestDotty {
         "WordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
         "AnyWordSpecSpec.scala", // skipped because does not compile yet
         "FixtureWordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
-        "AnyFixtureWordSpecSpec.scala" // skipped because does not compile yet
+        "FixtureAnyWordSpecSpec.scala" // skipped because does not compile yet
       )
     )      
 }
