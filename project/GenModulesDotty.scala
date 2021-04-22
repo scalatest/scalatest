@@ -53,12 +53,25 @@ object GenModulesDotty {
   
   /** (targetDir, version, scalaVersion) => generated files */
   type GenFn = (File, String, String) => Seq[File]
+
+  def genModuleFiles(moduleName: String, targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    moduleName match {
+      case "featurespec" => GenSafeStyles.genFeatureSpec(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, false)
+      case "flatspec" => GenSafeStyles.genFlatSpec(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, false)
+      case "freespec" => GenSafeStyles.genFreeSpec(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, false)
+      case "funsuite" => GenSafeStyles.genFunSuite(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, false)
+      case "funspec" => GenSafeStyles.genFunSpec(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, false)
+      case "propspec" => GenSafeStyles.genPropSpec(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, false)
+      case "wordspec" => GenSafeStyles.genWordSpec(new File(targetDir.getAbsolutePath + "/org/scalatest/" + moduleName), version, scalaVersion, false)
+      case _ => Seq.empty[File]
+    }
   
   def apply(moduleDirName: String, packagePaths: Seq[String]): GenFn = (targetDir, version, scalaVersion) => {
     GenScalaTestDotty.genScalaPackages
       .filter { case (packagePath, _) => packagePaths.contains(packagePath) }
       .flatMap { case (packagePath, skipList) =>
-        GenScalaTestDotty.copyDir(s"jvm/$moduleDirName/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+        GenScalaTestDotty.copyDir(s"jvm/$moduleDirName/src/main/scala/" + packagePath, packagePath, targetDir, skipList) ++ 
+        genModuleFiles(moduleDirName, targetDir, version, scalaVersion)
       }.toList
   }
   

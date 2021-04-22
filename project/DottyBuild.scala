@@ -165,7 +165,8 @@ trait DottyBuild { this: BuildCommons =>
           ScalaTestGenResourcesJVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           ScalaTestGenResourcesJVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)  ++
           GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-          GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+          GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genCore((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value, false)
         }.taskValue,
       javaSourceManaged := target.value / "java",
       managedSourceDirectories in Compile += javaSourceManaged.value,

@@ -650,44 +650,52 @@ object GenScalaTestDotty {
     copyDirJS("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)  
 
   def genFlatSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, List.empty)
+    copyDir("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, 
+      List(
+        "FixtureAnyFlatSpecSpec.scala" // skipped because tests failed
+      )
+    )
 
   def genFlatSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDirJS("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, List.empty)      
+    copyDirJS("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, 
+      List(
+        "FixtureAnyFlatSpecSpec.scala" // skipped because tests failed
+      )
+    )      
 
   def genFreeSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/freespec-test/src/test/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, 
       List(
-        "FixtureFreeSpecSpec.scala" // skipped because tests failed
+        "FixtureAnyFreeSpecSpec.scala" // skipped because tests failed
       )
     )
 
   def genFreeSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDirJS("jvm/freespec-test/src/test/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, 
       List(
-        "FixtureFreeSpecSpec.scala" // skipped because tests failed
+        "FixtureAnyFreeSpecSpec.scala" // skipped because tests failed
       )
     )  
 
   def genFunSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/funspec-test/src/test/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, 
       List(
-        "FixtureFunSpecSpec.scala" // skipped because tests failed
+        "FixtureAnyFunSpecSpec.scala" // skipped because tests failed
       )
     )
 
   def genFunSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDirJS("jvm/funspec-test/src/test/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, 
       List(
-        "FixtureFunSpecSpec.scala" // skipped because tests failed
+        "FixtureAnyFunSpecSpec.scala" // skipped because tests failed
       )
     )      
 
   def genFunSuiteTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/funsuite-test/src/test/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, 
       List(
-        "FunSuiteSpec.scala", 
-        "FixtureFunSuiteSpec.scala"
+        "AnyFunSuiteSpec.scala", 
+        "FixtureAnyFunSuiteSpec.scala"
       )
     )
 
@@ -695,23 +703,23 @@ object GenScalaTestDotty {
     copyDirJS("jvm/funsuite-test/src/test/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, 
       List(
         "FunSuiteSpec.scala", 
-        "FixtureFunSuiteSpec.scala"
+        "FixtureAnyFunSuiteSpec.scala"
       )
     )  
 
   def genPropSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/propspec-test/src/test/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, 
       List(
-        "PropSpecSpec.scala", 
-        "FixturePropSpecSpec.scala"
+        "AnyPropSpecSpec.scala", 
+        "FixtureAnyPropSpecSpec.scala"
       )
     )
 
   def genPropSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDirJS("jvm/propspec-test/src/test/scala/org/scalatest/propspec", "org/scalatest/propspec", targetDir, 
       List(
-        "PropSpecSpec.scala", 
-        "FixturePropSpecSpec.scala"
+        "AnyPropSpecSpec.scala", 
+        "FixtureAnyPropSpecSpec.scala"
       )
     )  
 
@@ -723,9 +731,9 @@ object GenScalaTestDotty {
         "FixtureAsyncWordSpecLikeSpec.scala", // skipped because does not compile yet
         "FixtureAsyncWordSpecSpec.scala", // skipped because does not compile yet
         "WordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
-        "WordSpecSpec.scala", // skipped because does not compile yet
+        "AnyWordSpecSpec.scala", // skipped because does not compile yet
         "FixtureWordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
-        "FixtureWordSpecSpec.scala" // skipped because does not compile yet
+        "FixtureAnyWordSpecSpec.scala" // skipped because does not compile yet
       )
     )
 
@@ -737,9 +745,9 @@ object GenScalaTestDotty {
         "FixtureAsyncWordSpecLikeSpec.scala", // skipped because does not compile yet
         "FixtureAsyncWordSpecSpec.scala", // skipped because does not compile yet
         "WordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
-        "WordSpecSpec.scala", // skipped because does not compile yet
+        "AnyWordSpecSpec.scala", // skipped because does not compile yet
         "FixtureWordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
-        "FixtureWordSpecSpec.scala" // skipped because does not compile yet
+        "AnyFixtureWordSpecSpec.scala" // skipped because does not compile yet
       )
     )      
 }
