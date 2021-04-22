@@ -675,6 +675,10 @@ trait NativeBuild { this: BuildCommons =>
       "-m", "org.scalatest.featurespec",
       "-m", "org.scalatest.flatspec",
       "-m", "org.scalatest.freespec",
+      "-m", "org.scalatest.funspec",
+      "-m", "org.scalatest.funsuite",
+      "-m", "org.scalatest.propspec",
+      "-m", "org.scalatest.wordspec",
       "-oDIF"))
 
   lazy val commonTestNative = project.in(file("native/common-test"))
