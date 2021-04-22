@@ -516,7 +516,8 @@ trait NativeBuild { this: BuildCommons =>
       moduleName := "scalatest-wordspec",
       sourceGenerators in Compile += {
         Def.task {
-          GenModulesNative.genScalaTestWordSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+          GenModulesNative.genScalaTestWordSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genWordSpec((sourceManaged in Compile).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -863,7 +864,8 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest WordSpec Test",
       sourceGenerators in Test += {
         Def.task {
-          GenScalaTestNative.genWordSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+          GenScalaTestNative.genWordSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genWordSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)  
