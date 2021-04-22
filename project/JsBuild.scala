@@ -708,7 +708,7 @@ trait JsBuild { this: BuildCommons =>
       Compile / sourceGenerators += {
         Def.task {
           GenModulesJS.genScalaTestPropSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genPropSpec((sourceManaged in Compile).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, false)
+          GenSafeStyles.genPropSpec((sourceManaged in Compile).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),

@@ -486,7 +486,8 @@ trait NativeBuild { this: BuildCommons =>
       moduleName := "scalatest-propspec",
       sourceGenerators in Compile += {
         Def.task {
-          GenModulesNative.genScalaTestPropSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+          GenModulesNative.genScalaTestPropSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genPropSpec((sourceManaged in Compile).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -849,7 +850,8 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest PropSpec Test",
       sourceGenerators in Test += {
         Def.task {
-          GenScalaTestNative.genPropSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+          GenScalaTestNative.genPropSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genPropSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
