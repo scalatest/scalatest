@@ -118,7 +118,7 @@ object GenScalacticJS {
   }
 
   def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyResourceDir("jvm/core/src/main/html", "html", targetDir, List.empty)
+    copyResourceDir("scalatest-doc/src/main/html", "html", targetDir, List.empty)
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
