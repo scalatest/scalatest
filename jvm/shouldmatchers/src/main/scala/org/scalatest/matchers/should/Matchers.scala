@@ -5533,7 +5533,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
+    // SKIP-DOTTY-START 
     def shouldBe(right: Any): Assertion = {
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY def shouldBe[R](right: R)(implicit caneq: scala.CanEqual[T, R]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (e != right) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
@@ -7011,7 +7014,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START 
     def shouldBe(right: Any): Assertion = {
     // SKIP-DOTTY-END
-    //DOTTY-ONLY extension [T](leftSideValue: T)(using pos: source.Position, prettifier: Prettifier) def shouldBe(right: Any): Assertion = {
+    //DOTTY-ONLY extension [T, R](leftSideValue: T)(using pos: source.Position, prettifier: Prettifier) def shouldBe(right: R)(implicit caneq: scala.CanEqual[T, R]): Assertion = {
       if (!areEqualComparingArraysStructurally(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
         val localPrettifier = prettifier // Grabbing a local copy so we don't attempt to serialize AnyShouldWrapper (since first param to indicateFailure is a by-name)

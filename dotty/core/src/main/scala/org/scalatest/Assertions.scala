@@ -949,7 +949,7 @@ trait Assertions extends TripleEquals  {
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  def assertResult(expected: Any, clue: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = {
+  def assertResult[L, R](expected: L, clue: Any)(actual: R)(implicit prettifier: Prettifier, pos: source.Position, caneq: scala.CanEqual[L, R]): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(prettifier, exp, act)
@@ -970,7 +970,7 @@ trait Assertions extends TripleEquals  {
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  def assertResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = {
+  def assertResult[L, R](expected: L)(actual: R)(implicit prettifier: Prettifier, pos: source.Position, caneq: scala.CanEqual[L, R]): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(prettifier, exp, act)
@@ -1295,8 +1295,13 @@ trait Assertions extends TripleEquals  {
    */
   final val succeed: Assertion = Succeeded
 
+  final val pipeChar = '|'
+
   extension (x: String) inline def stripMargin: String =
-    ${ org.scalatest.Assertions.stripMarginImpl('x) }
+    ${ org.scalatest.Assertions.stripMarginImpl('x, 'pipeChar) }
+
+  extension (x: String) inline def stripMargin(c: Char): String =
+    ${ org.scalatest.Assertions.stripMarginImpl('x, 'c) }  
 }
 
 /**
@@ -1344,9 +1349,9 @@ trait Assertions extends TripleEquals  {
 object Assertions extends Assertions {
   import scala.quoted._
 
-  def stripMarginImpl(x: Expr[String])(using Quotes): Expr[String] = x.value match {
-    case Some(str) => Expr(new scala.collection.immutable.StringOps(str).stripMargin)
-    case _ => '{ new scala.collection.immutable.StringOps($x).stripMargin }
+  def stripMarginImpl(x: Expr[String], c: Expr[Char])(using Quotes): Expr[String] = x.value match {
+    case Some(str) => Expr(new scala.collection.immutable.StringOps(str).stripMargin(c.value.getOrElse('|')))
+    case _ => '{ new scala.collection.immutable.StringOps($x).stripMargin($c) }
   }
 
   @deprecated("The trap method is no longer needed for demos in the REPL, which now abreviates stack traces, so NormalResult will be removed in a future version of ScalaTest")
