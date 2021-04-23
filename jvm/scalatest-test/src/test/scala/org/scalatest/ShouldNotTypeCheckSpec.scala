@@ -42,7 +42,6 @@ class ShouldNotTypeCheckSpec extends AnyFunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
 
-      // SKIP-DOTTY-START
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           "println(\"test)" shouldNot typeCheck
@@ -53,7 +52,6 @@ class ShouldNotTypeCheckSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
-      // SKIP-DOTTY-END
 
       it("should do nothing when used with 'val i: Int = null") {
         "val i: Int = null" shouldNot typeCheck
@@ -91,7 +89,6 @@ class ShouldNotTypeCheckSpec extends AnyFunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
 
-      // SKIP-DOTTY-START
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           """println("test)""" shouldNot typeCheck
@@ -102,7 +99,6 @@ class ShouldNotTypeCheckSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
-      // SKIP-DOTTY-END
 
       it("should do nothing when used with 'val i: Int = null") {
         """val i: Int = null""" shouldNot typeCheck
@@ -125,7 +121,6 @@ class ShouldNotTypeCheckSpec extends AnyFunSpec {
       }
     }
 
-    // SKIP-DOTTY-START
     describe("when work with triple quotes string literal with stripMargin") {
 
       it("should do nothing when type check failed") {
@@ -182,6 +177,5 @@ class ShouldNotTypeCheckSpec extends AnyFunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
     }
-    // SKIP-DOTTY-END
   }
 }
