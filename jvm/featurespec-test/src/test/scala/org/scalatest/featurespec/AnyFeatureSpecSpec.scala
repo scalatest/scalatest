@@ -46,7 +46,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.funspec.AnyFunSpec
 
-class FeatureSpecSpec extends AnyFunSpec {
+class AnyFeatureSpecSpec extends AnyFunSpec {
 
   private val prettifier = Prettifier.default
 
@@ -1105,7 +1105,7 @@ class FeatureSpecSpec extends AnyFunSpec {
             assert(a == 2)
           }
           assert(e.message == Some("1 did not equal 2"))
-          assert(e.failedCodeFileName == Some("FeatureSpecSpec.scala"))
+          assert(e.failedCodeFileName == Some("AnyFeatureSpecSpec.scala"))
           assert(e.failedCodeLineNumber == Some(thisLineNumber - 4))
         }
         registerTest("test 2") {
@@ -1156,9 +1156,9 @@ class FeatureSpecSpec extends AnyFunSpec {
         val s1 = new TestSpec
         s1.run(None, Args(rep))
         assert(rep.testFailedEventsReceived.size === 2)
-        assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FeatureSpecSpec.scala")
+        assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "AnyFeatureSpecSpec.scala")
         assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 13)
-        assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FeatureSpecSpec.scala")
+        assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "AnyFeatureSpecSpec.scala")
         assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
       }
       
@@ -1178,7 +1178,7 @@ class FeatureSpecSpec extends AnyFunSpec {
         val caught = intercept[NotAllowedException] {
           new TestSpec
         }
-        assert(caught.failedCodeFileName.get === "FeatureSpecSpec.scala")
+        assert(caught.failedCodeFileName.get === "AnyFeatureSpecSpec.scala")
         assert(caught.failedCodeLineNumber.get === thisLineNumber - 12)
       }
       // SKIP-DOTTY-END
@@ -1213,7 +1213,7 @@ class FeatureSpecSpec extends AnyFunSpec {
         assert(testFailedEvents.size === 1)
         assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
         val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-        assert("FeatureSpecSpec.scala" === trce.failedCodeFileName.get)
+        assert("AnyFeatureSpecSpec.scala" === trce.failedCodeFileName.get)
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
         assert(trce.message == Some("A scenario clause may not appear inside another scenario clause."))
       }
@@ -1246,7 +1246,7 @@ class FeatureSpecSpec extends AnyFunSpec {
         assert(testFailedEvents.size === 1)
         assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
         val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-        assert("FeatureSpecSpec.scala" === trce.failedCodeFileName.get)
+        assert("AnyFeatureSpecSpec.scala" === trce.failedCodeFileName.get)
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
         assert(trce.message == Some("An ignore clause may not appear inside a scenario clause."))
       }
@@ -1279,7 +1279,7 @@ class FeatureSpecSpec extends AnyFunSpec {
         assert(testFailedEvents.size === 1)
         assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
         val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-        assert("FeatureSpecSpec.scala" === trce.failedCodeFileName.get)
+        assert("AnyFeatureSpecSpec.scala" === trce.failedCodeFileName.get)
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
         assert(trce.message == Some("Test cannot be nested inside another test."))
       }
@@ -1312,7 +1312,7 @@ class FeatureSpecSpec extends AnyFunSpec {
         assert(testFailedEvents.size === 1)
         assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
         val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-        assert("FeatureSpecSpec.scala" === trce.failedCodeFileName.get)
+        assert("AnyFeatureSpecSpec.scala" === trce.failedCodeFileName.get)
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
         assert(trce.message == Some("Test cannot be nested inside another test."))
       }
@@ -1329,7 +1329,7 @@ class FeatureSpecSpec extends AnyFunSpec {
         val e = intercept[NotAllowedException] {
           new TestSpec
         }
-        assert("FeatureSpecSpec.scala" == e.failedCodeFileName.get)
+        assert("AnyFeatureSpecSpec.scala" == e.failedCodeFileName.get)
         assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
         assert(e.message == Some(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause))
 
@@ -1337,7 +1337,7 @@ class FeatureSpecSpec extends AnyFunSpec {
         val causeThrowable = e.cause.get
         assert(causeThrowable.isInstanceOf[TestFailedException])
         val cause = causeThrowable.asInstanceOf[TestFailedException]
-        assert("FeatureSpecSpec.scala" == cause.failedCodeFileName.get)
+        assert("AnyFeatureSpecSpec.scala" == cause.failedCodeFileName.get)
         assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
         assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
       }
@@ -1352,7 +1352,7 @@ class FeatureSpecSpec extends AnyFunSpec {
         val e = intercept[NotAllowedException] {
           new TestSpec
         }
-        assert("FeatureSpecSpec.scala" == e.failedCodeFileName.get)
+        assert("AnyFeatureSpecSpec.scala" == e.failedCodeFileName.get)
         assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
         assert(e.message == Some(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause))
 
@@ -1360,7 +1360,7 @@ class FeatureSpecSpec extends AnyFunSpec {
         val causeThrowable = e.cause.get
         assert(causeThrowable.isInstanceOf[TestCanceledException])
         val cause = causeThrowable.asInstanceOf[TestCanceledException]
-        assert("FeatureSpecSpec.scala" == cause.failedCodeFileName.get)
+        assert("AnyFeatureSpecSpec.scala" == cause.failedCodeFileName.get)
         assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
         assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
       }
@@ -1376,7 +1376,7 @@ class FeatureSpecSpec extends AnyFunSpec {
         val e = intercept[NotAllowedException] {
           new TestSpec
         }
-        assert("FeatureSpecSpec.scala" == e.failedCodeFileName.get)
+        assert("AnyFeatureSpecSpec.scala" == e.failedCodeFileName.get)
         assert(e.failedCodeLineNumber.get == thisLineNumber - 8)
         assert(e.cause.isDefined)
         val causeThrowable = e.cause.get
@@ -1391,14 +1391,14 @@ class FeatureSpecSpec extends AnyFunSpec {
       it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
         class TestSpec extends AnyFeatureSpec {
           Feature("a feature") {
-            Scenario("test 1") {}
-            Scenario("test 1") {}
+            Scenario("test 1") {/* ASSERTION_SUCCEED */}
+            Scenario("test 1") {/* ASSERTION_SUCCEED */}
           }
         }
         val e = intercept[NotAllowedException] {
           new TestSpec
         }
-        assert("FeatureSpecSpec.scala" == e.failedCodeFileName.get)
+        assert("AnyFeatureSpecSpec.scala" == e.failedCodeFileName.get)
         assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
         assert(e.cause.isDefined)
         val causeThrowable = e.cause.get
@@ -1524,9 +1524,9 @@ class FeatureSpecSpec extends AnyFunSpec {
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size === 2)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FeatureSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "AnyFeatureSpecSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 13)
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FeatureSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "AnyFeatureSpecSpec.scala")
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
     }
     

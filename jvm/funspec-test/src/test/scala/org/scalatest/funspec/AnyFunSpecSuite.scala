@@ -33,7 +33,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
-class FunSpecSuite extends AnyFunSuite {
+class AnyFunSpecSuite extends AnyFunSuite {
 
   test("three plain-old specifiers should be invoked in order") {
     class MySpec extends AnyFunSpec with Matchers {
