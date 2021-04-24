@@ -78,7 +78,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val rt = new StatefulRoseTree(StatefulInt(72))
       rt.value.value shouldBe 72
 
-      def processFun(i: StatefulInt): (Boolean, Option[_]) = {
+      def processFun(i: StatefulInt): (Boolean, Option[String]) = {
         i.processed = true
         (i.value < 12, None)
       }

@@ -755,7 +755,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should shrink Doubles by dropping the fraction part then repeatedly 'square-rooting' and negating") {
         import GeneratorDrivenPropertyChecks._
   // try with -173126.1489439121
-        forAll { (shrinkRoseTree: RoseTree[Byte]) =>
+        forAll { (shrinkRoseTree: RoseTree[Double]) =>
           val d = shrinkRoseTree.value
           val shrinks: List[Double] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
