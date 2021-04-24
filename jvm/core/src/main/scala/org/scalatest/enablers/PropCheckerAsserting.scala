@@ -184,7 +184,7 @@ abstract class UnitPropCheckerAsserting {
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
             // Let's shrink the failing value
-            val (shrunkRtOfA, errOpt, _) = 
+            val (shrunkRtOfA, errOpt1, _) = 
               roseTreeOfA.depthFirstShrinks(
                 value => {
                   val result: Try[T] = Try { fun(value) }
@@ -198,6 +198,7 @@ abstract class UnitPropCheckerAsserting {
 
             // We'll use the head of the shrunk value if available, if not we'll just use back roseTreeOfA
             val bestA = shrunkRtOfA.headOption.getOrElse(roseTreeOfA).value
+            val errOpt = List(Some(ex), errOpt1).flatten.lastOption
             println(s"############ BEST A: $bestA")
             val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestA) else PropertyArgument(None, bestA))
             println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
@@ -271,7 +272,45 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
+            // Let's shrink the failing value
+            val (shrunkRtOfA, errOpt1, rnd4) = 
+              roseTreeOfA.depthFirstShrinks(
+                value => {
+                  val result: Try[T] = Try { fun(value, b) }
+                  result match {
+                    case Success(_) => (true, None)
+                    case Failure(shrunkEx) => (false, Some(shrunkEx))
+                  }
+                }, 
+                rnd3
+              )
+
+            val bestA = shrunkRtOfA.headOption.getOrElse(roseTreeOfA).value  
+
+            val (shrunkRtOfB, errOpt2, _) = 
+              roseTreeOfB.depthFirstShrinks(
+                value => {
+                  val result: Try[T] = Try { fun(bestA, value) }
+                  result match {
+                    case Success(_) => (true, None)
+                    case Failure(shrunkEx) => (false, Some(shrunkEx))
+                  }
+                }, 
+                rnd4
+              )
+
+            // We'll use the head of the shrunk value if available, if not we'll just use back roseTreeOfA
+            val bestB = shrunkRtOfB.headOption.getOrElse(roseTreeOfB).value
+            val errOpt = List(Some(ex), errOpt1, errOpt2).flatten.lastOption
+            println(s"############ BEST A: $bestA")
+            println(s"############ BEST B: $bestB")
+            val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), (bestA, bestB)) else PropertyArgument(None, (bestA, bestB)))
+            println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
+            val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
+            println(s"############ THE RES: $theRes")
+            theRes
+
+            //new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)
         }
       }
 
