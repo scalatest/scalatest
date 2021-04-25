@@ -51,6 +51,17 @@ trait RoseTree[T] { thisRoseTreeOfT =>
     shrinkLoop(this, None, firstLevelShrinks, Set(value), nextRnd)
   }
 
+  def combineFirstDepthShrinks[E, U](fun: (T, U) => (Boolean, Option[E]), rnd: Randomizer, roseTreeOfU: RoseTree[U]): (List[RoseTree[(T, U)]], Option[E], Randomizer) = {
+    val (shrunkRtOfT, errOpt1, rnd2) = depthFirstShrinks(value => fun(value, roseTreeOfU.value), rnd)
+    val bestT = shrunkRtOfT.headOption.getOrElse(this)
+    val bestTValue = bestT.value
+    val (shrunkRtOfU, errOpt2, rnd3) = roseTreeOfU.depthFirstShrinks(value => fun(bestTValue, value), rnd2)
+    val bestU = shrunkRtOfU.headOption.getOrElse(roseTreeOfU)
+    val bestUValue = bestU.value
+    val errOpt = List(errOpt1, errOpt2).flatten.lastOption
+    (List(bestT.map(t => (t, bestUValue))), errOpt, rnd3)
+  }
+
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
   // for each shrunken Char, we'll get the one (Char, Int).
   def map[U](f: T => U): RoseTree[U] = {
