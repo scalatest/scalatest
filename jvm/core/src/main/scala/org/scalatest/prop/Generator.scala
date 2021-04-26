@@ -619,16 +619,13 @@ object Generator {
 
       case class NextRoseTree(value: Short) extends RoseTree[Short] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Short]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(n: Short, acc: List[RoseTree[Short]]): List[RoseTree[Short]] = {
-            if (n == 0) acc
-            else {
-              val half: Short = (n / 2).toShort
-              if (half == 0) Rose(0.toShort) :: acc
-              else shrinkLoop(half, NextRoseTree((-half).toShort) :: NextRoseTree(half) :: acc)
-            }
+          if (value == 0)
+            (List.empty, rndPassedToShrinks)
+          else {
+            val half: Short = (value / 2).toShort
+            val minusOne: Short = (if (value > 0) value - 1 else value + 1).toShort
+            (List(NextRoseTree(half), NextRoseTree(minusOne)), rndPassedToShrinks)
           }
-          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       }
 
@@ -703,16 +700,6 @@ object Generator {
 
       case class NextRoseTree(value: Int) extends RoseTree[Int] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Int]], Randomizer) = {
-          /*@tailrec
-          def shrinkLoop(i: Int, acc: List[RoseTree[Int]]): List[RoseTree[Int]] = {
-            if (i == 0) acc
-            else {
-              val half: Int = i / 2
-              if (half == 0) Rose(0) :: acc
-              else shrinkLoop(half, NextRoseTree(-half) :: NextRoseTree(half) :: acc)
-            }
-          }
-          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)*/
           if (value == 0)
             (List.empty, rndPassedToShrinks)
           else {
