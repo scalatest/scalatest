@@ -53,27 +53,45 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       shrinks should have length 1
       shrinks(0).value shouldBe 12
     }
-    it("should offer a depthFirstShrinks method that follows the 'depth-first' algo") {
 
-      case class StatefulInt(value: Int) {
-        var processed = false
-      }
+    case class StatefulInt(value: Int) {
+      var processed = false
+    }
 
-      class StatefulRoseTree(i: StatefulInt) extends RoseTree[StatefulInt] {
-        def processed: Boolean = i.processed
-        lazy val shrinksRoseTrees: List[StatefulRoseTree] = {
-          if (value.value == 0)
-            List.empty
-          else {
-            val half: Int = value.value / 2
-            val minusOne = if (value.value > 0) value.value - 1 else value.value + 1
-            List(new StatefulRoseTree(new StatefulInt(half)), new StatefulRoseTree(new StatefulInt(minusOne)))
-          }
+    class StatefulRoseTree(i: StatefulInt) extends RoseTree[StatefulInt] {
+      def processed: Boolean = i.processed
+      lazy val shrinksRoseTrees: List[StatefulRoseTree] = {
+        if (value.value == 0)
+          List.empty
+        else {
+          val half: Int = value.value / 2
+          val minusOne = if (value.value > 0) value.value - 1 else value.value + 1
+          List(new StatefulRoseTree(new StatefulInt(half)), new StatefulRoseTree(new StatefulInt(minusOne)))
         }
-        val value: StatefulInt = i
-
-        def shrinks(rnd: Randomizer): (List[RoseTree[StatefulInt]], Randomizer) = (shrinksRoseTrees, rnd)
       }
+      val value: StatefulInt = i
+
+      def shrinks(rnd: Randomizer): (List[RoseTree[StatefulInt]], Randomizer) = (shrinksRoseTrees, rnd)
+    }
+
+    case class StatefulBoolean(value: Boolean) {
+      var processed = false
+    }
+
+    class StatefulBooleanRoseTree(b: StatefulBoolean) extends RoseTree[StatefulBoolean] {
+      def processed: Boolean = b.processed
+      lazy val shrinksRoseTrees: List[StatefulBooleanRoseTree] = {
+        if (value.value == false)
+          List.empty
+        else 
+          List(new StatefulBooleanRoseTree(StatefulBoolean(false)))
+      }
+      val value: StatefulBoolean = b
+
+      def shrinks(rnd: Randomizer): (List[RoseTree[StatefulBoolean]], Randomizer) = (shrinksRoseTrees, rnd)
+    }
+
+    it("should offer a depthFirstShrinks method that follows the 'depth-first' algo") {
       
       val rt = new StatefulRoseTree(StatefulInt(72))
       rt.value.value shouldBe 72
@@ -203,6 +221,36 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       lvl10Node11.value.value shouldBe 11
       val (lvl10Node11Res, _) = processFun(lvl10Node11.value)
       lvl10Node11Res shouldBe true
+    }
+
+    it("should offer a combineFirstDepthShrinks function") {
+      val boolRt = new StatefulBooleanRoseTree(StatefulBoolean(true))
+      boolRt.value.value shouldBe true
+      
+      val intRt = new StatefulRoseTree(StatefulInt(2))
+      intRt.value.value shouldBe 2
+
+      def processFun(b: StatefulBoolean, i: StatefulInt): (Boolean, Option[String]) = {
+        b.processed = true
+        i.processed = true
+        (i.value > 3, None)
+      }
+
+      val (shrinks1, _, _) = boolRt.combineFirstDepthShrinks[String, StatefulInt](processFun, Randomizer.default, intRt)
+      shrinks1 should have length 1
+      shrinks1(0).value._1.value shouldBe false
+      shrinks1(0).value._2.value shouldBe 0
+
+      def processFun2(b: StatefulBoolean, i: StatefulInt): (Boolean, Option[String]) = {
+        b.processed = true
+        i.processed = true
+        (b.value == false || i.value > 3, None)
+      }
+
+      val (shrinks2, _, _) = boolRt.combineFirstDepthShrinks[String, StatefulInt](processFun2, Randomizer.default, intRt)
+      shrinks2 should have length 1
+      shrinks2(0).value._1.value shouldBe true
+      shrinks2(0).value._2.value shouldBe 0
     }
   }
   describe("A Rose") {
