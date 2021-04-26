@@ -335,25 +335,21 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(0, 1, -1, 2, -2, 3, -3).map(_.toByte)
       }
-      it("should shrink Bytes by repeatedly halving and negating") {
+      it("should shrink Bytes by dividing current value by 2 and minus 1") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Byte]) =>
-          val b = shrinkRoseTree.value
+          val i = shrinkRoseTree.value
           val shrinks: List[Byte] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (b == 0)
+          if (i == 0)
             shrinks shouldBe empty
           else {
-            if (b > 1.toByte)
-              shrinks.head should be > 0.toByte
-            else if (b < -1.toByte)
-              shrinks.head should be < 0.toByte
-            import org.scalatest.Inspectors._
-            val revShrinks = shrinks.reverse
-            val pairs: List[(Byte, Byte)] = revShrinks.zip(revShrinks.tail)
-            forAll (pairs) { case (x, y) =>
-              assert(x == 0 || x == -y || x.abs == y.abs / 2)
-            }
+            shrinks should have length 2
+            shrinks(0) shouldBe (i / 2)
+            if (i > 1)
+              shrinks(1) shouldBe (i - 1)
+            else
+              shrinks(1) shouldBe (i + 1)
           }
         }
       }
