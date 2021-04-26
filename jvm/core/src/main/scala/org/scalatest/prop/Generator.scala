@@ -734,16 +734,13 @@ object Generator {
 
       case class NextRoseTree(value: Long) extends RoseTree[Long] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Long]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: Long, acc: List[RoseTree[Long]]): List[RoseTree[Long]] = {
-            if (i == 0) acc
-            else {
-              val half: Long = i / 2
-              if (half == 0) Rose(0L) :: acc
-              else shrinkLoop(half, NextRoseTree(-half) :: NextRoseTree(half) :: acc)
-            }
+          if (value == 0)
+            (List.empty, rndPassedToShrinks)
+          else {
+            val half: Long = value / 2
+            val minusOne: Long = if (value > 0) value - 1 else value + 1
+            (List(NextRoseTree(half), NextRoseTree(minusOne)), rndPassedToShrinks)
           }
-          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       }
 
