@@ -879,7 +879,7 @@ abstract class UnitPropCheckerAsserting {
               }.getOrElse((List.empty, shrunkErrOpt4, rnd7))    
 
             val bestABCDEF = 
-              shrunkRtOfABCDE.headOption.map(_.value) match {
+              shrunkRtOfABCDEF.headOption.map(_.value) match {
                 case Some((((((a, b), c), d), e), f)) => (a, b, c, d, e, f)
                 case None => 
                   shrunkRtOfABCDE.headOption.map(_.value) match {
@@ -1143,10 +1143,37 @@ trait FuturePropCheckerAsserting {
             case ex: Throwable =>
               AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some(roseTreeOfA))
           } flatMap { result =>
-            if (result.result.isDefined)
-              Future.successful(result)
-            else
-              loop(result.succeededCount, result.discardedCount, result.edges, result.rnd, result.initialSizes, initSeed)
+            result.result match {
+              case Some(f: PropertyCheckResult.Failure) => 
+                val shrunkFuture = 
+                  roseTreeOfA.depthFirstShrinksForFuture(
+                    value => {
+                      val result: Future[T] = fun(value)
+                      result.map { r =>
+                        (true, None)
+                      }.recoverWith {
+                        case shrunkEx: Throwable =>
+                        Future.successful((false, Some(shrunkEx)))
+                      }
+                    }, 
+                    nextNextRnd
+                  )
+
+                shrunkFuture.map { case (shrunkRtOfA, errOpt1, _) =>
+                  val bestRtA = shrunkRtOfA.headOption.getOrElse(roseTreeOfA)
+                  val bestA = bestRtA.value
+                  val errOpt = List(f.ex, errOpt1).flatten.lastOption
+                  println(s"############ BEST A: $bestA")
+                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestA) else PropertyArgument(None, bestA))
+                  println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
+                  val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
+                  println(s"############ THE RES: $theRes")
+                  AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(theRes), Some(bestRtA))
+                }
+                
+              case Some(_) => Future.successful(result)
+              case None => loop(result.succeededCount, result.discardedCount, result.edges, result.rnd, result.initialSizes, initSeed)
+            }
           }
         }
         catch {
@@ -1164,8 +1191,31 @@ trait FuturePropCheckerAsserting {
               loop(result.succeededCount, result.discardedCount, result.edges, result.rnd, result.initialSizes, initSeed)
 
           case ex: Throwable =>
-            val result = AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some(roseTreeOfA))
-            Future.successful(result)
+            val shrunkFuture = 
+              roseTreeOfA.depthFirstShrinksForFuture(
+                value => {
+                  val result: Future[T] = fun(value)
+                  result.map { r =>
+                    (true, None)
+                  }.recoverWith {
+                    case shrunkEx: Throwable =>
+                    Future.successful((false, Some(shrunkEx)))
+                  }
+                }, 
+                nextNextRnd
+              )
+
+            shrunkFuture.map { case (shrunkRtOfA, errOpt1, _) =>
+              val bestRtA = shrunkRtOfA.headOption.getOrElse(roseTreeOfA)
+              val bestA = bestRtA.value
+              val errOpt = List(Some(ex), errOpt1).flatten.lastOption
+              println(s"############ BEST A: $bestA")
+              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestA) else PropertyArgument(None, bestA))
+              println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
+              val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
+              println(s"############ THE RES: $theRes")
+              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(theRes), Some(bestRtA))
+            }  
         }
       }
 

@@ -16,6 +16,7 @@
 package org.scalatest.prop
 
 import scala.annotation.tailrec
+import scala.concurrent.{Future, ExecutionContext}
 
 trait RoseTree[T] { thisRoseTreeOfT =>
 
@@ -47,6 +48,35 @@ trait RoseTree[T] { thisRoseTreeOfT =>
           (List(lastFailure), lastFailureData, currentRnd)
       }
     }
+    val (firstLevelShrinks, nextRnd) = shrinks(rnd)
+    shrinkLoop(this, None, firstLevelShrinks, Set(value), nextRnd)
+  }
+
+  def depthFirstShrinksForFuture[E](fun: T => Future[(Boolean, Option[E])], rnd: Randomizer)(implicit execContext: ExecutionContext): Future[(List[RoseTree[T]], Option[E], Randomizer)] = {
+    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: List[RoseTree[T]], processed: Set[T] , currentRnd: Randomizer): Future[(List[RoseTree[T]], Option[E], Randomizer)] = {
+      pending match {
+        case head :: tail => 
+          val future = fun(head.value)
+          future.flatMap { case (result, errDataOpt) =>
+            if (!result) {
+              // If the function fail, we got a new failure value, and we'll go one level deeper.
+              val (headChildrenRTs, nextRnd) = head.shrinks(currentRnd)
+              val newProceesed = processed + head.value
+              shrinkLoop(head, errDataOpt, headChildrenRTs.filter(rt => !newProceesed.contains(rt.value)), newProceesed,  nextRnd)
+            }
+            else {
+              // The function call succeeded, let's continue to try the sibling.
+              shrinkLoop(lastFailure, lastFailureData, tail, processed + head.value, currentRnd)
+            }
+          }
+
+        case Nil =>
+          Future.successful((List(lastFailure), lastFailureData, currentRnd))
+      }
+    }
+
+    println("####here...")
+
     val (firstLevelShrinks, nextRnd) = shrinks(rnd)
     shrinkLoop(this, None, firstLevelShrinks, Set(value), nextRnd)
   }
