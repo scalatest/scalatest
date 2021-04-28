@@ -300,7 +300,7 @@ object TimeLimits extends TimeLimits {
   //DOTTY-ONLY   val file = pos.sourceFile
   //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
   //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-  //DOTTY-ONLY   val lineNo: Int = pos.startLine
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
   //DOTTY-ONLY   '{failAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})), getStackDepthFun(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})))(${fun})(${timed})}
   //DOTTY-ONLY }
 
@@ -330,7 +330,7 @@ object TimeLimits extends TimeLimits {
   //DOTTY-ONLY   val file = pos.sourceFile
   //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
   //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-  //DOTTY-ONLY   val lineNo: Int = pos.startLine
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
   //DOTTY-ONLY   '{cancelAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})), getStackDepthFun(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})))(${fun})(${timed})}
   //DOTTY-ONLY }
 

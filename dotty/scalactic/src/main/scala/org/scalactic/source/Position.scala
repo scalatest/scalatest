@@ -72,7 +72,7 @@ object Position {
     val file = pos.sourceFile
     val fileName: String = Option(file.jpath).map(_.getFileName.toString).getOrElse("<unknown>")
     val filePath: String = filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}) }
   }
 
