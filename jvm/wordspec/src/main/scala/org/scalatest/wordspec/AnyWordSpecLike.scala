@@ -197,6 +197,32 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       case other: Throwable => throw other
     }
   }
+
+  private def registerBranch2(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit)(pos: source.Position): Unit = {
+
+    def registrationClosedMessageFun: String =
+      verb match {
+        case "should" => Resources.shouldCannotAppearInsideAnIn
+        case "when" => Resources.whenCannotAppearInsideAnIn
+        case "which" => Resources.whichCannotAppearInsideAnIn
+        case "that" => Resources.thatCannotAppearInsideAnIn
+        case "must" => Resources.mustCannotAppearInsideAnIn
+        case "can" => Resources.canCannotAppearInsideAnIn
+      }
+
+    try {
+      registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, "AnyWordSpecLike.scala", methodName, stackDepth, adjustment, None, Some(pos))
+    }
+    catch {
+      case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e.position.getOrElse(pos))
+      case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e.position.getOrElse(pos))
+      case nae: NotAllowedException => throw nae
+      case trce: TestRegistrationClosedException => throw trce
+      case e: DuplicateTestNameException => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.position.getOrElse(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description, other.getMessage), Some(other), pos)
+      case other: Throwable => throw other
+    }
+  }
   
   private def registerShorthandBranch(childPrefix: Option[String], notAllowMessage: => String, methodName:String, stackDepth: Int, adjustment: Int, pos: source.Position, fun: () => Unit): Unit = {
 
@@ -429,13 +455,18 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
-    def when(f: => Unit)(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-START
+    def when(f: => Unit)(implicit pos: source.Position): Unit = {  
       // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 4
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       registerBranch(string, Some("when"), "when", "when", stackDepth, -2, pos, () => f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def when(f: => Unit): Unit = {
+    //DOTTY-ONLY   ${ AnyWordSpecLike.whenMacro('{(pos: source.Position) => registerBranch2(string, Some("when"), "when", "when", 4, -2, () => f) _}, '{string}) } 
+    //DOTTY-ONLY }
 
     /**
      * Registers a <code>when</code> clause that is followed by an <em>after word</em>.
@@ -1221,3 +1252,20 @@ one error found
     
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }
+
+//DOTTY-ONLY object AnyWordSpecLike {
+//DOTTY-ONLY import scala.quoted._
+//DOTTY-ONLY def whenMacro(registerFun: Expr[source.Position => Unit], string: Expr[String])(using quotes: Quotes): Expr[Unit] = {
+//DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
+//DOTTY-ONLY   val file = pos.sourceFile
+//DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
+//DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+//DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
+//DOTTY-ONLY   '{${registerFun}.apply(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
+//DOTTY-ONLY }
+//DOTTY-ONLY }
+
+
+//registerBranch(string, Some("when"), "when", "when", stackDepth, -2, pos, () => f)
+
+// (description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, pos: source.Position, fun: () => Unit): Unit
