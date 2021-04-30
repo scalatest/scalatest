@@ -439,7 +439,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def when(f: => Unit): Unit = {
-    //DOTTY-ONLY   ${ AnyWordSpecLike.registerMacro('{(pos: source.Position) => registerBranch(string, Some("when"), "when", "when", 4, -2, pos, () => f)}, '{string}) } 
+    //DOTTY-ONLY   ${ AnyWordSpecLike.registerMacro('{(pos: source.Position) => registerBranch(string, Some("when"), "when", "when", 4, -2, pos, () => f)}) } 
     //DOTTY-ONLY }
 
     /**
@@ -490,7 +490,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def that(f: => Unit): Unit = {
-    //DOTTY-ONLY   ${ AnyWordSpecLike.registerMacro('{(pos: source.Position) => registerBranch(string.trim + " that", None, "that", "that", 4, -2, pos, () => f)}, '{string}) } 
+    //DOTTY-ONLY   ${ AnyWordSpecLike.registerMacro('{(pos: source.Position) => registerBranch(string.trim + " that", None, "that", "that", 4, -2, pos, () => f)}) } 
     //DOTTY-ONLY }
 
     /**
@@ -519,7 +519,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def which(f: => Unit): Unit = {
-    //DOTTY-ONLY   ${ AnyWordSpecLike.registerMacro('{(pos: source.Position) => registerBranch(string.trim + " which", None, "which", "which", 4, -2, pos, () => f)}, '{string}) } 
+    //DOTTY-ONLY   ${ AnyWordSpecLike.registerMacro('{(pos: source.Position) => registerBranch(string.trim + " which", None, "which", "which", 4, -2, pos, () => f)}) } 
     //DOTTY-ONLY }
 
     /**
@@ -1239,7 +1239,7 @@ one error found
 
 //DOTTY-ONLY object AnyWordSpecLike {
 //DOTTY-ONLY import scala.quoted._
-//DOTTY-ONLY def registerMacro(registerFun: Expr[source.Position => Unit], string: Expr[String])(using quotes: Quotes): Expr[Unit] = {
+//DOTTY-ONLY def registerMacro(registerFun: Expr[source.Position => Unit])(using quotes: Quotes): Expr[Unit] = {
 //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
 //DOTTY-ONLY   val file = pos.sourceFile
 //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
