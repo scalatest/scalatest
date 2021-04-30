@@ -717,7 +717,6 @@ object GenScalaTestDotty {
         "FixtureAsyncWordSpecLikeSpec.scala", // skipped because does not compile yet
         "FixtureAsyncWordSpecSpec.scala", // skipped because does not compile yet
         "WordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
-        //"WordSpecSpec.scala", // skipped because does not compile yet
         "FixtureWordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
         "FixtureWordSpecSpec.scala" // skipped because does not compile yet
       )
@@ -731,7 +730,6 @@ object GenScalaTestDotty {
         "FixtureAsyncWordSpecLikeSpec.scala", // skipped because does not compile yet
         "FixtureAsyncWordSpecSpec.scala", // skipped because does not compile yet
         "WordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
-        //"WordSpecSpec.scala", // skipped because does not compile yet
         "FixtureWordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
         "FixtureWordSpecSpec.scala" // skipped because does not compile yet
       )
