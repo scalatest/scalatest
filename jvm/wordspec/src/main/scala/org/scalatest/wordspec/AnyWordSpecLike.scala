@@ -439,7 +439,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def when(f: => Unit): Unit = {
-    //DOTTY-ONLY   ${ AnyWordSpecLike.registerMacro('{(pos: source.Position) => registerBranch(string, Some("when"), "when", "when", 4, -2, pos, () => f)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string, Some("when"), "when", "when", 4, -2, pos, () => f)}) } 
     //DOTTY-ONLY }
 
     /**
@@ -490,7 +490,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def that(f: => Unit): Unit = {
-    //DOTTY-ONLY   ${ AnyWordSpecLike.registerMacro('{(pos: source.Position) => registerBranch(string.trim + " that", None, "that", "that", 4, -2, pos, () => f)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " that", None, "that", "that", 4, -2, pos, () => f)}) } 
     //DOTTY-ONLY }
 
     /**
@@ -519,7 +519,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def which(f: => Unit): Unit = {
-    //DOTTY-ONLY   ${ AnyWordSpecLike.registerMacro('{(pos: source.Position) => registerBranch(string.trim + " which", None, "which", "which", 4, -2, pos, () => f)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " which", None, "which", "which", 4, -2, pos, () => f)}) } 
     //DOTTY-ONLY }
 
     /**
@@ -1236,15 +1236,3 @@ one error found
     
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }
-
-//DOTTY-ONLY object AnyWordSpecLike {
-//DOTTY-ONLY import scala.quoted._
-//DOTTY-ONLY def registerMacro(registerFun: Expr[source.Position => Unit])(using quotes: Quotes): Expr[Unit] = {
-//DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
-//DOTTY-ONLY   val file = pos.sourceFile
-//DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
-//DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-//DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
-//DOTTY-ONLY   '{${registerFun}.apply(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
-//DOTTY-ONLY }
-//DOTTY-ONLY }
