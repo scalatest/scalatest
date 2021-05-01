@@ -19,7 +19,7 @@ import org.scalactic._
 import org.scalactic.Requirements._
 import scala.collection.mutable.ListBuffer
 import collection.immutable.TreeMap
-import org.scalatest.{AnchorValue, Assertions, DiagrammedExpr, DiagrammedAssertionsMacro, Succeeded}
+import org.scalatest.{AnchorValue, Assertions, DiagrammedExpr, Succeeded}
 import org.scalatest.compatible.Assertion
 
 /**
