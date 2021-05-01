@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.diagrams
 
-@deprecated("Please use org.scalatest.diagrams.AnchorValue of diagrams module.")
-private[org] case class AnchorValue(anchor: Int, value: Any)
+private[diagrams] case class AnchorValue(anchor: Int, value: Any)
 
 /**
  * A trait that represent an expression recorded by <code>DiagrammedExprMacro</code>, which includes the following members:
@@ -31,13 +30,12 @@ private[org] case class AnchorValue(anchor: Int, value: Any)
  * so that the generated code can be compiled.  It is expected that ScalaTest users would ever need to use <code>DiagrammedExpr</code>
  * directly.
  */
-@deprecated("Please use org.scalatest.diagrams.DiagrammedExpr of diagrams module.") 
 trait DiagrammedExpr[T] {
   val anchor: Int
   def anchorValues: List[AnchorValue]
   def value: T
 
-  protected[scalatest] def eliminateDuplicates(anchorValues: List[AnchorValue]): List[AnchorValue] =
+  protected[diagrams] def eliminateDuplicates(anchorValues: List[AnchorValue]): List[AnchorValue] =
     (anchorValues.groupBy(_.anchor).map { case (anchor, group) =>
       group.last
     }).toList
@@ -50,7 +48,6 @@ trait DiagrammedExpr[T] {
  * so that the generated code can be compiled.  It is expected that ScalaTest users would ever need to use <code>DiagrammedExpr</code>
  * directly.
  */
-@deprecated("Please use org.scalatest.diagrams.DiagrammedExpr of diagrams module.") 
 object DiagrammedExpr {
 
   /**
@@ -86,13 +83,11 @@ object DiagrammedExpr {
     new DiagrammedSelectExpr(qualifier, value, anchor)
 }
 
-@deprecated("Please use org.scalatest.diagrams.DiagrammedSimpleExpr of diagrams module.")
-private[scalatest] class DiagrammedSimpleExpr[T](val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+private[diagrams] class DiagrammedSimpleExpr[T](val value: T, val anchor: Int) extends DiagrammedExpr[T] {
   def anchorValues = List(AnchorValue(anchor, value))
 }
 
-@deprecated("Please use org.scalatest.diagrams.DiagrammedApplyExpr of diagrams module.")
-private[scalatest] class DiagrammedApplyExpr[T](qualifier: DiagrammedExpr[_], args: List[DiagrammedExpr[_]], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+private[diagrams] class DiagrammedApplyExpr[T](qualifier: DiagrammedExpr[_], args: List[DiagrammedExpr[_]], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
 
   def anchorValues = {
     val quantifierAnchorValues = eliminateDuplicates(qualifier.anchorValues)
@@ -106,8 +101,7 @@ private[scalatest] class DiagrammedApplyExpr[T](qualifier: DiagrammedExpr[_], ar
   }
 }
 
-@deprecated("Please use org.scalatest.diagrams.DiagrammedSelectExpr of diagrams module.")
-private[scalatest] class DiagrammedSelectExpr[T](qualifier: DiagrammedExpr[_], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+private[diagrams] class DiagrammedSelectExpr[T](qualifier: DiagrammedExpr[_], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
   def anchorValues = {
     val quantifierAnchorValues = eliminateDuplicates(qualifier.anchorValues)
 
