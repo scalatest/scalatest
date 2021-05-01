@@ -100,6 +100,10 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  //DOTTY-ONLY private def wrapTestFun(testFun: FixtureParam => Any /* Assertion */): org.scalatest.fixture.Transformer[FixtureParam] = 
+  //DOTTY-ONLY   org.scalatest.fixture.Transformer(testFun)
+
+  // SKIP-DOTTY-START
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
@@ -107,7 +111,12 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
     engine.registerTest(testText, org.scalatest.fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
-  
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(testText, wrapTestFun(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, -1, None, None, Some(pos), None, testTags: _*)}) }
+  //DOTTY-ONLY }
+
+  // SKIP-DOTTY-START
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
@@ -115,6 +124,10 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
     engine.registerIgnoredTest(testText, org.scalatest.fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredTest(testText, wrapTestFun(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, -3, None, Some(pos), testTags: _*)}) }
+  //DOTTY-ONLY }
 
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
