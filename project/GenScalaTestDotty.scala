@@ -712,8 +712,6 @@ object GenScalaTestDotty {
   def genWordSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/wordspec-test/src/test/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, 
       List(
-        "AsyncWordSpecLikeSpec.scala", // skipped because does not compile yet
-        "AsyncWordSpecSpec.scala", // skipped because does not compile yet
         "FixtureAsyncWordSpecLikeSpec.scala", // skipped because does not compile yet
         "FixtureAsyncWordSpecSpec.scala", // skipped because does not compile yet
       )
@@ -722,8 +720,6 @@ object GenScalaTestDotty {
   def genWordSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDirJS("jvm/wordspec-test/src/test/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, 
       List(
-        "AsyncWordSpecLikeSpec.scala", // skipped because does not compile yet
-        "AsyncWordSpecSpec.scala", // skipped because does not compile yet
         "FixtureAsyncWordSpecLikeSpec.scala", // skipped because does not compile yet
         "FixtureAsyncWordSpecSpec.scala", // skipped because does not compile yet
       )
