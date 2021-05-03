@@ -1343,8 +1343,6 @@ class FreeSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(trce.message == Some("An ignore clause may not appear inside an in clause."))
     }
 
-    // SKIP-DOTTY-START
-    // Stack depth checking fails
     it("should generate TestRegistrationClosedException with correct stack depth info when has a registerTest nested inside a registerTest") {
       class TestSpec extends AnyFreeSpec {
         var registrationClosedThrown = false
@@ -1410,7 +1408,6 @@ class FreeSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(trce.failedCodeLineNumber.get == thisLineNumber - 24)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
-    // SKIP-DOTTY-END
 
     it("should generate NotAllowedException wrapping a TestFailedException when assert fails in scope") {
       class TestSpec extends AnyFreeSpec {
