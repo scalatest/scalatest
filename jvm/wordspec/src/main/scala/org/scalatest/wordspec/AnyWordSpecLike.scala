@@ -88,6 +88,9 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  //DOTTY-ONLY private def wrapTestFun(testFun: () => Any /* Assertion */): org.scalatest.Transformer[Unit] = 
+  //DOTTY-ONLY   org.scalatest.Transformer(testFun)
+
   // SKIP-DOTTY-START
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
@@ -98,7 +101,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyWordSpecLike.scala", "registerTest", 4, -1, None, None, Some(pos), None, testTags: _*)}) } 
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(testText, wrapTestFun(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyWordSpecLike.scala", "registerTest", 4, -1, None, None, Some(pos), None, testTags: _*)}) } 
   //DOTTY-ONLY }
 
   // SKIP-DOTTY-START
@@ -111,7 +114,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyWordSpecLike.scala", "registerIgnoredTest", 4, -3, None, Some(pos), testTags: _*)}) } 
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredTest(testText, wrapTestFun(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyWordSpecLike.scala", "registerIgnoredTest", 4, -3, None, Some(pos), testTags: _*)}) } 
   //DOTTY-ONLY }
 
   /**
