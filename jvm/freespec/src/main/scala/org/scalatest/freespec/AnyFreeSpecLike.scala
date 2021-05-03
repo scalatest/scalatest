@@ -93,6 +93,9 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  //DOTTY-ONLY private def wrapTestFun(testFun: () => Any /* Assertion */): org.scalatest.Transformer[Unit] = 
+  //DOTTY-ONLY   org.scalatest.Transformer(testFun)
+
   // SKIP-DOTTY-START
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
@@ -103,7 +106,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyFreeSpecLike.scala", "registerTest", 5, -2, None, None, Some(pos), None, testTags: _*)}) } 
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(testText, wrapTestFun(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyFreeSpecLike.scala", "registerTest", 5, -2, None, None, Some(pos), None, testTags: _*)}) } 
   //DOTTY-ONLY }
 
   // SKIP-DOTTY-START
@@ -116,7 +119,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyFreeSpecLike.scala", "registerIgnoredTest", 4, -3, None, Some(pos), testTags: _*)}) } 
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredTest(testText, wrapTestFun(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyFreeSpecLike.scala", "registerIgnoredTest", 4, -3, None, Some(pos), testTags: _*)}) } 
   //DOTTY-ONLY }
 
   /**
