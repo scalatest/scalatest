@@ -1096,7 +1096,6 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get == thisLineNumber - 11)
     }
     
-    // SKIP-DOTTY-START
     // Line checking not working yet.
     "should generate TestRegistrationClosedException with correct stack depth info when has a it nested inside a it" in {
       class TestSpec extends AnyFunSpec {
@@ -1337,7 +1336,6 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       assert(trce.failedCodeLineNumber.get == thisLineNumber - 24)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
-    // SKIP-DOTTY-END
 
     "should generate NotAllowedException wrapping a TestFailedException when assert fails in scope" in {
       class TestSpec extends AnyFunSpec {
@@ -1385,7 +1383,6 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
-    // SKIP-DOTTY-START
     "should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope" in {
       class TestSpec extends AnyFunSpec {
         describe("a feature") {
@@ -1405,7 +1402,6 @@ class FunSpecSpec extends AnyFreeSpec with GivenWhenThen {
       val cause = causeThrowable.asInstanceOf[RuntimeException]
       assert(cause.getMessage == "on purpose")
     }
-    // SKIP-DOTTY-END
 
     "should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope" in {
       class TestSpec extends AnyFunSpec {
