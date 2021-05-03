@@ -974,7 +974,9 @@ class FixtureAsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       class TestSpec extends wordspec.FixtureAsyncWordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
-        "a feature" when {}
+        "a feature" when {
+          //DOTTY-ONLY ()
+        }
         it when {
           "test 1" in { fixture => succeed }
           "test 1" in { fixture => succeed }
@@ -1021,7 +1023,9 @@ class FixtureAsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       class TestSpec extends wordspec.FixtureAsyncWordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
-        "a feature" should {}
+        "a feature" should {
+          //DOTTY-ONLY ()
+        }
         it should {
           "test 1" in { fixture => succeed }
           "test 1" in { fixture => succeed }
@@ -1068,7 +1072,9 @@ class FixtureAsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       class TestSpec extends wordspec.FixtureAsyncWordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
-        "a feature" must {}
+        "a feature" must {
+          //DOTTY-ONLY ()
+        }
         it must {
           "test 1" in { fixture => succeed }
           "test 1" in { fixture => succeed }
@@ -1161,7 +1167,9 @@ class FixtureAsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       class TestSpec extends wordspec.FixtureAsyncWordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
-        "a feature" can {}
+        "a feature" can {
+          //DOTTY-ONLY ()
+        }
         it can {
           "test 1" in { fixture => succeed }
           "test 1" in { fixture => succeed }
