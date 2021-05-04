@@ -10,6 +10,8 @@ import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLinkerConfig, jsEnv}
 
+import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
+
 trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
@@ -231,7 +233,7 @@ trait DottyBuild { this: BuildCommons =>
       initialCommands in console := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.0.0-RC1", 
       libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).withDottyCompat(dottyVersion), 
       packageManagedSources,
       sourceGenerators in Compile += Def.task {

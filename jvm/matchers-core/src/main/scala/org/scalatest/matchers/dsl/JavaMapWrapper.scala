@@ -42,7 +42,7 @@ private[scalatest] class JavaMapWrapper[K, V](val underlying: java.util.Map[K, V
     if (underlying.containsKey(key)) Some(underlying.get(key)) else None
   override def iterator: Iterator[(K, V)] = new Iterator[(K, V)] {
     private val javaIterator = underlying.entrySet.iterator
-    def next: (K, V) = {
+    def next(): (K, V) = {
       val nextEntry = javaIterator.next
       (nextEntry.getKey, nextEntry.getValue)
     }
