@@ -200,7 +200,9 @@ object GenScalaTestDotty {
       "org/scalatest/concurrent" -> List.empty, 
       "org/scalatest/diagrams" -> List(
         "Diagrams.scala", 
-        "DiagramsMacro.scala"
+        "DiagramsMacro.scala", 
+        "DiagrammedExprMacro.scala",        // Re-implemented
+        "DiagrammedExpr.scala",             // Re-implemented
       ), 
       "org/scalatest/exceptions" -> List.empty, 
       "org/scalatest/enablers" -> List(
