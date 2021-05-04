@@ -59,8 +59,7 @@ class PosZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
 
   describe("A PosZInt") {
     describe("should offer a from factory method that") {
-      it("returns Some[PosZInt] if the passed Int is greater than or equal to 0")
-      {
+      it("returns Some[PosZInt] if the passed Int is greater than or equal to 0") {
         PosZInt.from(0).value.value shouldBe 0
         PosZInt.from(50).value.value shouldBe 50
         PosZInt.from(100).value.value shouldBe 100
@@ -71,8 +70,7 @@ class PosZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
       }
     } 
     describe("should offer an ensuringValid factory method that") {
-      it("returns PosZInt if the passed Int is greater than or equal to 0")
-      {
+      it("returns PosZInt if the passed Int is greater than or equal to 0") {
         PosZInt.ensuringValid(0).value shouldBe 0
         PosZInt.ensuringValid(50).value shouldBe 50
         PosZInt.ensuringValid(100).value shouldBe 100
