@@ -99,6 +99,10 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  //DOTTY-ONLY private def wrapTestFun(testFun: FixtureParam => Any /* Assertion */): org.scalatest.fixture.Transformer[FixtureParam] = 
+  //DOTTY-ONLY   org.scalatest.fixture.Transformer(testFun)
+
+  // SKIP-DOTTY-START
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -2
@@ -106,7 +110,12 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
     engine.registerTest(testText, org.scalatest.fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(testText, wrapTestFun(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, -2, None, None, Some(pos), None, testTags: _*)}) } 
+  //DOTTY-ONLY }
 
+  // SKIP-DOTTY-START
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = 0
@@ -114,6 +123,10 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -2
     engine.registerIgnoredTest(testText, org.scalatest.fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 1, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredTest(testText, wrapTestFun(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 1, 0, None, Some(pos), testTags: _*)}) } 
+  //DOTTY-ONLY }
 
   /**
    * Class that, via an instance referenced from the <code>it</code> field,
@@ -141,6 +154,7 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
 
     class ResultOfItWordApplication(specText: String, testTags: Tag*) {
 
+      // SKIP-DOTTY-START
       def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
         // SKIP-SCALATESTJS,NATIVE-START
         val stackDepth = 3
@@ -150,7 +164,12 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
         //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
         engine.registerTest(specText, org.scalatest.fixture.Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
+      // SKIP-DOTTY-END
+      //DOTTY-ONLY inline def apply(testFun: FixtureParam => Any /* Assertion */): Unit = {
+      //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(specText, wrapTestFun(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, Some(pos), None, testTags: _*)}) } 
+      //DOTTY-ONLY }
 
+      // SKIP-DOTTY-START
       def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
         // SKIP-SCALATESTJS,NATIVE-START
         val stackDepth = 3
@@ -160,6 +179,10 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
         //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
         engine.registerTest(specText, org.scalatest.fixture.Transformer(new org.scalatest.fixture.NoArgTestWrapper(testFun)), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
+      // SKIP-DOTTY-END
+      //DOTTY-ONLY inline def apply(testFun: () => Any /* Assertion */): Unit = {
+      //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(specText, wrapTestFun(new org.scalatest.fixture.NoArgTestWrapper(testFun)), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, Some(pos), None, testTags: _*)}) } 
+      //DOTTY-ONLY }
     }
 
     /**
@@ -275,6 +298,7 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
   protected final class TheyWord {
 
     class ResultOfTheyWordApplication(specText: String, testTags: Tag*)(implicit pos: source.Position) {
+      // SKIP-DOTTY-START
       def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
         // SKIP-SCALATESTJS,NATIVE-START
         val stackDepthAdjustment = -2
@@ -282,6 +306,12 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
         //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -3
         engine.registerTest(specText, org.scalatest.fixture.Transformer(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
+      // SKIP-DOTTY-END
+      //DOTTY-ONLY inline def apply(testFun: FixtureParam => Any /* Assertion */): Unit = {
+      //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(specText, wrapTestFun(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, Some(pos), None, testTags: _*)}) } 
+      //DOTTY-ONLY }
+
+      // SKIP-DOTTY-START
       def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
         // SKIP-SCALATESTJS,NATIVE-START
         val stackDepthAdjustment = -2
@@ -289,6 +319,10 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
         //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -3
         engine.registerTest(specText, org.scalatest.fixture.Transformer(new org.scalatest.fixture.NoArgTestWrapper(testFun)), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
+      // SKIP-DOTTY-END
+      //DOTTY-ONLY inline def apply(testFun: () => Any /* Assertion */): Unit = {
+      //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(specText, wrapTestFun(new org.scalatest.fixture.NoArgTestWrapper(testFun)), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, Some(pos), None, testTags: _*)}) } 
+      //DOTTY-ONLY }
     }
 
     /**
@@ -380,6 +414,7 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
   protected val they = new TheyWord
 
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
+    // SKIP-DOTTY-START
     def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
@@ -389,6 +424,12 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
       engine.registerIgnoredTest(specText, org.scalatest.fixture.Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredTest(specText, wrapTestFun(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", 3, -3, None, Some(pos), testTags: _*)}) } 
+    //DOTTY-ONLY }
+    
+    // SKIP-DOTTY-START
     def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
@@ -398,6 +439,10 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
       engine.registerIgnoredTest(specText, org.scalatest.fixture.Transformer(new org.scalatest.fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredTest(specText, wrapTestFun(new org.scalatest.fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", 3, -3, None, Some(pos), testTags: _*)}) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -448,6 +493,7 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
    * @param description the description text
    * @param fun the function which makes up the body for the description
    */
+  // SKIP-DOTTY-START 
   protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
@@ -464,6 +510,21 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
       case other: Throwable => throw other
     }
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def describe(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => 
+  //DOTTY-ONLY     try {
+  //DOTTY-ONLY       registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, "describe", 4, -2, None, Some(pos))
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY     catch {
+  //DOTTY-ONLY       case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e.position.getOrElse(pos))
+  //DOTTY-ONLY       case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e.position.getOrElse(pos))
+  //DOTTY-ONLY       case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.position.getOrElse(pos))
+  //DOTTY-ONLY       case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), pos)
+  //DOTTY-ONLY       case other: Throwable => throw other
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY   }) }
+  //DOTTY-ONLY }
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FixtureAnyFunSpec</code> belong, and values

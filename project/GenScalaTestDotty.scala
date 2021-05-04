@@ -455,11 +455,7 @@ object GenScalaTestDotty {
       )
     ) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, 
-      List(
-        "SpanSugarSpec.scala" // skipped because does not compile yet.
-      )
-    ) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
@@ -607,11 +603,7 @@ object GenScalaTestDotty {
       )
     ) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
-    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, 
-      List(
-        "SpanSugarSpec.scala" // skipped because does not compile yet.
-      )
-    ) ++
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
@@ -658,32 +650,16 @@ object GenScalaTestDotty {
     copyDirJS("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec", "org/scalatest/flatspec", targetDir, List.empty)      
 
   def genFreeSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("jvm/freespec-test/src/test/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, 
-      List(
-        "FixtureFreeSpecSpec.scala" // skipped because tests failed
-      )
-    )
+    copyDir("jvm/freespec-test/src/test/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, List.empty)
 
   def genFreeSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDirJS("jvm/freespec-test/src/test/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, 
-      List(
-        "FixtureFreeSpecSpec.scala" // skipped because tests failed
-      )
-    )  
+    copyDirJS("jvm/freespec-test/src/test/scala/org/scalatest/freespec", "org/scalatest/freespec", targetDir, List.empty)  
 
   def genFunSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("jvm/funspec-test/src/test/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, 
-      List(
-        "FixtureFunSpecSpec.scala" // skipped because tests failed
-      )
-    )
+    copyDir("jvm/funspec-test/src/test/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty)
 
   def genFunSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDirJS("jvm/funspec-test/src/test/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, 
-      List(
-        "FixtureFunSpecSpec.scala" // skipped because tests failed
-      )
-    )      
+    copyDirJS("jvm/funspec-test/src/test/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir, List.empty)      
 
   def genFunSuiteTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/funsuite-test/src/test/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir, 
@@ -718,30 +694,8 @@ object GenScalaTestDotty {
     )  
 
   def genWordSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDir("jvm/wordspec-test/src/test/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, 
-      List(
-        "AsyncWordSpecLikeSpec.scala", // skipped because does not compile yet
-        "AsyncWordSpecSpec.scala", // skipped because does not compile yet
-        "FixtureAsyncWordSpecLikeSpec.scala", // skipped because does not compile yet
-        "FixtureAsyncWordSpecSpec.scala", // skipped because does not compile yet
-        "WordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
-        "WordSpecSpec.scala", // skipped because does not compile yet
-        "FixtureWordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
-        "FixtureWordSpecSpec.scala" // skipped because does not compile yet
-      )
-    )
+    copyDir("jvm/wordspec-test/src/test/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)
 
   def genWordSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDirJS("jvm/wordspec-test/src/test/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, 
-      List(
-        "AsyncWordSpecLikeSpec.scala", // skipped because does not compile yet
-        "AsyncWordSpecSpec.scala", // skipped because does not compile yet
-        "FixtureAsyncWordSpecLikeSpec.scala", // skipped because does not compile yet
-        "FixtureAsyncWordSpecSpec.scala", // skipped because does not compile yet
-        "WordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
-        "WordSpecSpec.scala", // skipped because does not compile yet
-        "FixtureWordSpecImportedMatchersSpec.scala", // skipped because does not compile yet
-        "FixtureWordSpecSpec.scala" // skipped because does not compile yet
-      )
-    )      
+    copyDirJS("jvm/wordspec-test/src/test/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)      
 }

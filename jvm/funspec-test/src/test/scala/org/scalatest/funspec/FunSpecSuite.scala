@@ -142,8 +142,6 @@ class FunSpecSuite extends AnyFunSuite {
     assert(a.testNames.iterator.toList(1) == "A Stack (when not full) must allow me to push")
   }
   
-  // SKIP-DOTTY-START
-  // AbstractMethodError  
   test("should be able to mix in BeforeAndAfterEach with BeforeAndAfterAll without any problems") {
     class MySpec extends AnyFunSpec with Matchers with BeforeAndAfterEach with BeforeAndAfterAll {
       describe("A Stack") {
@@ -158,7 +156,6 @@ class FunSpecSuite extends AnyFunSuite {
     val a = new MySpec
     a.run(None, Args(SilentReporter))
   }
-  // SKIP-DOTTY-END
   
   // Test for good strings in report for top-level examples  
   test("Top-level plain-old specifiers should yield good strings in a TestSucceeded report") {
@@ -1130,7 +1127,6 @@ class FunSpecSuite extends AnyFunSuite {
     assert(myRep.expectedMessageReceived)
   }
  
-  // SKIP-DOTTY-START
   // Testing Shared behaviors
   test("a shared specifier invoked with 'should behave like a' should get invoked") {
     class MySpec extends AnyFunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
@@ -1185,7 +1181,6 @@ class FunSpecSuite extends AnyFunSuite {
     assert(a.sharedExampleInvoked)
     assert(a.sharedExampleAlsoInvoked)
   }
-  // SKIP-DOTTY-END
 
   test("three examples in a shared behavior should be invoked in order") {
     class MySpec extends AnyFunSpec {
@@ -1247,7 +1242,6 @@ class FunSpecSuite extends AnyFunSuite {
     assert(!a.example3WasInvokedAfterExample2)
   }
   
-  // SKIP-DOTTY-START
   // Probably delete
   test("The test name for a shared specifier invoked with 'should behave like a' should be verbatim if top level") {
     var testSucceededReportHadCorrectTestName = false
@@ -1277,7 +1271,6 @@ class FunSpecSuite extends AnyFunSuite {
     a.run(None, Args(new MyReporter))
     assert(testSucceededReportHadCorrectTestName)
   }
-  // SKIP-DOTTY-END
   
   ignore("The example name for a shared example invoked with 'it should behave like' should start with '<description> should' if nested one level in a describe clause") {
     var testSucceededReportHadCorrectTestName = false
