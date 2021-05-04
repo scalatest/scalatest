@@ -96,13 +96,23 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  // SKIP-DOTTY-START
   final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)}) } 
+  //DOTTY-ONLY }
 
+  // SKIP-DOTTY-START
   final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)}) } 
+  //DOTTY-ONLY }
 
   /**
    * Class that, via an instance referenced from the <code>it</code> field,
@@ -150,9 +160,14 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
+    // SKIP-DOTTY-START
     def apply(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.itCannotAppearInsideAnotherItOrThey, None, None, pos, testTags: _*)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.itCannotAppearInsideAnotherItOrThey, None, None, pos, testTags: _*)}) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of shared tests.
@@ -262,9 +277,14 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
+    // SKIP-DOTTY-START
     def apply(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, None, None, pos, testTags: _*)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, None, None, pos, testTags: _*)}) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of shared tests.
@@ -346,9 +366,14 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
+  // SKIP-DOTTY-START
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, None, pos, testTags: _*)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def ignore(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, None, pos, testTags: _*)}) } 
+  //DOTTY-ONLY }
 
   /**
    * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
@@ -356,6 +381,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.
    */
+  // SKIP-DOTTY-START 
   protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
     try {
       registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, None, pos)
@@ -368,6 +394,21 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
       case other: Throwable => throw other
     }
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def describe(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => 
+  //DOTTY-ONLY     try {
+  //DOTTY-ONLY       registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, None, pos)
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY     catch {
+  //DOTTY-ONLY       case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e.position.getOrElse(pos))
+  //DOTTY-ONLY       case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e.position.getOrElse(pos))
+  //DOTTY-ONLY       case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.position.getOrElse(pos))
+  //DOTTY-ONLY       case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), pos)
+  //DOTTY-ONLY       case other: Throwable => throw other
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY   }) }
+  //DOTTY-ONLY }
 
   /**
    * An immutable <code>Set</code> of test names. If this <code>AsyncFunSpec</code> contains no tests, this method returns an

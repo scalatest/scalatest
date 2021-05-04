@@ -101,6 +101,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         class MySpec extends AnyWordSpec {
           "should blow up" in {
             "in the wrong place, at the wrong time" should {
+              //DOTTY-ONLY ()
             }
             /* ASSERTION_SUCCEED */
           }
@@ -131,6 +132,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         class MySpec extends AnyWordSpec {
           "should blow up" in {
             "in the wrong place, at the wrong time" when {
+              //DOTTY-ONLY ()
             }
             /* ASSERTION_SUCCEED */
           }
@@ -161,6 +163,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         class MySpec extends AnyWordSpec {
           "should blow up" in {
             "in the wrong place, at the wrong time" that {
+              //DOTTY-ONLY ()
             }
             /* ASSERTION_SUCCEED */
           }
@@ -191,6 +194,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         class MySpec extends AnyWordSpec {
           "should blow up" in {
             "in the wrong place, at the wrong time" which {
+              //DOTTY-ONLY ()
             }
             /* ASSERTION_SUCCEED */
           }
@@ -221,6 +225,7 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
         class MySpec extends AnyWordSpec {
           "should blow up" in {
             "in the wrong place, at the wrong time" can {
+              //DOTTY-ONLY ()
             }
             /* ASSERTION_SUCCEED */
           }
@@ -3849,7 +3854,9 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand when") {
       class TestSpec extends AnyWordSpec {
-        "a feature" when {}
+        "a feature" when {
+          //DOTTY-ONLY ()
+        }
         it when {
           "test 1" in {}
           "test 1" in {}
@@ -3892,7 +3899,9 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand should") {
       class TestSpec extends AnyWordSpec {
-        "a feature" should {}
+        "a feature" should {
+          //DOTTY-ONLY ()
+        }
         it should {
           "test 1" in {}
           "test 1" in {}
@@ -3935,7 +3944,9 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand must") {
       class TestSpec extends AnyWordSpec {
-        "a feature" must {}
+        "a feature" must {
+          //DOTTY-ONLY ()
+        }
         it must {
           "test 1" in {}
           "test 1" in {}
@@ -4020,7 +4031,9 @@ class WordSpecSpec extends AnyFunSpec with GivenWhenThen {
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand can") {
       class TestSpec extends AnyWordSpec {
-        "a feature" can {}
+        "a feature" can {
+          //DOTTY-ONLY ()
+        }
         it can {
           "test 1" in {}
           "test 1" in {}

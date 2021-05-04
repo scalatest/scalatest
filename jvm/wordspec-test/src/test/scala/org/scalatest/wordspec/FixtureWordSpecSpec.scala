@@ -1279,6 +1279,7 @@ class FixtureWordSpecSpec extends scalatest.funspec.AnyFunSpec {
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           "should blow up" in { fixture =>
             "in the wrong place, at the wrong time" should {
+              //DOTTY-ONLY ()
             }
             /* ASSERTION_SUCCEED */
           }
@@ -1313,6 +1314,7 @@ class FixtureWordSpecSpec extends scalatest.funspec.AnyFunSpec {
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           "should blow up" in { fixture =>
             "in the wrong place, at the wrong time" when {
+              //DOTTY-ONLY ()
             }
             /* ASSERTION_SUCCEED */
           }
@@ -1347,6 +1349,7 @@ class FixtureWordSpecSpec extends scalatest.funspec.AnyFunSpec {
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           "should blow up" in { fixture =>
             "in the wrong place, at the wrong time" that {
+              //DOTTY-ONLY ()
             }
             /* ASSERTION_SUCCEED */
           }
@@ -1381,6 +1384,7 @@ class FixtureWordSpecSpec extends scalatest.funspec.AnyFunSpec {
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           "should blow up" in { fixture =>
             "in the wrong place, at the wrong time" which {
+              //DOTTY-ONLY ()
             }
             /* ASSERTION_SUCCEED */
           }
@@ -1415,6 +1419,7 @@ class FixtureWordSpecSpec extends scalatest.funspec.AnyFunSpec {
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
           "should blow up" in { fixture =>
             "in the wrong place, at the wrong time" can {
+              //DOTTY-ONLY ()
             }
             /* ASSERTION_SUCCEED */
           }
@@ -4276,7 +4281,9 @@ class FixtureWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       class TestSpec extends wordspec.FixtureAnyWordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        "a feature" when {}
+        "a feature" when {
+          //DOTTY-ONLY ()
+        }
         it when {
           "test 1" in { fixture => }
           "test 1" in { fixture => }
@@ -4323,7 +4330,9 @@ class FixtureWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       class TestSpec extends wordspec.FixtureAnyWordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        "a feature" should {}
+        "a feature" should {
+          //DOTTY-ONLY ()
+        }
         it should {
           "test 1" in { fixture => }
           "test 1" in { fixture => }
@@ -4370,7 +4379,9 @@ class FixtureWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       class TestSpec extends wordspec.FixtureAnyWordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        "a feature" must {}
+        "a feature" must {
+          //DOTTY-ONLY ()
+        }
         it must {
           "test 1" in { fixture => }
           "test 1" in { fixture => }
@@ -4463,7 +4474,9 @@ class FixtureWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       class TestSpec extends wordspec.FixtureAnyWordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        "a feature" can {}
+        "a feature" can {
+          //DOTTY-ONLY ()
+        }
         it can {
           "test 1" in { fixture => }
           "test 1" in { fixture => }

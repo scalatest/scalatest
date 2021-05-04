@@ -649,7 +649,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forAllImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -662,7 +662,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forAllForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -675,7 +675,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forAllForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -688,7 +688,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forAllForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -701,7 +701,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forAtLeastImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -714,7 +714,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forAtLeastForMapImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -727,7 +727,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forAtLeastForJMapImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -740,7 +740,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forAtLeastForStringImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -753,7 +753,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forAtMostImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -766,7 +766,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forAtMostForMapImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -779,7 +779,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forAtMostForJMapImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -792,7 +792,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forAtMostForStringImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -805,7 +805,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forExactlyImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -818,7 +818,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forExactlyForMapImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -831,7 +831,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forExactlyForJMapImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -844,7 +844,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forExactlyForStringImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -857,7 +857,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forNoImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -870,7 +870,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forNoForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -883,7 +883,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forNoForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -896,7 +896,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forNoForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -909,7 +909,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forBetweenImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -922,7 +922,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forBetweenForMapImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -935,7 +935,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forBetweenForJMapImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -948,7 +948,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forBetweenForStringImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -961,7 +961,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forEveryImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -974,7 +974,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forEveryForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -987,7 +987,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forEveryForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
@@ -1000,7 +1000,7 @@ object Inspectors extends Inspectors {
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine
+    val lineNo: Int = pos.startLine + 1
     '{ forEveryForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 
