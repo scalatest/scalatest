@@ -21,6 +21,7 @@ import org.scalatest.exceptions.{TestFailedException, StackDepthException}
 import org.scalatest.verbs.{CompileWord, TypeCheckWord}
 
 import scala.quoted._
+import scala.compiletime.testing.{Error, ErrorKind}
 
 object CompileMacro {
 
@@ -70,44 +71,55 @@ object CompileMacro {
     }
   }
 
-  // check that a code snippet does not compile
-  def assertNotTypeCheckImpl(self: Expr[_], typeChecked: Expr[Boolean], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+  given FromExpr[ErrorKind] with {
+    def unapply(expr: Expr[ErrorKind])(using Quotes) = expr match {
+      case '{ ErrorKind.Parser } => Some(ErrorKind.Parser)
+      case '{ ErrorKind.Typer }  => Some(ErrorKind.Typer)
+      case _ => None
+    }
+  }
+
+  given FromExpr[Error] with {
+    def unapply(expr: Expr[Error])(using Quotes) = expr match {
+      case '{ Error(${Expr(msg)}, ${Expr(line)}, ${Expr(col)}, ${Expr(kind)}) } => Some(Error(msg, line, col, kind))
+      case _ => None
+    }
+  }
+
+  // check that a code snippet does not type check
+  def assertNotTypeCheckImpl(self: Expr[_], typeChecked: Expr[List[Error]], typeCheckWord: Expr[TypeCheckWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
     import quotes.reflect._
 
-    // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
-    def checkNotTypeCheck(code: String): Expr[Assertion] =
-      if (!typeChecked.valueOrError) '{ Succeeded }
-      else '{
-        val messageExpr = Resources.expectedTypeErrorButGotNone(${ Expr(code) })
-        throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
+    // parse and type check a code snippet
+    // generate code to throw TestFailedException if there is a parse error or type checking succeeds
+    def checkNotTypeCheck(code: String): Expr[Assertion] = {
+      // For some reason `typeChecked.valueOrError` is failing here, so instead we grab
+      // the varargs argument to List.apply and use that to extract the list of errors
+      val errors = typeChecked.asTerm.underlyingArgument match {
+        case Apply(TypeApply(Select(Ident("List"), "apply"), _), List(seq)) =>
+          seq.asExprOf[Seq[Error]].valueOrError.toList
       }
 
-    val methodName = shouldOrMust + "Not"
+      errors match {
+        case Error(_, _, _, ErrorKind.Typer) :: _ => '{ Succeeded }
+        case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
+          val messageExpr = Resources.expectedTypeErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
+        }
+        case Nil => '{
+          val messageExpr = Resources.expectedTypeErrorButGotNone(${ Expr(code) })
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
+        }
+      }
+    }
 
     self.asTerm.underlyingArgument match {
-      case Apply(
-             Apply(
-               Select(_, shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
-               List(
-                 Literal(code)
-               )
-             ),
-             _
-           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
-        // LHS is a normal string literal, call checkNotTypeCheck with the extracted code string to generate code
+
+      case Literal(StringConstant(code)) =>
         checkNotTypeCheck(code.toString)
 
-      case Apply(
-             Apply(
-               Ident(shouldOrMustTerconvertToStringShouldOrMustWrapperTermName),
-               List(
-                 Literal(StringConstant(code))
-               )
-             ),
-             _
-           ) if shouldOrMustTerconvertToStringShouldOrMustWrapperTermName ==  "convertToString" + shouldOrMust.capitalize + "Wrapper" =>
-        // LHS is a normal string literal, call checkNotTypeCheck with the extracted code string to generate code
-        checkNotTypeCheck(code.toString)
+      case Apply(Select(_, "stripMargin"), List(Literal(StringConstant(code)))) =>
+        checkNotTypeCheck(code.toString.stripMargin)
 
       case _ =>
         report.throwError("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
