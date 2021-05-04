@@ -380,7 +380,7 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
         def iterator: Iterator[Fred] =
           new Iterator[Fred] {
             private var hasNextElement: Boolean = true
-            def next: Fred = {
+            def next(): Fred = {
               if (hasNextElement) {
                 hasNextElement = false
                 thisFred
