@@ -595,7 +595,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += Def.task {
-        GenCommonTestDotty.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+        GenCommonTestDotty.genMain((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
         GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
         GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,
@@ -609,7 +609,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += Def.task {
-        GenCommonTestDotty.genMainJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+        GenCommonTestDotty.genMainJS((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
         GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
         GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,

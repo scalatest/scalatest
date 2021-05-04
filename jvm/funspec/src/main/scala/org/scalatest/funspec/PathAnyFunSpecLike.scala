@@ -99,6 +99,9 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  //DOTTY-ONLY private def wrapTestFun(testFun: () => Any /* Assertion */): org.scalatest.Transformer[Unit] = 
+  //DOTTY-ONLY   org.scalatest.Transformer(testFun)
+
   /**
    * Class that, via an instance referenced from the <code>it</code> field,
    * supports test (and shared test) registration in <code>PathAnyFunSpec</code>s.
@@ -145,6 +148,7 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
+    // SKIP-DOTTY-START
     def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
@@ -154,6 +158,10 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
       handleTest(thisSuite, testText, Transformer(() => testFun), Resources.itCannotAppearInsideAnotherItOrThey, "PathAnyFunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => handleTest(thisSuite, testText, wrapTestFun(() => testFun), Resources.itCannotAppearInsideAnotherItOrThey, "PathAnyFunSpecLike.scala", "apply", 3, -2, None, Some(pos), testTags: _*) }) } 
+    //DOTTY-ONLY }
     
     /**
      * Supports the registration of shared tests.
@@ -263,9 +271,14 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
+    // SKIP-DOTTY-START
     def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
       handleTest(thisSuite, testText, Transformer(() => testFun), Resources.theyCannotAppearInsideAnotherItOrThey, "PathAnyFunSpecLike.scala", "apply", 3, -2, None, Some(pos), testTags: _*)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => handleTest(thisSuite, testText, wrapTestFun(() => testFun), Resources.theyCannotAppearInsideAnotherItOrThey, "PathAnyFunSpecLike.scala", "apply", 3, -2, None, Some(pos), testTags: _*) }) } 
+    //DOTTY-ONLY }
  
     /**
      * Supports the registration of shared tests.
@@ -348,6 +361,7 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
+  // SKIP-DOTTY-START
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
@@ -358,6 +372,10 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
     // Might not actually register it. Only will register it if it is its turn.
     handleIgnoredTest(testText, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, "PathAnyFunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def ignore(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => handleIgnoredTest(testText, wrapTestFun(() => testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, "PathAnyFunSpecLike.scala", "ignore", 4, -2, None, Some(pos), testTags: _*) }) } 
+  //DOTTY-ONLY }
   
   /**
    * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
@@ -372,6 +390,7 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
    * <code>org.scalatest.funspec.PathAnyFunSpec</code>.
    * </p>
    */
+  // SKIP-DOTTY-START
   protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
@@ -389,6 +408,21 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
       case other: Throwable => throw other
     }
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def describe(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => 
+  //DOTTY-ONLY     try {
+  //DOTTY-ONLY       handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "PathAnyFunSpecLike.scala", "describe", 4, -2, None, Some(pos))
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY     catch {
+  //DOTTY-ONLY       case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e.position.getOrElse(pos))
+  //DOTTY-ONLY       case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e.position.getOrElse(pos))
+  //DOTTY-ONLY       case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.position.getOrElse(pos))
+  //DOTTY-ONLY       case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), pos)
+  //DOTTY-ONLY       case other: Throwable => throw other
+  //DOTTY-ONLY     }
+  //DOTTY-ONLY   }) }
+  //DOTTY-ONLY }
   
   /**
    * Supports shared test registration in <code>PathAnyFunSpec</code>s.

@@ -422,12 +422,7 @@ object GenScalaTestDotty {
         "NoArgSpec.scala",  // skipped because tests failed.
         "DeprecatedFeatureSpecSpec.scala"  // skipped because tests failed.
       )) ++ 
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, 
-      List(
-        "StackSpec.scala",  // skipped because does not compile yet.
-        "FunSpecSpec.scala",  // skipped because does not compile yet.
-        "FreeSpecSpec.scala" // skipped because does not compile yet.
-      )) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, 
       List(
         "CommonGeneratorsSpec.scala", 
@@ -570,12 +565,7 @@ object GenScalaTestDotty {
         "DeprecatedFeatureSpecSpec.scala",  // skipped because tests failed.
         "SuiteSpec.scala"    // skipped because depends on java reflections
       )) ++ 
-    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, 
-      List(
-        "StackSpec.scala",  // skipped because does not compile yet.
-        "FunSpecSpec.scala",  // skipped because does not compile yet.
-        "FreeSpecSpec.scala" // skipped because does not compile yet.
-      )) ++
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, 
       List(
         "CommonGeneratorsSpec.scala", 
