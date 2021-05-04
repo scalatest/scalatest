@@ -397,7 +397,6 @@ object GenScalaTestDotty {
         "SeveredStackTracesFailureSpec.scala", // skipped because tests failed 
         "SeveredStackTracesSpec.scala", // skipped because tests failed 
         "ShellSuite.scala", // skipped because does not compile yet 
-        "ShouldNotTypeCheckSpec.scala", // skipped because tests failed  
       )
     ) ++ 
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++
