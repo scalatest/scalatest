@@ -183,7 +183,7 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def apply(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(specText, Transformer(() => testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, Some(pos), None, testTags: _*)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(specText, wrapTestFun(() => testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, Some(pos), None, testTags: _*)}) } 
     //DOTTY-ONLY }
 
     /**
@@ -300,7 +300,7 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def apply(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(specText, Transformer(() => testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, Some(pos), None, testTags: _*)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(specText, wrapTestFun(() => testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, Some(pos), None, testTags: _*)}) } 
     //DOTTY-ONLY }
 
     /**
@@ -395,7 +395,7 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def ignore(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", 4, -3, None, Some(pos), testTags: _*)}) } 
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredTest(testText, wrapTestFun(() => testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", 4, -3, None, Some(pos), testTags: _*)}) } 
   //DOTTY-ONLY }
 
   /**
