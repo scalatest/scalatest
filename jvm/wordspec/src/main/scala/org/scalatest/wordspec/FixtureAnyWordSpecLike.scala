@@ -103,6 +103,9 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
   //DOTTY-ONLY private def wrapTestFun(testFun: FixtureParam => Any /* Assertion */): org.scalatest.fixture.Transformer[FixtureParam] = 
   //DOTTY-ONLY   org.scalatest.fixture.Transformer(testFun)
 
+  //DOTTY-ONLY private def noArgTestWrapper(testFun: () => Any /* Assertion */): org.scalatest.fixture.NoArgTestWrapper[FixtureParam, Any] = 
+  //DOTTY-ONLY   new org.scalatest.fixture.NoArgTestWrapper(testFun)
+
   // SKIP-DOTTY-START
   final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
@@ -312,7 +315,7 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(specText, tags, "in", testFun, pos)}) } 
-    //DOTTY-ONLY }
+    //DOTTY-ONLY }      
 
     /**
      * Supports tagged test registration, for tests that don't take a fixture.
@@ -338,7 +341,7 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(specText, tags, "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(specText, tags, "in", noArgTestWrapper(testFun), pos)}) } 
     //DOTTY-ONLY }
 
     /**
@@ -419,7 +422,7 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def ignore(testFun: () => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(specText, tags, "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(specText, tags, "ignore", noArgTestWrapper(testFun), pos)}) } 
     //DOTTY-ONLY }
   }
 
@@ -493,7 +496,7 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "in", noArgTestWrapper(testFun), pos)}) } 
     //DOTTY-ONLY }
 
     /**
@@ -574,7 +577,7 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def ignore(testFun: () => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(string, List(), "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(string, List(), "ignore", noArgTestWrapper(testFun), pos)}) } 
     //DOTTY-ONLY }
 
     /**
