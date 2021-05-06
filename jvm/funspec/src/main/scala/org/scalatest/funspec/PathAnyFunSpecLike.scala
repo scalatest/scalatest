@@ -99,9 +99,6 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  //DOTTY-ONLY private def wrapTestFun(testFun: () => Any /* Assertion */): org.scalatest.Transformer[Unit] = 
-  //DOTTY-ONLY   org.scalatest.Transformer(testFun)
-
   /**
    * Class that, via an instance referenced from the <code>it</code> field,
    * supports test (and shared test) registration in <code>PathAnyFunSpec</code>s.
