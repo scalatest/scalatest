@@ -100,13 +100,7 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  //DOTTY-ONLY private def wrapTestFun(testFun: FixtureParam => Any /* Assertion */): org.scalatest.fixture.Transformer[FixtureParam] = 
-  //DOTTY-ONLY   org.scalatest.fixture.Transformer(testFun)
-
-  //DOTTY-ONLY private def noArgTestWrapper(testFun: () => Any /* Assertion */): org.scalatest.fixture.NoArgTestWrapper[FixtureParam, Any] = 
-  //DOTTY-ONLY   new org.scalatest.fixture.NoArgTestWrapper(testFun)
-
-  private def registerTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
+  private final def registerTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
@@ -406,6 +400,10 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(specText, tags, "ignore", testFun, pos)}) } 
     //DOTTY-ONLY }
 
+    private final def ignoreImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
+      registerTestToIgnore(specText, tags, "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports registration of tagged, ignored tests that take no fixture parameter.
      *
@@ -426,11 +424,11 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def ignore(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(specText, tags, "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+      ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def ignore(testFun: () => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(specText, tags, "ignore", noArgTestWrapper(testFun), pos)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
   }
 
@@ -480,6 +478,10 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "in", testFun, pos)}) } 
     //DOTTY-ONLY }
 
+    private final def inImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
+      registerTestToRun(string, List(), "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports registration of tests that take no fixture.
      *
@@ -500,11 +502,11 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def in(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToRun(string, List(), "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+      inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "in", noArgTestWrapper(testFun), pos)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -561,6 +563,10 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(string, List(), "ignore", testFun, pos)}) } 
     //DOTTY-ONLY }
 
+    private final def ignoreImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
+      registerTestToIgnore(string, List(), "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports registration of ignored tests that take no fixture.
      *
@@ -581,11 +587,11 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def ignore(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(string, List(), "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+      ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def ignore(testFun: () => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(string, List(), "ignore", noArgTestWrapper(testFun), pos)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
     /**

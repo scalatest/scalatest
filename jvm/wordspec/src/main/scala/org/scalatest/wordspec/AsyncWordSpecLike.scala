@@ -104,18 +104,26 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    */
   protected def markup: Documenter = atomicDocumenter.get
 
+  private final def registerAsyncTestImpl(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
+    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
+  }
+
   // SKIP-DOTTY-START
   final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
+    registerAsyncTestImpl(testText, testTags: _*)(testFun, pos)
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*) }) } 
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
   //DOTTY-ONLY }
+
+  private final def registerIgnoredAsyncTestImpl(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
+    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
+  }
 
   // SKIP-DOTTY-START
   final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
+    registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos)
   }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
@@ -755,6 +763,10 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    */
   protected final class ItWord {
 
+    private final def shouldImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
+    }
+
     /**
      * Supports the registration of scope with <code>should</code> in a <code>AnyWordSpecLike</code>.
      *
@@ -776,12 +788,16 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      */
     // SKIP-DOTTY-START
     def should(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
+      shouldImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def should(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right) }) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => shouldImpl(right, pos) }) } 
     //DOTTY-ONLY }
+
+    private final def mustImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
+    }
 
     /**
      * Supports the registration of scope with <code>must</code> in a <code>AsyncWordSpecLike</code>.
@@ -804,12 +820,16 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      */
     // SKIP-DOTTY-START
     def must(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
+      mustImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def must(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right) }) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => mustImpl(right, pos) }) } 
     //DOTTY-ONLY }
+
+    private final def canImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
+    }
 
     /**
      * Supports the registration of scope with <code>can</code> in a <code>AsyncWordSpecLike</code>.
@@ -832,12 +852,16 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      */
     // SKIP-DOTTY-START
     def can(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
+      canImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def can(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right) }) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => canImpl(right, pos) }) } 
     //DOTTY-ONLY }
+
+    private final def whenImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
+    }
 
     /**
      * Supports the registration of scope with <code>when</code> in a <code>AsyncWordSpecLike</code>.
@@ -860,11 +884,11 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      */
     // SKIP-DOTTY-START
     def when(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
+      whenImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def when(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right) }) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => whenImpl(right, pos) }) } 
     //DOTTY-ONLY }
   }
 
@@ -910,6 +934,10 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    */
   protected final class TheyWord {
 
+    private final def shouldImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
+    }
+
     /**
      * Supports the registration of scope with <code>should</code> in a <code>AsyncWordSpecLike</code>.
      *
@@ -931,12 +959,16 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      */
     // SKIP-DOTTY-START
     def should(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
+      shouldImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def should(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right) }) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => shouldImpl(right, pos) }) } 
     //DOTTY-ONLY }
+
+    private final def mustImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
+    }
 
     /**
      * Supports the registration of scope with <code>must</code> in a <code>AsyncWordSpecLike</code>.
@@ -959,12 +991,16 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      */
     // SKIP-DOTTY-START
     def must(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
+      mustImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def must(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right) }) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => mustImpl(right, pos) }) } 
     //DOTTY-ONLY }
+
+    private final def canImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
+    }
 
     /**
      * Supports the registration of scope with <code>can</code> in a <code>AsyncWordSpecLike</code>.
@@ -987,12 +1023,16 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      */
     // SKIP-DOTTY-START
     def can(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
+      canImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def can(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right) }) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => canImpl(right, pos) }) } 
     //DOTTY-ONLY }
+
+    private final def whenImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
+    }
 
     /**
      * Supports the registration of scope with <code>when</code> in a <code>AsyncWordSpecLike</code>.
@@ -1015,11 +1055,11 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      */
     // SKIP-DOTTY-START
     def when(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
+      whenImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def when(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right) }) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => whenImpl(right, pos) }) } 
     //DOTTY-ONLY }
   }
 
