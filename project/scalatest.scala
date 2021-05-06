@@ -17,8 +17,6 @@ import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurre
 import com.typesafe.tools.mima.core._
 import com.typesafe.tools.mima.core.ProblemFilters._
 
-import dotty.tools.sbtplugin.DottyPlugin.autoImport._
-
 import xerial.sbt.Sonatype.autoImport.sonatypePublishToBundle
 
 object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with JsBuild {
@@ -113,7 +111,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   def sharedSettings: Seq[Setting[_]] = 
     commonSharedSettings ++ scalaVersionsSettings ++ Seq(
       libraryDependencies ++= {
-        if (isDotty.value)
+        if (scalaVersion.value.startsWith("3."))
           Seq()
         else
           scalaLibraries(scalaVersion.value),
