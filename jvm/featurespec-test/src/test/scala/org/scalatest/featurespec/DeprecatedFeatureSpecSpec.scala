@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.featurespec
 
+import org.scalatest._
 import SharedHelpers._
 import org.scalactic.Prettifier
 import java.awt.AWTError
