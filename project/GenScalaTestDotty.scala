@@ -471,7 +471,6 @@ object GenScalaTestDotty {
         "ClassTaggingProp.scala",    // skipped because annotation not supported
         "DeprecatedClassTaggingProp.scala",    // skipped because annotation not supported
         "ConfigMapWrapperSuiteSpec.scala",    // skipped because depends on java reflection
-        "DeprecatedFeatureSpecSpec.scala", // skipped because does not compile yet 
         "DispatchReporterSpec.scala",   // skipped because DispatchReporter uses thread.
         "DocSpecSpec.scala",   // skipped because DocSpecSpec is not supported yet
         "EncodedOrderingSpec.scala",  // skipped because use scala.reflect.NameTransformer.encode
@@ -559,9 +558,7 @@ object GenScalaTestDotty {
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
-        "AsyncTestDataFixtureSpec.scala",  // skipped because does not compile yet.
         "NoArgSpec.scala",  // skipped because tests failed.
-        "DeprecatedFeatureSpecSpec.scala",  // skipped because tests failed.
         "SuiteSpec.scala"    // skipped because depends on java reflections
       )) ++ 
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
