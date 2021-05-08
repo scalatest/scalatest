@@ -133,7 +133,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       }
     }
 
-    // SKIP-DOTTY-START
     it("should pass in the fixture to every test method") {
       val a = new featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
@@ -250,7 +249,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
         }
       }
     }
-    // SKIP-DOTTY-END
 
     class TestWasCalledSuite extends featurespec.FixtureAnyFeatureSpec {
       type FixtureParam = String
@@ -693,7 +691,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(!k.theTestTheOtherCalled)
     }
 
-    // SKIP-DOTTY-START
     it("should return the correct test count from its expectedTestCount method") {
 
       val a = new featurespec.FixtureAnyFeatureSpec {
@@ -844,7 +841,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 3)
     }
-    // SKIP-DOTTY-END
     // SKIP-SCALATESTJS,NATIVE-START
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
@@ -921,7 +917,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       var takesAFixtureInvoked = false
     }
 
-    // SKIP-DOTTY-END
     it("should allow both tests that take fixtures and tests that don't") {
       val a = new featurespec.FixtureAnyFeatureSpec with InvokeChecking {
 
@@ -1032,7 +1027,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(!s.aNoArgTestWasPassed)
       assert(s.aOneArgTestWasPassed)
     }
-    // SKIP-DOTTY-END
     it("should pass a NoArgTest that invokes the no-arg test when the " +
             "NoArgTest's no-arg apply method is invoked") {
 
@@ -1070,7 +1064,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "Scenario: should blow up")
       }
-      // SKIP-DOTTY-START
       it("should, if they call a feature with a nested it from within an it clause, result in a TestFailedException when running the test") {
 
         class MySpec extends featurespec.FixtureAnyFeatureSpec {
@@ -1203,7 +1196,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
         val spec = new MySpec
         ensureTestFailedEventReceived(spec, "Scenario: should blow up")
       }
-      // SKIP-DOTTY-END
       it("should, if they call a nested feature from within a feature clause, result in a SuiteAborted event when constructing the FeatureSpec") {
 
         class MySpec extends featurespec.FixtureAnyFeatureSpec {
@@ -1222,7 +1214,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
         assert(caught.getMessage === "Feature clauses cannot be nested.")
       }
     }
-    // SKIP-DOTTY-START
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
       class TestSpec extends featurespec.FixtureAnyFeatureSpec with expectations.Expectations {
         type FixtureParam = String
@@ -1245,7 +1236,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FixtureAnyFeatureSpecSpec.scala")
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
     }
-    // SKIP-DOTTY-END
   }
   it("should pass the correct test name in the OneArgTest passed to withFixture") {
     trait PassedChecking {
@@ -1296,7 +1286,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
   }
 
-  // SKIP-DOTTY-START  
   it("should prefix feature text with 'Feature: '") {
     val rep = new EventRecordingReporter
     (new ExamplePrefixSpec).run(None, Args(rep))
@@ -1318,7 +1307,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
     assert(testSucceeded.size === 1)
     assert(testSucceeded(0).testText === "Scenario: A Scenario")
   }
-  // SKIP-DOTTY-END
 
   it("should allow test registration with registerTest and registerIgnoredTest") {
     class TestSpec extends featurespec.FixtureAnyFeatureSpec {
@@ -1366,7 +1354,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
   
   describe("when failure happens") {
       
-    // SKIP-DOTTY-START  
     it("should fire TestFailed event with correct stack depth info when test failed") {
       class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
@@ -1545,7 +1532,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
-    // SKIP-DOTTY-END
 
     it("should generate NotAllowedException wrapping a TestFailedException when assert fails in scope") {
       class TestSpec extends featurespec.FixtureAnyFeatureSpec {
@@ -1597,8 +1583,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
-    // SKIP-DOTTY-START
-    // Failing line checking
     it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
       class TestSpec extends featurespec.FixtureAnyFeatureSpec {
         type FixtureParam = String
@@ -1620,7 +1604,6 @@ class FixtureAnyFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       val cause = causeThrowable.asInstanceOf[RuntimeException]
       assert(cause.getMessage == "on purpose")
     }
-    // SKIP-DOTTY-END
 
     it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
       class TestSpec extends featurespec.FixtureAnyFeatureSpec {

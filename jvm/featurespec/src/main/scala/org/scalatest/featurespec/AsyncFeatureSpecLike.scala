@@ -99,13 +99,31 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  private final def registerAsyncTestImpl(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
     engine.registerAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  // SKIP-DOTTY-START
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    registerAsyncTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def registerIgnoredAsyncTestImpl(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
+
+  // SKIP-DOTTY-START
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * '''The `scenario` (starting with lowercase 's') method has been deprecated and will be removed in a future version of ScalaTest. Please use `Scenario` (starting with an uppercase 'S') instead.'''
@@ -116,8 +134,17 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
   @deprecated("The scenario (starting with lowercase 's') method has been deprecated and will be removed in a future version of ScalaTest. Please use Scenario (starting with an uppercase 'S') instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
+  // SKIP-DOTTY-START
   protected def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit =
-    Scenario(specText, testTags: _*)(testFun)(pos)
+    ScenarioImpl(specText, testTags: _*)(testFun, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ScenarioImpl(specText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }  
+
+  private final def ScenarioImpl(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
+    engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, None, None, pos, testTags: _*)
+  }
 
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
@@ -137,8 +164,17 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
+  // SKIP-DOTTY-START
   protected def Scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, None, None, pos, testTags: _*)
+    ScenarioImpl(specText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def Scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ScenarioImpl(specText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def ignoreImpl(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion], pos: source.Position): Unit = {
+    engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, None, pos, testTags: _*)
   }
 
   /**
@@ -159,9 +195,14 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
+  // SKIP-DOTTY-START
   protected def ignore(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, None, pos, testTags: _*)
+    ignoreImpl(specText, testTags: _*)(testFun, pos)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def ignore(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(specText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * '''The `feature` (starting with lowercase 'f') method has been deprecated and will be removed in a future version of ScalaTest. Please use `Feature` (starting with an uppercase 'F') instead.'''
@@ -172,15 +213,14 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
   @deprecated("The feature (starting with lowercase 'f') method has been deprecated and will be removed in a future version of ScalaTest. Please use Feature (starting with an uppercase 'F') instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
-  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = Feature(description)(fun)(pos)
+  // SKIP-DOTTY-START
+  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = FeatureImpl(description)(fun, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def feature(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => FeatureImpl(description)(fun, pos) }) } 
+  //DOTTY-ONLY }
 
-  /**
-   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
-   * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
-   * (defined with <code>it</code>). This trait's implementation of this method will register the
-   * description string and immediately invoke the passed function.
-   */
-  protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  private final def FeatureImpl(description: String)(fun: => Unit, pos: source.Position): Unit = {
     if (!currentBranchIsTrunk)
       throw new NotAllowedException(Resources.cantNestFeatureClauses, pos)
 
@@ -196,6 +236,21 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
       case other: Throwable => throw other
     }
   }
+
+  /**
+   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
+   * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
+   * (defined with <code>it</code>). This trait's implementation of this method will register the
+   * description string and immediately invoke the passed function.
+   */
+  // SKIP-DOTTY-START
+  protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+    FeatureImpl(description)(fun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def Feature(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => FeatureImpl(description)(fun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
