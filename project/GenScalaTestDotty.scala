@@ -410,7 +410,6 @@ object GenScalaTestDotty {
         "ScopePendingProp.scala", // skipped because does not compile yet.
         "LocationSpec.scala",  // skipped because does not compile yet.
         "LocationFunctionSuiteProp.scala", // skipped because does not compile yet.
-        "EventSpec.scala", // skipped because does not compile yet.
         "DeprecatedScopePendingProp.scala",  // skipped because does not compile yet.
         "DeprecatedLocationSuiteProp.scala", // skipped because does not compile yet.
         "DeprecatedLocationFunctionSuiteProp.scala" // skipped because does not compile yet.
@@ -549,7 +548,6 @@ object GenScalaTestDotty {
         "ScopePendingProp.scala", // skipped because does not compile yet.
         "LocationSpec.scala",  // skipped because does not compile yet.
         "LocationFunctionSuiteProp.scala", // skipped because does not compile yet.
-        "EventSpec.scala", // skipped because does not compile yet.
         "DeprecatedScopePendingProp.scala",  // skipped because does not compile yet.
         "DeprecatedLocationSuiteProp.scala", // skipped because does not compile yet.
         "DeprecatedLocationFunctionSuiteProp.scala" // skipped because does not compile yet.
