@@ -139,7 +139,6 @@ object GenCommonTestDotty {
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, 
       List(
-        "JSON.scala", 
         "LineNumberHelper.scala", 
         "LineNumberMacro.scala"
       )
@@ -152,7 +151,6 @@ object GenCommonTestDotty {
   def genMainJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDirJS("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir,
       List(
-        "JSON.scala", 
         "LineNumberHelper.scala", 
         "LineNumberMacro.scala", 
         "TestConcurrentDistributor.scala"

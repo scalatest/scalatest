@@ -162,6 +162,11 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2"
         )
 
+      case Some((3, _)) =>
+        Seq(
+          "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.2.0-RC2"
+        )  
+
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.1")
 
