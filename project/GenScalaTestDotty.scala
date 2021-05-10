@@ -442,7 +442,7 @@ object GenScalaTestDotty {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
-        "FrameworkSuite.scala", // skipped because hang when tests execute.
+        //"FrameworkSuite.scala", // skipped because hang when tests execute.
         "ScalaTestRunnerSuite.scala", // skipped because does not compile yet.
         "SuiteDiscoveryHelperSuite.scala",  // skipped because does not compile yet.
         "XmlSocketReporterSpec.scala", // skipped because tests failed execute.
