@@ -404,13 +404,7 @@ object GenScalaTestDotty {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
-      List(
-        "DeprecatedScopePendingProp.scala",  // skipped because does not compile yet.
-        "DeprecatedLocationSuiteProp.scala", // skipped because does not compile yet.
-        "DeprecatedLocationFunctionSuiteProp.scala" // skipped because does not compile yet.
-      )
-    ) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
@@ -540,9 +534,6 @@ object GenScalaTestDotty {
         "TestLocationMethodJUnitSuite.scala", // Not supported by scala-js
         "TestLocationMethodTestNGSuite.scala", // Not supported by scala-js
         "LocationMethodSuiteProp.scala", // Not supported by scala-js
-        "DeprecatedScopePendingProp.scala",  // skipped because does not compile yet.
-        "DeprecatedLocationSuiteProp.scala", // skipped because does not compile yet.
-        "DeprecatedLocationFunctionSuiteProp.scala" // skipped because does not compile yet.
       )
     ) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
