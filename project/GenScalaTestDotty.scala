@@ -406,7 +406,6 @@ object GenScalaTestDotty {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
       List(
-        "LocationSuiteProp.scala", // skipped because does not compile yet.
         "DeprecatedScopePendingProp.scala",  // skipped because does not compile yet.
         "DeprecatedLocationSuiteProp.scala", // skipped because does not compile yet.
         "DeprecatedLocationFunctionSuiteProp.scala" // skipped because does not compile yet.
@@ -541,7 +540,6 @@ object GenScalaTestDotty {
         "TestLocationMethodJUnitSuite.scala", // Not supported by scala-js
         "TestLocationMethodTestNGSuite.scala", // Not supported by scala-js
         "LocationMethodSuiteProp.scala", // Not supported by scala-js
-        "LocationSuiteProp.scala", // skipped because does not compile yet.
         "DeprecatedScopePendingProp.scala",  // skipped because does not compile yet.
         "DeprecatedLocationSuiteProp.scala", // skipped because does not compile yet.
         "DeprecatedLocationFunctionSuiteProp.scala" // skipped because does not compile yet.
