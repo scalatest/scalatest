@@ -1445,7 +1445,6 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get == thisLineNumber - 10)
     }
     
-    // SKIP-DOTTY-START
     // Failing line check not working yet.
     it("should generate TestRegistrationClosedException with correct stack depth info when has an in nested inside a in") {
       class TestSpec extends AnyFlatSpec {
@@ -1574,7 +1573,6 @@ class FlatSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(trce.failedCodeLineNumber.get == thisLineNumber - 23)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
-    // SKIP-DOTTY-END
 
     it("should generate a DuplicateTestNameException when duplicate test name is detected") {
       class TestSpec extends AnyFlatSpec {

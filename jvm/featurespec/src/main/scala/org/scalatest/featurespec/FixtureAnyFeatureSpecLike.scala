@@ -94,7 +94,7 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with org.
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  private final def registerTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
@@ -102,7 +102,16 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with org.
     engine.registerTest(Resources.scenario(testText.trim), fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FixtureAnyFeatureSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  // SKIP-DOTTY-START
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    registerTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def registerIgnoredTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
@@ -110,8 +119,18 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with org.
     engine.registerIgnoredTest(Resources.scenario(testText.trim), fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FixtureAnyFeatureSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
+  // SKIP-DOTTY-START
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
   class ResultOfScenarioInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    
+    private final def applyImpl(testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
       // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -120,7 +139,17 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with org.
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
       engine.registerTest(Resources.scenario(specText.trim), fixture.Transformer(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
     }
-    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    
+    // SKIP-DOTTY-START
+    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+      applyImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def applyImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
       // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -129,6 +158,15 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with org.
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
       engine.registerTest(Resources.scenario(specText.trim), fixture.Transformer(new fixture.NoArgTestWrapper(testFun)), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
     }
+
+    // SKIP-DOTTY-START
+    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+      applyImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -164,7 +202,7 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with org.
     new ResultOfScenarioInvocation(specText, testTags: _*)
 
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    private final def applyImpl(testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
       // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -173,7 +211,17 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with org.
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
       engine.registerIgnoredTest(Resources.scenario(specText), fixture.Transformer(testFun), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
-    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    
+    // SKIP-DOTTY-START
+    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+      applyImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def applyImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
       // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -182,6 +230,15 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with org.
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
       engine.registerIgnoredTest(Resources.scenario(specText), fixture.Transformer(new fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
+    
+    // SKIP-DOTTY-START
+    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+      applyImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -214,17 +271,15 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with org.
    * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
   @deprecated("The feature (starting with lowercase 'f') method has been deprecated and will be removed in a future version of ScalaTest. Please use Feature (starting with an uppercase 'F') instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
-  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = Feature(description)(fun)(pos)
+  // SKIP-DOTTY-START
+  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = FeatureImpl(description)(fun, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def feature(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => FeatureImpl(description)(fun, pos) }) } 
+  //DOTTY-ONLY }
 
-  /**
-   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
-   * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
-   * (defined with <code>it</code>). This trait's implementation of this method will register the
-   * description string and immediately invoke the passed function.
-   *
-   * @param description the description text
-   */
-  protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  
+  private final def FeatureImpl(description: String)(fun: => Unit, pos: source.Position): Unit = {
 
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
@@ -248,6 +303,23 @@ trait FixtureAnyFeatureSpecLike extends org.scalatest.FixtureTestSuite with org.
       case other: Throwable => throw other
     }
   }
+
+  /**
+   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
+   * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
+   * (defined with <code>it</code>). This trait's implementation of this method will register the
+   * description string and immediately invoke the passed function.
+   *
+   * @param description the description text
+   */
+  // SKIP-DOTTY-START 
+  protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+    FeatureImpl(description)(fun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def Feature(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => FeatureImpl(description)(fun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FixtureAnyFeatureSpec</code> belong, and values

@@ -1162,8 +1162,6 @@ class FeatureSpecSpec extends AnyFunSpec {
         assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
       }
       
-      // Failing test
-      // SKIP-DOTTY-START
       it("should generate NotAllowedException with correct stack depth info when has a feature nested inside a feature") {
         class TestSpec extends AnyFeatureSpec {
           Feature("a feature") {
@@ -1181,10 +1179,7 @@ class FeatureSpecSpec extends AnyFunSpec {
         assert(caught.failedCodeFileName.get === "FeatureSpecSpec.scala")
         assert(caught.failedCodeLineNumber.get === thisLineNumber - 12)
       }
-      // SKIP-DOTTY-END
       
-      // Compiler crashed
-      // SKIP-DOTTY-START
       it("should generate TestRegistrationClosedException with correct stack depth info when has a scenario nested inside a scenario") {
         class TestSpec extends AnyFeatureSpec {
           var registrationClosedThrown = false
@@ -1317,8 +1312,6 @@ class FeatureSpecSpec extends AnyFunSpec {
         assert(trce.message == Some("Test cannot be nested inside another test."))
       }
 
-      // SKIP-DOTTY-END
-
       it("should generate NotAllowedException wrapping a TestFailedException when assert fails in scope") {
         class TestSpec extends AnyFeatureSpec {
           Feature("a feature") {
@@ -1365,8 +1358,6 @@ class FeatureSpecSpec extends AnyFunSpec {
         assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
       }
 
-      // SKIP-DOTTY-START
-      // Failing line number check
       it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
         class TestSpec extends AnyFeatureSpec {
           Feature("a feature") {
@@ -1386,7 +1377,6 @@ class FeatureSpecSpec extends AnyFunSpec {
         val cause = causeThrowable.asInstanceOf[RuntimeException]
         assert(cause.getMessage == "on purpose")
       }
-      // SKIP-DOTTY-END
 
       it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
         class TestSpec extends AnyFeatureSpec {

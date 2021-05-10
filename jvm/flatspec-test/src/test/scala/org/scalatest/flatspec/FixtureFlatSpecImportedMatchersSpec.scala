@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.flatspec
 
 import org.scalatest.StringFixture
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.flatspec.FixtureAnyFlatSpec
-import org.scalatest.matchers.should.Matchers
 
-class FlatSpecMixedInMatchersSpec extends FixtureAnyFlatSpec with Matchers with StringFixture {
+/*
+This tests that matchers works with FlatSpec when matchers are imported,
+something that broke in 2.1.RC1.
+*/
+class FixtureFlatSpecImportedMatchersSpec extends FixtureAnyFlatSpec with StringFixture {
   "This spec" should "work OK" in { _ =>
     "hello" should startWith ("he")
     "hello" should endWith ("lo")

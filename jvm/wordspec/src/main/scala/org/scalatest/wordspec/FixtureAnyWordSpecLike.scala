@@ -100,33 +100,38 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  //DOTTY-ONLY private def wrapTestFun(testFun: FixtureParam => Any /* Assertion */): org.scalatest.fixture.Transformer[FixtureParam] = 
-  //DOTTY-ONLY   org.scalatest.fixture.Transformer(testFun)
-
-  // SKIP-DOTTY-START
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  private final def registerTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
     engine.registerTest(testText, org.scalatest.fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerTest(testText, wrapTestFun(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, -1, None, None, Some(pos), None, testTags: _*)}) }
-  //DOTTY-ONLY }
 
   // SKIP-DOTTY-START
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    registerTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestImpl(testText, testTags: _*)(testFun, pos) }) }
+  //DOTTY-ONLY }
+
+  private final def registerIgnoredTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
     engine.registerIgnoredTest(testText, org.scalatest.fixture.Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
+
+  // SKIP-DOTTY-START
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos)
+  }
   // SKIP-DOTTY-END
   //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
-  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => engine.registerIgnoredTest(testText, wrapTestFun(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, -3, None, Some(pos), testTags: _*)}) }
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos) }) }
   //DOTTY-ONLY }
 
   /**
@@ -311,8 +316,8 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(specText, tags, "in", testFun, pos)}) } 
-    //DOTTY-ONLY }
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(specText, tags, "in", testFun, pos) }) } 
+    //DOTTY-ONLY }      
 
     /**
      * Supports tagged test registration, for tests that don't take a fixture.
@@ -338,7 +343,7 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(specText, tags, "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(specText, tags, "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -395,6 +400,10 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(specText, tags, "ignore", testFun, pos)}) } 
     //DOTTY-ONLY }
 
+    private final def ignoreImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
+      registerTestToIgnore(specText, tags, "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports registration of tagged, ignored tests that take no fixture parameter.
      *
@@ -415,11 +424,11 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def ignore(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(specText, tags, "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+      ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def ignore(testFun: () => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(specText, tags, "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
   }
 
@@ -469,6 +478,10 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "in", testFun, pos)}) } 
     //DOTTY-ONLY }
 
+    private final def inImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
+      registerTestToRun(string, List(), "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports registration of tests that take no fixture.
      *
@@ -489,11 +502,11 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def in(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToRun(string, List(), "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+      inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -550,6 +563,10 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(string, List(), "ignore", testFun, pos)}) } 
     //DOTTY-ONLY }
 
+    private final def ignoreImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
+      registerTestToIgnore(string, List(), "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports registration of ignored tests that take no fixture.
      *
@@ -570,11 +587,11 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def ignore(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(string, List(), "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+      ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def ignore(testFun: () => Any /* Assertion */): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(string, List(), "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
     /**
@@ -929,6 +946,10 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
    */
   protected final class ItWord {
 
+    private final def shouldImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
+    } 
+
     /**
      * Supports the registration of scope with <code>should</code> in a <code>FixtureAnyWordSpecLike</code>.
      *
@@ -952,12 +973,16 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def should(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
+      shouldImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def should(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => shouldImpl(right, pos) }) } 
     //DOTTY-ONLY }
+
+    private final def mustImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
+    }
 
     /**
      * Supports the registration of scope with <code>must</code> in a <code>FixtureAnyWordSpecLike</code>.
@@ -982,12 +1007,16 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def must(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
+      mustImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def must(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => mustImpl(right, pos) }) } 
     //DOTTY-ONLY }
+
+    private final def canImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
+    }
 
     /**
      * Supports the registration of scope with <code>can</code> in a <code>FixtureAnyWordSpecLike</code>.
@@ -1012,12 +1041,16 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def can(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
+      canImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def can(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => canImpl(right, pos) }) } 
     //DOTTY-ONLY }
+
+    private final def whenImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
+    }
 
     /**
      * Supports the registration of scope with <code>when</code> in a <code>FixtureAnyWordSpecLike</code>.
@@ -1042,11 +1075,11 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def when(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
+      whenImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def when(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => whenImpl(right, pos) }) } 
     //DOTTY-ONLY }
   }
 
@@ -1092,6 +1125,10 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
    */
   protected final class TheyWord {
 
+    private final def shouldImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
+    }
+
     /**
      * Supports the registration of scope with <code>should</code> in a <code>FixtureAnyWordSpecLike</code>.
      *
@@ -1115,12 +1152,16 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def should(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
+      shouldImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def should(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => shouldImpl(right, pos) }) } 
     //DOTTY-ONLY }
+
+    private final def mustImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
+    }
 
     /**
      * Supports the registration of scope with <code>must</code> in a <code>FixtureAnyWordSpecLike</code>.
@@ -1145,12 +1186,16 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def must(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
+      mustImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def must(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => mustImpl(right, pos) }) } 
     //DOTTY-ONLY }
+
+    private final def canImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
+    }
 
     /**
      * Supports the registration of scope with <code>can</code> in a <code>FixtureAnyWordSpecLike</code>.
@@ -1175,12 +1220,16 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def can(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
+      canImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def can(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => canImpl(right, pos) }) } 
     //DOTTY-ONLY }
+
+    private final def whenImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
+    }
 
     /**
      * Supports the registration of scope with <code>when</code> in a <code>FixtureAnyWordSpecLike</code>.
@@ -1205,11 +1254,11 @@ trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      */
     // SKIP-DOTTY-START
     def when(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
+      whenImpl(right, pos)
     }
     // SKIP-DOTTY-END
     //DOTTY-ONLY inline def when(right: => Unit): Unit = {
-    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)}) } 
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => whenImpl(right, pos) }) } 
     //DOTTY-ONLY }
   }
 

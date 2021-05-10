@@ -91,7 +91,7 @@ trait AnyFeatureSpecLike extends TestSuite with TestRegistration with Informing 
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  private final def registerTestImpl(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
@@ -99,13 +99,31 @@ trait AnyFeatureSpecLike extends TestSuite with TestRegistration with Informing 
     engine.registerTest(Resources.scenario(testText.trim), Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyFeatureSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  // SKIP-DOTTY-START
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    registerTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def registerIgnoredTestImpl(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
     engine.registerIgnoredTest(Resources.scenario(testText.trim), Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyFeatureSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
+
+  // SKIP-DOTTY-START
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * '''The `scenario` (starting with lowercase 's') method has been deprecated and will be removed in a future version of ScalaTest. Please use `Scenario` (starting with an uppercase 'S') instead.'''
@@ -116,8 +134,23 @@ trait AnyFeatureSpecLike extends TestSuite with TestRegistration with Informing 
    * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
   @deprecated("The scenario (starting with lowercase 's') method has been deprecated and will be removed in a future version of ScalaTest. Please use Scenario (starting with an uppercase 'S') instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
+  // SKIP-DOTTY-START
   protected def scenario(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit =
     Scenario(specText, testTags: _*)(testFun)(pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def scenario(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ScenarioImpl(specText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }  
+
+  private final def ScenarioImpl(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
+    // SKIP-SCALATESTJS,NATIVE-START
+    val stackDepth = 4
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
+    engine.registerTest(Resources.scenario(specText.trim), Transformer(() => testFun), Resources.scenarioCannotAppearInsideAnotherScenario, "AnyFeatureSpecLike.scala", "scenario", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+  }
 
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
@@ -137,14 +170,23 @@ trait AnyFeatureSpecLike extends TestSuite with TestRegistration with Informing 
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
+  // SKIP-DOTTY-START
   protected def Scenario(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    ScenarioImpl(specText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def Scenario(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ScenarioImpl(specText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def ignoreImpl(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
-    val stackDepthAdjustment = -2
+    val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
-    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
-    engine.registerTest(Resources.scenario(specText.trim), Transformer(() => testFun), Resources.scenarioCannotAppearInsideAnotherScenario, "AnyFeatureSpecLike.scala", "scenario", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
+    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(() => testFun), Resources.ignoreCannotAppearInsideAScenario, "AnyFeatureSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
@@ -165,15 +207,14 @@ trait AnyFeatureSpecLike extends TestSuite with TestRegistration with Informing 
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
+  // SKIP-DOTTY-START
   protected def ignore(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS,NATIVE-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS,NATIVE-END
-    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
-    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredTest(Resources.scenario(specText), Transformer(() => testFun), Resources.ignoreCannotAppearInsideAScenario, "AnyFeatureSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    ignoreImpl(specText, testTags: _*)(testFun, pos)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def ignore(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(specText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * '''The `feature` (starting with lowercase 'f') method has been deprecated and will be removed in a future version of ScalaTest. Please use `Feature` (starting with an uppercase 'F') instead.'''
@@ -184,15 +225,14 @@ trait AnyFeatureSpecLike extends TestSuite with TestRegistration with Informing 
    * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
   @deprecated("The feature (starting with lowercase 'f') method has been deprecated and will be removed in a future version of ScalaTest. Please use Feature (starting with an uppercase 'F') instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
+  // SKIP-DOTTY-START
   protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = Feature(description)(fun)(pos)
-  
-  /**
-   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
-   * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
-   * (defined with <code>it</code>). This trait's implementation of this method will register the
-   * description string and immediately invoke the passed function.
-   */
-  protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def feature(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => FeatureImpl(description)(fun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def FeatureImpl(description: String)(fun: => Unit, pos: source.Position): Unit = {
 
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
@@ -216,6 +256,21 @@ trait AnyFeatureSpecLike extends TestSuite with TestRegistration with Informing 
       case other: Throwable => throw other
     }
   }
+  
+  /**
+   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
+   * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
+   * (defined with <code>it</code>). This trait's implementation of this method will register the
+   * description string and immediately invoke the passed function.
+   */
+  // SKIP-DOTTY-START
+  protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+    FeatureImpl(description)(fun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def Feature(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => FeatureImpl(description)(fun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
