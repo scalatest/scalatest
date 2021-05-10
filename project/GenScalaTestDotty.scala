@@ -440,11 +440,7 @@ object GenScalaTestDotty {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
-      List(
-        "XmlSocketReporterSpec.scala", // skipped because tests failed execute.
-      )
-    ) ++ 
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++ 
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools/scalasbt", "org/scalatest/tools/scalasbt", targetDir, List.empty)
   }
 
