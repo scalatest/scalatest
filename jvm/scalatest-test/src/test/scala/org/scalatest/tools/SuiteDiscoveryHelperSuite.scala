@@ -25,7 +25,12 @@ import org.scalatest.funspec.AnyFunSpec
 class SuiteDiscoveryHelperFriend(sdt: SuiteDiscoveryHelper.type) {
 
   def transformToClassName(fileName: String, fileSeparator: Char): Option[String] = {
-    val m = Class.forName("org.scalatest.tools.SuiteDiscoveryHelper$").getDeclaredMethod("org$scalatest$tools$SuiteDiscoveryHelper$$transformToClassName",
+    val tranfromToClassNameMethodName = 
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
+        "org$scalatest$tools$SuiteDiscoveryHelper$$transformToClassName"
+      else
+        "transformToClassName"
+    val m = Class.forName("org.scalatest.tools.SuiteDiscoveryHelper$").getDeclaredMethod(tranfromToClassNameMethodName,
       Array(classOf[String], classOf[Char]): _*)
     m.setAccessible(true)
     m.invoke(sdt, Array[Object](fileName, new java.lang.Character(fileSeparator)): _*).asInstanceOf[Option[String]]
@@ -56,14 +61,24 @@ class SuiteDiscoveryHelperFriend(sdt: SuiteDiscoveryHelper.type) {
   def processFileNames(fileNames: Iterator[String], fileSeparator: Char, loader: ClassLoader, suffixes: Option[Pattern]):
   Set[String] =
   {
-    val m = Class.forName("org.scalatest.tools.SuiteDiscoveryHelper$").getDeclaredMethod("org$scalatest$tools$SuiteDiscoveryHelper$$processFileNames",
+    val processFileNamesMethodName = 
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
+        "org$scalatest$tools$SuiteDiscoveryHelper$$processFileNames"
+      else
+        "processFileNames"
+    val m = Class.forName("org.scalatest.tools.SuiteDiscoveryHelper$").getDeclaredMethod(processFileNamesMethodName,
       Array(classOf[Iterator[String]], classOf[Char], classOf[ClassLoader], classOf[Option[Pattern]]): _*)
     m.setAccessible(true)
     m.invoke(sdt, Array[Object](fileNames, new java.lang.Character(fileSeparator), loader, suffixes): _*).asInstanceOf[Set[String]]
   }
 
   def getFileNamesSetFromFile(file: File, fileSeparator: Char): Set[String] = {
-    val m = Class.forName("org.scalatest.tools.SuiteDiscoveryHelper$").getDeclaredMethod("org$scalatest$tools$SuiteDiscoveryHelper$$getFileNamesSetFromFile",
+    val getFileNamesSetFromFileMethodName = 
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
+        "org$scalatest$tools$SuiteDiscoveryHelper$$getFileNamesSetFromFile"
+      else
+        "getFileNamesSetFromFile"
+    val m = Class.forName("org.scalatest.tools.SuiteDiscoveryHelper$").getDeclaredMethod(getFileNamesSetFromFileMethodName,
       Array(classOf[File], classOf[Char]): _*)
     m.setAccessible(true)
     m.invoke(sdt, Array[Object](file, new java.lang.Character(fileSeparator)): _*).asInstanceOf[Set[String]]
@@ -92,7 +107,7 @@ class SuiteDiscoveryHelperSpec extends AnyFunSpec {
   // discoverTests should return a SuiteParam object for this
   // Suite and the specified test.
   //
-  def `test discover tests 1` = {
+  it("test discover tests 1") {
     val testSpecs = List(TestSpec("test discover tests 1", false))
 
     val suiteParams = discoverTests(testSpecs, accessibleSuites, loader)
@@ -112,7 +127,7 @@ class SuiteDiscoveryHelperSpec extends AnyFunSpec {
   // Given two test names, where only one is found, discoverTests should
   // return a SuiteParam with just the one test name.
   //
-  def `test discover tests 2` = {
+  it("test discover tests 2") {
     val testSpecs =
       List(
         TestSpec("test discover tests 2", false),
@@ -137,7 +152,7 @@ class SuiteDiscoveryHelperSpec extends AnyFunSpec {
   // Given two test names, where both are found, discoverTests should
   // return a SuiteParam with both test names.
   //
-  def `test discover tests 3` = {
+  it("test discover tests 3") {
     val testSpecs =
       List(
         TestSpec("test discover tests 2", false),
@@ -163,7 +178,7 @@ class SuiteDiscoveryHelperSpec extends AnyFunSpec {
   // Two test names, where both are in one Suite and one is in
   // two Suites.
   //
-  def `test discover tests 4` = {
+  it("test discover tests 4") {
     val testSpecs =
       List(
         TestSpec("test discover tests 4", false),
@@ -197,7 +212,7 @@ class SuiteDiscoveryHelperSpec extends AnyFunSpec {
   // Discover tests using a substring.  This should discover tests in
   // two Suites.
   //
-  def `test discover tests A1` = {
+  it("test discover tests A1") {
     val testSpecs =
       List(
         TestSpec("test discover tests A", true)
@@ -227,7 +242,7 @@ class SuiteDiscoveryHelperSpec extends AnyFunSpec {
     assert(suiteParam1.nestedSuites.length === 0)
   }
 
-  def `test transform to class name` = {
+  it("test transform to class name") {
     assert(sdtf.transformToClassName("bob.class", '/') === Some("bob"))
     assert(sdtf.transformToClassName("a.b.c.bob.class", '/') === Some("a.b.c.bob"))
     assert(sdtf.transformToClassName("a.b.c.bob", '/') === None)
@@ -243,7 +258,7 @@ class SuiteDiscoveryHelperSpec extends AnyFunSpec {
     assert(sdtf.transformToClassName("\\.class", '\\') === None)
   }
 
-  def `test is accessible suite` = {
+  it("test is accessible suite") {
     assert(sdtf.isAccessibleSuite(classOf[SuiteDiscoveryHelperSpec])) 
     assert(!sdtf.isAccessibleSuite(classOf[PackageAccessSuite]))
     assert(!sdtf.isAccessibleSuite(classOf[PackageAccessConstructorSuite]))
@@ -251,14 +266,14 @@ class SuiteDiscoveryHelperSpec extends AnyFunSpec {
     assert(!sdtf.isAccessibleSuite(classOf[Object]))
   }
 
-  def `test extract class names` = {
+  it("test extract class names") {
     assert(sdtf.extractClassNames(List("bob.class").iterator, '/').toList === List("bob"))
     assert(sdtf.extractClassNames(List("bob.class", "manifest.txt", "a/b/c/bob.class").iterator, '/').toList === List("bob", "a.b.c.bob"))
     assert(sdtf.extractClassNames(List("bob.class", "manifest.txt", "a\\b\\c\\bob.class").iterator, '\\').toList === List("bob", "a.b.c.bob"))
     assert(sdtf.extractClassNames(List("bob.class", "manifest.txt", "/a/b/c/bob.class").iterator, '/').toList === List("bob", "a.b.c.bob"))
   }
 
-  def `test process file names` = {
+  it("test process file names") {
 
     val loader = getClass.getClassLoader
     val discoveredSet1 = sdtf.processFileNames(List("doesNotExist.txt", "noSuchfile.class").iterator, '/', loader, None)
@@ -337,7 +352,7 @@ class SuiteDiscoveryHelperSpec extends AnyFunSpec {
     assert(discoveredSet7 === classNames4)
   }
 
-  def `test get file names set from file` = {
+  it("test get file names set from file") {
     
     assert(sdtf.getFileNamesSetFromFile(new File("harness/fnIteratorTest/empty.txt"), '/') === Set("empty.txt"))
     /*
@@ -348,13 +363,13 @@ class SuiteDiscoveryHelperSpec extends AnyFunSpec {
     */
   }
 
-  def `test is discoverable suite` = {
+  it("test is discoverable suite") {
     assert(sdtf.isDiscoverableSuite(classOf[SuiteDiscoveryHelperSpec])) 
     @DoNotDiscover class NotDiscoverable {}
     assert(!sdtf.isDiscoverableSuite(classOf[NotDiscoverable]))
   }
   
-  def `test is runnable` = {
+  it("test is runnable") {
     class NormalClass {}
     class SuiteClass extends Suite
     @WrapWith(classOf[SuiteClass])
@@ -377,12 +392,12 @@ class SuiteDiscoveryHelperSpec extends AnyFunSpec {
 //
 class SuiteDiscoveryHelperSpec2 extends AnyFunSpec {
 
-  def `test discover tests 4`: Unit = {
+  it("test discover tests 4") {
   }
 
-  def `test discover tests A2`: Unit = {
+  it("test discover tests A2") {
   }
 
-  def `test discover tests A3`: Unit = {
+  it("test discover tests A3") {
   }
 }
