@@ -46,7 +46,7 @@ abstract class PathSuiteExamples extends Tables {
   def siblingDeeplyNestedPathFreeSpec: freespec.PathAnyFreeSpec with FixtureServices
   def asymetricalDeeplyNestedPathFreeSpec: freespec.PathAnyFreeSpec with FixtureServices
  
-  def examples =
+  def examples: org.scalatest.prop.TableFor1[Suite with FixtureServices] =
     Table(
     "path suite",
     emptyPathFunSpec,
