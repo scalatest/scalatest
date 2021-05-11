@@ -662,8 +662,9 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should not type check
    */
-  transparent inline def assertTypeError(inline code: String)(implicit pos: source.Position): Assertion =
-    ${ CompileMacro.assertTypeErrorImpl('code, '{typeChecks(code)}, '{ pos }) }
+  transparent inline def assertTypeError(inline code: String): Assertion = {
+    ${ CompileMacro.assertTypeErrorImpl('code, '{typeChecks(code)}) }
+  }
 
   /**
    * Asserts that a given string snippet of code does not pass either the Scala parser or type checker.
@@ -694,8 +695,8 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should not type check
    */
-  transparent inline def assertDoesNotCompile(inline code: String)(implicit pos: source.Position): Assertion =
-    ${ CompileMacro.assertDoesNotCompileImpl('code, '{typeChecks(code)}, 'pos) }
+  transparent inline def assertDoesNotCompile(inline code: String): Assertion =
+    ${ CompileMacro.assertDoesNotCompileImpl('code, '{typeChecks(code)}) }
 
   /**
    * Asserts that a given string snippet of code passes both the Scala parser and type checker.
@@ -716,8 +717,8 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should compile
    */
-  transparent inline def assertCompiles(inline code: String)(implicit pos: source.Position): Assertion =
-    ${ CompileMacro.assertCompilesImpl('code, '{typeChecks(code)}, 'pos) }
+  transparent inline def assertCompiles(inline code: String): Assertion =
+    ${ CompileMacro.assertCompilesImpl('code, '{typeChecks(code)}) }
 
   /**
    * Intercept and return an exception that's expected to
