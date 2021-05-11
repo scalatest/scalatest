@@ -83,6 +83,8 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         }
         (fumList should contain only (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
       }
+      // In Scala 3 it will take only () as single element (), not empty parameter list. 
+      // SKIP-DOTTY-START
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") {  // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
@@ -100,6 +102,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           e1.message should be (Some(Resources.onlyEmpty))
         }
       }
+      // SKIP-DOTTY-END
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should contain only ("fee", "fie", "foe", "fie", "fum")
@@ -167,6 +170,8 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         }
         (fumList should (contain only (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
+      // In Scala 3 it will take only () as single element (), not empty parameter list. 
+      // SKIP-DOTTY-START
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
@@ -184,6 +189,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           e1.message should be (Some(Resources.onlyEmpty))
         }
       }
+      // SKIP-DOTTY-END
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           fumList should (contain only ("fee", "fie", "foe", "fie", "fum"))
@@ -338,6 +344,8 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           (toList shouldNot contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
+      // In Scala 3 it will take only () as single element (), not empty parameter list. 
+      // SKIP-DOTTY-START
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
@@ -355,6 +363,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           e1.message should be(Some(Resources.onlyEmpty))
         }
       }
+      // SKIP-DOTTY-END
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           toList shouldNot contain only ("fee", "fie", "foe", "fie", "fum")
@@ -402,6 +411,8 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           (toList shouldNot (contain only (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
+      // In Scala 3 it will take only () as single element (), not empty parameter list. 
+      // SKIP-DOTTY-START
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
@@ -419,6 +430,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           e1.message should be (Some(Resources.onlyEmpty))
         }
       }
+      // SKIP-DOTTY-END
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           toList shouldNot (contain only ("fee", "fie", "foe", "fie", "fum"))
@@ -498,6 +510,8 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           (all (hiLists) should contain only ("ho", "hi")) (decided by defaultEquality[String])
         }
       }
+      // In Scala 3 it will take only () as single element (), not empty parameter list. 
+      // SKIP-DOTTY-START
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
@@ -515,6 +529,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           e1.message should be (Some(Resources.onlyEmpty))
         }
       }
+      // SKIP-DOTTY-END
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should contain only (1, 2, 2, 3)
@@ -587,6 +602,8 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           (all (hiLists) should (contain only ("ho", "hi"))) (decided by defaultEquality[String])
         }
       }
+      // In Scala 3 it will take only () as single element (), not empty parameter list. 
+      // SKIP-DOTTY-START
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
@@ -604,6 +621,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           e1.message should be(Some(Resources.onlyEmpty))
         }
       }
+      // SKIP-DOTTY-END
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (list1s) should (contain only (1, 2, 2, 3))
@@ -770,6 +788,8 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           (all (toLists) shouldNot contain only (" YOU ", " TO ")) (after being lowerCased and trimmed)
         }
       }
+      // In Scala 3 it will take only () as single element (), not empty parameter list. 
+      // SKIP-DOTTY-START
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
@@ -787,6 +807,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           e1.message should be(Some(Resources.onlyEmpty))
         }
       }
+      // SKIP-DOTTY-END
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) shouldNot contain only ("fee", "fie", "foe", "fie", "fum")
@@ -837,6 +858,8 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           (all (toLists) shouldNot (contain only (" YOU ", " TO "))) (after being lowerCased and trimmed)
         }
       }
+      // In Scala 3 it will take only () as single element (), not empty parameter list. 
+      // SKIP-DOTTY-START
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
         if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
@@ -854,6 +877,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
           e1.message should be(Some(Resources.onlyEmpty))
         }
       }
+      // SKIP-DOTTY-END
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
         val e1 = intercept[exceptions.NotAllowedException] {
           all (toLists) shouldNot (contain only ("fee", "fie", "foe", "fie", "fum"))
