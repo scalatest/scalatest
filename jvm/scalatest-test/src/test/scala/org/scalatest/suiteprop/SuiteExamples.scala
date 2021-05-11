@@ -108,7 +108,7 @@ trait SuiteExamples extends Tables {
   def propSpec: AnyPropSpec with FixtureServices
   def fixturePropSpec: propspec.FixtureAnyPropSpec with FixtureServices
 
-  def examples =
+  def examples: org.scalatest.prop.TableFor1[Suite with FixtureServices] =
     Table(
       "suite",
       // SKIP-SCALATESTJS,NATIVE-START

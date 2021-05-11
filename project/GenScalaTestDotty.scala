@@ -419,7 +419,6 @@ object GenScalaTestDotty {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, 
       List(
         "PathSuiteMatrix.scala", 
-        "SuiteMatrix.scala", 
       )
     ) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
