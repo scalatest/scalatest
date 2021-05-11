@@ -389,7 +389,6 @@ object GenScalaTestDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
       List(
-        "EveryShouldContainOnlyLogicalOrSpec.scala", // skipped because tests failed 
         "SeveredStackTracesFailureSpec.scala", // skipped because tests failed 
         "SeveredStackTracesSpec.scala", // skipped because tests failed 
       )
@@ -431,7 +430,6 @@ object GenScalaTestDotty {
         "DocSpecSpec.scala",   // skipped because DocSpecSpec is not supported yet
         "EncodedOrderingSpec.scala",  // skipped because use scala.reflect.NameTransformer.encode
         "EntrySpec.scala",    // skipped because Entry extends java.util.Map
-        "EveryShouldContainOnlyLogicalOrSpec.scala", // skipped because tests failed 
         "FunSuiteSuite.scala",          // skipped because depends on java reflection
         "InheritedTagProp.scala",         // skipped because depends on java reflection
         "OldDocSpec.scala",             // Do we still need this?
