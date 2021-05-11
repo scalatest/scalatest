@@ -392,7 +392,6 @@ object GenScalaTestDotty {
         "EveryShouldContainOnlyLogicalAndSpec.scala", // skipped because tests failed
         "EveryShouldContainOnlyLogicalOrSpec.scala", // skipped because tests failed 
         "EveryShouldContainOnlySpec.scala", // skipped because does not compile yet 
-        "ListShouldContainOnlyLogicalAndSpec.scala", // skipped because does not compile yet 
         "ListShouldContainOnlyLogicalOrSpec.scala", // skipped because does not compile yet 
         "SeveredStackTracesFailureSpec.scala", // skipped because tests failed 
         "SeveredStackTracesSpec.scala", // skipped because tests failed 
@@ -440,7 +439,6 @@ object GenScalaTestDotty {
         "EveryShouldContainOnlySpec.scala", // skipped because does not compile yet
         "FunSuiteSuite.scala",          // skipped because depends on java reflection
         "InheritedTagProp.scala",         // skipped because depends on java reflection
-        "ListShouldContainOnlyLogicalAndSpec.scala", // skipped because does not compile yet 
         "ListShouldContainOnlyLogicalOrSpec.scala", // skipped because does not compile yet 
         "OldDocSpec.scala",             // Do we still need this?
         "PrivateMethodTesterSpec.scala",   // skipped because depends on java reflection
