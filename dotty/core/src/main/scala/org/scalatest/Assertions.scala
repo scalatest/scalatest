@@ -754,7 +754,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type.
    */
-  inline def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): T = 
+  inline def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): T = 
     ${ source.Position.withPosition[T]('{(pos: source.Position) => interceptImpl[T](f, classTag, pos) }) } 
 
   private final def interceptImpl[T <: AnyRef](f: => Any, classTag: ClassTag[T], pos: source.Position): T = {
