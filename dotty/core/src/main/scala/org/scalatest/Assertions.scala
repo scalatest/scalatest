@@ -754,7 +754,10 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type.
    */
-  def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): T = {
+  inline def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): T = 
+    ${ source.Position.withPosition[T]('{(pos: source.Position) => interceptImpl[T](f, classTag, pos) }) } 
+
+  private final def interceptImpl[T <: AnyRef](f: => Any, classTag: ClassTag[T], pos: source.Position): T = {
     val clazz = classTag.runtimeClass
     val caught = try {
       f
@@ -777,7 +780,7 @@ trait Assertions extends TripleEquals  {
         throw newAssertionFailedException(Some(message), None, pos, Vector.empty)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
     }
-  }
+  } 
 
   /**
    * Ensure that an expected exception is thrown by the passed function value. The thrown exception must be an instance of the
