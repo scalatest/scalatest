@@ -1101,7 +1101,8 @@ trait Assertions extends TripleEquals  {
   /**
    * Throws <code>TestCanceledException</code> to indicate a test was canceled.
    */
-  def cancel()(implicit pos: source.Position): Nothing = { throw newTestCanceledException(None, None, pos) }
+  inline def cancel(): Nothing = 
+    ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => throw newTestCanceledException(None, None, pos) }) }
 
   /**
    * Throws <code>TestCanceledException</code>, with the passed
@@ -1111,7 +1112,10 @@ trait Assertions extends TripleEquals  {
    * @param message A message describing the cancellation.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def cancel(message: String)(implicit pos: source.Position): Nothing = {
+  inline def cancel(message: String): Nothing = 
+    ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => cancelImpl(message, pos) }) }
+
+  private final def cancelImpl(message: String, pos: source.Position): Nothing = {
 
     requireNonNull(message)
 
@@ -1127,7 +1131,10 @@ trait Assertions extends TripleEquals  {
    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
    * @throws NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
    */
-  def cancel(message: String, cause: Throwable)(implicit pos: source.Position): Nothing = {
+  inline def cancel(message: String, cause: Throwable): Nothing = 
+    ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => cancelImpl(message, cause, pos) }) }
+
+  private final def cancelImpl(message: String, cause: Throwable, pos: source.Position): Nothing = {
 
     requireNonNull(message, cause)
 
@@ -1143,7 +1150,10 @@ trait Assertions extends TripleEquals  {
    * @param cause a <code>Throwable</code> that indicates the cause of the cancellation.
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>
    */
-  def cancel(cause: Throwable)(implicit pos: source.Position): Nothing = {
+  inline def cancel(cause: Throwable): Nothing = 
+    ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => cancelImpl(cause, pos) }) }
+
+  private final def cancelImpl(cause: Throwable, pos: source.Position): Nothing = {
 
     requireNonNull(cause)
 
