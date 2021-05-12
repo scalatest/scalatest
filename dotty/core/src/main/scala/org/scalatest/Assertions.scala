@@ -980,7 +980,10 @@ trait Assertions extends TripleEquals  {
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  def assertResult[L, R](expected: L)(actual: R)(implicit prettifier: Prettifier, pos: source.Position, caneq: scala.CanEqual[L, R]): Assertion = {
+  inline def assertResult[L, R](expected: L)(actual: R)(implicit prettifier: Prettifier, caneq: scala.CanEqual[L, R]): Assertion = 
+    ${ source.Position.withPosition[Assertion]('{(pos: source.Position) => assertResultImpl[L, R](expected, actual, prettifier, pos, caneq) }) }
+
+  private final def assertResultImpl[L, R](expected: L, actual: R, prettifier: Prettifier, pos: source.Position, caneq: scala.CanEqual[L, R]): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(prettifier, exp, act)
