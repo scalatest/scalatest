@@ -1050,7 +1050,7 @@ trait Assertions extends TripleEquals  {
    * @param message A message describing the failure.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  inline def fail(message: String)(implicit pos: source.Position): Nothing = 
+  inline def fail(message: String): Nothing = 
     ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => failImpl(message, pos) }) }
 
   private final def failImpl(message: String, pos: source.Position): Nothing = {
@@ -1069,7 +1069,7 @@ trait Assertions extends TripleEquals  {
    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
    * @throws NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
    */
-  inline def fail(message: String, cause: Throwable)(implicit pos: source.Position): Nothing = 
+  inline def fail(message: String, cause: Throwable): Nothing = 
     ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => failImpl(message, cause, pos) }) }
 
   private final def failImpl(message: String, cause: Throwable, pos: source.Position): Nothing = {
@@ -1088,7 +1088,7 @@ trait Assertions extends TripleEquals  {
    * @param cause a <code>Throwable</code> that indicates the cause of the failure.
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>
    */
-  inline def fail(cause: Throwable)(implicit pos: source.Position): Nothing = 
+  inline def fail(cause: Throwable): Nothing = 
     ${ source.Position.withPosition[Nothing]('{(pos: source.Position) => failImpl(cause: Throwable, pos: source.Position) }) }
 
   private final def failImpl(cause: Throwable, pos: source.Position): Nothing = {
