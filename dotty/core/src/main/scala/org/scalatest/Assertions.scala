@@ -815,7 +815,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type.
    */
-  inline def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): Assertion = 
+  inline def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): Assertion = 
     ${ source.Position.withPosition[Assertion]('{(pos: source.Position) => assertThrowsImpl[T](f, classTag, pos) }) } 
 
   private final def assertThrowsImpl[T <: AnyRef](f: => Any, classTag: ClassTag[T], pos: source.Position): Assertion = {
