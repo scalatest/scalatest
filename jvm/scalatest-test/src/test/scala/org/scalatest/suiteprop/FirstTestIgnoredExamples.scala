@@ -525,7 +525,7 @@ class FirstTestIgnoredExamples extends org.scalatest.suiteprop.SuiteExamples {
   lazy val fixturePropSpec = new FixturePropSpecExample
    
   // Two ways to ignore in a flat spec, so add two more examples
-  override def examples = super.examples ++ 
+  override def examples: org.scalatest.prop.TableFor1[Suite with Services] = super.examples ++ 
     Vector(
       new FlatSpecExample2,
       new FixtureFlatSpecExample2,

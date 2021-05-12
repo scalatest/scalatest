@@ -389,32 +389,15 @@ object GenScalaTestDotty {
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
       List(
-        "EveryShouldContainOnlyLogicalAndSpec.scala", // skipped because tests failed
-        "EveryShouldContainOnlyLogicalOrSpec.scala", // skipped because tests failed 
-        "EveryShouldContainOnlySpec.scala", // skipped because does not compile yet 
-        "ListShouldContainOnlyLogicalAndSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainOnlyLogicalOrSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainOnlySpec.scala", // skipped because does not compile yet 
         "SeveredStackTracesFailureSpec.scala", // skipped because tests failed 
         "SeveredStackTracesSpec.scala", // skipped because tests failed 
-        "ShellSuite.scala", // skipped because does not compile yet 
       )
     ) ++ 
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
-      List(
-        "LocationSuiteProp.scala", // skipped because does not compile yet.
-        "ScopePendingProp.scala", // skipped because does not compile yet.
-        "LocationSpec.scala",  // skipped because does not compile yet.
-        "LocationFunctionSuiteProp.scala", // skipped because does not compile yet.
-        "DeprecatedScopePendingProp.scala",  // skipped because does not compile yet.
-        "DeprecatedLocationSuiteProp.scala", // skipped because does not compile yet.
-        "DeprecatedLocationFunctionSuiteProp.scala" // skipped because does not compile yet.
-      )
-    ) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
@@ -426,38 +409,11 @@ object GenScalaTestDotty {
         "CommonGeneratorsSpec.scala", 
         "GeneratorSpec.scala"
       )) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, 
-      List(
-        "DeprecatedFirstTestIgnoredExamples.scala", 
-        "DeprecatedSecondTestIgnoredExamples.scala", 
-        "DeprecatedInfoInsideTestFiredAfterTestExamples.scala", 
-        "DeprecatedTwoSlowTestsExample.scala", 
-        "DeprecatedTwoSlowAndOneWeakTestExamples.scala", 
-        "DeprecatedTwoTestsIgnoredExamples.scala", 
-        "FirstTestIgnoredExamples.scala", 
-        "InfoInsideTestFiredAfterTestExamples.scala", 
-        "PathSuiteMatrix.scala", 
-        "PathBeforeAndAfterExamples.scala", 
-        "PathListBufferExamples.scala", 
-        "OnlyFirstTestExecutedOnCreationExamples.scala", 
-        "SecondTestIgnoredExamples.scala", 
-        "SuiteMatrix.scala", 
-        "TwoSlowAndOneWeakTestExamples.scala", 
-        "TwoTestsIgnoredExamples.scala", 
-        "TwoSlowTestsExample.scala"
-      )
-    ) ++
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
-      List(
-        "FrameworkSuite.scala", // skipped because hang when tests execute.
-        "ScalaTestRunnerSuite.scala", // skipped because does not compile yet.
-        "SuiteDiscoveryHelperSuite.scala",  // skipped because does not compile yet.
-        "XmlSocketReporterSpec.scala", // skipped because tests failed execute.
-      )
-    ) ++ 
+    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++ 
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/tools/scalasbt", "org/scalatest/tools/scalasbt", targetDir, List.empty)
   }
 
@@ -474,14 +430,8 @@ object GenScalaTestDotty {
         "DocSpecSpec.scala",   // skipped because DocSpecSpec is not supported yet
         "EncodedOrderingSpec.scala",  // skipped because use scala.reflect.NameTransformer.encode
         "EntrySpec.scala",    // skipped because Entry extends java.util.Map
-        "EveryShouldContainOnlyLogicalAndSpec.scala", // skipped because tests failed
-        "EveryShouldContainOnlyLogicalOrSpec.scala", // skipped because tests failed 
-        "EveryShouldContainOnlySpec.scala", // skipped because does not compile yet
         "FunSuiteSuite.scala",          // skipped because depends on java reflection
         "InheritedTagProp.scala",         // skipped because depends on java reflection
-        "ListShouldContainOnlyLogicalAndSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainOnlyLogicalOrSpec.scala", // skipped because does not compile yet 
-        "ListShouldContainOnlySpec.scala", // skipped because does not compile yet
         "OldDocSpec.scala",             // Do we still need this?
         "PrivateMethodTesterSpec.scala",   // skipped because depends on java reflection
         "PropertyFunSuite.scala",   // skipped because depends on java reflection
@@ -544,13 +494,6 @@ object GenScalaTestDotty {
         "TestLocationMethodJUnitSuite.scala", // Not supported by scala-js
         "TestLocationMethodTestNGSuite.scala", // Not supported by scala-js
         "LocationMethodSuiteProp.scala", // Not supported by scala-js
-        "LocationSuiteProp.scala", // skipped because does not compile yet.
-        "ScopePendingProp.scala", // skipped because does not compile yet.
-        "LocationSpec.scala",  // skipped because does not compile yet.
-        "LocationFunctionSuiteProp.scala", // skipped because does not compile yet.
-        "DeprecatedScopePendingProp.scala",  // skipped because does not compile yet.
-        "DeprecatedLocationSuiteProp.scala", // skipped because does not compile yet.
-        "DeprecatedLocationFunctionSuiteProp.scala" // skipped because does not compile yet.
       )
     ) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
@@ -565,27 +508,7 @@ object GenScalaTestDotty {
         "CommonGeneratorsSpec.scala", 
         "GeneratorSpec.scala"
       )) ++
-    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, 
-      List(
-        "DeprecatedFirstTestIgnoredExamples.scala", 
-        "DeprecatedSecondTestIgnoredExamples.scala", 
-        "DeprecatedInfoInsideTestFiredAfterTestExamples.scala", 
-        "DeprecatedTwoSlowTestsExample.scala", 
-        "DeprecatedTwoSlowAndOneWeakTestExamples.scala", 
-        "DeprecatedTwoTestsIgnoredExamples.scala", 
-        "FirstTestIgnoredExamples.scala", 
-        "InfoInsideTestFiredAfterTestExamples.scala", 
-        "PathSuiteMatrix.scala", 
-        "PathBeforeAndAfterExamples.scala", 
-        "PathListBufferExamples.scala", 
-        "OnlyFirstTestExecutedOnCreationExamples.scala", 
-        "SecondTestIgnoredExamples.scala", 
-        "SuiteMatrix.scala", 
-        "TwoSlowAndOneWeakTestExamples.scala", 
-        "TwoTestsIgnoredExamples.scala", 
-        "TwoSlowTestsExample.scala"
-      )
-    ) ++
+    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
