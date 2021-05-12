@@ -1298,7 +1298,10 @@ trait Assertions extends TripleEquals  {
    * @param f a block of code, which if it completes abruptly, should trigger a <code>TestPendingException</code>
    * @throws TestPendingException if the passed block of code completes abruptly with an <code>Exception</code> or <code>AssertionError</code>
    */
-  def pendingUntilFixed(f: => Unit)(implicit pos: source.Position): Assertion with PendingStatement = {
+  inline def pendingUntilFixed(f: => Unit)(implicit pos: source.Position): Assertion with PendingStatement = 
+    ${ source.Position.withPosition[Assertion with PendingStatement]('{(pos: source.Position) => pendingUntilFixedImpl(f, pos) }) }
+
+  private final def pendingUntilFixedImpl(f: => Unit, pos: source.Position): Assertion with PendingStatement = {
     val isPending =
       try {
         f
