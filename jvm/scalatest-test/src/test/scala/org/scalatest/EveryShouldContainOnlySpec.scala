@@ -458,6 +458,7 @@ class EveryShouldContainOnlySpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain only ("ho", "hi")
         }
+
         {
           implicit val ise = upperCaseStringEquality
           all (hiLists) should contain only ("HE", "HI")
@@ -549,6 +550,7 @@ class EveryShouldContainOnlySpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should (contain only ("ho", "hi"))
         }
+        
         {
           implicit val ise = upperCaseStringEquality
           all (hiLists) should (contain only ("HE", "HI"))
