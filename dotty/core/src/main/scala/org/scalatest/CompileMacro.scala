@@ -167,7 +167,7 @@ object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to return Fact (Yes or No).
-  def expectDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
+  def expectDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier])(using Quotes): Expr[Fact] = {
     if (typeChecked.valueOrError)
       '{
           val messageExpr = Resources.expectedCompileErrorButGotNone($code)
@@ -244,7 +244,7 @@ object CompileMacro {
     }
   }
 
-  def expectCompilesImpl(self: Expr[_], typeChecked: Expr[List[Error]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
+  def expectCompilesImpl(self: Expr[_], typeChecked: Expr[List[Error]], prettifier: Expr[Prettifier])(using Quotes): Expr[Fact] = {
     
     import quotes.reflect._
 
