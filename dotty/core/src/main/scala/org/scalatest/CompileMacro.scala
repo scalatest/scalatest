@@ -83,7 +83,7 @@ object CompileMacro {
     }
   }
 
-  def expectTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
+  def expectTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]], prettifier: Expr[Prettifier])(using Quotes): Expr[Fact] = {
     
     import quotes.reflect._
     
