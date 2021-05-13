@@ -107,8 +107,7 @@ object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty
-          )($prettifier)
-          //Succeeded 
+          )($prettifier) 
         }
         case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
           val messageExpr = Resources.expectedTypeErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
@@ -122,7 +121,6 @@ object CompileMacro {
             Vector.empty,
             Vector.empty
           )($prettifier)
-          //throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
         }
         case Nil => '{
           val messageExpr = Resources.expectedTypeErrorButGotNone(${ Expr(code) })
@@ -136,7 +134,6 @@ object CompileMacro {
             Vector.empty,
             Vector.empty
           )($prettifier)
-          //throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
         }
       }
     }
@@ -152,36 +149,6 @@ object CompileMacro {
       case _ =>
         report.throwError("The 'assertTypeError' function only works with String literals.")
     }
-    
-    /*if (typeChecked.valueOrError)
-      '{
-          val messageExpr = Resources.expectedTypeErrorButGotNone($code)
-          Fact.No(
-            messageExpr,
-            messageExpr,
-            messageExpr,
-            messageExpr,
-            Vector.empty,
-            Vector.empty,
-            Vector.empty,
-            Vector.empty
-          )($prettifier)
-       }
-    else
-      '{
-          val messageExpr = Resources.gotTypeErrorAsExpected($code)
-
-          Fact.Yes(
-            messageExpr,
-            messageExpr,
-            messageExpr,
-            messageExpr,
-            Vector.empty,
-            Vector.empty,
-            Vector.empty,
-            Vector.empty
-          )($prettifier)
-       }*/
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when both parse and type check succeeded
