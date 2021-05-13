@@ -491,15 +491,25 @@ class DirectExpectationsSpec extends AnyFunSpec {
         assert(!fact.isVacuousYes)
       }
 
-      // SKIP-DOTTY-START
       it("should return No with correct fact message when type check failed") {
         val fact = org.scalatest.expectations.Expectations.expectCompiles("val a: String = 2")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
-        assert(fact.factMessage == Resources.expectedNoErrorButGotTypeError(
-          """type mismatch;
-            | found   : Int(2)
-            | required: String""".stripMargin, "val a: String = 2"))
+        if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
+          assert(fact.factMessage == Resources.expectedNoErrorButGotTypeError(
+            """Found:    (2 : Int)
+              |Required: String
+              |
+              |The following import might fix the problem:
+              |
+              |  import org.scalactic.Prettifier.default
+              |
+              |""".stripMargin, "val a: String = 2"))
+        else
+          assert(fact.factMessage == Resources.expectedNoErrorButGotTypeError(
+            """type mismatch;
+              | found   : Int(2)
+              | required: String""".stripMargin, "val a: String = 2"))
         assert(!fact.isVacuousYes)
       }
 
@@ -507,12 +517,13 @@ class DirectExpectationsSpec extends AnyFunSpec {
         val fact = org.scalatest.expectations.Expectations.expectCompiles("println(\"test)")
         if (ScalaTestVersions.BuiltForScalaVersion == "2.10")
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but eof found.", "println(\"test)"))
+        else if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
+          assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("expression expected but erroneous token found", "println(\"test)"))
         else
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("unclosed string literal", "println(\"test)"))
 
         assert(!fact.isVacuousYes)
       }
-      // SKIP-DOTTY-END
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
@@ -534,7 +545,6 @@ class DirectExpectationsSpec extends AnyFunSpec {
         assert(!fact.isVacuousYes)
       }
 
-      // SKIP-DOTTY-START
       it("should return No with correct fact message when type check failed") {
         val fact =
           org.scalatest.expectations.Expectations.expectCompiles(
@@ -544,13 +554,27 @@ class DirectExpectationsSpec extends AnyFunSpec {
           )
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
-        assert(fact.factMessage == Resources.expectedNoErrorButGotTypeError(
-          """type mismatch;
-            | found   : Int(2)
-            | required: String""".stripMargin,
-          """
-            |val a: String = 2
-            |""".stripMargin))
+        if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
+          assert(fact.factMessage == Resources.expectedNoErrorButGotTypeError(
+            """Found:    (2 : Int)
+              |Required: String
+              |
+              |The following import might fix the problem:
+              |
+              |  import org.scalactic.Prettifier.default
+              |
+              |""".stripMargin, 
+            """
+              |val a: String = 2
+              |""".stripMargin))
+        else
+          assert(fact.factMessage == Resources.expectedNoErrorButGotTypeError(
+            """type mismatch;
+              | found   : Int(2)
+              | required: String""".stripMargin,
+            """
+              |val a: String = 2
+              |""".stripMargin))
         assert(!fact.isVacuousYes)
       }
 
@@ -565,6 +589,13 @@ class DirectExpectationsSpec extends AnyFunSpec {
         assert(fact.isNo)
         if (ScalaTestVersions.BuiltForScalaVersion == "2.10")
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but '}' found.", "\nprintln(\"test)\n"))
+        else if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
+          assert(fact.factMessage == Resources.expectedNoErrorButGotParseError(
+            "')' expected, but eof found",
+            """
+              |println("test)
+              |""".stripMargin
+          ))
         else
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError(
             "unclosed string literal",
@@ -574,7 +605,6 @@ class DirectExpectationsSpec extends AnyFunSpec {
           ))
         assert(!fact.isVacuousYes)
       }
-      // SKIP-DOTTY-END
     }
   }
 
@@ -598,18 +628,18 @@ class DirectExpectationsSpec extends AnyFunSpec {
         assert(!fact.isVacuousYes)
       }
 
-      // SKIP-DOTTY-START
       it("should return No with correct fact message when parse failed") {
         val fact = org.scalatest.expectations.Expectations.expectTypeError("println(\"test)")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
         if (ScalaTestVersions.BuiltForScalaVersion == "2.10")
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but eof found.", "println(\"test)"))
+        else if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
+          assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("expression expected but erroneous token found", "println(\"test)"))
         else
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("unclosed string literal", "println(\"test)"))
         assert(!fact.isVacuousYes)
       }
-      // SKIP-DOTTY-END
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
@@ -648,7 +678,6 @@ class DirectExpectationsSpec extends AnyFunSpec {
         assert(!fact.isVacuousYes)
       }
 
-      // SKIP-DOTTY-START
       it("should return No with correct fact message when parse failed ") {
         val fact =
           org.scalatest.expectations.Expectations.expectTypeError(
@@ -661,6 +690,13 @@ class DirectExpectationsSpec extends AnyFunSpec {
         assert(fact.isNo)
         if (ScalaTestVersions.BuiltForScalaVersion == "2.10")
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but '}' found.", "\nprintln(\"test)\n"))
+        else if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
+          assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError(
+            "')' expected, but eof found",
+            """
+              |println("test)
+              |""".stripMargin
+          ))
         else
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError(
             "unclosed string literal",
@@ -670,7 +706,6 @@ class DirectExpectationsSpec extends AnyFunSpec {
           ))
         assert(!fact.isVacuousYes)
       }
-      // SKIP-DOTTY-END
     }
   }
 }
