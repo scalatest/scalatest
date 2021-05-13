@@ -326,7 +326,6 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
     }
   }
 
-  // SKIP-DOTTY-START
   describe("The expectThrows method") {
     it("should catch subtypes") {
       class MyException extends RuntimeException
@@ -371,7 +370,6 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
       }
     }
   }
-  // SKIP-DOTTY-END
 
   describe("The expect method") {
 
