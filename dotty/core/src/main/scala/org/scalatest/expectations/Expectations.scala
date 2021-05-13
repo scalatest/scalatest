@@ -115,7 +115,7 @@ private[scalatest] trait Expectations {
     ${ CompileMacro.expectDoesNotCompileImpl('code, '{typeChecks(code)}, 'prettifier, 'pos) }
 
   transparent inline def expectCompiles(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
-    ${ CompileMacro.expectCompilesImpl('code, '{typeChecks(code)}, 'prettifier, 'pos) }
+    ${ CompileMacro.expectCompilesImpl('code, '{typeCheckErrors(code)}, 'prettifier, 'pos) }
 
   transparent inline def expectTypeError(inline code: String)(implicit prettifier: Prettifier): Fact =
     ${ CompileMacro.expectTypeErrorImpl('code, '{typeCheckErrors(code)}, 'prettifier) }

@@ -244,25 +244,21 @@ object CompileMacro {
     }
   }
 
-  def expectCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
-    if (typeChecked.valueOrError)
-      '{
-          val messageExpr = Resources.compiledSuccessfully($code)
-          Fact.Yes(
-            messageExpr,
-            messageExpr,
-            messageExpr,
-            messageExpr,
-            Vector.empty,
-            Vector.empty,
-            Vector.empty,
-            Vector.empty
-          )($prettifier)
-       }
-    else
-      '{
-          val messageExpr = Resources.expectedNoErrorButGotTypeError("", $code)
+  def expectCompilesImpl(self: Expr[_], typeChecked: Expr[List[Error]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
+    
+    import quotes.reflect._
 
+    def checkCompile(code: String): Expr[Fact] = {
+      // For some reason `typeChecked.valueOrError` is failing here, so instead we grab
+      // the varargs argument to List.apply and use that to extract the list of errors
+      val errors = typeChecked.asTerm.underlyingArgument match {
+        case Apply(TypeApply(Select(Ident("List"), "apply"), _), List(seq)) =>
+          seq.asExprOf[Seq[Error]].valueOrError.toList
+      }
+
+      errors match {
+        case Error(msg, _, _, ErrorKind.Typer) :: _ => '{
+          val messageExpr = Resources.expectedNoErrorButGotTypeError(${ Expr(msg) }, ${ Expr(code) })
           Fact.No(
             messageExpr,
             messageExpr,
@@ -273,6 +269,46 @@ object CompileMacro {
             Vector.empty,
             Vector.empty
           )($prettifier)
-       }
+        }
+        case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
+          val messageExpr = Resources.expectedNoErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
+          Fact.No(
+            messageExpr,
+            messageExpr,
+            messageExpr,
+            messageExpr,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty
+          )($prettifier)
+        }
+        case Nil => '{ 
+          val messageExpr = Resources.compiledSuccessfully(${ Expr(code) })
+          Fact.Yes(
+            messageExpr,
+            messageExpr,
+            messageExpr,
+            messageExpr,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty
+          )($prettifier)
+        }
+      }
+    }
+
+    self.asTerm.underlyingArgument match {
+
+      case Literal(StringConstant(code)) =>
+        checkCompile(code.toString)
+
+      case Apply(Select(_, "stripMargin"), List(Literal(StringConstant(code)))) =>
+        checkCompile(code.toString.stripMargin)
+
+      case _ =>
+        report.throwError("The 'expectCompiles' function only works with String literals.")
+    }
   }
 }
