@@ -164,17 +164,47 @@ object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when either parse or type check fails.
-  def assertCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean])(using Quotes): Expr[Assertion] = {
+  def assertCompilesImpl(self: Expr[_], typeChecked: Expr[List[Error]])(using Quotes): Expr[Assertion] = {
+
+    import quotes.reflect._
+
     val pos = quotes.reflect.Position.ofMacroExpansion
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
     val lineNo: Int = pos.startLine + 1
     
-    if (typeChecked.valueOrError) '{ Succeeded }
-    else '{
-      val messageExpr = Resources.expectedNoErrorButGotTypeError("unknown", $code)
-      throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+    def checkCompile(code: String): Expr[Assertion] = {
+      // For some reason `typeChecked.valueOrError` is failing here, so instead we grab
+      // the varargs argument to List.apply and use that to extract the list of errors
+      val errors = typeChecked.asTerm.underlyingArgument match {
+        case Apply(TypeApply(Select(Ident("List"), "apply"), _), List(seq)) =>
+          seq.asExprOf[Seq[Error]].valueOrError.toList
+      }
+
+      errors match {
+        case Error(msg, _, _, ErrorKind.Typer) :: _ => '{
+          val messageExpr = Resources.expectedNoErrorButGotTypeError(${ Expr(msg) }, ${ Expr(code) })
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+        }
+        case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
+          val messageExpr = Resources.expectedNoErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+        }
+        case Nil => '{ Succeeded }
+      }
+    }
+
+    self.asTerm.underlyingArgument match {
+
+      case Literal(StringConstant(code)) =>
+        checkCompile(code.toString)
+
+      case Apply(Select(_, "stripMargin"), List(Literal(StringConstant(code)))) =>
+        checkCompile(code.toString.stripMargin)
+
+      case _ =>
+        report.throwError("The 'assertCompiles' function only works with String literals.")
     }
   }
 

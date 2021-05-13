@@ -718,7 +718,7 @@ trait Assertions extends TripleEquals  {
    * @param code the snippet of code that should compile
    */
   transparent inline def assertCompiles(inline code: String): Assertion =
-    ${ CompileMacro.assertCompilesImpl('code, '{typeChecks(code)}) }
+    ${ CompileMacro.assertCompilesImpl('code, '{typeCheckErrors(code)}) }
 
   /**
    * Intercept and return an exception that's expected to
