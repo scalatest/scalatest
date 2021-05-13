@@ -34,81 +34,81 @@ trait SuiteExamples extends Tables {
   type FixtureServices
 
   // SKIP-SCALATESTJS,NATIVE-START
-  val spec: RefSpec with FixtureServices
+  def spec: RefSpec with FixtureServices
   // SKIP-SCALATESTJS,NATIVE-END
 
-  val funSuite: AnyFunSuite with FixtureServices
-  val fixtureFunSuite: funsuite.FixtureAnyFunSuite with FixtureServices
+  def funSuite: AnyFunSuite with FixtureServices
+  def fixtureFunSuite: funsuite.FixtureAnyFunSuite with FixtureServices
 
-  val funSpec: AnyFunSpec with FixtureServices
-  val nestedFunSpec: AnyFunSpec with FixtureServices
-  val deeplyNestedFunSpec: AnyFunSpec with FixtureServices
-  val fixtureFunSpec: funspec.FixtureAnyFunSpec with FixtureServices
-  val nestedFixtureFunSpec: funspec.FixtureAnyFunSpec with FixtureServices
-  val deeplyNestedFixtureFunSpec: funspec.FixtureAnyFunSpec with FixtureServices
+  def funSpec: AnyFunSpec with FixtureServices
+  def nestedFunSpec: AnyFunSpec with FixtureServices
+  def deeplyNestedFunSpec: AnyFunSpec with FixtureServices
+  def fixtureFunSpec: funspec.FixtureAnyFunSpec with FixtureServices
+  def nestedFixtureFunSpec: funspec.FixtureAnyFunSpec with FixtureServices
+  def deeplyNestedFixtureFunSpec: funspec.FixtureAnyFunSpec with FixtureServices
 
-  val pathFunSpec: funspec.PathAnyFunSpec with FixtureServices
-  val nestedPathFunSpec: funspec.PathAnyFunSpec with FixtureServices
-  val deeplyNestedPathFunSpec: funspec.PathAnyFunSpec with FixtureServices
+  def pathFunSpec: funspec.PathAnyFunSpec with FixtureServices
+  def nestedPathFunSpec: funspec.PathAnyFunSpec with FixtureServices
+  def deeplyNestedPathFunSpec: funspec.PathAnyFunSpec with FixtureServices
 
-  val wordSpec: AnyWordSpec with FixtureServices
-  val nestedWordSpec: AnyWordSpec with FixtureServices
-  val deeplyNestedWordSpec: AnyWordSpec with FixtureServices
-  val fixtureWordSpec: wordspec.FixtureAnyWordSpec with FixtureServices
-  val nestedFixtureWordSpec: wordspec.FixtureAnyWordSpec with FixtureServices
-  val deeplyNestedFixtureWordSpec: wordspec.FixtureAnyWordSpec with FixtureServices
+  def wordSpec: AnyWordSpec with FixtureServices
+  def nestedWordSpec: AnyWordSpec with FixtureServices
+  def deeplyNestedWordSpec: AnyWordSpec with FixtureServices
+  def fixtureWordSpec: wordspec.FixtureAnyWordSpec with FixtureServices
+  def nestedFixtureWordSpec: wordspec.FixtureAnyWordSpec with FixtureServices
+  def deeplyNestedFixtureWordSpec: wordspec.FixtureAnyWordSpec with FixtureServices
 
-  val nestedWordSpecWithMust: AnyWordSpec with FixtureServices
-  val deeplyNestedWordSpecWithMust: AnyWordSpec with FixtureServices
-  val nestedFixtureWordSpecWithMust: wordspec.FixtureAnyWordSpec with FixtureServices
-  val deeplyNestedFixtureWordSpecWithMust: wordspec.FixtureAnyWordSpec with FixtureServices
+  def nestedWordSpecWithMust: AnyWordSpec with FixtureServices
+  def deeplyNestedWordSpecWithMust: AnyWordSpec with FixtureServices
+  def nestedFixtureWordSpecWithMust: wordspec.FixtureAnyWordSpec with FixtureServices
+  def deeplyNestedFixtureWordSpecWithMust: wordspec.FixtureAnyWordSpec with FixtureServices
 
-  val nestedWordSpecWithCan: AnyWordSpec with FixtureServices
-  val deeplyNestedWordSpecWithCan: AnyWordSpec with FixtureServices
-  val nestedFixtureWordSpecWithCan: wordspec.FixtureAnyWordSpec with FixtureServices
-  val deeplyNestedFixtureWordSpecWithCan: wordspec.FixtureAnyWordSpec with FixtureServices
+  def nestedWordSpecWithCan: AnyWordSpec with FixtureServices
+  def deeplyNestedWordSpecWithCan: AnyWordSpec with FixtureServices
+  def nestedFixtureWordSpecWithCan: wordspec.FixtureAnyWordSpec with FixtureServices
+  def deeplyNestedFixtureWordSpecWithCan: wordspec.FixtureAnyWordSpec with FixtureServices
 
-  val flatSpec: AnyFlatSpec with FixtureServices
-  val subjectFlatSpec: AnyFlatSpec with FixtureServices
-  val shorthandSubjectFlatSpec: AnyFlatSpec with FixtureServices
-  val fixtureFlatSpec: flatspec.FixtureAnyFlatSpec with FixtureServices
-  val subjectFixtureFlatSpec: flatspec.FixtureAnyFlatSpec with FixtureServices
-  val shorthandSubjectFixtureFlatSpec: flatspec.FixtureAnyFlatSpec with FixtureServices
+  def flatSpec: AnyFlatSpec with FixtureServices
+  def subjectFlatSpec: AnyFlatSpec with FixtureServices
+  def shorthandSubjectFlatSpec: AnyFlatSpec with FixtureServices
+  def fixtureFlatSpec: flatspec.FixtureAnyFlatSpec with FixtureServices
+  def subjectFixtureFlatSpec: flatspec.FixtureAnyFlatSpec with FixtureServices
+  def shorthandSubjectFixtureFlatSpec: flatspec.FixtureAnyFlatSpec with FixtureServices
   
-  val flatSpecWithMust: AnyFlatSpec with FixtureServices
-  val subjectFlatSpecWithMust: AnyFlatSpec with FixtureServices
-  val shorthandSubjectFlatSpecWithMust: AnyFlatSpec with FixtureServices
-  val fixtureFlatSpecWithMust: flatspec.FixtureAnyFlatSpec with FixtureServices
-  val subjectFixtureFlatSpecWithMust: flatspec.FixtureAnyFlatSpec with FixtureServices
-  val shorthandSubjectFixtureFlatSpecWithMust: flatspec.FixtureAnyFlatSpec with FixtureServices
+  def flatSpecWithMust: AnyFlatSpec with FixtureServices
+  def subjectFlatSpecWithMust: AnyFlatSpec with FixtureServices
+  def shorthandSubjectFlatSpecWithMust: AnyFlatSpec with FixtureServices
+  def fixtureFlatSpecWithMust: flatspec.FixtureAnyFlatSpec with FixtureServices
+  def subjectFixtureFlatSpecWithMust: flatspec.FixtureAnyFlatSpec with FixtureServices
+  def shorthandSubjectFixtureFlatSpecWithMust: flatspec.FixtureAnyFlatSpec with FixtureServices
 
-  val flatSpecWithCan: AnyFlatSpec with FixtureServices
-  val subjectFlatSpecWithCan: AnyFlatSpec with FixtureServices
-  val shorthandSubjectFlatSpecWithCan: AnyFlatSpec with FixtureServices
-  val fixtureFlatSpecWithCan: flatspec.FixtureAnyFlatSpec with FixtureServices
-  val subjectFixtureFlatSpecWithCan: flatspec.FixtureAnyFlatSpec with FixtureServices
-  val shorthandSubjectFixtureFlatSpecWithCan: flatspec.FixtureAnyFlatSpec with FixtureServices
+  def flatSpecWithCan: AnyFlatSpec with FixtureServices
+  def subjectFlatSpecWithCan: AnyFlatSpec with FixtureServices
+  def shorthandSubjectFlatSpecWithCan: AnyFlatSpec with FixtureServices
+  def fixtureFlatSpecWithCan: flatspec.FixtureAnyFlatSpec with FixtureServices
+  def subjectFixtureFlatSpecWithCan: flatspec.FixtureAnyFlatSpec with FixtureServices
+  def shorthandSubjectFixtureFlatSpecWithCan: flatspec.FixtureAnyFlatSpec with FixtureServices
 
-  val freeSpec: AnyFreeSpec with FixtureServices
-  val nestedFreeSpec: AnyFreeSpec with FixtureServices
-  val deeplyNestedFreeSpec: AnyFreeSpec with FixtureServices
-  val fixtureFreeSpec: freespec.FixtureAnyFreeSpec with FixtureServices
-  val nestedFixtureFreeSpec: freespec.FixtureAnyFreeSpec with FixtureServices
-  val deeplyNestedFixtureFreeSpec: freespec.FixtureAnyFreeSpec with FixtureServices
+  def freeSpec: AnyFreeSpec with FixtureServices
+  def nestedFreeSpec: AnyFreeSpec with FixtureServices
+  def deeplyNestedFreeSpec: AnyFreeSpec with FixtureServices
+  def fixtureFreeSpec: freespec.FixtureAnyFreeSpec with FixtureServices
+  def nestedFixtureFreeSpec: freespec.FixtureAnyFreeSpec with FixtureServices
+  def deeplyNestedFixtureFreeSpec: freespec.FixtureAnyFreeSpec with FixtureServices
 
-  val pathFreeSpec: freespec.PathAnyFreeSpec with FixtureServices
-  val nestedPathFreeSpec: freespec.PathAnyFreeSpec with FixtureServices
-  val deeplyNestedPathFreeSpec: freespec.PathAnyFreeSpec with FixtureServices
+  def pathFreeSpec: freespec.PathAnyFreeSpec with FixtureServices
+  def nestedPathFreeSpec: freespec.PathAnyFreeSpec with FixtureServices
+  def deeplyNestedPathFreeSpec: freespec.PathAnyFreeSpec with FixtureServices
 
-  val featureSpec: AnyFeatureSpec with FixtureServices
-  val nestedFeatureSpec: AnyFeatureSpec with FixtureServices
-  val fixtureFeatureSpec: featurespec.FixtureAnyFeatureSpec with FixtureServices
-  val nestedFixtureFeatureSpec: featurespec.FixtureAnyFeatureSpec with FixtureServices
+  def featureSpec: AnyFeatureSpec with FixtureServices
+  def nestedFeatureSpec: AnyFeatureSpec with FixtureServices
+  def fixtureFeatureSpec: featurespec.FixtureAnyFeatureSpec with FixtureServices
+  def nestedFixtureFeatureSpec: featurespec.FixtureAnyFeatureSpec with FixtureServices
 
-  val propSpec: AnyPropSpec with FixtureServices
-  val fixturePropSpec: propspec.FixtureAnyPropSpec with FixtureServices
+  def propSpec: AnyPropSpec with FixtureServices
+  def fixturePropSpec: propspec.FixtureAnyPropSpec with FixtureServices
 
-  def examples =
+  def examples: org.scalatest.prop.TableFor1[Suite with FixtureServices] =
     Table(
       "suite",
       // SKIP-SCALATESTJS,NATIVE-START

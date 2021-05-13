@@ -23,11 +23,18 @@ import scala.quoted._
 object CompileMacro {
 
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
-  def assertTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(using Quotes): Expr[Assertion] = {
+  def assertTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean])(using Quotes): Expr[Assertion] = {
+
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine + 1
+    
     if (!typeChecked.valueOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedTypeErrorButGotNone($code)
-      throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
+      throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
     }
   }
 
@@ -64,11 +71,17 @@ object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when both parse and type check succeeded
-  def assertDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(using Quotes): Expr[Assertion] = {
+  def assertDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean])(using Quotes): Expr[Assertion] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine + 1
+    
     if (!typeChecked.valueOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedCompileErrorButGotNone($code)
-      throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
+      throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
     }
   }
 
@@ -106,11 +119,17 @@ object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when either parse or type check fails.
-  def assertCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean], pos: Expr[source.Position])(using Quotes): Expr[Assertion] = {
+  def assertCompilesImpl(code: Expr[String], typeChecked: Expr[Boolean])(using Quotes): Expr[Assertion] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine + 1
+    
     if (typeChecked.valueOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedNoErrorButGotTypeError("unknown", $code)
-      throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
+      throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
     }
   }
 

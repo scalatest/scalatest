@@ -100,7 +100,7 @@ class EveryShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
-        if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
+        if (ScalaTestVersions.BuiltForScalaVersion != "2.13" && !ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) { // For 2.13 and 3.x, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
             fumList should (contain only() or contain only("fie", "fee", "fum", "foe"))
           }
@@ -190,7 +190,7 @@ class EveryShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
-        if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
+        if (ScalaTestVersions.BuiltForScalaVersion != "2.13" && !ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) { // For 2.13 and 3.x, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
             fumList should (equal(fumList) or contain only())
           }
@@ -259,7 +259,7 @@ class EveryShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
-        if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
+        if (ScalaTestVersions.BuiltForScalaVersion != "2.13" && !ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) { // For 2.13 and 3.x, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
             fumList should (be(fumList) or contain only())
           }
@@ -328,7 +328,7 @@ class EveryShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
-        if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
+        if (ScalaTestVersions.BuiltForScalaVersion != "2.13" && !ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) { // For 2.13 and 3.x, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
             fumList should (contain only() or be(fumList))
           }
@@ -612,7 +612,7 @@ class EveryShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
-        if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
+        if (ScalaTestVersions.BuiltForScalaVersion != "2.13" && !ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) { // For 2.13 and 3.x, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
             all(list1s) should (contain only() or contain only(1, 3, 2))
           }
@@ -705,7 +705,7 @@ class EveryShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS is empty") {
-        if (ScalaTestVersions.BuiltForScalaVersion != "2.13") { // For 2.13, the compiler will pass in args with single argument ().
+        if (ScalaTestVersions.BuiltForScalaVersion != "2.13" && !ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) { // For 2.13 and 3.x, the compiler will pass in args with single argument ().
           val e1 = intercept[exceptions.NotAllowedException] {
             all(list1s) should (be(Many(3, 2, 1)) or contain only())
           }
