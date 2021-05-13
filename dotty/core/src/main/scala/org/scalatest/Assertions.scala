@@ -27,7 +27,7 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 import org.scalactic.anyvals.NonEmptyArray
 import scala.quoted._
-import scala.compiletime.testing.typeChecks
+import scala.compiletime.testing.{typeChecks, typeCheckErrors}
 import org.scalatest.compatible.Assertion
 import ArrayHelper.deep
 
@@ -663,7 +663,7 @@ trait Assertions extends TripleEquals  {
    * @param code the snippet of code that should not type check
    */
   transparent inline def assertTypeError(inline code: String): Assertion = {
-    ${ CompileMacro.assertTypeErrorImpl('code, '{typeChecks(code)}) }
+    ${ CompileMacro.assertTypeErrorImpl('code, '{typeCheckErrors(code)}) }
   }
 
   /**

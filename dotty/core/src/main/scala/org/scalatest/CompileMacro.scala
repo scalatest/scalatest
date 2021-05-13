@@ -19,22 +19,67 @@ import org.scalactic._
 import org.scalatest.exceptions._
 
 import scala.quoted._
+import scala.compiletime.testing.{Error, ErrorKind}
 
 object CompileMacro {
 
+  given FromExpr[ErrorKind] with {
+    def unapply(expr: Expr[ErrorKind])(using Quotes) = expr match {
+      case '{ ErrorKind.Parser } => Some(ErrorKind.Parser)
+      case '{ ErrorKind.Typer }  => Some(ErrorKind.Typer)
+      case _ => None
+    }
+  }
+
+  given FromExpr[Error] with {
+    def unapply(expr: Expr[Error])(using Quotes) = expr match {
+      case '{ Error(${Expr(msg)}, ${Expr(line)}, ${Expr(col)}, ${Expr(kind)}) } => Some(Error(msg, line, col, kind))
+      case _ => None
+    }
+  }
+
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
-  def assertTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean])(using Quotes): Expr[Assertion] = {
+  def assertTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]])(using Quotes): Expr[Assertion] = {
+
+    import quotes.reflect._
 
     val pos = quotes.reflect.Position.ofMacroExpansion
     val file = pos.sourceFile
     val fileName: String = file.jpath.getFileName.toString
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
     val lineNo: Int = pos.startLine + 1
-    
-    if (!typeChecked.valueOrError) '{ Succeeded }
-    else '{
-      val messageExpr = Resources.expectedTypeErrorButGotNone($code)
-      throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+
+    def checkNotTypeCheck(code: String): Expr[Assertion] = {
+      // For some reason `typeChecked.valueOrError` is failing here, so instead we grab
+      // the varargs argument to List.apply and use that to extract the list of errors
+      val errors = typeChecked.asTerm.underlyingArgument match {
+        case Apply(TypeApply(Select(Ident("List"), "apply"), _), List(seq)) =>
+          seq.asExprOf[Seq[Error]].valueOrError.toList
+      }
+
+      errors match {
+        case Error(_, _, _, ErrorKind.Typer) :: _ => '{ Succeeded }
+        case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
+          val messageExpr = Resources.expectedTypeErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+        }
+        case Nil => '{
+          val messageExpr = Resources.expectedTypeErrorButGotNone(${ Expr(code) })
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+        }
+      }
+    }
+
+    self.asTerm.underlyingArgument match {
+
+      case Literal(StringConstant(code)) =>
+        checkNotTypeCheck(code.toString)
+
+      case Apply(Select(_, "stripMargin"), List(Literal(StringConstant(code)))) =>
+        checkNotTypeCheck(code.toString.stripMargin)
+
+      case _ =>
+        report.throwError("The 'assertTypeError' function only works with String literals.")
     }
   }
 
