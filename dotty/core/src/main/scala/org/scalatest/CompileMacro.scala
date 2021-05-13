@@ -83,8 +83,77 @@ object CompileMacro {
     }
   }
 
-  def expectTypeErrorImpl(code: Expr[String], typeChecked: Expr[Boolean], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
-    if (typeChecked.valueOrError)
+  def expectTypeErrorImpl(self: Expr[_], typeChecked: Expr[List[Error]], prettifier: Expr[Prettifier], pos: Expr[source.Position])(using Quotes): Expr[Fact] = {
+    
+    import quotes.reflect._
+    
+    def checkNotTypeCheck(code: String): Expr[Fact] = {
+      // For some reason `typeChecked.valueOrError` is failing here, so instead we grab
+      // the varargs argument to List.apply and use that to extract the list of errors
+      val errors = typeChecked.asTerm.underlyingArgument match {
+        case Apply(TypeApply(Select(Ident("List"), "apply"), _), List(seq)) =>
+          seq.asExprOf[Seq[Error]].valueOrError.toList
+      }
+
+      errors match {
+        case Error(_, _, _, ErrorKind.Typer) :: _ => '{
+          val messageExpr = Resources.gotTypeErrorAsExpected(${ Expr(code) })
+          Fact.Yes(
+            messageExpr,
+            messageExpr,
+            messageExpr,
+            messageExpr,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty
+          )($prettifier)
+          //Succeeded 
+        }
+        case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
+          val messageExpr = Resources.expectedTypeErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
+          Fact.No(
+            messageExpr,
+            messageExpr,
+            messageExpr,
+            messageExpr,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty
+          )($prettifier)
+          //throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+        }
+        case Nil => '{
+          val messageExpr = Resources.expectedTypeErrorButGotNone(${ Expr(code) })
+          Fact.No(
+            messageExpr,
+            messageExpr,
+            messageExpr,
+            messageExpr,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty
+          )($prettifier)
+          //throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+        }
+      }
+    }
+
+    self.asTerm.underlyingArgument match {
+
+      case Literal(StringConstant(code)) =>
+        checkNotTypeCheck(code.toString)
+
+      case Apply(Select(_, "stripMargin"), List(Literal(StringConstant(code)))) =>
+        checkNotTypeCheck(code.toString.stripMargin)
+
+      case _ =>
+        report.throwError("The 'assertTypeError' function only works with String literals.")
+    }
+    
+    /*if (typeChecked.valueOrError)
       '{
           val messageExpr = Resources.expectedTypeErrorButGotNone($code)
           Fact.No(
@@ -112,7 +181,7 @@ object CompileMacro {
             Vector.empty,
             Vector.empty
           )($prettifier)
-       }
+       }*/
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when both parse and type check succeeded

@@ -21,7 +21,7 @@ import Fact._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.reflect.ClassTag
-import scala.compiletime.testing.typeChecks
+import scala.compiletime.testing.{typeChecks, typeCheckErrors}
 
 private[scalatest] trait Expectations {
 
@@ -118,7 +118,7 @@ private[scalatest] trait Expectations {
     ${ CompileMacro.expectCompilesImpl('code, '{typeChecks(code)}, 'prettifier, 'pos) }
 
   transparent inline def expectTypeError(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
-    ${ CompileMacro.expectTypeErrorImpl('code, '{typeChecks(code)}, 'prettifier, 'pos) }
+    ${ CompileMacro.expectTypeErrorImpl('code, '{typeCheckErrors(code)}, 'prettifier, 'pos) }
 
   import scala.language.implicitConversions
 

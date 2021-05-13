@@ -669,19 +669,19 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
         assert(!fact.isVacuousYes)
       }
 
-      // SKIP-DOTTY-START
       it("should return No with correct fact message when parse failed ") {
         val fact = expectTypeError("println(\"test)")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
         if (ScalaTestVersions.BuiltForScalaVersion == "2.10")
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but eof found.", "println(\"test)"))
+        else if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
+          assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("expression expected but erroneous token found", "println(\"test)"))
         else
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("unclosed string literal", "println(\"test)"))
         assert(!fact.isVacuousYes)
       }
-      // SKIP-DOTTY-END
-
+      
       it("should return Yes with correct fact message when used with 'val i: Int = null'") {
         val fact = expectTypeError("val i: Int = null")
         assert(fact.isInstanceOf[Fact.Leaf])
@@ -743,7 +743,6 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
         assert(!fact.isVacuousYes)
       }
 
-      // SKIP-DOTTY-START
       it("should return No with correct fact message when parse failed ") {
         val fact =
           expectTypeError(
@@ -756,6 +755,13 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
         assert(fact.isNo)
         if (ScalaTestVersions.BuiltForScalaVersion == "2.10")
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but '}' found.", "\nprintln(\"test)\n"))
+        else if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
+          assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError(
+            "')' expected, but eof found",
+            """
+              |println("test)
+              |""".stripMargin
+          ))
         else
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError(
             "unclosed string literal",
@@ -765,7 +771,6 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
           ))
         assert(!fact.isVacuousYes)
       }
-      // SKIP-DOTTY-END
 
       it("should return Yes with correct fact message when used with 'val i: Int = null'") {
         val fact =
