@@ -17,3 +17,5 @@ val scalaNativeVersion = Option(System.getenv("SCALANATIVE_VERSION")).getOrElse(
 addSbtPlugin("org.scala-native" % "sbt-scala-native" % scalaNativeVersion)
 
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.7.0")
+
+addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.5.5")
