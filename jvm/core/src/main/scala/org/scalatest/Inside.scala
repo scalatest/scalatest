@@ -188,7 +188,7 @@ object Inside extends Inside {
   //DOTTY-ONLY   val file = pos.sourceFile
   //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
   //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-  //DOTTY-ONLY   val lineNo: Int = pos.startLine
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
   //DOTTY-ONLY   '{insideWithPos(${value}, ${pf}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
   //DOTTY-ONLY }
 

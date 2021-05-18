@@ -214,8 +214,7 @@ class NumericCharSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
     }
     describe("should offer a goodOrElse factory method that") {
       it ("returns a NumericChar wrapped in a Good if the given Char "+
-          "is between '0' and '9'")
-      {
+          "is between '0' and '9'") {
         NumericChar.goodOrElse('0')(c => c) shouldBe
           Good(NumericChar('0'))
         NumericChar.goodOrElse('5')(c => c) shouldBe 
@@ -224,8 +223,7 @@ class NumericCharSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
           Good(NumericChar('9'))
       }
       it ("returns an error value produced by passing the given Char to "+
-          "the given function if the passed Char is not between '0' and '9'")
-      {
+          "the given function if the passed Char is not between '0' and '9'") {
         NumericChar.goodOrElse('a')(c => s"'$c' did not taste good") shouldBe
           Bad("'a' did not taste good")
         NumericChar.goodOrElse('?')(c => s"'$c' did not taste good") shouldBe 
@@ -233,8 +231,7 @@ class NumericCharSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
       }
     }
     describe("should offer a passOrElse factory method that") {
-      it ("returns a Pass if the given Char is between '0' and '9'")
-      {
+      it ("returns a Pass if the given Char is between '0' and '9'") {
         NumericChar.passOrElse('0')(i => i) shouldBe Pass
         NumericChar.passOrElse('1')(i => i) shouldBe Pass
         NumericChar.passOrElse('8')(i => i) shouldBe Pass
@@ -242,8 +239,7 @@ class NumericCharSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
       }
       it (" returns an error value produced by passing the given Char to "+
           "the given function if the passed Char is NOT between '0' and '9',"+
-          "wrapped in a Fail")
-      {
+          "wrapped in a Fail") {
         NumericChar.passOrElse('a')(i => s"'$i' is not so good") shouldBe
           Fail("'a' is not so good")
         NumericChar.passOrElse('?')(i => s"'$i' is not so good") shouldBe 
@@ -256,8 +252,7 @@ class NumericCharSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
     }
     describe("should offer a rightOrElse factory method that") {
       it("returns a NumericChar wrapped in a Right if the given Char is "+
-         "between '0' and '9'")
-      {
+         "between '0' and '9'") {
         NumericChar.rightOrElse('0')(i => i) shouldBe
           Right(NumericChar('0'))
         NumericChar.rightOrElse('1')(i => i) shouldBe 
@@ -269,8 +264,7 @@ class NumericCharSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
       }
       it ("returns an error value produced by passing the given Char to "+
           "the given function if the passed Char does not contain only "+
-          "numeric characters, wrapped in a Left")
-      {
+          "numeric characters, wrapped in a Left") {
         NumericChar.rightOrElse('a')(i => s"'$i' is not so good") shouldBe
           Left("'a' is not so good")
         NumericChar.rightOrElse('*')(i => s"'$i' is not so good") shouldBe 
@@ -281,16 +275,14 @@ class NumericCharSpec extends funspec.AnyFunSpec with matchers.should.Matchers w
     }
     describe("should offer a tryingValid factory method that") {
       it ("returns a NumericChar wrapped in a Success if the passed Char "+
-          "is between '0' and '9'")
-      {
+          "is between '0' and '9'") {
         NumericChar.tryingValid('0').success.value.value shouldBe '0'
         NumericChar.tryingValid('2').success.value.value shouldBe '2'
         NumericChar.tryingValid('7').success.value.value shouldBe '7'
         NumericChar.tryingValid('9').success.value.value shouldBe '9'
       }
       it (" returns an AssertionError wrapped in a Failure if the passed "+
-          "Char does not contain only numeric characters")
-      {
+          "Char does not contain only numeric characters") {
         NumericChar.tryingValid('a').failure.exception shouldBe
           an [AssertionError]
         NumericChar.tryingValid('X').failure.exception shouldBe 

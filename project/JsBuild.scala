@@ -236,7 +236,7 @@ trait JsBuild { this: BuildCommons =>
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
-      //libraryDependencies ++= crossBuildTestLibraryDependencies.value,
+      libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += {
         Def.task{
           GenCommonTestJS.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++

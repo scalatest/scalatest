@@ -50,7 +50,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
       pending
     }
     test("cancel") {
-      cancel
+      cancel()
     }
     ignore("ignore") {
       
@@ -75,7 +75,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
       pending
     }
     test("cancel") { param =>
-      cancel
+      cancel()
     }
     ignore("ignore") { param =>
       
@@ -101,7 +101,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
         pending
       }
       it("cancel") {
-        cancel
+        cancel()
       }
       ignore("ignore") {
       
@@ -128,7 +128,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
         pending
       }
       it("cancel") { param =>
-        cancel
+        cancel()
       }
       ignore("ignore") { param =>
       
@@ -155,7 +155,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
         pending
       }
       Scenario("cancel") {
-        cancel
+        cancel()
       }
       ignore("ignore") {
         
@@ -182,7 +182,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
         pending
       }
       Scenario("cancel") { param =>
-        cancel
+        cancel()
       }
       ignore("ignore") { param =>
       
@@ -208,7 +208,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
       pending
     }
     "Test 3" should "cancel" in {
-      cancel
+      cancel()
     }
     behavior of "Test 4"
     it should "be ignored" ignore {
@@ -240,7 +240,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
       pending
     }
     "Test 3" should "cancel" in { param =>
-      cancel
+      cancel()
     }
     behavior of "Test 4"
     it should "be ignored" ignore { param =>
@@ -273,7 +273,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
         pending
       }
       "should cancel" in {
-        cancel
+        cancel()
       }
       "should ignore" ignore {
         
@@ -300,7 +300,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
         pending
       }
       "should cancel" in { param =>
-        cancel
+        cancel()
       }
       "should ignore" ignore { param =>
         
@@ -326,7 +326,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
       pending
     }
     property("Test should cancel") {
-      cancel
+      cancel()
     }
     ignore("Test should ignore") {
         
@@ -351,7 +351,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
       pending
     }
     property("Test should cancel") { param =>
-      cancel
+      cancel()
     }
     ignore("Test should ignore") { param =>
         
@@ -382,7 +382,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
     }
     "Test 3" which {
       "cancel" in {
-        cancel
+        cancel()
       }
     }
     "Test 4" that {
@@ -425,7 +425,7 @@ class DeprecatedLocationFunctionSuiteProp extends FunctionSuiteProp {
     }
     "Test 3" which {
       "cancel" in { param =>
-        cancel
+        cancel()
       }
     }
     "Test 4" that {
@@ -470,7 +470,7 @@ class TestLocationFunctionPathFreeSpec extends freespec.PathAnyFreeSpec with Tes
       pending
     }
     "should cancel" in {
-      cancel
+      cancel()
     }
     "should ignore" ignore {
       
@@ -499,7 +499,7 @@ class TestLocationFunctionPathFunSpec extends funspec.PathAnyFunSpec with TestLo
       pending
     }
     it("cancel") {
-      cancel
+      cancel()
     }
     ignore("ignore") {
     

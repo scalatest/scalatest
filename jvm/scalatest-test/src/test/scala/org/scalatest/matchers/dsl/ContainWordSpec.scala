@@ -202,18 +202,18 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe leftList + " did not contain a file"
-        mr.negatedFailureMessage shouldBe leftList + " contained a file: " + myFile + " was a file"
-        mr.midSentenceFailureMessage shouldBe leftList + " did not contain a file"
-        mr.midSentenceNegatedFailureMessage shouldBe leftList + " contained a file: " + myFile + " was a file"
+        mr.failureMessage shouldBe s"$leftList did not contain a file"
+        mr.negatedFailureMessage shouldBe s"$leftList contained a file: $myFile was a file"
+        mr.midSentenceFailureMessage shouldBe s"$leftList did not contain a file"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$leftList contained a file: $myFile was a file"
         mr.rawFailureMessage shouldBe "{0} did not contain a {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} contained a {1}: {2}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain a {1}"
         mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained a {1}: {2}"
         mr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was a file"))
         mr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was a file"))
 
       }
       
@@ -221,17 +221,17 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe leftList + " contained a file: " + myFile + " was a file"
-        nmr.negatedFailureMessage shouldBe leftList + " did not contain a file"
-        nmr.midSentenceFailureMessage shouldBe leftList + " contained a file: " + myFile + " was a file"
-        nmr.midSentenceNegatedFailureMessage shouldBe leftList + " did not contain a file"
+        nmr.failureMessage shouldBe s"$leftList contained a file: $myFile was a file"
+        nmr.negatedFailureMessage shouldBe s"$leftList did not contain a file"
+        nmr.midSentenceFailureMessage shouldBe s"$leftList contained a file: $myFile was a file"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$leftList did not contain a file"
         nmr.rawFailureMessage shouldBe "{0} contained a {1}: {2}"
         nmr.rawNegatedFailureMessage shouldBe "{0} did not contain a {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} contained a {1}: {2}"
         nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain a {1}"
-        nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))
+        nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was a file"))
         nmr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was a file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was a file"))
         nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
 
       }
@@ -258,18 +258,18 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe leftList + " did not contain an file"
-        mr.negatedFailureMessage shouldBe leftList + " contained an file: " + myFile + " was an file"
-        mr.midSentenceFailureMessage shouldBe leftList + " did not contain an file"
-        mr.midSentenceNegatedFailureMessage shouldBe leftList + " contained an file: " + myFile + " was an file"
+        mr.failureMessage shouldBe s"$leftList did not contain an file"
+        mr.negatedFailureMessage shouldBe s"$leftList contained an file: $myFile was an file"
+        mr.midSentenceFailureMessage shouldBe s"$leftList did not contain an file"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$leftList contained an file: $myFile was an file"
         mr.rawFailureMessage shouldBe "{0} did not contain an {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} contained an {1}: {2}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain an {1}"
         mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained an {1}: {2}"
         mr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was an file"))
         mr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was an file"))
 
       }
       
@@ -277,17 +277,17 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe leftList + " contained an file: " + myFile + " was an file"
-        nmr.negatedFailureMessage shouldBe leftList + " did not contain an file"
-        nmr.midSentenceFailureMessage shouldBe leftList + " contained an file: " + myFile + " was an file"
-        nmr.midSentenceNegatedFailureMessage shouldBe leftList + " did not contain an file"
+        nmr.failureMessage shouldBe s"$leftList contained an file: $myFile was an file"
+        nmr.negatedFailureMessage shouldBe s"$leftList did not contain an file"
+        nmr.midSentenceFailureMessage shouldBe s"$leftList contained an file: $myFile was an file"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$leftList did not contain an file"
         nmr.rawFailureMessage shouldBe "{0} contained an {1}: {2}"
         nmr.rawNegatedFailureMessage shouldBe "{0} did not contain an {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} contained an {1}: {2}"
         nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain an {1}"
-        nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))
+        nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was an file"))
         nmr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(myFile + " was an file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was an file"))
         nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
 
       }
@@ -358,10 +358,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe lhs + " did not contain at least one of (1, 2)"
-        mr.negatedFailureMessage shouldBe lhs + " contained at least one of (1, 2)"
-        mr.midSentenceFailureMessage shouldBe lhs + " did not contain at least one of (1, 2)"
-        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained at least one of (1, 2)"
+        mr.failureMessage shouldBe s"$lhs did not contain at least one of (1, 2)"
+        mr.negatedFailureMessage shouldBe s"$lhs contained at least one of (1, 2)"
+        mr.midSentenceFailureMessage shouldBe s"$lhs did not contain at least one of (1, 2)"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$lhs contained at least one of (1, 2)"
         mr.rawFailureMessage shouldBe "{0} did not contain at least one of ({1})"
         mr.rawNegatedFailureMessage shouldBe "{0} contained at least one of ({1})"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain at least one of ({1})"
@@ -377,10 +377,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe lhs + " contained at least one of (1, 2)"
-        nmr.negatedFailureMessage shouldBe lhs + " did not contain at least one of (1, 2)"
-        nmr.midSentenceFailureMessage shouldBe lhs + " contained at least one of (1, 2)"
-        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain at least one of (1, 2)"
+        nmr.failureMessage shouldBe s"$lhs contained at least one of (1, 2)"
+        nmr.negatedFailureMessage shouldBe s"$lhs did not contain at least one of (1, 2)"
+        nmr.midSentenceFailureMessage shouldBe s"$lhs contained at least one of (1, 2)"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$lhs did not contain at least one of (1, 2)"
         nmr.rawFailureMessage shouldBe "{0} contained at least one of ({1})"
         nmr.rawNegatedFailureMessage shouldBe "{0} did not contain at least one of ({1})"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} contained at least one of ({1})"
@@ -459,10 +459,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe lhs + " did not contain the same elements as " + rhs
-        mr.negatedFailureMessage shouldBe lhs + " contained the same elements as " + rhs
-        mr.midSentenceFailureMessage shouldBe lhs + " did not contain the same elements as " + rhs
-        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained the same elements as " + rhs
+        mr.failureMessage shouldBe s"$lhs did not contain the same elements as " + rhs
+        mr.negatedFailureMessage shouldBe s"$lhs contained the same elements as " + rhs
+        mr.midSentenceFailureMessage shouldBe s"$lhs did not contain the same elements as " + rhs
+        mr.midSentenceNegatedFailureMessage shouldBe s"$lhs contained the same elements as " + rhs
         mr.rawFailureMessage shouldBe "{0} did not contain the same elements as {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} contained the same elements as {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain the same elements as {1}"
@@ -478,10 +478,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe lhs + " contained the same elements as " + rhs
-        nmr.negatedFailureMessage shouldBe lhs + " did not contain the same elements as " + rhs
-        nmr.midSentenceFailureMessage shouldBe lhs + " contained the same elements as " + rhs
-        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain the same elements as " + rhs
+        nmr.failureMessage shouldBe s"$lhs contained the same elements as " + rhs
+        nmr.negatedFailureMessage shouldBe s"$lhs did not contain the same elements as " + rhs
+        nmr.midSentenceFailureMessage shouldBe s"$lhs contained the same elements as " + rhs
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$lhs did not contain the same elements as " + rhs
         nmr.rawFailureMessage shouldBe "{0} contained the same elements as {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} did not contain the same elements as {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} contained the same elements as {1}"
@@ -510,10 +510,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe lhs + " did not contain the same elements in the same (iterated) order as " + rhs
-        mr.negatedFailureMessage shouldBe lhs + " contained the same elements in the same (iterated) order as " + rhs
-        mr.midSentenceFailureMessage shouldBe lhs + " did not contain the same elements in the same (iterated) order as " + rhs
-        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained the same elements in the same (iterated) order as " + rhs
+        mr.failureMessage shouldBe s"$lhs did not contain the same elements in the same (iterated) order as " + rhs
+        mr.negatedFailureMessage shouldBe s"$lhs contained the same elements in the same (iterated) order as " + rhs
+        mr.midSentenceFailureMessage shouldBe s"$lhs did not contain the same elements in the same (iterated) order as " + rhs
+        mr.midSentenceNegatedFailureMessage shouldBe s"$lhs contained the same elements in the same (iterated) order as " + rhs
         mr.rawFailureMessage shouldBe "{0} did not contain the same elements in the same (iterated) order as {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} contained the same elements in the same (iterated) order as {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain the same elements in the same (iterated) order as {1}"
@@ -529,10 +529,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe lhs + " contained the same elements in the same (iterated) order as " + rhs
-        nmr.negatedFailureMessage shouldBe lhs + " did not contain the same elements in the same (iterated) order as " + rhs
-        nmr.midSentenceFailureMessage shouldBe lhs + " contained the same elements in the same (iterated) order as " + rhs
-        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain the same elements in the same (iterated) order as " + rhs
+        nmr.failureMessage shouldBe s"$lhs contained the same elements in the same (iterated) order as " + rhs
+        nmr.negatedFailureMessage shouldBe s"$lhs did not contain the same elements in the same (iterated) order as " + rhs
+        nmr.midSentenceFailureMessage shouldBe s"$lhs contained the same elements in the same (iterated) order as " + rhs
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$lhs did not contain the same elements in the same (iterated) order as " + rhs
         nmr.rawFailureMessage shouldBe "{0} contained the same elements in the same (iterated) order as {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} did not contain the same elements in the same (iterated) order as {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} contained the same elements in the same (iterated) order as {1}"
@@ -560,10 +560,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe lhs + " did not contain only (1, 2)"
-        mr.negatedFailureMessage shouldBe lhs + " contained only (1, 2)"
-        mr.midSentenceFailureMessage shouldBe lhs + " did not contain only (1, 2)"
-        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained only (1, 2)"
+        mr.failureMessage shouldBe s"$lhs did not contain only (1, 2)"
+        mr.negatedFailureMessage shouldBe s"$lhs contained only (1, 2)"
+        mr.midSentenceFailureMessage shouldBe s"$lhs did not contain only (1, 2)"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$lhs contained only (1, 2)"
         mr.rawFailureMessage shouldBe "{0} did not contain only ({1})"
         mr.rawNegatedFailureMessage shouldBe "{0} contained only ({1})"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain only ({1})"
@@ -579,10 +579,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe lhs + " contained only (1, 2)"
-        nmr.negatedFailureMessage shouldBe lhs + " did not contain only (1, 2)"
-        nmr.midSentenceFailureMessage shouldBe lhs + " contained only (1, 2)"
-        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain only (1, 2)"
+        nmr.failureMessage shouldBe s"$lhs contained only (1, 2)"
+        nmr.negatedFailureMessage shouldBe s"$lhs did not contain only (1, 2)"
+        nmr.midSentenceFailureMessage shouldBe s"$lhs contained only (1, 2)"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$lhs did not contain only (1, 2)"
         nmr.rawFailureMessage shouldBe "{0} contained only ({1})"
         nmr.rawNegatedFailureMessage shouldBe "{0} did not contain only ({1})"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} contained only ({1})"
@@ -610,10 +610,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe lhs + " did not contain only (1, 2) in order"
-        mr.negatedFailureMessage shouldBe lhs + " contained only (1, 2) in order"
-        mr.midSentenceFailureMessage shouldBe lhs + " did not contain only (1, 2) in order"
-        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained only (1, 2) in order"
+        mr.failureMessage shouldBe s"$lhs did not contain only (1, 2) in order"
+        mr.negatedFailureMessage shouldBe s"$lhs contained only (1, 2) in order"
+        mr.midSentenceFailureMessage shouldBe s"$lhs did not contain only (1, 2) in order"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$lhs contained only (1, 2) in order"
         mr.rawFailureMessage shouldBe "{0} did not contain only ({1}) in order"
         mr.rawNegatedFailureMessage shouldBe "{0} contained only ({1}) in order"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain only ({1}) in order"
@@ -629,10 +629,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe lhs + " contained only (1, 2) in order"
-        nmr.negatedFailureMessage shouldBe lhs + " did not contain only (1, 2) in order"
-        nmr.midSentenceFailureMessage shouldBe lhs + " contained only (1, 2) in order"
-        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain only (1, 2) in order"
+        nmr.failureMessage shouldBe s"$lhs contained only (1, 2) in order"
+        nmr.negatedFailureMessage shouldBe s"$lhs did not contain only (1, 2) in order"
+        nmr.midSentenceFailureMessage shouldBe s"$lhs contained only (1, 2) in order"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$lhs did not contain only (1, 2) in order"
         nmr.rawFailureMessage shouldBe "{0} contained only ({1}) in order"
         nmr.rawNegatedFailureMessage shouldBe "{0} did not contain only ({1}) in order"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} contained only ({1}) in order"
@@ -660,10 +660,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe lhs + " did not contain all of (1, 2)"
-        mr.negatedFailureMessage shouldBe lhs + " contained all of (1, 2)"
-        mr.midSentenceFailureMessage shouldBe lhs + " did not contain all of (1, 2)"
-        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained all of (1, 2)"
+        mr.failureMessage shouldBe s"$lhs did not contain all of (1, 2)"
+        mr.negatedFailureMessage shouldBe s"$lhs contained all of (1, 2)"
+        mr.midSentenceFailureMessage shouldBe s"$lhs did not contain all of (1, 2)"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$lhs contained all of (1, 2)"
         mr.rawFailureMessage shouldBe "{0} did not contain all of ({1})"
         mr.rawNegatedFailureMessage shouldBe "{0} contained all of ({1})"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain all of ({1})"
@@ -679,10 +679,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe lhs + " contained all of (1, 2)"
-        nmr.negatedFailureMessage shouldBe lhs + " did not contain all of (1, 2)"
-        nmr.midSentenceFailureMessage shouldBe lhs + " contained all of (1, 2)"
-        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain all of (1, 2)"
+        nmr.failureMessage shouldBe s"$lhs contained all of (1, 2)"
+        nmr.negatedFailureMessage shouldBe s"$lhs did not contain all of (1, 2)"
+        nmr.midSentenceFailureMessage shouldBe s"$lhs contained all of (1, 2)"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$lhs did not contain all of (1, 2)"
         nmr.rawFailureMessage shouldBe "{0} contained all of ({1})"
         nmr.rawNegatedFailureMessage shouldBe "{0} did not contain all of ({1})"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} contained all of ({1})"
@@ -710,10 +710,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe lhs + " did not contain all of (1, 2) in order"
-        mr.negatedFailureMessage shouldBe lhs + " contained all of (1, 2) in order"
-        mr.midSentenceFailureMessage shouldBe lhs + " did not contain all of (1, 2) in order"
-        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained all of (1, 2) in order"
+        mr.failureMessage shouldBe s"$lhs did not contain all of (1, 2) in order"
+        mr.negatedFailureMessage shouldBe s"$lhs contained all of (1, 2) in order"
+        mr.midSentenceFailureMessage shouldBe s"$lhs did not contain all of (1, 2) in order"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$lhs contained all of (1, 2) in order"
         mr.rawFailureMessage shouldBe "{0} did not contain all of ({1}) in order"
         mr.rawNegatedFailureMessage shouldBe "{0} contained all of ({1}) in order"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain all of ({1}) in order"
@@ -729,10 +729,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe lhs + " contained all of (1, 2) in order"
-        nmr.negatedFailureMessage shouldBe lhs + " did not contain all of (1, 2) in order"
-        nmr.midSentenceFailureMessage shouldBe lhs + " contained all of (1, 2) in order"
-        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain all of (1, 2) in order"
+        nmr.failureMessage shouldBe s"$lhs contained all of (1, 2) in order"
+        nmr.negatedFailureMessage shouldBe s"$lhs did not contain all of (1, 2) in order"
+        nmr.midSentenceFailureMessage shouldBe s"$lhs contained all of (1, 2) in order"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$lhs did not contain all of (1, 2) in order"
         nmr.rawFailureMessage shouldBe "{0} contained all of ({1}) in order"
         nmr.rawNegatedFailureMessage shouldBe "{0} did not contain all of ({1}) in order"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} contained all of ({1}) in order"
@@ -760,10 +760,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe lhs + " did not contain at most one of (1, 2)"
-        mr.negatedFailureMessage shouldBe lhs + " contained at most one of (1, 2)"
-        mr.midSentenceFailureMessage shouldBe lhs + " did not contain at most one of (1, 2)"
-        mr.midSentenceNegatedFailureMessage shouldBe lhs + " contained at most one of (1, 2)"
+        mr.failureMessage shouldBe s"$lhs did not contain at most one of (1, 2)"
+        mr.negatedFailureMessage shouldBe s"$lhs contained at most one of (1, 2)"
+        mr.midSentenceFailureMessage shouldBe s"$lhs did not contain at most one of (1, 2)"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$lhs contained at most one of (1, 2)"
         mr.rawFailureMessage shouldBe "{0} did not contain at most one of ({1})"
         mr.rawNegatedFailureMessage shouldBe "{0} contained at most one of ({1})"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain at most one of ({1})"
@@ -779,10 +779,10 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe lhs + " contained at most one of (1, 2)"
-        nmr.negatedFailureMessage shouldBe lhs + " did not contain at most one of (1, 2)"
-        nmr.midSentenceFailureMessage shouldBe lhs + " contained at most one of (1, 2)"
-        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " did not contain at most one of (1, 2)"
+        nmr.failureMessage shouldBe s"$lhs contained at most one of (1, 2)"
+        nmr.negatedFailureMessage shouldBe s"$lhs did not contain at most one of (1, 2)"
+        nmr.midSentenceFailureMessage shouldBe s"$lhs contained at most one of (1, 2)"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$lhs did not contain at most one of (1, 2)"
         nmr.rawFailureMessage shouldBe "{0} contained at most one of ({1})"
         nmr.rawNegatedFailureMessage shouldBe "{0} did not contain at most one of ({1})"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} contained at most one of ({1})"

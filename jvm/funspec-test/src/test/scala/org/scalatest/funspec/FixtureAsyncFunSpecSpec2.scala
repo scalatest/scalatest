@@ -29,7 +29,6 @@ class FixtureAsyncFunSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
   describe("AsyncFunSpec") {
 
-    // SKIP-DOTTY-START
     it("can be used for tests that return Future under parallel async test execution") {
 
       class ExampleSpec extends funspec.FixtureAsyncFunSpec with ParallelTestExecution {
@@ -145,7 +144,6 @@ class FixtureAsyncFunSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
         assert(repo.testIgnoredEventsReceived(0).testName == "test 5")
       }
     }
-    // SKIP-DOTTY-END
 
     it("should run tests that return Future in serial by default") {
 

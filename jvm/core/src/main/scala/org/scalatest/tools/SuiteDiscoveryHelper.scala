@@ -317,7 +317,7 @@ private[scalatest] object SuiteDiscoveryHelper {
   private def getFileNamesIteratorFromJar(file: JarFile): Iterator[String] = {
 
     class EnumerationWrapper[T](e: Enumeration[T]) extends Iterator[T] {
-      def next: T = e.nextElement
+      def next(): T = e.nextElement
       def hasNext: Boolean = e.hasMoreElements
     }
 

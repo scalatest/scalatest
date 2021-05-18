@@ -6146,8 +6146,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
 
-      // SKIP-DOTTY-START
-      // no parse error support in Dotty
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           org.scalatest.Assertions.assertTypeError("println(\"test)")
@@ -6158,7 +6156,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
-      // SKIP-DOTTY-END
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
@@ -6171,8 +6168,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when type check passed") {
         val e = intercept[TestFailedException] {
           org.scalatest.Assertions.assertTypeError(
@@ -6185,10 +6180,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-      // SKIP-DOTTY-END
-
-      // SKIP-DOTTY-START
-      // no parse error support in Dotty
+      
       it("should throw TestFailedException with correct message and stack depth when parse failed ") {
         val e = intercept[TestFailedException] {
           org.scalatest.Assertions.assertTypeError(
@@ -6203,7 +6195,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
-      // SKIP-DOTTY-END
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
       org.scalatest.Assertions.assert(assertTypeError("val x: String = 1") eq Succeeded)
@@ -6251,8 +6242,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when parse and type check passed") {
         val e = intercept[TestFailedException] {
           org.scalatest.Assertions.assertDoesNotCompile(
@@ -6265,8 +6254,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-      // SKIP-DOTTY-END
-
+      
       it("should do nothing when parse failed ") {
         org.scalatest.Assertions.assertDoesNotCompile(
           """
@@ -6311,8 +6299,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
 
-      // SKIP-DOTTY-START
-      // different error message
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           org.scalatest.Assertions.assertCompiles("println(\"test)")
@@ -6323,7 +6309,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
-      // SKIP-DOTTY-END
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
@@ -6336,8 +6321,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when type check failed") {
         val e = intercept[TestFailedException] {
           org.scalatest.Assertions.assertCompiles(
@@ -6352,10 +6335,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
-      // SKIP-DOTTY-END
 
-      // SKIP-DOTTY-START
-      // different error message
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           org.scalatest.Assertions.assertCompiles(
@@ -6370,7 +6350,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
-      // SKIP-DOTTY-END
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
       org.scalatest.Assertions.assert(org.scalatest.Assertions.assertCompiles("val x: Int = 1") eq Succeeded)

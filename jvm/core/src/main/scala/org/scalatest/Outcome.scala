@@ -223,7 +223,7 @@ object Outcome {
         new Iterator[Throwable] {
           private var spent: Boolean = false
           def hasNext: Boolean = !spent
-          def next: Throwable =
+          def next(): Throwable =
             if (!spent) {
               spent = true
               ex
@@ -232,7 +232,7 @@ object Outcome {
       case _ => // Return an empty iterator
         new Iterator[Throwable] {
           def hasNext: Boolean = false
-          def next: Throwable = throw new NoSuchElementException
+          def next(): Throwable = throw new NoSuchElementException
         }
     }
 }

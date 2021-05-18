@@ -32,7 +32,6 @@ class FixtureAsyncFeatureSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
   describe("AsyncFeatureSpecLike") {
 
-    // SKIP-DOTTY-START
     // ParallelTestExecution not working yet.
     it("can be used for tests that return Future under parallel async test execution") {
 
@@ -144,7 +143,6 @@ class FixtureAsyncFeatureSpecLikeSpec2 extends funspec.AsyncFunSpec {
         assert(repo.testIgnoredEventsReceived(0).testName == "Scenario: test 5")
       }
     }
-    // SKIP-DOTTY-END
 
     it("should run tests that return Future in serial by default") {
 

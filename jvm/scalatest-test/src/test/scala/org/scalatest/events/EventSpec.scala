@@ -22,7 +22,6 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 
-// SKIP-SCALATESTJS-START
 class EventSpec extends AnyFunSpec {
 /*
   describe("An TestStarting Event") {
@@ -1191,4 +1190,3 @@ class EventSpec extends AnyFunSpec {
   }
 // SKIP-SCALATESTNATIVE-END
 }
-// SKIP-SCALATESTJS-END

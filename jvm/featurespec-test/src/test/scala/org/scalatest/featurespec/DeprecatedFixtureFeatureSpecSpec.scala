@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest.featurespec
 
 import org.scalatest._
 import SharedHelpers._
@@ -34,7 +34,7 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest
 
-class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
+class DeprecatedFixtureFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
 
   private val prettifier = Prettifier.default
 
@@ -1330,9 +1330,9 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size === 2)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "DeprecatedFeatureSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "DeprecatedFixtureFeatureSpecSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 13)
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "DeprecatedFeatureSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "DeprecatedFixtureFeatureSpecSpec.scala")
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
     }
   }
@@ -1415,7 +1415,7 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
           assert(a == 2)
         }
         assert(e.message == Some("1 did not equal 2"))
-        assert(e.failedCodeFileName == Some("DeprecatedFeatureSpecSpec.scala"))
+        assert(e.failedCodeFileName == Some("DeprecatedFixtureFeatureSpecSpec.scala"))
         assert(e.failedCodeLineNumber == Some(thisLineNumber - 4))
       }
       registerTest("test 2") { fixture =>
@@ -1468,9 +1468,9 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       val s1 = new TestSpec
       s1.run(None, Args(rep))
       assert(rep.testFailedEventsReceived.size === 2)
-      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "DeprecatedFeatureSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "DeprecatedFixtureFeatureSpecSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 13)
-      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "DeprecatedFeatureSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "DeprecatedFixtureFeatureSpecSpec.scala")
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
     }
       
@@ -1490,7 +1490,7 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       val caught = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert(caught.failedCodeFileName.get === "DeprecatedFeatureSpecSpec.scala")
+      assert(caught.failedCodeFileName.get === "DeprecatedFixtureFeatureSpecSpec.scala")
       assert(caught.failedCodeLineNumber.get === thisLineNumber - 12)
     }
     
@@ -1523,7 +1523,7 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("DeprecatedFeatureSpecSpec.scala" === trce.failedCodeFileName.get)
+      assert("DeprecatedFixtureFeatureSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
       assert(trce.message == Some("A scenario clause may not appear inside another scenario clause."))
     }
@@ -1557,7 +1557,7 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("DeprecatedFeatureSpecSpec.scala" === trce.failedCodeFileName.get)
+      assert("DeprecatedFixtureFeatureSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
       assert(trce.message == Some("An ignore clause may not appear inside a scenario clause."))
     }
@@ -1591,7 +1591,7 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("DeprecatedFeatureSpecSpec.scala" === trce.failedCodeFileName.get)
+      assert("DeprecatedFixtureFeatureSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
@@ -1625,7 +1625,7 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(testFailedEvents.size === 1)
       assert(testFailedEvents(0).throwable.get.getClass() === classOf[TestRegistrationClosedException])
       val trce = testFailedEvents(0).throwable.get.asInstanceOf[TestRegistrationClosedException]
-      assert("DeprecatedFeatureSpecSpec.scala" === trce.failedCodeFileName.get)
+      assert("DeprecatedFixtureFeatureSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
@@ -1642,7 +1642,7 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert("DeprecatedFeatureSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("DeprecatedFixtureFeatureSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause))
 
@@ -1650,7 +1650,7 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       val causeThrowable = e.cause.get
       assert(causeThrowable.isInstanceOf[TestFailedException])
       val cause = causeThrowable.asInstanceOf[TestFailedException]
-      assert("DeprecatedFeatureSpecSpec.scala" == cause.failedCodeFileName.get)
+      assert("DeprecatedFixtureFeatureSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
       assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
@@ -1667,7 +1667,7 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert("DeprecatedFeatureSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("DeprecatedFixtureFeatureSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause))
 
@@ -1675,7 +1675,7 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       val causeThrowable = e.cause.get
       assert(causeThrowable.isInstanceOf[TestCanceledException])
       val cause = causeThrowable.asInstanceOf[TestCanceledException]
-      assert("DeprecatedFeatureSpecSpec.scala" == cause.failedCodeFileName.get)
+      assert("DeprecatedFixtureFeatureSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
       assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
@@ -1691,7 +1691,7 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
         new TestSpec
       }
-      assert("DeprecatedFeatureSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("DeprecatedFixtureFeatureSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 8)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1714,7 +1714,7 @@ class DeprecatedFeatureSpecSpec extends scalatest.funspec.AnyFunSpec {
       val e = intercept[NotAllowedException] {
           new TestSpec
         }
-      assert("DeprecatedFeatureSpecSpec.scala" == e.failedCodeFileName.get)
+      assert("DeprecatedFixtureFeatureSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get

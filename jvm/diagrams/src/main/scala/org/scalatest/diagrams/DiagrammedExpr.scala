@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.diagrams
 
-private[org] case class AnchorValue(anchor: Int, value: Any)
+private[diagrams] case class AnchorValue(anchor: Int, value: Any)
 
 /**
  * A trait that represent an expression recorded by <code>DiagrammedExprMacro</code>, which includes the following members:
@@ -30,12 +30,12 @@ private[org] case class AnchorValue(anchor: Int, value: Any)
  * so that the generated code can be compiled.  It is expected that ScalaTest users would ever need to use <code>DiagrammedExpr</code>
  * directly.
  */
-trait DiagrammedExpr[+T] {
+trait DiagrammedExpr[T] {
   val anchor: Int
   def anchorValues: List[AnchorValue]
   def value: T
 
-  protected[scalatest] def eliminateDuplicates(anchorValues: List[AnchorValue]): List[AnchorValue] =
+  protected[diagrams] def eliminateDuplicates(anchorValues: List[AnchorValue]): List[AnchorValue] =
     (anchorValues.groupBy(_.anchor).map { case (anchor, group) =>
       group.last
     }).toList
@@ -83,11 +83,11 @@ object DiagrammedExpr {
     new DiagrammedSelectExpr(qualifier, value, anchor)
 }
 
-private[scalatest] class DiagrammedSimpleExpr[T](val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+private[diagrams] class DiagrammedSimpleExpr[T](val value: T, val anchor: Int) extends DiagrammedExpr[T] {
   def anchorValues = List(AnchorValue(anchor, value))
 }
 
-private[scalatest] class DiagrammedApplyExpr[T](qualifier: DiagrammedExpr[_], args: List[DiagrammedExpr[_]], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+private[diagrams] class DiagrammedApplyExpr[T](qualifier: DiagrammedExpr[_], args: List[DiagrammedExpr[_]], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
 
   def anchorValues = {
     val quantifierAnchorValues = eliminateDuplicates(qualifier.anchorValues)
@@ -101,7 +101,7 @@ private[scalatest] class DiagrammedApplyExpr[T](qualifier: DiagrammedExpr[_], ar
   }
 }
 
-private[scalatest] class DiagrammedSelectExpr[T](qualifier: DiagrammedExpr[_], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
+private[diagrams] class DiagrammedSelectExpr[T](qualifier: DiagrammedExpr[_], val value: T, val anchor: Int) extends DiagrammedExpr[T] {
   def anchorValues = {
     val quantifierAnchorValues = eliminateDuplicates(qualifier.anchorValues)
 
