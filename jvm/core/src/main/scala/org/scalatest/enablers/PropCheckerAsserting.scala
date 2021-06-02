@@ -1059,38 +1059,6 @@ trait FuturePropCheckerAsserting {
 
       case class AccumulatedResult(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedA: Option[RoseTree[A]])
 
-      def shrunkenFuture(future: Future[PropertyCheckResult], aRoseTree: RoseTree[A], rnd: Randomizer): Future[PropertyCheckResult] =
-        future.flatMap {
-          case pcr @ PropertyCheckResult.Failure(succeededCount, optEx, _, argsPassed, initSeed) => 
-            def shrinkLoop(shrinksRemaining: List[A]): Future[PropertyCheckResult] = {
-              shrinksRemaining match {
-                case Nil => Future.successful(pcr) // Can I reuse future here out of curiosity? That one is also completed.
-                case shrinkHead :: shrinkTail =>
-                  val result: Future[T] = fun(shrinkHead)
-                  // Once we drop support for Scala 2.11, we can use transformWith here
-                  result.flatMap(_ => shrinkLoop(shrinkTail)).recoverWith {
-                    case shrunkEx: Throwable =>
-                      val shrunkArgsPassed =
-                        List(
-                          if (names.isDefinedAt(0))
-                            PropertyArgument(Some(names(0)), shrinkHead)
-                          else
-                            PropertyArgument(None, shrinkHead)
-                        )
-                      Future.successful(new PropertyCheckResult.Failure(succeededCount, Some(shrunkEx), names, shrunkArgsPassed, initSeed))
-                  }
-              }
-            }
-            // For now, just look at the first level of the RoseTree, which
-            // should (except maybe in the case of Option) be the same
-            // values in our old shrink List[A]. Currently I won't use
-            // the next rnd that comes out of here, but later when we
-            // traverse the tree, we will use it.
-            val (firstLevelRoseTrees, _) = aRoseTree.shrinks(rnd)
-            shrinkLoop(firstLevelRoseTrees.reverse.map(_.value).take(100))
-          case pcr => Future.successful(pcr)
-        }
-
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
       val maxSize = PosZInt.ensuringValid(minSize + config.sizeRange)
@@ -1223,14 +1191,7 @@ trait FuturePropCheckerAsserting {
       // ensuringValid will always succeed because /ing a PosInt by a positive number will always yield a positive or zero
       val (initEdges, afterEdgesRnd) = genA.initEdges(PosZInt.ensuringValid(config.minSuccessful / 5), afterSizesRnd)
 
-      loop(0, 0, initEdges, afterEdgesRnd, initialSizes, initSeed).flatMap { accResult =>
-        accResult match {
-          case AccumulatedResult(_, _, _, rnd, _, Some(candidate), Some(roseTreeOfA)) =>
-            shrunkenFuture(Future.successful(candidate), roseTreeOfA, rnd)
-          case _ =>
-            Future.successful(accResult.result.get)
-        }
-      }
+      loop(0, 0, initEdges, afterEdgesRnd, initialSizes, initSeed).map(_.result.getOrElse(PropertyCheckResult.Success(List.empty, initSeed)))
     }
 
     private def checkForAll[A, B](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B])(fun: (A, B) => Future[T]): Future[PropertyCheckResult] = {
