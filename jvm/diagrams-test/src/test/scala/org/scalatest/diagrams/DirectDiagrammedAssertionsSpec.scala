@@ -596,6 +596,11 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
         e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
       }
 
+      def varargs(x: Int, y: String*): (Int, Seq[String]) = (x, y.toSeq)
+      it("should do nothing when is used to check varargs(1, y, z) == 1 -> Seq(y, z)") {
+        org.scalatest.diagrams.Diagrams.assert(varargs(1, "y", "z") == 1 -> Seq("y", "z"))
+      }
+
       it("should do nothing when is used to check a === 3") {
         org.scalatest.diagrams.Diagrams.assert(a === 3)
       }
