@@ -583,6 +583,18 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
       }
+      
+      it("should do nothing when is used to check Seq(a, b) == Seq(3, 5)") {
+        org.scalatest.diagrams.Diagrams.assert(Seq(a, b) == Seq(3, 5))
+      }
+
+      it("should throw TestFailedException when is used to check Set(a, b) == Set(4)") {
+        val e = intercept[TestFailedException] {
+          org.scalatest.diagrams.Diagrams.assert(Set(a, b) == Set(4))
+        }
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+      }
 
       it("should do nothing when is used to check a === 3") {
         org.scalatest.diagrams.Diagrams.assert(a === 3)
