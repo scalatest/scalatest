@@ -75,8 +75,6 @@ trait RoseTree[T] { thisRoseTreeOfT =>
       }
     }
 
-    println("####here...")
-
     val (firstLevelShrinks, nextRnd) = shrinks(rnd)
     shrinkLoop(this, None, firstLevelShrinks, Set(value), nextRnd)
   }
@@ -90,6 +88,46 @@ trait RoseTree[T] { thisRoseTreeOfT =>
     val bestUValue = bestU.value
     val errOpt = List(errOpt1, errOpt2).flatten.lastOption
     (List(bestT.map(t => (t, bestUValue))), errOpt, rnd3)
+  }
+
+  def combineFirstDepthShrinksForFuture[E, U](fun: (T, U) => Future[(Boolean, Option[E])], rnd: Randomizer, roseTreeOfU: RoseTree[U])(implicit execContext: ExecutionContext): Future[(List[RoseTree[(T, U)]], Option[E], Randomizer)] = {
+    val thisRoseTree = this
+    val futResOfShrunkRtOfT = depthFirstShrinksForFuture(value => fun(value, roseTreeOfU.value), rnd)
+    val futBestT = 
+      futResOfShrunkRtOfT.map { case (shrunkRtOfT, errOpt1, rnd2) =>
+        shrunkRtOfT.headOption.getOrElse(thisRoseTree)
+      }
+    val futRnd2 = futResOfShrunkRtOfT.map { case (shrunkRtOfT, errOpt1, rnd2) => rnd2 }
+    val futErrOpt1 = futResOfShrunkRtOfT.map { case (shrunkRtOfT, errOpt1, rnd2) => errOpt1 }
+    val futBestTValue = futBestT.map(_.value)
+    val futOfBestTValueAndRnd2 = 
+      for {
+        bestTValue <- futBestTValue
+        rnd2 <- futRnd2
+      } yield (bestTValue, rnd2)
+    val futResOfShrunkRtOfU = 
+      futOfBestTValueAndRnd2.flatMap { case (bestTValue, rnd2) =>
+        roseTreeOfU.depthFirstShrinksForFuture(value => fun(bestTValue, value), rnd2)
+      }
+    val futBestU = 
+      futResOfShrunkRtOfU.map { case (shrunkRtOfU, errOpt2, rnd3) =>
+        shrunkRtOfU.headOption.getOrElse(roseTreeOfU)
+      }
+    val futRnd3 = futResOfShrunkRtOfU.map { case (shrunkRtOfU, errOpt2, rnd3) => rnd3 }
+    val futErrOpt2 = futResOfShrunkRtOfU.map { case (shrunkRtOfU, errOpt2, rnd3) => errOpt2 }  
+    val futBestUValue = futBestU.map(_.value)
+    val futErrOpt = 
+      for {
+        errOpt1 <- futErrOpt1
+        errOpt2 <- futErrOpt2
+      } yield List(errOpt1, errOpt2).flatten.lastOption
+
+    for {
+      bestT <- futBestT
+      bestUValue <- futBestUValue
+      errOpt <- futErrOpt
+      rnd3 <- futRnd3
+    } yield (List(bestT.map(t => (t, bestUValue))), errOpt, rnd3)
   }
 
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
