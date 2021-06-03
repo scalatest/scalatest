@@ -1114,7 +1114,7 @@ trait FuturePropCheckerAsserting {
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 for {
-                  (shrunkRtOfA, errOpt1, _) <- roseTreeOfA.depthFirstShrinksForFuture(
+                  (shrunkRtOfA, errOpt1, rnd3) <- roseTreeOfA.depthFirstShrinksForFuture(
                                                  value => {
                                                    val result: Future[T] = fun(value)
                                                    result.map { r =>
@@ -1135,7 +1135,7 @@ trait FuturePropCheckerAsserting {
                   println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
                   println(s"############ THE RES: $theRes")
-                  AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(theRes), Some(bestRtA))
+                  AccumulatedResult(succeededCount, discardedCount, edges, rnd3, initialSizes, Some(theRes), Some(bestRtA))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1159,7 +1159,7 @@ trait FuturePropCheckerAsserting {
 
           case ex: Throwable =>
             for {
-              (shrunkRtOfA, errOpt1, _) <- roseTreeOfA.depthFirstShrinksForFuture(
+              (shrunkRtOfA, errOpt1, rnd3) <- roseTreeOfA.depthFirstShrinksForFuture(
                                              value => {
                                                val result: Future[T] = fun(value)
                                                result.map { r =>
@@ -1180,7 +1180,7 @@ trait FuturePropCheckerAsserting {
               println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
               println(s"############ THE RES: $theRes")
-              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(theRes), Some(bestRtA))
+              AccumulatedResult(succeededCount, discardedCount, edges, rnd3, initialSizes, Some(theRes), Some(bestRtA))
             }
         }
       }
@@ -1278,7 +1278,7 @@ trait FuturePropCheckerAsserting {
 
                   val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestAB) else PropertyArgument(None, bestAB))
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd4, initialSizes, Some(theRes))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1320,7 +1320,7 @@ trait FuturePropCheckerAsserting {
 
               val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestAB) else PropertyArgument(None, bestAB))
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(theRes))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd4, initialSizes, Some(theRes))
             }
         }
       }
@@ -1444,7 +1444,7 @@ trait FuturePropCheckerAsserting {
 
                   val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABC) else PropertyArgument(None, bestABC))
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd5, initialSizes, Some(theRes))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1509,7 +1509,7 @@ trait FuturePropCheckerAsserting {
 
               val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABC) else PropertyArgument(None, bestABC))
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(theRes))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd5, initialSizes, Some(theRes))
             }
         }
       }
@@ -1656,7 +1656,7 @@ trait FuturePropCheckerAsserting {
 
                   val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd6, initialSizes, Some(theRes))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1740,7 +1740,7 @@ trait FuturePropCheckerAsserting {
 
               val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(theRes))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd6, initialSizes, Some(theRes))
             }
         }
       }
