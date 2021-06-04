@@ -25,6 +25,9 @@ import OptionValues._
 import scala.concurrent.Future
 import org.scalatest.funspec.AsyncFunSpec
 import org.scalatest.matchers.should.Matchers
+import scala.util.Try
+import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
+import org.scalatest.prop.PropertyArgument
 
 class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with GeneratorDrivenPropertyChecks with LineNumberHelper {
 
@@ -64,8 +67,14 @@ class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with Gene
          values were tried.
        */
       forAllFutureAssertion.recoverWith {
-        case tfe: TestFailedException =>
-          tfe.cause.value.getMessage should endWith ("3 equaled 3")
+        case tfe: org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException =>
+          tfe.args.headOption match {
+            case Some(arg) if Try(arg.asInstanceOf[PropertyArgument].value == PosInt(3)).getOrElse(false) =>
+              tfe.cause.value.getMessage should endWith ("3 equaled 3")
+            case _ =>
+              tfe.cause.value.getMessage should endWith ("1000 was not less than 1000")  
+          }
+          
       }
     }
 
