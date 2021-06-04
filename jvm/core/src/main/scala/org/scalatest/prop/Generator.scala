@@ -916,7 +916,7 @@ object Generator {
 
       case class NextRoseTree(value: PosInt) extends RoseTree[PosInt] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosInt]], Randomizer) = {
-          if (value.value == 0)
+          if (value.value == 1)
             (List.empty, rndPassedToShrinks)
           else {
             val half: Int = value / 2
