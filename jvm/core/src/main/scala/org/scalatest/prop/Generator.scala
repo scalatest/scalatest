@@ -586,7 +586,7 @@ object Generator {
           else {
             val half: Byte = (value / 2).toByte
             val minusOne: Byte = (if (value > 0) value - 1 else value + 1).toByte
-            (List(NextRoseTree(half), NextRoseTree(minusOne)), rndPassedToShrinks)
+            (List(NextRoseTree(half), NextRoseTree(minusOne)).distinct, rndPassedToShrinks)
           }
         }
       }
@@ -622,7 +622,7 @@ object Generator {
           else {
             val half: Short = (value / 2).toShort
             val minusOne: Short = (if (value > 0) value - 1 else value + 1).toShort
-            (List(NextRoseTree(half), NextRoseTree(minusOne)), rndPassedToShrinks)
+            (List(NextRoseTree(half), NextRoseTree(minusOne)).distinct, rndPassedToShrinks)
           }
         }
       }
@@ -703,7 +703,7 @@ object Generator {
           else {
             val half: Int = value / 2
             val minusOne = if (value > 0) value - 1 else value + 1
-            (List(NextRoseTree(half), NextRoseTree(minusOne)), rndPassedToShrinks)
+            (List(NextRoseTree(half), NextRoseTree(minusOne)).distinct, rndPassedToShrinks)
           }  
         }
       }
@@ -739,7 +739,7 @@ object Generator {
           else {
             val half: Long = value / 2
             val minusOne: Long = if (value > 0) value - 1 else value + 1
-            (List(NextRoseTree(half), NextRoseTree(minusOne)), rndPassedToShrinks)
+            (List(NextRoseTree(half), NextRoseTree(minusOne)).distinct, rndPassedToShrinks)
           }
         }
       }
@@ -802,7 +802,7 @@ object Generator {
               else value
             // Nearest whole numbers closer to zero
             val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-            (List(NextRoseTree(nearest), NextRoseTree(nearestNeg)), rndPassedToShrinks)
+            (List(NextRoseTree(nearest), NextRoseTree(nearestNeg)).distinct, rndPassedToShrinks)
           }  
           else {
             val sqrt: Float = math.sqrt(value.abs.toDouble).toFloat
@@ -875,7 +875,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             // Nearest whole numbers closer to zero
             val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-            (List(NextRoseTree(nearest), NextRoseTree(nearestNeg)), rndPassedToShrinks)
+            (List(NextRoseTree(nearest), NextRoseTree(nearestNeg)).distinct, rndPassedToShrinks)
           }
           else {
             val sqrt: Double = math.sqrt(value.abs)
@@ -952,17 +952,13 @@ object Generator {
 
       case class NextRoseTree(value: PosZInt) extends RoseTree[PosZInt] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosZInt]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: PosZInt, acc: List[RoseTree[PosZInt]]): List[RoseTree[PosZInt]] = {
-            if (i.value == 0)
-              acc
-            else {
-              val half: Int = i / 2
-              val posIntHalf = PosZInt.ensuringValid(half)
-              shrinkLoop(posIntHalf, NextRoseTree(posIntHalf) :: acc)
-            }
+          if (value.value == 0)
+            (List.empty, rndPassedToShrinks)
+          else {
+            val half: Int = value / 2
+            val minusOne: Int = value - 1
+            (List(half, minusOne).filter(_ >= 0).distinct.map(i => NextRoseTree(PosZInt.ensuringValid(i))), rndPassedToShrinks)
           }
-          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       }
 
