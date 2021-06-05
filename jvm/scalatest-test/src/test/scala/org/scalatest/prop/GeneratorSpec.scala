@@ -674,38 +674,6 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           }
         }
       }
-      
-      /*it("should shrink Floats by dropping the fraction part then repeatedly 'square-rooting' and negating") {
-        import GeneratorDrivenPropertyChecks._
-        forAll { (shrinkRoseTree: RoseTree[Float]) =>
-          val f = shrinkRoseTree.value
-          val shrinks: List[Float] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
-          shrinks.distinct.length shouldEqual shrinks.length
-          if (f == 0.0f) {
-            shrinks shouldBe empty
-          } else {
-            val n =
-              if (f == Float.PositiveInfinity || f == Float.NaN)
-                Float.MaxValue
-              else if (f == Float.NegativeInfinity)
-                Float.MinValue
-              else f
-            if (n > 1.0f)
-              shrinks.head should be > 0.0f
-            else if (n < -1.0f)
-              shrinks.head should be < 0.0f
-            import org.scalatest.Inspectors._
-            if (!n.isWhole) {
-              shrinks.head shouldEqual (if (n > 0.0f) n.floor else n.ceil)
-            }
-            val revShrinks = shrinks.reverse
-            val pairs: List[(Float, Float)] = revShrinks.zip(revShrinks.tail)
-            forAll (pairs) { case (x, y) =>
-              assert(x == 0.0f || x == -y || x.abs < y.abs)
-            }
-          }
-        }
-      }*/
     }
     describe("for Doubles") {
       it("should produce the same Double values in the same order given the same Randomizer") {
