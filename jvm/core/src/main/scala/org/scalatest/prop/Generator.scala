@@ -770,52 +770,6 @@ object Generator {
 
       case class NextRoseTree(value: Float) extends RoseTree[Float] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Float]], Randomizer) = {
-          /*if (value == 0.0f)
-            (List.empty, rndPassedToShrinks)
-          else if (value <= 1.0f && value >= -1.0f) 
-            (List(Rose(0.0f)), rndPassedToShrinks)
-          else if (!value.isWhole) {
-            // We need to handle infinity and NaN specially because without it, this method
-            // will go into an infinite loop. The reason is floor and ciel give back the same value
-            // on these values:
-            //
-            // scala> val f = Float.PositiveInfinity
-            // f: Float = Infinity
-            //
-            // scala> f.floor
-            // res1: Float = Infinity
-            //
-            // scala> f.ceil
-            // res3: Float = Infinity
-            //
-            // scala> Float.NaN.floor
-            // res5: Float = NaN
-            //
-            // scala> Float.NaN.ceil
-            // res6: Float = NaN
-            //
-            val n =
-              if (value == Float.PositiveInfinity || value.isNaN)
-                Float.MaxValue
-              else if (value == Float.NegativeInfinity)
-                Float.MinValue
-              else value
-            // Nearest whole numbers closer to zero
-            val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-            (List(NextRoseTree(nearest), NextRoseTree(nearestNeg)).distinct, rndPassedToShrinks)
-          }  
-          else {
-            val sqrt: Float = math.sqrt(value.abs.toDouble).toFloat
-            if (sqrt < 1.0f) 
-              (List(Rose(0.0f)), rndPassedToShrinks)
-            else {
-              val whole: Float = sqrt.floor
-              val negWhole: Float = math.rint((-whole).toDouble).toFloat
-              val (first, second) = if (value < 0.0f) (negWhole, whole) else (whole, negWhole)
-              (List(NextRoseTree(first), NextRoseTree(second)), rndPassedToShrinks)
-            }
-          }*/
-
           if (value == 0.0f) 
             (List.empty, rndPassedToShrinks)
           else if (value < 1.0f && value > -1.0f) 
