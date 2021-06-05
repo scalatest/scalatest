@@ -1384,12 +1384,28 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (PosDouble.PositiveInfinity)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = posDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shouldGrowWithForShrink(_.value)
+      }
+
+      it("should shrink PosDouble by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == Double.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosFiniteDouble") {
