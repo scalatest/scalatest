@@ -666,7 +666,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             shrinks shouldBe empty
           else {
             inspectAll(shrinks) { s =>
-              if (i >= 0)
+              if (i >= 0.0f)
                 s should be < i
               else
                 s should be > i  
@@ -722,36 +722,21 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0)
       }
-      it("should shrink Doubles by dropping the fraction part then repeatedly 'square-rooting' and negating") {
+      it("should shrink Doubles with an algo towards 0") {
         import GeneratorDrivenPropertyChecks._
-  // try with -173126.1489439121
         forAll { (shrinkRoseTree: RoseTree[Double]) =>
-          val d = shrinkRoseTree.value
+          val i = shrinkRoseTree.value
           val shrinks: List[Double] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (d == 0.0) {
+          if (i == 0.0)
             shrinks shouldBe empty
-          }
           else {
-            val n =
-              if (d == Double.PositiveInfinity || d == Double.NaN)
-                Double.MaxValue
-              else if (d == Double.NegativeInfinity)
-                Double.MinValue
-              else d
-            if (n > 1.0)
-              shrinks.head should be > 0.0
-            else if (n < -1.0)
-              shrinks.head should be < 0.0
-            if (!n.isWhole) {
-              shrinks.head shouldEqual (if (n > 0.0) n.floor else n.ceil)
-            }
-            val revShrinks = shrinks.reverse
-            val pairs: List[(Double, Double)] = revShrinks.zip(revShrinks.tail)
-            import org.scalatest.Inspectors._
-            forAll (pairs) { case (x, y) =>
-              assert(x == 0.0 || x == -y || x.abs < y.abs)
-            }
+            inspectAll(shrinks) { s =>
+              if (i >= 0.0)
+                s should be < i
+              else
+                s should be > i  
+            }  
           }
         }
       }

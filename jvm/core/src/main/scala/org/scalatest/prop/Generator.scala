@@ -783,7 +783,7 @@ object Generator {
               else 
                 value
             // Nearest whole numbers closer to zero
-            val nearest = if (n >= 0.0f) n.floor else n.ceil
+            val nearest: Float = if (n >= 0.0f) n.floor else n.ceil
             val half: Float = value / 2.0f
             (List(nearest, half).distinct.map(i => NextRoseTree(i)), rndPassedToShrinks)
           }
@@ -823,48 +823,25 @@ object Generator {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Double]], Randomizer) = {
           if (value == 0.0) 
             (List.empty, rndPassedToShrinks)
-          else if (value <= 1.0 && value >= -1.0) 
-            (List(Rose(0.0)), rndPassedToShrinks)
+          else if (value < 1.0 && value > -1.0) 
+            (List(Rose(0.0f)), rndPassedToShrinks)
           else if (!value.isWhole) {
-            // We need to handle infinity and NaN specially because without it, this method
-            // will go into an infinite loop. The reason is floor and ciel give back the same value
-            // on these values:
-            //
-            // scala> val n = Double.PositiveInfinity
-            // n: Double = Infinity
-            //
-            // scala> n.floor
-            // res0: Double = Infinity
-            //
-            // scala> n.ceil
-            // res1: Double = Infinity
-            //
-            // scala> Double.NaN.floor
-            // res3: Double = NaN
-            //
-            // scala> Double.NaN.ceil
-            // res4: Double = NaN
             val n =
               if (value == Double.PositiveInfinity || value.isNaN)
                 Double.MaxValue
               else if (value == Double.NegativeInfinity)
-                Double.MinValue
-              else value
+                Double.MinValue  
+              else 
+                value
             // Nearest whole numbers closer to zero
-            // Nearest whole numbers closer to zero
-            val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-            (List(NextRoseTree(nearest), NextRoseTree(nearestNeg)).distinct, rndPassedToShrinks)
+            val nearest: Double = if (n >= 0.0) n.floor else n.ceil
+            val half: Double = value / 2.0
+            (List(nearest, half).distinct.map(i => NextRoseTree(i)), rndPassedToShrinks)
           }
           else {
-            val sqrt: Double = math.sqrt(value.abs)
-            if (sqrt < 1.0) (List(Rose(0.0)), rndPassedToShrinks)
-            else {
-              val whole: Double = sqrt.floor
-              // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
-              val negWhole: Double = -whole  //math.rint(-whole)
-              val (first, second) = if (value < 0.0) (negWhole, whole) else (whole, negWhole)
-              (List(NextRoseTree(first), NextRoseTree(second)), rndPassedToShrinks)
-            }
+            val half: Double = value / 2.0
+            val sqrt: Double = if (value >= 0.0) math.sqrt(value) else -(math.sqrt(value.abs))
+            (List(half, sqrt).distinct.map(i => NextRoseTree(i)), rndPassedToShrinks)
           }
         }
       }
