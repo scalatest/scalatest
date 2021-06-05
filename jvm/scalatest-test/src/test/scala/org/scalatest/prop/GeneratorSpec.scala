@@ -344,7 +344,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           if (i == 0)
             shrinks shouldBe empty
           else {
-            shrinks should have length 2
+            shrinks should (have length 2 or have length 1)
             shrinks(0) shouldBe (i / 2)
             if (i > 1)
               shrinks(1) shouldBe (i - 1)
@@ -2413,12 +2413,30 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (FiniteFloat.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = finiteFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shouldGrowWithForShrink(_.value)
+      }
+
+      it("should shrink FiniteFloats with an algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[FiniteFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[FiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0f)
+            shrinks shouldBe empty
+          else {
+            inspectAll(shrinks) { s =>
+              if (i.value >= 0)
+                s.value should be < i.value
+              else
+                s.value should be > i.value  
+            }  
+          }
+        }
       }
     }
     describe("for FiniteDouble") {

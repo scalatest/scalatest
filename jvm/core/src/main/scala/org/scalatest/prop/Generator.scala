@@ -1158,7 +1158,7 @@ object Generator {
 
       case class NextRoseTree(value: FiniteFloat) extends RoseTree[FiniteFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[FiniteFloat]], Randomizer) = {
-          @tailrec
+          /*@tailrec
           def shrinkLoop(f: FiniteFloat, acc: List[RoseTree[FiniteFloat]]): List[RoseTree[FiniteFloat]] = {
             val fv = f.value
             if (fv == 0.0f) acc
@@ -1179,7 +1179,28 @@ object Generator {
               }
             }
           }
-          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)*/
+
+          val fv = value.value
+          if (fv == 0.0f) 
+            (List.empty, rndPassedToShrinks)
+          else if (fv < 1.0f && fv > -1.0f) 
+            (List(Rose(FiniteFloat(0.0f))), rndPassedToShrinks)
+          else if (!fv.isWhole) {
+            val n =
+              if (fv.isNaN)
+                Float.MaxValue
+              else fv
+            // Nearest whole numbers closer to zero
+            val nearest = if (n >= 0.0f) n.floor else n.ceil
+            val half: Float = fv / 2.0f
+            (List(nearest, half).distinct.map(i => NextRoseTree(FiniteFloat.ensuringValid(i))), rndPassedToShrinks)
+          }
+          else {
+            val half: Float = fv / 2.0f
+            val sqrt: Float = if (fv >= 0.0f) math.sqrt(fv.toDouble).toFloat else -(math.sqrt(fv.abs.toDouble).toFloat)
+            (List(half, sqrt).distinct.map(i => NextRoseTree(FiniteFloat.ensuringValid(i))), rndPassedToShrinks)
+          }
         }
       }
 
