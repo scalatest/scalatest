@@ -927,7 +927,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           val i = shrinkRoseTree.value
           val shrinks: List[PosInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (i.value == 0)
+          if (i.value == 1)
             shrinks shouldBe empty
           else {
             shrinks should (have length 2 or have length 1)
@@ -1036,12 +1036,30 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (PosLong.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = posLongGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shouldGrowWithForShrink(_.value)
+      }
+
+      it("should shrink PosLongs by dividing current value by 2 and minus 1") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosLong]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 1L)
+            shrinks shouldBe empty
+          else {
+            shrinks should (have length 2 or have length 1)
+            shrinks(0).value shouldBe (i.value / 2)
+            if (i.value > 1)
+              shrinks(1).value shouldBe (i.value - 1)
+            else
+              shrinks(1).value shouldBe (i.value + 1)
+          }
+        }
       }
     }
     describe("for PosZLongs") {
