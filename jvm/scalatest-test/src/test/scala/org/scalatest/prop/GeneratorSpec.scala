@@ -656,7 +656,26 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f)
       }
-      it("should shrink Floats by dropping the fraction part then repeatedly 'square-rooting' and negating") {
+      it("should shrink Floats with an algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[Float]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[Float] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i == 0.0f)
+            shrinks shouldBe empty
+          else {
+            inspectAll(shrinks) { s =>
+              if (i >= 0)
+                s should be < i
+              else
+                s should be > i  
+            }  
+          }
+        }
+      }
+      
+      /*it("should shrink Floats by dropping the fraction part then repeatedly 'square-rooting' and negating") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Float]) =>
           val f = shrinkRoseTree.value
@@ -686,7 +705,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             }
           }
         }
-      }
+      }*/
     }
     describe("for Doubles") {
       it("should produce the same Double values in the same order given the same Randomizer") {
