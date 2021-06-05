@@ -1016,10 +1016,10 @@ object Generator {
       case class NextRoseTree(value: PosFloat) extends RoseTree[PosFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosFloat]], Randomizer) = {
           val fv = value.value
-          if (fv == 1.0f) 
+          if (fv == 1.0f || fv == Float.MinPositiveValue) 
             (List.empty, rndPassedToShrinks)
           else if (fv < 1.0f) 
-            (List(Rose(PosFloat(1.0f))), rndPassedToShrinks)
+            (List(Rose(PosFloat(1.0f)), Rose(PosFloat.ensuringValid(Float.MinPositiveValue))), rndPassedToShrinks)
           else if (!fv.isWhole) {
             val n =
               if (fv == Float.PositiveInfinity || fv.isNaN)
