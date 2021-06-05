@@ -2491,7 +2491,25 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = finiteDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shouldGrowWithForShrink(_.value)
+      }
+
+      it("should shrink FiniteDoubles with an algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[FiniteDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[FiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0)
+            shrinks shouldBe empty
+          else {
+            inspectAll(shrinks) { s =>
+              if (i.value >= 0.0)
+                s.value should be < i.value
+              else
+                s.value should be > i.value  
+            }  
+          }
+        }
       }
     }
     describe("for NumericChar") {
