@@ -920,8 +920,8 @@ object Generator {
             (List.empty, rndPassedToShrinks)
           else {
             val half: Int = value / 2
-            val minusOne: Int = if (value > 0) value - 1 else value + 1
-            (List(half, minusOne).filter(_ > 0).map(i => NextRoseTree(PosInt.ensuringValid(i))), rndPassedToShrinks)
+            val minusOne: Int = value - 1
+            (List(half, minusOne).filter(_ > 0).distinct.map(i => NextRoseTree(PosInt.ensuringValid(i))), rndPassedToShrinks)
           }
         }
       }
