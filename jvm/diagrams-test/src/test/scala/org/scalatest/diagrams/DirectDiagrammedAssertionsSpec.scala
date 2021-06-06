@@ -94,6 +94,8 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
   def woof(f: => Unit) = "woof"
   def meow(x: Int = 0, y: Int = 3) = "meow"
 
+  def varargs(x: Int, y: String*): (Int, Seq[String]) = (x, y.toSeq)
+
   describe("DiagrammedAssertions") {
 
     val a = 3
@@ -596,7 +598,6 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
         e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
       }
 
-      def varargs(x: Int, y: String*): (Int, Seq[String]) = (x, y.toSeq)
       it("should do nothing when is used to check varargs(1, y, z) == 1 -> Seq(y, z)") {
         org.scalatest.diagrams.Diagrams.assert(varargs(1, "y", "z") == 1 -> Seq("y", "z"))
       }
