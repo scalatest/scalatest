@@ -95,7 +95,11 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
   def meow(x: Int = 0, y: Int = 3) = "meow"
 
   def varargs(x: Int, y: String*): (Int, Seq[String]) = (x, y.toSeq)
-
+  class CustomList(value: List[Int]) {
+    def contains(x: Int*): Boolean = x.forall(value.contains(_))
+  }
+  val cList1 = new CustomList(List(1, 2, 3))
+ 
   describe("DiagrammedAssertions") {
 
     val a = 3
@@ -600,6 +604,10 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
 
       it("should do nothing when is used to check varargs(1, y, z) == 1 -> Seq(y, z)") {
         org.scalatest.diagrams.Diagrams.assert(varargs(1, "y", "z") == 1 -> Seq("y", "z"))
+      }
+
+      it("should do nothing when is used to check cList1.contains(1, 2)") {
+        org.scalatest.diagrams.Diagrams.assert(cList1.contains(1, 2))
       }
 
       it("should do nothing when is used to check a === 3") {
