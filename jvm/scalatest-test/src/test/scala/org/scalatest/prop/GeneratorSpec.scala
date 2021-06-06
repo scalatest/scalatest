@@ -1199,7 +1199,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         gen.canonicals(rnd).shouldGrowWith(_.value)
       }
 
-      it("should shrink PosFiniteFloat by algo towards 1.0 and positive min value") {
+      it("should shrink PosFiniteFloat by algo towards positive min value") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosFiniteFloat]) =>
           val i = shrinkRoseTree.value
@@ -1444,13 +1444,29 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (PosFiniteDouble.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         // TODO: Got: [info]     java.lang.AssertionError: Infinity was not a valid FiniteDouble
         import Generator._
         val gen = posFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shouldGrowWithForShrink(_.value)
+      }
+
+      it("should shrink PosFiniteDouble by algo towards positive min value") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosFiniteDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == Float.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosZDouble") {
