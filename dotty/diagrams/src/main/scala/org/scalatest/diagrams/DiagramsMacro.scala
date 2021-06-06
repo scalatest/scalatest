@@ -60,7 +60,7 @@ object DiagramsMacro {
         def handleArgs(argTps: List[TypeRepr], args: List[Term]): (List[Term], List[Term]) =
           args.zip(argTps).foldLeft(Nil -> Nil : (List[Term], List[Term])) { case ((diagrams, others), pair) =>
             pair match {
-              case (Typed(Repeated(args, _), _), AppliedType(_, _)) =>            
+              case (Typed(Repeated(args, _), _), AppliedType(_, _)) =>
                 (diagrams :++ args.map(parse), others)
               case (arg, ByNameType(_)) =>
                 (diagrams, others :+ arg)
