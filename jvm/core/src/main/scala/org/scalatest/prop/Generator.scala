@@ -1517,9 +1517,9 @@ object Generator {
           if (dv == Double.MinPositiveValue || dv == -Double.MinPositiveValue) 
             (List.empty, rndPassedToShrinks)
           else if (dv < 1.0 && dv > 0.0) 
-            (List(Rose(Double.MinPositiveValue)), rndPassedToShrinks)
+            (List(Rose(NonZeroDouble.ensuringValid(Double.MinPositiveValue))), rndPassedToShrinks)
           else if (dv < 0.0 && dv > -1.0)
-            (List(Rose(-Double.MinPositiveValue)), rndPassedToShrinks)  
+            (List(Rose(NonZeroDouble.ensuringValid(-Double.MinPositiveValue))), rndPassedToShrinks)  
           else if (!dv.isWhole) {
             val n =
               if (dv == Double.PositiveInfinity || dv.isNaN)
@@ -1571,9 +1571,9 @@ object Generator {
           if (dv == Double.MinPositiveValue || dv == -Double.MinPositiveValue) 
             (List.empty, rndPassedToShrinks)
           else if (dv < 1.0 && dv > 0.0) 
-            (List(Rose(Double.MinPositiveValue)), rndPassedToShrinks)
+            (List(Rose(NonZeroFiniteDouble.ensuringValid(Double.MinPositiveValue))), rndPassedToShrinks)
           else if (dv < 0.0 && dv > -1.0)
-            (List(Rose(-Double.MinPositiveValue)), rndPassedToShrinks)  
+            (List(Rose(NonZeroFiniteDouble.ensuringValid(-Double.MinPositiveValue))), rndPassedToShrinks)  
           else if (!dv.isWhole) {
             val n = dv
             // Nearest whole numbers closer to zero
