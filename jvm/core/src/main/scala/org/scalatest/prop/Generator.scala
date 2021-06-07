@@ -1718,13 +1718,13 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroInt) extends RoseTree[NonZeroInt] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NonZeroInt]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: NonZeroInt, acc: List[RoseTree[NonZeroInt]]): List[RoseTree[NonZeroInt]] = {
-            val half: Int = i / 2 // i cannot be zero, because initially it is the underlying Int value of a NonZeroInt (in types
-            if (half == 0) acc    // we trust), then if half results in zero, we return acc here. I.e., we don't loop.
-            else shrinkLoop(NonZeroInt.ensuringValid(half), NextRoseTree(NonZeroInt.ensuringValid(-half)) :: NextRoseTree(NonZeroInt.ensuringValid(half)) :: acc)
+          if (value.value == 1 || value.value == -1)
+            (List.empty, rndPassedToShrinks)
+          else {
+            val half: Int = value.value / 2
+            val minusOne: Int = if (value.value > 0) value.value - 1 else value.value + 1
+            (List(half, minusOne).filter(_ != 0).distinct.map(i => NextRoseTree(NonZeroInt.ensuringValid(i))), rndPassedToShrinks)
           }
-          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       } // TODO Confirm OK without Roses.
 
