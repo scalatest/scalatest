@@ -2374,12 +2374,31 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (NonZeroFiniteFloat.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = nonZeroFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shouldGrowWithForShrink(_.value)
+      }
+
+      it("should shrink NonZeroFiniteFloats with an algo towards min positive or negative value") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NonZeroFiniteFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NonZeroFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == Float.MinPositiveValue || i.value == -Float.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i.value >= 0.0f)
+                s.value should be < i.value
+              else
+                s.value should be > i.value
+            }  
+          }
+        }
       }
     }
     describe("for NonZeroDouble") {
