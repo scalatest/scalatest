@@ -2422,12 +2422,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           val i = shrinkRoseTree.value
           val shrinks: List[NonZeroDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (i == 0.0)
+          if (i.value == Double.MinPositiveValue || i.value == -Double.MinPositiveValue)
             shrinks shouldBe empty
           else {
             shrinks should not be empty
             inspectAll(shrinks) { s =>
-              if (i >= 0.0)
+              if (i.value >= 0.0)
                 s.value should be < i.value
               else
                 s.value should be > i.value
