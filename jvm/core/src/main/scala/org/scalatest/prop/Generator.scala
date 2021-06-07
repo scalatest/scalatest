@@ -1615,34 +1615,31 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroFloat) extends RoseTree[NonZeroFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NonZeroFloat]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(raw: NonZeroFloat, acc: List[RoseTree[NonZeroFloat]]): List[RoseTree[NonZeroFloat]] = {
-            val d = raw.value
-            if (d <= 1.0f && d >= -1.0f) acc
-            else if (!d.isWhole) {
-              val n =
-                if (d == Float.PositiveInfinity || d.isNaN)
-                  Float.MaxValue
-                else if (d == Float.NegativeInfinity)
-                  Float.MinValue
-                else d
-              // Nearest whole numbers closer to zero
-              val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-              shrinkLoop(NonZeroFloat.ensuringValid(nearest), NextRoseTree(NonZeroFloat.ensuringValid(nearestNeg)) :: NextRoseTree(NonZeroFloat.ensuringValid(nearest)) :: acc)
-            }
-            else {
-              val sqrt: Float = math.sqrt(d.abs.toDouble).toFloat
-              if (sqrt < 1.0f) acc
-              else {
-                val whole: NonZeroFloat = NonZeroFloat.ensuringValid(sqrt.floor)
-                // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
-                val negWhole: NonZeroFloat = -whole  //math.rint(-whole)
-                val (first, second) = if (d > 0.0f) (negWhole, whole) else (whole, negWhole)
-                shrinkLoop(first, NextRoseTree(first) :: NextRoseTree(second) :: acc)
-              }
-            }
+          val fv = value.value
+          if (fv == Float.MinPositiveValue || fv == -Float.MinPositiveValue) 
+            (List.empty, rndPassedToShrinks)
+          else if (fv < 1.0f && fv > 0.0f) 
+            (List(Rose(NonZeroFloat.ensuringValid(Float.MinPositiveValue))), rndPassedToShrinks)
+          else if (fv < 0.0f && fv > -1.0f)
+            (List(Rose(NonZeroFloat.ensuringValid(-Float.MinPositiveValue))), rndPassedToShrinks)  
+          else if (!fv.isWhole) {
+            val n =
+              if (fv == Float.PositiveInfinity || fv.isNaN)
+                Float.MaxValue
+              else if (fv == Float.NegativeInfinity)
+                Float.MinValue  
+              else 
+                fv
+            // Nearest whole numbers closer to zero
+            val nearest: Float = if (n > 0.0f) n.floor else n.ceil
+            val half: Float = fv / 2.0f
+            (List(nearest, half).filter(_ != 0.0f).distinct.map(i => NextRoseTree(NonZeroFloat.ensuringValid(i))), rndPassedToShrinks)
           }
-          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+          else {
+            val half: Float = fv / 2.0f
+            val sqrt: Float = if (fv > 0.0f) math.sqrt(fv.toDouble).toFloat else -(math.sqrt(fv.abs.toDouble).toFloat)
+            (List(half, sqrt).filter(_ != 0.0f).distinct.map(i => NextRoseTree(NonZeroFloat.ensuringValid(i))), rndPassedToShrinks)
+          }
         }
       } // TODO confirm no roses needed
 
