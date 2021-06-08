@@ -1967,12 +1967,28 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (NegZFloat.NegativeInfinity)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = negZFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shouldGrowWithForShrink(_.value)
+      }
+
+      it("should shrink NegZFloat by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegZFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegZFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0f)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegZFiniteFloat") {
