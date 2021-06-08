@@ -1633,12 +1633,28 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (NegInt.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = negIntGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shouldGrowWithForShrink(_.value)
+      }
+
+      it("should shrink NegInts by algo towards -1") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegInt]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == -1)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegZInts") {

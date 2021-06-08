@@ -1990,16 +1990,13 @@ object Generator {
 
       case class NextRoseTree(value: NegInt) extends RoseTree[NegInt] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegInt]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: NegInt, acc: List[RoseTree[NegInt]]): List[RoseTree[NegInt]] = {
-            val half: Int = i / 2
-            if (half == 0) acc
-            else {
-              val negIntHalf = NegInt.ensuringValid(half)
-              shrinkLoop(negIntHalf, NextRoseTree(negIntHalf) :: acc)
-            }
+          if (value.value == -1)
+            (List.empty, rndPassedToShrinks)
+          else {
+            val half: Int = value / 2
+            val minusOne: Int = value + 1
+            (List(half, minusOne).filter(_ < 0).distinct.map(i => NextRoseTree(NegInt.ensuringValid(i))), rndPassedToShrinks)
           }
-          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       } // TODO Confirm OK with no Roses.
 
