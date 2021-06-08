@@ -1205,7 +1205,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           val i = shrinkRoseTree.value
           val shrinks: List[PosFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (i.value == 1.0f || i.value == Float.MinPositiveValue)
+          if (i.value == Float.MinPositiveValue)
             shrinks shouldBe empty
           else {
             shrinks should not be empty
@@ -1874,7 +1874,23 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shouldGrowWithForShrink(_.value)
+      }
+
+      it("should shrink NegFiniteFloat by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegFiniteFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == -Float.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegZFloat") {
