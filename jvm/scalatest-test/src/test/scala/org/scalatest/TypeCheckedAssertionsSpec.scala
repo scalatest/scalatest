@@ -128,6 +128,8 @@ class TypeCheckedAssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
+    // Scala 3 will raise error when trying to use == or != with null
+    // SKIP-DOTTY-START
     it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
       val e = intercept[TestFailedException] {
         assert(a == null)
@@ -145,6 +147,7 @@ class TypeCheckedAssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
       val e = intercept[TestFailedException] {

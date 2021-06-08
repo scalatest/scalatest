@@ -88,21 +88,39 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  private final def registerTestImpl(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
     engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyWordSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
+  
+  // SKIP-DOTTY-START
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    registerTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  private final def registerIgnoredTestImpl(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
     engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyWordSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
+
+  // SKIP-DOTTY-START
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
@@ -270,9 +288,14 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(specText, tags, "in", () => testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(specText, tags, "in", () => testFun, pos)}) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports registration of tagged, pending tests.
@@ -290,9 +313,14 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerTestToRun(specText, tags, "is", () => { testFun; succeed }, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(specText, tags, "is", () => { testFun; succeed }, pos)}) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports registration of tagged, ignored tests.
@@ -310,9 +338,14 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)}) } 
+    //DOTTY-ONLY }
   }       
 
   /**
@@ -348,9 +381,14 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def in(f: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToRun(string, List(), "in", () => f, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(f: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "in", () => f, pos)}) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports ignored test registration.
@@ -368,9 +406,14 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def ignore(f: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(f: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(string, List(), "ignore", () => f, pos)}) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports pending test registration.
@@ -388,9 +431,14 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def is(f: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerTestToRun(string, List(), "is", () => { f; succeed }, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def is(f: => PendingStatement): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "is", () => { f; succeed }, pos)}) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports tagged test registration.
@@ -429,13 +477,18 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
-    def when(f: => Unit)(implicit pos: source.Position): Unit = {
+    // SKIP-DOTTY-START
+    def when(f: => Unit)(implicit pos: source.Position): Unit = {  
       // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 4
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       registerBranch(string, Some("when"), "when", "when", stackDepth, -2, pos, () => f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def when(f: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string, Some("when"), "when", "when", 4, -2, pos, () => f)}) } 
+    //DOTTY-ONLY }
 
     /**
      * Registers a <code>when</code> clause that is followed by an <em>after word</em>.
@@ -455,9 +508,14 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def when(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position): Unit = {
       registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, pos, resultOfAfterWordApplication.f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def when(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, pos, resultOfAfterWordApplication.f)}) } 
+    //DOTTY-ONLY }
 
     /**
      * Registers a <code>that</code> clause.
@@ -475,6 +533,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START 
     def that(f: => Unit)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 4
@@ -482,6 +541,10 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, pos, () => f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def that(f: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " that", None, "that", "that", 4, -2, pos, () => f)}) } 
+    //DOTTY-ONLY }
 
     /**
      * Registers a <code>which</code> clause.
@@ -499,6 +562,7 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START 
     def which(f: => Unit)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 4
@@ -506,6 +570,10 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
       registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, pos, () => f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def which(f: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " which", None, "which", "which", 4, -2, pos, () => f)}) } 
+    //DOTTY-ONLY }
 
     /**
      * Registers a <code>that</code> clause that is followed by an <em>after word</em>.
@@ -525,9 +593,14 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def that(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position): Unit = {
       registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, pos, resultOfAfterWordApplication.f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def that(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, pos, resultOfAfterWordApplication.f)}) } 
+    //DOTTY-ONLY }
     
     /**
      * Registers a <code>which</code> clause that is followed by an <em>after word</em>.
@@ -547,9 +620,14 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START 
     def which(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position): Unit = {
       registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, pos, resultOfAfterWordApplication.f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def which(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, pos, resultOfAfterWordApplication.f)}) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -691,6 +769,10 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
    * </p>
    */
   protected final class ItWord {
+
+    private final def shouldImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
+    }
     
     /**
      * Supports the registration of scope with <code>should</code> in a <code>AnyWordSpecLike</code>.
@@ -711,10 +793,19 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def should(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
+      shouldImpl(right, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def should(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => shouldImpl(right, pos) }) } 
+    //DOTTY-ONLY }
     
+    private final def mustImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
+    }
+
     /**
      * Supports the registration of scope with <code>must</code> in a <code>AnyWordSpecLike</code>.
      *
@@ -734,8 +825,17 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START 
     def must(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
+      mustImpl(right, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def must(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => mustImpl(right, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def canImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
     }
     
     /**
@@ -757,10 +857,19 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def can(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
+      canImpl(right, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def can(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => canImpl(right, pos) }) } 
+    //DOTTY-ONLY }
     
+    private final def whenImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
+    }
+
     /**
      * Supports the registration of scope with <code>when</code> in a <code>AnyWordSpecLike</code>.
      *
@@ -780,9 +889,14 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def when(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
+      whenImpl(right, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def when(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => whenImpl(right, pos) }) } 
+    //DOTTY-ONLY }
   }
   
   /**
@@ -826,6 +940,10 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
    * </p>
    */
   protected final class TheyWord {
+
+    private final def shouldImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
+    }
     
     /**
      * Supports the registration of scope with <code>should</code> in a <code>AnyWordSpecLike</code>.
@@ -846,10 +964,19 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def should(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, () => right)
+      shouldImpl(right, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def should(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => shouldImpl(right, pos) }) } 
+    //DOTTY-ONLY }
     
+    private final def mustImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
+    }
+
     /**
      * Supports the registration of scope with <code>must</code> in a <code>AnyWordSpecLike</code>.
      *
@@ -869,10 +996,19 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def must(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)
+      mustImpl(right, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def must(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)}) } 
+    //DOTTY-ONLY }
     
+    private final def canImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
+    }
+
     /**
      * Supports the registration of scope with <code>can</code> in a <code>AnyWordSpecLike</code>.
      *
@@ -892,10 +1028,19 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def can(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)
+      canImpl(right, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def can(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)}) } 
+    //DOTTY-ONLY }
     
+    private final def whenImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
+    }
+
     /**
      * Supports the registration of scope with <code>when</code> in a <code>AnyWordSpecLike</code>.
      *
@@ -915,9 +1060,14 @@ trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for <code>AnyWordSpec</code>.
      * </p>
      */
+    // SKIP-DOTTY-START
     def when(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, () => right)
+      whenImpl(right, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def when(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => whenImpl(right, pos) }) } 
+    //DOTTY-ONLY }
   }
   
   /**

@@ -437,6 +437,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
     it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(a == null)
@@ -454,6 +455,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
       val e = intercept[TestFailedException] {
@@ -869,11 +871,13 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(a == 3 && { println("hi"); b == 3})
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
-      else
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      else // for dotty
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
-      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
@@ -885,11 +889,13 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert({ println("hi"); b == 5} && a == 5)
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       else
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
-      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -1400,7 +1406,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(s1.isInstanceOf[List[Int]])
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasNotInstanceOf(s1, "scala.List")))
+      assert(e.message == Some(wasNotInstanceOf(s1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List")))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -1439,7 +1445,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(!l1.isInstanceOf[List[Int]])
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasInstanceOf(l1, "scala.List")))
+      assert(e.message == Some(wasInstanceOf(l1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List")))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -1643,7 +1649,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(l1.exists(_ > 3))
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasFalse("l1.exists(((x$10: Int) => x$10.>(3)))")))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$9: scala.Int) => _$9.>(3)))" else "l1.exists(((x$10: Int) => x$10.>(3)))")))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -1652,7 +1658,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(l1.exists(3 < _))
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasFalse("l1.exists(((x$11: Int) => 3.<(x$11)))")))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$10: scala.Int) => 3.<(_$10)))" else "l1.exists(((x$11: Int) => 3.<(x$11)))")))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -1661,7 +1667,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(l3.exists(_.isEmpty))
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasFalse("l3.exists(((x$12: String) => x$12.isEmpty()))")))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l3.exists(((_$11: java.lang.String) => _$11.isEmpty()))" else "l3.exists(((x$12: String) => x$12.isEmpty()))")))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -1880,6 +1886,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
     it("should throw TestFailedException with correct message and stack depth when is used to check a == null") {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(a == null, ". dude")
@@ -1897,6 +1904,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
       val e = intercept[TestFailedException] {
@@ -2312,11 +2320,13 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(a == 3 && { println("hi"); b == 3}, ", dude")
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
-      else
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      else // dotty
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
-      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -2328,11 +2338,13 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert({ println("hi"); b == 5} && a == 5, ", dude")
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
-      else
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      else // dotty
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
-      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -2843,7 +2855,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(s1.isInstanceOf[List[Int]], ", dude")
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasNotInstanceOf(s1, "scala.List") + ", dude"))
+      assert(e.message == Some(wasNotInstanceOf(s1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List") + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -2882,7 +2894,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(!l1.isInstanceOf[List[Int]], ", dude")
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasInstanceOf(l1, "scala.List") + ", dude"))
+      assert(e.message == Some(wasInstanceOf(l1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List") + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3086,7 +3098,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(l1.exists(_ > 3), ", dude")
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasFalse("l1.exists(((x$21: Int) => x$21.>(3)))") + ", dude"))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$20: scala.Int) => _$20.>(3)))" else "l1.exists(((x$21: Int) => x$21.>(3)))") + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3095,7 +3107,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(l1.exists(3 < _), ", dude")
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasFalse("l1.exists(((x$22: Int) => 3.<(x$22)))") + ", dude"))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$21: scala.Int) => 3.<(_$21)))" else "l1.exists(((x$22: Int) => 3.<(x$22)))") + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3104,7 +3116,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(l3.exists(_.isEmpty), ", dude")
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasFalse("l3.exists(((x$23: String) => x$23.isEmpty()))") + ", dude"))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l3.exists(((_$22: java.lang.String) => _$22.isEmpty()))" else "l3.exists(((x$23: String) => x$23.isEmpty()))") + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3316,6 +3328,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
     it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(a == null)
@@ -3333,6 +3346,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
       val e = intercept[TestCanceledException] {
@@ -3748,11 +3762,13 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assume(a == 3 && { println("hi"); b == 3})
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
-      else
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      else // dotty
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
-      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
@@ -3764,11 +3780,13 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assume({ println("hi"); b == 5} && a == 5)
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
-      else
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      else // dotty
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
-      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -4279,7 +4297,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(s1.isInstanceOf[List[Int]])
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasNotInstanceOf(s1, "scala.List")))
+      assert(e.message == Some(wasNotInstanceOf(s1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List")))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4318,7 +4336,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(!l1.isInstanceOf[List[Int]])
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasInstanceOf(l1, "scala.List")))
+      assert(e.message == Some(wasInstanceOf(l1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List")))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4522,7 +4540,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(l1.exists(_ > 3))
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasFalse("l1.exists(((x$32: Int) => x$32.>(3)))")))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$31: scala.Int) => _$31.>(3)))" else "l1.exists(((x$32: Int) => x$32.>(3)))")))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4531,7 +4549,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(l1.exists(3 < _))
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasFalse("l1.exists(((x$33: Int) => 3.<(x$33)))")))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$32: scala.Int) => 3.<(_$32)))" else "l1.exists(((x$33: Int) => 3.<(x$33)))")))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4540,7 +4558,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(l3.exists(_.isEmpty))
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasFalse("l3.exists(((x$34: String) => x$34.isEmpty()))")))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l3.exists(((_$33: java.lang.String) => _$33.isEmpty()))" else "l3.exists(((x$34: String) => x$34.isEmpty()))")))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4759,6 +4777,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
+    // SKIP-DOTTY-START
     it("should throw TestCanceledException with correct message and stack depth when is used to check a == null") {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(a == null, ", dude")
@@ -4776,6 +4795,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
+    // SKIP-DOTTY-END
 
     it("should throw TestFailedException with correct message and stack depth when is used to check 3 != a") {
       val e = intercept[TestCanceledException] {
@@ -5191,11 +5211,13 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assume(a == 3 && { println("hi"); b == 3}, ", dude")
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
-      else
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      else // dotty
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
-      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -5207,11 +5229,13 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assume({ println("hi"); b == 5} && a == 5, ", dude")
       }
       if (ScalaTestVersions.BuiltForScalaVersion == "2.12" || ScalaTestVersions.BuiltForScalaVersion == "2.13")
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
-      else
-        org.scalatest.Assertions.assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      else if (ScalaTestVersions.BuiltForScalaVersion == "2.10" || ScalaTestVersions.BuiltForScalaVersion == "2.11")
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      else // dotty
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\")" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
-      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
+      org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 9)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -5722,7 +5746,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(s1.isInstanceOf[List[Int]], ", dude")
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasNotInstanceOf(s1, "scala.List") + ", dude"))
+      assert(e.message == Some(wasNotInstanceOf(s1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List") + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -5761,7 +5785,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(!l1.isInstanceOf[List[Int]], ", dude")
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasInstanceOf(l1, "scala.List") + ", dude"))
+      assert(e.message == Some(wasInstanceOf(l1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List") + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -5965,7 +5989,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(l1.exists(_ > 3), ", dude")
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasFalse("l1.exists(((x$43: Int) => x$43.>(3)))") + ", dude"))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$42: scala.Int) => _$42.>(3)))" else "l1.exists(((x$43: Int) => x$43.>(3)))") + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -5974,7 +5998,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(l1.exists(3 < _), ", dude")
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasFalse("l1.exists(((x$44: Int) => 3.<(x$44)))") + ", dude"))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$43: scala.Int) => 3.<(_$43)))" else "l1.exists(((x$44: Int) => 3.<(x$44)))") + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -5983,7 +6007,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(l3.exists(_.isEmpty), ", dude")
       }
-      org.scalatest.Assertions.assert(e.message == Some(wasFalse("l3.exists(((x$45: String) => x$45.isEmpty()))") + ", dude"))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l3.exists(((_$44: java.lang.String) => _$44.isEmpty()))" else "l3.exists(((x$45: String) => x$45.isEmpty()))") + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName == (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -6156,7 +6180,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-
+      
       it("should throw TestFailedException with correct message and stack depth when parse failed ") {
         val e = intercept[TestFailedException] {
           org.scalatest.Assertions.assertTypeError(
@@ -6230,7 +6254,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-
+      
       it("should do nothing when parse failed ") {
         org.scalatest.Assertions.assertDoesNotCompile(
           """
@@ -6381,11 +6405,12 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assertResult("hi") { n1 }
       }
       val a1 = Array(1, 2, 3)
+      val aNull: Array[Int] = null
       intercept[TestFailedException] {
-        org.scalatest.Assertions.assertResult(n1) { a1 }
+        org.scalatest.Assertions.assertResult(aNull) { a1 }
       }
       intercept[TestFailedException] {
-        org.scalatest.Assertions.assertResult(a1) { n1 }
+        org.scalatest.Assertions.assertResult(a1) { aNull }
       }
       val a = "hi"
       val e1 = intercept[TestFailedException] {
@@ -6448,11 +6473,12 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assertResult("hi", "a clue") { n1 }
       }
       val a1 = Array(1, 2, 3)
+      val aNull: Array[Int] = null
       intercept[TestFailedException] {
-        org.scalatest.Assertions.assertResult(n1, "a clue") { a1 }
+        org.scalatest.Assertions.assertResult(aNull, "a clue") { a1 }
       }
       intercept[TestFailedException] {
-        org.scalatest.Assertions.assertResult(a1, "a clue") { n1 }
+        org.scalatest.Assertions.assertResult(a1, "a clue") { aNull }
       }
       val a = "hi"
       val e1 = intercept[TestFailedException] {

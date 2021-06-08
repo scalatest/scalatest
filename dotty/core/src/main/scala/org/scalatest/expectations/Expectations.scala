@@ -21,12 +21,12 @@ import Fact._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.reflect.ClassTag
-import scala.compiletime.testing.typeChecks
+import scala.compiletime.testing.{typeChecks, typeCheckErrors}
 
 private[scalatest] trait Expectations {
 
   // TODO: Need to make this and assertResult use custom equality I think.
-  def expectResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Fact = {
+  def expectResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier): Fact = {
     if (!DefaultEquality.areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val rawFactMessage = Resources.rawExpectedButGot
@@ -108,25 +108,25 @@ private[scalatest] trait Expectations {
     }
   }
 
-  inline def expect(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact =
-    ${ ExpectationsMacro.expect('{expression})('{prettifier}, '{pos}) }
+  inline def expect(expression: Boolean)(implicit prettifier: Prettifier): Fact =
+    ${ ExpectationsMacro.expect('{expression})('{prettifier}) }
 
-  inline def expectDoesNotCompile(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
-    ${ CompileMacro.expectDoesNotCompileImpl('code, '{typeChecks(code)}, 'prettifier, 'pos) }
+  transparent inline def expectDoesNotCompile(inline code: String)(implicit prettifier: Prettifier): Fact =
+    ${ CompileMacro.expectDoesNotCompileImpl('code, '{typeChecks(code)}, 'prettifier) }
 
-  inline def expectCompiles(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
-    ${ CompileMacro.expectCompilesImpl('code, '{typeChecks(code)}, 'prettifier, 'pos) }
+  transparent inline def expectCompiles(inline code: String)(implicit prettifier: Prettifier): Fact =
+    ${ CompileMacro.expectCompilesImpl('code, '{typeCheckErrors(code)}, 'prettifier) }
 
-  inline def expectTypeError(inline code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact =
-    ${ CompileMacro.expectTypeErrorImpl('code, '{typeChecks(code)}, 'prettifier, 'pos) }
+  transparent inline def expectTypeError(inline code: String)(implicit prettifier: Prettifier): Fact =
+    ${ CompileMacro.expectTypeErrorImpl('code, '{typeCheckErrors(code)}, 'prettifier) }
 
   import scala.language.implicitConversions
 
   /**
     * Implicit conversion that makes (x &gt; 0) implies expect(x &gt; -1) syntax works
     */
-  implicit inline def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact =
-    ${ ExpectationsMacro.expect('expression)('prettifier, 'pos) }
+  implicit inline def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier): Fact =
+    ${ ExpectationsMacro.expect('expression)('prettifier) }
 
   implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
 }
@@ -135,7 +135,7 @@ object Expectations extends Expectations {
 
   class ExpectationsHelper {
 
-    def macroExpect(bool: Bool, clue: Any, prettifier: Prettifier, pos: source.Position): Fact = {
+    def macroExpect(bool: Bool, clue: Any, prettifier: Prettifier): Fact = {
       //requireNonNull(clue)
       if (!bool.value)
         No(

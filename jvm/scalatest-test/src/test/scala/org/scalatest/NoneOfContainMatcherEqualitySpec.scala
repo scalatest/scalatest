@@ -105,7 +105,7 @@ class NoneOfContainMatcherEqualitySpec extends funspec.AnyFunSpec with Explicitl
       Set(1, 2, 3) should contain noneOf (1, 2, 3)
       Array(1, 2, 3) should contain noneOf (1, 2, 3)
         
-      implicit val mapEquality = new MapSetEquality(Set(1 -> "one", 2 -> " two", 3 -> "three"), Set(1 -> "one", 2 -> " two", 3 -> "three"), false)
+      implicit val mapEquality: MapSetEquality = new MapSetEquality(Set(1 -> "one", 2 -> " two", 3 -> "three"), Set(1 -> "one", 2 -> " two", 3 -> "three"), false)
       Map(1 -> "one", 2 -> " two", 3 -> "three") should contain noneOf (1 -> "one", 2 -> " two", 3 -> "three")
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -123,7 +123,7 @@ class NoneOfContainMatcherEqualitySpec extends funspec.AnyFunSpec with Explicitl
       Set(1, 2, 3) should not contain noneOf (7, 8, 9)
       Array(1, 2, 3) should not contain noneOf (7, 8, 9)
       
-      implicit val mapEquality = new MapSetEquality(Set(1 -> "one", 2 -> "two", 3 -> "three"), Set(7 -> "seven", 8 -> "eight", 9 -> "nine"), true)
+      implicit val mapEquality: MapSetEquality = new MapSetEquality(Set(1 -> "one", 2 -> "two", 3 -> "three"), Set(7 -> "seven", 8 -> "eight", 9 -> "nine"), true)
       Map(1 -> "one", 2 -> "two", 3 -> "three") should not contain noneOf (7 -> "seven", 8 -> "eight", 9 -> "nine")
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -156,7 +156,7 @@ class NoneOfContainMatcherEqualitySpec extends funspec.AnyFunSpec with Explicitl
       }
         checkShouldContainStackDepth(e3, left3, deep(Array(6, 7, 8)), thisLineNumber - 2)
         
-      implicit val mapEquality = new MapSetEquality(Set(1 -> "one", 2 -> "two", 3 -> "three"), Set(6 -> "six", 7 -> "seven", 8 -> "eight"), true)
+      implicit val mapEquality: MapSetEquality = new MapSetEquality(Set(1 -> "one", 2 -> "two", 3 -> "three"), Set(6 -> "six", 7 -> "seven", 8 -> "eight"), true)
         
       val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {
@@ -202,7 +202,7 @@ class NoneOfContainMatcherEqualitySpec extends funspec.AnyFunSpec with Explicitl
       }
       checkShouldNotContainStackDepth(e3, left3, deep(Array(1, 2, 3)), thisLineNumber - 2)
         
-      implicit val mapEquality = new MapSetEquality(Set(1 -> "one", 2 -> "two", 3 -> "three"), Set(1 -> "one", 2 -> "two", 3 -> "three"), false)
+      implicit val mapEquality: MapSetEquality = new MapSetEquality(Set(1 -> "one", 2 -> "two", 3 -> "three"), Set(1 -> "one", 2 -> "two", 3 -> "three"), false)
         
       val left4 = Map(1 -> "one", 2 -> "two", 3 -> "three")
       val e4 = intercept[exceptions.TestFailedException] {

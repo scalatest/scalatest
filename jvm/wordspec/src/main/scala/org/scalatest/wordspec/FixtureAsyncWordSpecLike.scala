@@ -97,13 +97,31 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  private final def registerAsyncTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  // SKIP-DOTTY-START
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    registerAsyncTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def registerIgnoredAsyncTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
+
+  // SKIP-DOTTY-START
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
@@ -268,8 +286,17 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(specText, tags, "in", testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToRun(specText, tags, "in", testFun, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def inImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToRun(specText, tags, "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -290,9 +317,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToRun(specText, tags, "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+      inImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports registration of tagged, pending tests.
@@ -312,9 +344,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports registration of tagged, ignored tests.
@@ -334,9 +371,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(specText, tags, "ignore", testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(specText, tags, "ignore", testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports registration of tagged, ignored tests that take no fixture parameter.
@@ -356,9 +398,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(specText, tags, "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(specText, tags, "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -398,8 +445,17 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(string, List(), "in", testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToRun(string, List(), "in", testFun, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def inImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToRun(string, List(), "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -420,9 +476,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToRun(string, List(), "in", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
+      inImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports pending test registration.
@@ -442,9 +503,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports ignored test registration.
@@ -464,8 +530,17 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(string, List(), "ignore", testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(string, List(), "ignore", testFun, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def ignoreImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToIgnore(string, List(), "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -486,10 +561,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToIgnore(string, List(), "ignore", new org.scalatest.fixture.NoArgTestWrapper(testFun), pos)
-
+      ignoreImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports tagged test registration.
@@ -534,9 +613,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param f the function which is the body of the scope
      */
+    // SKIP-DOTTY-START
     def when(f: => Unit)(implicit pos: source.Position): Unit = {
       registerBranch(string, Some("when"), "when", pos, () => f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def when(f: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string, Some("when"), "when", pos, () => f) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Registers a <code>when</code> clause that is followed by an <em>after word</em>.
@@ -558,9 +642,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
+    // SKIP-DOTTY-START
     def when(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position): Unit = {
       registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", pos, resultOfAfterWordApplication.f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def when(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", pos, resultOfAfterWordApplication.f) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Registers a <code>that</code> clause.
@@ -580,9 +669,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param f the function which is the body of the scope
      */
+    // SKIP-DOTTY-START
     def that(f: => Unit)(implicit pos: source.Position): Unit = {
       registerBranch(string.trim + " that", None, "that", pos, () => f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def that(f: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " that", None, "that", pos, () => f) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Registers a <code>which</code> clause.
@@ -602,9 +696,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param f the function which is the body of the scope
      */
+    // SKIP-DOTTY-START
     def which(f: => Unit)(implicit pos: source.Position): Unit = {
       registerBranch(string.trim + " which", None, "which", pos, () => f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def which(f: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " which", None, "which", pos, () => f) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Registers a <code>that</code> clause.
@@ -624,9 +723,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
+    // SKIP-DOTTY-START
     def that(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position): Unit = {
       registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", pos, resultOfAfterWordApplication.f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def that(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", pos, resultOfAfterWordApplication.f) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Registers a <code>which</code> clause.
@@ -646,9 +750,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
+    // SKIP-DOTTY-START
     def which(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position): Unit = {
       registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", pos, resultOfAfterWordApplication.f)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def which(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", pos, resultOfAfterWordApplication.f) }) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -796,6 +905,10 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
    */
   protected final class ItWord {
 
+    private final def shouldImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", pos, () => right)
+    }
+
     /**
      * Supports the registration of scope with <code>should</code> in a <code>FixtureAsyncWordSpecLike</code>.
      *
@@ -817,8 +930,17 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param right the body function
      */
+    // SKIP-DOTTY-START
     def should(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", pos, () => right)
+      shouldImpl(right, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def should(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => shouldImpl(right, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def mustImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", pos, () => right)
     }
 
     /**
@@ -842,8 +964,17 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param right the body function
      */
+    // SKIP-DOTTY-START
     def must(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", pos, () => right)
+      mustImpl(right, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def must(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => mustImpl(right, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def canImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", pos, () => right)
     }
 
     /**
@@ -867,8 +998,17 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param right the body function
      */
+    // SKIP-DOTTY-START
     def can(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", pos, () => right)
+      canImpl(right, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def can(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => canImpl(right, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def whenImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", pos, () => right)
     }
 
     /**
@@ -892,9 +1032,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param right the body function
      */
+    // SKIP-DOTTY-START
     def when(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", pos, () => right)
+      whenImpl(right, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def when(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => whenImpl(right, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -939,6 +1084,10 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
    */
   protected final class TheyWord {
 
+    private final def shouldImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", pos, () => right)
+    }
+
     /**
      * Supports the registration of scope with <code>should</code> in a <code>FixtureAsyncWordSpecLike</code>.
      *
@@ -960,8 +1109,17 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param right the body function
      */
+    // SKIP-DOTTY-START
     def should(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", pos, () => right)
+      shouldImpl(right, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def should(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => shouldImpl(right, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def mustImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", pos, () => right)
     }
 
     /**
@@ -985,8 +1143,17 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param right the body function
      */
+    // SKIP-DOTTY-START
     def must(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", pos, () => right)
+      mustImpl(right, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def must(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => mustImpl(right, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def canImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", pos, () => right)
     }
 
     /**
@@ -1010,8 +1177,17 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param right the body function
      */
+    // SKIP-DOTTY-START
     def can(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", pos, () => right)
+      canImpl(right, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def can(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => canImpl(right, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def whenImpl(right: => Unit, pos: source.Position): Unit = {
+      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", pos, () => right)
     }
 
     /**
@@ -1035,9 +1211,14 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param right the body function
      */
+    // SKIP-DOTTY-START
     def when(right: => Unit)(implicit pos: source.Position): Unit = {
-      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", pos, () => right)
+      whenImpl(right, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def when(right: => Unit): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => whenImpl(right, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**

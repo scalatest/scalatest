@@ -37,7 +37,7 @@ class ShorthandShouldNotBeThrownBySpec extends AnyFunSpec {
   def hadExpectedMessage(left: Throwable, expectedMessage: String): String = 
     FailureMessages.hadExpectedMessage(prettifier, left, expectedMessage)
 
-  class TestException(message: String) extends Exception(message)
+  class TestException(msg: String) extends Exception(msg)
   
   describe("the [Exception] 'should not have message' syntax should") {
     

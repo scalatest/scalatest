@@ -95,13 +95,31 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  private final def registerAsyncTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  // SKIP-DOTTY-START
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    registerAsyncTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def registerIgnoredAsyncTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
+
+  // SKIP-DOTTY-START
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
@@ -163,6 +181,10 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
    */
   protected final class BehaviorWord {
 
+    private final def ofImpl(description: String, pos: source.Position): Unit = {
+      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, pos)
+    }
+
     /**
      * Supports the registration of a &ldquo;subject&rdquo; being specified and tested via the
      * instance referenced from <code>FixtureAsyncFlatSpec</code>'s <code>behavior</code> field.
@@ -183,9 +205,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param description the description text
      */
+    // SKIP-DOTTY-START
     def of(description: String)(implicit pos: source.Position): Unit = {
-      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, pos)
+      ofImpl(description, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def of(description: String): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ofImpl(description, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -251,6 +278,10 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
    */
   protected final class ItVerbStringTaggedAs(verb: String, name: String, tags: List[Tag]) {
 
+    private final def inImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper[FixtureParam, Future[compatible.Assertion]](testFun), pos)
+    }
+
     /**
      * Supports the registration of tagged, no-arg tests in a <code>FixtureAnyFlatSpec</code>.
      *
@@ -270,9 +301,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper[FixtureParam, Future[compatible.Assertion]](testFun), pos)
+      inImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of tagged, one-arg tests (tests that take a <code>FixtureParam</code> object as a parameter) in a <code>FixtureAnyFlatSpec</code>.
@@ -293,9 +329,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of pending, tagged tests in a <code>FixtureAsyncFlatSpec</code>.
@@ -317,8 +358,17 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def ignoreImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -341,9 +391,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, new NoArgTestWrapper(testFun), pos)
+      ignoreImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of ignored, tagged, one-arg tests (tests that take a <code>FixtureParam</code> object
@@ -366,9 +421,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -420,6 +480,10 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
    */
   protected final class ItVerbString(verb: String, name: String) {
 
+    private final def inImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports the registration of no-arg tests in a <code>FixtureAsyncFlatSpec</code>.
      *
@@ -439,9 +503,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun), pos)
+      inImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of one-arg tests (tests that take a <code>FixtureParam</code> object as a parameter) in a <code>FixtureAsyncFlatSpec</code>.
@@ -462,9 +531,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of pending tests in a <code>FixtureAsyncFlatSpec</code>.
@@ -485,8 +559,17 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def ignoreImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -508,9 +591,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), new NoArgTestWrapper(testFun), pos)
+      ignoreImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of ignored one-arg tests (tests that take a <code>FixtureParam</code> object as a parameter) in a <code>FixtureAsyncFlatSpec</code>.
@@ -531,9 +619,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of tagged tests in a <code>FixtureAsyncFlatSpec</code>.
@@ -786,6 +879,10 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
    */
   protected final class TheyVerbStringTaggedAs(verb: String, name: String, tags: List[Tag]) {
 
+    private final def inImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports the registration of tagged, no-arg tests in a <code>FixtureAsyncFlatSpec</code>.
      *
@@ -805,9 +902,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper(testFun), pos)
+      inImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of tagged, one-arg tests (tests that take a <code>FixtureParam</code> object as a parameter) in a <code>FixtureAsyncFlatSpec</code>.
@@ -828,9 +930,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of pending, tagged tests in a <code>FixtureAsyncFlatSpec</code>.
@@ -852,8 +959,17 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def ignoreImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -876,9 +992,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, new NoArgTestWrapper(testFun), pos)
+      ignoreImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of ignored, tagged, one-arg tests (tests that take a <code>FixtureParam</code> object
@@ -901,9 +1022,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -955,6 +1081,10 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
    */
   protected final class TheyVerbString(verb: String, name: String) {
 
+    private final def inImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports the registration of no-arg tests in a <code>FixtureAsyncFlatSpec</code>.
      *
@@ -974,9 +1104,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun), pos)
+      inImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of one-arg tests (tests that take a <code>FixtureParam</code> object as a parameter) in a <code>FixtureAsyncFlatSpec</code>.
@@ -997,9 +1132,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of pending tests in a <code>FixtureAsyncFlatSpec</code>.
@@ -1020,8 +1160,17 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def ignoreImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -1043,9 +1192,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), new NoArgTestWrapper(testFun), pos)
+      ignoreImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of ignored one-arg tests (tests that take a <code>FixtureParam</code> object as a parameter) in a <code>FixtureAsyncFlatSpec</code>.
@@ -1066,9 +1220,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      (implicit pos: source.Position)*/
+    // SKIP-DOTTY-START
     def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of tagged tests in a <code>FixtureAsyncFlatSpec</code>.
@@ -1320,6 +1479,10 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
    */
   protected final class IgnoreVerbStringTaggedAs(verb: String, name: String, tags: List[Tag]) {
 
+    private final def inImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, new NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports the registration of ignored, tagged, no-arg tests in a <code>FixtureAsyncFlatSpec</code>.
      *
@@ -1340,9 +1503,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, new NoArgTestWrapper(testFun), pos)
+      inImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of ignored, tagged, one-arg tests (tests that take a <code>FixtureParam</code> object as a parameter)
@@ -1365,9 +1533,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of ignored, tagged, pending tests in a <code>FixtureAsyncFlatSpec</code>.
@@ -1397,9 +1570,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, unusedFixtureParam => testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -1449,6 +1627,10 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
    */
   protected final class IgnoreVerbString(verb: String, name: String) {
 
+    private final def inImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), new NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports the registration of ignored, no-arg tests in a <code>FixtureAsyncFlatSpec</code>.
      *
@@ -1468,9 +1650,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), new NoArgTestWrapper(testFun), pos)
+      inImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of ignored, one-arg tests (tests that take a <code>FixtureParam</code> object
@@ -1492,9 +1679,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of ignored, pending tests in a <code>FixtureAsyncFlatSpec</code>.
@@ -1523,9 +1715,14 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), unusedFixtureParam => testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), unusedFixtureParam => testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of ignored, tagged tests in a <code>FixtureAsyncFlatSpec</code>.
@@ -1701,6 +1898,10 @@ trait FixtureAsyncFlatSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
     import resultOfStringPassedToVerb.rest
 import resultOfStringPassedToVerb.verb
 
+    private final def inImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToRun(verb.trim + " " + rest.trim, List(), "in", new NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports the registration of no-arg tests in shorthand form.
      *
@@ -1720,8 +1921,17 @@ import resultOfStringPassedToVerb.verb
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToRun(verb.trim + " " + rest.trim, List(), "in", new NoArgTestWrapper(testFun), pos)
+      inImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def ignoreImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToIgnore(verb.trim + " " + rest.trim, List(), new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -1743,9 +1953,14 @@ import resultOfStringPassedToVerb.verb
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToIgnore(verb.trim + " " + rest.trim, List(), new NoArgTestWrapper(testFun), pos)
+      ignoreImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of one-arg tests (tests that take a <code>FixtureParam</code> parameter) in shorthand form.
@@ -1766,9 +1981,14 @@ import resultOfStringPassedToVerb.verb
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + rest.trim, List(), "in", testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToRun(verb.trim + " " + rest.trim, List(), "in", testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of ignored, one-arg tests (tests that take a <code>FixtureParam</code> parameter) in shorthand form.
@@ -1789,9 +2009,14 @@ import resultOfStringPassedToVerb.verb
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + rest.trim, List(), testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + rest.trim, List(), testFun, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   import scala.language.implicitConversions
@@ -1854,6 +2079,10 @@ import resultOfStringPassedToVerb.verb
     import resultOfTaggedAsInvocation.rest
     import resultOfTaggedAsInvocation.{tags => tagsList}
 
+    private final def inImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToRun(verb.trim + " " + rest.trim, tagsList, "in", new NoArgTestWrapper(testFun), pos)
+    }
+
     /**
      * Supports the registration of tagged, no-arg tests in shorthand form.
      *
@@ -1873,8 +2102,17 @@ import resultOfStringPassedToVerb.verb
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToRun(verb.trim + " " + rest.trim, tagsList, "in", new NoArgTestWrapper(testFun), pos)
+      inImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def ignoreImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
+      registerAsyncTestToIgnore(verb.trim + " " + rest.trim, tagsList, new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -1898,9 +2136,14 @@ import resultOfStringPassedToVerb.verb
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-      registerAsyncTestToIgnore(verb.trim + " " + rest.trim, tagsList, new NoArgTestWrapper(testFun), pos)
+      ignoreImpl(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of tagged, one-arg tests (tests that take a <code>FixtureParam</code> parameter) in shorthand form.
@@ -1921,9 +2164,14 @@ import resultOfStringPassedToVerb.verb
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + rest.trim, tagsList, "in", testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToRun(verb.trim + " " + rest.trim, tagsList, "in", testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of tagged, ignored, one-arg tests (tests that take a <code>FixtureParam</code> parameter) in shorthand form.
@@ -1946,9 +2194,14 @@ import resultOfStringPassedToVerb.verb
      *
      * @param testFun the test function
      */
+    // SKIP-DOTTY-START
     def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + rest.trim, tagsList, testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestToIgnore(verb.trim + " " + rest.trim, tagsList, testFun, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**

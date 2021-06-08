@@ -51,12 +51,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           xs should contain ("ho")
         }
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        xs should contain ("ho")
-        intercept[TestFailedException] {
-          xs should contain ("hi")
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          xs should contain ("ho")
+          intercept[TestFailedException] {
+            xs should contain ("hi")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -66,30 +69,36 @@ class EveryShouldContainSpec extends AnyFunSpec {
         (caseLists should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
         (caseLists should contain ("HI")) (after being lowerCased)
         (caseLists should contain ("HI ")) (after being lowerCased and trimmed)
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          (xs should contain ("hi")) (decided by defaultEquality[String])
         }
-        (xs should contain ("hi")) (decided by defaultEquality[String])
       }
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         intercept[TestFailedException] {
           caseLists should contain ("HI")
         }
         var normalizedInvokedCount = 0
-        implicit val e = new NormalizingEquality[String] {
-          def normalized(s: String): String = {
-            normalizedInvokedCount += 1
-            s.toLowerCase
-          }
-          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
+
+        {
+          implicit val e = new NormalizingEquality[String] {
+            def normalized(s: String): String = {
+              normalizedInvokedCount = normalizedInvokedCount + 1
+              s.toLowerCase
             }
+            def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
+            def normalizedOrSame(b: Any) =
+              b match {
+                case s: String => normalized(s)
+                case _ => b
+              }
+          }
+          caseLists should contain ("HI")
+          normalizedInvokedCount should be (4)
         }
-        caseLists should contain ("HI")
-        normalizedInvokedCount should be (4)
       }
       it("should do nothing when used with null and LHS contains null value") {
         xsWithNull should contain (null)
@@ -122,12 +131,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           xs should not contain "hi"
         }
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        xs should not contain "hi"
-        intercept[TestFailedException] {
-          xs should not contain "ho"
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          xs should not contain "hi"
+          intercept[TestFailedException] {
+            xs should not contain "ho"
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -145,22 +157,25 @@ class EveryShouldContainSpec extends AnyFunSpec {
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists should not contain "HI"
         var normalizedInvokedCount = 0
-        implicit val e = new NormalizingEquality[String] {
-          def normalized(s: String): String = {
-            normalizedInvokedCount += 1
-            s.toLowerCase
-          }
-          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
+
+        {
+          implicit val e = new NormalizingEquality[String] {
+            def normalized(s: String): String = {
+              normalizedInvokedCount = normalizedInvokedCount + 1
+              s.toLowerCase
             }
+            def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
+            def normalizedOrSame(b: Any) =
+              b match {
+                case s: String => normalized(s)
+                case _ => b
+              }
+          }
+          intercept[TestFailedException] {
+            caseLists should not contain "HI"
+          }
+          normalizedInvokedCount should be (4)
         }
-        intercept[TestFailedException] {
-          caseLists should not contain "HI"
-        }
-        normalizedInvokedCount should be (4)
       }
       it("should do nothing when used with null and LHS did not contain null value") {
         xs should not contain (null)
@@ -194,12 +209,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           xs should not (contain ("hi"))
         }
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        xs should not (contain ("hi"))
-        intercept[TestFailedException] {
-          xs should not (contain ("ho"))
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          xs should not (contain ("hi"))
+          intercept[TestFailedException] {
+            xs should not (contain ("ho"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -220,22 +238,25 @@ class EveryShouldContainSpec extends AnyFunSpec {
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists should not (contain ("HI"))
         var normalizedInvokedCount = 0
-        implicit val e = new NormalizingEquality[String] {
-          def normalized(s: String): String = {
-            normalizedInvokedCount += 1
-            s.toLowerCase
-          }
-          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
+
+        {
+          implicit val e = new NormalizingEquality[String] {
+            def normalized(s: String): String = {
+              normalizedInvokedCount = normalizedInvokedCount + 1
+              s.toLowerCase
             }
+            def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
+            def normalizedOrSame(b: Any) =
+              b match {
+                case s: String => normalized(s)
+                case _ => b
+              }
+          }
+          intercept[TestFailedException] {
+            caseLists should not (contain ("HI"))
+          }
+          normalizedInvokedCount should be (4)
         }
-        intercept[TestFailedException] {
-          caseLists should not (contain ("HI"))
-        }
-        normalizedInvokedCount should be (4)
       }
       it("should do nothing when used with null and LHS did not contain null value") {
         xs should not (contain (null))
@@ -268,12 +289,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           xs should (not contain "hi")
         }
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        xs should (not contain "hi")
-        intercept[TestFailedException] {
-          xs should (not contain "ho")
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          xs should (not contain "hi")
+          intercept[TestFailedException] {
+            xs should (not contain "ho")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -294,22 +318,25 @@ class EveryShouldContainSpec extends AnyFunSpec {
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists should (not contain "HI")
         var normalizedInvokedCount = 0
-        implicit val e = new NormalizingEquality[String] {
-          def normalized(s: String): String = {
-            normalizedInvokedCount += 1
-            s.toLowerCase
-          }
-          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
+
+        {
+          implicit val e = new NormalizingEquality[String] {
+            def normalized(s: String): String = {
+              normalizedInvokedCount = normalizedInvokedCount + 1
+              s.toLowerCase
             }
+            def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
+            def normalizedOrSame(b: Any) =
+              b match {
+                case s: String => normalized(s)
+                case _ => b
+              }
+          }
+          intercept[TestFailedException] {
+            caseLists should (not contain "HI")
+          }
+          normalizedInvokedCount should be (4)
         }
-        intercept[TestFailedException] {
-          caseLists should (not contain "HI")
-        }
-        normalizedInvokedCount should be (4)
       }
       it("should do nothing when used with null and LHS did not contain null value") {
         xs should (not contain (null))
@@ -342,12 +369,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           xs shouldNot contain ("hi")
         }
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        xs shouldNot contain ("hi")
-        intercept[TestFailedException] {
-          xs shouldNot contain ("ho")
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          xs shouldNot contain ("hi")
+          intercept[TestFailedException] {
+            xs shouldNot contain ("ho")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -365,22 +395,25 @@ class EveryShouldContainSpec extends AnyFunSpec {
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists shouldNot contain ("HI")
         var normalizedInvokedCount = 0
-        implicit val e = new NormalizingEquality[String] {
-          def normalized(s: String): String = {
-            normalizedInvokedCount += 1
-            s.toLowerCase
-          }
-          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
+        
+        {
+          implicit val e = new NormalizingEquality[String] {
+            def normalized(s: String): String = {
+              normalizedInvokedCount = normalizedInvokedCount + 1
+              s.toLowerCase
             }
+            def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
+            def normalizedOrSame(b: Any) =
+              b match {
+                case s: String => normalized(s)
+                case _ => b
+              }
+          }
+          intercept[TestFailedException] {
+            caseLists shouldNot contain ("HI")
+          }
+          normalizedInvokedCount should be (4)
         }
-        intercept[TestFailedException] {
-          caseLists shouldNot contain ("HI")
-        }
-        normalizedInvokedCount should be (4)
       }
       it("should do nothing when used with null and LHS did not contain null value") {
         xs shouldNot contain (null)
@@ -414,12 +447,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           xs shouldNot (contain ("hi"))
         }
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        xs shouldNot (contain ("hi"))
-        intercept[TestFailedException] {
-          xs shouldNot (contain ("ho"))
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          xs shouldNot (contain ("hi"))
+          intercept[TestFailedException] {
+            xs shouldNot (contain ("ho"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -440,22 +476,25 @@ class EveryShouldContainSpec extends AnyFunSpec {
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists shouldNot (contain ("HI"))
         var normalizedInvokedCount = 0
-        implicit val e = new NormalizingEquality[String] {
-          def normalized(s: String): String = {
-            normalizedInvokedCount += 1
-            s.toLowerCase
-          }
-          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
+
+        {
+          implicit val e = new NormalizingEquality[String] {
+            def normalized(s: String): String = {
+              normalizedInvokedCount = normalizedInvokedCount + 1
+              s.toLowerCase
             }
+            def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
+            def normalizedOrSame(b: Any) =
+              b match {
+                case s: String => normalized(s)
+                case _ => b
+              }
+          }
+          intercept[TestFailedException] {
+            caseLists shouldNot (contain ("HI"))
+          }
+          normalizedInvokedCount should be (4)
         }
-        intercept[TestFailedException] {
-          caseLists shouldNot (contain ("HI"))
-        }
-        normalizedInvokedCount should be (4)
       }
       it("should do nothing when used with null and LHS did not contain null value") {
         xs shouldNot (contain (null))
@@ -521,12 +560,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain ("ho")
         }
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        all (hiLists) should contain ("ho")
-        intercept[TestFailedException] {
-          all (hiLists) should contain ("hi")
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          all (hiLists) should contain ("ho")
+          intercept[TestFailedException] {
+            all (hiLists) should contain ("hi")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -545,20 +587,23 @@ class EveryShouldContainSpec extends AnyFunSpec {
           all (hiHeHoLists) should contain ("HO")
         }
         var normalizedInvokedCount = 0
-        implicit val e = new NormalizingEquality[String] {
-          def normalized(s: String): String = {
-            normalizedInvokedCount += 1
-            s.toLowerCase
-          }
-          def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
-          def normalizedOrSame(b: Any) =
-            b match {
-              case s: String => normalized(s)
-              case _ => b
+
+        {
+          implicit val e = new NormalizingEquality[String] {
+            def normalized(s: String): String = {
+              normalizedInvokedCount = normalizedInvokedCount + 1
+              s.toLowerCase
             }
+            def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[String]
+            def normalizedOrSame(b: Any) =
+              b match {
+                case s: String => normalized(s)
+                case _ => b
+              }
+          }
+          all (hiHeHoLists) should contain ("HO")
+          normalizedInvokedCount should be (12)
         }
-        all (hiHeHoLists) should contain ("HO")
-        normalizedInvokedCount should be (12)
       }
       it("should do nothing when used with null and LHS contains null value") {
         all (hiNullLists) should contain (null)
@@ -598,12 +643,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should not contain "hi"
         }
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        all (hiLists) should not contain "hi"
-        intercept[TestFailedException] {
-          all (hiLists) should not contain "ho"
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          all (hiLists) should not contain "hi"
+          intercept[TestFailedException] {
+            all (hiLists) should not contain "ho"
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -654,12 +702,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should not (contain ("hi"))
         }
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        all (hiLists) should not (contain ("hi"))
-        intercept[TestFailedException] {
-          all (hiLists) should not (contain ("ho"))
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          all (hiLists) should not (contain ("hi"))
+          intercept[TestFailedException] {
+            all (hiLists) should not (contain ("ho"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -710,12 +761,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should (not contain "hi")
         }
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        all (hiLists) should (not contain "hi")
-        intercept[TestFailedException] {
-          all (hiLists) should (not contain "ho")
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          all (hiLists) should (not contain "hi")
+          intercept[TestFailedException] {
+            all (hiLists) should (not contain "ho")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -767,12 +821,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) shouldNot contain ("hi")
         }
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        all (hiLists) shouldNot contain ("hi")
-        intercept[TestFailedException] {
-          all (hiLists) shouldNot contain ("ho")
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          all (hiLists) shouldNot contain ("hi")
+          intercept[TestFailedException] {
+            all (hiLists) shouldNot contain ("ho")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -823,12 +880,15 @@ class EveryShouldContainSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) shouldNot (contain ("hi"))
         }
-        implicit val e = new Equality[String] {
-          def areEqual(a: String, b: Any): Boolean = a != b
-        }
-        all (hiLists) shouldNot (contain ("hi"))
-        intercept[TestFailedException] {
-          all (hiLists) shouldNot (contain ("ho"))
+
+        {
+          implicit val e = new Equality[String] {
+            def areEqual(a: String, b: Any): Boolean = a != b
+          }
+          all (hiLists) shouldNot (contain ("hi"))
+          intercept[TestFailedException] {
+            all (hiLists) shouldNot (contain ("ho"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {

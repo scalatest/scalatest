@@ -453,7 +453,7 @@ import org.scalatest.{Suite, Finders}
  * add nicely formatted text to HTML reports. Here's what the above <code>SetSpec</code> would look like in the HTML reporter:
  * </p>
  *
- * <img class="stScreenShot" src="../../lib/freeSpec.gif">
+ * <img class="stScreenShot" src="../../../lib/freeSpec.gif">
  *
  * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2>
  *

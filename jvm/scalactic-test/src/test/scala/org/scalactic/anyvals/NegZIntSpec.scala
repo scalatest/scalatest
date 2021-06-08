@@ -57,8 +57,7 @@ class NegZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
 
   describe("A NegZInt") {
     describe("should offer a from factory method that") {
-      it("returns Some[NegZInt] if the passed Int is lesser than or equal to 0")
-      {
+      it("returns Some[NegZInt] if the passed Int is lesser than or equal to 0") {
         NegZInt.from(0).value.value shouldBe 0
         NegZInt.from(-50).value.value shouldBe -50
         NegZInt.from(-100).value.value shouldBe -100
@@ -69,8 +68,7 @@ class NegZIntSpec extends funspec.AnyFunSpec with matchers.should.Matchers with 
       }
     }
     describe("should offer an ensuringValid factory method that") {
-      it("returns NegZInt if the passed Int is lesser than or equal to 0")
-      {
+      it("returns NegZInt if the passed Int is lesser than or equal to 0") {
         NegZInt.ensuringValid(0).value shouldBe 0
         NegZInt.ensuringValid(-50).value shouldBe -50
         NegZInt.ensuringValid(-100).value shouldBe -100

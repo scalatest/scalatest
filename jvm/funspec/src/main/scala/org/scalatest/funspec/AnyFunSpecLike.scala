@@ -96,7 +96,7 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  private final def registerTestImpl(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS,NATIVE-END
@@ -104,13 +104,31 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
     engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  // SKIP-DOTTY-START
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    registerTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def registerIgnoredTestImpl(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -5
     engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
+
+  // SKIP-DOTTY-START
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {  // Note: we can't remove the implicit pos here because it is the signature of registerTest in TestRegistration.
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * Class that, via an instance referenced from the <code>it</code> field,
@@ -140,6 +158,16 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
    */
   protected class ItWord {
 
+    private final def applyImpl(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
+      // SKIP-SCALATESTJS,NATIVE-START
+      val stackDepth = 3
+      val stackDepthAdjustment = -2
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
+      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
+      engine.registerTest(specText, Transformer(() => testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    }
+
     /**
      * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
      * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -158,6 +186,7 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
+    // SKIP-DOTTY-START
     def apply(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS,NATIVE-START
       val stackDepth = 3
@@ -165,8 +194,12 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
       // SKIP-SCALATESTJS,NATIVE-END
       //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
       //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-      engine.registerTest(specText, Transformer(() => testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+      applyImpl(specText, testTags: _*)(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(specText, testTags: _*)(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of shared tests.
@@ -258,6 +291,10 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
    */
   protected class TheyWord {
 
+    private final def applyImpl(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
+      engine.registerTest(specText, Transformer(() => testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, Some(pos), None, testTags: _*)
+    }
+
     /**
      * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
      * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -276,9 +313,14 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
+    // SKIP-DOTTY-START
     def apply(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      engine.registerTest(specText, Transformer(() => testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, Some(pos), None, testTags: _*)
+      applyImpl(specText, testTags: _*)(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(specText: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(specText, testTags: _*)(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
     /**
      * Supports the registration of shared tests.
@@ -342,6 +384,16 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
    */
   protected val they = new TheyWord
 
+  private final def ignoreImpl(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
+    // SKIP-SCALATESTJS,NATIVE-START
+    val stackDepth = 4
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
+    engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+  }
+
   /**
    * Register a test to ignore, which has the given spec text, optional tags, and test function value that takes no arguments.
    * This method will register the test for later ignoring via an invocation of one of the <code>execute</code>
@@ -360,23 +412,16 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
+  // SKIP-DOTTY-START
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS,NATIVE-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS,NATIVE-END
-    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
-    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    ignoreImpl(testText, testTags: _*)(testFun, pos)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def ignore(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
 
-  /**
-   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
-   * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
-   * (defined with <code>it</code>). This trait's implementation of this method will register the
-   * description string and immediately invoke the passed function.
-   */
-  protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  private final def describeImpl(description: String)(fun: => Unit, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     // SKIP-SCALATESTJS,NATIVE-END
@@ -392,6 +437,21 @@ trait AnyFunSpecLike extends TestSuite with TestRegistration with Informing with
       case other: Throwable => throw other
     }
   }
+
+  /**
+   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
+   * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
+   * (defined with <code>it</code>). This trait's implementation of this method will register the
+   * description string and immediately invoke the passed function.
+   */
+  // SKIP-DOTTY-START
+  protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+    describeImpl(description)(fun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def describe(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => describeImpl(description)(fun, pos) }) }
+  //DOTTY-ONLY }
 
   /**
    * An immutable <code>Set</code> of test names. If this <code>AnyFunSpec</code> contains no tests, this method returns an

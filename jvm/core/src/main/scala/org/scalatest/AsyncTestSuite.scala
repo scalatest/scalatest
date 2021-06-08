@@ -262,6 +262,9 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
    */
   implicit def convertAssertionToFutureAssertion(assertion: compatible.Assertion): Future[compatible.Assertion] = Future.successful(assertion)
 
+  //DOTTY-ONLY implicit def convertTestDataAssertionFunToTestDataFutureAssertionFun(fun: TestData => compatible.Assertion): TestData => Future[compatible.Assertion] = 
+  //DOTTY-ONLY                (testData: TestData) => Future.successful(fun(testData))
+
   protected[scalatest] def parallelAsyncTestExecution: Boolean = thisAsyncTestSuite.isInstanceOf[org.scalatest.ParallelTestExecution] ||
       thisAsyncTestSuite.isInstanceOf[org.scalatest.RandomTestOrder]
 

@@ -982,7 +982,7 @@ class NonEmptyArraySpec extends UnitSpec {
   }
   it should "have a reverseIterator method" in {
     NonEmptyArray(3).reverseIterator.toStream shouldBe Stream(3)
-    NonEmptyArray(1, 2, 3).reverseIterator.toArray shouldBe Stream(3, 2, 1)
+    NonEmptyArray(1, 2, 3).reverseIterator.toStream shouldBe Stream(3, 2, 1)
   }
   it should "have a reverseMap method" in {
     NonEmptyArray(3).reverseMap(_ + 1) shouldBe NonEmptyArray(4)
@@ -1049,14 +1049,14 @@ class NonEmptyArraySpec extends UnitSpec {
   it should "have a scanLeft method" in {
     NonEmptyArray(1).scanLeft(0)(_ + _) shouldBe NonEmptyArray(0, 1)
     NonEmptyArray(1, 2, 3).scanLeft(0)(_ + _) shouldBe NonEmptyArray(0, 1, 3, 6)
-    NonEmptyArray(1, 2, 3).scanLeft("z")(_ + _) shouldBe NonEmptyArray("z", "z1", "z12", "z123")
-    NonEmptyArray(0).scanLeft("z")(_ + _) shouldBe NonEmptyArray("z", "z0")
+    NonEmptyArray(1, 2, 3).scanLeft("z")(_.toString + _.toString) shouldBe NonEmptyArray("z", "z1", "z12", "z123")
+    NonEmptyArray(0).scanLeft("z")(_.toString + _.toString) shouldBe NonEmptyArray("z", "z0")
   }
   it should "have a scanRight method" in {
     NonEmptyArray(1).scanRight(0)(_ + _) shouldBe NonEmptyArray(1, 0)
     NonEmptyArray(1, 2, 3).scanRight(0)(_ + _) shouldBe NonEmptyArray(6, 5, 3, 0)
-    NonEmptyArray(1, 2, 3).scanRight("z")(_ + _) shouldBe NonEmptyArray("123z", "23z", "3z", "z")
-    NonEmptyArray(0).scanRight("z")(_ + _) shouldBe NonEmptyArray("0z", "z")
+    NonEmptyArray(1, 2, 3).scanRight("z")(_.toString + _.toString) shouldBe NonEmptyArray("123z", "23z", "3z", "z")
+    NonEmptyArray(0).scanRight("z")(_.toString + _.toString) shouldBe NonEmptyArray("0z", "z")
   }
   it should "have a segmentLength method" in {
     NonEmptyArray(1, 2, 3, 4, 5, 6, 6, 7, 8, 10).segmentLength(_ > 7, 0) shouldBe 0

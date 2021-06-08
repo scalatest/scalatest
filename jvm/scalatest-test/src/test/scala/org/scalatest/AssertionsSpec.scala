@@ -230,17 +230,11 @@ class AssertionsSpec extends AnyFunSpec {
     FailureMessages.wasLessThanOrEqualTo(prettifier, left, right)
 
   def commaAnd(left: String, right: String): String =
-  // SKIP-DOTTY-START
     FailureMessages.commaAnd(prettifier, UnquotedString(left), UnquotedString(right))
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY FailureMessages.commaAnd(prettifier, left, right)
-
+  
   def commaBut(left: String, right: String): String =
-  // SKIP-DOTTY-START
     FailureMessages.commaBut(prettifier, UnquotedString(left), UnquotedString(right))
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY FailureMessages.commaBut(prettifier, left, right)
-
+  
   def wasFalse(left: String): String =
     left + " was false"
 
@@ -1405,17 +1399,14 @@ class AssertionsSpec extends AnyFunSpec {
       assert(l1.isInstanceOf[List[Int]])
     }
 
-    // SKIP-DOTTY-START
-    // different printing of `List[Int]`
     it("should throw TestFailedException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[TestFailedException] {
         assert(s1.isInstanceOf[List[Int]])
       }
-      assert(e.message == Some(wasNotInstanceOf(s1, "scala.List")))
+      assert(e.message == Some(wasNotInstanceOf(s1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       assert(date.isInstanceOf[Date])
@@ -1447,17 +1438,14 @@ class AssertionsSpec extends AnyFunSpec {
       assert(!s1.isInstanceOf[List[Int]])
     }
 
-    // SKIP-DOTTY-START
-    // different printing of `List[Int]`
     it("should throw TestFailedException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[TestFailedException] {
         assert(!l1.isInstanceOf[List[Int]])
       }
-      assert(e.message == Some(wasInstanceOf(l1, "scala.List")))
+      assert(e.message == Some(wasInstanceOf(l1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       assert(!l1.isInstanceOf[Date])
@@ -1655,13 +1643,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
-    // SKIP-DOTTY-START
-    // different printing of anonymous functions
     it("should throw TestFailedException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[TestFailedException] {
         assert(l1.exists(_ > 3))
       }
-      assert(e.message == Some(wasFalse("l1.exists(((x$10: Int) => x$10.>(3)))")))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$9: scala.Int) => _$9.>(3)))" else "l1.exists(((x$10: Int) => x$10.>(3)))")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -1670,7 +1656,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         assert(l1.exists(3 < _))
       }
-      assert(e.message == Some(wasFalse("l1.exists(((x$11: Int) => 3.<(x$11)))")))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$10: scala.Int) => 3.<(_$10)))" else "l1.exists(((x$11: Int) => 3.<(x$11)))")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -1679,12 +1665,11 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         assert(l3.exists(_.isEmpty))
       }
-      assert(e.message == Some(wasFalse("l3.exists(((x$12: String) => x$12.isEmpty()))")))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l3.exists(((_$11: java.lang.String) => _$11.isEmpty()))" else "l3.exists(((x$12: String) => x$12.isEmpty()))")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should throw TestFailedException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[TestFailedException] {
         assert(ci1.exists(321))
@@ -1726,8 +1711,6 @@ class AssertionsSpec extends AnyFunSpec {
         """)
     }
 
-    // SKIP-DOTTY-START
-    // ambiguous implicits
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
@@ -1739,8 +1722,7 @@ class AssertionsSpec extends AnyFunSpec {
           }
         """)
     }
-    // SKIP-DOTTY-END
-
+    
     it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
       assertCompiles(
         """
@@ -1800,13 +1782,10 @@ class AssertionsSpec extends AnyFunSpec {
         """)
     }
 
-    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
       assert(assert(x + 1 == 2) eq Succeeded)
     }
-    // SKIP-DOTTY-END
-
 
   }
 
@@ -2872,18 +2851,15 @@ class AssertionsSpec extends AnyFunSpec {
       assert(l1.isInstanceOf[List[Int]], ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // different printing of `List[Int]`
     it("should throw TestFailedException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[TestFailedException] {
         assert(s1.isInstanceOf[List[Int]], ", dude")
       }
-      assert(e.message == Some(wasNotInstanceOf(s1, "scala.List") + ", dude"))
+      assert(e.message == Some(wasNotInstanceOf(s1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       assert(date.isInstanceOf[Date], ", dude")
     }
@@ -2914,18 +2890,15 @@ class AssertionsSpec extends AnyFunSpec {
       assert(!s1.isInstanceOf[List[Int]], ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // different printing of `List[Int]`
     it("should throw TestFailedException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[TestFailedException] {
         assert(!l1.isInstanceOf[List[Int]], ", dude")
       }
-      assert(e.message == Some(wasInstanceOf(l1, "scala.List") + ", dude"))
+      assert(e.message == Some(wasInstanceOf(l1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       assert(!l1.isInstanceOf[Date], ", dude")
     }
@@ -3069,7 +3042,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
-    // SKIP-DOTTY-START
     it("should do nothing when is used to check l1.exists(_ == 3)") {
       assert(l1.exists(_ == 3), ", dude")
     }
@@ -3095,7 +3067,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check !l1.exists(_ == 5)") {
       assert(!l1.exists(_ == 5), ", dude")
@@ -3105,7 +3076,6 @@ class AssertionsSpec extends AnyFunSpec {
       assert(!l1.exists(5 == _), ", dude")
     }
 
-    // SKIP-DOTTY-START
     it("should throw TestFailedException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
       val e = intercept[TestFailedException] {
         assert(!l1.exists(_ == 3), ", dude")
@@ -3128,7 +3098,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         assert(l1.exists(_ > 3), ", dude")
       }
-      assert(e.message == Some(wasFalse("l1.exists(((x$21: Int) => x$21.>(3)))") + ", dude"))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$20: scala.Int) => _$20.>(3)))" else "l1.exists(((x$21: Int) => x$21.>(3)))") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3137,7 +3107,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         assert(l1.exists(3 < _), ", dude")
       }
-      assert(e.message == Some(wasFalse("l1.exists(((x$22: Int) => 3.<(x$22)))") + ", dude"))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$21: scala.Int) => 3.<(_$21)))" else "l1.exists(((x$22: Int) => 3.<(x$22)))") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3146,7 +3116,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         assert(l3.exists(_.isEmpty), ", dude")
       }
-      assert(e.message == Some(wasFalse("l3.exists(((x$23: String) => x$23.isEmpty()))") + ", dude"))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l3.exists(((_$22: java.lang.String) => _$22.isEmpty()))" else "l3.exists(((x$23: String) => x$23.isEmpty()))") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -3159,8 +3129,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     def woof(f: => Unit) = "woof"
     def meow(x: Int = 0, y: Int = 3) = "meow"
 
@@ -3193,8 +3162,6 @@ class AssertionsSpec extends AnyFunSpec {
         """)
     }
 
-    // SKIP-DOTTY-START
-    // ambiguous implicits
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
@@ -3206,8 +3173,7 @@ class AssertionsSpec extends AnyFunSpec {
           }
         """)
     }
-    // SKIP-DOTTY-END
-
+    
     it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
       assertCompiles(
         """
@@ -3267,12 +3233,10 @@ class AssertionsSpec extends AnyFunSpec {
         """)
     }
 
-    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
       assert(assert(x + 1 == 2, "clue") eq Succeeded)
     }
-    // SKIP-DOTTY-END
   }
 
   describe("The assume(boolean) method") {
@@ -4330,17 +4294,14 @@ class AssertionsSpec extends AnyFunSpec {
       assume(l1.isInstanceOf[List[Int]])
     }
 
-    // SKIP-DOTTY-START
-    // different printing of `List[Int]`
     it("should throw TestCanceledException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[TestCanceledException] {
         assume(s1.isInstanceOf[List[Int]])
       }
-      assert(e.message == Some(wasNotInstanceOf(s1, "scala.List")))
+      assert(e.message == Some(wasNotInstanceOf(s1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       assume(date.isInstanceOf[Date])
@@ -4372,18 +4333,15 @@ class AssertionsSpec extends AnyFunSpec {
       assume(!s1.isInstanceOf[List[Int]])
     }
 
-    // SKIP-DOTTY-START
-    // different printing of `List[Int]`
     it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[TestCanceledException] {
         assume(!l1.isInstanceOf[List[Int]])
       }
-      assert(e.message == Some(wasInstanceOf(l1, "scala.List")))
+      assert(e.message == Some(wasInstanceOf(l1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       assume(!l1.isInstanceOf[Date])
     }
@@ -4579,13 +4537,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
-    // SKIP-DOTTY-START
-    // different printing of anonymous function
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[TestCanceledException] {
         assume(l1.exists(_ > 3))
       }
-      assert(e.message == Some(wasFalse("l1.exists(((x$32: Int) => x$32.>(3)))")))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$31: scala.Int) => _$31.>(3)))" else "l1.exists(((x$32: Int) => x$32.>(3)))")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4594,7 +4550,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         assume(l1.exists(3 < _))
       }
-      assert(e.message == Some(wasFalse("l1.exists(((x$33: Int) => 3.<(x$33)))")))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$32: scala.Int) => 3.<(_$32)))" else "l1.exists(((x$33: Int) => 3.<(x$33)))")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4603,12 +4559,11 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         assume(l3.exists(_.isEmpty))
       }
-      assert(e.message == Some(wasFalse("l3.exists(((x$34: String) => x$34.isEmpty()))")))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l3.exists(((_$33: java.lang.String) => _$33.isEmpty()))" else "l3.exists(((x$34: String) => x$34.isEmpty()))")))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should throw TestCanceledException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[TestCanceledException] {
         assume(ci1.exists(321))
@@ -4650,8 +4605,6 @@ class AssertionsSpec extends AnyFunSpec {
         """.stripMargin)
     }
 
-    // SKIP-DOTTY-START
-    // ambiguous implicits
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
@@ -4663,8 +4616,7 @@ class AssertionsSpec extends AnyFunSpec {
           |}
         """.stripMargin)
     }
-    // SKIP-DOTTY-END
-
+    
     it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
       assertCompiles(
         """
@@ -4723,12 +4675,10 @@ class AssertionsSpec extends AnyFunSpec {
           |assume(org.exists(_ == 'b'))
         """.stripMargin)
     }
-    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
       assert(assume(x + 1 == 2) eq Succeeded)
     }
-    // SKIP-DOTTY-END
   }
 
   describe("The assume(boolean, clue) method") {
@@ -5793,18 +5743,15 @@ class AssertionsSpec extends AnyFunSpec {
       assume(l1.isInstanceOf[List[Int]], ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // different printing of `List[Int]`
     it("should throw TestCanceledException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
       val e = intercept[TestCanceledException] {
         assume(s1.isInstanceOf[List[Int]], ", dude")
       }
-      assert(e.message == Some(wasNotInstanceOf(s1, "scala.List") + ", dude"))
+      assert(e.message == Some(wasNotInstanceOf(s1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       assume(date.isInstanceOf[Date], ", dude")
     }
@@ -5835,18 +5782,15 @@ class AssertionsSpec extends AnyFunSpec {
       assume(!s1.isInstanceOf[List[Int]], ", dude")
     }
 
-    // SKIP-DOTTY-START
-    // different printing of `List[Int]`
     it("should throw TestCanceledException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
       val e = intercept[TestCanceledException] {
         assume(!l1.isInstanceOf[List[Int]], ", dude")
       }
-      assert(e.message == Some(wasInstanceOf(l1, "scala.List") + ", dude"))
+      assert(e.message == Some(wasInstanceOf(l1, if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "scala.collection.immutable.List[scala.Int]" else "scala.List") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       assume(!l1.isInstanceOf[Date], ", dude")
     }
@@ -6042,13 +5986,11 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
-    // SKIP-DOTTY-START
-    // different printing for anonymous functions
     it("should throw TestCanceledException with correct message and stack depth when is used to check l1.exists(_ > 3)") {
       val e = intercept[TestCanceledException] {
         assume(l1.exists(_ > 3), ", dude")
       }
-      assert(e.message == Some(wasFalse("l1.exists(((x$43: Int) => x$43.>(3)))") + ", dude"))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$42: scala.Int) => _$42.>(3)))" else "l1.exists(((x$43: Int) => x$43.>(3)))") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -6057,7 +5999,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         assume(l1.exists(3 < _), ", dude")
       }
-      assert(e.message == Some(wasFalse("l1.exists(((x$44: Int) => 3.<(x$44)))") + ", dude"))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l1.exists(((_$43: scala.Int) => 3.<(_$43)))" else "l1.exists(((x$44: Int) => 3.<(x$44)))") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -6066,12 +6008,11 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         assume(l3.exists(_.isEmpty), ", dude")
       }
-      assert(e.message == Some(wasFalse("l3.exists(((x$45: String) => x$45.isEmpty()))") + ", dude"))
+      assert(e.message == Some(wasFalse(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "l3.exists(((_$44: java.lang.String) => _$44.isEmpty()))" else "l3.exists(((x$45: String) => x$45.isEmpty()))") + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
-    // SKIP-DOTTY-END
-
+    
     it("should throw TestCanceledException with correct message and stack depth when is used to check l3.exists(false)") {
       val e = intercept[TestCanceledException] {
         assume(ci1.exists(321), ", dude")
@@ -6113,8 +6054,6 @@ class AssertionsSpec extends AnyFunSpec {
         """.stripMargin)
     }
 
-    // SKIP-DOTTY-START
-    // ambiguous implicits
     it("should compile when used with org === xxx with TypeCheckedTripleEquals that shadow org.scalactic") {
       assertCompiles(
         """
@@ -6126,8 +6065,7 @@ class AssertionsSpec extends AnyFunSpec {
           |}
         """.stripMargin)
     }
-    // SKIP-DOTTY-END
-
+    
     it("should compile when used with org.aCustomMethod that shadow org.scalactic") {
       assertCompiles(
         """
@@ -6187,12 +6125,10 @@ class AssertionsSpec extends AnyFunSpec {
         """.stripMargin)
     }
 
-    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
       assert(assume(x + 1 == 2, "clue") eq Succeeded)
     }
-    // SKIP-DOTTY-END
   }
 
   describe("assertTypeError method ") {
@@ -6212,8 +6148,6 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
 
-      // SKIP-DOTTY-START
-      // no parse error support in Dotty
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           assertTypeError("println(\"test)")
@@ -6224,8 +6158,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
-      // SKIP-DOTTY-END
-
+      
       it("should do nothing when used with 'val i: Int = null'") {
         assertTypeError("val i: Int = null")
       }
@@ -6257,8 +6190,6 @@ class AssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when type check passed") {
         val e = intercept[TestFailedException] {
           assertTypeError(
@@ -6271,10 +6202,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-      // SKIP-DOTTY-END
-
-      // SKIP-DOTTY-START
-      // no parse error support in Dotty
+      
       it("should throw TestFailedException with correct message and stack depth when parse failed ") {
         val e = intercept[TestFailedException] {
           assertTypeError(
@@ -6289,8 +6217,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
-      // SKIP-DOTTY-END
-
+      
       it("should do nothing when used with 'val i: Int = null'") {
         assertTypeError(
           """
@@ -6298,8 +6225,6 @@ class AssertionsSpec extends AnyFunSpec {
             |""".stripMargin
         )
       }
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
 
@@ -6319,13 +6244,10 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-      // SKIP-DOTTY-END
     }
-    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       assert(assertTypeError("val x: String = 1") eq Succeeded)
     }
-    // SKIP-DOTTY-END
   }
 
   describe("assertDoesNotCompile method ") {
@@ -6385,8 +6307,6 @@ class AssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when parse and type check passed") {
         val e = intercept[TestFailedException] {
           assertDoesNotCompile(
@@ -6399,8 +6319,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-      // SKIP-DOTTY-END
-
+      
       it("should do nothing when parse failed ") {
         assertDoesNotCompile(
           """
@@ -6424,8 +6343,6 @@ class AssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
 
@@ -6444,7 +6361,6 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 7)))
       }
-      // SKIP-DOTTY-END
     }
   }
 
@@ -6467,8 +6383,6 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
 
-      // SKIP-DOTTY-START
-      // different error message
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           assertCompiles("println(\"test)")
@@ -6479,7 +6393,6 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
-      // SKIP-DOTTY-END
 
       it("should do nothing when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
@@ -6503,8 +6416,6 @@ class AssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when type check failed") {
         val e = intercept[TestFailedException] {
           assertCompiles(
@@ -6519,10 +6430,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
-      // SKIP-DOTTY-END
-
-      // SKIP-DOTTY-START
-      // different error message
+      
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           assertCompiles(
@@ -6537,8 +6445,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
-      // SKIP-DOTTY-END
-
+      
       it("should do nothing when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
 
@@ -6553,11 +6460,9 @@ class AssertionsSpec extends AnyFunSpec {
             |""".stripMargin)
       }
     }
-    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       assert(assertCompiles("val x: Int = 1") eq Succeeded)
     }
-    // SKIP-DOTTY-END
   }
 
   describe("The assertResult method") {
@@ -6609,11 +6514,12 @@ class AssertionsSpec extends AnyFunSpec {
         assertResult("hi") { n1 }
       }
       val a1 = Array(1, 2, 3)
+      val aNull: Array[Int] = null
       intercept[TestFailedException] {
-        assertResult(n1) { a1 }
+        assertResult(aNull) { a1 }
       }
       intercept[TestFailedException] {
-        assertResult(a1) { n1 }
+        assertResult(a1) { aNull }
       }
       val a = "hi"
       val e1 = intercept[TestFailedException] {
@@ -6621,12 +6527,10 @@ class AssertionsSpec extends AnyFunSpec {
       }
       assert(e1.message === Some(FailureMessages.expectedButGot(prettifier, a, null)))
     }
-    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
       assert(assertResult(2) { x + 1 } eq Succeeded)
     }
-    // SKIP-DOTTY-END
   }
 
   describe("The assertResult method that 'gets a clue'") {
@@ -6678,11 +6582,12 @@ class AssertionsSpec extends AnyFunSpec {
         assertResult("hi", "a clue") { n1 }
       }
       val a1 = Array(1, 2, 3)
+      val aNull: Array[Int] = null
       intercept[TestFailedException] {
-        assertResult(n1, "a clue") { a1 }
+        assertResult(aNull, "a clue") { a1 }
       }
       intercept[TestFailedException] {
-        assertResult(a1, "a clue") { n1 }
+        assertResult(a1, "a clue") { aNull }
       }
       val a = "hi"
       val e1 = intercept[TestFailedException] {
@@ -6715,11 +6620,15 @@ class AssertionsSpec extends AnyFunSpec {
       }
       assert(e4.message === Some(FailureMessages.expectedButGot(prettifier, aDiff, bDiff) + "; the clue"))
     }
-    // SKIP-DOTTY-START
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
       assert(assertResult(2, "clue") { x + 1 } eq Succeeded)
     }
-    // SKIP-DOTTY-END
+  }
+
+  describe("The Assertions") {
+    it("should not break stripMargin") {
+      assert("foo".stripMargin('!') == "foo") 
+    }    
   }
 }

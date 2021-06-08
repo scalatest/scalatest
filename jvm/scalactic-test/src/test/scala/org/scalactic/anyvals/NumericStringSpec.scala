@@ -1571,7 +1571,7 @@ class NumericStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers
       }
     }
     it("should offer a scanRight method consistent with StringOps") {
-      def sum(c1: Char, s: String) = c1 + s
+      def sum(c1: Char, s: String) = c1.toString + s
 
       forAll { (numStr: NumericString) =>
         numStr.scanRight("0")(sum) shouldEqual
@@ -1986,16 +1986,14 @@ class NumericStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers
     }
     describe("should offer a tryingValid factory method that") {
       it ("returns a NumericString wrapped in a Success if the passed String "+
-          "contains only numeric characters")
-      {
+          "contains only numeric characters") {
         NumericString.tryingValid("123").success.value.value shouldBe "123"
         NumericString.tryingValid("0").success.value.value shouldBe "0"
         NumericString.tryingValid("007").success.value.value shouldBe "007"
         NumericString.tryingValid("").success.value.value shouldBe ""
       }
       it (" returns an AssertionError wrapped in a Failure if the passed "+
-          "String does not contain only numeric characters")
-      {
+          "String does not contain only numeric characters") {
         NumericString.tryingValid("-123").failure.exception shouldBe
           an [AssertionError]
         NumericString.tryingValid("+123").failure.exception shouldBe
@@ -2007,8 +2005,7 @@ class NumericStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers
       }
     }
     describe("should offer a passOrElse factory method that") {
-      it ("returns a Pass if the given String contains only numeric characters")
-      {
+      it ("returns a Pass if the given String contains only numeric characters") {
         NumericString.passOrElse("50")(i => i) shouldBe Pass
         NumericString.passOrElse("0")(i => i) shouldBe Pass
         NumericString.passOrElse("007")(i => i) shouldBe Pass
@@ -2016,8 +2013,7 @@ class NumericStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers
       }
       it (" returns an error value produced by passing the given String to "+
           "the given function if the passed String is NOT numeric, wrapped "+
-          "in a Fail")
-      {
+          "in a Fail") {
         NumericString.passOrElse("-1")(i => s"$i did not taste good") shouldBe
           Fail("-1 did not taste good")
         NumericString.passOrElse("+1")(i => s"$i did not taste good") shouldBe
@@ -2030,8 +2026,7 @@ class NumericStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers
     }
     describe("should offer a goodOrElse factory method that") {
       it ("returns a NumericString wrapped in a Good if the given String "+
-          "contains only numeric characters")
-      {
+          "contains only numeric characters") {
         NumericString.goodOrElse("50")(i => i) shouldBe
           Good(NumericString("50"))
         NumericString.goodOrElse("100")(i => i) shouldBe
@@ -2045,8 +2040,7 @@ class NumericStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers
       }
       it ("returns an error value produced by passing the given String to "+
           "the given function if the passed String does not contains only "+
-          "numeric characters, wrapped in a Bad")
-      {
+          "numeric characters, wrapped in a Bad") {
         NumericString.goodOrElse("-1")(i => s"$i did not taste good") shouldBe
           Bad("-1 did not taste good")
         NumericString.goodOrElse("+1")(i => s"$i did not taste good") shouldBe
@@ -2059,8 +2053,7 @@ class NumericStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers
     }
     describe("should offer a rightOrElse factory method that") {
       it("returns a NumericString wrapped in a Right if the given String does "+
-         "not contain only numeric characters")
-      {
+         "not contain only numeric characters") {
         NumericString.rightOrElse("0")(i => i) shouldBe
           Right(NumericString("0"))
         NumericString.rightOrElse("")(i => i) shouldBe
@@ -2072,8 +2065,7 @@ class NumericStringSpec extends funspec.AnyFunSpec with matchers.should.Matchers
       }
       it ("returns an error value produced by passing the given String to "+
           "the given function if the passed String does not contain only "+
-          "numeric characters, wrapped in a Left")
-      {
+          "numeric characters, wrapped in a Left") {
         NumericString.rightOrElse("-1")(i => s"$i did not taste good") shouldBe
           Left("-1 did not taste good")
         NumericString.rightOrElse("-0")(i => s"$i did not taste good") shouldBe

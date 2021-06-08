@@ -100,41 +100,12 @@ trait Inside {
    * @param pf the partial function to use to inspect inside the passed value
    * @throws TestFailedException if the passed partial function is not defined at the passed value
    */
-  def inside[T, U](value: T)(pf: PartialFunction[T, U])(implicit pos: source.Position): U = {
-
-    def appendInsideMessage(currentMessage: Option[String]) = {
-      val st = Thread.currentThread.getStackTrace
-      /*val levelCount =
-        st.count { elem =>
-          elem.getClassName == "org.scalatest.Inside$class" && elem.getMethodName == "inside"
-        }*/
-      val levelCount = Inside.level.get
-      val indentation = "  " * (levelCount)
-      currentMessage match {
-        case Some(msg) => Some(Resources.insidePartialFunctionAppendSomeMsg(msg.trim, indentation, value.toString()))
-        case None => Some(Resources.insidePartialFunctionAppendNone(indentation, value.toString()))
-      }
-    }
-
-    Inside.level.set(Option(Inside.level.get).getOrElse(0) + 1)
-
-    if (pf.isDefinedAt(value)) {
-      try {
-        val result = pf(value)
-        Inside.level.set(Inside.level.get - 1)
-        result
-      }
-      catch {
-        case e: org.scalatest.exceptions.ModifiableMessage[_] =>
-          Inside.level.set(Inside.level.get - 1)
-          throw e.modifyMessage(appendInsideMessage)
-      }
-    }
-    else {
-      Inside.level.set(Inside.level.get - 1)
-      throw new TestFailedException((_: StackDepthException) => Some(Resources.insidePartialFunctionNotDefined(value.toString())), None, pos)
-    }
-  }
+  // SKIP-DOTTY-START
+  def inside[T, U](value: T)(pf: PartialFunction[T, U])(implicit pos: source.Position): U = 
+    Inside.insideWithPos(value, pf, pos)
+  // SKIP-DOTTY-END  
+  //DOTTY-ONLY inline def inside[T, U](value: T)(pf: PartialFunction[T, U]): U = 
+  //DOTTY-ONLY   ${ Inside.insideMacro('{value})('{pf}) }
 }
 
 /**
@@ -174,5 +145,51 @@ trait Inside {
 object Inside extends Inside {
 
   private val level = new ThreadLocal[Int]
+
+  def insideWithPos[T, U](value: T, pf: PartialFunction[T, U], pos: source.Position): U = {
+
+    def appendInsideMessage(currentMessage: Option[String]) = {
+      val st = Thread.currentThread.getStackTrace
+      /*val levelCount =
+        st.count { elem =>
+          elem.getClassName == "org.scalatest.Inside$class" && elem.getMethodName == "inside"
+        }*/
+      val levelCount = Inside.level.get
+      val indentation = "  " * (levelCount)
+      currentMessage match {
+        case Some(msg) => Some(Resources.insidePartialFunctionAppendSomeMsg(msg.trim, indentation, value.toString()))
+        case None => Some(Resources.insidePartialFunctionAppendNone(indentation, value.toString()))
+      }
+    }
+
+    Inside.level.set(Option(Inside.level.get).getOrElse(0) + 1)
+
+    if (pf.isDefinedAt(value)) {
+      try {
+        val result = pf(value)
+        Inside.level.set(Inside.level.get - 1)
+        result
+      }
+      catch {
+        case e: org.scalatest.exceptions.ModifiableMessage[_] =>
+          Inside.level.set(Inside.level.get - 1)
+          throw e.modifyMessage(appendInsideMessage)
+      }
+    }
+    else {
+      Inside.level.set(Inside.level.get - 1)
+      throw new TestFailedException((_: StackDepthException) => Some(Resources.insidePartialFunctionNotDefined(value.toString())), None, pos)
+    }
+  }
+
+  //DOTTY-ONLY import scala.quoted._
+  //DOTTY-ONLY private[scalatest] def insideMacro[T, U](value: Expr[T])(pf: Expr[PartialFunction[T, U]])(using quotes: Quotes, typeT: Type[T], typeU: Type[U]): Expr[U] = {
+  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
+  //DOTTY-ONLY   val file = pos.sourceFile
+  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
+  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
+  //DOTTY-ONLY   '{insideWithPos(${value}, ${pf}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
+  //DOTTY-ONLY }
 
 }

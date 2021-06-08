@@ -71,7 +71,7 @@ class MatcherProducersSpec extends AnyFunSpec with Matchers {
       tfe.message should be (Some(Resources.wasNotGreaterThan("7.toInt", "8.toInt")))
     }
     it("should be able to modify failure message args via mapArgs") {
-      val beAsIntsGreaterThan = f composeTwice g mapArgs { _ + ".toInt" }
+      val beAsIntsGreaterThan = f composeTwice g mapArgs { _.toString + ".toInt" }
       "8" should beAsIntsGreaterThan ("7")
       val tfe = the [TestFailedException] thrownBy {
         "7" should beAsIntsGreaterThan ("8")

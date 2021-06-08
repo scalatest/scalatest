@@ -266,14 +266,17 @@ class OptionShouldContainOneOfLogicalOrSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiSomes) should (contain oneOf ("HI", "HE") or contain oneOf ("HI", "HE"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiSomes) should (contain oneOf ("HI", "HE") or contain oneOf ("HI", "HE"))
-        all (hiSomes) should (contain oneOf ("hi", "he") or contain oneOf ("HI", "HE"))
-        all (hiSomes) should (contain oneOf ("HI", "HE") or contain oneOf ("hi", "he"))
-        val e1 = intercept[TestFailedException] {
-          all (hiSomes) should (contain oneOf ("hi", "he") or contain oneOf ("hi", "he"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiSomes) should (contain oneOf ("HI", "HE") or contain oneOf ("HI", "HE"))
+          all (hiSomes) should (contain oneOf ("hi", "he") or contain oneOf ("HI", "HE"))
+          all (hiSomes) should (contain oneOf ("HI", "HE") or contain oneOf ("hi", "he"))
+          val e1 = intercept[TestFailedException] {
+            all (hiSomes) should (contain oneOf ("hi", "he") or contain oneOf ("hi", "he"))
+          }
+          checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.didNotContainOneOfElements(prettifier, hiSomes(0), UnquotedString("\"hi\", \"he\"")) + ", and " + FailureMessages.didNotContainOneOfElements(prettifier, hiSomes(0), UnquotedString("\"hi\", \"he\"")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.didNotContainOneOfElements(prettifier, hiSomes(0), UnquotedString("\"hi\", \"he\"")) + ", and " + FailureMessages.didNotContainOneOfElements(prettifier, hiSomes(0), UnquotedString("\"hi\", \"he\"")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
       it("should use an explicitly provided Equality") {
         (all (hiSomes) should (contain oneOf ("HI", "HE") or contain oneOf ("HI", "HE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
@@ -326,14 +329,17 @@ class OptionShouldContainOneOfLogicalOrSpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiSomes) should (be (Some("ho")) or contain oneOf ("HI", "HE"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiSomes) should (be (Some("hi")) or contain oneOf ("HI", "HE"))
-        all (hiSomes) should (be (Some("he")) or contain oneOf ("HI", "HE"))
-        all (hiSomes) should (be (Some("hi")) or contain oneOf ("hi", "he"))
-        val e1 = intercept[TestFailedException] {
-          all (hiSomes) should (be (Some("he")) or contain oneOf ("hi", "he"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiSomes) should (be (Some("hi")) or contain oneOf ("HI", "HE"))
+          all (hiSomes) should (be (Some("he")) or contain oneOf ("HI", "HE"))
+          all (hiSomes) should (be (Some("hi")) or contain oneOf ("hi", "he"))
+          val e1 = intercept[TestFailedException] {
+            all (hiSomes) should (be (Some("he")) or contain oneOf ("hi", "he"))
+          }
+          checkMessageStackDepth(e1, allErrMsg(0, "Some(\"hi\") was not equal to Some(\"he\"), and " + FailureMessages.didNotContainOneOfElements(prettifier, hiSomes(0), UnquotedString("\"hi\", \"he\"")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, "Some(\"hi\") was not equal to Some(\"he\"), and " + FailureMessages.didNotContainOneOfElements(prettifier, hiSomes(0), UnquotedString("\"hi\", \"he\"")), thisLineNumber - 2, hiSomes), fileName, thisLineNumber - 2)
       }
       it("should use an explicitly provided Equality") {
         (all (hiSomes) should (be (Some("hi")) or contain oneOf ("HI", "HE"))) (decided by upperCaseStringEquality)

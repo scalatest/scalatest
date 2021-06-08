@@ -91,11 +91,11 @@ class StatusProp extends AllSuiteProp {
         val distributor = new DelayExecutionDistributor
         val recordingReporter = new EventRecordingReporter
         val status = suite.run(None, Args(recordingReporter, distributor = Some(distributor)))
-        assert(!status.isCompleted, "status.isCompleted should be false before distributor.execute(), but we got true")
+        assert(!status.isCompleted(), "status.isCompleted should be false before distributor.execute(), but we got true")
         val vmeCount = distributor.execute()
         assert(vmeCount == 1, "should have 1 VirtualMachineError")
-        assert(status.isCompleted, "status.isCompleted should be true after distributor.execute(), but we got false")
-        assert(!status.succeeds, "status.succeeds should be false after distributor.execute(), but we got false")
+        assert(status.isCompleted(), "status.isCompleted should be true after distributor.execute(), but we got false")
+        assert(!status.succeeds(), "status.succeeds should be false after distributor.execute(), but we got false")
       }
       else Succeeded
     }
@@ -107,11 +107,11 @@ class StatusProp extends AllSuiteProp {
         val distributor = new DelayExecutionDistributor
         val recordingReporter = new EventRecordingReporter
         val status = suite.testRunTests(None, Args(recordingReporter, distributor = Some(distributor)))
-        assert(!status.isCompleted, "status.isCompleted should be false before distributor.execute(), but we got true")
+        assert(!status.isCompleted(), "status.isCompleted should be false before distributor.execute(), but we got true")
         val vmeCount = distributor.execute()
         assert(vmeCount == 1, "should have 1 VirtualMachineError")
-        assert(status.isCompleted, "status.isCompleted should be true after distributor.execute(), but we got false")
-        assert(!status.succeeds, "status.succeeds should be false after distributor.execute(), but we got false")
+        assert(status.isCompleted(), "status.isCompleted should be true after distributor.execute(), but we got false")
+        assert(!status.succeeds(), "status.succeeds should be false after distributor.execute(), but we got false")
       }
       else Succeeded
     }
@@ -123,11 +123,11 @@ class StatusProp extends AllSuiteProp {
         val distributor = new DelayExecutionDistributor
         val recordingReporter = new EventRecordingReporter
         val status = suite.testRunTest(Args(recordingReporter, distributor = Some(distributor), runTestInNewInstance = true))
-        assert(!status.isCompleted, "status.isCompleted should be false before distributor.execute(), but we got true")
+        assert(!status.isCompleted(), "status.isCompleted should be false before distributor.execute(), but we got true")
         val vmeCount = distributor.execute()
         assert(vmeCount == 1, "should have 1 VirtualMachineError")
-        assert(status.isCompleted, "status.isCompleted should be true after distributor.execute(), but we got false")
-        assert(!status.succeeds, "status.succeeds should be false after distributor.execute(), but we got false")
+        assert(status.isCompleted(), "status.isCompleted should be true after distributor.execute(), but we got false")
+        assert(!status.succeeds(), "status.succeeds should be false after distributor.execute(), but we got false")
       }
       else Succeeded
     }

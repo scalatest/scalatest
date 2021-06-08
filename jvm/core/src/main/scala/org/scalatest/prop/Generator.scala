@@ -4308,6 +4308,7 @@ object Generator {
         val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
         (canonicalsOfT.map(t => Set(t)), rnd1)
       }
+
       override def shrink(xs: Set[T], rnd: Randomizer): (RoseTree[Set[T]], Randomizer) = (NextRoseTree(xs), rnd)
 
       // Members declared in org.scalatest.prop.HavingSize
@@ -4433,6 +4434,7 @@ object Generator {
         val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
         (canonicalsOfT.map(t => SortedSet(t)), rnd1)
       }
+
       override def shrink(xs: SortedSet[T], rnd: Randomizer): (RoseTree[SortedSet[T]], Randomizer) = (NextRoseTree(xs), rnd)
 
       // Members declared in org.scalatest.prop.HavingSize
@@ -4563,6 +4565,7 @@ object Generator {
       }
 
       override def shrink(xs: Map[K, V], rnd: Randomizer): (RoseTree[Map[K, V]], Randomizer) = (NextRoseTree(xs), rnd)
+
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Map[K, V]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Map[K, V]] = {

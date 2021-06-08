@@ -20,20 +20,21 @@ import org.scalatest.Assertion
 import org.scalatest.verbs.{CompileWord, TypeCheckWord}
 
 import scala.quoted._
+import scala.compiletime.testing.Error
 
 object CompileMacro {
 
   // used by should compile syntax, delegate to assertCompileImpl to generate code
-  def shouldCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
-    org.scalatest.matchers.CompileMacro.assertCompileImpl(self, compileWord, pos)("should")
+  def shouldCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
+    org.scalatest.matchers.CompileMacro.assertCompileImpl(code, typeChecked, compileWord, pos)("should")
 
   // used by shouldNot compile syntax, delegate to assertNotCompileImpl to generate code
-  def shouldNotCompileImpl(self: Expr[Matchers#AnyShouldWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
-    org.scalatest.matchers.CompileMacro.assertNotCompileImpl(self, compileWord, pos)("should")
+  def shouldNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
+    org.scalatest.matchers.CompileMacro.assertNotCompileImpl(code, typeChecked, compileWord, pos)("should")
 
   // used by shouldNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
-  def shouldNotTypeCheckImpl(self: Expr[Matchers#AnyShouldWrapper[_]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
-    org.scalatest.matchers.CompileMacro.assertNotTypeCheckImpl(self, typeCheckWord, pos)("should")  
+  def shouldNotTypeCheckImpl(code: Expr[String], typeChecked: Expr[List[Error]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
+    org.scalatest.matchers.CompileMacro.assertNotTypeCheckImpl(code, typeChecked, typeCheckWord, pos)("should")  
   
 
 }

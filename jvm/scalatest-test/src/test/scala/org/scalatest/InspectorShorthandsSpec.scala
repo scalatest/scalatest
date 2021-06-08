@@ -266,11 +266,14 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
     it("should use Equality from 'shouldEqual'") {
       val xs = List(1, 1, 1)
       all (xs) shouldEqual 1 
-      implicit val e = new Equality[Int] {
-        def areEqual(a: Int, b: Any): Boolean = a != b
-      }
-      intercept[exceptions.TestFailedException] {
-        all (xs) should equal (1) 
+
+      {
+        implicit val e = new Equality[Int] {
+          def areEqual(a: Int, b: Any): Boolean = a != b
+        }
+        intercept[exceptions.TestFailedException] {
+          all (xs) should equal (1) 
+        }
       }
     }
     
@@ -321,22 +324,28 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
     it("should use Equality from 'should equal'") {
       val xs = List(1, 1, 1)
       all (xs) should equal (1) 
-      implicit val e = new Equality[Int] {
-        def areEqual(a: Int, b: Any): Boolean = a != b
-      }
-      intercept[exceptions.TestFailedException] {
-        all (xs) should equal (1) 
+
+      {
+        implicit val e = new Equality[Int] {
+          def areEqual(a: Int, b: Any): Boolean = a != b
+        }
+        intercept[exceptions.TestFailedException] {
+          all (xs) should equal (1) 
+        }
       }
     }
     
     it("should use Equality from 'should not equal'") {
       val xs = List(1, 1, 1)
       all (xs) should not equal (2) 
-      implicit val e = new Equality[Int] {
-        def areEqual(a: Int, b: Any): Boolean = a != b
-      }
-      intercept[exceptions.TestFailedException] {
-        all (xs) should not equal (2) 
+
+      {
+        implicit val e = new Equality[Int] {
+          def areEqual(a: Int, b: Any): Boolean = a != b
+        }
+        intercept[exceptions.TestFailedException] {
+          all (xs) should not equal (2) 
+        }
       }
     }
     
@@ -654,16 +663,18 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
+    // SKIP-DOTTY-START
     it("should allow be symbol to work with arbitrary objects") {
       case class Person(name: String, happy: Boolean)
-      all (List(Person("Fred", true), Person("Sally", true)) ) should be ('happy)
+      all (List(Person("Fred", true), Person("Sally", true)) ) should be (Symbol("happy"))
     }
+    // SKIP-DOTTY-END
 
     it("should throw TestFailedException with correct stack depth and message when 'be symbol' failed") {
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("", "boom!", ""))
         val e2 = intercept[exceptions.TestFailedException] {
-          all(col) should be ('empty) 
+          all(col) should be (Symbol("empty")) 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -686,7 +697,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("", "boom!", ""))
         val e2 = intercept[exceptions.TestFailedException] {
-          all (col) shouldBe 'empty 
+          all (col) shouldBe Symbol("empty") 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -709,7 +720,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("peace 1", "", "peace 2"))
         val e2 = intercept[exceptions.TestFailedException] {
-          all(col) should not be ('empty) 
+          all(col) should not be (Symbol("empty")) 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -785,7 +796,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("", "boom!", ""))
         val e2 = intercept[exceptions.TestFailedException] {
-          all(col) should be a 'empty 
+          all(col) should be a Symbol("empty") 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -809,7 +820,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("", "boom!", ""))
         val e2 = intercept[exceptions.TestFailedException] {
-          all(col) shouldBe a ('empty) 
+          all(col) shouldBe a (Symbol("empty")) 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -832,7 +843,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("", "boom!", ""))
         val e2 = intercept[exceptions.TestFailedException] {
-          all(col) should not be a ('empty) 
+          all(col) should not be a (Symbol("empty")) 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -903,7 +914,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("", "boom!", ""))
         val e2 = intercept[exceptions.TestFailedException] {
-          all(col) should be an 'empty 
+          all(col) should be an Symbol("empty") 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -926,7 +937,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("", "boom!", ""))
         val e2 = intercept[exceptions.TestFailedException] {
-          all(col) shouldBe an ('empty) 
+          all(col) shouldBe an (Symbol("empty")) 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -949,7 +960,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       forAll(nullableExamples) { colFun => 
         val col = colFun(Set("", "boom!", ""))
         val e2 = intercept[exceptions.TestFailedException] {
-          all(col) should not be an ('empty) 
+          all(col) should not be an (Symbol("empty")) 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -1536,7 +1547,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       forAll(traversableExamples) { colFun => 
         val col = colFun(Set(Set(), Set("boom!"), Set()))
         val e2 = intercept[exceptions.TestFailedException] {
-          all(col) should be ('empty) 
+          all(col) should be (Symbol("empty")) 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -1559,7 +1570,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       forAll(traversableExamples) { colFun => 
         val col = colFun(Set(Set(), Set("boom!"), Set()))
         val e2 = intercept[exceptions.TestFailedException] {
-          all(col) should not be 'empty 
+          all(col) should not be Symbol("empty") 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
@@ -1571,7 +1582,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-            tfe.message should be (Some(firstViolation + " was empty"))
+            tfe.message should be (Some(s"${firstViolation.toString()} was empty"))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -1618,7 +1629,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-            tfe.message should be (Some(firstViolation + " had length 0"))
+            tfe.message should be (Some(s"${firstViolation.toString()} had length 0"))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -1664,7 +1675,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           case tfe: exceptions.TestFailedException =>
             tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
             tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-            tfe.message should be (Some(firstViolation + " had size 0"))
+            tfe.message should be (Some(s"${firstViolation.toString()} had size 0"))
             tfe.getCause should be (null)
           case other => fail("Expected cause to be TestFailedException, but got: " + other)
         }
@@ -3669,12 +3680,12 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       import collection.JavaConverters._
       it("should do nothing if succeeds") {
         val jMap123: java.util.Map[Int, Int] = Map(1 -> 5, 2 -> 5, 3 -> 5).asJava
-        all (jMap123) should have ('value(5))
+        all (jMap123) should have (Symbol("value") (5))
       }
       it("should throw a TFE with a good error message if fails") {
         val jMap12345: java.util.Map[Int, Int] = javaMap(Entry(1, 5), Entry(2, 5), Entry(3, 5), Entry(4, 6), Entry(5, 5))
         val e = intercept[exceptions.TestFailedException] {
-          all(jMap12345) should have ('value(5))
+          all(jMap12345) should have (Symbol("value") (5))
         }
         e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 3))

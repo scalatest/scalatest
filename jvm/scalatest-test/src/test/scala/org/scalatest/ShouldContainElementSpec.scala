@@ -340,7 +340,7 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught = intercept[TestFailedException] {
            set should contain (3)
         }
-        assert(caught.getMessage === set + " did not contain element 3")
+        assert(caught.getMessage === s"${set.toString()} did not contain element 3")
       }
 
       it("should throw TestFailedException if set contains the specified element, when used with not") {
@@ -348,19 +348,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           set1 should not contain (2)
         }
-        assert(caught1.getMessage === set1 + " contained element 2")
+        assert(caught1.getMessage === s"${set1.toString()} contained element 2")
 
         val set2 = mutable.Set(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should not (contain (2))
         }
-        assert(caught2.getMessage === set2 + " contained element 2")
+        assert(caught2.getMessage === s"${set2.toString()} contained element 2")
 
         val set3 = mutable.Set(1, 2)
         val caught3 = intercept[TestFailedException] {
           set3 should (not contain (2))
         }
-        assert(caught3.getMessage === set3 + " contained element 2")
+        assert(caught3.getMessage === s"${set3.toString()} contained element 2")
       }
 
       it("should throw a TestFailedException when set doesn't contain the specified element and used in a logical-and expression") {
@@ -368,13 +368,13 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           set1 should { contain (5) and (contain (2 - 1)) }
         }
-        assert(caught1.getMessage === set1 + " did not contain element 5")
+        assert(caught1.getMessage === s"${set1.toString()} did not contain element 5")
 
         val set2 = mutable.Set(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should (contain (5) and contain (2 - 1))
         }
-        assert(caught2.getMessage === set2 + " did not contain element 5")
+        assert(caught2.getMessage === s"${set2.toString()} did not contain element 5")
       }
 
       it("should throw a TestFailedException when set doesn't contain the specified element and used in a logical-or expression") {
@@ -382,13 +382,13 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {(
           set1 should { contain (55) or (contain (22)) }
         )}
-        assert(caught1.getMessage === set1 + " did not contain element 55, and " + set1 + " did not contain element 22")
+        assert(caught1.getMessage === s"${set1.toString()} did not contain element 55, and ${set1.toString()} did not contain element 22")
 
         val set2 = mutable.Set(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should (contain (55) or contain (22))
         }
-        assert(caught2.getMessage === set2 + " did not contain element 55, and " + set2 + " did not contain element 22")
+        assert(caught2.getMessage === s"${set2.toString()} did not contain element 55, and ${set2.toString()} did not contain element 22")
       }
 
       it("should throw a TestFailedException when set contains the specified element and used in a logical-and expression with not") {
@@ -396,19 +396,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {(
           set1 should { not { contain (3) } and not { contain (2) }}
         )}
-        assert(caught1.getMessage === set1 + " did not contain element 3, but " + set1 + " contained element 2")
+        assert(caught1.getMessage === s"${set1.toString()} did not contain element 3, but ${set1.toString()} contained element 2")
         
         val set2 = mutable.Set(1, 2) 
         val caught2 = intercept[TestFailedException] {(
           set2 should ((not contain (3)) and (not contain (2))))
         }
-        assert(caught2.getMessage === set2 + " did not contain element 3, but " + set2 + " contained element 2")
+        assert(caught2.getMessage === s"${set2.toString()} did not contain element 3, but ${set2.toString()} contained element 2")
         
         val set3 = mutable.Set(1, 2) 
         val caught3 = intercept[TestFailedException] {(
           set3 should (not contain (3) and not contain (2)))
         }
-        assert(caught3.getMessage === set3 + " did not contain element 3, but " + set3 + " contained element 2")
+        assert(caught3.getMessage === s"${set3.toString()} did not contain element 3, but ${set3.toString()} contained element 2")
       }
 
       it("should throw a TestFailedException when set contains the specified element and used in a logical-or expression with not") {
@@ -416,19 +416,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {(
           set1 should { not { contain (2) } or not { contain (2) } }
         )}
-        assert(caught1.getMessage === set1 + " contained element 2, and " + set1 + " contained element 2")
+        assert(caught1.getMessage === s"${set1.toString()} contained element 2, and ${set1.toString()} contained element 2")
         
         val set2 = mutable.Set(1, 2) 
         val caught2 = intercept[TestFailedException] {(
           set2 should ((not contain (2)) or (not contain (2))))
         }
-        assert(caught2.getMessage === set2 + " contained element 2, and " + set2 + " contained element 2")
+        assert(caught2.getMessage === s"${set2.toString()} contained element 2, and ${set2.toString()} contained element 2")
         
         val set3 = mutable.Set(1, 2) 
         val caught3 = intercept[TestFailedException] {(
           set3 should (not contain (2) or not contain (2)))
         }
-        assert(caught3.getMessage === set3 + " contained element 2, and " + set3 + " contained element 2")
+        assert(caught3.getMessage === s"${set3.toString()} contained element 2, and ${set3.toString()} contained element 2")
       }
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -612,7 +612,7 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught = intercept[TestFailedException] {
           HashSet(1, 2) should contain (3)
         }
-        assert(caught.getMessage === HashSet(1, 2) + " did not contain element 3")
+        assert(caught.getMessage === s"${HashSet(1, 2).toString()} did not contain element 3")
       }
 
       it("should throw TestFailedException if set contains the specified element, when used with not") {
@@ -620,17 +620,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should not contain (2)
         }
-        assert(caught1.getMessage === HashSet(1, 2) + " contained element 2")
+        assert(caught1.getMessage === s"${HashSet(1, 2).toString()} contained element 2")
 
         val caught2 = intercept[TestFailedException] {
           HashSet(1, 2) should not (contain (2))
         }
-        assert(caught2.getMessage === HashSet(1, 2) + " contained element 2")
+        assert(caught2.getMessage === s"${HashSet(1, 2).toString()} contained element 2")
 
         val caught3 = intercept[TestFailedException] {
           HashSet(1, 2) should (not contain (2))
         }
-        assert(caught3.getMessage === HashSet(1, 2) + " contained element 2")
+        assert(caught3.getMessage === s"${HashSet(1, 2).toString()} contained element 2")
       }
 
       it("should throw a TestFailedException when set doesn't contain the specified element and used in a logical-and expression") {
@@ -638,12 +638,12 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should { contain (5) and (contain (2 - 1)) }
         }
-        assert(caught1.getMessage === HashSet(1, 2) + " did not contain element 5")
+        assert(caught1.getMessage === s"${HashSet(1, 2).toString()} did not contain element 5")
 
         val caught2 = intercept[TestFailedException] {
           HashSet(1, 2) should (contain (5) and contain (2 - 1))
         }
-        assert(caught2.getMessage === HashSet(1, 2) + " did not contain element 5")
+        assert(caught2.getMessage === s"${HashSet(1, 2).toString()} did not contain element 5")
       }
 
       it("should throw a TestFailedException when set doesn't contain the specified element and used in a logical-or expression") {
@@ -651,12 +651,12 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should { contain (55) or (contain (22)) }
         }
-        assert(caught1.getMessage === HashSet(1, 2) + " did not contain element 55, and " + HashSet(1, 2) + " did not contain element 22")
+        assert(caught1.getMessage === s"${HashSet(1, 2).toString()} did not contain element 55, and ${HashSet(1, 2).toString()} did not contain element 22")
 
         val caught2 = intercept[TestFailedException] {
           HashSet(1, 2) should (contain (55) or contain (22))
         }
-        assert(caught2.getMessage === HashSet(1, 2) + " did not contain element 55, and " + HashSet(1, 2) + " did not contain element 22")
+        assert(caught2.getMessage === s"${HashSet(1, 2).toString()} did not contain element 55, and ${HashSet(1, 2).toString()} did not contain element 22")
       }
 
       it("should throw a TestFailedException when set contains the specified element and used in a logical-and expression with not") {
@@ -664,17 +664,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should { not { contain (3) } and not { contain (2) }}
         }
-        assert(caught1.getMessage === HashSet(1, 2) + " did not contain element 3, but " + HashSet(1, 2) + " contained element 2")
+        assert(caught1.getMessage === s"${HashSet(1, 2).toString()} did not contain element 3, but ${HashSet(1, 2).toString()} contained element 2")
 
         val caught2 = intercept[TestFailedException] {
           HashSet(1, 2) should ((not contain (3)) and (not contain (2)))
         }
-        assert(caught2.getMessage === HashSet(1, 2) + " did not contain element 3, but " + HashSet(1, 2) + " contained element 2")
+        assert(caught2.getMessage === s"${HashSet(1, 2).toString()} did not contain element 3, but ${HashSet(1, 2).toString()} contained element 2")
 
         val caught3 = intercept[TestFailedException] {
           HashSet(1, 2) should (not contain (3) and not contain (2))
         }
-        assert(caught3.getMessage === HashSet(1, 2) + " did not contain element 3, but " + HashSet(1, 2) + " contained element 2")
+        assert(caught3.getMessage === s"${HashSet(1, 2).toString()} did not contain element 3, but ${HashSet(1, 2).toString()} contained element 2")
       }
 
       it("should throw a TestFailedException when set contains the specified element and used in a logical-or expression with not") {
@@ -682,17 +682,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           HashSet(1, 2) should { not { contain (2) } or not { contain (2) }}
         }
-        assert(caught1.getMessage === HashSet(1, 2) + " contained element 2, and " + HashSet(1, 2) + " contained element 2")
+        assert(caught1.getMessage === s"${HashSet(1, 2).toString()} contained element 2, and ${HashSet(1, 2).toString()} contained element 2")
 
         val caught2 = intercept[TestFailedException] {
           HashSet(1, 2) should ((not contain (2)) or (not contain (2)))
         }
-        assert(caught2.getMessage === HashSet(1, 2) + " contained element 2, and " + HashSet(1, 2) + " contained element 2")
+        assert(caught2.getMessage === s"${HashSet(1, 2).toString()} contained element 2, and ${HashSet(1, 2).toString()} contained element 2")
 
         val caught3 = intercept[TestFailedException] {
           HashSet(1, 2) should (not contain (2) or not contain (2))
         }
-        assert(caught3.getMessage === HashSet(1, 2) + " contained element 2, and " + HashSet(1, 2) + " contained element 2")
+        assert(caught3.getMessage === s"${HashSet(1, 2).toString()} contained element 2, and ${HashSet(1, 2).toString()} contained element 2")
       }
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -745,7 +745,7 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught = intercept[TestFailedException] {
           set should contain (3)
         }
-        assert(caught.getMessage === set + " did not contain element 3")
+        assert(caught.getMessage === s"${set.toString()} did not contain element 3")
       }
 
       it("should throw TestFailedException if set contains the specified element, when used with not") {
@@ -753,19 +753,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           set1 should not contain (2)
         }
-        assert(caught1.getMessage === set1 + " contained element 2")
+        assert(caught1.getMessage === s"${set1.toString()} contained element 2")
 
         val set2 = mutable.HashSet(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should not (contain (2))
         }
-        assert(caught2.getMessage === set2 + " contained element 2")
+        assert(caught2.getMessage === s"${set2.toString()} contained element 2")
 
         val set3 = mutable.HashSet(1, 2)
         val caught3 = intercept[TestFailedException] {
           set3 should (not contain (2))
         }
-        assert(caught3.getMessage === set3 + " contained element 2")
+        assert(caught3.getMessage === s"${set3.toString()} contained element 2")
       }
 
       it("should throw a TestFailedException when set doesn't contain the specified element and used in a logical-and expression") {
@@ -773,13 +773,13 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
            set1 should { contain (5) and (contain (2 - 1)) }
         }
-        assert(caught1.getMessage === set1 + " did not contain element 5")
+        assert(caught1.getMessage === s"${set1.toString()} did not contain element 5")
         
         val set2 = mutable.HashSet(1, 2) 
         val caught2 = intercept[TestFailedException] {(
           set2 should (contain (5) and contain (2 - 1)))
         }
-        assert(caught2.getMessage === set2 + " did not contain element 5")
+        assert(caught2.getMessage === s"${set2.toString()} did not contain element 5")
       }
 
       it("should throw a TestFailedException when set doesn't contain the specified element and used in a logical-or expression") {
@@ -787,13 +787,13 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           set1 should { contain (55) or (contain (22)) }
         }
-        assert(caught1.getMessage === set1 + " did not contain element 55, and " + set1 + " did not contain element 22")
+        assert(caught1.getMessage === s"${set1.toString()} did not contain element 55, and " + set1 + " did not contain element 22")
 
         val set2 = mutable.HashSet(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should (contain (55) or contain (22))
         }
-        assert(caught2.getMessage === set2 + " did not contain element 55, and " + set2 + " did not contain element 22")
+        assert(caught2.getMessage === s"${set2.toString()} did not contain element 55, and " + set2 + " did not contain element 22")
       }
 
       it("should throw a TestFailedException when set contains the specified element and used in a logical-and expression with not") {
@@ -801,19 +801,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
            set1 should { not { contain (3) } and not { contain (2) }}
         }
-        assert(caught1.getMessage === set1 + " did not contain element 3, but " + set1 + " contained element 2")
+        assert(caught1.getMessage === s"${set1.toString()} did not contain element 3, but " + set1 + " contained element 2")
         
         val set2 = mutable.HashSet(1, 2) 
         val caught2 = intercept[TestFailedException] {(
           set2 should ((not contain (3)) and (not contain (2))))
         }
-        assert(caught2.getMessage === set2 + " did not contain element 3, but " + set2 + " contained element 2")
+        assert(caught2.getMessage === s"${set2.toString()} did not contain element 3, but " + set2 + " contained element 2")
         
         val set3 = mutable.HashSet(1, 2) 
         val caught3 = intercept[TestFailedException] {(
           set3 should (not contain (3) and not contain (2)))
         }
-        assert(caught3.getMessage === set3 + " did not contain element 3, but " + set3 + " contained element 2")
+        assert(caught3.getMessage === s"${set3.toString()} did not contain element 3, but " + set3 + " contained element 2")
       }
 
       it("should throw a TestFailedException when set contains the specified element and used in a logical-or expression with not") {
@@ -821,19 +821,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           set1 should { not { contain (2) } or not { contain (2) }}
         }
-        assert(caught1.getMessage === set1 + " contained element 2, and " + set1 + " contained element 2")
+        assert(caught1.getMessage === s"${set1.toString()} contained element 2, and " + set1 + " contained element 2")
 
         val set2 = mutable.HashSet(1, 2)
         val caught2 = intercept[TestFailedException] {
           set2 should ((not contain (2)) or (not contain (2)))
         }
-        assert(caught2.getMessage === set2 + " contained element 2, and " + set2 + " contained element 2")
+        assert(caught2.getMessage === s"${set2.toString()} contained element 2, and " + set2 + " contained element 2")
 
         val set3 = mutable.HashSet(1, 2)
         val caught3 = intercept[TestFailedException] {
           set3 should (not contain (2) or not contain (2))
         }
-        assert(caught3.getMessage === set3 + " contained element 2, and " + set3 + " contained element 2")
+        assert(caught3.getMessage === s"${set3.toString()} contained element 2, and " + set3 + " contained element 2")
       }
 
       // SKIP-SCALATESTJS,NATIVE-START

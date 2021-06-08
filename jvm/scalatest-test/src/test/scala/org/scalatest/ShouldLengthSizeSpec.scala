@@ -36,7 +36,7 @@ class ShouldLengthSizeSpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
     }
     val obj = new Lengthy(2)
 
-    implicit val lengthOfLengthy =
+    implicit val lengthOfLengthy: Length[Lengthy] with Size[Lengthy] =
       new Length[Lengthy] with Size[Lengthy] {
         def lengthOf(o: Lengthy): Long = o.length
         def sizeOf(o: Lengthy): Long = o.size
