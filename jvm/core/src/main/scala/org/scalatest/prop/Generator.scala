@@ -2113,26 +2113,27 @@ object Generator {
 
       case class NextRoseTree(value: NegZFiniteDouble) extends RoseTree[NegZFiniteDouble] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegZFiniteDouble]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(f: NegZFiniteDouble, acc: List[RoseTree[NegZFiniteDouble]]): List[RoseTree[NegZFiniteDouble]] = {
-            val fv = f.value
-            if (fv == 0.0) acc
-            else if (fv >= -1.0) Rose(NegZFiniteDouble(0.0)) :: acc
-            else if (!fv.isWhole) {
-              // Nearest whole numbers closer to zero
-              val nearest = NegZFiniteDouble.ensuringValid(fv.ceil)
-              shrinkLoop(nearest, NextRoseTree(nearest) :: acc)
-            }
-            else {
-              val sqrt: Double = -math.sqrt(fv.abs)
-              if (sqrt > -1.0) Rose(NegZFiniteDouble(0.0)) :: acc
-              else {
-                val whole = NegZFiniteDouble.ensuringValid(sqrt.ceil)
-                shrinkLoop(whole, NextRoseTree(whole) :: acc)
-              }
-            }
+          val dv = value.value
+          if (dv == 0.0) 
+            (List.empty, rndPassedToShrinks)
+          else if (dv > 1.0) 
+            (List(Rose(NegZFiniteDouble(0.0))), rndPassedToShrinks)
+          else if (!dv.isWhole) {
+            val n =
+              if (dv.isNaN)
+                Double.MinValue  
+              else 
+                dv
+            // Nearest whole numbers closer to zero
+            val nearest: Double = n.ceil
+            val half: Double = dv / 2.0
+            (List(nearest, half).distinct.map(i => NextRoseTree(NegZFiniteDouble.ensuringValid(i))), rndPassedToShrinks)
           }
-          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+          else {
+            val half: Double = dv / 2.0
+            val sqrt: Double = -(math.sqrt(dv.abs))
+            (List(half, sqrt).distinct.map(i => NextRoseTree(NegZFiniteDouble.ensuringValid(i))), rndPassedToShrinks)
+          }
         }
       }
 
