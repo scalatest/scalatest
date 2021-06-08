@@ -2192,7 +2192,23 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZDoubleGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shouldGrowWithForShrink(_.value)
+      }
+
+      it("should shrink NegZDouble by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegZDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegZDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegZFiniteDouble") {
