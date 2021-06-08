@@ -37,7 +37,7 @@ class LocationSpec extends AnyFunSpec {
       
     }
     test("fail") {
-      fail
+      fail()
     }
     test("pending") {
       pending
@@ -89,7 +89,7 @@ class LocationSpec extends AnyFunSpec {
     }
 
     def `test fail`: Unit = {
-      fail
+      fail()
     }
 
     def `test pending`: Unit = {

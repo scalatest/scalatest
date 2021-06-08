@@ -362,6 +362,7 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
       Prettifier.default(ab) should be ("<a/><b/>")
     }
     // SKIP-SCALATESTJS,NATIVE-END
+    // SKIP-DOTTY-START
     it("should handle runaway recursion gracefully, if not necessarily quickly") {
       /*
         You'd think no one would do this, but:
@@ -380,7 +381,7 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
         def iterator: Iterator[Fred] =
           new Iterator[Fred] {
             private var hasNextElement: Boolean = true
-            def next: Fred = {
+            def next(): Fred = {
               if (hasNextElement) {
                 hasNextElement = false
                 thisFred
@@ -395,6 +396,7 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
       }
       Prettifier.default(new Fred) shouldBe "It's Fred all the way down"
     }
+    // SKIP-DOTTY-END
   }
 }
 

@@ -127,6 +127,16 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
    */
   protected class ItWord {
 
+    private final def applyImpl(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */, pos: source.Position): Unit = {
+      // SKIP-SCALATESTJS,NATIVE-START
+      val stackDepth = 3
+      val stackDepthAdjustment = -2
+      // SKIP-SCALATESTJS,NATIVE-END
+      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
+      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
+      handleTest(thisSuite, testText, Transformer(() => testFun), Resources.itCannotAppearInsideAnotherItOrThey, "PathAnyFunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    }
+
     /**
      * Supports test registration.
      *
@@ -145,15 +155,14 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
+    // SKIP-DOTTY-START
     def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS,NATIVE-START
-      val stackDepth = 3
-      val stackDepthAdjustment = -2
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY val stackDepth = 5
-      //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-      handleTest(thisSuite, testText, Transformer(() => testFun), Resources.itCannotAppearInsideAnotherItOrThey, "PathAnyFunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+      applyImpl(testText, testTags: _*)(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testText, testTags: _*)(testFun, pos) }) } 
+    //DOTTY-ONLY }
     
     /**
      * Supports the registration of shared tests.
@@ -245,6 +254,10 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
    */
   protected class TheyWord {
 
+    private def applyImpl(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */, pos: source.Position): Unit = {
+      handleTest(thisSuite, testText, Transformer(() => testFun), Resources.theyCannotAppearInsideAnotherItOrThey, "PathAnyFunSpecLike.scala", "apply", 3, -2, None, Some(pos), testTags: _*)
+    }
+
     /**
      * Supports test registration.
      *
@@ -263,9 +276,14 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
+    // SKIP-DOTTY-START
     def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
-      handleTest(thisSuite, testText, Transformer(() => testFun), Resources.theyCannotAppearInsideAnotherItOrThey, "PathAnyFunSpecLike.scala", "apply", 3, -2, None, Some(pos), testTags: _*)
+      applyImpl(testText, testTags: _*)(testFun, pos)
     }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testText, testTags: _*)(testFun, pos) }) } 
+    //DOTTY-ONLY }
  
     /**
      * Supports the registration of shared tests.
@@ -328,6 +346,17 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
    * </p>
    */
   protected val they = new TheyWord
+
+  private final def ignoreImpl(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */, pos: source.Position): Unit = {
+    // SKIP-SCALATESTJS,NATIVE-START
+    val stackDepth = 4
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
+    // Might not actually register it. Only will register it if it is its turn.
+    handleIgnoredTest(testText, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, "PathAnyFunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+  }
   
   /**
    * Supports registration of a test to ignore.
@@ -348,31 +377,16 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
+  // SKIP-DOTTY-START
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS,NATIVE-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -2
-    // SKIP-SCALATESTJS,NATIVE-END
-    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
-    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
-    // Might not actually register it. Only will register it if it is its turn.
-    handleIgnoredTest(testText, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, "PathAnyFunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    ignoreImpl(testText, testTags: _*)(testFun, pos)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def ignore(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
   
-  /**
-   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
-   * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
-   * (defined with <code>it</code>).
-   *
-   * <p>
-   * This class's implementation of this method will decide whether to
-   * register the description text and invoke the passed function
-   * based on whether or not this is part of the current "test path." For the details on this process, see
-   * the <a href="#howItExecutes">How it executes</a> section of the main documentation for trait
-   * <code>org.scalatest.funspec.PathAnyFunSpec</code>.
-   * </p>
-   */
-  protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  private final def describeImpl(description: String)(fun: => Unit, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
     // SKIP-SCALATESTJS,NATIVE-END
@@ -389,6 +403,28 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
       case other: Throwable => throw other
     }
   }
+
+  /**
+   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
+   * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
+   * (defined with <code>it</code>).
+   *
+   * <p>
+   * This class's implementation of this method will decide whether to
+   * register the description text and invoke the passed function
+   * based on whether or not this is part of the current "test path." For the details on this process, see
+   * the <a href="#howItExecutes">How it executes</a> section of the main documentation for trait
+   * <code>org.scalatest.funspec.PathAnyFunSpec</code>.
+   * </p>
+   */
+  // SKIP-DOTTY-START
+  protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+    describeImpl(description)(fun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def describe(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => describeImpl(description)(fun, pos) }) }
+  //DOTTY-ONLY }
   
   /**
    * Supports shared test registration in <code>PathAnyFunSpec</code>s.

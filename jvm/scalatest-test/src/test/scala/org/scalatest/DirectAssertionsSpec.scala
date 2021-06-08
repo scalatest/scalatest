@@ -6171,8 +6171,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when type check passed") {
         val e = intercept[TestFailedException] {
           org.scalatest.Assertions.assertTypeError(
@@ -6185,10 +6183,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-      // SKIP-DOTTY-END
-
-      // SKIP-DOTTY-START
-      // no parse error support in Dotty
       it("should throw TestFailedException with correct message and stack depth when parse failed ") {
         val e = intercept[TestFailedException] {
           org.scalatest.Assertions.assertTypeError(
@@ -6203,7 +6197,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
-      // SKIP-DOTTY-END
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
       org.scalatest.Assertions.assert(assertTypeError("val x: String = 1") eq Succeeded)
@@ -6251,8 +6244,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when parse and type check passed") {
         val e = intercept[TestFailedException] {
           org.scalatest.Assertions.assertDoesNotCompile(
@@ -6265,7 +6256,6 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-      // SKIP-DOTTY-END
 
       it("should do nothing when parse failed ") {
         org.scalatest.Assertions.assertDoesNotCompile(
@@ -6426,11 +6416,12 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assertResult("hi") { n1 }
       }
       val a1 = Array(1, 2, 3)
+      val aNull: Array[Int] = null
       intercept[TestFailedException] {
-        org.scalatest.Assertions.assertResult(n1) { a1 }
+        org.scalatest.Assertions.assertResult(aNull) { a1 }
       }
       intercept[TestFailedException] {
-        org.scalatest.Assertions.assertResult(a1) { n1 }
+        org.scalatest.Assertions.assertResult(a1) { aNull }
       }
       val a = "hi"
       val e1 = intercept[TestFailedException] {
@@ -6493,11 +6484,12 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assertResult("hi", "a clue") { n1 }
       }
       val a1 = Array(1, 2, 3)
+      val aNull: Array[Int] = null
       intercept[TestFailedException] {
-        org.scalatest.Assertions.assertResult(n1, "a clue") { a1 }
+        org.scalatest.Assertions.assertResult(aNull, "a clue") { a1 }
       }
       intercept[TestFailedException] {
-        org.scalatest.Assertions.assertResult(a1, "a clue") { n1 }
+        org.scalatest.Assertions.assertResult(a1, "a clue") { aNull }
       }
       val a = "hi"
       val e1 = intercept[TestFailedException] {

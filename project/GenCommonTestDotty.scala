@@ -137,27 +137,25 @@ object GenCommonTestDotty {
   }
 
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyFiles("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir,
+    copyDir("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, 
       List(
-        "mytags.scala", 
-        "StubReporter.scala"
+        "LineNumberHelper.scala", 
+        "LineNumberMacro.scala"
       )
-    )
-    /*++
-      copyDir("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
-        List("ExampleLikeSpecs.scala"), targetDir)*/
+    ) ++
+    copyDir("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty)
   }
 
   def genMainJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyFiles("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir,
+    copyDirJS("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir,
       List(
-        "mytags.scala", 
-        "StubReporter.scala"
+        "LineNumberHelper.scala", 
+        "LineNumberMacro.scala", 
+        "TestConcurrentDistributor.scala"
       )
     ) ++
-    copyDirJS("dotty/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List("TestConcurrentDistributor.scala")) ++
-    /*copyFiles("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, 
-      List("ExampleLikeSpecs.scala")) ++  */
+    copyDirJS("dotty/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
+    copyDirJS("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++ 
     copyDirJS("js/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty)
   }
 

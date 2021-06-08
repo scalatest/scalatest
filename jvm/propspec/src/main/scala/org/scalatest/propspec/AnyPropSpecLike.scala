@@ -89,7 +89,7 @@ trait AnyPropSpecLike extends TestSuite with TestRegistration with Informing wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  private final def registerTestImpl(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS,NATIVE-END
@@ -97,12 +97,40 @@ trait AnyPropSpecLike extends TestSuite with TestRegistration with Informing wit
     engine.registerTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyPropSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  // SKIP-DOTTY-START
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    registerTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def registerIgnoredTestImpl(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -4
     engine.registerIgnoredTest(testText, Transformer(() => testFun), Resources.testCannotBeNestedInsideAnotherTest, "AnyPropSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
+  }
+
+  // SKIP-DOTTY-START
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def propertyImpl(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
+    // SKIP-SCALATESTJS,NATIVE-START
+    val stackDepth = 4
+    val stackDepthAdjustment = -2
+    // SKIP-SCALATESTJS,NATIVE-END
+    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
+    engine.registerTest(testName, Transformer(() => testFun), Resources.propertyCannotAppearInsideAnotherProperty, "AnyPropSpecLike.scala", "property", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   /**
@@ -119,14 +147,23 @@ trait AnyPropSpecLike extends TestSuite with TestRegistration with Informing wit
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    * @throws NullArgumentException if <code>testName</code> or any passed test tag is <code>null</code>
    */
+  // SKIP-DOTTY-START
   protected def property(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
+    propertyImpl(testName, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def property(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => propertyImpl(testName, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def ignoreImpl(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
     val stackDepth = 4
-    val stackDepthAdjustment = -2
+    val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
-    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -6
-    engine.registerTest(testName, Transformer(() => testFun), Resources.propertyCannotAppearInsideAnotherProperty, "AnyPropSpecLike.scala", "property", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
+    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -7
+    engine.registerIgnoredTest(testName, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAProperty, "AnyPropSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
@@ -144,15 +181,14 @@ trait AnyPropSpecLike extends TestSuite with TestRegistration with Informing wit
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
+  // SKIP-DOTTY-START
   protected def ignore(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS,NATIVE-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS,NATIVE-END
-    //SCALATESTJS,NATIVE-ONLY val stackDepth = 6
-    //SCALATESTJS,NATIVE-ONLY val stackDepthAdjustment = -7
-    engine.registerIgnoredTest(testName, Transformer(() => testFun), Resources.ignoreCannotAppearInsideAProperty, "AnyPropSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
+    ignoreImpl(testName, testTags: _*)(testFun, pos)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def ignore(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testName, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
   * An immutable <code>Set</code> of test names. If this <code>AnyPropSpec</code> contains no tests, this method returns an empty <code>Set</code>.

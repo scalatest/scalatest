@@ -20,6 +20,7 @@ import org.scalatest.Assertion
 import org.scalatest.verbs.{CompileWord, TypeCheckWord}
 
 import scala.quoted._
+import scala.compiletime.testing.Error
 
 object CompileMacro {
 
@@ -32,7 +33,7 @@ object CompileMacro {
     org.scalatest.matchers.CompileMacro.assertNotCompileImpl(code, typeChecked, compileWord, pos)("must")  
 
   // used by mustNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
-  def mustNotTypeCheckImpl(code: Expr[String], typeChecked: Expr[Boolean], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
+  def mustNotTypeCheckImpl(code: Expr[String], typeChecked: Expr[List[Error]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
     org.scalatest.matchers.CompileMacro.assertNotTypeCheckImpl(code, typeChecked, typeCheckWord, pos)("must")
 
 }

@@ -37,8 +37,6 @@ class AsyncFreeSpecSpec extends funspec.AnyFunSpec {
 
   describe("AsyncFreeSpec") {
 
-    // SKIP-DOTTY-START
-    // ParallelTestExecution not working yet.
     it("can be used for tests that return Future under parallel async test execution") {
 
       class ExampleSpec extends AsyncFreeSpec with ParallelTestExecution {
@@ -148,7 +146,6 @@ class AsyncFreeSpecSpec extends funspec.AnyFunSpec {
       assert(rep.testIgnoredEventsReceived.length == 1)
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
-    // SKIP-DOTTY-END
 
     it("can be used with is for pending tests that don't return a Future") {
 
