@@ -1426,6 +1426,7 @@ class FitxureAnyFlatSpecSpec extends scalatest.funspec.AnyFunSpec {
         it should "do something" in { fixture => /* ASSERTION_SUCCEED */ }
       }
       val a = new SpecA
+
       a.run(None, Args(SilentReporter))
       assert(a.correctTestNameWasPassed)
     }
@@ -1440,6 +1441,7 @@ class FitxureAnyFlatSpecSpec extends scalatest.funspec.AnyFunSpec {
         it should "do something" in { fixture => /* ASSERTION_SUCCEED */ }
       }
       val a = new SpecA
+
       a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
       assert(a.correctConfigMapWasPassed)
     }
