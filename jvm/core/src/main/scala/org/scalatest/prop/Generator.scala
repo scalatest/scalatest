@@ -1994,8 +1994,8 @@ object Generator {
             (List.empty, rndPassedToShrinks)
           else {
             val half: Int = value / 2
-            val minusOne: Int = value + 1
-            (List(half, minusOne).filter(_ < 0).distinct.map(i => NextRoseTree(NegInt.ensuringValid(i))), rndPassedToShrinks)
+            val plusOne: Int = value + 1
+            (List(half, plusOne).filter(_ < 0).distinct.map(i => NextRoseTree(NegInt.ensuringValid(i))), rndPassedToShrinks)
           }
         }
       } // TODO Confirm OK with no Roses.
@@ -2026,16 +2026,13 @@ object Generator {
 
       case class NextRoseTree(value: NegLong) extends RoseTree[NegLong] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegLong]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: NegLong, acc: List[RoseTree[NegLong]]): List[RoseTree[NegLong]] = {
-            val half: Long = i / 2
-            if (half == 0) acc
-            else {
-              val negLongHalf = NegLong.ensuringValid(half)
-              shrinkLoop(negLongHalf, NextRoseTree(negLongHalf) :: acc)
-            }
+          if (value.value == -1L)
+            (List.empty, rndPassedToShrinks)
+          else {
+            val half: Long = value / 2L
+            val plusOne: Long = value + 1L
+            (List(half, plusOne).filter(_ < 0L).distinct.map(i => NextRoseTree(NegLong.ensuringValid(i))), rndPassedToShrinks)
           }
-          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       } // TODO: Confirm OK with no Roses.
 
