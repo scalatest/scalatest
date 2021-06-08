@@ -2299,17 +2299,13 @@ object Generator {
 
       case class NextRoseTree(value: NegZLong) extends RoseTree[NegZLong] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegZLong]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: NegZLong, acc: List[RoseTree[NegZLong]]): List[RoseTree[NegZLong]] = {
-            if (i.value == 0)
-              acc
-            else {
-              val half: Long = i / 2
-              val negLongHalf = NegZLong.ensuringValid(half)
-              shrinkLoop(negLongHalf, NextRoseTree(negLongHalf) :: acc)
-            }
+          if (value.value == 0L)
+            (List.empty, rndPassedToShrinks)
+          else {
+            val half: Long = value / 2L
+            val plusOne: Long = value + 1L
+            (List(half, plusOne).filter(_ <= 0L).distinct.map(i => NextRoseTree(NegZLong.ensuringValid(i))), rndPassedToShrinks)
           }
-          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       } // TODO Confirm OK no Rose.
 
