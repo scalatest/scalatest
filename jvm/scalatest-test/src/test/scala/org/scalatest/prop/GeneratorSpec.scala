@@ -4243,12 +4243,6 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val genLine = for { color <- genColor } yield Line(color)
       val genCircle = for { color <- genColor } yield Circle(color)
       
-      /*lazy val genShape = evenly[Shape](genLine, genCircle, genBox)
-      lazy val genBox: Generator[Box] = for {
-        color <- genColor
-        shape <- genShape
-      } yield Box(color, shape)*/
-      
       // SKIP-DOTTY-START
       """
       lazy val genShape = evenly(genLine, genCircle, genBox)
