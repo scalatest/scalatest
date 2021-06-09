@@ -2865,7 +2865,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (FiniteDouble.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = finiteDoubleGenerator
         val rnd = Randomizer.default
@@ -2921,6 +2921,30 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (a1, ae1, ar1) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = initEdges, rnd = ier)
         val (a2, _, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         List(a1, a2).map(_.value) should contain theSameElementsAs List(NumericChar('0'), NumericChar('9'))
+      }
+
+      it("should have legitimate canonicals") {
+        import Generator._
+        val gen = numericCharGenerator
+        val rnd = Randomizer.default
+        gen.canonicals(rnd).shouldGrowWith(_.value)
+      }
+
+      it("should shrink FiniteDoubles with an algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NumericChar]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NumericChar] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == '0')
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value.toInt should be < i.value.toInt  
+            }  
+          }
+        }
       }
     }
 
