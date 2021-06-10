@@ -2375,49 +2375,18 @@ object Generator {
     new Generator[String] {
       private val stringEdges = List("")
 
-      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: String) extends RoseTree[String] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[String]], Randomizer) = {
-          val s = value
-          val rootRoseTree =
-            if (value.isEmpty) Rose(value)
-            else
-              new RoseTree[String] {
-                val value: String = s
-
-                def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[String]], Randomizer) = {
-
-                  val lowerAlphaChars = "abcdefghikjlmnopqrstuvwxyz"
-                  val upperAlphaChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                  val numericChars = "0123456789"
-                  val (lowerCharIndex, rnd1) = rndPassedToShrinks.chooseInt(0, lowerAlphaChars.length - 1)
-                  val (upperCharIndex, rnd2) = rnd1.chooseInt(0, upperAlphaChars.length - 1)
-                  val (numericCharIndex, rnd3) = rnd1.chooseInt(0, numericChars.length - 1)
-                  val lowerChar = lowerAlphaChars(lowerCharIndex)
-                  val upperChar = upperAlphaChars(upperCharIndex)
-                  val numericChar = numericChars(numericCharIndex)
-                  val candidateChars: List[Char] = List(lowerChar, upperChar, numericChar) ++ s.distinct.toList
-                  val candidateStrings: List[Rose[String]] = candidateChars.map(c => Rose(c.toString))
-
-                  val lastBatch = {
-                    val it = {
-                      new Iterator[String] {
-                        private var nextString = s.take(2)
-                        def hasNext: Boolean = nextString.length < s.length
-                        def next(): String = {
-                          val result = nextString
-                          nextString = s.take(result.length * 2)
-                          result
-                        }
-                      }
-                    }
-                    it.toList.map(s => Rose(s))
-                  }
-
-                  ((List(Rose("")) ++ candidateStrings ++ lastBatch).reverse, rnd3)
-                }
-              }
-          rootRoseTree.shrinks(rndPassedToShrinks)
+          if (value.isEmpty)
+            (List.empty, rndPassedToShrinks)
+          else {
+            val halfSize = value.length / 2
+            val firstHalf = value.take(halfSize)
+            val secondHalf = value.drop(halfSize)
+            val tail = value.tail
+            val init = value.init
+            (List(NextRoseTree(firstHalf), NextRoseTree(secondHalf), NextRoseTree(tail), NextRoseTree(init)).distinct, rndPassedToShrinks)
+          }
         }
       }
 

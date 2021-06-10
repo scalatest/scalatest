@@ -2992,34 +2992,19 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (s5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = r4)
         s5.value.length shouldBe 100
       }
-      it("should shrink Strings using strategery") {
+      it("should shrink String with an algo towards empty string") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[String]) =>
-          val s = shrinkRoseTree.value
-          val shrinks: List[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
-          if (s.isEmpty)
+          val i = shrinkRoseTree.value
+          val shrinks: List[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i == "")
             shrinks shouldBe empty
           else {
-            shrinks(0) shouldBe ""
-            shrinks(1) should have length 1
-            shrinks(1).head should (be >= 'a' and be <= 'z')
-            shrinks(2) should have length 1
-            shrinks(2).head should (be >= 'A' and be <= 'Z')
-            shrinks(3) should have length 1
-            shrinks(3).head should (be >= '0' and be <= '9')
-  
-            val theChars = shrinks.drop(4)
-            val distincts: List[String] = s.distinct.toList.map(_.toString)
-            theChars.take(distincts.length).toList shouldEqual distincts
-  
-            val theHalves = shrinks.drop(4 + distincts.length)
-            if (theHalves.length > 1) {
-              import org.scalatest.Inspectors
-              val zipped = theHalves.zip(theHalves.tail) 
-              Inspectors.forAll (zipped) { case (s, t) => 
-                s.length should be < t.length
-              }
-            } else succeed
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.length should be < i.length  
+            }  
           }
         }
       }
