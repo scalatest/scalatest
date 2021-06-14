@@ -20,19 +20,20 @@ import org.scalatest.Assertion
 import org.scalatest.verbs.{CompileWord, TypeCheckWord}
 
 import scala.quoted._
+import scala.compiletime.testing.Error
 
 object CompileMacro {
 
   // used by must compile syntax, delegate to assertCompileImpl to generate code
-  def mustCompileImpl(self: Expr[Matchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
-    org.scalatest.matchers.CompileMacro.assertCompileImpl(self, compileWord, pos)("must")
+  def mustCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
+    org.scalatest.matchers.CompileMacro.assertCompileImpl(code, typeChecked, compileWord, pos)("must")
 
   // used by mustNot compile syntax, delegate to assertNotCompileImpl to generate code
-  def mustNotCompileImpl(self: Expr[Matchers#AnyMustWrapper[_]], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
-    org.scalatest.matchers.CompileMacro.assertNotCompileImpl(self, compileWord, pos)("must")  
+  def mustNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean], compileWord: Expr[CompileWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
+    org.scalatest.matchers.CompileMacro.assertNotCompileImpl(code, typeChecked, compileWord, pos)("must")  
 
   // used by mustNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
-  def mustNotTypeCheckImpl(self: Expr[Matchers#AnyMustWrapper[_]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
-    org.scalatest.matchers.CompileMacro.assertNotTypeCheckImpl(self, typeCheckWord, pos)("must")
+  def mustNotTypeCheckImpl(code: Expr[String], typeChecked: Expr[List[Error]], typeCheckWord: Expr[TypeCheckWord])(pos: Expr[source.Position])(using Quotes): Expr[Assertion] =
+    org.scalatest.matchers.CompileMacro.assertNotTypeCheckImpl(code, typeChecked, typeCheckWord, pos)("must")
 
 }

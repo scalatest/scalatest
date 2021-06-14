@@ -73,7 +73,7 @@ trait StackBehaviors { this: PathAnyFunSpec =>
     it("should remove the top item on pop") {
       val stack = newStack
       val size = stack.size
-      assert(stack.pop === lastItemAdded)
+      assert(stack.pop() === lastItemAdded)
       assert(stack.size === size - 1)
     }
   }
@@ -119,7 +119,7 @@ class StackSpec extends PathAnyFunSpec with StackBehaviors {
 
       it("should complain on pop") {
         intercept[IllegalStateException] {
-          stack.pop
+          stack.pop()
         }
       }
     }

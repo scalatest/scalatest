@@ -226,29 +226,13 @@ trait TimeLimits {
    * @param pos the <code>Position</code> of the caller site
    * @param timed the <code>Timed</code> type class that provides the behavior implementation of the timing restriction.
    */
+  // SKIP-DOTTY-START 
   def failAfter[T](timeout: Span)(fun: => T)(implicit signaler: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = {
-    failAfterImpl(timeout, signaler, prettifier, Some(pos), getStackDepthFun(pos))(fun)(timed)
+    TimeLimits.failAfterImpl(timeout, signaler, prettifier, Some(pos), getStackDepthFun(pos))(fun)(timed)
   }
-
-  private[scalatest] def failAfterImpl[T](timeout: Span, signaler: Signaler, prettifier: Prettifier, pos: Option[source.Position], stackDepthFun: StackDepthException => Int)(fun: => T)(implicit timed: Timed[T]): T = {
-    val stackTraceElements = Thread.currentThread.getStackTrace()
-    timed.timeoutAfter(
-      timeout,
-      fun,
-      signaler,
-      (cause: Option[Throwable]) => {
-        val e = new TestFailedDueToTimeoutException(
-          (_: StackDepthException) => Some(FailureMessages.timeoutFailedAfter(prettifier, UnquotedString(timeout.prettyString))),
-          cause,
-          posOrElseStackDepthFun(pos, stackDepthFun),
-          None,
-          timeout
-        )
-        e.setStackTrace(stackTraceElements)
-        e
-      }
-    )
-  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY final inline def failAfter[T](timeout: Span)(fun: => T)(implicit signaler: Signaler, prettifier: Prettifier = implicitly[Prettifier], timed: Timed[T] = implicitly[Timed[T]]): T = 
+  //DOTTY-ONLY   ${ TimeLimits.failAfterMacro('{timeout}, '{signaler}, '{prettifier}, '{fun}, '{timed}) }
 
   // TODO: Consider creating a TestCanceledDueToTimeoutException
   /**
@@ -273,9 +257,52 @@ trait TimeLimits {
    * @param pos the <code>Position</code> of the caller site
    * @param timed the <code>Timed</code> type class that provides the behavior implementation of the timing restriction.
    */
+  // SKIP-DOTTY-START 
   def cancelAfter[T](timeout: Span)(fun: => T)(implicit signaler: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = {
-    cancelAfterImpl(timeout, signaler, prettifier, Some(pos), getStackDepthFun(pos))(fun)(timed)
+    TimeLimits.cancelAfterImpl(timeout, signaler, prettifier, Some(pos), getStackDepthFun(pos))(fun)(timed)
   }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY final inline def cancelAfter[T](timeout: Span)(fun: => T)(implicit signaler: Signaler, prettifier: Prettifier = implicitly[Prettifier], timed: Timed[T] = implicitly[Timed[T]]): T = 
+  //DOTTY-ONLY   ${ TimeLimits.cancelAfterMacro('{timeout}, '{signaler}, '{prettifier}, '{fun}, '{timed}) }
+}
+
+/**
+ * Companion object that facilitates the importing of <code>Timeouts</code> members as 
+ * an alternative to mixing in the trait. One use case is to import <code>Timeouts</code>'s members so you can use
+ * them in the Scala interpreter.
+ */
+object TimeLimits extends TimeLimits {
+
+  private[scalatest] def failAfterImpl[T](timeout: Span, signaler: Signaler, prettifier: Prettifier, pos: Option[source.Position], stackDepthFun: StackDepthException => Int)(fun: => T)(implicit timed: Timed[T]): T = {
+    val stackTraceElements = Thread.currentThread.getStackTrace()
+    timed.timeoutAfter(
+      timeout,
+      fun,
+      signaler,
+      (cause: Option[Throwable]) => {
+        val e = new TestFailedDueToTimeoutException(
+          (_: StackDepthException) => Some(FailureMessages.timeoutFailedAfter(prettifier, UnquotedString(timeout.prettyString))),
+          cause,
+          posOrElseStackDepthFun(pos, stackDepthFun),
+          None,
+          timeout
+        )
+        e.setStackTrace(stackTraceElements)
+        e
+      }
+    )
+  }
+
+  //DOTTY-ONLY import scala.quoted._
+
+  //DOTTY-ONLY private[concurrent] def failAfterMacro[T](timeout: Expr[Span], signaler: Expr[Signaler], prettifier: Expr[Prettifier], fun: Expr[T], timed: Expr[Timed[T]])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
+  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
+  //DOTTY-ONLY   val file = pos.sourceFile
+  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
+  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
+  //DOTTY-ONLY   '{failAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})), getStackDepthFun(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})))(${fun})(${timed})}
+  //DOTTY-ONLY }
 
   private[scalatest] def cancelAfterImpl[T](timeout: Span, signaler: Signaler, prettifier: Prettifier, pos: Option[source.Position], stackDepthFun: StackDepthException => Int)(fun: => T)(implicit timed: Timed[T]): T = {
     val stackTraceElements = Thread.currentThread.getStackTrace()
@@ -295,11 +322,16 @@ trait TimeLimits {
       }
     )
   }
-}
 
-/**
- * Companion object that facilitates the importing of <code>Timeouts</code> members as 
- * an alternative to mixing in the trait. One use case is to import <code>Timeouts</code>'s members so you can use
- * them in the Scala interpreter.
- */
-object TimeLimits extends TimeLimits
+  //DOTTY-ONLY import scala.quoted._
+
+  //DOTTY-ONLY private[concurrent] def cancelAfterMacro[T](timeout: Expr[Span], signaler: Expr[Signaler], prettifier: Expr[Prettifier], fun: Expr[T], timed: Expr[Timed[T]])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
+  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
+  //DOTTY-ONLY   val file = pos.sourceFile
+  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
+  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
+  //DOTTY-ONLY   '{cancelAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})), getStackDepthFun(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})))(${fun})(${timed})}
+  //DOTTY-ONLY }
+
+}

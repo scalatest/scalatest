@@ -31,6 +31,6 @@ class TestLocationTestNGSuite extends TestNGSuite with TestLocationServices {
   
   @Test
   def testFail(): Unit = { 
-    fail
+    fail()
   }
 }

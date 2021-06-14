@@ -396,7 +396,7 @@ class FunSpecSpec extends scalatest.freespec.AnyFreeSpec with GivenWhenThen {
     case class TestWasCalledCounts(var theTestThisCalled: Boolean, var theTestThatCalled: Boolean)
     
     class TestWasCalledSuite(val counts: TestWasCalledCounts) extends PathAnyFunSpec {
-      def this() { this(TestWasCalledCounts(false, false)) }
+      def this() = { this(TestWasCalledCounts(false, false)) }
       it("should run this") { counts.theTestThisCalled = true }
       it("should run that, maybe") { counts.theTestThatCalled = true }
       override def newInstance = new TestWasCalledSuite(counts)
@@ -493,7 +493,7 @@ class FunSpecSpec extends scalatest.freespec.AnyFreeSpec with GivenWhenThen {
       // If I provide a specific testName to run, then it should ignore an Ignore on that test
       // method and actually invoke it.
       class EFunSpec(val counts: TestWasCalledCounts) extends PathAnyFunSpec {
-        def this() { this(TestWasCalledCounts(false, false)) }
+        def this() = { this(TestWasCalledCounts(false, false)) }
         ignore("test this") { counts.theTestThisCalled = true }
         it("test that") { counts.theTestThatCalled = true }
         override def newInstance = new EFunSpec(counts)

@@ -139,15 +139,15 @@ class ShouldBeShorthandSpec extends AnyFunSpec with EmptyMocks with BookProperty
     // SKIP-SCALATESTJS,NATIVE-START
     it("should work with symbol") {
       
-      emptyMock shouldBe 'empty
-      isEmptyMock shouldBe 'empty
+      emptyMock shouldBe Symbol("empty")
+      isEmptyMock shouldBe Symbol("empty")
       
-      emptyMock shouldBe a ('empty)
+      emptyMock shouldBe a (Symbol("empty"))
 
-      emptyMock shouldBe an ('empty)
+      emptyMock shouldBe an (Symbol("empty"))
 
       val ex1 = intercept[TestFailedException] {
-        noPredicateMock shouldBe 'empty
+        noPredicateMock shouldBe Symbol("empty")
       }
       assert(ex1.message === Some("NoPredicateMock has neither an empty nor an isEmpty method"))
       assert(ex1.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
@@ -155,42 +155,42 @@ class ShouldBeShorthandSpec extends AnyFunSpec with EmptyMocks with BookProperty
       
       // Check message for name that starts with a consonant (should use a instead of an)
       val ex2 = intercept[TestFailedException] {
-        noPredicateMock shouldBe 'full
+        noPredicateMock shouldBe Symbol("full")
       }
       assert(ex2.message === Some("NoPredicateMock has neither a full nor an isFull method"))
       assert(ex2.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
       assert(ex2.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val ex3 = intercept[TestFailedException] {
-        noPredicateMock shouldBe a ('empty)
+        noPredicateMock shouldBe a (Symbol("empty"))
       }
       assert(ex3.message === Some("NoPredicateMock has neither an empty nor an isEmpty method"))
       assert(ex3.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
       assert(ex3.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val ex4 = intercept[TestFailedException] {
-        noPredicateMock shouldBe an ('empty)
+        noPredicateMock shouldBe an (Symbol("empty"))
       }
       assert(ex4.message === Some("NoPredicateMock has neither an empty nor an isEmpty method"))
       assert(ex4.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
       assert(ex4.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val ex5 = intercept[TestFailedException] {
-        List(1, 2) shouldBe 'empty
+        List(1, 2) shouldBe Symbol("empty")
       }
       assert(ex5.message === Some("List(1, 2) was not empty"))
       assert(ex5.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
       assert(ex5.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val ex6 = intercept[TestFailedException] {
-        List(1, 2) shouldBe a ('empty)
+        List(1, 2) shouldBe a (Symbol("empty"))
       }
       assert(ex6.message === Some("List(1, 2) was not a empty"))
       assert(ex6.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
       assert(ex6.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val ex7 = intercept[TestFailedException] {
-        List(1, 2) shouldBe an ('empty)
+        List(1, 2) shouldBe an (Symbol("empty"))
       }
       assert(ex7.message === Some("List(1, 2) was not an empty"))
       assert(ex7.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))

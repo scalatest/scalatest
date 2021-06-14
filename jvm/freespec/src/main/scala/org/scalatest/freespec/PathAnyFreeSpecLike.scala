@@ -389,7 +389,12 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
    * methods <code>in</code>, <code>is</code>, <code>taggedAs</code> and <code>ignore</code>,
    * as well as the dash operator (<code>-</code>), to be invoked on <code>String</code>s.
    */
+  // SKIP-DOTTY-START
   protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position): FreeSpecStringWrapper = new FreeSpecStringWrapper(s, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline implicit def convertToFreeSpecStringWrapper(s: String): FreeSpecStringWrapper = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[FreeSpecStringWrapper]('{(pos: source.Position) => new FreeSpecStringWrapper(s, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * Supports shared test registration in <code>PathAnyFreeSpec</code>s.

@@ -24,6 +24,8 @@ import scala.util.matching.Regex
 import java.lang.reflect.Field
 import org.scalactic.{source, Prettifier}
 import org.scalatest.UnquotedString
+import org.scalatest.matchers.dsl.ResultOfThrownByApplication
+import org.scalatest.matchers.dsl.ResultOfBeThrownBy
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -87,9 +89,13 @@ private[scalatest] object MatchersHelper {
 
     (fieldOption, methodOption, getMethodOption) match {
 
-      case (_, Some(method), _) => Some(method.invoke(objectWithProperty, Array[AnyRef](): _*))
+      case (_, Some(method), _) => 
+        //DOTTY-ONLY method.setAccessible(true)
+        Some(method.invoke(objectWithProperty, Array[AnyRef](): _*))
 
-      case (_, None, Some(getMethod)) => Some(getMethod.invoke(objectWithProperty, Array[AnyRef](): _*))
+      case (_, None, Some(getMethod)) => 
+        //DOTTY-ONLY getMethod.setAccessible(true)
+        Some(getMethod.invoke(objectWithProperty, Array[AnyRef](): _*))
 
       case (Some(field), None, None) => Some(field.get(objectWithProperty))
 
@@ -329,6 +335,63 @@ private[scalatest] object MatchersHelper {
       }
     }
   }
+
+  def checkThrownBy(clazz: Class[_], thrownBy: ResultOfThrownByApplication, pos: source.Position): Assertion = {
+    val caught = try {
+      thrownBy.execute()
+      None
+    }
+    catch {
+      case u: Throwable => Some(u)
+    }
+    if (caught.isEmpty) {
+      val message = Resources.exceptionExpected(clazz.getName)
+      indicateFailure(message, None, pos)
+    } else {
+      val u = caught.get
+      if (!clazz.isAssignableFrom(u.getClass)) {
+        val s = Resources.wrongException(clazz.getName, u.getClass.getName)
+        indicateFailure(s, Some(u), pos)
+      } else indicateSuccess(Resources.exceptionThrown(u.getClass.getName))
+    }
+  }
+
+  //DOTTY-ONLY import scala.quoted._
+  //DOTTY-ONLY def checkThrownByMacro(clazz: Expr[Class[_]], thrownBy: Expr[ResultOfThrownByApplication])(using quotes: Quotes): Expr[Assertion] = {
+  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
+  //DOTTY-ONLY   val file = pos.sourceFile
+  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
+  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
+  //DOTTY-ONLY   '{checkThrownBy(${clazz}, ${thrownBy}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
+  //DOTTY-ONLY }
+
+  def checkBeThrownBy(clazz: Class[_], beThrownBy: ResultOfBeThrownBy, pos: source.Position): Assertion = {
+    val throwables = beThrownBy.throwables
+    val noThrowable = throwables.find(_.isEmpty)
+    if (noThrowable.isDefined) {
+      val message = Resources.exceptionExpected(clazz.getName)
+      indicateFailure(message, None, pos)
+    }
+    else {
+      val unmatch = throwables.map(_.get).find(t => !clazz.isAssignableFrom(t.getClass))
+      if (unmatch.isDefined) {
+        val u = unmatch.get
+        val s = Resources.wrongException(clazz.getName, u.getClass.getName)
+        indicateFailure(s, Some(u), pos)
+      }
+      else indicateSuccess(Resources.exceptionThrown(clazz.getClass.getName))
+    }
+  }
+
+  //DOTTY-ONLY def checkBeThrownByMacro(clazz: Expr[Class[_]], beThrownBy: Expr[ResultOfBeThrownBy])(using quotes: Quotes): Expr[Assertion] = {
+  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
+  //DOTTY-ONLY   val file = pos.sourceFile
+  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
+  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
+  //DOTTY-ONLY   '{checkBeThrownBy(${clazz}, ${beThrownBy}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
+  //DOTTY-ONLY }
 
   def indicateSuccess(message: => String): Assertion = Succeeded
 

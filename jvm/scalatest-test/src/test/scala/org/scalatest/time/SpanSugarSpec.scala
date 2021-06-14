@@ -22,6 +22,7 @@ import org.scalatest.matchers.should.Matchers
 class SpanSugarSpec extends AnyFunSpec with SpanMatchers with Matchers {
   
   import SpanSugar._
+  import scala.language.postfixOps
  
   describe("The SpanSugar trait") {
     

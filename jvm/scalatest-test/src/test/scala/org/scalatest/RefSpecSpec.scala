@@ -275,12 +275,13 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
     it("should report as ignored, and not run, tests marked ignored") {
 
-      val a = new RefSpec {
+      class SpecA extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         def `test: this`(): Unit = { theTestThisCalled = true }
         def `test: that`: Unit = { theTestThatCalled = true }
       }
+      val a = new SpecA()
 
       import scala.language.reflectiveCalls
 
@@ -290,13 +291,14 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(a.theTestThisCalled)
       assert(a.theTestThatCalled)
 
-      val b = new RefSpec {
+      class SpecB extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @Ignore
         def `test: this`(): Unit = { theTestThisCalled = true }
         def `test: that`: Unit = { theTestThatCalled = true }
       }
+      val b = new SpecB
 
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -306,13 +308,14 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(!b.theTestThisCalled)
       assert(b.theTestThatCalled)
 
-      val c = new RefSpec {
+      class SpecC extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         def `test: this`(): Unit = { theTestThisCalled = true }
         @Ignore
         def `test: that`: Unit = { theTestThatCalled = true }
       }
+      val c = new SpecC
 
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repC, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -322,7 +325,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(c.theTestThisCalled)
       assert(!c.theTestThatCalled)
 
-      val d = new RefSpec {
+      class SpecD extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @Ignore
@@ -330,6 +333,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         @Ignore
         def `test: that`: Unit = { theTestThatCalled = true }
       }
+      val d = new SpecD
 
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -342,13 +346,14 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
     it("should ignore a test marked as ignored if run is invoked with that testName") {
 
-      val e = new RefSpec {
+      class SpecE extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @Ignore
         def `test: this`(): Unit = { theTestThisCalled = true }
         def `test: that`: Unit = { theTestThatCalled = true }
       }
+      val e = new SpecE
 
       import scala.language.reflectiveCalls
 
@@ -361,13 +366,14 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
     it("should exclude a test with a tag included in the tagsToExclude set even if run is invoked with that testName") {
 
-      val e = new RefSpec {
+      class SpecE extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @SlowAsMolasses
         def `test: this`(): Unit = { theTestThisCalled = true }
         def `test: that`: Unit = { theTestThatCalled = true }
       }
+      val e = new SpecE
 
       import scala.language.reflectiveCalls
 
@@ -381,13 +387,14 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
     it("should run only those tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new RefSpec {
+      class SpecA extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @SlowAsMolasses
         def `test this`: Unit = { theTestThisCalled = true }
         def `test that`: Unit = { theTestThatCalled = true }
       }
+      val a = new SpecA
 
       import scala.language.reflectiveCalls
 
@@ -398,13 +405,14 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new RefSpec {
+      class SpecB extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @SlowAsMolasses
         def `test this`: Unit = { theTestThisCalled = true }
         def `test that`: Unit = { theTestThatCalled = true }
       }
+      val b = new SpecB
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repB.testIgnoredReceived)
@@ -412,7 +420,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new RefSpec {
+      class SpecC extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @SlowAsMolasses
@@ -420,6 +428,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         @SlowAsMolasses
         def `test that`: Unit = { theTestThatCalled = true }
       }
+      val c = new SpecC
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repC.testIgnoredReceived)
@@ -427,7 +436,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new RefSpec {
+      class SpecD extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @Ignore
@@ -436,6 +445,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         @SlowAsMolasses
         def `test that`: Unit = { theTestThatCalled = true }
       }
+      val d = new SpecD
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(repD.testIgnoredReceived)
@@ -443,7 +453,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new RefSpec {
+      class SpecE extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -454,6 +464,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `test that`: Unit = { theTestThatCalled = true }
         def `test the other`: Unit = { theTestTheOtherCalled = true }
       }
+      val e = new SpecE
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
         ConfigMap.empty, None, new Tracker, Set.empty))
@@ -463,7 +474,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new RefSpec {
+      class SpecF extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -475,6 +486,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `test that`: Unit = { theTestThatCalled = true }
         def `test the other`: Unit = { theTestTheOtherCalled = true }
       }
+      val f = new SpecF
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
         ConfigMap.empty, None, new Tracker, Set.empty))
@@ -484,7 +496,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new RefSpec {
+      class SpecG extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -496,6 +508,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         @Ignore
         def `test the other`: Unit = { theTestTheOtherCalled = true }
       }
+      val g = new SpecG
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
         ConfigMap.empty, None, new Tracker, Set.empty))
@@ -505,7 +518,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new RefSpec {
+      class SpecH extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -516,6 +529,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `test that`: Unit = { theTestThatCalled = true }
         def `test the other`: Unit = { theTestTheOtherCalled = true }
       }
+      val h = new SpecH
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repH.testIgnoredReceived)
@@ -524,7 +538,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new RefSpec {
+      class SpecI extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -535,6 +549,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `test that`: Unit = { theTestThatCalled = true }
         def `test the other`: Unit = { theTestTheOtherCalled = true }
       }
+      val i = new SpecI
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repI.testIgnoredReceived)
@@ -543,7 +558,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new RefSpec {
+      class SpecJ extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -556,6 +571,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `test that`: Unit = { theTestThatCalled = true }
         def `test the other`: Unit = { theTestTheOtherCalled = true }
       }
+      val j = new SpecJ
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(!repI.testIgnoredReceived)
@@ -564,7 +580,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new RefSpec {
+      class SpecK extends RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -578,6 +594,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         @Ignore
         def `test the other`: Unit = { theTestTheOtherCalled = true }
       }
+      val k = new SpecK
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
       assert(repK.testIgnoredReceived)
@@ -840,7 +857,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
     }
 
     it("should invoke withFixture from runTest for no-arg test method") {
-      val a = new RefSpec {
+      class SpecA extends RefSpec {
         var withFixtureWasInvoked = false
         var theTestWasInvoked = false
         override def withFixture(test: NoArgTest): Outcome = {
@@ -851,6 +868,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
           theTestWasInvoked = true
         }
       }
+      val a = new SpecA
 
       import scala.language.reflectiveCalls
 
@@ -860,7 +878,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
     }
 
     it("should pass the correct test name in the NoArgTest passed to withFixture") {
-      val a = new RefSpec {
+      class SpecA extends RefSpec {
         var correctTestNameWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctTestNameWasPassed = test.name == "test: something"
@@ -868,6 +886,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
         def `test: something`: Unit = {}
       }
+      val a = new SpecA
 
       import scala.language.reflectiveCalls
 
@@ -876,7 +895,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
     }
 
     it("should pass the correct config map in the NoArgTest passed to withFixture") {
-      val a = new RefSpec {
+      class SpecA extends RefSpec {
         var correctConfigMapWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
@@ -884,6 +903,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
         def `test: something`: Unit = {}
       }
+      val a = new SpecA
 
       import scala.language.reflectiveCalls
 
@@ -2468,7 +2488,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       }
       assert("RefSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == 2488)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
       assert(e.message == Some(FailureMessages.exceptionWasThrownInObject(prettifier, UnquotedString(causeThrowable.getClass.getName), UnquotedString("a feature"))))
@@ -2593,7 +2613,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 }
 
 @DoNotDiscover
-class `My RefSpec` extends RefSpec {}
+class `MyRefSpec` extends RefSpec {}
 @DoNotDiscover
 class NormalRefSpec extends RefSpec
 @DoNotDiscover

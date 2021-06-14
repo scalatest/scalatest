@@ -143,10 +143,10 @@ class HaveWordSpec extends AnyFunSpec with Matchers {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""
-        mr.negatedFailureMessage shouldBe lhs + " had message \"Message from Mars!\""
-        mr.midSentenceFailureMessage shouldBe lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""
-        mr.midSentenceNegatedFailureMessage shouldBe lhs + " had message \"Message from Mars!\""
+        mr.failureMessage shouldBe s"""$lhs had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""""
+        mr.negatedFailureMessage shouldBe s"""$lhs had message \"Message from Mars!\""""
+        mr.midSentenceFailureMessage shouldBe s"""$lhs had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""""
+        mr.midSentenceNegatedFailureMessage shouldBe s"""$lhs had message \"Message from Mars!\""""
         mr.rawFailureMessage shouldBe "{0} had message {1} instead of expected message {2}"
         mr.rawNegatedFailureMessage shouldBe "{0} had message {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} had message {1} instead of expected message {2}"
@@ -162,10 +162,10 @@ class HaveWordSpec extends AnyFunSpec with Matchers {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe lhs + " had message \"Message from Mars!\""
-        nmr.negatedFailureMessage shouldBe lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""
-        nmr.midSentenceFailureMessage shouldBe lhs + " had message \"Message from Mars!\""
-        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""
+        nmr.failureMessage shouldBe s"""$lhs had message \"Message from Mars!\""""
+        nmr.negatedFailureMessage shouldBe s"""$lhs had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""""
+        nmr.midSentenceFailureMessage shouldBe s"""$lhs had message \"Message from Mars!\""""
+        nmr.midSentenceNegatedFailureMessage shouldBe s"""$lhs had message \"Message from Mars!\" instead of expected message \"Message from Mars!\""""
         nmr.rawFailureMessage shouldBe "{0} had message {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} had message {1} instead of expected message {2}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} had message {1}"

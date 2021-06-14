@@ -346,6 +346,27 @@ object Diagrams extends Diagrams {
       lines.mkString(Prettifier.lineSeparator)
     }
 
+    private[this] def filterAndSortByAnchorOld(anchorValues: List[org.scalatest.AnchorValue]): Traversable[org.scalatest.AnchorValue] = {
+      var map = TreeMap[Int, org.scalatest.AnchorValue]()(Ordering.by(-_))
+      // values stemming from compiler generated code often have the same anchor as regular values
+      // and get recorded before them; let's filter them out
+      for (value <- anchorValues) if (!map.contains(value.anchor)) map += (value.anchor -> value)
+      map.values
+    }
+
+    private[this] def renderDiagramOld(sourceText: String, anchorValues: List[org.scalatest.AnchorValue]): String = {
+      val offset = sourceText.prefixLength(_.isWhitespace)
+      val intro = new StringBuilder().append(sourceText.trim())
+      val lines = ListBuffer(new StringBuilder)
+
+      val rightToLeft = filterAndSortByAnchorOld(anchorValues)
+      for (anchorValue <- rightToLeft) placeValue(lines, anchorValue.value, anchorValue.anchor - offset)
+
+      lines.prepend(intro)
+      lines.append(new StringBuilder)
+      lines.mkString(Prettifier.lineSeparator)
+    }
+
     /**
       * Assert that the passed in <code>Bool</code> is <code>true</code>, else fail with <code>TestFailedException</code>
       * with error message that include a diagram showing expression values.
@@ -357,7 +378,18 @@ object Diagrams extends Diagrams {
       requireNonNull(clue)
       if (!bool.value) {
         val failureMessage =
-          Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
+          Some(clue.toString + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
+        throw newAssertionFailedException(failureMessage, None, pos, Vector.empty)
+      }
+      Succeeded
+    }
+
+    @deprecated("This function is deprecated and will be removed in future, please use macroAssert that takes org.scalatest.diagrams.DiagrammedExpr")
+    def macroAssert(bool: org.scalatest.DiagrammedExpr[Boolean], clue: Any, sourceText: String, pos: source.Position): Assertion = {
+      requireNonNull(clue)
+      if (!bool.value) {
+        val failureMessage =
+          Some(clue.toString + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagramOld(sourceText, bool.anchorValues))
         throw newAssertionFailedException(failureMessage, None, pos, Vector.empty)
       }
       Succeeded
@@ -374,7 +406,18 @@ object Diagrams extends Diagrams {
       requireNonNull(clue)
       if (!bool.value) {
         val failureMessage =
-          Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
+          Some(clue.toString + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
+        throw newTestCanceledException(failureMessage, None, pos)
+      }
+      Succeeded
+    }
+
+    @deprecated("This function is deprecated and will be removed in future, please use macroAssume that takes org.scalatest.diagrams.DiagrammedExpr")
+    def macroAssume(bool: org.scalatest.DiagrammedExpr[Boolean], clue: Any, sourceText: String, pos: source.Position): Assertion = {
+      requireNonNull(clue)
+      if (!bool.value) {
+        val failureMessage =
+          Some(clue.toString + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagramOld(sourceText, bool.anchorValues))
         throw newTestCanceledException(failureMessage, None, pos)
       }
       Succeeded

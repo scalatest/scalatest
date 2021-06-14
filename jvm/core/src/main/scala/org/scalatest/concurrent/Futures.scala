@@ -472,12 +472,13 @@ trait Futures extends PatienceConfiguration {
      * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
      *     the specified timeout has been exceeded
      */
-    def futureValue(implicit config: PatienceConfig, pos: source.Position): T = {
+    def futureValue(implicit config: PatienceConfig, pos: source.Position): T = 
       futureValueImpl(pos)(config)
-    }
 
     private[concurrent] def futureValueImpl(pos: source.Position)(implicit config: PatienceConfig): T
   }
+
+  //DOTTY-ONLY import scala.quoted._
 
   /**
    * Queries the passed future repeatedly until it either is ready, or a configured maximum
@@ -508,12 +509,13 @@ trait Futures extends PatienceConfiguration {
    *          <code>interval</code> parameters that are unused by this method
    * @return the result of invoking the <code>fun</code> parameter
    */
-  final def whenReady[T, U](future: FutureConcept[T], timeout: Timeout, interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = {
-    val result = future.futureValueImpl(pos)(PatienceConfig(timeout.value, interval.value))
-    fun(result)
-  }
-    // whenReady(future)(fun)(PatienceConfig(timeout.value, interval.value))
-
+  // SKIP-DOTTY-START 
+  final def whenReady[T, U](future: FutureConcept[T], timeout: Timeout, interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+    Futures.whenReadyImpl(this)(future, fun, timeout.value, interval.value, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T], timeout: Timeout, interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{timeout.value}, '{interval.value}) }    
+    
   /**
    * Queries the passed future repeatedly until it either is ready, or a configured maximum
    * amount of time has passed, sleeping a configured interval between attempts; and when ready, passes the future's value
@@ -542,11 +544,12 @@ trait Futures extends PatienceConfiguration {
    *          <code>interval</code> parameters that are unused by this method
    * @return the result of invoking the <code>fun</code> parameter
    */
-  final def whenReady[T, U](future: FutureConcept[T], timeout: Timeout)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = {
-    val result = future.futureValueImpl(pos)(PatienceConfig(timeout.value, config.interval))
-    fun(result)
-  }
-    // whenReady(future)(fun)(PatienceConfig(timeout.value, config.interval))
+  // SKIP-DOTTY-START 
+  final def whenReady[T, U](future: FutureConcept[T], timeout: Timeout)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+    Futures.whenReadyImpl(this)(future, fun, timeout.value, config.interval, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T], timeout: Timeout)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{timeout.value}, '{config.interval}) }  
 
   /**
    * Queries the passed future repeatedly until it either is ready, or a configured maximum
@@ -567,12 +570,13 @@ trait Futures extends PatienceConfiguration {
    *          <code>interval</code> parameters that are unused by this method
    * @return the result of invoking the <code>fun</code> parameter
    */
-  final def whenReady[T, U](future: FutureConcept[T], interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = {
-    val result = future.futureValueImpl(pos)(PatienceConfig(config.timeout, interval.value))
-    fun(result)
-  }
-    // whenReady(future)(fun)(PatienceConfig(config.timeout, interval.value))
-
+  // SKIP-DOTTY-START 
+  final def whenReady[T, U](future: FutureConcept[T], interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+    Futures.whenReadyImpl(this)(future, fun, config.timeout, interval.value, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T], interval: Interval)(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{config.timeout}, '{interval.value}) }
+  
   /**
    * Queries the passed future repeatedly until it either is ready, or a configured maximum
    * amount of time has passed, sleeping a configured interval between attempts; and when ready, passes the future's value
@@ -600,9 +604,36 @@ trait Futures extends PatienceConfiguration {
    *          <code>interval</code> parameters that are unused by this method
    * @return the result of invoking the <code>fun</code> parameter
    */
-  final def whenReady[T, U](future: FutureConcept[T])(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = {
-    val result = future.futureValueImpl(pos)(config)
-    fun(result)
-  }
+  // SKIP-DOTTY-START
+  final def whenReady[T, U](future: FutureConcept[T])(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+    Futures.whenReadyImpl(this)(future, fun, config.timeout, config.interval, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY final inline def whenReady[T, U](future: FutureConcept[T])(fun: T => U)(implicit config: PatienceConfig, pos: source.Position): U = 
+  //DOTTY-ONLY   ${ Futures.whenReadyMacro('{this}, '{future}, '{fun}, '{config.timeout}, '{config.interval}) }
+
+  /**/
 }
 
+object Futures extends Futures {
+
+  final def whenReadyImpl[T, U](futures: Futures)(future: futures.FutureConcept[T], fun: T => U, timeout: Span, interval: Span, pos: source.Position): U = {
+    val result = future.futureValueImpl(pos)(futures.PatienceConfig(timeout, interval))
+    fun(result)
+  }
+
+  //DOTTY-ONLY import scala.quoted._
+
+  //DOTTY-ONLY final def workaroundWhenReadyImpl[T, U](futures: Futures)(future: Futures#FutureConcept[T], fun: T => U, timeout: Span, interval: Span, pos: source.Position): U = 
+  //DOTTY-ONLY   whenReadyImpl(futures)(future.asInstanceOf[futures.FutureConcept[T]], fun, timeout, interval, pos)
+
+  //DOTTY-ONLY // Ideally, we can use future: Expr[futures.FutureConcept[T]] and fun Expr[T => U] here, can't get it to work so we have the above workaroundWhenReadyImpl that takes Any.
+  //DOTTY-ONLY private[concurrent] def whenReadyMacro[T, U](futures: Expr[Futures], future: Expr[Futures#FutureConcept[T]], fun: Expr[T => U], timeout: Expr[Span], interval: Expr[Span])(using quotes: Quotes, typeT: Type[T], typeU: Type[U]): Expr[U] = {
+  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
+  //DOTTY-ONLY   val file = pos.sourceFile
+  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
+  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
+  //DOTTY-ONLY   '{workaroundWhenReadyImpl(${futures})(${future}, ${fun}, ${timeout}, ${interval}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
+  //DOTTY-ONLY }
+
+}

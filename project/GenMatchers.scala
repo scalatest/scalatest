@@ -87,7 +87,7 @@ object GenMatchers {
       .replaceAll("MatcherWords", "FactMatcherWords")
   }
 
-  def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, dotty: Boolean, translateFun: String => String): File = {
+  def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, translateFun: String => String): File = {
     val outputFile = new File(targetDir, fileName)
     if (!outputFile.exists || generatorSource.lastModified > outputFile.lastModified) {
       val outputWriter = new BufferedWriter(new FileWriter(outputFile))
@@ -95,45 +95,7 @@ object GenMatchers {
         val lines = Source.fromFile(new File(sourceFileName)).getLines.toList
         var skipMode = false
         for (line <- lines) {
-          val mustLine: String =
-            if (scalaJS) {
-              if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START") {
-                skipMode = true
-                ""
-              }
-              else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END") {
-                skipMode = false
-                ""
-              }
-              else if (!skipMode) {
-                if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
-                  translateFun(line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26))
-                else
-                  translateFun(line)
-              }
-              else
-                ""
-            }
-            else if (dotty) {
-              if (line.trim == "// SKIP-DOTTY-START") {
-                skipMode = true
-                ""
-              }
-              else if (line.trim == "// SKIP-DOTTY-END") {
-                skipMode = false
-                ""
-              }
-              else if (!skipMode) {
-                if (line.trim.startsWith("//DOTTY-ONLY "))
-                  translateFun(line.substring(line.indexOf("//DOTTY-ONLY ") + 13))
-                else
-                  translateFun(line)
-              }
-              else
-                ""
-            }
-            else
-              translateFun(line)
+          val mustLine: String = translateFun(line)
 
           outputWriter.write(mustLine)
           outputWriter.newLine()
@@ -148,7 +110,134 @@ object GenMatchers {
     outputFile
   }
 
-  def genMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean, dotty: Boolean): Seq[File] = {
+  def translateFileJS(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, translateFun: String => String): File = {
+    val outputFile = new File(targetDir, fileName)
+    if (!outputFile.exists || generatorSource.lastModified > outputFile.lastModified) {
+      val outputWriter = new BufferedWriter(new FileWriter(outputFile))
+      try {
+        val lines = Source.fromFile(new File(sourceFileName)).getLines.toList
+        var skipMode = false
+        for (line <- lines) {
+          val mustLine: String =
+            if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START") {
+              skipMode = true
+              ""
+            }
+            else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END") {
+              skipMode = false
+              ""
+            }
+            else if (!skipMode) {
+              if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+                translateFun(line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26))
+              else
+                translateFun(line)
+            }
+            else
+              ""
+
+          outputWriter.write(mustLine)
+          outputWriter.newLine()
+        }
+      }
+      finally {
+        outputWriter.flush()
+        outputWriter.close()
+        println("Generated " + outputFile.getAbsolutePath)
+      }
+    }
+    outputFile
+  }
+
+  def translateFileDotty(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, translateFun: String => String): File = {
+    val outputFile = new File(targetDir, fileName)
+    if (!outputFile.exists || generatorSource.lastModified > outputFile.lastModified) {
+      val outputWriter = new BufferedWriter(new FileWriter(outputFile))
+      try {
+        val lines = Source.fromFile(new File(sourceFileName)).getLines.toList
+        var skipMode = false
+        for (line <- lines) {
+          val mustLine: String =
+            if (line.trim == "// SKIP-DOTTY-START") {
+              skipMode = true
+              ""
+            }
+            else if (line.trim == "// SKIP-DOTTY-END") {
+              skipMode = false
+              ""
+            }
+            else if (!skipMode) {
+              if (line.trim.startsWith("//DOTTY-ONLY "))
+                translateFun(line.substring(line.indexOf("//DOTTY-ONLY ") + 13))
+              else
+                translateFun(line)
+            }
+            else
+              ""
+
+          outputWriter.write(mustLine)
+          outputWriter.newLine()
+        }
+      }
+      finally {
+        outputWriter.flush()
+        outputWriter.close()
+        println("Generated " + outputFile.getAbsolutePath)
+      }
+    }
+    outputFile
+  }
+
+  def translateFileDottyJS(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, translateFun: String => String): File = {
+    val outputFile = new File(targetDir, fileName)
+    if (!outputFile.exists || generatorSource.lastModified > outputFile.lastModified) {
+      val outputWriter = new BufferedWriter(new FileWriter(outputFile))
+      try {
+        val lines = Source.fromFile(new File(sourceFileName)).getLines.toList
+        var skipMode = false
+        for (line <- lines) {
+          val mustLine: String =
+            if (line.trim == "// SKIP-DOTTY-START") {
+              skipMode = true
+              ""
+            }
+            else if (line.trim == "// SKIP-DOTTY-END") {
+              skipMode = false
+              ""
+            }
+            else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START") {
+              skipMode = true
+              ""
+            }
+            else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END") {
+              skipMode = false
+              ""
+            }
+            else if (!skipMode) {
+              if (line.trim.startsWith("//DOTTY-ONLY "))
+                translateFun(line.substring(line.indexOf("//DOTTY-ONLY ") + 13))
+              else if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+                translateFun(line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26))
+              else
+                translateFun(line)
+            }
+            else
+              ""
+
+          outputWriter.write(mustLine)
+          outputWriter.newLine()
+        }
+      }
+      finally {
+        outputWriter.flush()
+        outputWriter.close()
+        println("Generated " + outputFile.getAbsolutePath)
+      }
+    }
+    outputFile
+  }
+
+  def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     targetDir.mkdirs()
     val matchersDir = new File(targetDir, "matchers")
     matchersDir.mkdirs()
@@ -157,7 +246,7 @@ object GenMatchers {
     val mustDir = new File(matchersDir, "must")
     mustDir.mkdirs()
     Seq(
-      translateFile(mustDir, "Matchers.scala", "jvm/shouldmatchers/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, scalaJS, dotty, translateShouldToMust)
+      translateFile(mustDir, "Matchers.scala", "jvm/shouldmatchers/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, translateShouldToMust)
       /*translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
       translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
       translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,
@@ -177,15 +266,90 @@ object GenMatchers {
     )
   }
 
-  def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    genMainImpl(targetDir, version, scalaVersion, false, false)
-  }
-
   def genMainForScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    genMainImpl(targetDir, version, scalaVersion, true, false)
+    targetDir.mkdirs()
+    val matchersDir = new File(targetDir, "matchers")
+    matchersDir.mkdirs()
+    val shouldDir = new File(matchersDir, "should")
+    shouldDir.mkdirs()
+    val mustDir = new File(matchersDir, "must")
+    mustDir.mkdirs()
+    Seq(
+      translateFileJS(mustDir, "Matchers.scala", "jvm/shouldmatchers/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, translateShouldToMust)
+      /*translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,
+        (line: String) => translateShouldToWill(line.replaceAll("PleaseUseNoExceptionShouldSyntaxInstead", "STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD"))
+          .replaceAll("STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD", "PleaseUseNoExceptionShouldSyntaxInstead")
+      )
+      translateFile(targetDir, "FactResultOfAnTypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfAnTypeInvocation.scala", scalaVersion, scalaJS,
+        (line: String) => translateShouldToWill(line.replaceAll("PleaseUseNoExceptionShouldSyntaxInstead", "STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD"))
+                          .replaceAll("STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD", "PleaseUseNoExceptionShouldSyntaxInstead")
+      )
+      translateFile(targetDir, "FactResultOfBeWordForAType.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForAType.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfBeWordForAnType.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForAnType.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfBeWordForNoException.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForNoException.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfContainWord.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfContainWord.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfNotWordForAny.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfNotWordForAny.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactMatcherWords.scala", "scalatest/src/main/scala/org/scalatest/words/MatcherWords.scala", scalaVersion, scalaJS, translateShouldToWill)*/
+    )
   }
 
   def genMainForDotty(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    genMainImpl(targetDir, version, scalaVersion, false, true)
+    targetDir.mkdirs()
+    val matchersDir = new File(targetDir, "matchers")
+    matchersDir.mkdirs()
+    val shouldDir = new File(matchersDir, "should")
+    shouldDir.mkdirs()
+    val mustDir = new File(matchersDir, "must")
+    mustDir.mkdirs()
+    Seq(
+      translateFileDotty(mustDir, "Matchers.scala", "jvm/shouldmatchers/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, translateShouldToMust)
+      /*translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,
+        (line: String) => translateShouldToWill(line.replaceAll("PleaseUseNoExceptionShouldSyntaxInstead", "STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD"))
+          .replaceAll("STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD", "PleaseUseNoExceptionShouldSyntaxInstead")
+      )
+      translateFile(targetDir, "FactResultOfAnTypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfAnTypeInvocation.scala", scalaVersion, scalaJS,
+        (line: String) => translateShouldToWill(line.replaceAll("PleaseUseNoExceptionShouldSyntaxInstead", "STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD"))
+                          .replaceAll("STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD", "PleaseUseNoExceptionShouldSyntaxInstead")
+      )
+      translateFile(targetDir, "FactResultOfBeWordForAType.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForAType.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfBeWordForAnType.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForAnType.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfBeWordForNoException.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForNoException.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfContainWord.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfContainWord.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfNotWordForAny.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfNotWordForAny.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactMatcherWords.scala", "scalatest/src/main/scala/org/scalatest/words/MatcherWords.scala", scalaVersion, scalaJS, translateShouldToWill)*/
+    )
+  }
+
+  def genMainForDottyJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    targetDir.mkdirs()
+    val matchersDir = new File(targetDir, "matchers")
+    matchersDir.mkdirs()
+    val shouldDir = new File(matchersDir, "should")
+    shouldDir.mkdirs()
+    val mustDir = new File(matchersDir, "must")
+    mustDir.mkdirs()
+    Seq(
+      translateFileDottyJS(mustDir, "Matchers.scala", "jvm/shouldmatchers/src/main/scala/org/scalatest/matchers/should/Matchers.scala", scalaVersion, translateShouldToMust)
+      /*translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,
+        (line: String) => translateShouldToWill(line.replaceAll("PleaseUseNoExceptionShouldSyntaxInstead", "STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD"))
+          .replaceAll("STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD", "PleaseUseNoExceptionShouldSyntaxInstead")
+      )
+      translateFile(targetDir, "FactResultOfAnTypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfAnTypeInvocation.scala", scalaVersion, scalaJS,
+        (line: String) => translateShouldToWill(line.replaceAll("PleaseUseNoExceptionShouldSyntaxInstead", "STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD"))
+                          .replaceAll("STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD", "PleaseUseNoExceptionShouldSyntaxInstead")
+      )
+      translateFile(targetDir, "FactResultOfBeWordForAType.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForAType.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfBeWordForAnType.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForAnType.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfBeWordForNoException.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForNoException.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfContainWord.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfContainWord.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactResultOfNotWordForAny.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfNotWordForAny.scala", scalaVersion, scalaJS, translateShouldToWill)
+      translateFile(targetDir, "FactMatcherWords.scala", "scalatest/src/main/scala/org/scalatest/words/MatcherWords.scala", scalaVersion, scalaJS, translateShouldToWill)*/
+    )
   }
 }

@@ -308,8 +308,12 @@ trait Eventually extends PatienceConfiguration {
    * @param pos the position of the call site
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
+  // SKIP-DOTTY-START 
   def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(implicit retrying: Retrying[T], pos: source.Position): T =
-    eventually(fun)(PatienceConfig(timeout.value, interval.value), retrying, pos)
+    retrying.retry(timeout.value, interval.value, pos)(fun)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T]): T = 
+  //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{timeout.value}, '{interval.value}, '{fun}, '{retrying}) }
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -339,8 +343,12 @@ trait Eventually extends PatienceConfiguration {
    * @param pos the position of the call site
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
+   // SKIP-DOTTY-START
   def eventually[T](timeout: Timeout)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
-    eventually(fun)(PatienceConfig(timeout.value, config.interval), retrying, pos)
+    retrying.retry(timeout.value, config.interval, pos)(fun)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def eventually[T](timeout: Timeout)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T]): T = 
+  //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{timeout.value}, '{config.interval}, '{fun}, '{retrying}) }
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -369,8 +377,12 @@ trait Eventually extends PatienceConfiguration {
    * @param pos the position of the call site
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
+  // SKIP-DOTTY-START 
   def eventually[T](interval: Interval)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
-    eventually(fun)(PatienceConfig(config.timeout, interval.value), retrying, pos)
+    retrying.retry(config.timeout, interval.value, pos)(fun) 
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def eventually[T](interval: Interval)(fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T]): T = 
+  //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{config.timeout}, '{interval.value}, '{fun}, '{retrying}) }  
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -398,8 +410,12 @@ trait Eventually extends PatienceConfiguration {
    * @param pos the position of the call site
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
+  // SKIP-DOTTY-START 
   def eventually[T](fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T], pos: source.Position): T =
-    retrying.retry(config.timeout, config.interval, pos)(fun)
+    retrying.retry(config.timeout, config.interval, pos)(fun)  
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def eventually[T](fun: => T)(implicit config: PatienceConfig, retrying: Retrying[T]): T = 
+  //DOTTY-ONLY   ${ Eventually.eventuallyMacro('{config.timeout}, '{config.interval}, '{fun}, '{retrying}) }  
 }
 
 /**
@@ -438,4 +454,19 @@ trait Eventually extends PatienceConfiguration {
  *   ...
  * </pre>
  */
-object Eventually extends Eventually
+object Eventually extends Eventually {
+
+  //DOTTY-ONLY def callRetry[T](retrying: Retrying[T], timeout: Span, interval: Span, pos: source.Position, fun: => T): T = 
+  //DOTTY-ONLY   retrying.retry(timeout, interval, pos)(fun)
+
+  //DOTTY-ONLY import scala.quoted._
+  //DOTTY-ONLY private[scalatest] def eventuallyMacro[T](timeout: Expr[Span], interval: Expr[Span], fun: Expr[T], retrying: Expr[Retrying[T]])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
+  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
+  //DOTTY-ONLY   val file = pos.sourceFile
+  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
+  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
+  //DOTTY-ONLY   '{callRetry(${retrying}, ${timeout}, ${interval}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}), ${fun})}
+  //DOTTY-ONLY }
+
+}

@@ -87,6 +87,70 @@ object GenScalacticDotty {
     }
   }
 
+  private def uncommentJsExportJS(line: String): String =
+    if (line.trim.startsWith("//DOTTY-ONLY "))
+      line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
+    else if (line.trim.startsWith("//DOTTY-ONLY "))
+      line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
+    else if (line.trim.startsWith("//SCALACTICJS,NATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALACTICJS,NATIVE-ONLY ") + 26)
+    else if (line.trim.startsWith("//SCALACTICJS-ONLY "))
+      line.substring(line.indexOf("//SCALACTICJS-ONLY ") + 19)
+    else if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26)
+    else if (line.trim.startsWith("//SCALATESTJS-ONLY "))
+      line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19)    
+    else
+      line
+
+  private def transformLineJS(line: String): String =
+    uncommentJsExportJS(line)
+
+  private def copyFileJS(sourceFile: File, destFile: File): File = {
+    val destWriter = new BufferedWriter(new FileWriter(destFile))
+    try {
+      val lines = Source.fromFile(sourceFile).getLines.toList
+      var skipMode = false
+      for (line <- lines) {
+        if (line.trim == "// SKIP-DOTTY-START" || line.trim == "// SKIP-DOTTY-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-DOTTY-END" || line.trim == "// SKIP-DOTTY-END")
+          skipMode = false
+        else if (line.trim == "// SKIP-SCALACTICJS,NATIVE-START" || line.trim == "// SKIP-SCALACTICJS-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-SCALACTICJS,NATIVE-END" || line.trim == "// SKIP-SCALACTICJS-END")
+          skipMode = false
+        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTJS-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTJS-END")
+          skipMode = false    
+        else if (!skipMode) {
+          destWriter.write(transformLineJS(line))
+          destWriter.newLine()
+        }
+      }
+      destFile
+    }
+    finally {
+      destWriter.flush()
+      destWriter.close()
+      println("Copied " + destFile.getAbsolutePath)
+    }
+  }
+
+  def copyDirJS(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
+    val packageDir = new File(targetDir, packageDirName)
+    packageDir.mkdirs()
+    val sourceDir = new File(sourceDirName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
+      val destFile = new File(packageDir, sourceFile.getName)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFileJS(sourceFile, destFile)
+
+      destFile
+    }
+  }
+
   def copyResourceDir(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
@@ -114,6 +178,27 @@ object GenScalacticDotty {
         "TypeInfo.scala"  // Re-implemented
       )) ++
     copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
+
+  def genScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir,
+      List(
+        "BooleanMacro.scala", // Re-implemented
+        "Requirements.scala", // Re-implemented
+        "Snapshots.scala"     // Re-implemented
+      )
+    ) ++
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic/exceptions", "org/scalactic/exceptions", targetDir, List.empty) ++
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir,
+      List(
+        "Position.scala",  // Re-implemented
+        "TypeInfo.scala",  // Re-implemented
+        "ObjectMeta.scala"    // Re-implemented in scala-js
+      )) ++
+    copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
+    copyDir("dotty/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
+    copyDir("dotty/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) ++
+    copyDirJS("dotty/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++ 
+    copyDir("js/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
 
   def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("jvm/scalactic-macro/src/main/scala/org/scalactic", "org/scalactic", targetDir,
@@ -158,5 +243,18 @@ object GenScalacticDotty {
         "OddInt.scala"        // not used, scala2 macros
       )) ++
     copyDir("jvm/scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
+
+  def genTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDirJS("jvm/scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
+      List(
+        "TripleEqualsSpec.for210",  // Old staff, we shall delete this soon.
+        "FutureSugarSpec.scala"     // instability, occasional timeout in CI
+      )) ++
+    copyDirJS("jvm/scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
+      List(
+        "OddIntMacro.scala",  // not used, scala2 macros
+        "OddInt.scala"        // not used, scala2 macros
+      )) ++
+    copyDirJS("jvm/scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
 
 }

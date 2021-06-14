@@ -324,10 +324,13 @@ class ListShouldContainInOrderOnlySpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should contain inOrderOnly ("hi", "ho")
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should contain inOrderOnly ("HI", "HE")
-        intercept[TestFailedException] {
-          all (hiLists) should contain inOrderOnly ("HI", "HO")
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should contain inOrderOnly ("HI", "HE")
+          intercept[TestFailedException] {
+            all (hiLists) should contain inOrderOnly ("HI", "HO")
+          }
         }
       }
       it("should use an explicitly provided Equality") {
@@ -384,10 +387,13 @@ class ListShouldContainInOrderOnlySpec extends AnyFunSpec {
         intercept[TestFailedException] {
           all (hiLists) should (contain inOrderOnly ("he", "hi"))
         }
-        implicit val ise = upperCaseStringEquality
-        all (hiLists) should (contain inOrderOnly ("HI", "HE"))
-        intercept[TestFailedException] {
-          all (hiLists) should (contain inOrderOnly ("HI", "HO"))
+
+        {
+          implicit val ise = upperCaseStringEquality
+          all (hiLists) should (contain inOrderOnly ("HI", "HE"))
+          intercept[TestFailedException] {
+            all (hiLists) should (contain inOrderOnly ("HI", "HO"))
+          }
         }
       }
       it("should use an explicitly provided Equality") {
