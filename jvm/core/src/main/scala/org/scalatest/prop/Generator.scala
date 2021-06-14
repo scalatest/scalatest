@@ -3913,55 +3913,18 @@ object Generator {
   implicit def setGenerator[T](implicit genOfT: Generator[T]): Generator[Set[T]] with HavingSize[Set[T]] =
     new Generator[Set[T]] with HavingSize[Set[T]] {
 
-      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: Set[T]) extends RoseTree[Set[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Set[T]]], Randomizer) = {
-          val xs = value
-          val rootRoseTree = {
-            if (xs.isEmpty) Rose(xs)
-            else {
-              new RoseTree[Set[T]] {
-                val value: Set[T] = xs
-                def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Set[T]]], Randomizer) = {
-                  val (canonicalTsIt, rnd1) = genOfT.canonicals(rndPassedToShrinks)
-                  val canonicalTs = canonicalTsIt.toList
-                  // Start with Lists of length one each of which contain one of the canonical values
-                  // of the element type.
-
-                  val canonicalListOfTsIt: List[Rose[Set[T]]] = canonicalTs.map(t => Rose(Set(t)))
-
-                  // Only include distinctListsOfTs if the list to shrink (xs) does not contain
-                  // just one element itself. If it does, then xs will appear in the output, which
-                  // we don't need, since we already know it fails.
-                  val distinctListOfTsIt: List[Rose[Set[T]]] =
-                  if (xs.nonEmpty && (xs.size > 1))
-                    for (x <- xs.toList if !canonicalTs.contains(x)) yield Rose(Set(x))
-                  else List.empty
-
-                  // The last batch of candidate shrunken values are just slices of the list starting at
-                  // 0 with size doubling each time.
-                  val lastBatch: List[Rose[Set[T]]] = {
-                    val it =
-                      new Iterator[Set[T]] {
-                        private var nextT = xs.take(2)
-                        def hasNext: Boolean = nextT.size < xs.size
-                        def next(): Set[T] = {
-                          if (!hasNext)
-                            throw new NoSuchElementException
-                          val result = nextT
-                          nextT = xs.take(result.size * 2)
-                          result
-                        }
-                      }
-                    it.toList.map(xs => Rose(xs))
-                  }
-
-                  ((List(Rose(Set.empty[T])) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch).reverse, rnd1)
-                }
-              }
-            }
+          if (value.isEmpty)
+            (List.empty, rndPassedToShrinks)
+          else {
+            val halfSize = value.size / 2
+            val firstHalf = value.take(halfSize)
+            val secondHalf = value.drop(halfSize)
+            val tail = value.tail
+            val init = value.init
+            (List(firstHalf, secondHalf, tail, init).distinct.filter(_ != value).map(NextRoseTree(_)), rndPassedToShrinks)
           }
-          rootRoseTree.shrinks(rndPassedToShrinks)
         }
       }
 
@@ -3970,9 +3933,9 @@ object Generator {
 
           def next(ignoredSzp: org.scalatest.prop.SizeParam, edges: List[Set[T]], rnd: org.scalatest.prop.Randomizer): (RoseTree[Set[T]], List[Set[T]], org.scalatest.prop.Randomizer) = {
             @scala.annotation.tailrec
-            def loop(targetSize: Int, result: Set[T], rnd: org.scalatest.prop.Randomizer): (Rose[Set[T]], List[Set[T]], org.scalatest.prop.Randomizer) =
+            def loop(targetSize: Int, result: Set[T], rnd: org.scalatest.prop.Randomizer): (RoseTree[Set[T]], List[Set[T]], org.scalatest.prop.Randomizer) =
               if (result.size == targetSize)
-                (Rose(result), edges, rnd)
+                (NextRoseTree(result), edges, rnd)
               else {
                 val (nextRoseTreeOfT, nextEdges, nextRnd) = genOfT.next(szp, List.empty, rnd)
                 loop(targetSize, result + nextRoseTreeOfT.value, nextRnd)
@@ -4010,7 +3973,7 @@ object Generator {
           def next(szp: org.scalatest.prop.SizeParam, edges: List[Set[T]],rnd: org.scalatest.prop.Randomizer): (RoseTree[Set[T]], List[Set[T]], org.scalatest.prop.Randomizer) = {
             edges match {
               case head :: tail =>
-                (Rose(head), tail, rnd)
+                (NextRoseTree(head), tail, rnd)
               case _ =>
                 val s = f(szp)
                 val gen = generatorWithSize(s)

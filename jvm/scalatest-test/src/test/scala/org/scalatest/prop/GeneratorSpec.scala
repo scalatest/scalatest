@@ -3628,9 +3628,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1, a2, a3, a4, a5).map(_.value) should contain theSameElementsAs List(b1, b2, b3, b4, b5).map(_.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce Set[T] edge values first in random order") {
         val gen = Generator.setGenerator[Int]
@@ -3682,26 +3682,27 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           s.size shouldBe 5
         }
       }
-
-      it("should shrink Sets using strategery") {
-        shrinkByStrategery[Set](Set)
+      it("should shrink Set with an algo towards empty Set") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[Set[Int]]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[Set[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.isEmpty)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              i should contain allElementsOf s
+              s.size should be < i.size  
+            }  
+          }
+        }
       }
       it("should return an empty Iterator when asked to shrink a Set of size 0") {
         val lstGen = implicitly[Generator[Set[Int]]]
         val xs = Set.empty[Int]
         lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
-      }
-      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Set of size 1") {
-        val lstGen = implicitly[Generator[Set[Int]]]
-        val canonicalLists = Vector(0, 1, -1, 2, -2, 3, -3).map(i => Set(i))
-        val expectedLists = Vector(Set.empty[Int]) ++ canonicalLists
-        val nonCanonical = Set(99)
-        // We control the intended generated rosetree value by passing the intended value as the only edge case.
-        lstGen.next(SizeParam(1, 0, 1), List(nonCanonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
-        val canonical = Set(3)
-        // Ensure 3 (an Int canonical value) does not show up twice in the output
-        // We control the intended generated rosetree value by passing the intended value as the only edge case.
-        lstGen.next(SizeParam(1, 0, 1), List(canonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a Set of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Set[Int]]]
