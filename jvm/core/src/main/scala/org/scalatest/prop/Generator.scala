@@ -4003,52 +4003,16 @@ object Generator {
       // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: SortedSet[T]) extends RoseTree[SortedSet[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[SortedSet[T]]], Randomizer) = {
-          val xs = value
-          val rootRoseTree = {
-            if (xs.isEmpty) Rose(xs)
-            else {
-              new RoseTree[SortedSet[T]] {
-                val value: SortedSet[T] = xs
-                def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[SortedSet[T]]], Randomizer) = {
-                  val (canonicalTsIt, rnd1) = genOfT.canonicals(rndPassedToShrinks)
-                  val canonicalTs = canonicalTsIt.toList
-                  // Start with Lists of length one each of which contain one of the canonical values
-                  // of the element type.
-
-                  val canonicalListOfTsIt: List[Rose[SortedSet[T]]] = canonicalTs.map(t => Rose(SortedSet(t)))
-
-                  // Only include distinctListsOfTs if the list to shrink (xs) does not contain
-                  // just one element itself. If it does, then xs will appear in the output, which
-                  // we don't need, since we already know it fails.
-                  val distinctListOfTsIt: List[Rose[SortedSet[T]]] =
-                  if (xs.nonEmpty && (xs.size > 1))
-                    for (x <- xs.toList if !canonicalTs.contains(x)) yield Rose(SortedSet(x))
-                  else List.empty
-
-                  // The last batch of candidate shrunken values are just slices of the list starting at
-                  // 0 with size doubling each time.
-                  val lastBatch: List[Rose[SortedSet[T]]] = {
-                    val it =
-                      new Iterator[SortedSet[T]] {
-                        private var nextT = xs.take(2)
-                        def hasNext: Boolean = nextT.size < xs.size
-                        def next(): SortedSet[T] = {
-                          if (!hasNext)
-                            throw new NoSuchElementException
-                          val result = nextT
-                          nextT = xs.take(result.size * 2)
-                          result
-                        }
-                      }
-                    it.toList.map(xs => Rose(xs))
-                  }
-
-                  ((List(Rose(SortedSet.empty[T])) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch).reverse, rnd1)
-                }
-              }
-            }
+          if (value.isEmpty)
+            (List.empty, rndPassedToShrinks)
+          else {
+            val halfSize = value.size / 2
+            val firstHalf = value.take(halfSize)
+            val secondHalf = value.drop(halfSize)
+            val tail = value.tail
+            val init = value.init
+            (List(firstHalf, secondHalf, tail, init).distinct.filter(_ != value).map(NextRoseTree(_)), rndPassedToShrinks)
           }
-          rootRoseTree.shrinks(rndPassedToShrinks)
         }
       }
 
