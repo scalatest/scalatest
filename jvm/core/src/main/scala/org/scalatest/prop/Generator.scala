@@ -3462,31 +3462,33 @@ object Generator {
       // method on Generator that can be passed a value, so that we can shrink edges
       // inside something like Option generator (and either, or, etc.). Maybe call it
       // shrinkValue so that the name looks different.
-//      case class NextRoseTree(value: Option[T]) extends RoseTree[Option[T]] {
-//        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
-//
-//          value match {
-//            // If there is a real value, shrink that value, and return that and None.
-//            case Some(t) =>
-//              val optionOfT: Option[T] = value
-//              val rootRoseTree =
-//                new RoseTree[Option[T]] {
-//                  val value: Option[T] = optionOfT
-//                  def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
-//                    val (topRoseTreeOfT, rnd2) = genOfT.shrink(t, rndPassedToShrinks) // topRoseTreeOfT is a RoseTree[T]
-//                    val (nestedRoseTrees, rnd3) = topRoseTreeOfT.shrinks(rnd2) // nestedRoseTrees: List[RoseTree[T]]
-//                    val noneList: List[RoseTree[Option[T]]] = List(Rose(None))
-//                    val nestedList: List[RoseTree[Option[T]]] = nestedRoseTrees.map(nrt => nrt.map(t => Some(t): Option[T]))
-//                    ((noneList ++ nestedList).reverse, rnd3)
-//                  }
-//                }
-//              rootRoseTree.shrinks(rndPassedToShrinks)
-//
-//            // There's no way to simplify None:
-//            case None => (List.empty, rndPassedToShrinks)
-//          }
-//        }
-//      }
+      case class NextRoseTree(value: Option[T]) extends RoseTree[Option[T]] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
+
+          value match {
+            // If there is a real value, shrink that value, and return that and None.
+            case Some(t) =>
+              val optionOfT: Option[T] = value
+              val rootRoseTree =
+                new RoseTree[Option[T]] {
+                  val value: Option[T] = optionOfT
+                  def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Option[T]]], Randomizer) = {
+                    val (topRoseTreeOfT, _, rnd2) = genOfT.next(SizeParam(1, 0, 1), List(t), rndPassedToShrinks) // topRoseTreeOfT is a RoseTree[T]
+                    val (nestedRoseTrees, rnd3) = topRoseTreeOfT.shrinks(rnd2) // nestedRoseTrees: List[RoseTree[T]]
+                    val nestedList: List[RoseTree[Option[T]]] = nestedRoseTrees.map(nrt => nrt.map(t => Some(t): Option[T])).filter(_.value != value)
+                    if (nestedList.isEmpty)
+                      (List.empty, rnd3)
+                    else
+                      (nestedList, rnd3)
+                  }
+                }
+              rootRoseTree.shrinks(rndPassedToShrinks)
+
+            // There's no way to simplify None:
+            case None => (List.empty, rndPassedToShrinks)
+          }
+        }
+      }
 
       // TODO: Ah, maybe edges should return List[RoseTree[Option[T]], Randomizer] instead. Then it could be shrunken.
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Option[T]], Randomizer) = {
@@ -3505,11 +3507,11 @@ object Generator {
       def next(szp: SizeParam, edges: List[Option[T]], rnd: Randomizer): (RoseTree[Option[T]], List[Option[T]], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd) // This means I won't shrink an edge if wrapped in an Option, which is a bit odd but OK for now. UUU
+            (NextRoseTree(head), tail, rnd) // This means I won't shrink an edge if wrapped in an Option, which is a bit odd but OK for now. UUU
           case Nil =>               // This I think can be shrunken if we add a shrinkValue method to Generator (the old shrink method).
             val (nextInt, nextRnd) = rnd.nextInt // Actually maybe not, because can't map/flatMap shrinkValue. Oh, maybe edges should
             if (nextInt % 100 == 0) // let every hundredth value or so be a None
-              (Rose(None), Nil, nextRnd) // No need to shrink None.
+              (NextRoseTree(None), Nil, nextRnd) // No need to shrink None.
             else {
               val (nextRoseTreeOfT, _, nextNextRnd) = genOfT.next(szp, Nil, nextRnd)
               (nextRoseTreeOfT.map(nextT => Some(nextT)), Nil, nextNextRnd)
