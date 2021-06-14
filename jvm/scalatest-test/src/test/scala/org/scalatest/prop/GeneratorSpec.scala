@@ -3004,6 +3004,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             shrinks should not be empty
             inspectAll(shrinks) { s =>
               s.length should be < i.length  
+              i should contain allElementsOf s
             }  
           }
         }
@@ -3307,31 +3308,30 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val xss = List(List(100, 200, 300, 400, 300))
         lstGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should not contain xss
       }
-      it("should shrink Lists using strategery") {
-        shrinkByStrategery[List](List)
-      }
       it("should return an empty Iterator when asked to shrink a List of size 0") {
         val lstGen = implicitly[Generator[List[Int]]]
         val xs = List.empty[Int]
         lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
       }
-      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a List of size 1") {
-        val lstGen = implicitly[Generator[List[Int]]]
-        val canonicalLists = List(0, 1, -1, 2, -2, 3, -3).map(i => List(i))
-        val expectedLists = List(List.empty[Int]) ++ canonicalLists
-        val nonCanonical = List(99)
-        // pass in nonCanonical as only edge case so the generator will generate rose tree with the specified value.
-        lstGen.next(SizeParam(1, 0, 1), List(nonCanonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
-        val canonical = List(3)
-        // Ensure 3 (an Int canonical value) does not show up twice in the output
-        // pass in canonical as only edge case so the generator will generate rose tree with the specified value.
-        lstGen.next(SizeParam(1, 0, 1), List(canonical), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
+      it("should shrink List with an algo towards empty List") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[List[Int]]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[List[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.isEmpty)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              i should contain allElementsOf s
+              s.length should be < i.length  
+            }  
+          }
+        }
       }
-      it("should return an Iterator that does not repeat canonicals when asked to shrink a List of size 2 that includes canonicals") {
-        val lstGen = implicitly[Generator[List[Int]]]
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(List(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
-        shrinkees.distinct should contain theSameElementsAs shrinkees
-      }
+
+
       it("should return an Iterator that does not repeat the passed list-to-shink even if that list has a power of 2 length") {
         // Since the last batch of lists produced by the list shrinker start at length 2 and then double in size each time,
         // they lengths will be powers of two: 2, 4, 8, 16, etc... So make sure that if the original length has length 16,

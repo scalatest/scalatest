@@ -19,6 +19,7 @@ import org.scalactic.anyvals._
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.Inspectors.{forAll => inspectAll}
 
 class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
   describe("A HavingLengthsBetween Generator for Lists") {
@@ -60,30 +61,11 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
-  
-            // First one should be the empty list
-            shrinks(0) shouldBe Nil
-  
-            // Then should come one-element Lists of the canonicals of the type
-            val phase2 = shrinks.drop(1).take(intCanonicals.length)
-            phase2 shouldEqual (intCanonicals.map(i => List(i)))
-  
-            // Phase 3 should be one-element lists of all distinct values in the value passed to shrink
-            // If xs already is a one-element list, then we don't do this, because then xs would appear in the output.
-            val xsDistincts = if (xs.length > 1) xs.distinct else Nil
-            val phase3 = shrinks.drop(1 + intCanonicals.length).take(xsDistincts.length)
-            phase3 shouldEqual (xsDistincts.map(i => List(i)))
-  
-            // Phase 4 should be n-element lists that are prefixes cut in half
-            val theHalves = shrinks.drop(1 + intCanonicals.length + xsDistincts.length)
-            theHalves should not contain xs // This was a bug I noticed
-            if (theHalves.length > 1) {
-              import org.scalatest.Inspectors
-              val zipped = theHalves.zip(theHalves.tail) 
-              Inspectors.forAll (zipped) { case (s, t) => 
-                s.length should be < t.length
-              }
-            } else succeed
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              xs should contain allElementsOf s
+              s.length should be < xs.length  
+            }
           }
         }
       }
@@ -92,23 +74,6 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         val lstGen = lists[Int].havingLengthsBetween(0, 99)
         val xs = List.empty[Int]
         lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
-      }
-      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a List of size 1") {
-        import CommonGenerators.lists
-        val lstGen = lists[Int].havingLengthsBetween(0, 88)
-        val canonicalLists = List(0, 1, -1, 2, -2, 3, -3).map(i => List(i))
-        val expectedLists = List(List.empty[Int]) ++ canonicalLists
-        
-        val singleElementLstGen = lists[Int].havingLength(1)
-
-        // pass in List(99) as only edge case so the generator will generate rose tree with the specified value.
-        val (rtNonCanonical, _, _) = singleElementLstGen.next(SizeParam(1, 1, 1), List(List(99)), Randomizer.default)
-        rtNonCanonical.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
-        
-        // pass in List(3) as only edge case so the generator will generate rose tree with the specified value.
-        val (rtCanonical, _, _) = singleElementLstGen.next(SizeParam(1, 1, 1), List(List(3)), Randomizer.default)
-        // Ensure 3 (an Int canonical value) does not show up twice in the output
-        rtCanonical.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a List of size 2 that includes canonicals") {
         import CommonGenerators.lists
@@ -199,30 +164,11 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
-  
-            // First one should be the empty list
-            shrinks(0) shouldBe Nil
-  
-            // Then should come one-element Lists of the canonicals of the type
-            val phase2 = shrinks.drop(1).take(intCanonicals.length)
-            phase2 shouldEqual (intCanonicals.map(i => List(i)))
-  
-            // Phase 3 should be one-element lists of all distinct values in the value passed to shrink
-            // If xs already is a one-element list, then we don't do this, because then xs would appear in the output.
-            val xsDistincts = if (xs.length > 1) xs.distinct else Nil
-            val phase3 = shrinks.drop(1 + intCanonicals.length).take(xsDistincts.length)
-            phase3 shouldEqual (xsDistincts.map(i => List(i)))
-  
-            // Phase 4 should be n-element lists that are prefixes cut in half
-            val theHalves = shrinks.drop(1 + intCanonicals.length + xsDistincts.length)
-            theHalves should not contain xs // This was a bug I noticed
-            if (theHalves.length > 1) {
-              import org.scalatest.Inspectors
-              val zipped = theHalves.zip(theHalves.tail) 
-              Inspectors.forAll (zipped) { case (s, t) => 
-                s.length should be < t.length
-              }
-            } else succeed
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              xs should contain allElementsOf s
+              s.length should be < xs.length  
+            }
           }
         }
       }
@@ -231,22 +177,6 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         val lstGen = lists[Int].havingLengthsBetween(5, 99)
         val xs = List.empty[Int]
         lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
-      }
-      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a List of size 1") {
-        import CommonGenerators.lists
-        val lstGen = lists[Int].havingLengthsBetween(5, 88)
-        val canonicalLists = List(0, 1, -1, 2, -2, 3, -3).map(i => List(i))
-        val expectedLists = List(List.empty[Int]) ++ canonicalLists
-
-        val singleElementLstGen = lists[Int].havingLength(1)
-        
-        // pass in List(99) as only edge case so the generator will generate rose tree with the specified value.
-        val (rtNonCanonical, _, _) = singleElementLstGen.next(SizeParam(1, 1, 1), List(List(99)), Randomizer.default)
-        rtNonCanonical.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
-        
-        // pass in List(3) as only edge case so the generator will generate rose tree with the specified value.
-        val (rtCanonical, _, _) = singleElementLstGen.next(SizeParam(1, 1, 1), List(List(3)), Randomizer.default)
-        rtCanonical.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a List of size 2 that includes canonicals") {
         import CommonGenerators.lists

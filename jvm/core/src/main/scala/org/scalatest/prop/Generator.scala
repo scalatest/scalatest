@@ -2385,7 +2385,7 @@ object Generator {
             val secondHalf = value.drop(halfSize)
             val tail = value.tail
             val init = value.init
-            (List(NextRoseTree(firstHalf), NextRoseTree(secondHalf), NextRoseTree(tail), NextRoseTree(init)).distinct, rndPassedToShrinks)
+            (List(firstHalf, secondHalf, tail, init).distinct.filter(_ != value).map(NextRoseTree(_)), rndPassedToShrinks)
           }
         }
       }
@@ -2424,50 +2424,17 @@ object Generator {
       // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: List[T]) extends RoseTree[List[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[List[T]]], Randomizer) = {
-          val xs = value
-          val rootRoseTree =
-            if (xs.isEmpty) Rose(xs)
-            else
-              new RoseTree[List[T]] {
-                val value: List[T] = xs
-
-                def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[List[T]]], Randomizer) = {
-                  val (canonicalTsIt, rnd1) = genOfT.canonicals(rndPassedToShrinks)
-                  val canonicalTs = canonicalTsIt.toList
-                  // Start with Lists of length one each of which contain one of the canonical values
-                  // of the element type.
-                  val canonicalListOfTsIt: List[Rose[List[T]]] = canonicalTs.map(t => Rose(List(t)))
-
-                  // Only include distinctListsOfTs if the list to shrink (xs) does not contain
-                  // just one element itself. If it does, then xs will appear in the output, which
-                  // we don't need, since we already know it fails.
-                  val distinctListOfTsIt: List[Rose[List[T]]] =
-                    if (xs.nonEmpty && xs.tail.nonEmpty)
-                      for (x <- xs if !canonicalTs.contains(x)) yield Rose(List(x))
-                    else List.empty
-
-                  // The last batch of candidate shrunken values are just slices of the list starting at
-                  // 0 with size doubling each time.
-                  val lastBatch: List[Rose[List[T]]] = {
-                    val it =
-                      new Iterator[List[T]] {
-                        private var nextT = xs.take(2)
-                        def hasNext: Boolean = nextT.length < xs.length
-                        def next(): List[T] = {
-                          if (!hasNext)
-                            throw new NoSuchElementException
-                          val result = nextT
-                          nextT = xs.take(result.length * 2)
-                          result
-                        }
-                      }
-                    it.toList.map(xs => Rose(xs))
-                  }
-
-                  ((List(Rose(Nil: List[T])) ++ canonicalListOfTsIt ++ distinctListOfTsIt ++ lastBatch).reverse, rnd1)
-                }
-              }
-          rootRoseTree.shrinks(rndPassedToShrinks)
+          if (value.isEmpty)
+            (List.empty, rndPassedToShrinks)
+          else {
+            val halfSize = value.length / 2
+            val firstHalf = value.take(halfSize)
+            val secondHalf = value.drop(halfSize)
+            val tail = value.tail
+            val init = value.init
+            val result = List(NextRoseTree(firstHalf), NextRoseTree(secondHalf), NextRoseTree(tail), NextRoseTree(init))
+            (List(firstHalf, secondHalf, tail, init).distinct.filter(_ != value).map(NextRoseTree(_)), rndPassedToShrinks)
+          }
         }
       }
 
