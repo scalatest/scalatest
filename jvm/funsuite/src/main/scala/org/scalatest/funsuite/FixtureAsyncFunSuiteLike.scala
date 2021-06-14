@@ -93,22 +93,59 @@ trait FixtureAsyncFunSuiteLike extends org.scalatest.FixtureAsyncTestSuite with 
     */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  private final def registerAsyncTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  // SKIP-DOTTY-START
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    registerAsyncTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def registerIgnoredAsyncTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
+  // SKIP-DOTTY-START
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
   class ResultOfTestInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    
+    private final def applyImpl(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
       engine.registerAsyncTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, None, None, pos, testTags: _*)
     }
+    
+    // SKIP-DOTTY-START
+    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+      applyImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
-    def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    private final def applyImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
       engine.registerAsyncTest(testName, transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.testCannotAppearInsideAnotherTest, None, None, pos, testTags: _*)
     }
+
+    // SKIP-DOTTY-START
+    def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+      applyImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -139,13 +176,32 @@ trait FixtureAsyncFunSuiteLike extends org.scalatest.FixtureAsyncTestSuite with 
   */
 
   class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+
+    private final def applyImpl(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
       engine.registerIgnoredAsyncTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideATest, None, pos, testTags: _*)
     }
+    
+    // SKIP-DOTTY-START
+    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+      applyImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
 
-    def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    private final def applyImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
       engine.registerIgnoredAsyncTest(testName, transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideATest, None, pos, testTags: _*)
     }
+
+    // SKIP-DOTTY-START
+    def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+      applyImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**

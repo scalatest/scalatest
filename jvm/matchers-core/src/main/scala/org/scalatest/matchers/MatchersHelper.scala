@@ -362,7 +362,7 @@ private[scalatest] object MatchersHelper {
   //DOTTY-ONLY   val file = pos.sourceFile
   //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
   //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-  //DOTTY-ONLY   val lineNo: Int = pos.startLine
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
   //DOTTY-ONLY   '{checkThrownBy(${clazz}, ${thrownBy}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
   //DOTTY-ONLY }
 
@@ -389,7 +389,7 @@ private[scalatest] object MatchersHelper {
   //DOTTY-ONLY   val file = pos.sourceFile
   //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
   //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-  //DOTTY-ONLY   val lineNo: Int = pos.startLine
+  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
   //DOTTY-ONLY   '{checkBeThrownBy(${clazz}, ${beThrownBy}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
   //DOTTY-ONLY }
 

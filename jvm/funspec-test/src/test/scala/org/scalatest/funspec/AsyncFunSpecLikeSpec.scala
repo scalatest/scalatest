@@ -31,7 +31,6 @@ class AsyncFunSpecLikeSpec extends funspec.AnyFunSpec {
 
   describe("AsyncFunSpecLike") {
 
-    // SKIP-DOTTY-START
     it("can be used for tests that return Future under parallel async test execution") {
 
       class ExampleSpec extends AsyncFunSpecLike with ParallelTestExecution {
@@ -141,7 +140,6 @@ class AsyncFunSpecLikeSpec extends funspec.AnyFunSpec {
       assert(rep.testIgnoredEventsReceived.length == 1)
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
-    // SKIP-DOTTY-END
 
     it("should run tests that return Future in serial by default") {
 

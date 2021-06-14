@@ -98,21 +98,59 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  private final def registerAsyncTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
     engine.registerAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  // SKIP-DOTTY-START
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    registerAsyncTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
+  private final def registerIgnoredAsyncTestImpl(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
+  // SKIP-DOTTY-START
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerIgnoredAsyncTestImpl(testText, testTags: _*)(testFun, pos) }) } 
+  //DOTTY-ONLY }
+
   class ResultOfScenarioInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    
+    def applyImpl(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
       engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, None, None, pos, testTags: _*)
     }
-    def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+
+    // SKIP-DOTTY-START
+    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+      applyImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
+    
+    private final def applyImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
       engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.scenarioCannotAppearInsideAnotherScenario, None, None, pos, testTags: _*)
     }
+
+    // SKIP-DOTTY-START
+    def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+      applyImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -148,12 +186,32 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
     new ResultOfScenarioInvocation(specText, testTags: _*)
 
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+    
+    private final def applyImpl(testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
       engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, None, pos, testTags: _*)
     }
-    def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+
+    // SKIP-DOTTY-START
+    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+      applyImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
+
+    private final def applyImpl(testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
       engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(new fixture.NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAScenario, None, pos, testTags: _*)
     }
+
+    // SKIP-DOTTY-START
+    def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
+      applyImpl(testFun, pos)
+    }
+    // SKIP-DOTTY-END
+    //DOTTY-ONLY inline def apply(testFun: () => Future[compatible.Assertion]): Unit = {
+    //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => applyImpl(testFun, pos) }) } 
+    //DOTTY-ONLY }
   }
 
   /**
@@ -186,17 +244,14 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
    * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
    */
   @deprecated("The feature (starting with lowercase 'f') method has been deprecated and will be removed in a future version of ScalaTest. Please use Feature (starting with an uppercase 'F') instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
-  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = Feature(description)(fun)(pos)
+  // SKIP-DOTTY-START
+  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = FeatureImpl(description)(fun, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def feature(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => FeatureImpl(description)(fun, pos) }) } 
+  //DOTTY-ONLY }
 
-  /**
-   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
-   * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
-   * (defined with <code>it</code>). This trait's implementation of this method will register the
-   * description string and immediately invoke the passed function.
-   *
-   * @param description the description text
-   */
-  protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+  private final def FeatureImpl(description: String)(fun: => Unit, pos: source.Position): Unit = {
     if (!currentBranchIsTrunk)
       throw new NotAllowedException(Resources.cantNestFeatureClauses, None, pos)
 
@@ -211,6 +266,23 @@ trait FixtureAsyncFeatureSpecLike extends org.scalatest.FixtureAsyncTestSuite wi
       case other: Throwable => throw other
     }
   }
+
+  /**
+   * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
+   * passed function value may contain more describers (defined with <code>describe</code>) and/or tests
+   * (defined with <code>it</code>). This trait's implementation of this method will register the
+   * description string and immediately invoke the passed function.
+   *
+   * @param description the description text
+   */
+  // SKIP-DOTTY-START
+  protected def Feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
+    FeatureImpl(description)(fun, pos)
+  }
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY inline def Feature(description: String)(fun: => Unit): Unit = {
+  //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => FeatureImpl(description)(fun, pos) }) } 
+  //DOTTY-ONLY }
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FixtureAsyncFeatureSpec</code> belong, and values

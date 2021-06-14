@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.diagrams
 
 import org.scalactic._
+import org.scalatest.Assertion
 import reflect.macros.Context
 import scala.annotation.tailrec
 
-@deprecated("Please use org.scalatest.diagrams.DiagrammedExprMacro of diagrams module.")
-private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
+private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
 
   import context.universe._
 
@@ -83,11 +83,14 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
+              newTermName("scalatest")
             ),
-            newTermName("scalatest")
-          ),
+            newTermName("diagrams")
+          ), 
           newTermName("DiagrammedExpr")
         ),
         newTermName("simpleExpr")
@@ -144,10 +147,13 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Select(
+                  Ident(newTermName("_root_")),
+                  newTermName("org")
+                ),
+                newTermName("scalatest")
               ),
-              newTermName("scalatest")
+              newTermName("diagrams")
             ),
             newTermName("DiagrammedExpr")
           ),
@@ -275,10 +281,13 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Select(
+                  Ident(newTermName("_root_")),
+                  newTermName("org")
+                ),
+                newTermName("scalatest")
               ),
-              newTermName("scalatest")
+              newTermName("diagrams")
             ),
             newTermName("DiagrammedExpr")
           ),

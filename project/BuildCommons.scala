@@ -10,7 +10,7 @@ trait BuildCommons {
     scalaVersion := crossScalaVersions.value.head,
   )
 
-  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.5.0")
+  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.5.1")
   def scalatestJSLibraryDependencies =
     Seq(
       "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
@@ -18,11 +18,10 @@ trait BuildCommons {
 
   val releaseVersion = "3.3.0-SNAP3"
 
-  val previousReleaseVersion = "3.2.7"
+  val previousReleaseVersion = "3.2.8"
 
-  val plusJUnitVersion = "3.2.8.0"
-  val plusTestNGVersion = "3.2.8.0"
-
+  val plusJUnitVersion = "3.2.9.0"
+  val plusTestNGVersion = "3.2.9.0"
   val flexmarkVersion = "0.36.8"
 
   def rootProject: Project

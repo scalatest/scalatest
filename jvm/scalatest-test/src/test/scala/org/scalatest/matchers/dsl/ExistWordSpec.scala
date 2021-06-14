@@ -47,10 +47,10 @@ class ExistWordSpec extends AnyFunSpec with Matchers with FileMocks {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe lhs + " does not exist"
-        mr.negatedFailureMessage shouldBe lhs + " exists"
-        mr.midSentenceFailureMessage shouldBe lhs + " does not exist"
-        mr.midSentenceNegatedFailureMessage shouldBe lhs + " exists"
+        mr.failureMessage shouldBe s"$lhs does not exist"
+        mr.negatedFailureMessage shouldBe s"$lhs exists"
+        mr.midSentenceFailureMessage shouldBe s"$lhs does not exist"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$lhs exists"
         mr.rawFailureMessage shouldBe "{0} does not exist"
         mr.rawNegatedFailureMessage shouldBe "{0} exists"
         mr.rawMidSentenceFailureMessage shouldBe "{0} does not exist"
@@ -66,10 +66,10 @@ class ExistWordSpec extends AnyFunSpec with Matchers with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe lhs + " exists"
-        nmr.negatedFailureMessage shouldBe lhs + " does not exist"
-        nmr.midSentenceFailureMessage shouldBe lhs + " exists"
-        nmr.midSentenceNegatedFailureMessage shouldBe lhs + " does not exist"
+        nmr.failureMessage shouldBe s"$lhs exists"
+        nmr.negatedFailureMessage shouldBe s"$lhs does not exist"
+        nmr.midSentenceFailureMessage shouldBe s"$lhs exists"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$lhs does not exist"
         nmr.rawFailureMessage shouldBe "{0} exists"
         nmr.rawNegatedFailureMessage shouldBe "{0} does not exist"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} exists"

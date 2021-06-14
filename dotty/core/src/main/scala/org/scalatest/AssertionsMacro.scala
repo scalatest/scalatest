@@ -48,7 +48,13 @@ object AssertionsMacro {
     pos: Expr[source.Position], clue: Expr[Any]
   )
   (using Quotes): Expr[Assertion] = {
+    val pos = quotes.reflect.Position.ofMacroExpansion
+    val file = pos.sourceFile
+    val fileName: String = file.jpath.getFileName.toString
+    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
+    val lineNo: Int = pos.startLine + 1
+
     val bool = BooleanMacro.parse(condition, prettifier)
-    '{ ($helper)($bool, $clue, $pos) }
+    '{ ($helper)($bool, $clue, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
   }
 }

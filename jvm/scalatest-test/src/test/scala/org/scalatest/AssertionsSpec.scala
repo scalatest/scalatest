@@ -6148,8 +6148,6 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
 
-      // SKIP-DOTTY-START
-      // no parse error support in Dotty
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           assertTypeError("println(\"test)")
@@ -6160,8 +6158,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
-      // SKIP-DOTTY-END
-
+      
       it("should do nothing when used with 'val i: Int = null'") {
         assertTypeError("val i: Int = null")
       }
@@ -6193,8 +6190,6 @@ class AssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when type check passed") {
         val e = intercept[TestFailedException] {
           assertTypeError(
@@ -6207,10 +6202,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-      // SKIP-DOTTY-END
-
-      // SKIP-DOTTY-START
-      // no parse error support in Dotty
+      
       it("should throw TestFailedException with correct message and stack depth when parse failed ") {
         val e = intercept[TestFailedException] {
           assertTypeError(
@@ -6225,8 +6217,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
-      // SKIP-DOTTY-END
-
+      
       it("should do nothing when used with 'val i: Int = null'") {
         assertTypeError(
           """
@@ -6234,8 +6225,6 @@ class AssertionsSpec extends AnyFunSpec {
             |""".stripMargin
         )
       }
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
 
@@ -6255,7 +6244,6 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-      // SKIP-DOTTY-END
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
       assert(assertTypeError("val x: String = 1") eq Succeeded)
@@ -6319,8 +6307,6 @@ class AssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when parse and type check passed") {
         val e = intercept[TestFailedException] {
           assertDoesNotCompile(
@@ -6333,8 +6319,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-      // SKIP-DOTTY-END
-
+      
       it("should do nothing when parse failed ") {
         assertDoesNotCompile(
           """
@@ -6358,8 +6343,6 @@ class AssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
 
@@ -6378,7 +6361,6 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 7)))
       }
-      // SKIP-DOTTY-END
     }
   }
 
@@ -6401,8 +6383,6 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
 
-      // SKIP-DOTTY-START
-      // different error message
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           assertCompiles("println(\"test)")
@@ -6413,7 +6393,6 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
-      // SKIP-DOTTY-END
 
       it("should do nothing when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
@@ -6437,8 +6416,6 @@ class AssertionsSpec extends AnyFunSpec {
         )
       }
 
-      // SKIP-DOTTY-START
-      // different line number
       it("should throw TestFailedException with correct message and stack depth when type check failed") {
         val e = intercept[TestFailedException] {
           assertCompiles(
@@ -6453,10 +6430,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
-      // SKIP-DOTTY-END
-
-      // SKIP-DOTTY-START
-      // different error message
+      
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         val e = intercept[TestFailedException] {
           assertCompiles(
@@ -6471,8 +6445,7 @@ class AssertionsSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
-      // SKIP-DOTTY-END
-
+      
       it("should do nothing when the code compiles with implicit view in scope") {
         import scala.collection.JavaConverters._
 

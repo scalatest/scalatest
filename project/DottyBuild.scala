@@ -10,11 +10,13 @@ import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLinkerConfig, jsEnv}
 
+import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
+
 trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.0-RC3")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.0")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
@@ -234,7 +236,7 @@ trait DottyBuild { this: BuildCommons =>
       initialCommands in console := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies ++= scalaXmlDependency(scalaVersion.value),
+      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.0.0", 
       libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).withDottyCompat(dottyVersion), 
       packageManagedSources,
       sourceGenerators in Compile += Def.task {
@@ -599,13 +601,11 @@ trait DottyBuild { this: BuildCommons =>
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
-      sourceGenerators in Compile += 
-        Def.task{
-          GenCommonTestDotty.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
-          GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-          GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
-        }.taskValue,
-      noPublishSettings
+      sourceGenerators in Compile += Def.task {
+        GenCommonTestDotty.genMain((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
+        GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      noPublishSettings, 
     ).dependsOn(scalacticDotty, LocalProject("scalatestDotty"))
 
   lazy val commonTestDottyJS = project.in(file("dotty/common-test.js"))
@@ -615,7 +615,7 @@ trait DottyBuild { this: BuildCommons =>
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
       sourceGenerators in Compile += Def.task {
-        GenCommonTestDotty.genMainJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+        GenCommonTestDotty.genMainJS((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
         GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
       }.taskValue,
       noPublishSettings,
