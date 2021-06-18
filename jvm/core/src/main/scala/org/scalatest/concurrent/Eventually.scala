@@ -288,7 +288,7 @@ trait Eventually extends PatienceConfiguration {
    * The by-name parameter "succeeds" if it returns a result. It "fails" if it throws any exception that
    * would normally cause a test to fail. (These are any exceptions except <a href="TestPendingException"><code>TestPendingException</code></a> and
    * <code>Error</code>s listed in the
-   * <a href="Suite.html#errorHandling">Treatment of <code>java.lang.Error</code>s</a> section of the
+   * <a href="../Suite.html#errorHandling">Treatment of <code>java.lang.Error</code>s</a> section of the
    * documentation of trait <code>Suite</code>.)
    * </p>
    *
@@ -323,7 +323,7 @@ trait Eventually extends PatienceConfiguration {
    * The by-name parameter "succeeds" if it returns a result. It "fails" if it throws any exception that
    * would normally cause a test to fail. (These are any exceptions except <a href="TestPendingException"><code>TestPendingException</code></a> and
    * <code>Error</code>s listed in the
-   * <a href="Suite.html#errorHandling">Treatment of <code>java.lang.Error</code>s</a> section of the
+   * <a href="../Suite.html#errorHandling">Treatment of <code>java.lang.Error</code>s</a> section of the
    * documentation of trait <code>Suite</code>.)
    * </p>
    *
@@ -358,7 +358,7 @@ trait Eventually extends PatienceConfiguration {
    * The by-name parameter "succeeds" if it returns a result. It "fails" if it throws any exception that
    * would normally cause a test to fail. (These are any exceptions except <a href="TestPendingException"><code>TestPendingException</code></a> and
    * <code>Error</code>s listed in the
-   * <a href="Suite.html#errorHandling">Treatment of <code>java.lang.Error</code>s</a> section of the
+   * <a href="../Suite.html#errorHandling">Treatment of <code>java.lang.Error</code>s</a> section of the
    * documentation of trait <code>Suite</code>.)
    * </p>
    *
@@ -392,7 +392,7 @@ trait Eventually extends PatienceConfiguration {
    * The by-name parameter "succeeds" if it returns a result. It "fails" if it throws any exception that
    * would normally cause a test to fail. (These are any exceptions except <a href="TestPendingException"><code>TestPendingException</code></a> and
    * <code>Error</code>s listed in the
-   * <a href="Suite.html#errorHandling">Treatment of <code>java.lang.Error</code>s</a> section of the
+   * <a href="../Suite.html#errorHandling">Treatment of <code>java.lang.Error</code>s</a> section of the
    * documentation of trait <code>Suite</code>.)
    * </p>
    *
