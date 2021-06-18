@@ -578,7 +578,7 @@ import org.scalatest.Suite
  * Note that marking a test class as ignored won't prevent it from being discovered by ScalaTest. Ignored classes
  * will be discovered and run, and all their tests will be reported as ignored. This is intended to keep the ignored
  * class visible, to encourage the developers to eventually fix and &ldquo;un-ignore&rdquo; it. If you want to
- * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a>
+ * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="../DoNotDiscover.html"><code>DoNotDiscover</code></a>
  * annotation instead.
  * </p>
  *
@@ -593,13 +593,13 @@ import org.scalatest.Suite
  * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
- * One of the parameters to <code>AsyncFlatSpec</code>'s <code>run</code> method is a <a href="Reporter.html"><code>Reporter</code></a>, which
+ * One of the parameters to <code>AsyncFlatSpec</code>'s <code>run</code> method is a <a href="../Reporter.html"><code>Reporter</code></a>, which
  * will collect and report information about the running suite of tests.
  * Information about suites and tests that were run, whether tests succeeded or failed, 
  * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
  * Most often the reporting done by default by <code>AsyncFlatSpec</code>'s methods will be sufficient, but
  * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
- * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
+ * For this purpose, an <a href="../Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
  * is provided via the <code>info</code> parameterless method.
  * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
  * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/InfoProvided.html"><code>InfoProvided</code></a> event.
@@ -607,7 +607,7 @@ import org.scalatest.Suite
  * 
  * <p>
  * One use case for the <code>Informer</code> is to pass more information about a specification to the reporter. For example,
- * the <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> trait provides methods that use the implicit <code>info</code> provided by <code>AsyncFlatSpec</code>
+ * the <a href="../GivenWhenThen.html"><code>GivenWhenThen</code></a> trait provides methods that use the implicit <code>info</code> provided by <code>AsyncFlatSpec</code>
  * to pass such information to the reporter.  Here's an example:
  * </p>
  *
@@ -657,7 +657,7 @@ import org.scalatest.Suite
  * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
- * <code>AsyncFlatSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
+ * <code>AsyncFlatSpec</code> also provides a <code>markup</code> method that returns a <a href="../Documenter.html"><code>Documenter</code></a>, which allows you to send
  * to the <code>Reporter</code> text formatted in <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown syntax</a>.
  * You can pass the extra information to the <code>Documenter</code> via its <code>apply</code> method.
  * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
@@ -740,8 +740,8 @@ import org.scalatest.Suite
  * </p>
  *
  * <p>
- * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
- * (an <a href="Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
+ * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="../Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
+ * (an <a href="../Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
  * </p>
  *
  * <pre class="stHighlight">

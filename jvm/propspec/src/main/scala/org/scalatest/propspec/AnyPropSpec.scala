@@ -188,18 +188,18 @@ import org.scalatest.{Finders, Suite}
  * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
- * One of the parameters to <code>AnyPropSpec</code>'s <code>run</code> method is a <a href="Reporter.html"><code>Reporter</code></a>, which
+ * One of the parameters to <code>AnyPropSpec</code>'s <code>run</code> method is a <a href="../Reporter.html"><code>Reporter</code></a>, which
  * will collect and report information about the running suite of tests.
  * Information about suites and tests that were run, whether tests succeeded or failed, 
  * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
  * Most often the reporting done by default by <code>AnyPropSpec</code>'s methods will be sufficient, but
  * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
- * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information
+ * For this purpose, an <a href="../Informer.html"><code>Informer</code></a> that will forward information
  * to the current <code>Reporter</code> is provided via the <code>info</code> parameterless method.
  * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
  * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/InfoProvided.html"><code>InfoProvided</code></a> event.
  * Here's an example that shows both a direct use as well as an indirect use through the methods
- * of <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a>:
+ * of <a href="../GivenWhenThen.html"><code>GivenWhenThen</code></a>:
  * </p>
  *
  * <pre class="stHighlight">
@@ -268,7 +268,7 @@ import org.scalatest.{Finders, Suite}
  * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
- * <code>AnyPropSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
+ * <code>AnyPropSpec</code> also provides a <code>markup</code> method that returns a <a href="../Documenter.html"><code>Documenter</code></a>, which allows you to send
  * to the <code>Reporter</code> text formatted in <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown syntax</a>.
  * You can pass the extra information to the <code>Documenter</code> via its <code>apply</code> method.
  * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
@@ -365,8 +365,8 @@ import org.scalatest.{Finders, Suite}
  * </p>
  *
  * <p>
- * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
- * (an <a href="Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
+ * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="../Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
+ * (an <a href="../Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
  * </p>
  *
  * <pre class="stHighlight">

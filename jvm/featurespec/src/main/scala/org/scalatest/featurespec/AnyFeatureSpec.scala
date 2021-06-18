@@ -29,7 +29,7 @@ import org.scalatest._
  * </td></tr></table>
  * 
  * <p>
- * Although not required, <code>AnyFeatureSpec</code> is often used together with <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> to express acceptance requirements
+ * Although not required, <code>AnyFeatureSpec</code> is often used together with <a href="../GivenWhenThen.html"><code>GivenWhenThen</code></a> to express acceptance requirements
  * in more detail. Here's an example:
  * </p>
  *
@@ -87,7 +87,7 @@ import org.scalatest._
  *
  * <p>
  * Note: for more information on the calls to <code>Given</code>, <code>When</code>, and <code>Then</code>, see the documentation 
- * for trait <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> and the <a href="#informers"><code>Informers</code> section</a> below.
+ * for trait <a href="../GivenWhenThen.html"><code>GivenWhenThen</code></a> and the <a href="#informers"><code>Informers</code> section</a> below.
  * </p>
  *
  * <p>
@@ -131,7 +131,7 @@ import org.scalatest._
  *
  * <p>
  * When you run a <code>AnyFeatureSpec</code>, it will send <a href="../events/Formatter.html"><code>Formatter</code></a>s in the events it sends to the
- * <a href="Reporter.html"><code>Reporter</code></a>. ScalaTest's built-in reporters will report these events in such a way
+ * <a href="../Reporter.html"><code>Reporter</code></a>. ScalaTest's built-in reporters will report these events in such a way
  * that the output is easy to read as an informal specification of the <em>subject</em> being tested.
  * For example, were you to run <code>TVSetSpec</code> from within the Scala interpreter:
  * </p>
@@ -252,10 +252,10 @@ import org.scalatest._
  * One of the parameters to <code>AnyFeatureSpec</code>'s <code>run</code> method is a <code>Reporter</code>, which
  * will collect and report information about the running suite of tests.
  * Information about suites and tests that were run, whether tests succeeded or failed, 
- * and tests that were ignored will be passed to the <a href="Reporter.html"><code>Reporter</code></a> as the suite runs.
+ * and tests that were ignored will be passed to the <a href="../Reporter.html"><code>Reporter</code></a> as the suite runs.
  * Most often the default reporting done by <code>AnyFeatureSpec</code>'s methods will be sufficient, but
  * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
- * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
+ * For this purpose, an <a href="../Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
  * is provided via the <code>info</code> parameterless method.
  * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
  * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/InfoProvided.html"><code>InfoProvided</code></a> event.
@@ -270,7 +270,7 @@ import org.scalatest._
  * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
- * <code>AnyFeatureSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
+ * <code>AnyFeatureSpec</code> also provides a <code>markup</code> method that returns a <a href="../Documenter.html"><code>Documenter</code></a>, which allows you to send
  * to the <code>Reporter</code> text formatted in <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown syntax</a>.
  * You can pass the extra information to the <code>Documenter</code> via its <code>apply</code> method.
  * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
@@ -354,8 +354,8 @@ import org.scalatest._
  * </p>
  *
  * <p>
- * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
- * (an <a href="Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
+ * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="../Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
+ * (an <a href="../Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
  * </p>
  *
  * <pre class="stHighlight">
