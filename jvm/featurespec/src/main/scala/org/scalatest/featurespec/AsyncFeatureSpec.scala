@@ -230,12 +230,12 @@ import org.scalatest.Suite
  * <a name="asyncExecutionModel"></a><h2>Asynchronous execution model</h2>
  *
  * <p>
- * <code>AsyncFeatureSpec</code> extends <a href="AsyncTestSuite.html"><code>AsyncTestSuite</code></a>, which provides an
+ * <code>AsyncFeatureSpec</code> extends <a href="../AsyncTestSuite.html"><code>AsyncTestSuite</code></a>, which provides an
  * implicit <code>scala.concurrent.ExecutionContext</code>
  * named <code>executionContext</code>. This
  * execution context is used by <code>AsyncFeatureSpec</code> to 
  * transform the <code>Future[Assertion]</code>s returned by each test
- * into the <a href="FutureOutcome.html"><code>FutureOutcome</code></a> returned by the <code>test</code> function
+ * into the <a href="../FutureOutcome.html"><code>FutureOutcome</code></a> returned by the <code>test</code> function
  * passed to <code>withFixture</code>.
  * This <code>ExecutionContext</code> is also intended to be used in the tests,
  * including when you map assertions onto futures.
@@ -358,9 +358,9 @@ import org.scalatest.Suite
  * parallelExecution in Test := true // the default in sbt
  * </pre>
  * 
- * On the JVM, if both <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in and 
+ * On the JVM, if both <a href="../ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in and 
  * parallel execution is enabled in the build, tests in an async-style suite will be started in parallel, using threads from
- * the <a href="Distributor"><code>Distributor</code></a>, and allowed to complete in parallel, using threads from the
+ * the <a href="../Distributor"><code>Distributor</code></a>, and allowed to complete in parallel, using threads from the
  * <code>executionContext</code>. If you are using ScalaTest's serial execution context, the JVM default, asynchronous tests will
  * run in parallel very much like traditional (such as <a href="AnyFeatureSpec.html"><code>AnyFeatureSpec</code></a>) tests run in
  * parallel: 1) Because <code>ParallelTestExecution</code> extends
@@ -372,7 +372,7 @@ import org.scalatest.Suite
  * </p>
  * 
  * <p>
- * If <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in but
+ * If <a href="../ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in but
  * parallel execution of suites is <em>not</em> enabled, asynchronous tests on the JVM will be started sequentially, by the single thread
  * that invoked <code>run</code>, but without waiting for one test to complete before the next test is started. As a result,
  * asynchronous tests will be allowed to <em>complete</em> in parallel, using threads
@@ -397,7 +397,7 @@ import org.scalatest.Suite
  * <p>
  * If you need to test for expected exceptions in the context of futures, you can use the
  * <code>recoverToSucceededIf</code> and <code>recoverToExceptionIf</code> methods of trait
- * <a href="RecoverMethods.html"><code>RecoverMethods</code></a>. Because this trait is mixed into
+ * <a href="../RecoverMethods.html"><code>RecoverMethods</code></a>. Because this trait is mixed into
  * supertrait <code>AsyncTestSuite</code>, both of these methods are
  * available by default in an <code>AsyncFeatureSpec</code>.
  * </p>
@@ -415,7 +415,7 @@ import org.scalatest.Suite
  *
  * <p>
  * The <code>recoverToSucceededIf</code> method performs a job similar to
- * <a href="Assertions.html#assertThrowsMethod"><code>assertThrows</code></a>, except
+ * <a href="../Assertions.html#assertThrowsMethod"><code>assertThrows</code></a>, except
  * in the context of a future. It transforms a <code>Future</code> of any type into a
  * <code>Future[Assertion]</code> that succeeds only if the original future fails with the specified
  * exception. Here's an example in the REPL:
@@ -482,8 +482,8 @@ import org.scalatest.Suite
  *
  * <p>
  * In other words, <code>recoverToExpectionIf</code> is to
- * <a href="Assertions.html#interceptMethod"><code>intercept</code></a> as
- * <code>recovertToSucceededIf</code> is to <a href="Assertions.html#assertThrowsMethod"><code>assertThrows</code></a>. The first one allows you to
+ * <a href="../Assertions.html#interceptMethod"><code>intercept</code></a> as
+ * <code>recovertToSucceededIf</code> is to <a href="../Assertions.html#assertThrowsMethod"><code>assertThrows</code></a>. The first one allows you to
  * perform further assertions on the expected exception. The second one gives you a result type that will satisfy the type checker
  * at the end of the test body. Here's an example showing <code>recoverToExceptionIf</code> in the REPL:
  * </p>
@@ -1146,7 +1146,7 @@ import org.scalatest.Suite
  * Although the get-fixture method approach takes care of setting up a fixture at the beginning of each
  * test, it doesn't address the problem of cleaning up a fixture at the end of the test. If you just need to perform a side-effect at the beginning or end of
  * a test, and don't need to actually pass any fixture objects into the test, you can override <code>withFixture(NoArgAsyncTest)</code>, a
- * method defined in trait <a href="AsyncTestSuite.html"><code>AsyncTestSuite</code></a>, a supertrait of <code>AsyncFeatureSpec</code>.
+ * method defined in trait <a href="../AsyncTestSuite.html"><code>AsyncTestSuite</code></a>, a supertrait of <code>AsyncFeatureSpec</code>.
  * </p>
  *
  * <p>
@@ -1166,7 +1166,7 @@ import org.scalatest.Suite
  * <p>
  * You can, therefore, override <code>withFixture</code> to perform setup before invoking the test function,
  * and/or perform cleanup after the test completes. The recommended way to ensure cleanup is performed after a test completes is
- * to use the <code>complete</code>-<code>lastly</code> syntax, defined in supertrait <a href="CompleteLastly.html"><code>CompleteLastly</code></a>.
+ * to use the <code>complete</code>-<code>lastly</code> syntax, defined in supertrait <a href="../CompleteLastly.html"><code>CompleteLastly</code></a>.
  * The <code>complete</code>-<code>lastly</code> syntax will ensure that
  * cleanup will occur whether future-producing code completes abruptly by throwing an exception, or returns
  * normally yielding a future. In the latter case, <code>complete</code>-<code>lastly</code> will register the cleanup code

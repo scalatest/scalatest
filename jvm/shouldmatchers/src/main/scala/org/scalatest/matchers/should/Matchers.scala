@@ -968,7 +968,7 @@ import org.scalatest.exceptions._
  * <h2>Inspector shorthands</h2>
  *
  * <p>
- * You can use the <a href="Inspectors.html"><code>Inspectors</code></a> syntax with matchers as well as assertions. If you have a multi-dimensional collection, such as a
+ * You can use the <a href="../../Inspectors.html"><code>Inspectors</code></a> syntax with matchers as well as assertions. If you have a multi-dimensional collection, such as a
  * list of lists, using <code>Inspectors</code> is your best option:
  * </p>
  *
@@ -1089,7 +1089,7 @@ import org.scalatest.exceptions._
  *
  * <p>
  * To assert both that a collection contains just one "lone" element as well as something else about that element, you can use
- * the <code>loneElement</code> syntax provided by trait <a href="LoneElement.html"><code>LoneElement</code></a>. For example, if a
+ * the <code>loneElement</code> syntax provided by trait <a href="../../LoneElement.html"><code>LoneElement</code></a>. For example, if a
  * <code>Set[Int]</code> should contain just one element, an <code>Int</code>
  * less than or equal to 10, you could write:
  * </p>
@@ -1155,7 +1155,7 @@ import org.scalatest.exceptions._
  * a collection of <code>Entry</code>. To make Java <code>Map</code>s easier to work with, however,
  * ScalaTest matchers allows you to treat a Java <code>Map</code> as a collection of <code>Entry</code>,
  * and defines a convenience implementation of <code>java.util.Map.Entry</code> in
- * <a href="Entry.html"><code>org.scalatest.Entry</code></a>. Here's how you use it:
+ * <a href="../../Entry.html"><code>org.scalatest.Entry</code></a>. Here's how you use it:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1474,7 +1474,7 @@ import org.scalatest.exceptions._
  * </pre>
  *
  * <p>
- * If you mix in (or import the members of) <a href="OptionValues.html"><code>OptionValues</code></a>,
+ * If you mix in (or import the members of) <a href="../../OptionValues.html"><code>OptionValues</code></a>,
  * you can write one statement that indicates you believe an option should be defined and then say something else about its value. Here's an example:
  * </p>
  *
@@ -1610,7 +1610,7 @@ import org.scalatest.exceptions._
  * <h2>Checking that an expression matches a pattern</h2>
  *
  * <p>
- * ScalaTest's <a href="Inside.html"><code>Inside</code></a> trait allows you to make assertions after a pattern match.
+ * ScalaTest's <a href="../../Inside.html"><code>Inside</code></a> trait allows you to make assertions after a pattern match.
  * Here's an example:
  * </p>
  *

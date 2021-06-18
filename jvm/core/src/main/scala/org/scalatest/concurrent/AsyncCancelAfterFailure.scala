@@ -34,7 +34,7 @@ AFTER MOVING, DROP THE .. in the link to AsyncTestSuite below
  * remaining tests, because they would not see the same flag. For this reason, this trait contains
  * a final implementation of a method defined in <a href="../OneInstancePerTest.html"><code>OneInstancePerTest</code></a>,
  * to prevent it from being mixed into any class that also mixes in <code>OneInstancePerTest</code>, 
- * including by mixing in <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a>
+ * including by mixing in <a href="../ParallelTestExecution.html"><code>ParallelTestExecution</code></a>
  * or a <a href="path/package.html">path traits</a>.
  * </p>
  */
