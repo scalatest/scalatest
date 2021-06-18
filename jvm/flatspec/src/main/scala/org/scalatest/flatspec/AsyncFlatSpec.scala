@@ -265,7 +265,7 @@ import org.scalatest.Suite
  * enable <a href="Runner.scala#slowpokeNotifications">slowpoke notifications</a>.) If you really do 
  * want to block in your tests, you may wish to just use a
  * traditional <a href="AnyFlatSpec.html"><code>AnyFlatSpec</code></a> with
- * <a href="concurrent/ScalaFutures.html"><code>ScalaFutures</code></a> instead. Alternatively, you could override
+ * <a href="../concurrent/ScalaFutures.html"><code>ScalaFutures</code></a> instead. Alternatively, you could override
  * the <code>executionContext</code> and use a traditional <code>ExecutionContext</code> backed by a thread pool. This
  * will enable you to block in an asynchronous-style test on the JVM, but you'll need to worry about synchronizing access to
  * shared mutable state.
@@ -308,7 +308,7 @@ import org.scalatest.Suite
  * <p>
  * If you want the tests of an <code>AsyncFlatSpec</code> to be executed in parallel, you
  * must mix in <code>ParallelTestExecution</code> and enable parallel execution of tests in your build.
- * You enable parallel execution in <a href="tools/Runner$.html"><code>Runner</code></a> with the <code>-P</code> command line flag. 
+ * You enable parallel execution in <a href="../tools/Runner$.html"><code>Runner</code></a> with the <code>-P</code> command line flag.
  * In the ScalaTest Maven Plugin, set <code>parallel</code> to <code>true</code>.
  * In <code>sbt</code>, parallel execution is the default, but to be explicit you can write:
  * 
@@ -602,7 +602,7 @@ import org.scalatest.Suite
  * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
  * is provided via the <code>info</code> parameterless method.
  * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
- * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="events/InfoProvided.html"><code>InfoProvided</code></a> event.
+ * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/InfoProvided.html"><code>InfoProvided</code></a> event.
  * </p>
  * 
  * <p>
@@ -660,7 +660,7 @@ import org.scalatest.Suite
  * <code>AsyncFlatSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
  * to the <code>Reporter</code> text formatted in <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown syntax</a>.
  * You can pass the extra information to the <code>Documenter</code> via its <code>apply</code> method.
- * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
+ * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
  * </p>
  *
  * <p>
@@ -785,7 +785,7 @@ import org.scalatest.Suite
  * </pre>
  *
  * <p>
- * Another example is <a href="tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
+ * Another example is <a href="../tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
  * If you find a test is taking a long time to complete, but you're not sure which test, you can enable 
  * slowpoke notifications. ScalaTest will use an <code>Alerter</code> to fire an event whenever a test has been running
  * longer than a specified amount of time.
@@ -1882,7 +1882,7 @@ import org.scalatest.Suite
  * that setup and cleanup code happens before and after the test in <code>BeforeAndAfterEach</code>, but at the beginning and
  * end of the test in <code>withFixture</code>. Thus if a <code>withFixture</code> method completes abruptly with an exception, it is
  * considered a failed test. By contrast, if any of the <code>beforeEach</code> or <code>afterEach</code> methods of <code>BeforeAndAfterEach</code>
- * complete abruptly, it is considered an aborted suite, which will result in a <a href="events/SuiteAborted.html"><code>SuiteAborted</code></a> event.
+ * complete abruptly, it is considered an aborted suite, which will result in a <a href="../events/SuiteAborted.html"><code>SuiteAborted</code></a> event.
  * </p>
  *
  * <a name="sharedTests"></a><h2>Shared tests</h2>
