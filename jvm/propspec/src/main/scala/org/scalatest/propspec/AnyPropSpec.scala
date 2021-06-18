@@ -92,10 +92,10 @@ import org.scalatest.{Finders, Suite}
  * </pre>
  *
  * <p>
- * You can also pass to <code>execute</code> a <a href="ConfigMap.html"><em>config map</em></a> of key-value
+ * You can also pass to <code>execute</code> a <a href="../ConfigMap.html"><em>config map</em></a> of key-value
  * pairs, which will be passed down into suites and tests, as well as other parameters that configure the run itself.
  * For more information on running in the Scala interpreter, see the documentation for <code>execute</code> (below) and the
- * <a href="Shell.html">ScalaTest shell</a>.
+ * <a href="../Shell.html">ScalaTest shell</a>.
  * </p>
  *
  * <p>
