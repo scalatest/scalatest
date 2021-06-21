@@ -32,9 +32,9 @@ AFTER MOVING, DROP THE .. in the link to AsyncTestSuite below
  * it uses a private volatile instance variable as a flag to indicate whether or not a test has failed.
  * If you are running each test in its own instance, therefore, it would not cancel the
  * remaining tests, because they would not see the same flag. For this reason, this trait contains
- * a final implementation of a method defined in <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>,
+ * a final implementation of a method defined in <a href="../OneInstancePerTest.html"><code>OneInstancePerTest</code></a>,
  * to prevent it from being mixed into any class that also mixes in <code>OneInstancePerTest</code>, 
- * including by mixing in <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a>
+ * including by mixing in <a href="../ParallelTestExecution.html"><code>ParallelTestExecution</code></a>
  * or a <a href="path/package.html">path traits</a>.
  * </p>
  */

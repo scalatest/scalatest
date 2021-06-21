@@ -1237,7 +1237,7 @@ final case class SuiteAborted (
  * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param testCount the number of tests expected during this run
- * @param configMap a <a href="../ConfigMap.html"><code>ConfigMap</code></a> of key-value pairs that can be used by custom <a href="Reporter.html"><code>Reporter</code></a>s
+ * @param configMap a <a href="../ConfigMap.html"><code>ConfigMap</code></a> of key-value pairs that can be used by custom <a href="../Reporter.html"><code>Reporter</code></a>s
  * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
  * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.

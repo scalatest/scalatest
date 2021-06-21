@@ -158,7 +158,7 @@ import org.scalatest.{Finders, Suite}
  * Tests can only be registered while the <code>AnyFlatSpec</code> is
  * in its registration phase. Any attempt to register a test after the <code>AnyFlatSpec</code> has
  * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>AnyFlatSpec</code>,
- * will be met with a thrown <a href="exceptions/TestRegistrationClosedException.html"><code>TestRegistrationClosedException</code></a>. The recommended style
+ * will be met with a thrown <a href="../exceptions/TestRegistrationClosedException.html"><code>TestRegistrationClosedException</code></a>. The recommended style
  * of using <code>AnyFlatSpec</code> is to register tests during object construction as is done in all
  * the examples shown here. If you keep to the recommended style, you should never see a
  * <code>TestRegistrationClosedException</code>.
@@ -296,27 +296,27 @@ import org.scalatest.{Finders, Suite}
  * Note that marking a test class as ignored won't prevent it from being discovered by ScalaTest. Ignored classes
  * will be discovered and run, and all their tests will be reported as ignored. This is intended to keep the ignored
  * class visible, to encourage the developers to eventually fix and &ldquo;un-ignore&rdquo; it. If you want to
- * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a> annotation instead.
+ * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="../DoNotDiscover.html"><code>DoNotDiscover</code></a> annotation instead.
  * </p>
  *
  * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
- * One of the parameters to <code>AnyFlatSpec</code>'s <code>run</code> method is a <a href="Reporter.html"><code>Reporter</code></a>, which
+ * One of the parameters to <code>AnyFlatSpec</code>'s <code>run</code> method is a <a href="../Reporter.html"><code>Reporter</code></a>, which
  * will collect and report information about the running suite of tests.
  * Information about suites and tests that were run, whether tests succeeded or failed, 
  * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
  * Most often the reporting done by default by <code>AnyFlatSpec</code>'s methods will be sufficient, but
  * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
- * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
+ * For this purpose, an <a href="../Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
  * is provided via the <code>info</code> parameterless method.
  * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
- * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="events/InfoProvided.html"><code>InfoProvided</code></a> event.
+ * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/InfoProvided.html"><code>InfoProvided</code></a> event.
  * </p>
  * 
  * <p>
  * One use case for the <code>Informer</code> is to pass more information about a specification to the reporter. For example,
- * the <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> trait provides methods that use the implicit <code>info</code> provided by <code>FlatSpec</code>
+ * the <a href="../GivenWhenThen.html"><code>GivenWhenThen</code></a> trait provides methods that use the implicit <code>info</code> provided by <code>FlatSpec</code>
  * to pass such information to the reporter.  Here's an example:
  * </p>
  *
@@ -365,10 +365,10 @@ import org.scalatest.{Finders, Suite}
  * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
- * <code>AnyFlatSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
+ * <code>AnyFlatSpec</code> also provides a <code>markup</code> method that returns a <a href="../Documenter.html"><code>Documenter</code></a>, which allows you to send
  * to the <code>Reporter</code> text formatted in <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown syntax</a>.
  * You can pass the extra information to the <code>Documenter</code> via its <code>apply</code> method.
- * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
+ * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
  * </p>
  *
  * <p>
@@ -447,8 +447,8 @@ import org.scalatest.{Finders, Suite}
  * </p>
  *
  * <p>
- * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
- * (an <a href="Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
+ * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="../Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
+ * (an <a href="../Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
  * </p>
  *
  * <pre class="stHighlight">
@@ -492,7 +492,7 @@ import org.scalatest.{Finders, Suite}
  * </pre>
  *
  * <p>
- * Another example is <a href="tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
+ * Another example is <a href="../tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
  * If you find a test is taking a long time to complete, but you're not sure which test, you can enable 
  * slowpoke notifications. ScalaTest will use an <code>Alerter</code> to fire an event whenever a test has been running
  * longer than a specified amount of time.
@@ -519,7 +519,7 @@ import org.scalatest.{Finders, Suite}
  * To support this style of testing, a test can be given a name that specifies one
  * bit of behavior required by the system being tested. The test can also include some code that
  * sends more information about the behavior to the reporter when the tests run. At the end of the test,
- * it can call method <code>pending</code>, which will cause it to complete abruptly with <a href="exceptions/TestPendingException.html"><code>TestPendingException</code></a>.
+ * it can call method <code>pending</code>, which will cause it to complete abruptly with <a href="../exceptions/TestPendingException.html"><code>TestPendingException</code></a>.
  * </p>
  *
  * <p>
@@ -618,7 +618,7 @@ import org.scalatest.{Finders, Suite}
  * optionally be included and/or excluded. To tag a <code>AnyFlatSpec</code>'s tests,
  * you pass objects that extend class <code>org.scalatest.Tag</code> to methods
  * that register tests. Class <code>Tag</code> takes one parameter, a string name.  If you have
- * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
+ * created tag annotation interfaces as described in the <a href="../Tag.html"><code>Tag</code> documentation</a>, then you
  * will probably want to use tag names on your test functions that match. To do so, simply 
  * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
  * defined a tag annotation interface with fully qualified name, 
@@ -664,7 +664,7 @@ import org.scalatest.{Finders, Suite}
  * </p>
  *
  * <p>
- * The <code>run</code> method takes a <a href="Filter.html"><code>Filter</code></a>, whose constructor takes an optional
+ * The <code>run</code> method takes a <a href="../Filter.html"><code>Filter</code></a>, whose constructor takes an optional
  * <code>Set[String]</code> called <code>tagsToInclude</code> and a <code>Set[String]</code> called
  * <code>tagsToExclude</code>. If <code>tagsToInclude</code> is <code>None</code>, all tests will be run
  * except those those belonging to tags listed in the
@@ -677,7 +677,7 @@ import org.scalatest.{Finders, Suite}
  * It is recommended, though not required, that you create a corresponding tag annotation when you
  * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of a <code>AnyFlatSpec</code> in
  * one stroke by annotating the class. For more information and examples, see the
- * <a href="Tag.html">documentation for class <code>Tag</code></a>. On Scala.js, to tag all tests of a suite, you'll need to
+ * <a href="../Tag.html">documentation for class <code>Tag</code></a>. On Scala.js, to tag all tests of a suite, you'll need to
  * tag each test individually at the test site.
  * </p>
  *
@@ -923,7 +923,7 @@ import org.scalatest.{Finders, Suite}
  * Although the get-fixture method and fixture-context object approaches take care of setting up a fixture at the beginning of each
  * test, they don't address the problem of cleaning up a fixture at the end of the test. If you just need to perform a side-effect at the beginning or end of
  * a test, and don't need to actually pass any fixture objects into the test, you can override <code>withFixture(NoArgTest)</code>, one of ScalaTest's
- * lifecycle methods defined in trait <a href="Suite.html"><code>Suite</code></a>.
+ * lifecycle methods defined in trait <a href="../Suite.html"><code>Suite</code></a>.
  * </p>
  *
  * <p>
@@ -1015,8 +1015,8 @@ import org.scalatest.{Finders, Suite}
  * </pre>
  *
  * <p>
- * Note that the <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> passed to <code>withFixture</code>, in addition to
- * an <code>apply</code> method that executes the test, also includes [[org.scalatest.TestData <code>TestData</code>]] such as the test name and the <a href="ConfigMap.html">config
+ * Note that the <a href="../Suite$NoArgTest.html"><code>NoArgTest</code></a> passed to <code>withFixture</code>, in addition to
+ * an <code>apply</code> method that executes the test, also includes [[org.scalatest.TestData <code>TestData</code>]] such as the test name and the <a href="../ConfigMap.html">config
  * map</a> passed to <code>runTest</code>. Thus you can also use the test name and configuration objects in your <code>withFixture</code>
  * implementation.
  * </p>
@@ -1198,7 +1198,7 @@ import org.scalatest.{Finders, Suite}
  * performed <em>during</em> the test.  This means that if an exception occurs during any of these activities, it will be reported as a test failure.
  * Sometimes, however, you may want setup to happen <em>before</em> the test starts, and cleanup <em>after</em> the test has completed, so that if an
  * exception occurs during setup or cleanup, the entire suite aborts and no more tests are attempted. The simplest way to accomplish this in ScalaTest is
- * to mix in trait <a href="BeforeAndAfter.html"><code>BeforeAndAfter</code></a>.  With this trait you can denote a bit of code to run before each test
+ * to mix in trait <a href="../BeforeAndAfter.html"><code>BeforeAndAfter</code></a>.  With this trait you can denote a bit of code to run before each test
  * with <code>before</code> and/or after each test each test with <code>after</code>, like this:
  * </p>
  * 
@@ -1242,7 +1242,7 @@ import org.scalatest.{Finders, Suite}
  * reassigning instance <code>var</code>s or by changing the state of mutable objects held from instance <code>val</code>s (as in this example). If using
  * instance <code>var</code>s or mutable objects held from instance <code>val</code>s you wouldn't be able to run tests in parallel in the same instance
  * of the test class (on the JVM, not Scala.js) unless you synchronized access to the shared, mutable state. This is why ScalaTest's <code>ParallelTestExecution</code> trait extends
- * <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>. By running each test in its own instance of the class, each test has its own copy of the instance variables, so you
+ * <a href="../OneInstancePerTest.html"><code>OneInstancePerTest</code></a>. By running each test in its own instance of the class, each test has its own copy of the instance variables, so you
  * don't need to synchronize. If you mixed <code>ParallelTestExecution</code> into the <code>ExampleSuite</code> above, the tests would run in parallel just fine
  * without any synchronization needed on the mutable <code>StringBuilder</code> and <code>ListBuffer[String]</code> objects.
  * </p>
@@ -1330,8 +1330,8 @@ import org.scalatest.{Finders, Suite}
  * </pre>
  *
  * <p>
- * Another way to create stackable fixture traits is by extending the <a href="BeforeAndAfterEach.html"><code>BeforeAndAfterEach</code></a>
- * and/or <a href="BeforeAndAfterAll.html"><code>BeforeAndAfterAll</code></a> traits.
+ * Another way to create stackable fixture traits is by extending the <a href="../BeforeAndAfterEach.html"><code>BeforeAndAfterEach</code></a>
+ * and/or <a href="../BeforeAndAfterAll.html"><code>BeforeAndAfterAll</code></a> traits.
  * <code>BeforeAndAfterEach</code> has a <code>beforeEach</code> method that will be run before each test (like JUnit's <code>setUp</code>),
  * and an <code>afterEach</code> method that will be run after (like JUnit's <code>tearDown</code>).
  * Similarly, <code>BeforeAndAfterAll</code> has a <code>beforeAll</code> method that will be run before all tests,
@@ -1401,7 +1401,7 @@ import org.scalatest.{Finders, Suite}
  * that setup and cleanup code happens before and after the test in <code>BeforeAndAfterEach</code>, but at the beginning and
  * end of the test in <code>withFixture</code>. Thus if a <code>withFixture</code> method completes abruptly with an exception, it is
  * considered a failed test. By contrast, if any of the <code>beforeEach</code> or <code>afterEach</code> methods of <code>BeforeAndAfterEach</code> 
- * complete abruptly, it is considered an aborted suite, which will result in a <a href="events/SuiteAborted.html"><code>SuiteAborted</code></a> event.
+ * complete abruptly, it is considered an aborted suite, which will result in a <a href="../events/SuiteAborted.html"><code>SuiteAborted</code></a> event.
  * </p>
  * 
  * <a name="sharedTests"></a><h2>Shared tests</h2>
