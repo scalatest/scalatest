@@ -6180,7 +6180,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-      
+
       it("should throw TestFailedException with correct message and stack depth when parse failed ") {
         val e = intercept[TestFailedException] {
           org.scalatest.Assertions.assertTypeError(
@@ -6254,7 +6254,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
         org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
         org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 8)))
       }
-      
+
       it("should do nothing when parse failed ") {
         org.scalatest.Assertions.assertDoesNotCompile(
           """

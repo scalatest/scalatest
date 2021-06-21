@@ -15,6 +15,9 @@
  */
 package org.scalatest.prop
 
+import scala.annotation.tailrec
+import scala.concurrent.{Future, ExecutionContext}
+
 trait RoseTree[T] { thisRoseTreeOfT =>
 
   val value: T
@@ -23,6 +26,80 @@ trait RoseTree[T] { thisRoseTreeOfT =>
   // This will be called only when a property fails, and just once, and it
   // won't take long, so no need to make this a lazy val.
   def shrinks(rnd: Randomizer): (List[RoseTree[T]], Randomizer)
+
+  def depthFirstShrinks[E](fun: T => (Boolean, Option[E]), rnd: Randomizer): (List[RoseTree[T]], Option[E], Randomizer) = {
+    @tailrec
+    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: List[RoseTree[T]], processed: Set[T] , currentRnd: Randomizer): (List[RoseTree[T]], Option[E], Randomizer) = {
+      pending match {
+        case head :: tail => 
+          val (result, errDataOpt) = fun(head.value)
+          if (!result) {
+            // If the function fail, we got a new failure value, and we'll go one level deeper.
+            val (headChildrenRTs, nextRnd) = head.shrinks(currentRnd)
+            val newProceesed = processed + head.value
+            shrinkLoop(head, errDataOpt, headChildrenRTs.filter(rt => !newProceesed.contains(rt.value)), newProceesed,  nextRnd)
+          }
+          else {
+            // The function call succeeded, let's continue to try the sibling.
+            shrinkLoop(lastFailure, lastFailureData, tail, processed + head.value, currentRnd)
+          }
+
+        case Nil => // No more further sibling to try, return the last failure
+          (List(lastFailure), lastFailureData, currentRnd)
+      }
+    }
+    val (firstLevelShrinks, nextRnd) = shrinks(rnd)
+    shrinkLoop(this, None, firstLevelShrinks, Set(value), nextRnd)
+  }
+
+  def depthFirstShrinksForFuture[E](fun: T => Future[(Boolean, Option[E])], rnd: Randomizer)(implicit execContext: ExecutionContext): Future[(List[RoseTree[T]], Option[E], Randomizer)] = {
+    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: List[RoseTree[T]], processed: Set[T] , currentRnd: Randomizer): Future[(List[RoseTree[T]], Option[E], Randomizer)] = {
+      pending match {
+        case head :: tail => 
+          val future = fun(head.value)
+          future.flatMap { case (result, errDataOpt) =>
+            if (!result) {
+              // If the function fail, we got a new failure value, and we'll go one level deeper.
+              val (headChildrenRTs, nextRnd) = head.shrinks(currentRnd)
+              val newProceesed = processed + head.value
+              shrinkLoop(head, errDataOpt, headChildrenRTs.filter(rt => !newProceesed.contains(rt.value)), newProceesed,  nextRnd)
+            }
+            else {
+              // The function call succeeded, let's continue to try the sibling.
+              shrinkLoop(lastFailure, lastFailureData, tail, processed + head.value, currentRnd)
+            }
+          }
+
+        case Nil =>
+          Future.successful((List(lastFailure), lastFailureData, currentRnd))
+      }
+    }
+
+    val (firstLevelShrinks, nextRnd) = shrinks(rnd)
+    shrinkLoop(this, None, firstLevelShrinks, Set(value), nextRnd)
+  }
+
+  def combineFirstDepthShrinks[E, U](fun: (T, U) => (Boolean, Option[E]), rnd: Randomizer, roseTreeOfU: RoseTree[U]): (List[RoseTree[(T, U)]], Option[E], Randomizer) = {
+    val (shrunkRtOfT, errOpt1, rnd2) = depthFirstShrinks(value => fun(value, roseTreeOfU.value), rnd)
+    val bestT = shrunkRtOfT.headOption.getOrElse(this)
+    val bestTValue = bestT.value
+    val (shrunkRtOfU, errOpt2, rnd3) = roseTreeOfU.depthFirstShrinks(value => fun(bestTValue, value), rnd2)
+    val bestU = shrunkRtOfU.headOption.getOrElse(roseTreeOfU)
+    val bestUValue = bestU.value
+    val errOpt = List(errOpt1, errOpt2).flatten.lastOption
+    (List(bestT.map(t => (t, bestUValue))), errOpt, rnd3)
+  }
+
+  def combineFirstDepthShrinksForFuture[E, U](fun: (T, U) => Future[(Boolean, Option[E])], rnd: Randomizer, roseTreeOfU: RoseTree[U])(implicit execContext: ExecutionContext): Future[(List[RoseTree[(T, U)]], Option[E], Randomizer)] = 
+    for {
+      (shrunkRtOfT, errOpt1, rnd2) <- depthFirstShrinksForFuture(value => fun(value, roseTreeOfU.value), rnd)
+      bestT = shrunkRtOfT.headOption.getOrElse(this)
+      bestTValue = bestT.value
+      (shrunkRtOfU, errOpt2, rnd3) <- roseTreeOfU.depthFirstShrinksForFuture(value => fun(bestTValue, value), rnd2)
+      bestU = shrunkRtOfU.headOption.getOrElse(roseTreeOfU)
+      bestUValue = bestU.value
+      errOpt = List(errOpt1, errOpt2).flatten.lastOption
+    } yield (List(bestT.map(t => (t, bestUValue))), errOpt, rnd3)
 
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
   // for each shrunken Char, we'll get the one (Char, Int).
