@@ -3533,19 +3533,18 @@ object Generator {
   implicit def orGenerator[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] =
     new Generator[G Or B] {
 
-      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: G Or B) extends RoseTree[G Or B] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[G Or B]], Randomizer) = {
           value match {
             case Good(g) => {
               val (goodRt, _, nextRnd) = genOfG.next(SizeParam(1, 0, 1), List(g), rndPassedToShrinks)
               val (gShrink, nextNextRnd) = goodRt.shrinks(nextRnd)
-              (gShrink.map(rt => rt.map(Good(_) : G Or B)), nextNextRnd)
+              (gShrink.filter(_.value != value).map(rt => rt.map(Good(_) : G Or B)), nextNextRnd)
             }
             case Bad(b) => {
               val (badRt, _, nextRnd) = genOfB.next(SizeParam(1, 0, 1), List(b), rndPassedToShrinks)
               val (bShrink, nextNextRnd) = badRt.shrinks(nextRnd)
-              (bShrink.map(rt => rt.map(Bad(_) : G Or B)), nextNextRnd)
+              (bShrink.filter(_.value != value).map(rt => rt.map(Bad(_) : G Or B)), nextNextRnd)
             }
           }
         }
