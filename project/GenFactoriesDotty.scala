@@ -2876,7 +2876,7 @@ object MatcherFactory$arity$ {
    * @param matcherFactory a MatcherFactory$arity$ to convert
    * @return a Matcher produced by the passed MatcherFactory$arity$
    */
-  implicit def produceMatcher[SC: Type, $typeConstructors$, T <: SC : $colonSeparatedTCNs$](matcherFactory: MatcherFactory$arity$[SC, $commaSeparatedTCNs$]): Matcher[T] =
+  implicit def produceMatcher[SC, $typeConstructors$, T <: SC : $colonSeparatedTCNs$](matcherFactory: MatcherFactory$arity$[SC, $commaSeparatedTCNs$]): Matcher[T] =
     matcherFactory.matcher
 
   /**
