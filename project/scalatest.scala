@@ -154,25 +154,9 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     )
 
   def crossBuildTestLibraryDependencies = Def.setting {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      // if scala 2.13+ is used, add dependency on scala-parallel-collections module
-      case Some((2, scalaMajor)) if scalaMajor >= 13 =>
-        Seq(
-          //"org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2",
-          "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2"
-        )
-
-      case Some((3, _)) =>
-        Seq(
-          "org.scala-lang.modules" %%% "scala-parser-combinators" % "2.0.0"
-        )  
-
-      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-        Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.1")
-
-      case _ =>
-        Seq.empty
-    }
+    Seq(
+      "org.scala-lang.modules" %%% "scala-parser-combinators" % "2.0.0"
+    )
   }
 
   val flexmarkAll = "com.vladsch.flexmark" % "flexmark-all" % flexmarkVersion % "optional"
