@@ -72,8 +72,8 @@ trait Configuration {
     */
   case class PropertyCheckConfiguration(minSuccessful: PosInt = PosInt(10),
                                         maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
-                                        minSize: PosZInt = Configuration.minSize.get(),
-                                        sizeRange: PosZInt = Configuration.sizeRange.get(),
+                                        minSize: PosZInt = PosZInt(0),
+                                        sizeRange: PosZInt = PosZInt(100),
                                         workers: PosInt = PosInt(1))
 
   import scala.language.implicitConversions
@@ -335,11 +335,6 @@ trait Configuration {
  * them in the Scala interpreter.
  */
 object Configuration extends Configuration {
-
-  // TODO: I assume these are intended for poking default values in from the Runner? They are used in
-  // PropertyCheckConfiguration.
-  private[scalatest] lazy val minSize: AtomicReference[PosZInt] = new AtomicReference(PosZInt(0))
-  private[scalatest] lazy val sizeRange: AtomicReference[PosZInt] = new AtomicReference(PosZInt(100))
 
   /**
     * The parameters that define how a property evaluation should be executed.
