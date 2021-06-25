@@ -259,7 +259,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
           GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
-      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10") Seq.empty[String] else if (scalaVersion.value.startsWith("2.13")) Seq.empty else Seq("-Ypartial-unification")),
       // include the macro classes and resources in the main jar
       mappings in (Compile, packageBin) ++= mappings.in(scalacticMacro, Compile, packageBin).value,
       // include the macro sources in the main source jar
@@ -313,7 +312,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       sourceGenerators in Test += Def.task {
         GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)
       }.taskValue,
-      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
     ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
 
   def sharedTestSettings: Seq[Setting[_]] = 
@@ -326,8 +324,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       baseDirectory in Test := file("./"),
       publishArtifact := false,
       publish := {},
-      publishLocal := {},
-      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification"))
+      publishLocal := {}
     )
 
   lazy val scalatestTest = Project("scalatest-test", file("jvm/scalatest-test"))
@@ -1246,7 +1243,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def gentestsSharedSettings: Seq[Setting[_]] = scalaVersionsSettings ++ Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
-    scalacOptions ++= Seq("-feature") ++ (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty else Seq("-Ypartial-unification")),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= gentestsLibraryDependencies,
     testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/html"))
