@@ -46,8 +46,8 @@ import Suite.unparsedXml
 import Suite.xmlContent
 import org.scalatest.exceptions.TestFailedException
 
-import com.vladsch.flexmark.profiles.pegdown.Extensions
-import com.vladsch.flexmark.profiles.pegdown.PegdownOptionsAdapter
+import com.vladsch.flexmark.parser.PegdownExtensions
+import com.vladsch.flexmark.profile.pegdown.PegdownOptionsAdapter
 import com.vladsch.flexmark.parser.Parser
 import com.vladsch.flexmark.html.HtmlRenderer
 
@@ -114,7 +114,7 @@ private[scalatest] class HtmlReporter(
   
   private val results = resultHolder.getOrElse(new SuiteResultHolder)
 
-  private val pegdownOptions = PegdownOptionsAdapter.flexmarkOptions(Extensions.ALL)
+  private val pegdownOptions = PegdownOptionsAdapter.flexmarkOptions(PegdownExtensions.ALL)
   private val markdownParser = Parser.builder(pegdownOptions).build()
   private val htmlRenderer = HtmlRenderer.builder(pegdownOptions).build()
   
