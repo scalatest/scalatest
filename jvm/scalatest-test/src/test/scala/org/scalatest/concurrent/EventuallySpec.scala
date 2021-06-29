@@ -27,6 +27,7 @@ import SharedHelpers.serializeRoundtrip
 import scala.concurrent.Future
 import org.scalatest.funspec.AsyncFunSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.tagobjects.Flicker
 
 class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with SeveredStackTraces*/ {
 
@@ -376,7 +377,7 @@ class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with
       }
     }
 
-    it("should, if an alternate explicit timeout is provided, invoke an always-failing by-name by at least the specified timeout") {
+    it("should, if an alternate explicit timeout is provided, invoke an always-failing by-name by at least the specified timeout", Flicker) {
 
       var startTime: Option[Long] = None
       recoverToSucceededIf[TestFailedException] {

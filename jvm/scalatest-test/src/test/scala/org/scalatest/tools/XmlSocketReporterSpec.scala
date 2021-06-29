@@ -45,6 +45,7 @@ import org.scalatest.time.Seconds
 import org.scalatest._
 import SharedHelpers._
 import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.tagobjects.Flicker
 
 class XmlSocketReporterSpec extends AnyFunSpec with Eventually {
   
@@ -546,7 +547,7 @@ class XmlSocketReporterSpec extends AnyFunSpec with Eventually {
       assert((eventRecorder.markupProvidedEvents(0) \ "timeStamp").text === timeStamp.toString)
     }
     
-    it("should send multilines indented error message correctly") {
+    it("should send multilines indented error message correctly", Flicker) {
       
       //forAll failed, because: 
         //at index 0, forAll failed, because: 

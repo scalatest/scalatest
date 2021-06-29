@@ -32,6 +32,7 @@ import java.io.PrintStream
 import java.io.ByteArrayOutputStream
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.tagobjects.Flicker
 
 class ParallelTestExecutionSpec extends AnyFunSpec with EventHelpers {
   /*
@@ -121,7 +122,7 @@ class ParallelTestExecutionSpec extends AnyFunSpec with EventHelpers {
     // SKIP-SCALATESTJS,NATIVE-END
 
     // SKIP-SCALATESTJS,NATIVE-START
-    it("should have the events reported in correct order when tests are executed in parallel") {
+    it("should have the events reported in correct order when tests are executed in parallel", Flicker) {
 
       def withDistributor(fun: ControlledOrderDistributor => Unit): Unit = {
 

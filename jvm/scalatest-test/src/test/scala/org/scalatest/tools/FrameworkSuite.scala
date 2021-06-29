@@ -23,6 +23,7 @@ import org.scalatest.tagobjects.Retryable
 import java.io.File
 import Retries._
 import OptionValues._
+import org.scalatest.tagobjects.Flicker
 
 class FrameworkSuite extends AnyFunSuite {
 
@@ -1294,7 +1295,7 @@ class FrameworkSuite extends AnyFunSuite {
     }
   }
   
-  test("-W should cause AlertProvided to be fired") {
+  test("-W should cause AlertProvided to be fired", Flicker) {
     val runner = framework.runner(Array("-W", "1", "1", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     makeSureDone(runner) {
       val testEventHandler = new TestEventHandler

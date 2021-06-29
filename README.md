@@ -40,6 +40,13 @@ This command will build and run the regular tests:
 
   `$ sbt test`
 
+To include flicker tests, you'll need to set environment variable SCALATEST_RUN_FLICKER_TESTS=true: 
+
+```
+> export SCALATEST_RUN_FLICKER_TESTS=true
+> sbt test
+```
+
 To run generated all tests, you'll need to increase maximum heap size to at least -Xmx5000M, and use this command instead:
 
     $ rm -rf gentests

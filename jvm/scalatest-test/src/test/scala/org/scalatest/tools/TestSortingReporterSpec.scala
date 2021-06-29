@@ -33,6 +33,7 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.tagobjects.Flicker
 
 class TestSortingReporterSpec extends AnyFunSpec with Matchers {
 
@@ -278,7 +279,7 @@ class TestSortingReporterSpec extends AnyFunSpec with Matchers {
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
-    it("should timeout if a test with no event fired is blocking") {
+    it("should timeout if a test with no event fired is blocking", Flicker) {
       val recordingReporter = new EventRecordingReporter()
       val dispatch = new TestSortingReporter("aSuite", recordingReporter, Span(3, Seconds), 7, None, new PrintStream(new ByteArrayOutputStream))
       

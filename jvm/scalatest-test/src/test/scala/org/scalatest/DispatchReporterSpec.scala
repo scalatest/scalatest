@@ -27,6 +27,7 @@ import tagobjects.Retryable
 import Retries._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers._
+import org.scalatest.tagobjects.Flicker
 
 class DispatchReporterSpec extends AnyFunSpec {
 
@@ -164,7 +165,7 @@ class DispatchReporterSpec extends AnyFunSpec {
           )
         )
       }
-      it("should stop sending out AlertProvided events after a detected slowpoke is reported as pending") {
+      it("should stop sending out AlertProvided events after a detected slowpoke is reported as pending", Flicker) {
         doTestStartingAndFinishedEvents(
           TestPending(
             ordinal = TestFinishedOrdinal,

@@ -30,6 +30,7 @@ import SharedHelpers._
 import org.scalatest.tagobjects.Retryable
 import org.scalatest.tools.DistributedTestRunnerSuite
 import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.tagobjects.Flicker
 
 class ParallelTestExecutionProp extends AnyFunSuite {
 
@@ -213,7 +214,7 @@ class ParallelTestExecutionProp extends AnyFunSuite {
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
-  test("ParallelTestExecution should have the blocking suite's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired") {
+  test("ParallelTestExecution should have the blocking suite's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired", Flicker) {
     import ParallelTestExecutionSuiteTimeoutExamples._
     forAll(suiteTimeoutExamples) { example =>
       val events = withSuiteHoldingDistributor(example, _.executeInOrder())
