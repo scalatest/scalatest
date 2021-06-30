@@ -248,9 +248,8 @@ trait Diagrams extends Assertions {
  *
  * <pre class="stREPL">
  * $scala -classpath scalatest.jar
- * Welcome to Scala version 2.10.4.final (Java HotSpot(TM) Client VM, Java 1.6.0_45).
- * Type in expressions to have them evaluated.
- * Type :help for more information.
+ * Welcome to Scala 2.13.6 (OpenJDK 64-Bit Server VM, Java yyy).
+ * Type in expressions for evaluation. Or try :help.
  * &nbsp;
  * scala&gt; import org.scalatest.Assertions._
  * import org.scalatest.Assertions._
