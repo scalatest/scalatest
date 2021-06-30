@@ -128,25 +128,8 @@ object TypeMatcherHelper {
       x.isInstanceOf[Float] ||
       x.isInstanceOf[Double] ||
       x.isInstanceOf[Boolean]
-    else {
-      val runtimeClass = classTag.runtimeClass
-      // This part of code is inspired from ClassTag's unapply method starting Scala 2.11,
-      // we can't use ClassTag's unapply directly because in Scala 2.10 it wasn't
-      // written this way and it can't meet our purpose.
-      if (null != x && (
-        (runtimeClass.isInstance(x))
-          || (x.isInstanceOf[Byte]    && runtimeClass.isAssignableFrom(classOf[Byte]))
-          || (x.isInstanceOf[Short]   && runtimeClass.isAssignableFrom(classOf[Short]))
-          || (x.isInstanceOf[Char]    && runtimeClass.isAssignableFrom(classOf[Char]))
-          || (x.isInstanceOf[Int]     && runtimeClass.isAssignableFrom(classOf[Int]))
-          || (x.isInstanceOf[Long]    && runtimeClass.isAssignableFrom(classOf[Long]))
-          || (x.isInstanceOf[Float]   && runtimeClass.isAssignableFrom(classOf[Float]))
-          || (x.isInstanceOf[Double]  && runtimeClass.isAssignableFrom(classOf[Double]))
-          || (x.isInstanceOf[Boolean] && runtimeClass.isAssignableFrom(classOf[Boolean]))
-          || (x.isInstanceOf[Unit]    && runtimeClass.isAssignableFrom(classOf[Unit])))
-      ) true
-      else false
-    }
+    else 
+      classTag.unapply(x).isDefined
 
   /**
    * Check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfATypeInvocation</code>.

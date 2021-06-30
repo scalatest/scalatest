@@ -1637,9 +1637,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    * @return a copy of this <code>NonEmptyList</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
    */
   final def updated[U >: T](idx: Int, elem: U): NonEmptyList[U] =
-    try new NonEmptyList(toList.updated(idx, elem))
-    catch { case _: UnsupportedOperationException => throw new IndexOutOfBoundsException(idx.toString) } // This is needed for 2.10 support. Can drop after.
-                                                                                                         // Because 2.11 throws IndexOutOfBoundsException.
+    new NonEmptyList(toList.updated(idx, elem))
 
   /**
    * Returns a <code>NonEmptyList</code> formed from this <code>NonEmptyList</code> and an iterable collection by combining corresponding
