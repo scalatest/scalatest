@@ -113,6 +113,14 @@ private[scalatest] class HtmlReporter(
   copyResource(getResource("images/graybullet.gif"), imagesDir, "infoprovided.gif")
   
   private val results = resultHolder.getOrElse(new SuiteResultHolder)
+  
+  try {
+    Class.forName("com.vladsch.flexmark.profile.pegdown.PegdownOptionsAdapter")
+  }
+  catch {
+    case _: ClassNotFoundException => 
+      new ClassNotFoundException(Resources.flexmarkClassNotFound)
+  }
 
   private val pegdownOptions = PegdownOptionsAdapter.flexmarkOptions(PegdownExtensions.ALL)
   private val markdownParser = Parser.builder(pegdownOptions).build()
