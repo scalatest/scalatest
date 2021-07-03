@@ -184,12 +184,7 @@ object Inside extends Inside {
 
   //DOTTY-ONLY import scala.quoted._
   //DOTTY-ONLY private[scalatest] def insideMacro[T, U](value: Expr[T])(pf: Expr[PartialFunction[T, U]])(using quotes: Quotes, typeT: Type[T], typeU: Type[U]): Expr[U] = {
-  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
-  //DOTTY-ONLY   val file = pos.sourceFile
-  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
-  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
-  //DOTTY-ONLY   '{insideWithPos(${value}, ${pf}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
+  //DOTTY-ONLY   source.Position.withPosition[U]('{(pos: source.Position) => insideWithPos(${value}, ${pf}, pos) })
   //DOTTY-ONLY }
 
 }

@@ -628,12 +628,7 @@ object Futures extends Futures {
 
   //DOTTY-ONLY // Ideally, we can use future: Expr[futures.FutureConcept[T]] and fun Expr[T => U] here, can't get it to work so we have the above workaroundWhenReadyImpl that takes Any.
   //DOTTY-ONLY private[concurrent] def whenReadyMacro[T, U](futures: Expr[Futures], future: Expr[Futures#FutureConcept[T]], fun: Expr[T => U], timeout: Expr[Span], interval: Expr[Span])(using quotes: Quotes, typeT: Type[T], typeU: Type[U]): Expr[U] = {
-  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
-  //DOTTY-ONLY   val file = pos.sourceFile
-  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
-  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
-  //DOTTY-ONLY   '{workaroundWhenReadyImpl(${futures})(${future}, ${fun}, ${timeout}, ${interval}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
+  //DOTTY-ONLY   source.Position.withPosition[U]('{(pos: source.Position) => workaroundWhenReadyImpl(${futures})(${future}, ${fun}, ${timeout}, ${interval}, pos) })
   //DOTTY-ONLY }
 
 }

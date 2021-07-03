@@ -43,12 +43,6 @@ object CompileMacro {
 
     import quotes.reflect._
 
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-
     def checkNotTypeCheck(code: String): Expr[Assertion] = {
       // For some reason `typeChecked.valueOrError` is failing here, so instead we grab
       // the varargs argument to List.apply and use that to extract the list of errors
@@ -61,11 +55,19 @@ object CompileMacro {
         case Error(_, _, _, ErrorKind.Typer) :: _ => '{ Succeeded }
         case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
           val messageExpr = Resources.expectedTypeErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
-          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+          ${
+            source.Position.withPosition[Assertion]('{(pos: source.Position) => 
+              throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, pos)
+            })
+          }
         }
         case Nil => '{
           val messageExpr = Resources.expectedTypeErrorButGotNone(${ Expr(code) })
-          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+          ${
+            source.Position.withPosition[Assertion]('{(pos: source.Position) => 
+              throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, pos)
+            })
+          }
         }
       }
     }
@@ -153,16 +155,14 @@ object CompileMacro {
 
   // parse and type check a code snippet, generate code to throw TestFailedException when both parse and type check succeeded
   def assertDoesNotCompileImpl(code: Expr[String], typeChecked: Expr[Boolean])(using Quotes): Expr[Assertion] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    
     if (!typeChecked.valueOrError) '{ Succeeded }
     else '{
       val messageExpr = Resources.expectedCompileErrorButGotNone($code)
-      throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+      ${
+        source.Position.withPosition[Assertion]('{(pos: source.Position) => 
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, pos)
+        })
+      }
     }
   }
 
@@ -204,12 +204,6 @@ object CompileMacro {
 
     import quotes.reflect._
 
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    
     def checkCompile(code: String): Expr[Assertion] = {
       // For some reason `typeChecked.valueOrError` is failing here, so instead we grab
       // the varargs argument to List.apply and use that to extract the list of errors
@@ -221,11 +215,19 @@ object CompileMacro {
       errors match {
         case Error(msg, _, _, ErrorKind.Typer) :: _ => '{
           val messageExpr = Resources.expectedNoErrorButGotTypeError(${ Expr(msg) }, ${ Expr(code) })
-          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+          ${
+            source.Position.withPosition[Assertion]('{(pos: source.Position) => 
+              throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, pos)
+            })
+          }
         }
         case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
           val messageExpr = Resources.expectedNoErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
-          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))
+          ${
+            source.Position.withPosition[Assertion]('{(pos: source.Position) => 
+              throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, pos)
+            })
+          }
         }
         case Nil => '{ Succeeded }
       }

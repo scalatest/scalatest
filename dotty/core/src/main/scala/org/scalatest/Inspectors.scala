@@ -645,12 +645,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAllMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forAllImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forAllImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forAllForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -658,12 +653,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAllForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forAllForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forAllForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forAllForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -671,12 +661,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAllForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forAllForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forAllForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forAllForStringImpl[ASSERTION, RESULT](xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -684,12 +669,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAllForStringMacro[ASSERTION, RESULT](xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forAllForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forAllForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forAtLeastImpl[E, C[_], ASSERTION, RESULT](min: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -697,12 +677,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtLeastMacro[E, C[_], ASSERTION, RESULT](min: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forAtLeastImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forAtLeastImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forAtLeastForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](min: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -710,12 +685,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtLeastForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](min: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forAtLeastForMapImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forAtLeastForMapImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forAtLeastForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](min: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -723,12 +693,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtLeastForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](min: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forAtLeastForJMapImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forAtLeastForJMapImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forAtLeastForStringImpl[ASSERTION, RESULT](min: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -736,12 +701,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtLeastForStringMacro[ASSERTION, RESULT](min: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forAtLeastForStringImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forAtLeastForStringImpl(${min}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forAtMostImpl[E, C[_], ASSERTION, RESULT](max: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -749,12 +709,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtMostMacro[E, C[_], ASSERTION, RESULT](max: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forAtMostImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forAtMostImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forAtMostForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](max: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -762,12 +717,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtMostForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](max: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forAtMostForMapImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forAtMostForMapImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forAtMostForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](max: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -775,12 +725,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtMostForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](max: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forAtMostForJMapImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forAtMostForJMapImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forAtMostForStringImpl[ASSERTION, RESULT](max: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -788,12 +733,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forAtMostForStringMacro[ASSERTION, RESULT](max: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forAtMostForStringImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forAtMostForStringImpl(${max}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forExactlyImpl[E, C[_], ASSERTION, RESULT](succeededCount: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -801,12 +741,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forExactlyMacro[E, C[_], ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forExactlyImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forExactlyImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forExactlyForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](succeededCount: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -814,12 +749,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forExactlyForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forExactlyForMapImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forExactlyForMapImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forExactlyForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](succeededCount: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -827,12 +757,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forExactlyForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forExactlyForJMapImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forExactlyForJMapImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forExactlyForStringImpl[ASSERTION, RESULT](succeededCount: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -840,12 +765,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forExactlyForStringMacro[ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forExactlyForStringImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forExactlyForStringImpl(${succeededCount}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forNoImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -853,12 +773,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forNoMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forNoImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forNoImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forNoForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -866,12 +781,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forNoForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forNoForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forNoForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forNoForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -879,12 +789,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forNoForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forNoForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forNoForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forNoForStringImpl[ASSERTION, RESULT](xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -892,12 +797,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forNoForStringMacro[ASSERTION, RESULT](xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forNoForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forNoForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forBetweenImpl[E, C[_], ASSERTION, RESULT](from: Int, upTo: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -905,12 +805,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forBetweenMacro[E, C[_], ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forBetweenImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forBetweenImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forBetweenForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -918,12 +813,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forBetweenForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forBetweenForMapImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forBetweenForMapImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forBetweenForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -931,12 +821,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forBetweenForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forBetweenForJMapImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forBetweenForJMapImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forBetweenForStringImpl[ASSERTION, RESULT](from: Int, upTo: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -944,12 +829,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forBetweenForStringMacro[ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forBetweenForStringImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forBetweenForStringImpl(${from}, ${upTo}, ${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forEveryImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -957,12 +837,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forEveryMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forEveryImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forEveryImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forEveryForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -970,12 +845,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forEveryForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forEveryForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forEveryForMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forEveryForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -983,12 +853,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forEveryForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forEveryForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forEveryForJMapImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
   def forEveryForStringImpl[ASSERTION, RESULT](xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
@@ -996,12 +861,7 @@ object Inspectors extends Inspectors {
   }
 
   private[scalatest] def forEveryForStringMacro[ASSERTION, RESULT](xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
-    val pos = quotes.reflect.Position.ofMacroExpansion
-    val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
-    val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-    val lineNo: Int = pos.startLine + 1
-    '{ forEveryForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})) }
+    source.Position.withPosition[RESULT]('{(pos: source.Position) => forEveryForStringImpl(${xs}, ${fun}, ${collecting}, ${asserting}, ${prettifier}, pos) })
   }
 
 }

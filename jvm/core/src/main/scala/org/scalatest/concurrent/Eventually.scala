@@ -461,12 +461,7 @@ object Eventually extends Eventually {
 
   //DOTTY-ONLY import scala.quoted._
   //DOTTY-ONLY private[scalatest] def eventuallyMacro[T](timeout: Expr[Span], interval: Expr[Span], fun: Expr[T], retrying: Expr[Retrying[T]])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
-  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
-  //DOTTY-ONLY   val file = pos.sourceFile
-  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
-  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
-  //DOTTY-ONLY   '{callRetry(${retrying}, ${timeout}, ${interval}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}), ${fun})}
+  //DOTTY-ONLY   source.Position.withPosition[T]('{(pos: source.Position) => callRetry(${retrying}, ${timeout}, ${interval}, pos, ${fun}) })
   //DOTTY-ONLY }
 
 }

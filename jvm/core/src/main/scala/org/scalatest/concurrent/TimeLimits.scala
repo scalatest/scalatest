@@ -296,12 +296,7 @@ object TimeLimits extends TimeLimits {
   //DOTTY-ONLY import scala.quoted._
 
   //DOTTY-ONLY private[concurrent] def failAfterMacro[T](timeout: Expr[Span], signaler: Expr[Signaler], prettifier: Expr[Prettifier], fun: Expr[T], timed: Expr[Timed[T]])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
-  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
-  //DOTTY-ONLY   val file = pos.sourceFile
-  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
-  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
-  //DOTTY-ONLY   '{failAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})), getStackDepthFun(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})))(${fun})(${timed})}
+  //DOTTY-ONLY   source.Position.withPosition[T]('{(pos: source.Position) => failAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(pos), getStackDepthFun(pos))(${fun})(${timed}) })
   //DOTTY-ONLY }
 
   private[scalatest] def cancelAfterImpl[T](timeout: Span, signaler: Signaler, prettifier: Prettifier, pos: Option[source.Position], stackDepthFun: StackDepthException => Int)(fun: => T)(implicit timed: Timed[T]): T = {
@@ -326,12 +321,7 @@ object TimeLimits extends TimeLimits {
   //DOTTY-ONLY import scala.quoted._
 
   //DOTTY-ONLY private[concurrent] def cancelAfterMacro[T](timeout: Expr[Span], signaler: Expr[Signaler], prettifier: Expr[Prettifier], fun: Expr[T], timed: Expr[Timed[T]])(using quotes: Quotes, typeT: Type[T]): Expr[T] = {
-  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
-  //DOTTY-ONLY   val file = pos.sourceFile
-  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
-  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
-  //DOTTY-ONLY   '{cancelAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})), getStackDepthFun(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)})))(${fun})(${timed})}
+  //DOTTY-ONLY   source.Position.withPosition[T]('{(pos: source.Position) => cancelAfterImpl(${timeout}, ${signaler}, ${prettifier}, Some(pos), getStackDepthFun(pos))(${fun})(${timed}) })
   //DOTTY-ONLY }
 
 }
