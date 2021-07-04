@@ -250,23 +250,27 @@ private[scalatest] class HtmlReporter(
           }
         }
         <script type="text/javascript">
-        //<![CDATA[
-            function toggleDetails(contentId, linkId) { 
-              var ele = document.getElementById(contentId); 
-              var text = document.getElementById(linkId); 
-              if(ele.style.display == "block") { 
-                ele.style.display = "none"; 
-                text.innerHTML = "(Show Details)"; 
+          {
+            unparsedXml(
+              """
+              function toggleDetails(contentId, linkId) { 
+                var ele = document.getElementById(contentId); 
+                var text = document.getElementById(linkId); 
+                if(ele.style.display == "block") { 
+                  ele.style.display = "none"; 
+                  text.innerHTML = "(Show Details)"; 
+                } 
+                else { 
+                  ele.style.display = "block"; 
+                  text.innerHTML = "(Hide Details)";
+                }
               } 
-              else { 
-                ele.style.display = "block"; 
-                text.innerHTML = "(Hide Details)";
+              function hideOpenInNewTabIfRequired() { 
+                if (top === self) { document.getElementById('printlink').style.display = 'none'; } 
               }
-            } 
-            function hideOpenInNewTabIfRequired() { 
-              if (top === self) { document.getElementById('printlink').style.display = 'none'; } 
-            }
-        //]]>
+              """
+            )
+          }
         </script>
       </head>
       <body class="specification">
@@ -532,7 +536,9 @@ private[scalatest] class HtmlReporter(
         <script type="text/javascript" src="js/d3.v2.min.js"></script>
         <script type="text/javascript" src="js/sorttable.js"></script>
         <script type="text/javascript">
-        //<![CDATA[
+          {
+          unparsedXml(
+            """
             var tagMap = {};     
             var SUCCEEDED_BIT = 1; 
             var FAILED_BIT = 2; 
@@ -573,8 +579,9 @@ private[scalatest] class HtmlReporter(
               detailsView.style.left = left + "px"; 
               detailsView.style.width = (window.innerWidth - left - 30) + "px";
               detailsView.style.height = (window.innerHeight - headerView.offsetHeight - 20) + "px";
-            }
-        //]]>
+            }"""
+          )
+          }
         </script>
       </head>
       <body onresize="resizeDetailsView()">
@@ -634,9 +641,7 @@ private[scalatest] class HtmlReporter(
           { unparsedXml(tagMapScript) }
         </script>
         <script type="text/javascript">
-          //<![CDATA[
           resizeDetailsView();
-          //]]>
         </script>
       </body>
     </html>
