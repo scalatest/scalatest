@@ -46,8 +46,8 @@ import Suite.unparsedXml
 import Suite.xmlContent
 import org.scalatest.exceptions.TestFailedException
 
-import com.vladsch.flexmark.profiles.pegdown.Extensions
-import com.vladsch.flexmark.profiles.pegdown.PegdownOptionsAdapter
+import com.vladsch.flexmark.parser.PegdownExtensions
+import com.vladsch.flexmark.profile.pegdown.PegdownOptionsAdapter
 import com.vladsch.flexmark.parser.Parser
 import com.vladsch.flexmark.html.HtmlRenderer
 
@@ -113,8 +113,16 @@ private[scalatest] class HtmlReporter(
   copyResource(getResource("images/graybullet.gif"), imagesDir, "infoprovided.gif")
   
   private val results = resultHolder.getOrElse(new SuiteResultHolder)
+  
+  try {
+    Class.forName("com.vladsch.flexmark.profile.pegdown.PegdownOptionsAdapter")
+  }
+  catch {
+    case _: ClassNotFoundException => 
+      new ClassNotFoundException(Resources.flexmarkClassNotFound)
+  }
 
-  private val pegdownOptions = PegdownOptionsAdapter.flexmarkOptions(Extensions.ALL)
+  private val pegdownOptions = PegdownOptionsAdapter.flexmarkOptions(PegdownExtensions.ALL)
   private val markdownParser = Parser.builder(pegdownOptions).build()
   private val htmlRenderer = HtmlRenderer.builder(pegdownOptions).build()
   
@@ -242,23 +250,27 @@ private[scalatest] class HtmlReporter(
           }
         }
         <script type="text/javascript">
-        //<![CDATA[
-            function toggleDetails(contentId, linkId) { 
-              var ele = document.getElementById(contentId); 
-              var text = document.getElementById(linkId); 
-              if(ele.style.display == "block") { 
-                ele.style.display = "none"; 
-                text.innerHTML = "(Show Details)"; 
+          {
+            unparsedXml(
+              """
+              function toggleDetails(contentId, linkId) { 
+                var ele = document.getElementById(contentId); 
+                var text = document.getElementById(linkId); 
+                if(ele.style.display == "block") { 
+                  ele.style.display = "none"; 
+                  text.innerHTML = "(Show Details)"; 
+                } 
+                else { 
+                  ele.style.display = "block"; 
+                  text.innerHTML = "(Hide Details)";
+                }
               } 
-              else { 
-                ele.style.display = "block"; 
-                text.innerHTML = "(Hide Details)";
+              function hideOpenInNewTabIfRequired() { 
+                if (top === self) { document.getElementById('printlink').style.display = 'none'; } 
               }
-            } 
-            function hideOpenInNewTabIfRequired() { 
-              if (top === self) { document.getElementById('printlink').style.display = 'none'; } 
-            }
-        //]]>
+              """
+            )
+          }
         </script>
       </head>
       <body class="specification">
@@ -524,7 +536,9 @@ private[scalatest] class HtmlReporter(
         <script type="text/javascript" src="js/d3.v2.min.js"></script>
         <script type="text/javascript" src="js/sorttable.js"></script>
         <script type="text/javascript">
-        //<![CDATA[
+          {
+          unparsedXml(
+            """
             var tagMap = {};     
             var SUCCEEDED_BIT = 1; 
             var FAILED_BIT = 2; 
@@ -565,8 +579,9 @@ private[scalatest] class HtmlReporter(
               detailsView.style.left = left + "px"; 
               detailsView.style.width = (window.innerWidth - left - 30) + "px";
               detailsView.style.height = (window.innerHeight - headerView.offsetHeight - 20) + "px";
-            }
-        //]]>
+            }"""
+          )
+          }
         </script>
       </head>
       <body onresize="resizeDetailsView()">
@@ -626,9 +641,7 @@ private[scalatest] class HtmlReporter(
           { unparsedXml(tagMapScript) }
         </script>
         <script type="text/javascript">
-          //<![CDATA[
           resizeDetailsView();
-          //]]>
         </script>
       </body>
     </html>
