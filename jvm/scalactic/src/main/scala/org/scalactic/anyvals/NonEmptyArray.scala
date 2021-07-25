@@ -24,7 +24,7 @@ import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
 import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
-import org.scalactic.Every
+import org.scalactic.{Every, Resources}
 
 
 // Can't be a LinearSeq[T] because Builder would be able to create an empty one.
@@ -510,9 +510,9 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * That is, every key <code>k</code> is bound to a <code>NonEmptyArray</code> of those elements <code>x</code> for which <code>f(x)</code> equals <code>k</code>.
     * </p>
     */
-  final def groupBy[K](f: T => K)(implicit classTag: ClassTag[T]): Map[K, NonEmptyArray[T]] = {
-    val mapKToArray = toArray.toList.groupBy(f) // toList and implicit ClassTag is required to compile in scala 2.10.
-    (mapKToArray.mapValues{ list => new NonEmptyArray(list.toArray) }).toMap
+  final def groupBy[K](f: T => K): Map[K, NonEmptyArray[T]] = {
+    val mapKToArray = toArray.groupBy(f)
+    (mapKToArray.mapValues{ list => new NonEmptyArray(list) }).toMap
   }
 
   /**
@@ -521,9 +521,11 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @param size the number of elements per group
     * @return An iterator producing <code>NonEmptyArray</code>s of size <code>size</code>, except the last will be truncated if the elements don't divide evenly. 
     */
-  final def grouped(size: Int)(implicit classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = {
-    val itOfArray = toArray.toList.grouped(size) // toList and implicit ClassTag is required to compile in scala 2.10.
-    itOfArray.map { list => new NonEmptyArray(list.toArray) }
+  final def grouped(size: Int): Iterator[NonEmptyArray[T]] = {
+    if (size < 1)
+      throw new IllegalArgumentException(Resources.invalidSize(size))
+    val itOfArray = toArray.grouped(size)
+    itOfArray.map { list => new NonEmptyArray(list) }
   }
 
   /**
@@ -924,9 +926,9 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     *
     * @return an iterator that traverses the distinct permutations of this <code>NonEmptyArray</code>.
     */
-  final def permutations(implicit classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = {
-    val it = toArray.toList.permutations  // toList and implicit ClassTag is required to compile in scala 2.10.
-    it map { list => new NonEmptyArray(list.toArray) }
+  final def permutations: Iterator[NonEmptyArray[T]] = {
+    val it = toArray.permutations
+    it map { new NonEmptyArray(_) }
   }
 
   /**
@@ -1160,7 +1162,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @return an iterator producing <code>NonEmptyArray</code>s of size <code>size</code>, except the last and the only element will be truncated
     *     if there are fewer elements than <code>size</code>.
     */
-  final def sliding(size: Int)(implicit classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = toArray.toList.sliding(size).map(l => new NonEmptyArray(l.toArray)) // toList and implicit ClassTag is required to compile in scala 2.10.
+  final def sliding(size: Int): Iterator[NonEmptyArray[T]] = toArray.sliding(size).map(new NonEmptyArray(_))
 
   /**
     * Groups elements in fixed size blocks by passing a &ldquo;sliding window&rdquo; over them (as opposed to partitioning them, as is done in grouped.),
@@ -1171,7 +1173,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @return an iterator producing <code>NonEmptyArray</code>s of size <code>size</code>, except the last and the only element will be truncated
     *     if there are fewer elements than <code>size</code>.
     */
-  final def sliding(size: Int, step: Int)(implicit classTag: ClassTag[T]): Iterator[NonEmptyArray[T]] = toArray.toList.sliding(size, step).map(l => new NonEmptyArray(l.toArray)) // toList and implicit ClassTag is required to compile in scala 2.10.
+  final def sliding(size: Int, step: Int): Iterator[NonEmptyArray[T]] = toArray.sliding(size, step).map(new NonEmptyArray(_))
 
   /**
     * The size of this <code>NonEmptyArray</code>.
@@ -1383,10 +1385,10 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     */
   override def toString: String = "NonEmptyArray(" + toArray.mkString(", ") + ")"
 
-  final def transpose[U](implicit ev: T <:< NonEmptyArray[U], classTag: ClassTag[U]): NonEmptyArray[NonEmptyArray[U]] = {
+  final def transpose[U](implicit ev: T <:< NonEmptyArray[U]): NonEmptyArray[NonEmptyArray[U]] = {
     val asArrays = toArray.map(ev)
-    val list = asArrays.toList.transpose // toList and implicit ClassTag is required to compile in scala 2.10.
-    new NonEmptyArray(list.map(l => new NonEmptyArray(l.toArray)).toArray)
+    val list = asArrays.transpose
+    new NonEmptyArray(list.map(new NonEmptyArray(_)))
   }
 
   /**
@@ -1425,9 +1427,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @return a copy of this <code>NonEmptyArray</code> with the element at position <code>idx</code> replaced by <code>elem</code>. 
     */
   final def updated[U >: T](idx: Int, elem: U)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
-    try new NonEmptyArray(toArray.updated(idx, elem).toArray)
-    catch { case _: UnsupportedOperationException => throw new IndexOutOfBoundsException(idx.toString) } // This is needed for 2.10 support. Can drop after.
-  // Because 2.11 throws IndexOutOfBoundsException.
+    new NonEmptyArray(toArray.updated(idx, elem).toArray)
 
   /**
     * Returns a <code>NonEmptyArray</code> formed from this <code>NonEmptyArray</code> and an iterable collection by combining corresponding

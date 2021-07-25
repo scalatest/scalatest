@@ -41,16 +41,16 @@ import Suite.mergeMap
 
 /**
  * <p>
- * This class is ScalaTest's implementation of the new Framework API that is supported in sbt 0.13.
+ * This class is ScalaTest's implementation of the new Framework API that is supported in sbt 0.13.x and 1.x.
  * </p>
  *
  * <p>
  * To use ScalaTest in sbt, you should add ScalaTest as dependency in your sbt build file, the following shows an example
- * for using ScalaTest 2.0 with Scala 2.10.x project:
+ * for using ScalaTest 3.2.0 with Scala 2.13.x project:
  * </p>
  *
  * <pre class="stHighlight">
- * "org.scalatest" % "scalatest_2.10" % "2.0" % "test"
+ * "org.scalatest" % "scalatest" %% "3.2.0" % "test"
  * </pre>
  *
  * <p>
