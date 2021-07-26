@@ -14,7 +14,7 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 trait JsBuild { this: BuildCommons =>
 
-  val sjsPrefix = if (scalaJSVersion.startsWith("1.")) "_sjs1_" else "_sjs0.6_"
+  val sjsPrefix = "_sjs1_"
 
   lazy val deleteJsDependenciesTask = taskKey[Unit]("Delete JS_DEPENDENCIES")
 

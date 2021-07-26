@@ -40,11 +40,11 @@ import org.scalatools.testing.{Framework => SbtFramework, _}
  *
  * <p>
  * To use ScalaTest in SBT, you should add ScalaTest as dependency in your SBT build file, the following shows an example
- * for using ScalaTest 2.0 with Scala 2.10.x project:
+ * for using ScalaTest 3.3.0 with Scala 2.13.x project:
  * </p>
  *
  * <pre class="stHighlight">
- * "org.scalatest" % "scalatest_2.10" % "2.0" % "test"
+ * "org.scalatest" %% "scalatest" % "3.3.0" % "test"
  * </pre>
  *
  * <p>

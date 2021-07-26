@@ -135,36 +135,6 @@ With Sonatype credentials and GPG file in place, you can now publish to Sonatype
 
 Before publishing any patch release, binary compatibility with previous version should be checked:
 
-    $ export SCALAJS_VERSION=0.6.33
-    $ sbt ++2.10.7 scalactic/package scalactic/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestCore/package scalatestCore/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestFeatureSpec/package scalatestFeatureSpec/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestFlatSpec/package scalatestFlatSpec/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestFreeSpec/package scalatestFreeSpec/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestFunSuite/package scalatestFunSuite/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestFunSpec/package scalatestFunSpec/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestPropSpec/package scalatestPropSpec/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestRefSpec/package scalatestRefSpec/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestWordSpec/package scalatestWordSpec/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestDiagrams/package scalatestDiagrams/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestMatchersCore/package scalatestMatchersCore/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestShouldMatchers/package scalatestShouldMatchers/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestMustMatchers/package scalatestMustMatchers/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalacticJS/package scalacticJS/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestCoreJS/package scalatestCoreJS/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestFeatureSpecJS/package scalatestFeatureSpecJS/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestFlatSpecJS/package scalatestFlatSpecJS/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestFreeSpecJS/package scalatestFreeSpecJS/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestFunSuiteJS/package scalatestFunSuiteJS/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestFunSpecJS/package scalatestFunSpecJS/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestPropSpecJS/package scalatestPropSpecJS/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestWordSpecJS/package scalatestWordSpecJS/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestDiagramsJS/package scalatestDiagramsJS/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestMatchersCoreJS/package scalatestMatchersCoreJS/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestShouldMatchersJS/package scalatestShouldMatchersJS/mimaReportBinaryIssues
-    $ sbt ++2.10.7 scalatestMustMatchersJS/package scalatestMustMatchersJS/mimaReportBinaryIssues
-
-    $ export SCALAJS_VERSION=1.5.1
     $ sbt ++2.11.12 scalactic/package scalactic/mimaReportBinaryIssues
     $ sbt ++2.11.12 scalatestCore/package scalatestCore/mimaReportBinaryIssues
     $ sbt ++2.11.12 scalatestFeatureSpec/package scalatestFeatureSpec/mimaReportBinaryIssues

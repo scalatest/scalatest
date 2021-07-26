@@ -74,9 +74,8 @@ trait Tolerance {
  *
  * <pre class="stREPL">
  * $ scala -classpath scalactic.jar
- * Welcome to Scala version 2.10.0
- * Type in expressions to have them evaluated.
- * Type :help for more information.
+ * Welcome to Scala 2.13.6 (OpenJDK 64-Bit Server VM, Java yyy).
+ * Type in expressions for evaluation. Or try :help.
  *
  * scala&gt; import org.scalactic._
  * import org.scalactic._
