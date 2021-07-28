@@ -358,12 +358,7 @@ private[scalatest] object MatchersHelper {
 
   //DOTTY-ONLY import scala.quoted._
   //DOTTY-ONLY def checkThrownByMacro(clazz: Expr[Class[_]], thrownBy: Expr[ResultOfThrownByApplication])(using quotes: Quotes): Expr[Assertion] = {
-  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
-  //DOTTY-ONLY   val file = pos.sourceFile
-  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
-  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
-  //DOTTY-ONLY   '{checkThrownBy(${clazz}, ${thrownBy}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
+  //DOTTY-ONLY   source.Position.withPosition[Assertion]('{(pos: source.Position) => checkThrownBy(${clazz}, ${thrownBy}, pos) })
   //DOTTY-ONLY }
 
   def checkBeThrownBy(clazz: Class[_], beThrownBy: ResultOfBeThrownBy, pos: source.Position): Assertion = {
@@ -385,12 +380,7 @@ private[scalatest] object MatchersHelper {
   }
 
   //DOTTY-ONLY def checkBeThrownByMacro(clazz: Expr[Class[_]], beThrownBy: Expr[ResultOfBeThrownBy])(using quotes: Quotes): Expr[Assertion] = {
-  //DOTTY-ONLY   val pos = quotes.reflect.Position.ofMacroExpansion
-  //DOTTY-ONLY   val file = pos.sourceFile
-  //DOTTY-ONLY   val fileName: String = file.jpath.getFileName.toString
-  //DOTTY-ONLY   val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
-  //DOTTY-ONLY   val lineNo: Int = pos.startLine + 1
-  //DOTTY-ONLY   '{checkBeThrownBy(${clazz}, ${beThrownBy}, org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
+  //DOTTY-ONLY   source.Position.withPosition[Assertion]('{(pos: source.Position) => checkBeThrownBy(${clazz}, ${beThrownBy}, pos) })
   //DOTTY-ONLY }
 
   def indicateSuccess(message: => String): Assertion = Succeeded
