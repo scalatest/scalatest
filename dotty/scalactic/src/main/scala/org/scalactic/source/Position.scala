@@ -79,7 +79,7 @@ object Position {
   def withPosition[T](fun: Expr[Position => T])(using quotes: Quotes, typeOfT: Type[T]): Expr[T] = {
     val pos = quotes.reflect.Position.ofMacroExpansion
     val file = pos.sourceFile
-    val fileName: String = file.jpath.getFileName.toString
+    val fileName: String = Option(file.jpath).map(_.getFileName.toString).getOrElse("<unknown>")
     val filePath: String = org.scalactic.source.Position.filePathnames(file.toString)
     val lineNo: Int = pos.startLine + 1
    '{${fun}.apply(org.scalactic.source.Position(${Expr(fileName)}, ${Expr(filePath)}, ${Expr(lineNo)}))}
