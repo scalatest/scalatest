@@ -10,7 +10,9 @@ trait BuildCommons {
     scalaVersion := crossScalaVersions.value.head,
   )
 
-  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.5.1")
+  val runFlickerTests = Option(System.getenv("SCALATEST_RUN_FLICKER_TESTS")).getOrElse("FALSE").toUpperCase == "TRUE"
+
+  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.6.0")
   def scalatestJSLibraryDependencies =
     Seq(
       "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
@@ -22,7 +24,7 @@ trait BuildCommons {
 
   val plusJUnitVersion = "3.2.9.0"
   val plusTestNGVersion = "3.2.9.0"
-  val flexmarkVersion = "0.36.8"
+  val flexmarkVersion = "0.62.2"
 
   def rootProject: Project
 
@@ -43,8 +45,6 @@ trait BuildCommons {
   def scalatestJSDocTaskSetting: Setting[_]
 
   def crossBuildTestLibraryDependencies: sbt.Def.Initialize[Seq[sbt.ModuleID]]
-
-  def scalatestTestOptions: Seq[sbt.TestOption]
 
   lazy val projectTitle = settingKey[String]("Name of project to display in doc titles")
 
@@ -146,4 +146,96 @@ trait BuildCommons {
     doc in Compile := docTask((doc in Compile).value,
                               (sourceDirectory in Compile).value,
                               name.value)
+
+  def scalatestTestOptions =
+    Seq(
+      Tests.Argument(TestFrameworks.ScalaTest,
+        (
+          Seq(
+            "-l", "org.scalatest.tags.Slow",
+            "-m", "org.scalatest",
+            "-m", "org.scalactic",
+            "-m", "org.scalactic.anyvals",
+            "-m", "org.scalactic.algebra",
+            "-m", "org.scalactic.enablers",
+            "-m", "org.scalatest.fixture",
+            "-m", "org.scalatest.concurrent",
+            "-m", "org.scalatest.deprecated",
+            "-m", "org.scalatest.events",
+            "-m", "org.scalatest.prop",
+            "-m", "org.scalatest.tools",
+            "-m", "org.scalatest.matchers",
+            "-m", "org.scalatest.matchers.should",
+            "-m", "org.scalatest.matchers.must",
+            "-m", "org.scalatest.matchers.dsl",
+            "-m", "org.scalatest.verbs",
+            "-m", "org.scalatest.suiteprop",
+            "-m", "org.scalatest.path",
+            "-m", "org.scalatest.exceptions",
+            "-m", "org.scalatest.time",
+            "-m", "org.scalatest.words",
+            "-m", "org.scalatest.enablers",
+            "-m", "org.scalatest.expectations",
+            "-m", "org.scalatest.diagrams",
+            "-m", "org.scalatest.featurespec",
+            "-m", "org.scalatest.flatspec",
+            "-m", "org.scalatest.freespec",
+            "-m", "org.scalatest.funspec",
+            "-m", "org.scalatest.funsuite",
+            "-m", "org.scalatest.propspec",
+            "-m", "org.scalatest.wordspec",
+            "-oDIF",
+            "-W", "120", "60",
+            "-h", "target/html",
+            "-u", "target/junit",
+            "-fW", "target/result.txt"
+          ) ++ 
+          (if (runFlickerTests) Seq.empty[String] else Seq("-l", "org.scalatest.tags.Flicker")) 
+        ): _*
+      )
+    )
+
+  def scalatestTestJSNativeOptions =
+    Seq(
+      Tests.Argument(TestFrameworks.ScalaTest,
+        (
+          Seq(
+            "-l", "org.scalatest.tags.Slow",
+            "-m", "org.scalatest",
+            "-m", "org.scalactic",
+            "-m", "org.scalactic.anyvals",
+            "-m", "org.scalactic.algebra",
+            "-m", "org.scalactic.enablers",
+            "-m", "org.scalatest.fixture",
+            "-m", "org.scalatest.concurrent",
+            "-m", "org.scalatest.events",
+            "-m", "org.scalatest.prop",
+            "-m", "org.scalatest.tools",
+            "-m", "org.scalatest.matchers",
+            "-m", "org.scalatest.matchers",
+            "-m", "org.scalatest.matchers.should",
+            "-m", "org.scalatest.matchers.must",
+            "-m", "org.scalatest.matchers.dsl",
+            "-m", "org.scalatest.verbs",
+            "-m", "org.scalatest.suiteprop",
+            "-m", "org.scalatest.path",
+            "-m", "org.scalatest.exceptions",
+            "-m", "org.scalatest.time",
+            "-m", "org.scalatest.words",
+            "-m", "org.scalatest.enablers",
+            "-m", "org.scalatest.expectations",
+            "-m", "org.scalatest.diagrams",
+            "-m", "org.scalatest.featurespec",
+            "-m", "org.scalatest.flatspec",
+            "-m", "org.scalatest.freespec",
+            "-m", "org.scalatest.funspec",
+            "-m", "org.scalatest.funsuite",
+            "-m", "org.scalatest.propspec",
+            "-m", "org.scalatest.wordspec",
+            "-oDIF"
+          ) ++ 
+          (if (runFlickerTests) Seq.empty[String] else Seq("-l", "org.scalatest.tags.Flicker")) 
+        ): _*
+      )
+    )                                
 }
