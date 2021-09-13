@@ -43,6 +43,9 @@ object CompileMacro {
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
         checkCompile(code.toString)
 
+      case Apply(Select(_, "stripMargin"), List(Literal(StringConstant(code)))) =>
+        checkCompile(code.stripMargin.toString)  
+
       case other =>
         report.throwError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
     }
