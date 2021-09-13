@@ -20,10 +20,58 @@ import org.scalatest.exceptions.TestFailedException
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.SortedMap
 import org.scalatest.funspec.AnyFunSpec
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.tagobjects.Flicker
 
-class GeneratorSpec extends AnyFunSpec with Matchers {
+/**
+  * Boilerplate reduction for those `(Iterator[T], Randomizer)` pairs returned
+  * from `canonicals()` and `shrink()`
+  *
+  * @param pair the returned values from the Generator method
+  * @tparam T the type of the Generator
+  */
+// SKIP-DOTTY-START  
+class GeneratorIteratorPairOps[T](pair: (Iterator[T], Randomizer)) {
+// SKIP-DOTTY-END
+//DOTTY-ONLY implicit class GeneratorIteratorPairOps[T](pair: (Iterator[T], Randomizer)) {  
+  /**
+    * Helper method for testing canonicals and shrinks, which should always be
+    * "growing".
+    *
+    * The definition of "growing" means, essentially, "moving further from zero".
+    * Sometimes that's in the positive direction (eg, PosInt), sometimes negative
+    * (NegFloat), sometimes both (NonZeroInt).
+    *
+    * This returns Unit, because it's all about the assertion.
+    *
+    * This is a bit loose and approximate, but sufficient for the various
+    * Scalactic types.
+    *
+    * @param iter an Iterator over a type, typically a Scalactic type
+    * @param conv a conversion function from the Scalactic type to an ordinary Numeric
+    * @tparam T the Scalactic type
+    * @tparam N the underlying ordered numeric type
+    */
+  def shouldGrowWith[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {
+    val iter: Iterator[T] = pair._1
+    iter.reduce { (last, cur) =>
+      // Duplicates not allowed:
+      last should not equal cur
+      val nLast = nOps.abs(conv(last))
+      val nCur = nOps.abs(conv(cur))
+      nLast should be <= nCur
+      cur
+    }
+  }
+}
+
+class GeneratorSpec extends AnyFunSpec {
+
+  // SKIP-DOTTY-START
+  implicit def convertToGeneratorIteratorPairOps[T](pair: (Iterator[T], Randomizer)): GeneratorIteratorPairOps[T] = 
+    new GeneratorIteratorPairOps(pair)
+  // SKIP-DOTTY-END  
+
   describe("A Generator") {
     it("should offer a map and flatMap method that composes the next methods") {
       import Generator._
@@ -93,7 +141,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
     it("should offer a filter method so that pattern matching can be used in for expressions with Generator generators") {
       """for ((a, b) <- CommonGenerators.tuple2s[String, Int]) yield (b, a)""" should compile
       case class Person(name: String, age: Int)
+      // SKIP-DOTTY-START
       val persons = CommonGenerators.instancesOf(Person) { p => (p.name, p.age) }
+      // SKIP-DOTTY-END
+      //DOTTY-ONLY val persons = CommonGenerators.instancesOf[(String, Int), Person](Person.apply) { p => (p.name, p.age) }
       """for (Person(a, b) <- persons) yield (b, a)""" should compile
     }
     it("should offer a filter method that throws an exception if too many objects are filtered out") {
@@ -149,7 +200,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       count shouldEqual generatorDrivenConfig.minSuccessful.value
 
       {
-        implicit val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 10)
+        implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration(minSuccessful = 10)
         count = 0
         forAll { (i: Int) => 
           count += 1
@@ -783,14 +834,16 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
     }
 
+    // SKIP-DOTTY-START
     /**
       * Boilerplate reduction for those `(Iterator[T], Randomizer)` pairs returned
       * from `canonicals()` and `shrink()`
       *
       * @param pair the returned values from the Generator method
       * @tparam T the type of the Generator
-      */
+      */  
     implicit class GeneratorIteratorPairOps[T](pair: (Iterator[T], Randomizer)) {
+    // SKIP-DOTTY-END  
       /**
         * Helper method for testing canonicals and shrinks, which should always be
         * "growing".
@@ -809,7 +862,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         * @tparam T the Scalactic type
         * @tparam N the underlying ordered numeric type
         */
-      def shouldGrowWith[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {
+      // SKIP-DOTTY-START  
+      def shouldGrowWithForGeneratorIteratorPair[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {
+      // SKIP-DOTTY-END  
+      //DOTTY-ONLY extension [T](pair: (Iterator[T], Randomizer)) def shouldGrowWithForGeneratorIteratorPair[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {  
         val iter: Iterator[T] = pair._1
         iter.reduce { (last, cur) =>
           // Duplicates not allowed:
@@ -820,7 +876,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           cur
         }
       }
+    // SKIP-DOTTY-START  
     }
+    // SKIP-DOTTY-END
 
     describe("for PosInts") {
       it("should produce the same PosInt values in the same order given the same Randomizer") {
@@ -2801,8 +2859,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should offer an implicit provider that uses hashCode to tweak a seed and has a pretty toString") {
         val gen = implicitly[Generator[Option[Int] => List[Int]]]
         val sample = gen.sample
+        // SKIP-DOTTY-START
         sample.toString should include ("Option[Int]")
         sample.toString should include ("List[Int]")
+        // SKIP-DOTTY-END
+        //DOTTY-ONLY sample.toString should include ("scala.Option[scala.Int]")
+        //DOTTY-ONLY sample.toString should include ("scala.collection.immutable.List[scala.Int]")
       }
     }
     describe("for Tuple2s") {
@@ -2871,31 +2933,31 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Vector[T] following size determined by havingSize method") {
         val aGen= Generator.vectorGenerator[Int]
-        implicit val sGen = aGen.havingSize(PosZInt(3))
+        implicit val sGen: Generator[Vector[Int]] = aGen.havingSize(PosZInt(3))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { v: Vector[Int] =>
+        forAll { (v: Vector[Int]) =>
           v.size shouldBe 3
         }
       }
       it("should produce Vector[T] following length determined by havingLength method") {
         val aGen= Generator.vectorGenerator[Int]
-        implicit val sGen = aGen.havingLength(PosZInt(3))
+        implicit val sGen: Generator[Vector[Int]] = aGen.havingLength(PosZInt(3))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { v: Vector[Int] =>
+        forAll { (v: Vector[Int]) =>
           v.length shouldBe 3
         }
       }
       it("should produce Vector[T] following sizes determined by havingSizeBetween method") {
         val aGen= Generator.vectorGenerator[Int]
-        implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
+        implicit val sGen: Generator[Vector[Int]] = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { v: Vector[Int] =>
+        forAll { (v: Vector[Int]) =>
           v.size should (be >= 3 and be <= 5)
         }
       }
@@ -2911,11 +2973,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Vector[T] following lengths determined by havingLengthBetween method") {
         val aGen= Generator.vectorGenerator[Int]
-        implicit val sGen = aGen.havingLengthsBetween(PosZInt(3), PosZInt(5))
+        implicit val sGen: Generator[Vector[Int]] = aGen.havingLengthsBetween(PosZInt(3), PosZInt(5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { v: Vector[Int] =>
+        forAll { (v: Vector[Int]) =>
           v.length should (be >= 3 and be <= 5)
         }
       }
@@ -2931,21 +2993,21 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Vector[T] following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.vectorGenerator[Int]
-        implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
+        implicit val sGen: Generator[Vector[Int]] = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { v: Vector[Int] =>
+        forAll { (v: Vector[Int]) =>
           v.size shouldBe 5
         }
       }
       it("should produce Vector[T] following sizes determined by havingLengthsDeterminedBy method") {
         val aGen= Generator.vectorGenerator[Int]
-        implicit val sGen = aGen.havingLengthsDeterminedBy(s => SizeParam(5, 0, 5))
+        implicit val sGen: Generator[Vector[Int]] = aGen.havingLengthsDeterminedBy(s => SizeParam(5, 0, 5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { v: Vector[Int] =>
+        forAll { (v: Vector[Int]) =>
           v.length shouldBe 5
         }
       }
@@ -3028,21 +3090,21 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Set[T] following size determined by havingSize method") {
         val aGen= Generator.setGenerator[Int]
-        implicit val sGen = aGen.havingSize(PosZInt(3))
+        implicit val sGen: Generator[Set[Int]] = aGen.havingSize(PosZInt(3))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: Set[Int] =>
+        forAll { (s: Set[Int]) =>
           s.size shouldBe 3
         }
       }
       it("should produce Set[T] following sizes determined by havingSizeBetween method") {
         val aGen= Generator.setGenerator[Int]
-        implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
+        implicit val sGen: Generator[Set[Int]] = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: Set[Int] =>
+        forAll { (s: Set[Int]) =>
           s.size should (be >= 3 and be <= 5)
         }
       }
@@ -3058,11 +3120,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Set[T] following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.setGenerator[Int]
-        implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
+        implicit val sGen: Generator[Set[Int]] = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: Set[Int] =>
+        forAll { (s: Set[Int]) =>
           s.size shouldBe 5
         }
       }
@@ -3147,21 +3209,21 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Set[T] following size determined by havingSize method") {
         val aGen= Generator.sortedSetGenerator[Int]
-        implicit val sGen = aGen.havingSize(PosZInt(3))
+        implicit val sGen: Generator[SortedSet[Int]] = aGen.havingSize(PosZInt(3))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: SortedSet[Int] =>
+        forAll { (s: SortedSet[Int]) =>
           s.size shouldBe 3
         }
       }
       it("should produce Set[T] following sizes determined by havingSizeBetween method") {
         val aGen= Generator.sortedSetGenerator[Int]
-        implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
+        implicit val sGen: Generator[SortedSet[Int]] = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: SortedSet[Int] =>
+        forAll { (s: SortedSet[Int]) =>
           s.size should (be >= 3 and be <= 5)
         }
       }
@@ -3177,11 +3239,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Set[T] following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.sortedSetGenerator[Int]
-        implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
+        implicit val sGen: Generator[SortedSet[Int]] = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: SortedSet[Int] =>
+        forAll { (s: SortedSet[Int]) =>
           s.size shouldBe 5
         }
       }
@@ -3304,21 +3366,21 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Map[K, V] following size determined by havingSize method") {
         val aGen= Generator.mapGenerator[Int, String]
-        implicit val sGen = aGen.havingSize(PosZInt(3))
+        implicit val sGen: Generator[Map[Int, String]] = aGen.havingSize(PosZInt(3))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: Map[Int, String] =>
+        forAll { (s: Map[Int, String]) =>
           s.size shouldBe 3
         }
       }
       it("should produce Map[K, V] following sizes determined by havingSizeBetween method") {
         val aGen= Generator.mapGenerator[Int, String]
-        implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
+        implicit val sGen: Generator[Map[Int, String]] = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: Map[Int, String] =>
+        forAll { (s: Map[Int, String]) =>
           s.size should (be >= 3 and be <= 5)
         }
       }
@@ -3334,11 +3396,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce Map[K, V] following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.mapGenerator[Int, String]
-        implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
+        implicit val sGen: Generator[Map[Int, String]] = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: Map[Int, String] =>
+        forAll { (s: Map[Int, String]) =>
           s.size shouldBe 5
         }
       }
@@ -3464,21 +3526,21 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce SortedMap[K, V] following size determined by havingSize method") {
         val aGen= Generator.sortedMapGenerator[Int, String]
-        implicit val sGen = aGen.havingSize(PosZInt(3))
+        implicit val sGen: Generator[SortedMap[Int, String]] = aGen.havingSize(PosZInt(3))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: SortedMap[Int, String] =>
+        forAll { (s: SortedMap[Int, String]) =>
           s.size shouldBe 3
         }
       }
       it("should produce SortedMap[K, V] following sizes determined by havingSizeBetween method") {
         val aGen= Generator.sortedMapGenerator[Int, String]
-        implicit val sGen = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
+        implicit val sGen: Generator[SortedMap[Int, String]] = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: SortedMap[Int, String] =>
+        forAll { (s: SortedMap[Int, String]) =>
           s.size should (be >= 3 and be <= 5)
         }
       }
@@ -3494,11 +3556,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce SortedMap[K, V] following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.sortedMapGenerator[Int, String]
-        implicit val sGen = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
+        implicit val sGen: Generator[SortedMap[Int, String]] = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
 
         import GeneratorDrivenPropertyChecks._
 
-        forAll { s: SortedMap[Int, String] =>
+        forAll { (s: SortedMap[Int, String]) =>
           s.size shouldBe 5
         }
       }
@@ -3604,6 +3666,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val genColor = specificValues(Red, Green)
       val genLine = for { color <- genColor } yield Line(color)
       val genCircle = for { color <- genColor } yield Circle(color)
+      
+      /*lazy val genShape = evenly[Shape](genLine, genCircle, genBox)
+      lazy val genBox: Generator[Box] = for {
+        color <- genColor
+        shape <- genShape
+      } yield Box(color, shape)*/
+      
+      // SKIP-DOTTY-START
       """
       lazy val genShape = evenly(genLine, genCircle, genBox)
       lazy val genBox: Generator[Box] = for {
@@ -3611,6 +3681,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         shape <- genShape
       } yield Box(color, shape)
       """ should compile
+      // SKIP-DOTTY-END
+      //DOTTY-ONLY """
+      //DOTTY-ONLY lazy val genShape = evenly[Shape](genLine, genCircle, genBox)
+      //DOTTY-ONLY lazy val genBox: Generator[Box] = for {
+      //DOTTY-ONLY   color <- genColor
+      //DOTTY-ONLY   shape <- genShape
+      //DOTTY-ONLY } yield Box(color, shape)
+      //DOTTY-ONLY """ should compile
     }
   }
 }
