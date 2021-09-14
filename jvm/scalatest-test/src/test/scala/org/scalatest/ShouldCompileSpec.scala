@@ -32,7 +32,6 @@ class ShouldCompileSpec extends AnyFunSpec {
         "val a = 1" should compile
       }
 
-      // SKIP-DOTTY-START
       it("should throw TestFailedException with correct message and stack depth when type check failed") {
         val e = intercept[TestFailedException] {
           "val a: String = 2" should compile
@@ -43,8 +42,7 @@ class ShouldCompileSpec extends AnyFunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
-      // SKIP-DOTTY-END
-
+      
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
         
         // SKIP-DOTTY-START
