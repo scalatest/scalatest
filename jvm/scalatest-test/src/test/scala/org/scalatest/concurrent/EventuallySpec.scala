@@ -359,7 +359,7 @@ class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with
       }
     }
 
-    it("should, if an alternate implicit Timeout is provided, invoke an always-failing by-name by at least the specified timeout") {
+    it("should, if an alternate implicit Timeout is provided, invoke an always-failing by-name by at least the specified timeout", Flicker) {
 
       implicit val patienceConfig = PatienceConfig(timeout = Span(1500, Millis))
 
