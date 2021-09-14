@@ -125,7 +125,7 @@ object CompileMacro {
         checkNotTypeCheck(code.toString)
 
       case Apply(Select(_, "stripMargin"), List(Literal(StringConstant(code)))) =>
-        checkNotTypeCheck(code.toString.stripMargin)
+        checkNotTypeCheck(code.stripMargin)
 
       case _ =>
         report.throwError("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
