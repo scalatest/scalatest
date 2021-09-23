@@ -167,46 +167,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       "org.scalatestplus" %% "junit-4-13" % plusJUnitVersion % "test"
     )
 
-  def scalatestTestOptions =
-    Seq(Tests.Argument(TestFrameworks.ScalaTest,
-      "-l", "org.scalatest.tags.Slow",
-      "-m", "org.scalatest",
-      "-m", "org.scalactic",
-      "-m", "org.scalactic.anyvals",
-      "-m", "org.scalactic.algebra",
-      "-m", "org.scalactic.enablers",
-      "-m", "org.scalatest.fixture",
-      "-m", "org.scalatest.concurrent",
-      "-m", "org.scalatest.deprecated",
-      "-m", "org.scalatest.events",
-      "-m", "org.scalatest.prop",
-      "-m", "org.scalatest.tools",
-      "-m", "org.scalatest.matchers",
-      "-m", "org.scalatest.matchers.should",
-      "-m", "org.scalatest.matchers.must",
-      "-m", "org.scalatest.matchers.dsl",
-      "-m", "org.scalatest.verbs",
-      "-m", "org.scalatest.suiteprop",
-      "-m", "org.scalatest.path",
-      "-m", "org.scalatest.exceptions",
-      "-m", "org.scalatest.time",
-      "-m", "org.scalatest.words",
-      "-m", "org.scalatest.enablers",
-      "-m", "org.scalatest.expectations",
-      "-m", "org.scalatest.diagrams",
-      "-m", "org.scalatest.featurespec",
-      "-m", "org.scalatest.flatspec",
-      "-m", "org.scalatest.freespec",
-      "-m", "org.scalatest.funspec",
-      "-m", "org.scalatest.funsuite",
-      "-m", "org.scalatest.propspec",
-      "-m", "org.scalatest.wordspec",
-      "-oDIF",
-      "-W", "120", "60",
-      "-h", "target/html",
-      "-u", "target/junit",
-      "-fW", "target/result.txt"))
-
   lazy val commonTest = Project("common-test", file("jvm/common-test"))
     .settings(sharedSettings: _*)
     .settings(

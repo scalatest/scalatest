@@ -654,42 +654,6 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalatestMatchersCoreNative).enablePlugins(ScalaNativePlugin)
 
-  def scalatestTestNativeOptions =
-    Seq(Tests.Argument(TestFrameworks.ScalaTest,
-      "-l", "org.scalatest.tags.Slow",
-      "-m", "org.scalatest",
-      "-m", "org.scalactic",
-      "-m", "org.scalactic.anyvals",
-      "-m", "org.scalactic.algebra",
-      "-m", "org.scalactic.enablers",
-      "-m", "org.scalatest.fixture",
-      "-m", "org.scalatest.concurrent",
-      "-m", "org.scalatest.events",
-      "-m", "org.scalatest.prop",
-      "-m", "org.scalatest.tools",
-      "-m", "org.scalatest.matchers",
-      "-m", "org.scalatest.matchers",
-      "-m", "org.scalatest.matchers.should",
-      "-m", "org.scalatest.matchers.must",
-      "-m", "org.scalatest.matchers.dsl",
-      "-m", "org.scalatest.verbs",
-      "-m", "org.scalatest.suiteprop",
-      "-m", "org.scalatest.path",
-      "-m", "org.scalatest.exceptions",
-      "-m", "org.scalatest.time",
-      "-m", "org.scalatest.words",
-      "-m", "org.scalatest.enablers",
-      "-m", "org.scalatest.expectations",
-      "-m", "org.scalatest.diagrams",
-      "-m", "org.scalatest.featurespec",
-      "-m", "org.scalatest.flatspec",
-      "-m", "org.scalatest.freespec",
-      "-m", "org.scalatest.funspec",
-      "-m", "org.scalatest.funsuite",
-      "-m", "org.scalatest.propspec",
-      "-m", "org.scalatest.wordspec",
-      "-oDIF"))
-
   lazy val commonTestNative = project.in(file("native/common-test"))
       .settings(sharedSettings ++ sharedNativeSettings)
       .settings(
@@ -732,7 +696,7 @@ trait NativeBuild { this: BuildCommons =>
       fork in test := false,
       nativeLinkStubs in Test := true,
       nativeDump in Test := false, 
-      testOptions in Test := scalatestTestNativeOptions,
+      testOptions in Test := scalatestTestJSNativeOptions,
       publishArtifact := false,
       publish := {},
       publishLocal := {}

@@ -92,16 +92,16 @@ import org.scalatest.{Finders, Suite}
  * </pre>
  *
  * <p>
- * You can also pass to <code>execute</code> a <a href="ConfigMap.html"><em>config map</em></a> of key-value
+ * You can also pass to <code>execute</code> a <a href="../ConfigMap.html"><em>config map</em></a> of key-value
  * pairs, which will be passed down into suites and tests, as well as other parameters that configure the run itself.
  * For more information on running in the Scala interpreter, see the documentation for <code>execute</code> (below) and the
- * <a href="Shell.html">ScalaTest shell</a>.
+ * <a href="../Shell.html">ScalaTest shell</a>.
  * </p>
  *
  * <p>
  * The <code>execute</code> method invokes a <code>run</code> method that takes two
  * parameters. This <code>run</code> method, which actually executes the suite, will usually be invoked by a test runner, such
- * as <a href="run$.html"><code>run</code></a>, <a href="tools/Runner$.html"><code>tools.Runner</code></a>, a build tool, or an IDE.
+ * as <a href="run$.html"><code>run</code></a>, <a href="../tools/Runner$.html"><code>tools.Runner</code></a>, a build tool, or an IDE.
  * </p>
  *
  * <p>
@@ -122,7 +122,7 @@ import org.scalatest.{Finders, Suite}
  * Tests can only be registered with the <code>property</code> method while the <code>AnyPropSpec</code> is
  * in its registration phase. Any attempt to register a test after the <code>AnyPropSpec</code> has
  * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>AnyPropSpec</code>,
- * will be met with a thrown <a href="exceptions/TestRegistrationClosedException.html"><code>TestRegistrationClosedException</code></a>. The recommended style
+ * will be met with a thrown <a href="../exceptions/TestRegistrationClosedException.html"><code>TestRegistrationClosedException</code></a>. The recommended style
  * of using <code>AnyPropSpec</code> is to register tests during object construction as is done in all
  * the examples shown here. If you keep to the recommended style, you should never see a
  * <code>TestRegistrationClosedException</code>.
@@ -188,18 +188,18 @@ import org.scalatest.{Finders, Suite}
  * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
- * One of the parameters to <code>AnyPropSpec</code>'s <code>run</code> method is a <a href="Reporter.html"><code>Reporter</code></a>, which
+ * One of the parameters to <code>AnyPropSpec</code>'s <code>run</code> method is a <a href="../Reporter.html"><code>Reporter</code></a>, which
  * will collect and report information about the running suite of tests.
  * Information about suites and tests that were run, whether tests succeeded or failed, 
  * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
  * Most often the reporting done by default by <code>AnyPropSpec</code>'s methods will be sufficient, but
  * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
- * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information
+ * For this purpose, an <a href="../Informer.html"><code>Informer</code></a> that will forward information
  * to the current <code>Reporter</code> is provided via the <code>info</code> parameterless method.
  * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
- * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="events/InfoProvided.html"><code>InfoProvided</code></a> event.
+ * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/InfoProvided.html"><code>InfoProvided</code></a> event.
  * Here's an example that shows both a direct use as well as an indirect use through the methods
- * of <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a>:
+ * of <a href="../GivenWhenThen.html"><code>GivenWhenThen</code></a>:
  * </p>
  *
  * <pre class="stHighlight">
@@ -268,10 +268,10 @@ import org.scalatest.{Finders, Suite}
  * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
- * <code>AnyPropSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
+ * <code>AnyPropSpec</code> also provides a <code>markup</code> method that returns a <a href="../Documenter.html"><code>Documenter</code></a>, which allows you to send
  * to the <code>Reporter</code> text formatted in <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown syntax</a>.
  * You can pass the extra information to the <code>Documenter</code> via its <code>apply</code> method.
- * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
+ * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
  * </p>
  *
  * <p>
@@ -365,8 +365,8 @@ import org.scalatest.{Finders, Suite}
  * </p>
  *
  * <p>
- * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
- * (an <a href="Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
+ * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="../Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
+ * (an <a href="../Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
  * </p>
  *
  * <pre class="stHighlight">
@@ -421,7 +421,7 @@ import org.scalatest.{Finders, Suite}
  * </pre>
  *
  * <p>
- * Another example is <a href="tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
+ * Another example is <a href="../tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
  * If you find a test is taking a long time to complete, but you're not sure which test, you can enable 
  * slowpoke notifications. ScalaTest will use an <code>Alerter</code> to fire an event whenever a test has been running
  * longer than a specified amount of time.
@@ -448,7 +448,7 @@ import org.scalatest.{Finders, Suite}
  * To support this style of testing, a test can be given a name that specifies one
  * bit of behavior required by the system being tested. The test can also include some code that
  * sends more information about the behavior to the reporter when the tests run. At the end of the test,
- * it can call method <code>pending</code>, which will cause it to complete abruptly with <a href="exceptions/TestPendingException.html"><code>TestPendingException</code></a>.
+ * it can call method <code>pending</code>, which will cause it to complete abruptly with <a href="../exceptions/TestPendingException.html"><code>TestPendingException</code></a>.
  * </p>
  *
  * <p>
@@ -539,7 +539,7 @@ import org.scalatest.{Finders, Suite}
  * optionally be included and/or excluded. To tag a <code>AnyPropSpec</code>'s tests,
  * you pass objects that extend class <code>org.scalatest.Tag</code> to methods
  * that register tests. Class <code>Tag</code> takes one parameter, a string name.  If you have
- * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
+ * created tag annotation interfaces as described in the <a href="../Tag.html"><code>Tag</code> documentation</a>, then you
  * will probably want to use tag names on your test functions that match. To do so, simply 
  * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
  * defined a tag annotation interface with fully qualified names,
