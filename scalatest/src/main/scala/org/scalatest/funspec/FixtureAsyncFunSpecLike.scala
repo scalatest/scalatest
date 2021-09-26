@@ -20,7 +20,8 @@ import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
 import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
-import words.BehaveWord
+import verbs.BehaveWord
+import scala.util.Try
 
 
 /**
@@ -46,7 +47,7 @@ import words.BehaveWord
  */
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait FixtureAsyncFunSpecLike extends org.scalatest.fixture.AsyncTestSuite with org.scalatest.fixture.AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAsyncFunSpecLike extends org.scalatest.FixtureAsyncTestSuite with org.scalatest.FixtureAsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
 
@@ -444,10 +445,10 @@ trait FixtureAsyncFunSpecLike extends org.scalatest.fixture.AsyncTestSuite with 
    * @throws NullArgumentException if <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
+      FutureAsyncOutcome(
         withFixture(
           new OneArgAsyncTest {
             val name = testData.name
@@ -461,7 +462,8 @@ trait FixtureAsyncFunSpecLike extends org.scalatest.fixture.AsyncTestSuite with 
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 
@@ -585,10 +587,12 @@ trait FixtureAsyncFunSpecLike extends org.scalatest.fixture.AsyncTestSuite with 
 */
 
   /**
-   * Suite style name.
+   * <strong>The <code>styleName</code> lifecycle method has been deprecated and will be removed in a future version of ScalaTest.</strong>
    *
-   * @return <code>org.scalatest.fixture.FunSpec</code>
+   * <p>This method was used to support the chosen styles feature, which was deactivated in 3.1.0. The internal modularization of ScalaTest in 3.2.0
+   * will replace chosen styles as the tool to encourage consistency across a project. We do not plan a replacement for <code>styleName</code>.</p>
    */
+  @deprecated("The styleName lifecycle method has been deprecated and will be removed in a future version of ScalaTest with no replacement.", "3.1.0")
   final override val styleName: String = "org.scalatest.fixture.FunSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)

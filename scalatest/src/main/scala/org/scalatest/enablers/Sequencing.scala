@@ -18,7 +18,7 @@ package org.scalatest.enablers
 import scala.collection.JavaConverters._
 import org.scalactic.{Equality, Every}
 import scala.collection.GenTraversable
-import org.scalatest.words.ArrayWrapper
+import org.scalatest.verbs.ArrayWrapper
 import scala.annotation.tailrec
 
 /**

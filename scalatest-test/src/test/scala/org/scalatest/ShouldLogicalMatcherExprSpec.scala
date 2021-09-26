@@ -15,15 +15,32 @@
  */
 package org.scalatest
 
-import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import java.util.concurrent.atomic.AtomicInteger
+
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 
-class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with ReturnsNormallyThrowsAssertion {
+class ShouldLogicalMatcherExprSpec extends FunSpec with ReturnsNormallyThrowsAssertion {
 
-  class Clown {
+  sealed abstract class Clown {
     def hasBigRedNose = true
+  }
+
+  class CountingClown extends Clown {
+    val count = new AtomicInteger(0)
+    override def hasBigRedNose: Boolean = {
+      count.incrementAndGet()
+      super.hasBigRedNose
+    }
+  }
+
+  def mock[T]: Clown = new CountingClown
+
+  def verify(clown: Clown, expectedCount: Int): Unit = {
+    clown match {
+      case countingClown: CountingClown => assert(countingClown.count.get() == expectedCount)
+      case other => fail("Expected CountingClown, but we got: " + other)
+    }
   }
 
   describe("Matcher expressions to the right of and") {
@@ -36,7 +53,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
           "hi" should (have length (1) and { mockClown.hasBigRedNose; have length (2) })
         }
  
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
       }
     }
 
@@ -49,13 +66,13 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
           "hi" should (have length (1) and have length {mockClown.hasBigRedNose; 2})
         }
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         intercept[TestFailedException] {
           "hi" should (have length (1) and {mockClown.hasBigRedNose; have length 2})
         }
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
       }
     }
 
@@ -68,19 +85,19 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
           "hi" should (have length (1) and not have length {mockClown.hasBigRedNose; 1})
         }
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         intercept[TestFailedException] {
           "hi" should (have length (1) and not {mockClown.hasBigRedNose; have length (1)})
         }
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
 
         intercept[TestFailedException] {
           "hi" should (have length (1) and {mockClown.hasBigRedNose; not have length (1)})
         }
 
-        verify(mockClown, times(3)).hasBigRedNose
+        verify(mockClown, 3)
       }
     }
 
@@ -93,13 +110,13 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
           Array(1, 2) should (have size (1) and have size {mockClown.hasBigRedNose; 2})
         }
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         intercept[TestFailedException] {
           "hi" should (have size (1) and {mockClown.hasBigRedNose; have size 2})
         }
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
       }
     }
 
@@ -112,19 +129,19 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
           Array(1, 2) should (have size (1) and not have size {mockClown.hasBigRedNose; 1})
         }
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         intercept[TestFailedException] {
           Array(1, 2) should (have size (1) and not {mockClown.hasBigRedNose; have size (1)})
         }
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
 
         intercept[TestFailedException] {
           Array(1, 2) should (have size (1) and {mockClown.hasBigRedNose; not have size (1)})
         }
 
-        verify(mockClown, times(3)).hasBigRedNose
+        verify(mockClown, 3)
       }
     }
 
@@ -137,13 +154,13 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
           "hi" should (equal ("ho") and equal {mockClown.hasBigRedNose; "ho"})
         }
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         intercept[TestFailedException] {
           "hi" should (equal ("ho") and {mockClown.hasBigRedNose; equal ("ho")})
         }
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
       }
     }
   }
@@ -157,13 +174,13 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
         "hi" should (equal ("ho") and not equal {mockClown.hasBigRedNose; "ho"})
       }
 
-      verify(mockClown, times(1)).hasBigRedNose
+      verify(mockClown, 1)
 
       intercept[TestFailedException] {
         "hi" should (equal ("ho") and {mockClown.hasBigRedNose; not equal ("ho")})
       }
 
-      verify(mockClown, times(2)).hasBigRedNose
+      verify(mockClown, 2)
     }
   }
 
@@ -175,7 +192,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
 
         "hi" should (have length (2) or { mockClown.hasBigRedNose; have length (2) })
  
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
       }
     }
 
@@ -186,11 +203,11 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
 
         "hi" should (have length (2) or have length {mockClown.hasBigRedNose; 2})
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         "hi" should (have length (2) or {mockClown.hasBigRedNose; have length 2})
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
       }
     }
 
@@ -201,15 +218,15 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
 
         "hi" should (have length (2) or not have length {mockClown.hasBigRedNose; 1})
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         "hi" should (have length (2) or not {mockClown.hasBigRedNose; have length (1)})
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
 
         "hi" should (have length (2) or {mockClown.hasBigRedNose; not have length (1)})
 
-        verify(mockClown, times(3)).hasBigRedNose
+        verify(mockClown, 3)
       }
     }
 
@@ -220,11 +237,11 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
 
         Array(1, 2) should (have size (2) or have size {mockClown.hasBigRedNose; 2})
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         Array(1, 2) should (have size (2) or {mockClown.hasBigRedNose; have size 2})
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
       }
     }
 
@@ -235,15 +252,15 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
 
         Array(1, 2) should (have size (2) or not have size {mockClown.hasBigRedNose; 1})
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         Array(1, 2) should (have size (2) or not {mockClown.hasBigRedNose; have size (1)})
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
 
         Array(1, 2) should (have size (2) or {mockClown.hasBigRedNose; not have size (1)})
 
-        verify(mockClown, times(3)).hasBigRedNose
+        verify(mockClown, 3)
       }
     }
 
@@ -254,11 +271,11 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
 
         "hi" should (equal ("hi") or equal {mockClown.hasBigRedNose; "ho"})
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         "hi" should (equal ("hi") or {mockClown.hasBigRedNose; equal ("ho")})
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
       }
     }
 
@@ -269,11 +286,11 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
 
         5 should (be < (7) or be < {mockClown.hasBigRedNose; 3})
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         5 should (be < (7) or be < {mockClown.hasBigRedNose; 3})
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
       }
       it("should not short-circuit if left matcher does match for >") {
 
@@ -281,11 +298,11 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
 
         5 should (be > (3) or be > {mockClown.hasBigRedNose; 3})
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         5 should (be > (3) or be > {mockClown.hasBigRedNose; 3})
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
       }
     }
 
@@ -296,11 +313,11 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
 
         5 should (be < (3) or not be < {mockClown.hasBigRedNose; 3})
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         5 should (be < (3) or not be < {mockClown.hasBigRedNose; 3})
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
       }
       it("should not short-circuit if left matcher does match for >") {
 
@@ -308,11 +325,11 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with MockitoSugar with Return
 
         5 should (be > (7) or not be > {mockClown.hasBigRedNose; 8})
 
-        verify(mockClown, times(1)).hasBigRedNose
+        verify(mockClown, 1)
 
         5 should (be > (7) or not be > {mockClown.hasBigRedNose; 8})
 
-        verify(mockClown, times(2)).hasBigRedNose
+        verify(mockClown, 2)
       }
     }
   }

@@ -24,7 +24,7 @@ import matchers.{ FailureMessage, NegatedFailureMessage, MidSentenceFailureMessa
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
 import prop.TableFor1
-
+import expectations._
 
 /*
 No(
@@ -64,7 +64,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         caught.failedCodeFileName shouldBe Some("FactSpec.scala")
       }
       "throws TestCanceledException with the correct error message and stack depth if the Fact is a vacuous Yes" in {
-        import Expectations._
+        import expectations.Expectations._
         val x = 1
         val vacuousYes = (expect(x == 2) implies expect(x > 0))
         val caught = the [TestCanceledException] thrownBy vacuousYes.toAssertion
@@ -283,7 +283,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     }
 
     "should propagate VacuousYes correctly" - {
-      import Expectations._
+      import expectations.Expectations._
       val x = 1
       val vacuousYes = (expect(x == 2) implies expect(x > 0))
       "for VacuousYes && VacuousYes" in {
@@ -447,7 +447,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     }
 
     "should propagate VacuousYes correctly" - {
-      import Expectations._
+      import expectations.Expectations._
       val x = 1
       val vacuousYes = (expect(x == 2) implies expect(x > 0))
       "for VacuousYes & VacuousYes" in {
@@ -615,7 +615,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     }
 
     "should propagate VacuousYes correctly" - {
-      import Expectations._
+      import expectations.Expectations._
       val x = 1
       val vacuousYes = (expect(x == 2) implies expect(x > 0))
       "for VacuousYes || VacuousYes" in {
@@ -781,7 +781,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
 
 
       "should propagate VacuousYes correctly" - {
-        import Expectations._
+        import expectations.Expectations._
         val x = 1
         val vacuousYes = (expect(x == 2) implies expect(x > 0))
         "for VacuousYes | VacuousYes" in {
@@ -1288,7 +1288,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     }
 
     "should propagate VacuousYes correctly" - {
-      import Expectations._
+      import expectations.Expectations._
       val x = 1
       val vacuousYes = (expect(x == 2) implies expect(x > 0))
       "for VacuousYes isEqvTo VacuousYes" in {

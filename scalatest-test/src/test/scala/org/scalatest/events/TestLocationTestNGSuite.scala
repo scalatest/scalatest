@@ -16,7 +16,7 @@
 package org.scalatest.events
 
 import org.testng.annotations.Test
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 import org.scalatest.DoNotDiscover
 
 @DoNotDiscover

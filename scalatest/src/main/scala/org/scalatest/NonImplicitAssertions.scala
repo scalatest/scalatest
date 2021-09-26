@@ -80,9 +80,136 @@ trait NonImplicitAssertions extends Assertions {
   override def typeCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], ev: B <:< A): A CanEqual B = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
   override def convertEquivalenceToBToAConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B <:< A): A CanEqual B = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 
+  /**
+   * <strong>The <code>lowPriorityConversionCheckedConstraint</code> method has been deprecated and will be removed in a future version of Scalactic. It
+   * is no longer needed now that the deprecation period of <code>ConversionCheckedTripleEquals</code> has expired. It will not be replaced.</strong>
+   *
+   * <p>
+   * Provides an <code>A CanEqual B</code> instance for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> is
+   * implicitly convertible to <code>B</code>, given an implicit <code>Equivalence[B]</code>.
+   * </p>
+   *
+   * <p>
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equivalence[B]</code>'s
+   * <code>areEquivalent</code> method to determine equality.
+   * </p>
+   *
+   * <p>
+   * This method is overridden and made implicit by subtraits
+   * <a href="LowPriorityConversionCheckedConstraint.html"><code>LowPriorityConversionCheckedConstraint</code></a> (extended by
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>), and
+   * overriden as non-implicit by the other subtraits in this package.
+   * </p>
+   *
+   * @param equalityOfB an <code>Equivalence[B]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
+   * @param cnv an implicit conversion from <code>A</code> to </code>B</code>
+   * @return an <code>A CanEqual B</code> instance whose <code>areEqual</code> method delegates to the <code>areEquivalent</code> method of
+   *     the passed <code>Equivalence[B]</code>.
+   */
+  @deprecated("The lowPriorityConversionCheckedConstraint method has been deprecated and will be removed in a future version of ScalaTest. It is no longer needed now that the deprecation period of ConversionCheckedTripleEquals has expired. It will not be replaced.", "3.1.0")
   override def lowPriorityConversionCheckedConstraint[A, B](implicit equivalenceOfB: Equivalence[B], cnv: A => B): A CanEqual B = new AToBEquivalenceConstraint[A, B](equivalenceOfB, cnv)
+
+  /**
+   * <strong>The <code>convertEquivalenceToAToBConversionConstraint</code> method has been deprecated and will be removed in a future version of Scalactic.
+   * It is no longer needed now that the deprecation period of <code>ConversionCheckedTripleEquals</code> has expired. It will not be replaced.</strong>
+   *
+   * <p>
+   * Provides an <code>A CanEqual B</code> instance for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>A</code> is
+   * implicitly convertible to <code>B</code>, given an <em>explicit</em> <code>Equivalence[B]</code>.
+   * </p>
+   *
+   * <p>
+   * This method is used to enable the <a href="Explicitly.html"><code>Explicitly</code></a> DSL for
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalance[B]</code>, but
+   * taking an implicit function that converts from <code>A</code> to </code>B</code>.
+   * </p>
+   *
+   * <p>
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equivalence[B]</code>'s
+   * <code>areEquivalent</code> method to determine equality.
+   * </p>
+   *
+   * <p>
+   * This method is overridden and made implicit by subtraits
+   * <a href="LowPriorityConversionCheckedConstraint.html"><code>LowPriorityConversionCheckedConstraint</code></a> (extended by
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>), and
+   * overriden as non-implicit by the other subtraits in this package.
+   * </p>
+   *
+   * @param equalityOfB an <code>Equivalence[B]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
+   * @param cnv an implicit conversion from <code>A</code> to </code>B</code>
+   * @return an <code>A CanEqual B</code> instance whose <code>areEqual</code> method delegates to the <code>areEquivalent</code> method of
+   *     the passed <code>Equivalence[B]</code>.
+   */
+  @deprecated("The convertEquivalenceToAToBConversionConstraint method has been deprecated and will be removed in a future version of ScalaTest. It is no longer needed now that the deprecation period of ConversionCheckedTripleEquals has expired. It will not be replaced.", "3.1.0")
   override def convertEquivalenceToAToBConversionConstraint[A, B](equivalenceOfB: Equivalence[B])(implicit ev: A => B): A CanEqual B = new AToBEquivalenceConstraint[A, B](equivalenceOfB, ev)
+
+  /**
+   * <strong>The <code>conversionCheckedConstraint</code> method has been deprecated and will be removed in a future version of Scalactic. It
+   * is no longer needed now that the deprecation period of <code>ConversionCheckedTripleEquals</code> has expired. It will not be replaced.</strong>
+   *
+   * <p>
+   * Provides an <code>A CanEqual B</code> instance for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>B</code> is
+   * implicitly convertible to <code>A</code>, given an implicit <code>Equivalence[A]</code>.
+   * </p>
+   *
+   * <p>
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equivalence[A]</code>'s
+   * <code>areEquivalent</code> method to determine equality.
+   * </p>
+   *
+   * <p>
+   * This method is overridden and made implicit by subtraits
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>) and
+   * overriden as non-implicit by the other subtraits in this package.
+   * </p>
+   *
+   * @param equivalenceOfA an <code>Equivalence[A]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
+   * @param cnv an implicit conversion from <code>B</code> to </code>A</code>
+   * @return an <code>A CanEqual B</code> instance whose <code>areEqual</code> method delegates to the <code>areEquivalent</code> method of
+   *     the passed <code>Equivalence[A]</code>.
+   */
+  @deprecated("The conversionCheckedConstraint method has been deprecated and will be removed in a future version of ScalaTest. It is no longer needed now that the deprecation period of ConversionCheckedTripleEquals has expired. It will not be replaced.", "3.1.0")
   override def conversionCheckedConstraint[A, B](implicit equivalenceOfA: Equivalence[A], cnv: B => A): A CanEqual B = new BToAEquivalenceConstraint[A, B](equivalenceOfA, cnv)
+
+  /**
+   * <strong>The <code>convertEquivalenceToBToAConversionConstraint</code> method has been deprecated and will be removed in a future version of Scalactic.
+   * It is no longer needed now that the deprecation period of <code>ConversionCheckedTripleEquals</code> has expired. It will not be replaced.</strong>
+   *
+   * <p>
+   * Provides an <code>A CanEqual B</code> instance for any two types <code>A</code> and <code>B</code>, enforcing the type constraint that <code>B</code> is
+   * implicitly convertible to <code>A</code>, given an <em>explicit</em> <code>Equivalence[A]</code>.
+   * </p>
+   *
+   * <p>
+   * This method is used to enable the <a href="Explicitly.html"><code>Explicitly</code></a> DSL for
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a> by requiring an explicit <code>Equivalance[A]</code>, but
+   * taking an implicit function that converts from <code>B</code> to </code>A</code>. For example, under <code>ConversionCheckedTripleEquals</code>,
+   * this method (as an implicit method), would be used to compile this statement:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * def closeEnoughTo1(num: Double): Boolean =
+   *   (num === 1.0)(decided by forgivingEquality)
+   * </pre>
+   *
+   * <p>
+   * The returned <code>Constraint</code>'s <code>areEqual</code> method uses the implicitly passed <code>Equivalence[A]</code>'s
+   * <code>areEquivalent</code> method to determine equality.
+   * </p>
+   *
+   * <p>
+   * This method is overridden and made implicit by subtraits
+   * <a href="ConversionCheckedTripleEquals.html"><code>ConversionCheckedTripleEquals</code></a>) and
+   * overriden as non-implicit by the other subtraits in this package.
+   * </p>
+   *
+   * @param equivalenceOfA an <code>Equivalence[A]</code> type class to which the <code>Constraint.areEqual</code> method will delegate to determine equality.
+   * @param cnv an implicit conversion from <code>B</code> to </code>A</code>
+   * @return an <code>A CanEqual B</code> instance whose <code>areEqual</code> method delegates to the <code>areEquivalent</code> method of
+   *     the passed <code>Equivalence[A]</code>.
+   */
+  @deprecated("The convertEquivalenceToBToAConversionConstraint method has been deprecated and will be removed in a future version of ScalaTest. It is no longer needed now that the deprecation period of ConversionCheckedTripleEquals has expired. It will not be replaced.", "3.1.0")
   override def convertEquivalenceToBToAConversionConstraint[A, B](equivalenceOfA: Equivalence[A])(implicit ev: B => A): A CanEqual B = new BToAEquivalenceConstraint[A, B](equivalenceOfA, ev)
 }
 

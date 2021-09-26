@@ -335,7 +335,7 @@ import Span.totalNanosForLongLength
  */
 final class Span private (totNanos: Long, lengthString: String, unitsMessageFun: String => String, unitsName: String) extends Serializable {
 
-  private[time] def this(length: Long, units: Units) {
+  private[time] def this(length: Long, units: Units) = {
     this(
       totalNanosForLongLength(length, units),
       length.toString,
@@ -344,7 +344,7 @@ final class Span private (totNanos: Long, lengthString: String, unitsMessageFun:
     )
   }
 
-  private def this(length: Double, units: Units) {
+  private def this(length: Double, units: Units) = {
     this(
       totalNanosForDoubleLength(length, units),
       length.toString,

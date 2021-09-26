@@ -15,10 +15,11 @@
  */
 package org.scalatest.funsuite
 
-import org.scalactic.{Resources => _, _}
+import org.scalactic.source
 import org.scalatest._
 import scala.concurrent.Future
 import Suite.autoTagClassAnnotations
+import scala.util.Try
 
 /**
   * Implementation trait for class <code>AsyncFunSuite</code>, which represents
@@ -159,10 +160,10 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
     *     is <code>null</code>.
     */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
+      FutureAsyncOutcome(
         withFixture(
           new NoArgAsyncTest {
             val name = testData.name
@@ -173,7 +174,8 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying /* fills in executionContext here */
+        ).underlying,
+        onCompleteFun
       )
     }
 
@@ -239,9 +241,12 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
   protected def testsFor(unit: Unit): Unit = {}
 
   /**
-    * Suite style name.
-    */
-  @deprecated("styleName is deprecated and will be removed in the future version of ScalaTest, because FunSuite will be refactored as its own module.")
+   * <strong>The <code>styleName</code> lifecycle method has been deprecated and will be removed in a future version of ScalaTest.</strong>
+   *
+   * <p>This method was used to support the chosen styles feature, which was deactivated in 3.1.0. The internal modularization of ScalaTest in 3.2.0
+   * will replace chosen styles as the tool to encourage consistency across a project. We do not plan a replacement for <code>styleName</code>.</p>
+   */
+  @deprecated("The styleName lifecycle method has been deprecated and will be removed in a future version of ScalaTest with no replacement.", "3.1.0")
   final override val styleName: String = "org.scalatest.FunSuite"
 
   // Inherits scaladoc

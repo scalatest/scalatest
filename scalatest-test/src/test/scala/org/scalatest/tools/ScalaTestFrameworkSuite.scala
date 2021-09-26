@@ -18,7 +18,7 @@ package org.scalatest.tools
 import org.scalatools.testing._
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
+import org.scalatestplus.junit.JUnitRunner
 import org.scalatest.SharedHelpers.EventRecordingReporter
 
 @RunWith(classOf[JUnitRunner])

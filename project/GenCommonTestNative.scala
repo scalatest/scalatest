@@ -55,7 +55,7 @@ object GenCommonTestNative {
     }
   }
 
-  def copyDir(sourceDirName: String, packageDirName: String, files: List[String], targetDir: File): Seq[File] = {
+  def copyFiles(sourceDirName: String, packageDirName: String, files: List[String], targetDir: File): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
     val sourceDir = new File(sourceDirName)
@@ -66,8 +66,21 @@ object GenCommonTestNative {
     }
   }
 
+  def copyDir(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
+    val packageDir = new File(targetDir, packageDirName)
+    packageDir.mkdirs()
+    val sourceDir = new File(sourceDirName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && f.getName.endsWith(".scala")).map { sourceFile =>
+      val destFile = new File(packageDir, sourceFile.getName)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFile(sourceFile, destFile)
+
+      destFile
+    }
+  }
+
   def genMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyDir("common-test/src/main/scala/org/scalatest", "org/scalatest",
+    copyFiles("common-test/src/main/scala/org/scalatest", "org/scalatest",
       List(
         "SharedHelpers.scala",
         "mytags.scala",
@@ -80,8 +93,10 @@ object GenCommonTestNative {
         "FileMocks.scala",
         "StringFixture.scala"
       ), targetDir) ++
-    copyDir("common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
-      List("ExampleLikeSpecs.scala"), targetDir)
+    copyFiles("common-test/src/main/scala/org/scalatest/path", "org/scalatest/path",
+      List("ExampleLikeSpecs.scala"), targetDir) ++ 
+    copyDir("common-test/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDir("common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty)  
   }
 
 }

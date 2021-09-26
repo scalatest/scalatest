@@ -106,7 +106,7 @@ private[scalatest] case class Durations(file: File) {
     }
 
     def getTest(): Test = {
-      val suite = getSuite
+      val suite = getSuite()
       val testOption = suite.tests.find(test => test.name == testName)
 
       if (testOption.isDefined) {

@@ -38,7 +38,6 @@ object DeprecatedParallelTestExecutionTestTimeoutExamples extends Tables {
 
   // SKIP-SCALATESTJS,NATIVE-START
   def testTimeoutSpec = new ExampleParallelTestExecutionTestTimeoutSpec()
-  def testTimeoutFixtureSpec = new ExampleParallelTestExecutionTestTimeoutFixtureSpec()
   // SKIP-SCALATESTJS,NATIVE-END
   def testTimeoutFunSuite = new ExampleParallelTestExecutionTestTimeoutFunSuite()
   def testTimeoutFixtureFunSuite = new ExampleParallelTestExecutionTestTimeoutFixtureFunSuite()
@@ -60,7 +59,6 @@ object DeprecatedParallelTestExecutionTestTimeoutExamples extends Tables {
       "suite1",
       // SKIP-SCALATESTJS,NATIVE-START
       testTimeoutSpec, 
-      testTimeoutFixtureSpec,
       // SKIP-SCALATESTJS,NATIVE-END
       testTimeoutFunSuite, 
       testTimeoutFixtureFunSuite, 
@@ -104,32 +102,6 @@ class ExampleParallelTestExecutionTestTimeoutSpec extends RefSpec with ParallelT
   def `test 1`: Unit = {}
   def `test 2`: Unit = {}
   def `test 3`: Unit = {}
-  
-  val holdTestSucceededName = "test 2"
-  val holdUntilEventCount = 5
-  
-  override protected[scalatest] def createTestSpecificReporter(testSorter: DistributedTestSorter, testName: String): Reporter = {
-    holdingReporter = new TestHoldingReporter(super.createTestSpecificReporter(testSorter, testName), holdTestSucceededName)
-    holdingReporter
-  }
-  
-  def assertTestTimeoutTest(events: List[Event]): Unit = {
-    assert(events.size === 6)
-    checkTestStarting(events(0), "test 1")
-    checkTestSucceeded(events(1), "test 1")
-    checkTestStarting(events(2), "test 2")
-    checkTestStarting(events(3), "test 3")
-    checkTestSucceeded(events(4), "test 3")
-    // The missing one
-    checkTestSucceeded(events(5), "test 2")
-  }
-}
-
-@DoNotDiscover
-class ExampleParallelTestExecutionTestTimeoutFixtureSpec extends fixture.Spec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
-  def `test 1`(fixture: String): Unit = {}
-  def `test 2`(fixture: String): Unit = {}
-  def `test 3`(fixture: String): Unit = {}
   
   val holdTestSucceededName = "test 2"
   val holdUntilEventCount = 5

@@ -59,7 +59,7 @@ trait NegZFloatSpecSupport {
           case Success(bFloat: Float) if bFloat.isNaN => true
           case _ => false
         }
-      case Success(double: Double) if double.isNaN => 
+      case Success(double: Double) if double.isNaN =>
         b match {
           case Success(bDouble: Double) if bDouble.isNaN => true
           case _ => false
@@ -100,7 +100,10 @@ class NegZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         an [AssertionError] should be thrownBy NegZFloat.ensuringValid(0.00001f)
         an [AssertionError] should be thrownBy NegZFloat.ensuringValid(99.9f)
         an [AssertionError] should be thrownBy NegZFloat.ensuringValid(Float.PositiveInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy NegZFloat.ensuringValid(Float.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -309,65 +312,6 @@ class NegZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       NegZFloat(-1.0f) plus NegInt(-2) should === (NegZFloat(-3.0f))
     }
 
-    it("should offer overloaded 'sumOf' methods on the companion that takes two or more NegZFloats and returns a NegZFloat") {
-
-      // Run these with a relatively high minSuccessful for a while, just to see if we find a problem case.
-      // Check the sumOf that takes exactly 2 args (the one that doesn't box)
-      forAll (minSuccessful(1000)) { (negZFloat1: NegZFloat, negZFloat2: NegZFloat) =>
-        NegZFloat.sumOf(negZFloat1, negZFloat2) should === (NegZFloat.ensuringValid(negZFloat1.value + negZFloat2.value))
-      }
-
-      // Check the sumOf that takes at least 2 args (the one that does box the var args part)
-      // First just pass 2 to it and an empty list, which I wonder if that will do the other one,
-      // but it doesn't matter. 
-      forAll (minSuccessful(1000)) { (negZFloat1: NegZFloat, negZFloat2: NegZFloat) =>
-        NegZFloat.sumOf(negZFloat1, negZFloat2, List.empty[NegZFloat]: _*) should === {
-          NegZFloat.ensuringValid(negZFloat1.value + negZFloat2.value)
-        }
-      }
-      // Then add some real lists in there
-      forAll (minSuccessful(1000)) { (negZFloat1: NegZFloat, negZFloat2: NegZFloat, negZFloats: List[NegZFloat]) =>
-        NegZFloat.sumOf(negZFloat1, negZFloat2, negZFloats: _*) should === {
-          NegZFloat.ensuringValid(negZFloat1.value + negZFloat2.value + negZFloats.map(_.value).sum)
-        }
-      }
-
-      // I want to try all combinations of edge cases in the boxing sumOf.
-      // And out of an abundance of caution, all permutations of them (all the different orders)
-      val negZEdgeValues = List(NegZFloat.MinValue, NegZFloat.MaxValue, NegZFloat.NegativeInfinity)
-      Inspectors.forAll (negZEdgeValues.permutations.toList) { case List(a, b, c) =>
-        NegZFloat.sumOf(a, b, c) should === {
-          NegZFloat.ensuringValid(a.value + b.value + c.value)
-        }
-      }
-
-      // Now try all combinations of 2 NegZEdgeFloats followed by both nothing and an empty varargs.
-      // The idea is to test both forms with two args, though it is possible the compiler optiizes
-      // the empty list (though I don't think it can tell at compile time, because I don't let it have
-      // element type Nothing).
-      // I get all combos by doing combinations ++ combinations.reverse. That seems to do the trick.
-      val halfOfThePairs = negZEdgeValues.combinations(2).toList
-      val negZPairCombos = halfOfThePairs ++ (halfOfThePairs.reverse)
-      Inspectors.forAll (negZPairCombos) { case negZFloat1 :: negZFloat2 :: Nil  =>
-        // Call the two-arg form
-        NegZFloat.sumOf(negZFloat1, negZFloat2) should === {
-          NegZFloat.ensuringValid(negZFloat1.value + negZFloat2.value)
-        }
-        // Most likely call the var-args form
-        NegZFloat.sumOf(negZFloat1, negZFloat2, List.empty[NegZFloat]: _*) should === {
-          NegZFloat.ensuringValid(negZFloat1.value + negZFloat2.value)
-        }
-      }
-
-      val halfOfTheTriples = negZEdgeValues.combinations(3).toList
-      val negZTripleCombos = halfOfTheTriples ++ (halfOfTheTriples.reverse)
-      Inspectors.forAll (negZTripleCombos) { case negZFloat1 :: negZFloat2 :: negZFloat3 :: Nil  =>
-        NegZFloat.sumOf(negZFloat1, negZFloat2, negZFloat3) should === {
-          NegZFloat.ensuringValid(negZFloat1.value + negZFloat2.value + negZFloat3.value)
-        }
-      }
-    }
-
     it("should offer 'min' and 'max' methods that are consistent with Float") {
       forAll { (pfloat1: NegZFloat, pfloat2: NegZFloat) =>
         pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
@@ -403,7 +347,16 @@ class NegZFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       NegZFloat(-33.0f).ensuringValid(_ => Float.NegativeInfinity) shouldEqual NegZFloat.ensuringValid(Float.NegativeInfinity)
       an [AssertionError] should be thrownBy { NegZFloat.MaxValue.ensuringValid(_ - NegZFloat.MaxValue + 1) }
       an [AssertionError] should be thrownBy { NegZFloat.MaxValue.ensuringValid(_ => Float.PositiveInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { NegZFloat.MaxValue.ensuringValid(_ => Float.NaN) }
+      // SKIP-DOTTY-END
+    }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: NegZFiniteFloat) =>
+        (n: NegZFloat).isFinite should be (true)
+        NegZFloat.NegativeInfinity.isFinite should be (false)
+      }
     }
   }
 }

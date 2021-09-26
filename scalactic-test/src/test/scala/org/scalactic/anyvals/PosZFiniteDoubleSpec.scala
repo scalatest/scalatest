@@ -92,7 +92,10 @@ class PosZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
         an [AssertionError] should be thrownBy PosZFiniteDouble.ensuringValid(-99.9)
         an [AssertionError] should be thrownBy PosZFiniteDouble.ensuringValid(Double.PositiveInfinity)
         an [AssertionError] should be thrownBy PosZFiniteDouble.ensuringValid(Double.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy PosZFiniteDouble.ensuringValid(Double.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -174,9 +177,9 @@ class PosZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
     it("should not offer a NegativeInfinity factory method") {
       "PosZFiniteDouble.NegativeInfinity" shouldNot compile
     }
-    it("should not offer a isPosInfinity method") {
-      "PosZFiniteDouble(1.0f).isPosInfinity" shouldNot compile
-    }
+/* This now compiles because of the newly added implicit PosZFiniteDouble => PosZDouble method
+    PosZFiniteDouble(1.0f).isPosInfinity
+*/
     it("should not offer a isNegInfinity method") {
       "PosZFiniteDouble(1.0f).isNegInfinity" shouldNot compile
     }
@@ -324,7 +327,10 @@ class PosZFiniteDoubleSpec extends FunSpec with Matchers with PropertyChecks wit
       an [AssertionError] should be thrownBy { PosZFiniteDouble.MaxValue.ensuringValid(_ - PosZFiniteDouble.MaxValue - 1) }
       an [AssertionError] should be thrownBy { PosZFiniteDouble.MaxValue.ensuringValid(_ => Double.PositiveInfinity) }
       an [AssertionError] should be thrownBy { PosZFiniteDouble.MaxValue.ensuringValid(_ => Double.NegativeInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { PosZFiniteDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
     }
   }
 }

@@ -15,6 +15,8 @@
  */
 package org.scalactic.source
 
+import scala.util.{Failure, Try, Success}
+
 trait ObjectMeta {
 
   def fieldNames: scala.collection.immutable.IndexedSeq[String]
@@ -37,7 +39,10 @@ object ObjectMeta {
 
       lazy val fieldNames = {
         v.getClass.getDeclaredMethods.filter { m =>
+          // SKIP-DOTTY-START
           m.getParameterTypes.isEmpty && privFields.contains(m.getName)
+          // SKIP-DOTTY-END
+          //DOTTY-ONLY m.getParameterTypes.isEmpty && privFields.contains(m.getName) && m.getName != "$outer"
         }.map { f =>
           if (f.getName.endsWith("$mcI$sp"))
             f.getName.dropRight(7)
@@ -46,20 +51,31 @@ object ObjectMeta {
         }.toVector
       }
 
-      def value(name: String): Any =
-        try {
-          v.getClass.getDeclaredMethod(name).invoke(v)
-        }
-        catch {
-          case e: NoSuchMethodException =>
+      def value(name: String): Any = {
+        val fieldTry = Try(v.getClass.getDeclaredMethod(name))
+          .recoverWith {
+            case e: NoSuchMethodException =>
+              Try(v.getClass.getDeclaredMethod(name + "$mcI$sp"))
+                .recoverWith {
+                  case e: NoSuchMethodException =>
+                    Failure(new IllegalArgumentException("'" + name + "' is not attribute for this instance."))
+                }
+          }
+
+        fieldTry match {
+          case Failure(e) => throw e
+          case Success(field) =>
             try {
-              v.getClass.getDeclaredMethod(name + "$mcI$sp").invoke(v)
-            }
-            catch {
-              case e: NoSuchMethodException =>
-                throw new IllegalArgumentException("'" + name + "' is not attribute for this instance.")
+              field.invoke(v)
+            } catch {
+              case e: IllegalAccessException =>
+                field.setAccessible(true)
+                val value = field.invoke(v)
+                field.setAccessible(false)
+                value
             }
         }
+      }
 
       def typeName(name: String): String = value(name).getClass.getName
 

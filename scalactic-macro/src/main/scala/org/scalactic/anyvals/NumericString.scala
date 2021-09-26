@@ -950,8 +950,8 @@ final class NumericString private (val value: String) extends AnyVal {
    *          defined and collecting the results.  The
    *          order of the elements is preserved.
    */
-  def collect[B](pf: PartialFunction[Char, B]): String =
-    value.collect(pf).mkString
+  def collect(pf: PartialFunction[Char, Char]) =
+    value.collect(pf)
 
   /**
    * Finds the first character of the `NumericString` for
@@ -1531,7 +1531,7 @@ final class NumericString private (val value: String) extends AnyVal {
    * returns a single string for `NumericString`.
    */
   def lines: Iterator[String] =
-    value.lines
+    value.linesIterator
 
   /** Return all lines in this `NumericString` in an iterator,
    *  including trailing line end characters.  Always returns a
@@ -1908,32 +1908,30 @@ final class NumericString private (val value: String) extends AnyVal {
    *  @return a new string containing the prefix scan of the
    *          elements in this `NumericString`
    */
-  def scan[B >: Char](z: B)(op: (B, B) ⇒ B): IndexedSeq[B] =
+  def scan(z: Char)(op: (Char, Char) ⇒ Char) =
     value.scan(z)(op)
 
   /** Produces a collection containing cumulative results of applying the
    *  operator going left to right.
    *
-   *  @tparam B      the type of the elements in the resulting collection
    *  @param z       the initial value
    *  @param op      the binary operator applied to the intermediate
    *                 result and the element
    *  @return        collection with intermediate results
    */
-  def scanLeft[B](z: B)(op: (B, Char) ⇒ B): IndexedSeq[B] =
+  def scanLeft(z: String)(op: (String, Char) ⇒ String) =
     value.scanLeft(z)(op)
 
   /** Produces a collection containing cumulative results of
    *  applying the operator going right to left.  The head of
    *  the collection is the last cumulative result.
    *
-   *  @tparam B      the type of the elements in the resulting collection
    *  @param z       the initial value
    *  @param         op the binary operator applied to the intermediate
    *                 result and the element
    *  @return        collection with intermediate results
    */
-  def scanRight[B](z: B)(op: (Char, B) ⇒ B): IndexedSeq[B] =
+  def scanRight(z: String)(op: (Char, String) ⇒ String) =
     value.scanRight(z)(op)
                     
 
@@ -2393,7 +2391,7 @@ final class NumericString private (val value: String) extends AnyVal {
    *                  `NumericString` followed by all elements
    *                  of `that`.
    */
-  def union[B >: Char](that: Seq[B]): IndexedSeq[B] =
+  def union(that: Seq[Char]) =
     value.union(that)
 
   /** A copy of this `NumericString` with one single replaced element.

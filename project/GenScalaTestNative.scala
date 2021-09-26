@@ -113,13 +113,9 @@ object GenScalaTestNative {
     copyResourceDir("scalatest/src/main/html", "html", targetDir, List.empty)
   }
 
-  def asyncs(sourceDirName: String): List[String] = {
-    new File(sourceDirName).listFiles.toList.map(_.getName).filter(_.toLowerCase.contains("async"))
-  }
-
-  def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyDir("scalatest/src/main/scala/org/scalatest", "org/scalatest", targetDir,
-      List(
+  val genScalaPackages: Map[String, List[String]] =
+    Map(
+      "org/scalatest" -> (List(
         "DispatchReporter.scala",
         "ConfigMapWrapperSuite.scala",    // skipped because depends on java reflection.
         "JavaClassesWrappers.scala",
@@ -127,18 +123,21 @@ object GenScalaTestNative {
         "SuiteRerunner.scala",
         "SuiteRerunner.scala",
         "run.scala"
-      ) ++ asyncs("scalatest/src/main/scala/org/scalatest")
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
-      List(
+      )),
+      "org/scalatest/diagrams" -> List.empty,
+      "org/scalatest/fixture" -> (List(
         "Spec.scala",
         "SpecLike.scala"
-      ) ++ asyncs("scalatest/src/main/scala/org/scalatest/fixture")
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
-      List(
+      )),
+      "org/scalatest/events" -> List.empty,
+      "org/scalatest/expectations" -> List.empty, 
+      "org/scalatest/matchers" -> List.empty, 
+      "org/scalatest/matchers/should" -> List.empty, 
+      "org/scalatest/matchers/dsl" -> List(
+        "JavaCollectionWrapper.scala",
+        "JavaMapWrapper.scala"
+      ), 
+      "org/scalatest/tools" -> List(
         "AboutJDialog.scala",
         //"AnsiColor.scala",
         "AnsiReset.scala",
@@ -187,33 +186,22 @@ object GenScalaTestNative {
         "TestSpec.scala",
         "XmlReporter.scala",
         "XmlSocketReporter.scala"
-      )
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir,
-      List(
+      ), 
+      "org/scalatest/exceptions" -> List(
         "StackDepthExceptionHelper.scala"
-      )
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir,
-      List(
-        "JavaCollectionWrapper.scala",
-        "JavaMapWrapper.scala"
-      )
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/funsuite", "org/scalatest/funsuite", targetDir,
-      asyncs("scalatest/src/main/scala/org/scalatest/funsuite")
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir,
-      asyncs("scalatest/src/main/scala/org/scalatest/featurespec")
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/funspec", "org/scalatest/funspec", targetDir,
-      asyncs("scalatest/src/main/scala/org/scalatest/funspec")
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
-      List(
+      ), 
+      "org/scalatest/time" -> List.empty, 
+      "org/scalatest/words" -> List.empty, 
+      "org/scalatest/enablers" -> List.empty, 
+      "org/scalatest/funsuite" -> List.empty,
+      "org/scalatest/featurespec" -> List.empty,
+      "org/scalatest/funspec" -> List.empty,
+      "org/scalatest/freespec" -> List.empty,
+      "org/scalatest/flatspec" -> List.empty,
+      "org/scalatest/prop" -> List.empty,
+      "org/scalatest/propspec" -> List.empty,
+      "org/scalatest/wordspec" -> List.empty,
+      "org/scalatest/concurrent" -> (List(
         "Waiters.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
         "Conductors.scala",             // skipped because depends on PimpedReadWriteLock
         "ConductorFixture.scala",       // skipped because depends on Conductors
@@ -232,19 +220,23 @@ object GenScalaTestNative {
         "DeprecatedTimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
         "Timeouts.scala",               // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
         "TimeoutTask.scala"            // skipped because timeout is not supported.,
-      ) ++ asyncs("scalatest/src/main/scala/org/scalatest/concurrent")
-    ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/tagobjects", "org/scalatest/tagobjects", targetDir,
-      List(
+      )),
+      "org/scalatest/path" -> List.empty,
+      "org/scalatest/tagobjects" -> List(
         "ChromeBrowser.scala",  // skipped because selenium not supported.
         "FirefoxBrowser.scala",  // skipped because selenium not supported.
         "HtmlUnitBrowser.scala",  // skipped because selenium not supported.
         "InternetExplorerBrowser.scala",  // skipped because selenium not supported.
         "SafariBrowser.scala"  // skipped because selenium not supported.
-      )
+      ), 
+      "org/scalatest/verbs" -> List.empty, 
+
     )
-  }
+
+  def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    genScalaPackages.flatMap { case (packagePath, skipList) =>
+      copyDir("scalatest/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     //copyStartsWithFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++
@@ -572,7 +564,7 @@ object GenScalaTestNative {
         "WordSpecImportedMatchersSpec.scala",
         "WordSpecMixedInMatchersSpec.scala",
         "WordSpecSpec.scala"
-      ) ++ asyncs("scalatest-test/src/test/scala/org/scalatest")) ++
+      )) ++
     // Invalid LLVM: "error: value doesn't match function result type 'void' ret i8* %_38"
     // copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
     //   List(
@@ -612,7 +604,7 @@ object GenScalaTestNative {
       List(
         "SpecSpec.scala",     // skipped because depends on java reflections
         "SuiteSpec.scala"    // skipped because depends on java reflections
-      ) ++ asyncs("scalatest-test/src/test/scala/org/scalatest/fixture")) ++
+      )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir,
       List(
@@ -622,11 +614,6 @@ object GenScalaTestNative {
     copyDir("scalatest-test/src/test/scala/org/scalatest/suiteprop", "org/scalatest/suiteprop", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir,
-      List(
-        "ResultOfNotWordForAnySpec.scala"
-      )
-    ) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
         "DashboardReporterSpec.scala",

@@ -19,7 +19,7 @@ import org.scalatest.SharedHelpers.{ EventRecordingReporter, thisLineNumber }
 
 // SKIP-SCALATESTJS,NATIVE-START
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
+import org.scalatestplus.junit.JUnitRunner
 import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS,NATIVE-END
 import org.scalatest._

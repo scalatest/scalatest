@@ -15,17 +15,17 @@
  */
 package org.scalatest
 
-import org.scalactic._
-import Requirements._
-import org.scalatest.exceptions._
+import org.scalactic.{source, Requirements}
+import Requirements.requireNonNull
+import org.scalatest.exceptions.{TestPendingException, TestCanceledException, TestFailedException, StackDepthException}
 
 /**
  * Superclass for the possible outcomes of running a test.
  *
  * <p>
  * <code>Outcome</code> is the result type of the <code>withFixture</code> methods of traits
- * <a href="Suite.html#withFixture"><code>Suite</code></a> and <a href="fixture/Suite.html#withFixture"><code>fixture.Suite</code></a>, as well as their
- * <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> and <a href="fixture/Suite$OneArgTest.html"><code>OneArgTest</code></a> function types.
+ * <a href="Suite.html#withFixture"><code>Suite</code></a> and <a href="FixtureSuite.html#withFixture"><code>FixtureSuite</code></a>, as well as their
+ * <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> and <a href="FixtureSuite$OneArgTest.html"><code>OneArgTest</code></a> function types.
  * The four possible outcomes are:
  * </p>
  *
@@ -415,6 +415,9 @@ case class Failed(exception: Throwable) extends Exceptional(exception) {
   def toSucceeded: Succeeded.type = throw exception
 }
 
+/**
+ * Companion object for `Failed` offering several factory methods.
+ */
 object Failed {
 
   /**

@@ -92,7 +92,10 @@ class NegZDoubleSpec extends FunSpec with Matchers with PropertyChecks with NegZ
         an [AssertionError] should be thrownBy NegZDouble.ensuringValid(0.00001)
         an [AssertionError] should be thrownBy NegZDouble.ensuringValid(99.9)
         an [AssertionError] should be thrownBy NegZDouble.ensuringValid(Double.PositiveInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy NegZDouble.ensuringValid(Double.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -313,65 +316,6 @@ class NegZDoubleSpec extends FunSpec with Matchers with PropertyChecks with NegZ
       NegZDouble(-1.0) plus NegDouble(-2.0) should === (NegZDouble(-3.0))
     }
 
-    it("should offer overloaded 'sumOf' methods on the companion that takes two or more NegZDoubles and returns a NegZDouble") {
-
-      // Run these with a relatively high minSuccessful for a while, just to see if we find a problem case.
-      // Check the sumOf that takes exactly 2 args (the one that doesn't box)
-      forAll (minSuccessful(1000)) { (negZDouble1: NegZDouble, negZDouble2: NegZDouble) =>
-        NegZDouble.sumOf(negZDouble1, negZDouble2) should === (NegZDouble.ensuringValid(negZDouble1.value + negZDouble2.value))
-      }
-
-      // Check the sumOf that takes at least 2 args (the one that does box the var args part)
-      // First just pass 2 to it and an empty list, which I wonder if that will do the other one,
-      // but it doesn't matter.
-      forAll (minSuccessful(1000)) { (negZDouble1: NegZDouble, negZDouble2: NegZDouble) =>
-        NegZDouble.sumOf(negZDouble1, negZDouble2, List.empty[NegZDouble]: _*) should === {
-          NegZDouble.ensuringValid(negZDouble1.value + negZDouble2.value)
-        }
-      }
-      // Then add some real lists in there
-      forAll (minSuccessful(1000)) { (negZDouble1: NegZDouble, negZDouble2: NegZDouble, negZDoubles: List[NegZDouble]) =>
-        NegZDouble.sumOf(negZDouble1, negZDouble2, negZDoubles: _*) should === {
-          NegZDouble.ensuringValid(negZDouble1.value + negZDouble2.value + negZDoubles.map(_.value).sum)
-        }
-      }
-
-      // I want to try all combinations of edge cases in the boxing sumOf.
-      // And out of an abundance of caution, all permutations of them (all the different orders)
-      val negZEdgeValues = List(NegZDouble.MinValue, NegZDouble.MaxValue, NegZDouble.NegativeInfinity)
-      Inspectors.forAll (negZEdgeValues.permutations.toList) { case List(a, b, c) =>
-        NegZDouble.sumOf(a, b, c) should === {
-          NegZDouble.ensuringValid(a.value + b.value + c.value)
-        }
-      }
-
-      // Now try all combinations of 2 NegZEdgeDoubles followed by both nothing and an empty varargs.
-      // The idea is to test both forms with two args, though it is possible the compiler optiizes
-      // the empty list (though I don't think it can tell at compile time, because I don't let it have
-      // element type Nothing).
-      // I get all combos by doing combinations ++ combinations.reverse. That seems to do the trick.
-      val halfOfThePairs = negZEdgeValues.combinations(2).toList
-      val negZPairCombos = halfOfThePairs ++ (halfOfThePairs.reverse)
-      Inspectors.forAll (negZPairCombos) { case negZDouble1 :: negZDouble2 :: Nil  =>
-        // Call the two-arg form
-        NegZDouble.sumOf(negZDouble1, negZDouble2) should === {
-          NegZDouble.ensuringValid(negZDouble1.value + negZDouble2.value)
-        }
-        // Most likely call the var-args form
-        NegZDouble.sumOf(negZDouble1, negZDouble2, List.empty[NegZDouble]: _*) should === {
-          NegZDouble.ensuringValid(negZDouble1.value + negZDouble2.value)
-        }
-      }
-
-      val halfOfTheTriples = negZEdgeValues.combinations(3).toList
-      val negZTripleCombos = halfOfTheTriples ++ (halfOfTheTriples.reverse)
-      Inspectors.forAll (negZTripleCombos) { case negZDouble1 :: negZDouble2 :: negZDouble3 :: Nil  =>
-        NegZDouble.sumOf(negZDouble1, negZDouble2, negZDouble3) should === {
-          NegZDouble.ensuringValid(negZDouble1.value + negZDouble2.value + negZDouble3.value)
-        }
-      }
-    }
-
     it("should offer 'min' and 'max' methods that are consistent with Double") {
       forAll { (pzdouble1: NegZDouble, pzdouble2: NegZDouble) =>
         pzdouble1.max(pzdouble2).toDouble shouldEqual pzdouble1.toDouble.max(pzdouble2.toDouble)
@@ -410,7 +354,16 @@ class NegZDoubleSpec extends FunSpec with Matchers with PropertyChecks with NegZ
       NegZDouble(-33.0).ensuringValid(_ => Double.NegativeInfinity) shouldEqual NegZDouble.ensuringValid(Double.NegativeInfinity)
       an [AssertionError] should be thrownBy { NegZDouble.MaxValue.ensuringValid(_ - NegZDouble.MaxValue + 1) }
       an [AssertionError] should be thrownBy { NegZDouble.MaxValue.ensuringValid(_ => Double.PositiveInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { NegZDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
+    }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: NegZFiniteDouble) =>
+        (n: NegZDouble).isFinite should be (true)
+        NegZDouble.NegativeInfinity.isFinite should be (false)
+      }
     }
   }
 }

@@ -1036,7 +1036,7 @@ class PropSpecSpec extends FunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends PropSpec with Expectations {
+      class TestSpec extends PropSpec with expectations.Expectations {
         property("fail scenario") {
           expect(1 === 2); /* ASSERTION_SUCCEED */
         }

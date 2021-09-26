@@ -129,13 +129,16 @@ class EverySpec extends UnitSpec {
     }
   }
   it should "have an apply method" in {
-    Every(1, 2, 3)(0) shouldEqual 1 
-    Every(1, 2, 3)(1) shouldEqual 2 
+    Every(1, 2, 3)(0) shouldEqual 1
+    Every(1, 2, 3)(1) shouldEqual 2
     One("hi")(0) shouldEqual "hi"
     Many(7, 8, 9)(2) shouldEqual 9
+    val vectorOutOfBoundsException = intercept[IndexOutOfBoundsException] {
+      Vector(1, 2, 3)(3)
+    }
     the [IndexOutOfBoundsException] thrownBy {
       Every(1, 2, 3)(3)
-    } should have message "3"
+    } should have message vectorOutOfBoundsException.getMessage
   }
   it should "have an length method" in {
     One(1).length shouldBe 1
@@ -220,7 +223,7 @@ class EverySpec extends UnitSpec {
   // Could have an implicit conversion from Every[Char] to CharSequence like
   // there is for Seq in Predef.
   /*
-  scala> Vector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i / 2 }  
+  scala> Vector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i / 2 }
   res1: scala.collection.immutable.Vector[Int] = Vector()
   */
   it should "have an collectFirst method" in {
@@ -322,7 +325,7 @@ class EverySpec extends UnitSpec {
   }
 
   /*
-  it should not have an drop method 
+  it should not have an drop method
     scala> Vector(1, 2, 3).drop(3)
     res1: scala.collection.immutable.Vector[Int] = Vector()
 
@@ -480,18 +483,18 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).indexOf(5, 3) shouldBe 4
   }
   it should "have 2 indexOfSlice methods that take a GenSeq" in {
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3)) shouldBe 1
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3) shouldBe -1
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3) shouldBe -1
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5)) shouldBe -1
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(5)) shouldBe 4
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5)) shouldBe 0
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe 0
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe -1
-    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe 0
-    Every(1, 2, 3, 4, 5).indexOfSlice(List.empty) shouldBe 0
-    Every(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6) shouldBe -1
-    Every(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4) shouldBe 4
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3))
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3), 3)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5), 3)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(2, 3, 5))
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(5))
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5)) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5))
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 0)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), 1)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List(1, 2, 3, 4, 5), -1)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List.empty) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty, 6)
+    Every(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4) shouldBe List(1, 2, 3, 4, 5).indexOfSlice(List.empty, 4)
   }
   it should "have 2 indexOfSlice methods that take an Every" in {
     Every(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3)) shouldBe 1
@@ -652,9 +655,11 @@ class EverySpec extends UnitSpec {
     Every(-1, -2, 3, 4, 5).minBy(_.abs) shouldBe -1
   }
   it should "have a mkString method" in {
-
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     One("hi").mkString shouldBe "hi"
     Many(1, 2, 3).mkString shouldBe "123"
+    // SKIP-DOTTY-END
 
     One("hi").mkString("#") shouldBe "hi"
     Many(1, 2, 3).mkString("#") shouldBe "1#2#3"
@@ -819,8 +824,8 @@ class EverySpec extends UnitSpec {
   it should "have a scan method" in {
     Every(1).scan(0)(_ + _) shouldBe Every(0, 1)
     Every(1, 2, 3).scan(0)(_ + _) shouldBe Every(0, 1, 3, 6)
-    Every(1, 2, 3).scan("z")(_ + _.toString) shouldBe Every("z", "z1", "z12", "z123")
-    Every(0).scan("z")(_ + _.toString) shouldBe Every("z", "z0")
+    Every(1, 2, 3).scan("z")(_.toString + _.toString) shouldBe Every("z", "z1", "z12", "z123")
+    Every(0).scan("z")(_.toString + _.toString) shouldBe Every("z", "z0")
   }
   it should "have a scanLeft method" in {
     Every(1).scanLeft(0)(_ + _) shouldBe Every(0, 1)
@@ -1010,7 +1015,7 @@ class EverySpec extends UnitSpec {
     scala> Vector(1, 2, 3).take(-1)
     res12: scala.collection.immutable.Vector[Int] = Vector()
 
-  it should not have a takeRight method 
+  it should not have a takeRight method
     scala> Vector(1).takeRight(1)
     res13: scala.collection.immutable.Vector[Int] = Vector(1)
     scala> Vector(1).takeRight(0)

@@ -19,9 +19,13 @@ import scala.concurrent.Future
 import org.scalactic._
 
 /**
+ * <strong>The <code>org.scalatest.AsyncTestRegistration</code> has been deprecated and will be removed in a future version of ScalaTest. We do
+ * not plan a replacement.</strong>
+ *
  * Trait declaring methods that can be used to register by-name test functions that
  * have result type <code>Future[Assertion]</code>.
  */
+@deprecated("The org.scalatest.AsyncTestRegistration trait has been deprecated and will be removed in a future version of ScalaTest. No replacement is planned.", "3.1.0")
 trait AsyncTestRegistration { theSuite: AsyncTestSuite =>
 
   /**
@@ -31,7 +35,7 @@ trait AsyncTestRegistration { theSuite: AsyncTestSuite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position)
+  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit
 
   /**
    * Registers an ignored test.
@@ -40,5 +44,5 @@ trait AsyncTestRegistration { theSuite: AsyncTestSuite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position)
+  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit
 }

@@ -16,13 +16,13 @@
 package org.scalatest
 
 import org.scalatest.events._
-import org.scalatest.junit._
+import org.scalatestplus.junit._
 import org.scalatest.time._
 import SharedHelpers._
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import org.junit.Test
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 import org.scalatest.tools.SuiteSortingReporter
 import org.scalatest.tools.TestSortingReporter
 import org.testng.annotations.{Test => TestNG }
@@ -35,7 +35,6 @@ class DeprecatedCatchReporterProp extends AllSuiteProp {
   type FixtureServices = DeprecatedCatchReporterFixtureServices
   
   def spec = new DeprecatedExampleCatchReporterSpec
-  def fixtureSpec = new DeprecatedExampleCatchReporterFixtureSpec
   def junit3Suite = new DeprecatedExampleCatchReporterJUnit3Suite
   def junitSuite = new DeprecatedExampleCatchReporterJUnitSuite
   def testngSuite = new DeprecatedExampleCatchReporterTestNGSuite
@@ -387,14 +386,6 @@ class DeprecatedExampleCatchReporterSpec extends RefSpec with DeprecatedCatchRep
   def `test 1`: Unit = {}
   def `test 2`: Unit = {}
   def `test 3`: Unit = {}
-  override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
-}
-
-@DoNotDiscover
-class DeprecatedExampleCatchReporterFixtureSpec extends fixture.Spec with DeprecatedCatchReporterFixtureServices with StringFixture {
-  def `test 1`(fixture: String): Unit = {}
-  def `test 2`(fixture: String): Unit = {}
-  def `test 3`(fixture: String): Unit = {}
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 

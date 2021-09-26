@@ -21,6 +21,7 @@ import scala.collection.mutable.ListBuffer
 
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
+import org.scalactic.NormalizingEquality
 
 import org.scalatest.CompatParColls.Converters._
 
@@ -159,18 +160,6 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(1, 2) + 0 shouldBe NonEmptySet(0, 1, 2)
     NonEmptySet("one", "two") + "zero" shouldBe NonEmptySet("zero", "one", "two")
   }
-  it should "have a /: method" in {
-    (0 /: NonEmptySet(1))(_ + _) shouldBe 1
-    (1 /: NonEmptySet(1))(_ + _) shouldBe 2
-    (0 /: NonEmptySet(1, 2, 3))(_ + _) shouldBe 6
-    (1 /: NonEmptySet(1, 2, 3))(_ + _) shouldBe 7
-  }
-  it should "have a :\\ method" in {
-    (NonEmptySet(1) :\ 0)(_ + _) shouldBe 1
-    (NonEmptySet(1) :\ 1)(_ + _) shouldBe 2
-    (NonEmptySet(1, 2, 3) :\ 0)(_ + _) shouldBe 6
-    (NonEmptySet(1, 2, 3) :\ 1)(_ + _) shouldBe 7
-  }
   it should "have 3 addString methods" in {
     NonEmptySet("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
     NonEmptySet(1, 2, 3).addString(new StringBuilder) shouldBe new StringBuilder("231")
@@ -212,13 +201,15 @@ class NonEmptySetSpec extends UnitSpec {
     e.contains(3) shouldBe true
     e.contains(4) shouldBe false
     val es = NonEmptySet("one", "two", "three")
-    es.contains("one") shouldBe true;
-    es.contains("ONE") shouldBe false;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.contains("one") shouldBe true;
-      es.contains("ONE") shouldBe false
-    }
+    es.contains("one") shouldBe true
+    es.contains("ONE") shouldBe false
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.contains("one") shouldBe true
+    es.contains("ONE") shouldBe false
+    // SKIP-DOTTY-END
   }
   it should "have 3 copyToArray methods" in {
 
@@ -446,9 +437,11 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(-1, -2, 3, 4, 5).minBy(_.abs) shouldBe -1
   }
   it should "have a mkString method" in {
-
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     NonEmptySet("hi").mkString shouldBe "hi"
     NonEmptySet(1, 2, 3).mkString shouldBe "231"
+    // SKIP-DOTTY-END
 
     NonEmptySet("hi").mkString("#") shouldBe "hi"
     NonEmptySet(1, 2, 3).mkString("#") shouldBe "2#3#1"
@@ -545,8 +538,8 @@ class NonEmptySetSpec extends UnitSpec {
   it should "have a scan method" in {
     NonEmptySet(1).scan(0)(_ + _) shouldBe NonEmptySet(0, 1)
     NonEmptySet(1, 2, 3).scan(0)(_ + _) shouldBe NonEmptySet(0, 2, 5, 6)
-    NonEmptySet(1, 2, 3).scan("z")(_ + _.toString) shouldBe NonEmptySet("z", "z2", "z23", "z231")
-    NonEmptySet(0).scan("z")(_ + _.toString) shouldBe NonEmptySet("z", "z0")
+    NonEmptySet(1, 2, 3).scan("z")(_.toString + _.toString) shouldBe NonEmptySet("z", "z2", "z23", "z231")
+    NonEmptySet(0).scan("z")(_.toString + _.toString) shouldBe NonEmptySet("z", "z0")
   }
   it should "have a scanLeft method" in {
     NonEmptySet(1).scanLeft(0)(_ + _) shouldBe NonEmptySet(0, 1)

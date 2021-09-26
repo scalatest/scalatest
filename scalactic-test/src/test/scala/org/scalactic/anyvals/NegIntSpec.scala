@@ -150,7 +150,10 @@ class NegIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCheck
     }
     it("should offer MaxValue and MinValue factory methods") {
       NegInt.MaxValue shouldEqual NegInt.from(-1).get
+      // SKIP-DOTTY-START
+      // not constant literal
       NegInt.MinValue shouldEqual NegInt(Int.MinValue)
+      // SKIP-DOTTY-END
     }
 
     it("should be sortable") {

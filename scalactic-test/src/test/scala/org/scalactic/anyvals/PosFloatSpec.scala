@@ -39,7 +39,7 @@ trait PosFloatSpecSupport {
           case Success(bFloat: Float) if bFloat.isNaN => true
           case _ => false
         }
-      case Success(double: Double) if double.isNaN => 
+      case Success(double: Double) if double.isNaN =>
         b match {
           case Success(bDouble: Double) if bDouble.isNaN => true
           case _ => false
@@ -67,7 +67,7 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         PosFloat.from(-0.00001F) shouldBe None
         PosFloat.from(-99.9F) shouldBe None
       }
-    } 
+    }
     describe("should offer an ensuringValid factory method that") {
       it("returns PosFloat if the passed Float is greater than 0") {
         PosFloat.ensuringValid(50.23F).value shouldBe 50.23F
@@ -79,7 +79,10 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(-0.00001F)
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(-99.9F)
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(Float.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy PosFloat.ensuringValid(Float.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -137,7 +140,7 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         PosFloat.isValid(-0.00001f) shouldBe false
         PosFloat.isValid(-99.9f) shouldBe false
       }
-    } 
+    }
     describe("should offer a fromOrElse factory method that") {
       it("returns a PosFloat if the passed Float is greater than 0") {
         PosFloat.fromOrElse(50.23f, PosFloat(42.0f)).value shouldBe 50.23f
@@ -148,7 +151,7 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         PosFloat.fromOrElse(-0.00001f, PosFloat(42.0f)).value shouldBe 42.0f
         PosFloat.fromOrElse(-99.9f, PosFloat(42.0f)).value shouldBe 42.0f
       }
-    } 
+    }
     it("should offer MaxValue and MinValue factory methods") {
       PosFloat.MaxValue shouldEqual PosFloat.from(Float.MaxValue).get
       PosFloat.MinValue shouldEqual
@@ -176,7 +179,7 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
     }
 
     describe("when created with apply method") {
-  
+
       it("should compile when 8 is passed in") {
         "PosFloat(8)" should compile
         PosFloat(8).value shouldEqual 8.0F
@@ -185,13 +188,13 @@ class PosFloatSpec extends FunSpec with Matchers with PropertyChecks with TypeCh
         "PosFloat(8.0F)" should compile
         PosFloat(8.0F).value shouldEqual 8.0F
       }
-  
+
       it("should not compile when 0 is passed in") {
         "PosFloat(0)" shouldNot compile
         "PosFloat(0L)" shouldNot compile
         "PosFloat(0.0F)" shouldNot compile
       }
-  
+
       it("should not compile when -8 is passed in") {
         "PosFloat(-8)" shouldNot compile
         "PosFloat(-8L)" shouldNot compile
@@ -294,55 +297,6 @@ specifying floats so long as it is in the valid range for floats.
       (PosFloat(1.0f) plus PosInt(2)) should === (PosFloat(3.0f))
     }
 
-    it("should offer overloaded 'sumOf' methods on the companion that take one PosFloat and one or more PosZFloats and returns a PosFloat") {
-
-      forAll { (posFloat: PosFloat, posZFloat: PosZFloat) =>
-        PosFloat.sumOf(posFloat, posZFloat) should === (PosFloat.ensuringValid(posFloat.value + posZFloat.value))
-      }
-      forAll { (posFloat: PosFloat, posZFloats: List[PosZFloat]) =>
-        whenever(posZFloats.nonEmpty) {
-          PosFloat.sumOf(posFloat, posZFloats.head, posZFloats.tail: _*) should === {
-            PosFloat.ensuringValid(posFloat.value + posZFloats.head.value + posZFloats.tail.map(_.value).sum)
-          }
-        }
-      }
-
-      val posEdgeValues: List[PosFloat] = List(PosFloat.MinValue, PosFloat.MaxValue, PosFloat.PositiveInfinity)
-      val posZEdgeValues = List(PosZFloat.MinValue, PosZFloat.MinPositiveValue, PosZFloat.MaxValue, PosZFloat.PositiveInfinity)
-      // First put each PosFloat edge in front, then follow it with all permutations (orders) of all four PosZFloat edge values.
-      Inspectors.forAll (posEdgeValues) { pos =>
-        Inspectors.forAll (posZEdgeValues.permutations.toList) { case posZHead :: posZTail =>
-          PosFloat.sumOf(pos, posZHead, posZTail: _*) should === {
-            PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
-          }
-        }
-      }
-
-      // Now do each PosFloat edge in front, then follow it with all combinations of 2 PosZEdgeFloats
-      // I get all combos by doing combinations(2) ++ combinations(2).reverse. That seems to do the trick.
-      val halfOfThePairs = posZEdgeValues.combinations(2).toList
-      val posZPairCombos = halfOfThePairs ++ (halfOfThePairs.reverse)
-      Inspectors.forAll (posEdgeValues) { pos =>
-        Inspectors.forAll (posZPairCombos) { case posZHead :: posZTail  =>
-          PosFloat.sumOf(pos, posZHead, posZTail: _*) should === {
-            PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
-          }
-        }
-      }
-
-      // Now do each PosFloat edge in front, then follow it with all combinations of 3 PosZEdgeFloats
-      // I get all combos by doing combinations(3) ++ combinations(3).reverse. That seems to do the trick.
-      val halfOfTheTriples = posZEdgeValues.combinations(3).toList
-      val posZTripleCombos = halfOfTheTriples ++ (halfOfTheTriples.reverse)
-      Inspectors.forAll (posEdgeValues) { pos =>
-        Inspectors.forAll (posZTripleCombos) { case posZHead :: posZTail  =>
-          PosFloat.sumOf(pos, posZHead, posZTail: _*) should === {
-            PosFloat.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
-          }
-        }
-      }
-    }
-
     it("should offer 'min' and 'max' methods that are consistent with Float") {
       forAll { (pfloat1: PosFloat, pfloat2: PosFloat) =>
         pfloat1.max(pfloat2).toFloat shouldEqual pfloat1.toFloat.max(pfloat2.toFloat)
@@ -402,13 +356,22 @@ specifying floats so long as it is in the valid range for floats.
         widen(pfloat) shouldEqual widen(NonZeroDouble.from(pfloat.toFloat).get)
       }
     }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: PosFiniteFloat) =>
+        (n: PosFloat).isFinite should be (true)
+        PosFloat.PositiveInfinity.isFinite should be (false)
+      }
+    }
   }
   it("should offer an ensuringValid method that takes a Float => Float, throwing AssertionError if the result is invalid") {
     PosFloat(33.0f).ensuringValid(_ + 1.0f) shouldEqual PosFloat(34.0f)
     PosFloat(33.0f).ensuringValid(_ => Float.PositiveInfinity) shouldEqual PosFloat.ensuringValid(Float.PositiveInfinity)
     an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ - PosFloat.MaxValue) }
     an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6710
     an [AssertionError] should be thrownBy { PosFloat.MaxValue.ensuringValid(_ => Float.NaN) }
+    // SKIP-DOTTY-END
   }
 }
-  
+

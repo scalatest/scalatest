@@ -38,7 +38,7 @@ class EitherValuesSpec extends FunSpec {
         }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("EitherValuesSpec.scala")
-      caught.message.value should be (Resources.eitherLeftValueNotDefined)
+      caught.message.value should be (Resources.eitherLeftValueNotDefined(e))
     }
     
     it("should return the right value inside an either if right.value is defined") {
@@ -55,7 +55,7 @@ class EitherValuesSpec extends FunSpec {
         }
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 2)
       caught.failedCodeFileName.value should be ("EitherValuesSpec.scala")
-      caught.message.value should be (Resources.eitherRightValueNotDefined)
+      caught.message.value should be (Resources.eitherRightValueNotDefined(e))
     }
 
     it("should allow an immediate application of parens to invoke apply on the type contained in the Left") {

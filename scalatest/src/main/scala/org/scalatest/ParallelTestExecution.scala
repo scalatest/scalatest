@@ -83,7 +83,7 @@ trait ParallelTestExecution extends OneInstancePerTest { this: Suite =>
       else {
         args.distributor match {  // This is the initial instance
           case Some(distributor) =>
-            val testSortingReporter = new TestSortingReporter(suiteId, args.reporter, sortingTimeout, testNames.size, args.distributedSuiteSorter, System.err)
+            val testSortingReporter = new TestSortingReporter(suiteId, args.reporter, sortingTimeout, expectedTestCount(args.filter), args.distributedSuiteSorter, System.err)
             args.copy(reporter = testSortingReporter, distributedTestSorter = Some(testSortingReporter))
           case None =>
             args
@@ -155,7 +155,7 @@ trait ParallelTestExecution extends OneInstancePerTest { this: Suite =>
             sorter.distributingTest(testName)
 
           // It will be oneInstance, testName, args.copy(reporter = ...)
-          distribute(new DistributedTestRunnerSuite(newInstance, testName, args), args.copy(tracker = args.tracker.nextTracker))
+          distribute(new DistributedTestRunnerSuite(newInstance, testName, args), args.copy(tracker = args.tracker.nextTracker()))
         }
         else {
           // In test-specific (distributed) instance, so just run the test. (RTINI was

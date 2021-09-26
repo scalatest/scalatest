@@ -23,6 +23,7 @@ import org.scalactic.source
 import org.scalatest.exceptions.StackDepthException._
 
 import org.scalactic.source
+import org.scalatest.compatible.Assertion
 
 /**
  * Offers two methods for transforming futures when exceptions are expected.
@@ -208,7 +209,7 @@ trait RecoverMethods {
   }
 
   private[scalatest] def newAssertionFailedExceptionForRecover(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
-    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, pos)
+    new org.scalatest.exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, pos)
 }
 
 /**

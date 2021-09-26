@@ -17,10 +17,10 @@ package org.scalatest
 
 import org.scalatest.events.Ordinal
 // SKIP-SCALATESTJS,NATIVE-START
-import org.scalatest.junit.JUnit3Suite
-import org.scalatest.junit.JUnitSuite
+import org.scalatestplus.junit.JUnit3Suite
+import org.scalatestplus.junit.JUnitSuite
 import org.scalatest.refspec.RefSpec
-import org.scalatest.testng.TestNGSuite
+import org.scalatestplus.testng.TestNGSuite
 // SKIP-SCALATESTJS,NATIVE-END
 import SharedHelpers._
 
@@ -59,9 +59,6 @@ class FilterProp extends SuiteProp {
     override def nestedSuites = Vector(new Suite {})
   }
   def spec = new RefSpec {
-    override def nestedSuites = Vector(new Suite {})
-  }
-  def fixtureSpec = new fixture.Spec with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
   // SKIP-SCALATESTJS,NATIVE-END

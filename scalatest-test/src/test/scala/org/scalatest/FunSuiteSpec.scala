@@ -1250,35 +1250,6 @@ class FunSuiteSpec extends FunSpec {
       }
     }
 
-    it("should throw a NotAllowedException if chosenStyles is defined and does not include FunSuite") {
-
-      class SimpleSuite extends FunSuite {
-        test("one") {/* ASSERTION_SUCCEED */}
-        test("two") {/* ASSERTION_SUCCEED */}
-        test("three") {/* ASSERTION_SUCCEED */}
-      }
-
-      val simpleSuite = new SimpleSuite()
-      simpleSuite.run(None, Args(SilentReporter))
-      simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSuite")), None, new Tracker, Set.empty))
-      val caught =
-        intercept[NotAllowedException] {
-          simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec")), None, new Tracker, Set.empty))
-        }
-      import OptionValues._
-      assert(caught.message.value === Resources.notTheChosenStyle("org.scalatest.FunSuite", "org.scalatest.FunSpec"))
-      val caught2 =
-        intercept[NotAllowedException] {
-          simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec", "org.scalatest.FreeSpec")), None, new Tracker, Set.empty))
-        }
-      assert(caught2.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.FunSuite", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec"))))
-      val caught3 =
-        intercept[NotAllowedException] {
-          simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec", "org.scalatest.FreeSpec", "org.scalatest.FlatSpec")), None, new Tracker, Set.empty))
-        }
-      assert(caught3.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.FunSuite", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec", "org.scalatest.FlatSpec"))))
-    }
-
     describe("registerTest and registerIgnoredTest method") {
 
       it("should allow test registration and ignored test registration") {
@@ -1387,7 +1358,7 @@ class FunSuiteSpec extends FunSpec {
     }
 
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends FunSuite with Expectations {
+      class TestSpec extends FunSuite with expectations.Expectations {
         test("fail scenario") {
           expect(1 === 2); /* ASSERTION_SUCCEED */
         }

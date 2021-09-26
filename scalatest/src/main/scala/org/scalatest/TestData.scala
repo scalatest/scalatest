@@ -21,8 +21,8 @@ import org.scalactic._
  * A bundle of information about the current test.
  *
  * <p>
- * A <code>TestData</code> object is passed to the <code>withFixture</code> methods of traits <code>Suite</code> and <code>fixture.Suite</code>
- * (both <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> and <a href="fixture/Suite$OneArgTest.html"><code>OneArgTest</code></a>
+ * A <code>TestData</code> object is passed to the <code>withFixture</code> methods of traits <code>Suite</code> and <code>FixtureSuite</code>
+ * (both <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a> and <a href="FixtureSuite$OneArgTest.html"><code>OneArgTest</code></a>
  * extend <code>TestData</code>) and to the <code>beforeEach</code> and <code>afterEach</code>
  * methods of trait <a href="BeforeAndAfterEach.html"><code>BeforeAndAfterEach</code></a>. This enables fixtures and tests to make use
  * of the test name and configuration objects in the config map.

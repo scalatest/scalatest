@@ -1699,7 +1699,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       }
     }
     ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
-      class TestSpec extends fixture.WordSpec with Expectations {
+      class TestSpec extends fixture.WordSpec with expectations.Expectations {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "it should do something" in { () =>

@@ -181,7 +181,7 @@ package org.scalatest.featurespec
  *   }
  * }
  *
- * trait DbFixture { this: fixture.AsyncTestSuite =&gt;
+ * trait DbFixture { this: FixtureAsyncTestSuite =&gt;
  *
  *   type FixtureParam = Db
  *
@@ -259,7 +259,7 @@ package org.scalatest.featurespec
  *
  * @author Bill Venners
  */
-abstract class FixtureAsyncFeatureSpec extends AsyncFeatureSpecLike {
+abstract class FixtureAsyncFeatureSpec extends FixtureAsyncFeatureSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

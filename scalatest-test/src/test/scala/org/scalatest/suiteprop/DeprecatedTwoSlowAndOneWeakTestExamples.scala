@@ -58,12 +58,6 @@ class DeprecatedTwoSlowAndOneWeakTestExamples extends org.scalatest.suiteprop.Su
     @SlowAsMolasses def `test second`: Unit = {}
     override val theTestNames = Vector("test first", "test second")
   }
-
-  class FixtureSpecExample extends StringFixtureSpec with Services {
-    @SlowAsMolasses @WeakAsAKitten def `test first`(s: String): Unit = {}
-    @SlowAsMolasses def `test second`(s: String): Unit = {}
-    override val theTestNames = Vector("test first", "test second")
-  }
   // SKIP-SCALATESTJS,NATIVE-END
 
   class FunSuiteExample extends FunSuite with Services {
@@ -456,7 +450,6 @@ class DeprecatedTwoSlowAndOneWeakTestExamples extends org.scalatest.suiteprop.Su
 
   // SKIP-SCALATESTJS,NATIVE-START
   lazy val spec = new SpecExample
-  lazy val fixtureSpec = new FixtureSpecExample
   // SKIP-SCALATESTJS,NATIVE-END
   lazy val funSuite = new FunSuiteExample
   lazy val fixtureFunSuite = new FixtureFunSuiteExample

@@ -155,7 +155,7 @@ abstract class StackDepthException(
    * </p>
    */
   lazy val message: Option[String] = messageFun(this)
- 
+
   lazy val failedCodeFilePathname: Option[String] = position.map(_.filePathname)
 
   /**
@@ -205,7 +205,7 @@ abstract class StackDepthException(
    */
   override def equals(other: Any): Boolean =
     other match {
-      case that: StackDepthException => 
+      case that: StackDepthException =>
         (that canEqual this) &&
         message == that.message &&
         cause == that.cause &&

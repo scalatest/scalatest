@@ -16,7 +16,7 @@
 
 package org.scalatest.featurespec
 
-import org.scalactic.{Resources => _, FailureMessages => _, UnquotedString => _, _}
+import org.scalactic.{source, Prettifier}
 import org.scalatest._
 import scala.concurrent.Future
 import Suite.anExceptionThatShouldCauseAnAbort
@@ -24,6 +24,7 @@ import Suite.autoTagClassAnnotations
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.exceptions._
+import scala.util.Try
 
 /**
  * Implementation trait for class <code>AsyncFeatureSpec</code>, which represents
@@ -105,7 +106,15 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
     engine.registerIgnoredAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
-  @deprecated("use Scenario instead", "ScalaTest 3.1.1")
+  /**
+   * '''The `scenario` (starting with lowercase 's') method has been deprecated and will be removed in a future version of ScalaTest. Please use `Scenario` (starting with an uppercase 'S') instead.'''
+   *
+   * This method has been renamed for consistency with ScalaTest's `Given`, `When`, and `Then` methods, which were changed to uppper case
+   * when Scala deprecated `then` as an identifier, and Cucumber, one of the main original inspirations for `FeatureSpec`.
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
+   */
+  @deprecated("The scenario (starting with lowercase 's') method has been deprecated and will be removed in a future version of ScalaTest. Please use Scenario (starting with an uppercase 'S') instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   protected def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit =
     Scenario(specText, testTags: _*)(testFun)(pos)
 
@@ -153,7 +162,15 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
     engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, None, pos, testTags: _*)
   }
 
-  @deprecated("use Feature instead", "ScalaTest 3.1.1")
+  /**
+   * '''The `feature` (starting with lowercase 'f') method has been deprecated and will be removed in a future version of ScalaTest. Please use `Feature` (starting with an uppercase 'F') instead.'''
+   *
+   * This method has been renamed for consistency with ScalaTest's `Given`, `When`, and `Then` methods, which were changed to uppper case
+   * when Scala deprecated `then` as an identifier, and Cucumber, one of the main original inspirations for `FeatureSpec`.
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
+   */
+  @deprecated("The feature (starting with lowercase 'f') method has been deprecated and will be removed in a future version of ScalaTest. Please use Feature (starting with an uppercase 'F') instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = Feature(description)(fun)(pos)
 
   /**
@@ -210,10 +227,10 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithAsyncFixture(theTest: TestLeaf, onCompleteFun: Try[Outcome] => Unit): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      InternalFutureOutcome(
+      FutureAsyncOutcome(
         withFixture(
           new NoArgAsyncTest {
             val name = testData.name
@@ -224,7 +241,8 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
             val tags = testData.tags
             val pos = testData.pos
           }
-        ).underlying
+        ).underlying,
+        onCompleteFun
       )
     }
 
@@ -331,7 +349,15 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
     runImpl(thisSuite, testName, args, parallelAsyncTestExecution, super.run)
   }
 
-  @deprecated("use ScenariosFor instead", "ScalaTest 3.1.1")
+  /**
+   * '''The `scenariosFor` (starting with lowercase 's') method has been deprecated and will be removed in a future version of ScalaTest. Please use `ScenariosFor` (starting with an uppercase 'S') instead.'''
+   *
+   * This method has been renamed for consistency with ScalaTest's `Given`, `When`, and `Then` methods, which were changed to uppper case
+   * when Scala deprecated `then` as an identifier, and Cucumber, one of the main original inspirations for `FeatureSpec`.
+   *
+   * <p>This can be rewritten automatically with autofix: <a href="https://github.com/scalatest/autofix/tree/master/3.1.x">https://github.com/scalatest/autofix/tree/master/3.1.x</a>.</p>
+   */
+  @deprecated("The scenariosFor (starting with lowercase 's') method has been deprecated and will be removed in a future version of ScalaTest. Please use ScenariosFor (starting with an uppercase 'S') instead. This can be rewritten automatically with autofix: https://github.com/scalatest/autofix/tree/master/3.1.x", "3.1.0")
   protected def scenariosFor(unit: Unit): Unit = ScenariosFor(unit)
 
   /**
@@ -356,8 +382,12 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
   protected def ScenariosFor(unit: Unit): Unit = {}
 
   /**
-   * Suite style name.
+   * <strong>The <code>styleName</code> lifecycle method has been deprecated and will be removed in a future version of ScalaTest.</strong>
+   *
+   * <p>This method was used to support the chosen styles feature, which was deactivated in 3.1.0. The internal modularization of ScalaTest in 3.2.0
+   * will replace chosen styles as the tool to encourage consistency across a project. We do not plan a replacement for <code>styleName</code>.</p>
    */
+  @deprecated("The styleName lifecycle method has been deprecated and will be removed in a future version of ScalaTest with no replacement.", "3.1.0")
   final override val styleName: String = "org.scalatest.FeatureSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)

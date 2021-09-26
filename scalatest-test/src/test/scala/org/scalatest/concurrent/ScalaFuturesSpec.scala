@@ -102,11 +102,13 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         futureIsNow.isReadyWithin(Span(1, Second)) should be (true)
       }
 
+      // SKIP-SCALATESTJS-START
       it("should query a never-ready future by at least the specified timeout") {
         var startTime = System.currentTimeMillis
         neverReadyFuture.isReadyWithin(Span(1250, Milliseconds)) should be (false)
         (System.currentTimeMillis - startTime).toInt should be >= (1250)
       }
+      // SKIP-SCALATESTJS-END
 
       it("should wrap any exception that normally causes a test to fail to propagate back wrapped in a TFE") {
 
@@ -177,7 +179,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
           neverReadyCountingFuture.futureValue
         }
 
-        caught.message.value should be (Resources.wasNeverReady(count.toString, "15 milliseconds"))
+        caught.message.value should be (Resources.wasNeverReady("150 milliseconds"))
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 4)
         caught.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
       }
@@ -202,6 +204,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         caught4.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
       }
 
+      // SKIP-SCALATESTJS-START
       it("should by default query a never-ready future for at least 1 second") {
         var startTime = System.currentTimeMillis
         a [TestFailedException] should be thrownBy {
@@ -237,6 +240,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         }
         (System.currentTimeMillis - startTime).toInt should be >= (1388)
       }
+      // SKIP-SCALATESTJS-END
 
       it("should wrap any exception that normally causes a test to fail to propagate back wrapped in a TFE") {
 
@@ -270,26 +274,14 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
       // SKIP-SCALATESTJS,NATIVE-END
 
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
-        val tpeFuture =
-          new FutureConcept[String] {
-            def eitherValue: Option[Either[Throwable, String]] = Some(Left(new TestPendingException))
-            def isExpired: Boolean = false
-            def isCanceled: Boolean = false
-            def awaitAtMost(span: Span): String = throw new TestPendingException
-          }
+        val tpeFuture = FutureOfScala.failed(new TestPendingException)
         intercept[TestPendingException] {
           tpeFuture.futureValue
         }
       }
 
       it("should allow TestCanceledException, which does not normally cause a test to fail, through immediately when thrown") {
-        val tpeFuture =
-          new FutureConcept[String] {
-            def eitherValue: Option[Either[Throwable, String]] = Some(Left(new TestCanceledException(0)))
-            def isExpired: Boolean = false
-            def isCanceled: Boolean = false
-            def awaitAtMost(span: Span): String = throw new TestCanceledException(0)
-          }
+        val tpeFuture = FutureOfScala.failed(new TestCanceledException(0))
         intercept[TestCanceledException] {
           tpeFuture.futureValue
         }
@@ -340,50 +332,6 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         caught.getMessage should be ("oops")
       }
 
-      it("should query the future just once if the future is ready the first time") {
-        var count = 0
-        val countingFuture = newAlreadySucceededCountingFuture { count += 1 }
-        whenReady(countingFuture) { s =>
-          s should equal ("hi")
-        }
-        count should equal (1)
-      }
-
-      it("should query the future five times if the future is not ready four times before finally being ready the fifth time") {
-        var count = 0
-        val countingFuture =
-          new FutureOfScala[String] {
-            var gotToFive = false
-            // These 2 ??? is needed to compile in 2.12, not really used though.
-            def transform[S](f: Try[String] => Try[S])(implicit executor: ExecutionContext): FutureOfScala[S] = ???
-            def transformWith[S](f: Try[String] => FutureOfScala[S])(implicit executor: ExecutionContext): FutureOfScala[S] = ???
-            def isCompleted = gotToFive
-            def onComplete[U](func: Try[String] => U)(implicit executor: ExecutionContext): Unit = {}
-            def value: Option[Try[String]] = {
-              count += 1
-              if (count < 5) None 
-              else {
-                gotToFive = true
-                Some(Success("hi"))
-              }
-            }
-
-            @throws(classOf[Exception])
-            def result(atMost: Duration)(implicit permit: CanAwait): String = neverReadyFuture.result(atMost)
-
-            @throws(classOf[TimeoutException])
-            @throws(classOf[InterruptedException])
-            def ready(atMost: Duration)(implicit permit: CanAwait): this.type = {
-              neverReadyFuture.ready(atMost)
-              this
-            }
-          }
-        whenReady(countingFuture) { s =>
-          s should equal ("hi")
-        }
-        count should equal (5)
-      }
-
       it("should eventually blow up with a TFE if the future is never ready") {
 
         var count = 0
@@ -394,7 +342,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
           }
         }
 
-        caught.message.value should be (Resources.wasNeverReady(count.toString, "15 milliseconds"))
+        caught.message.value should be (Resources.wasNeverReady("150 milliseconds"))
         caught.failedCodeLineNumber.value should equal (thisLineNumber - 6)
         caught.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
       }
@@ -419,6 +367,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         caught4.failedCodeFileName.value should be ("ScalaFuturesSpec.scala")
       }
 
+      // SKIP-SCALATESTJS-START
       it("should by default query a never-ready future for at least 1 second") {
         var startTime = System.currentTimeMillis
         a [TestFailedException] should be thrownBy {
@@ -462,6 +411,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         }
         (System.currentTimeMillis - startTime).toInt should be >= (1388)
       }
+      // SKIP-SCALATESTJS-END
 
       it("should wrap any exception that normally causes a test to fail to propagate back wrapped in a TFE") {
 
@@ -500,13 +450,9 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
 
       // Same thing here and in 2.0 need to add a test for TestCanceledException
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
-        val tpeFuture =
-          new FutureConcept[String] {
-            def eitherValue: Option[Either[Throwable, String]] = Some(Left(new TestPendingException))
-            def isExpired: Boolean = false
-            def isCanceled: Boolean = false
-            def awaitAtMost(span: Span): String = throw new TestPendingException
-          }
+        val promise = Promise[String]
+        promise.failure(new TestPendingException)
+        val tpeFuture = promise.future
         intercept[TestPendingException] {
           whenReady(tpeFuture) { s =>
             s should equal ("hi")
@@ -514,13 +460,9 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         }
       }
       it("should allow TestCanceledException, which does not normally cause a test to fail, through immediately when thrown") {
-        val tpeFuture =
-          new FutureConcept[String] {
-            def eitherValue: Option[Either[Throwable, String]] = Some(Left(new TestCanceledException(0)))
-            def isExpired: Boolean = false
-            def isCanceled: Boolean = false
-            def awaitAtMost(span: Span): String = throw new TestCanceledException(0)
-          }
+        val promise = Promise[String]
+        promise.failure(new TestCanceledException(0))
+        val tpeFuture = promise.future
         intercept[TestCanceledException] {
           whenReady(tpeFuture) { s =>
             s should equal ("hi")

@@ -125,7 +125,7 @@ private[scalatest] class RunnerJFrame(
   // This should only be updated by the event handler thread.
   private var viewOptions = runsAndFailures
 
-  private val optionsMap: Map[EventToPresent, JCheckBoxMenuItem] = initializeOptionsMap
+  private val optionsMap: Map[EventToPresent, JCheckBoxMenuItem] = initializeOptionsMap()
 
   private val aboutBox: AboutJDialog = initializeAboutBox()
 

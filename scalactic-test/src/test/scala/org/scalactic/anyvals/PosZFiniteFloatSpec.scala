@@ -59,7 +59,7 @@ trait PosZFiniteFloatSpecSupport {
           case Success(bFloat: Float) if bFloat.isNaN => true
           case _ => false
         }
-      case Success(double: Double) if double.isNaN => 
+      case Success(double: Double) if double.isNaN =>
         b match {
           case Success(bDouble: Double) if bDouble.isNaN => true
           case _ => false
@@ -100,7 +100,10 @@ class PosZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with
         an [AssertionError] should be thrownBy PosZFiniteFloat.ensuringValid(-99.9f)
         an [AssertionError] should be thrownBy PosZFiniteFloat.ensuringValid(Float.PositiveInfinity)
         an [AssertionError] should be thrownBy PosZFiniteFloat.ensuringValid(Float.NegativeInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy PosZFiniteFloat.ensuringValid(Float.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -325,7 +328,10 @@ class PosZFiniteFloatSpec extends FunSpec with Matchers with PropertyChecks with
       an [AssertionError] should be thrownBy { PosZFiniteFloat.MaxValue.ensuringValid(_ - PosZFiniteFloat.MaxValue - 1) }
       an [AssertionError] should be thrownBy { PosFiniteFloat.MaxValue.ensuringValid(_ => Float.PositiveInfinity) }
       an [AssertionError] should be thrownBy { PosFiniteFloat.MaxValue.ensuringValid(_ => Float.NegativeInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { PosZFiniteFloat.MaxValue.ensuringValid(_ => Float.NaN) }
+      // SKIP-DOTTY-END
     }
   }
 }

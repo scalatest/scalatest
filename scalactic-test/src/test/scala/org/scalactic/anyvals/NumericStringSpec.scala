@@ -73,7 +73,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         NumericString.isValid("-1") shouldBe false
         NumericString.isValid("-99") shouldBe false
       }
-    } 
+    }
     describe("should offer a fromOrElse factory method that") {
       it("returns a NumericString if the passed String is numeric") {
         NumericString.fromOrElse("50", NumericString("42")).value shouldBe "50"
@@ -84,7 +84,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         NumericString.fromOrElse("-1", NumericString("42")).value shouldBe "42"
         NumericString.fromOrElse("-99", NumericString("42")).value shouldBe "42"
       }
-    } 
+    }
     it("should offer an ensuringValid method that takes a String => String, throwing AssertionError if the result is invalid") {
       NumericString("33").ensuringValid(s => (s.toInt + 1).toString) shouldEqual NumericString("34")
       an [AssertionError] should be thrownBy { NumericString("33").ensuringValid(_ + "!") }
@@ -224,10 +224,13 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       }
     }
     it("should offer a getBytes method that is consistent with String") {
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6705
       forAll { (numStr: NumericString) =>
         numStr.getBytes shouldEqual
           numStr.value.getBytes
       }
+      // SKIP-DOTTY-END
       forAll { (numStr: NumericString) =>
         numStr.getBytes(Charset.defaultCharset) shouldEqual
           numStr.value.getBytes(Charset.defaultCharset)
@@ -810,7 +813,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
 
         whenever (numStr.length > 0) {
           val plausible = pint % numStr.length
-        
+
           numStr.combinations(plausible).mkString(",") shouldEqual
             numStr.value.combinations(plausible).mkString(",")
         }
@@ -960,7 +963,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
 
         whenever (numStr.length > 0) {
           val plausible = pint % numStr.length
-        
+
           numStr.drop(plausible) shouldEqual
             numStr.value.drop(plausible)
         }
@@ -973,7 +976,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
 
         whenever (numStr.length > 0) {
           val plausible = pint % numStr.length
-        
+
           numStr.dropRight(plausible) shouldEqual
             numStr.value.dropRight(plausible)
         }
@@ -1044,10 +1047,13 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
     it("should offer a flatMap method consistent with StringOps") {
       def fooIt(c: Char): String = "foo" + c
 
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6705
       forAll { (numStr: NumericString) =>
         numStr.flatMap(fooIt).mkString shouldEqual
           numStr.value.flatMap(fooIt _)
       }
+      // SKIP-DOTTY-END
     }
     it("should offer a fold method consistent with StringOps") {
       def sumchars(c1: Char, c2:Char): Char = (c1 + c2).toChar
@@ -1312,7 +1318,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
     it("should offer a lines method consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.lines.mkString(",") shouldEqual
-          numStr.value.lines.mkString(",")
+          numStr.value.linesIterator.mkString(",")
       }
     }
     it("should offer a linesWithSeparators method consistent with StringOps") {
@@ -1343,6 +1349,8 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.maxBy(mod3)
       }
     }
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     it("should offer a min method consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.min shouldEqual
@@ -1369,12 +1377,13 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.mkString("<", " ", ">")
       }
     }
+    // SKIP-DOTTY-END
     it("should offer a nonEmpty method consistent with StringOps") {
       val empty = NumericString("")
 
       empty.nonEmpty shouldEqual
         empty.value.nonEmpty
-      
+
       forAll { (numStr: NumericString) =>
         numStr.nonEmpty shouldEqual
           numStr.value.nonEmpty
@@ -1404,17 +1413,15 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       }
     }
     it("should offer a patch method consistent with StringOps") {
-      forAll { (numStr: NumericString, from: Int, that: String, replaced: Int) =>
-        numStr.patch(from, that, replaced) shouldEqual
-          numStr.value.patch(from, that, replaced)
+      forAll { (numStr: NumericString, from: PosZInt, that: String, replaced: PosZInt) =>
+        numStr.patch(from, that, replaced % numStr.length) shouldEqual
+          numStr.value.patch(from, that, replaced % numStr.length)
 
-        whenever (numStr.length > 0) {
-          val reasonableFrom = from % numStr.length
-          val reasonableReplaced = replaced % numStr.length
+        val reasonableFrom = from % numStr.length
+        val reasonableReplaced = replaced % numStr.length
 
-          numStr.patch(reasonableFrom, that, reasonableReplaced) shouldEqual
-            numStr.value.patch(reasonableFrom, that, reasonableReplaced)
-        }
+        numStr.patch(reasonableFrom, that, reasonableReplaced) shouldEqual
+          numStr.value.patch(reasonableFrom, that, reasonableReplaced)
       }
     }
     it("should offer a permutations method that is consistent with StringOps") {
@@ -1514,12 +1521,15 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       emptyNumStr.reduceRightOption(max) shouldEqual
         emptyNumStr.value.reduceRightOption(max)
 
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6705
       forAll { (numStr: NumericString) =>
         whenever (numStr.length > 0) {
           numStr.reduceRightOption(max) shouldEqual
             numStr.value.reduceRightOption(max)
         }
       }
+      // SKIP-DOTTY-END
     }
     it("should offer a replaceAllLiterally method that is consistent with StringOps") {
       forAll { (numStr: NumericString) =>
@@ -1527,6 +1537,8 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.replaceAllLiterally("0+", "1")
       }
     }
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     it("should offer a reverse method that is consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.reverse shouldEqual
@@ -1538,31 +1550,32 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
 
       forAll { (numStr: NumericString) =>
         numStr.reverseMap(plus1).mkString shouldEqual
-          numStr.value.reverseMap(plus1)
+          numStr.value.reverseMap(plus1).mkString
       }
     }
+    // SKIP-DOTTY-END
     it("should offer a scan method consistent with StringOps") {
       def sum(c1: Char, c2: Char) = (c1 + c2).toChar
 
       forAll { (numStr: NumericString) =>
-        numStr.scan('0')(sum).mkString shouldEqual
+        numStr.scan('0')(sum) shouldEqual
           numStr.value.scan('0')(sum)
       }
     }
     it("should offer a scanLeft method consistent with StringOps") {
-      def sum(c1: Char, c2: Char) = (c1 + c2).toChar
+      def sum(s: String, c2: Char) = s + c2
 
       forAll { (numStr: NumericString) =>
-        numStr.scanLeft('0')(sum).mkString shouldEqual
-          numStr.value.scanLeft('0')(sum)
+        numStr.scanLeft("0")(sum) shouldEqual
+          numStr.value.scanLeft("0")(sum)
       }
     }
     it("should offer a scanRight method consistent with StringOps") {
-      def sum(c1: Char, c2: Char) = (c1 + c2).toChar
+      def sum(c1: Char, s: String) = c1 + s
 
       forAll { (numStr: NumericString) =>
-        numStr.scanRight('0')(sum).mkString shouldEqual
-          numStr.value.scanRight('0')(sum)
+        numStr.scanRight("0")(sum) shouldEqual
+          numStr.value.scanRight("0")(sum)
       }
     }
     it("should offer a sameElements method consistent with StringOps") {
@@ -1693,12 +1706,14 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
 
         whenever (numStr.length > 0) {
           val n = pint % numStr.length
-          
+
           numStr.splitAt(n) shouldEqual
             numStr.value.splitAt(n)
         }
       }
     }
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     it("should offer a stringPrefix method consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.stringPrefix shouldEqual
@@ -1721,6 +1736,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.stripMargin(marginChar)
       }
     }
+    // SKIP-DOTTY-END
     it("should offer a stripPrefix method consistent with StringOps") {
       forAll { (numStr: NumericString, str: String) =>
         numStr.stripPrefix(str) shouldEqual
@@ -1856,6 +1872,8 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
           numStr.value.toList
       }
     }
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     it("should offer a toLong method consistent with StringOps") {
       forAll { (n: Long) =>
         whenever (n >= 0) {
@@ -1866,6 +1884,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
+    // SKIP-DOTTY-END
     it("should offer a toSeq method consistent with StringOps") {
       forAll { (numStr: NumericString) =>
         numStr.toSeq shouldEqual
@@ -1902,10 +1921,13 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
     }
     it("should offer a union method consistent with StringOps") {
       forAll { (numStr: NumericString, that: NumericString) =>
-        numStr.union(that.value).mkString shouldEqual
+        numStr.union(that.value) shouldEqual
           numStr.value.union(that.value)
       }
     }
+    // SKIP-DOTTY-START
+    // type checking error for `numStr.updated(index, c).value shouldEqual`
+    // value is not a member of scala.collection.immutable.IndexedSeq[AnyVal]
     it("should offer a updated method consistent with StringOps") {
       forAll { (numStr: NumericString, pint: PosInt, c: NumericChar) =>
         whenever (numStr.length > 0) {
@@ -1916,6 +1938,10 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
         }
       }
     }
+    // SKIP-DOTTY-END
+
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     it("should offer view methods consistent with StringOps") {
       forAll { (numStr: NumericString) =>
 
@@ -1924,6 +1950,7 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
 
       }
     }
+    // SKIP-DOTTY-END
     it("should offer a withFilter method consistent with StringOps") {
       def lt5(ch: Char) = ch < '5'
       def identity(ch: Char) = ch
@@ -1971,11 +1998,11 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       {
         NumericString.tryingValid("-123").failure.exception shouldBe
           an [AssertionError]
-        NumericString.tryingValid("+123").failure.exception shouldBe 
+        NumericString.tryingValid("+123").failure.exception shouldBe
           an [AssertionError]
-        NumericString.tryingValid("abc").failure.exception shouldBe 
+        NumericString.tryingValid("abc").failure.exception shouldBe
           an [AssertionError]
-        NumericString.tryingValid("1e14").failure.exception shouldBe 
+        NumericString.tryingValid("1e14").failure.exception shouldBe
           an [AssertionError]
       }
     }
@@ -1993,11 +2020,11 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       {
         NumericString.passOrElse("-1")(i => s"$i did not taste good") shouldBe
           Fail("-1 did not taste good")
-        NumericString.passOrElse("+1")(i => s"$i did not taste good") shouldBe 
+        NumericString.passOrElse("+1")(i => s"$i did not taste good") shouldBe
           Fail("+1 did not taste good")
-        NumericString.passOrElse("broccoli")(i => s"$i did not taste good") shouldBe 
+        NumericString.passOrElse("broccoli")(i => s"$i did not taste good") shouldBe
           Fail("broccoli did not taste good")
-        NumericString.passOrElse("1E-1")(i => s"$i did not taste good") shouldBe 
+        NumericString.passOrElse("1E-1")(i => s"$i did not taste good") shouldBe
           Fail("1E-1 did not taste good")
       }
     }
@@ -2007,13 +2034,13 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       {
         NumericString.goodOrElse("50")(i => i) shouldBe
           Good(NumericString("50"))
-        NumericString.goodOrElse("100")(i => i) shouldBe 
+        NumericString.goodOrElse("100")(i => i) shouldBe
           Good(NumericString("100"))
-        NumericString.goodOrElse("")(i => i) shouldBe 
+        NumericString.goodOrElse("")(i => i) shouldBe
           Good(NumericString(""))
-        NumericString.goodOrElse("0")(i => i) shouldBe 
+        NumericString.goodOrElse("0")(i => i) shouldBe
           Good(NumericString("0"))
-        NumericString.goodOrElse("00")(i => i) shouldBe 
+        NumericString.goodOrElse("00")(i => i) shouldBe
           Good(NumericString("00"))
       }
       it ("returns an error value produced by passing the given String to "+
@@ -2022,11 +2049,11 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       {
         NumericString.goodOrElse("-1")(i => s"$i did not taste good") shouldBe
           Bad("-1 did not taste good")
-        NumericString.goodOrElse("+1")(i => s"$i did not taste good") shouldBe 
+        NumericString.goodOrElse("+1")(i => s"$i did not taste good") shouldBe
           Bad("+1 did not taste good")
-        NumericString.goodOrElse("salamander")(i => s"$i did not taste good") shouldBe 
+        NumericString.goodOrElse("salamander")(i => s"$i did not taste good") shouldBe
           Bad("salamander did not taste good")
-        NumericString.goodOrElse("1e0")(i => s"$i did not taste good") shouldBe 
+        NumericString.goodOrElse("1e0")(i => s"$i did not taste good") shouldBe
           Bad("1e0 did not taste good")
       }
     }
@@ -2036,11 +2063,11 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       {
         NumericString.rightOrElse("0")(i => i) shouldBe
           Right(NumericString("0"))
-        NumericString.rightOrElse("")(i => i) shouldBe 
+        NumericString.rightOrElse("")(i => i) shouldBe
           Right(NumericString(""))
-        NumericString.rightOrElse("00")(i => i) shouldBe 
+        NumericString.rightOrElse("00")(i => i) shouldBe
           Right(NumericString("00"))
-        NumericString.rightOrElse("456")(i => i) shouldBe 
+        NumericString.rightOrElse("456")(i => i) shouldBe
           Right(NumericString("456"))
       }
       it ("returns an error value produced by passing the given String to "+
@@ -2049,13 +2076,13 @@ class NumericStringSpec extends FunSpec with Matchers with GeneratorDrivenProper
       {
         NumericString.rightOrElse("-1")(i => s"$i did not taste good") shouldBe
           Left("-1 did not taste good")
-        NumericString.rightOrElse("-0")(i => s"$i did not taste good") shouldBe 
+        NumericString.rightOrElse("-0")(i => s"$i did not taste good") shouldBe
           Left("-0 did not taste good")
-        NumericString.rightOrElse("+0")(i => s"$i did not taste good") shouldBe 
+        NumericString.rightOrElse("+0")(i => s"$i did not taste good") shouldBe
           Left("+0 did not taste good")
-        NumericString.rightOrElse("that last clam")(i => s"$i did not taste good") shouldBe 
+        NumericString.rightOrElse("that last clam")(i => s"$i did not taste good") shouldBe
           Left("that last clam did not taste good")
-        NumericString.rightOrElse("0e0")(i => s"$i did not taste good") shouldBe 
+        NumericString.rightOrElse("0e0")(i => s"$i did not taste good") shouldBe
           Left("0e0 did not taste good")
       }
     }

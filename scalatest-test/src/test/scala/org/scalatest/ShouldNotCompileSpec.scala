@@ -66,6 +66,47 @@ class ShouldNotCompileSpec extends FunSpec {
       }
     }
 
+    describe("when work with triple double quotes string literal") {
+
+      it("should do nothing when type check failed") {
+        """val a: String = 2""" shouldNot compile
+      }
+
+      it("should throw TestFailedException with correct message and stack depth when type check passed") {
+        val e = intercept[TestFailedException] {
+          """val a = 1""" shouldNot compile
+        }
+        assert(e.message == Some(Resources.expectedCompileErrorButGotNone("val a = 1")))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      }
+
+      it("should do nothing when parse failed") {
+        """println("test)""" shouldNot compile
+      }
+
+      it("should do nothing when used with 'val i: Int = null") {
+        """val i: Int = null""" shouldNot compile
+      }
+
+      it("should work correctly with the implicit view is in scope") {
+        import scala.collection.JavaConverters._
+
+        val arrayList: java.util.ArrayList[String] = new java.util.ArrayList[String]()
+
+        arrayList.add("Foo")
+        arrayList.add("Bar")
+
+        val e = intercept[TestFailedException] {
+          """arrayList.asScala""" shouldNot compile
+        }
+        assert(e.message == Some(Resources.expectedCompileErrorButGotNone("arrayList.asScala")))
+        assert(e.failedCodeFileName === (Some(fileName)))
+        assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+      }
+    }
+
+    // SKIP-DOTTY-START
     describe("when work with triple quotes string literal with stripMargin") {
 
       it("should do nothing when type check failed") {
@@ -115,6 +156,7 @@ class ShouldNotCompileSpec extends FunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
     }
+    // SKIP-DOTTY-END
 
   }
 

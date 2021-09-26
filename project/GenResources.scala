@@ -158,12 +158,16 @@ trait GenResourcesJVM extends GenResources {
       if (paramCount > 0)
         "def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = makeString(\"" + kv.key + "\", Array(" + (for (i <- 0 until paramCount) yield s"param$i").mkString(", ") + "))"
       else
-        "def " + kv.key + "(): String = resourceBundle.getString(\"" + kv.key + "\")"
+        "def " + kv.key + ": String = resourceBundle.getString(\"" + kv.key + "\")"
     ) + "\n\n" +
     "def raw" + kv.key.capitalize + ": String = resourceBundle.getString(\"" + kv.key + "\")"
 
-  def failureMessagesKeyValueTemplate(kv: KeyValue, paramCount: Int): String =
-    "def " + kv.key + (if (paramCount == 0) "(" else "(prettifier: org.scalactic.Prettifier, ") + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = Resources." + kv.key + "(" + (for (i <- 0 until paramCount) yield s"prettifier.apply(param$i)").mkString(", ") + ")"
+  def failureMessagesKeyValueTemplate(kv: KeyValue, paramCount: Int): String = {
+    if (paramCount == 0)
+      "def " + kv.key + ": String = Resources." + kv.key
+    else
+      "def " + kv.key + "(prettifier: org.scalactic.Prettifier, " + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = Resources." + kv.key + "(" + (for (i <- 0 until paramCount) yield s"prettifier.apply(param$i)").mkString(", ") + ")"
+  }
 
 }
 

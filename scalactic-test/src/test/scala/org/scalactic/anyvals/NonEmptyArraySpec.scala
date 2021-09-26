@@ -21,6 +21,7 @@ import scala.collection.mutable.ArrayBuffer
 
 import org.scalactic.{Every, One, Many, StringNormalizations}
 import org.scalactic.UnitSpec
+import org.scalactic.NormalizingEquality
 
 import org.scalatest.CompatParColls.Converters._
 
@@ -184,21 +185,9 @@ class NonEmptyArraySpec extends UnitSpec {
     pf1.isDefinedAt(0) shouldBe true
     pf1.isDefinedAt(1) shouldBe false
   }
-  it should "have a /: method" in {
-    (0 /: NonEmptyArray(1))(_ + _) shouldBe 1
-    (1 /: NonEmptyArray(1))(_ + _) shouldBe 2
-    (0 /: NonEmptyArray(1, 2, 3))(_ + _) shouldBe 6
-    (1 /: NonEmptyArray(1, 2, 3))(_ + _) shouldBe 7
-  }
   it should "have a :+ method" in {
     NonEmptyArray(1) :+ 2 shouldBe NonEmptyArray(1, 2)
     NonEmptyArray(1, 2) :+ 3 shouldBe NonEmptyArray(1, 2, 3)
-  }
-  it should "have a :\\ method" in {
-    (NonEmptyArray(1) :\ 0)(_ + _) shouldBe 1
-    (NonEmptyArray(1) :\ 1)(_ + _) shouldBe 2
-    (NonEmptyArray(1, 2, 3) :\ 0)(_ + _) shouldBe 6
-    (NonEmptyArray(1, 2, 3) :\ 1)(_ + _) shouldBe 7
   }
   it should "have 3 addString methods" in {
     NonEmptyArray("hi").addString(new StringBuilder) shouldBe new StringBuilder("hi")
@@ -232,7 +221,7 @@ class NonEmptyArraySpec extends UnitSpec {
   // Could have an implicit conversion from Every[Char] to CharSequence like
   // there is for Seq in Predef.
   /*
-  scala> Vector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i / 2 }  
+  scala> Vector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).collect { case i if i > 10 == 0 => i / 2 }
   res1: scala.collection.immutable.Vector[Int] = Vector()
   */
   it should "have an collectFirst method" in {
@@ -263,11 +252,13 @@ class NonEmptyArraySpec extends UnitSpec {
     val es = NonEmptyArray("one", "two", "three")
     es.contains("one") shouldBe true;
     es.contains("ONE") shouldBe false;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.contains("one") shouldBe true;
-      es.contains("ONE") shouldBe false
-    }
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.contains("one") shouldBe true;
+    es.contains("ONE") shouldBe false
+    // SKIP-DOTTY-END
   }
   // Decided to just overload one for GenSeq and one for Every. Could have done
   // what that has a Slicing nature, but that's a bit too fancy pants.
@@ -355,7 +346,7 @@ class NonEmptyArraySpec extends UnitSpec {
   }
 
   /*
-  it should not have an drop method 
+  it should not have an drop method
     scala> Vector(1, 2, 3).drop(3)
     res1: scala.collection.immutable.Vector[Int] = Vector()
 
@@ -567,14 +558,16 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3, 4, 5).indexOf(5, 3) shouldBe 4
 
     val es = NonEmptyArray("one", "two", "three")
-    es.indexOf("one") shouldBe 0;
+    es.indexOf("one") shouldBe 0
     es.indexOf("one", 1) shouldBe -1
-    es.indexOf("ONE") shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.indexOf("one") shouldBe 0;
-      es.indexOf("ONE") shouldBe -1
-    }
+    es.indexOf("ONE") shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.indexOf("one") shouldBe 0
+    es.indexOf("ONE") shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take a GenSeq" in {
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Array(2, 3)) shouldBe 1
@@ -593,12 +586,14 @@ class NonEmptyArraySpec extends UnitSpec {
     val es = NonEmptyArray("one", "two", "three", "four", "five")
     es.indexOfSlice(Array("one", "two")) shouldBe 0;
     es.indexOfSlice(Array("one", "two"), 1) shouldBe -1
-    es.indexOfSlice(Array("ONE", "TWO")) shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.indexOfSlice(Array("one", "two")) shouldBe 0;
-      es.indexOfSlice(Array("ONE", "TWO")) shouldBe -1
-    }
+    es.indexOfSlice(Array("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.indexOfSlice(Array("one", "two")) shouldBe 0
+    es.indexOfSlice(Array("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take an Every" in {
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Every(2, 3)) shouldBe 1
@@ -612,14 +607,16 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(Every(1, 2, 3, 4, 5), -1) shouldBe 0
 
     val es = NonEmptyArray("one", "two", "three", "four", "five")
-    es.indexOfSlice(Every("one", "two")) shouldBe 0;
+    es.indexOfSlice(Every("one", "two")) shouldBe 0
     es.indexOfSlice(Every("one", "two"), 1) shouldBe -1
-    es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.indexOfSlice(Every("one", "two")) shouldBe 0;
-      es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1
-    }
+    es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.indexOfSlice(Every("one", "two")) shouldBe 0
+    es.indexOfSlice(Every("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 indexOfSlice methods that take a NonEmptyArray" in {
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(NonEmptyArray(2, 3)) shouldBe 1
@@ -633,14 +630,16 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3, 4, 5).indexOfSlice(NonEmptyArray(1, 2, 3, 4, 5), -1) shouldBe 0
 
     val es = NonEmptyArray("one", "two", "three", "four", "five")
-    es.indexOfSlice(NonEmptyArray("one", "two")) shouldBe 0;
+    es.indexOfSlice(NonEmptyArray("one", "two")) shouldBe 0
     es.indexOfSlice(NonEmptyArray("one", "two"), 1) shouldBe -1
-    es.indexOfSlice(NonEmptyArray("ONE", "TWO")) shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.indexOfSlice(NonEmptyArray("one", "two")) shouldBe 0;
-      es.indexOfSlice(NonEmptyArray("ONE", "TWO")) shouldBe -1
-    }
+    es.indexOfSlice(NonEmptyArray("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.indexOfSlice(NonEmptyArray("one", "two")) shouldBe 0
+    es.indexOfSlice(NonEmptyArray("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 indexWhere methods" in {
     NonEmptyArray(1, 2, 3, 4, 5).indexWhere(_ == 3) shouldBe 2
@@ -708,12 +707,14 @@ class NonEmptyArraySpec extends UnitSpec {
     es.lastIndexOf("two") shouldBe 1
     es.lastIndexOf("three") shouldBe 2
     es.lastIndexOf("three", 1) shouldBe -1
-    es.lastIndexOf("ONE") shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.lastIndexOf("one") shouldBe 0;
-      es.lastIndexOf("ONE") shouldBe -1
-    }
+    es.lastIndexOf("ONE") shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOf("one") shouldBe 0
+    es.lastIndexOf("ONE") shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take a GenSeq" in {
     NonEmptyArray(1, 2, 3, 4, 5).lastIndexOfSlice(Array(2, 3)) shouldBe 1
@@ -732,12 +733,14 @@ class NonEmptyArraySpec extends UnitSpec {
     val es = NonEmptyArray("one", "two", "three", "four", "five")
     es.lastIndexOfSlice(Array("one", "two")) shouldBe 0;
     es.lastIndexOfSlice(Array("two", "three"), 0) shouldBe -1
-    es.lastIndexOfSlice(Array("ONE", "TWO")) shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.lastIndexOfSlice(Array("one", "two")) shouldBe 0;
-      es.lastIndexOfSlice(Array("ONE", "TWO")) shouldBe -1
-    }
+    es.lastIndexOfSlice(Array("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOfSlice(Array("one", "two")) shouldBe 0
+    es.lastIndexOfSlice(Array("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take an Every" in {
     NonEmptyArray(1, 2, 3, 4, 5).lastIndexOfSlice(Every(2, 3)) shouldBe 1
@@ -753,12 +756,14 @@ class NonEmptyArraySpec extends UnitSpec {
     val es = NonEmptyArray("one", "two", "three", "four", "five")
     es.lastIndexOfSlice(Every("one", "two")) shouldBe 0;
     es.lastIndexOfSlice(Every("two", "three"), 0) shouldBe -1
-    es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.lastIndexOfSlice(Every("one", "two")) shouldBe 0;
-      es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1
-    }
+    es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOfSlice(Every("one", "two")) shouldBe 0
+    es.lastIndexOfSlice(Every("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexOfSlice methods that take a NonEmptyArray" in {
     NonEmptyArray(1, 2, 3, 4, 5).lastIndexOfSlice(NonEmptyArray(2, 3)) shouldBe 1
@@ -772,14 +777,16 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3, 4, 5).lastIndexOfSlice(NonEmptyArray(1, 2, 3, 4, 5), -1) shouldBe -1
 
     val es = NonEmptyArray("one", "two", "three", "four", "five")
-    es.lastIndexOfSlice(NonEmptyArray("one", "two")) shouldBe 0;
+    es.lastIndexOfSlice(NonEmptyArray("one", "two")) shouldBe 0
     es.lastIndexOfSlice(NonEmptyArray("two", "three"), 0) shouldBe -1
-    es.lastIndexOfSlice(NonEmptyArray("ONE", "TWO")) shouldBe -1;
-    {
-      implicit val strEq = StringNormalizations.lowerCased.toEquality
-      es.lastIndexOfSlice(NonEmptyArray("one", "two")) shouldBe 0;
-      es.lastIndexOfSlice(NonEmptyArray("ONE", "TWO")) shouldBe -1
-    }
+    es.lastIndexOfSlice(NonEmptyArray("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6114
+    implicit val strEq = StringNormalizations.lowerCased.toEquality
+    //DOTTY-ONLY implicit val strEq: NormalizingEquality[String] = StringNormalizations.lowerCased.toEquality
+    es.lastIndexOfSlice(NonEmptyArray("one", "two")) shouldBe 0
+    es.lastIndexOfSlice(NonEmptyArray("ONE", "TWO")) shouldBe -1
+    // SKIP-DOTTY-END
   }
   it should "have 2 lastIndexWhere methods" in {
     NonEmptyArray(1, 2, 3, 4, 5).lastIndexWhere(_ == 2) shouldBe 1
@@ -844,9 +851,11 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(-1, -2, 3, 4, 5).minBy(_.abs) shouldBe -1
   }
   it should "have a mkString method" in {
-
+    // SKIP-DOTTY-START
+    // https://github.com/lampepfl/dotty/issues/6705
     NonEmptyArray("hi").mkString shouldBe "hi"
     NonEmptyArray(1, 2, 3).mkString shouldBe "123"
+    // SKIP-DOTTY-END
 
     NonEmptyArray("hi").mkString("#") shouldBe "hi"
     NonEmptyArray(1, 2, 3).mkString("#") shouldBe "1#2#3"
@@ -1034,8 +1043,8 @@ class NonEmptyArraySpec extends UnitSpec {
   it should "have a scan method" in {
     NonEmptyArray(1).scan(0)(_ + _) shouldBe NonEmptyArray(0, 1)
     NonEmptyArray(1, 2, 3).scan(0)(_ + _) shouldBe NonEmptyArray(0, 1, 3, 6)
-    NonEmptyArray(1, 2, 3).scan("z")(_ + _.toString) shouldBe NonEmptyArray("z", "z1", "z12", "z123")
-    NonEmptyArray(0).scan("z")(_ + _.toString) shouldBe NonEmptyArray("z", "z0")
+    NonEmptyArray(1, 2, 3).scan("z")(_.toString + _.toString) shouldBe NonEmptyArray("z", "z1", "z12", "z123")
+    NonEmptyArray(0).scan("z")(_.toString + _.toString) shouldBe NonEmptyArray("z", "z0")
   }
   it should "have a scanLeft method" in {
     NonEmptyArray(1).scanLeft(0)(_ + _) shouldBe NonEmptyArray(0, 1)
@@ -1334,11 +1343,11 @@ class NonEmptyArraySpec extends UnitSpec {
     it should not have a tail method
       scala> Vector(1).tail
       res7: scala.collection.immutable.Vector[Int] = Vector()
-  
+
     it should not have a tails method
       scala> Vector(1).tails.toArray
       res8: Array[scala.collection.immutable.Vector[Int]] = Array(Vector(1), Vector())
-  
+
     it should not have a take method
       scala> Vector(1).take(0)
       res10: scala.collection.immutable.Vector[Int] = Vector()
@@ -1346,15 +1355,15 @@ class NonEmptyArraySpec extends UnitSpec {
       res11: scala.collection.immutable.Vector[Int] = Vector()
       scala> Vector(1, 2, 3).take(-1)
       res12: scala.collection.immutable.Vector[Int] = Vector()
-  
-    it should not have a takeRight method 
+
+    it should not have a takeRight method
       scala> Vector(1).takeRight(1)
       res13: scala.collection.immutable.Vector[Int] = Vector(1)
       scala> Vector(1).takeRight(0)
       res14: scala.collection.immutable.Vector[Int] = Vector()
       scala> Vector(1, 2, 3).takeRight(0)
       res15: scala.collection.immutable.Vector[Int] = Vector()
-  
+
     it should not have a takeWhile method
       scala> Vector(1, 2, 3).takeWhile(_ > 10)
       res17: scala.collection.immutable.Vector[Int] = Vector()
@@ -1470,7 +1479,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1).updated(0, 2) shouldBe NonEmptyArray(2)
     def willThrowIndexOutOfBoundsException(): Unit = {
       NonEmptyArray(1).updated(1, 2)
-      Unit
+      ()
     }
     an [IndexOutOfBoundsException] should be thrownBy {
       willThrowIndexOutOfBoundsException()

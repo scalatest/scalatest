@@ -1052,8 +1052,13 @@ class FrameworkSuite extends FunSuite {
                                      new TaskDef("org.scalatest.SuiteSuite", subclassFingerprint, false, Array(new SuiteSelector))))
       assert(tasks.size === 1)
       val runner2 = framework.runner(Array("-m", "org.scalatest.concurrent"), Array.empty, testClassLoader)
-      val tasks2 = runner2.tasks(Array(new TaskDef("org.scalatest.enablers.NoParamSpec", subclassFingerprint, false, Array(new SuiteSelector))))
-      assert(tasks2.size === 0)
+      try {
+        val tasks2 = runner2.tasks(Array(new TaskDef("org.scalatest.enablers.NoParamSpec", subclassFingerprint, false, Array(new SuiteSelector))))
+        assert(tasks2.size === 0)
+      }
+      finally {
+        runner2.done()
+      }
     }
     finally {
       runner.done()
@@ -1096,8 +1101,9 @@ class FrameworkSuite extends FunSuite {
     assert(iae.getMessage === "-P without specifying <numthreads> is not supported when running ScalaTest from sbt, please use sbt parallel configuration instead.")
   }
 
-  test("Framework.runner accept without problem when -P 4 is passed in") {
-    framework.runner(Array("-P4"), Array.empty, testClassLoader)
+  test("Framework.runner accept without problem when -P4 is passed in") {
+    val runner = framework.runner(Array("-P4"), Array.empty, testClassLoader)
+    runner.done()
   }
 
   test("Framework.runner should throw IllegalArgumentException when -P0 is passed in") {
@@ -1143,7 +1149,8 @@ class FrameworkSuite extends FunSuite {
   }
 
   test("Framework.runner should be able to pass in test sorting timeout with -T") {
-    framework.runner(Array("-T", "100"), Array.empty, testClassLoader)
+    val runner = framework.runner(Array("-T", "100"), Array.empty, testClassLoader)
+    runner.done()
   }
   
   private def makeSureDone(runners: Runner*)(fun: => Unit): Unit = {
@@ -1176,52 +1183,6 @@ class FrameworkSuite extends FunSuite {
       scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
         case Some(recordingRep : EventRecordingReporter) => 
           assert(recordingRep.testSucceededEventsReceived.size === 3)
-        case _ => fail("Expected to find EventRecordingReporter, but not found.")
-      }
-    }
-  }
-
-  test("-y should do nothing when the task to execute is a chosen style", Retryable) {
-    val runner = framework.runner(Array("-y", "org.scalatest.FunSuite", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
-    makeSureDone(runner) {
-      val testEventHandler = new TestEventHandler
-      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
-      val task = tasks(0)
-      task.execute(testEventHandler, Array(new TestLogger))
-      assert(testEventHandler.successEventsReceived.size === 3)
-      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
-      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
-      scalatestRunner.done()
-      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
-        case Some(recordingRep : EventRecordingReporter) => 
-          assert(recordingRep.testSucceededEventsReceived.size === 3)
-          assert(recordingRep.suiteCompletedEventsReceived.size === 1)
-        case _ => fail("Expected to find EventRecordingReporter, but not found.")
-      }
-    }
-  }
-  
-  test("-y should get SuiteAborted event with NotAllowedException when the task to execute is not a chosen style") {
-    val runner = framework.runner(Array("-y", "org.scalatest.FunSpec", "-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
-    makeSureDone(runner) {
-      val testEventHandler = new TestEventHandler
-      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.SampleSuite", subclassFingerprint, false, Array(new SuiteSelector))))
-      val task = tasks(0)
-      task.execute(testEventHandler, Array(new TestLogger))
-      assert(testEventHandler.successEventsReceived.size === 0)
-      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
-      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
-      scalatestRunner.done()
-      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
-        case Some(recordingRep : EventRecordingReporter) => 
-          assert(recordingRep.testSucceededEventsReceived.size === 0)
-          val suiteAbortedEvents = recordingRep.suiteAbortedEventsReceived
-          assert(suiteAbortedEvents.size === 1)
-          suiteAbortedEvents(0).throwable match {
-            case Some(e: NotAllowedException) => 
-              assert(e.getMessage === Resources.notTheChosenStyle("org.scalatest.FunSuite", "org.scalatest.FunSpec"))
-            case _ => fail("Expected SuiteAborted to carry NotAllowedException, but it did not.")
-          }
         case _ => fail("Expected to find EventRecordingReporter, but not found.")
       }
     }

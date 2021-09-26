@@ -18,9 +18,13 @@ package org.scalatest
 import org.scalactic._
 
 /**
+ * <strong>The <code>org.scalatest.TestRegistration</code> has been deprecated and will be removed in a future version of ScalaTest. We do
+ * not plan a replacement.</strong>
+ *
  * Trait declaring methods that can be used to register by-name test functions that
  * have any result type.
  */
+@deprecated("The org.scalatest.TestRegistration trait has been deprecated and will be removed in a future version of ScalaTest. No replacement is planned.", "3.1.0")
 trait TestRegistration { theSuite: Suite =>
 
   /**
@@ -30,7 +34,7 @@ trait TestRegistration { theSuite: Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position)
+  def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit
 
   /**
    * Registers an ignored test.
@@ -39,5 +43,5 @@ trait TestRegistration { theSuite: Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position)
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit
 }

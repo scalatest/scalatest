@@ -18,8 +18,8 @@ package org.scalatest.matchers
 import org.scalactic.source
 import org.scalatest.{FailureMessages, Resources, Suite, UnquotedString}
 import org.scalactic.Prettifier
-import org.scalatest.MatchersHelper._
-import org.scalatest.words.{ResultOfATypeInvocation, ResultOfAnTypeInvocation}
+import org.scalatest.matchers.MatchersHelper._
+import org.scalatest.matchers.dsl.{ResultOfATypeInvocation, ResultOfAnTypeInvocation}
 
 import scala.reflect.ClassTag
 //import org.scalatest.words.{FactResultOfAnTypeInvocation, FactResultOfATypeInvocation}

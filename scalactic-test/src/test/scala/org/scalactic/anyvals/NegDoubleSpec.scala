@@ -74,7 +74,10 @@ class NegDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
         an [AssertionError] should be thrownBy NegDouble.ensuringValid(0.00001)
         an [AssertionError] should be thrownBy NegDouble.ensuringValid(99.9)
         an [AssertionError] should be thrownBy NegDouble.ensuringValid(Double.PositiveInfinity)
+        // SKIP-DOTTY-START
+        // https://github.com/lampepfl/dotty/issues/6710
         an [AssertionError] should be thrownBy NegDouble.ensuringValid(Double.NaN)
+        // SKIP-DOTTY-END
       }
     }
     describe("should offer a tryingValid factory method that") {
@@ -284,55 +287,6 @@ class NegDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       (NegDouble(-1.0) plus NegInt(-2)) should === (NegDouble(-3.0))
     }
 
-    it("should offer overloaded 'sumOf' methods on the companion that take one NegDouble and one or more NegZDoubles and returns a NegDouble") {
-
-      forAll { (negDouble: NegDouble, posZDouble: NegZDouble) =>
-        NegDouble.sumOf(negDouble, posZDouble) should === (NegDouble.ensuringValid(negDouble.value + posZDouble.value))
-      }
-      forAll { (negDouble: NegDouble, posZDoubles: List[NegZDouble]) =>
-        whenever(posZDoubles.nonEmpty) {
-          NegDouble.sumOf(negDouble, posZDoubles.head, posZDoubles.tail: _*) should === {
-            NegDouble.ensuringValid(negDouble.value + posZDoubles.head.value + posZDoubles.tail.map(_.value).sum)
-          }
-        }
-      }
-
-      val posEdgeValues: List[NegDouble] = List(NegDouble.MinValue, NegDouble.MaxValue, NegDouble.NegativeInfinity)
-      val posZEdgeValues = List(NegZDouble.MinValue, NegZDouble.MaxValue, NegZDouble.NegativeInfinity)
-      // First put each NegDouble edge in front, then follow it with all permutations (orders) of all four NegZDouble edge values.
-      Inspectors.forAll (posEdgeValues) { pos =>
-        Inspectors.forAll (posZEdgeValues.permutations.toList) { case posZHead :: posZTail =>
-          NegDouble.sumOf(pos, posZHead, posZTail: _*) should === {
-            NegDouble.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
-          }
-        }
-      }
-
-      // Now do each NegDouble edge in front, then follow it with all combinations of 2 NegZEdgeDoubles
-      // I get all combos by doing combinations(2) ++ combinations(2).reverse. That seems to do the trick.
-      val halfOfThePairs = posZEdgeValues.combinations(2).toList
-      val posZPairCombos = halfOfThePairs ++ (halfOfThePairs.reverse)
-      Inspectors.forAll (posEdgeValues) { pos =>
-        Inspectors.forAll (posZPairCombos) { case posZHead :: posZTail  =>
-          NegDouble.sumOf(pos, posZHead, posZTail: _*) should === {
-            NegDouble.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
-          }
-        }
-      }
-
-      // Now do each NegDouble edge in front, then follow it with all combinations of 3 NegZEdgeDoubles
-      // I get all combos by doing combinations(3) ++ combinations(3).reverse. That seems to do the trick.
-      val halfOfTheTriples = posZEdgeValues.combinations(3).toList
-      val posZTripleCombos = halfOfTheTriples ++ (halfOfTheTriples.reverse)
-      Inspectors.forAll (posEdgeValues) { pos =>
-        Inspectors.forAll (posZTripleCombos) { case posZHead :: posZTail  =>
-          NegDouble.sumOf(pos, posZHead, posZTail: _*) should === {
-            NegDouble.ensuringValid(pos.value + posZHead.value + posZTail.map(_.value).sum)
-          }
-        }
-      }
-    }
-
     it("should offer 'min' and 'max' methods that are consistent with Double") {
       forAll { (pdouble1: NegDouble, pdouble2: NegDouble) =>
         pdouble1.max(pdouble2).toDouble shouldEqual pdouble1.toDouble.max(pdouble2.toDouble)
@@ -380,7 +334,18 @@ class NegDoubleSpec extends FunSpec with Matchers with PropertyChecks with TypeC
       NegDouble(-33.0).ensuringValid(_ => Double.NegativeInfinity) shouldEqual NegDouble.ensuringValid(Double.NegativeInfinity)
       an [AssertionError] should be thrownBy { NegDouble.MaxValue.ensuringValid(_ - NegDouble.MaxValue) }
       an [AssertionError] should be thrownBy { NegDouble.MaxValue.ensuringValid(_ => Double.PositiveInfinity) }
+      // SKIP-DOTTY-START
+      // https://github.com/lampepfl/dotty/issues/6710
       an [AssertionError] should be thrownBy { NegDouble.MaxValue.ensuringValid(_ => Double.NaN) }
+      // SKIP-DOTTY-END
+    }
+    it("should offer an isFinite method that returns true if the value does not represent infinity") {
+      forAll { (n: NegFiniteDouble) =>
+        (n: NegDouble).isFinite should be (true)
+        NegDouble.NegativeInfinity.isFinite should be (false)
+      }
     }
   }
 }
+
+

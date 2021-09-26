@@ -525,14 +525,6 @@ trait Conductors extends PatienceConfiguration {
     def thread(fun: => Any): Thread = threadNamed("Conductor-Thread-" + threads.size) { fun }
 
     /**
-     * <strong>The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.</strong>
-     */
-    @deprecated("The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.")
-    def thread(name: String)(fun: => Any)(implicit pos: source.Position): Thread = {
-      threadNamed(name)(fun)
-    }
-
-    /**
      * Creates a new thread with the specified name that will execute the specified function.
      *
      * <p>
@@ -579,7 +571,7 @@ trait Conductors extends PatienceConfiguration {
           testThreadsStartingCounter.decrement()
 
           // wait for the main thread to say its ok to go.
-          greenLightForTestThreads.await
+          greenLightForTestThreads.await()
 
           // go
           f()

@@ -15,14 +15,21 @@
  */
 package org.scalatest
 
-import Suite.wrapReporterIfNecessary
+import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import org.scalactic.Requirements.requireNonNull
 import org.scalatest.events.{InfoProvided, NameInfo}
 
-trait TestsBeforeNestedSuites extends Suite { thisSuite: Suite =>
+/**
+ * `SuiteMixin` trait that overrides `run` to execute tests ''before'' nested suites.
+ *
+ * The default behavior of `run` executes nested suites before running
+ * tests declared in this suite. This trait overrides `run` and executes
+ * this suites's tests first, then executes its nested suites.
+ */
+trait TestsBeforeNestedSuites extends SuiteMixin { thisSuite: Suite =>
 
   /**
-   * Override to run test first before nested suite(s).
+   * Runs this suite's tests (if any), then runs this suite's nested suites (if any).
    */
   override def run(testName: Option[String], args: Args): Status = {
 
@@ -53,5 +60,4 @@ trait TestsBeforeNestedSuites extends Suite { thisSuite: Suite =>
     }
     finally Thread.currentThread.setName(originalThreadName)
   }
-
 }

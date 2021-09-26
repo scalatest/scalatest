@@ -192,17 +192,17 @@ private[scalactic] class GenMapDiffer[K, V] extends Differ {
             val leftValue = aMap(k)
             val rightValue = bMap(k)
             if (leftValue != rightValue)
-              Some(k + ": " + leftValue + " -> " + rightValue)
+              Some(k.toString + ": " + leftValue + " -> " + rightValue)
             else
               None
           }.toSet ++
             missingKeyInLeft.flatMap { k =>
               val rightValue = bMap(k)
-              Option(k + ": -> " + rightValue)
+              Option(k.toString + ": -> " + rightValue)
             }.toSet ++
             missingKeyInRight.flatMap { k =>
               val leftValue = aMap(k)
-              Option(k + ": " + leftValue + " -> ")
+              Option(k.toString + ": " + leftValue + " -> ")
             }.toSet
 
         val shortName = Differ.simpleClassName(aMap)
@@ -222,7 +222,9 @@ private[scalactic] object GenMapDiffer extends GenMapDiffer[Any, Any]
 // SKIP-SCALATESTNATIVE-START
 private[scalactic] trait ObjectDiffer extends Differ {
 
-  def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
+  def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair =  diffImpl(a, b, prettifier, Set.empty)
+
+  def diffImpl(a: Any, b: Any, prettifier: Prettifier, processed: Set[Any]): PrettyPair = {
     import org.scalactic.source.ObjectMeta
 
     val leftMeta = ObjectMeta(a)
@@ -235,14 +237,18 @@ private[scalactic] trait ObjectDiffer extends Differ {
           if (rightMeta.hasField(name)) {
             val rightValue = rightMeta.value(name)
             if (leftValue != rightValue) {
-              val nestedPair = AnyDiffer.difference(leftValue, rightValue, prettifier)
-              nestedPair.analysis match {
-                case Some(analysis) =>
-                  Some(name + ": " + analysis)
+              if (!processed.exists(e => e == leftValue || e == rightValue)) {
+                val nestedPair = AnyDiffer.diffImpl(leftValue, rightValue, prettifier, processed ++ Set(leftValue, rightValue))
+                nestedPair.analysis match {
+                  case Some(analysis) =>
+                    Some(name + ": " + analysis)
 
-                case None =>
-                  Some(name + ": " + leftValue + " -> " + rightValue)
+                  case None =>
+                    Some(name + ": " + leftValue + " -> " + rightValue)
+                }
               }
+              else 
+                Some("Cyclic value detected, name: " + leftValue.toString + " -> " + rightValue.toString)
             }
             else
               None
@@ -276,7 +282,9 @@ private[scalactic] object ObjectDiffer extends ObjectDiffer
 
 private[scalactic] class AnyDiffer extends Differ {
 
-  def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
+  def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = diffImpl(a, b, prettifier, Set.empty)
+
+  def diffImpl(a: Any, b: Any, prettifier: Prettifier, processed: Set[Any]): PrettyPair = {
 
     (a, b) match {
       case (s1: String, s2: String) => StringDiffer.difference(s1, s2, prettifier)
@@ -284,7 +292,7 @@ private[scalactic] class AnyDiffer extends Differ {
       case (s1: scala.collection.GenSeq[_], s2: scala.collection.GenSeq[_]) => GenSeqDiffer.difference(s1, s2, prettifier)
       case (s1: scala.collection.GenSet[Any], s2: scala.collection.GenSet[Any]) => GenSetDiffer.difference(s1, s2, prettifier)
       // SKIP-SCALATESTNATIVE-START
-      case (s1: Product, s2: Product) => ObjectDiffer.difference(s1, s2, prettifier)
+      case (s1: Product, s2: Product) => ObjectDiffer.diffImpl(s1, s2, prettifier, processed)
       // SKIP-SCALATESTNATIVE-END
       case _ => PrettyPair(prettifier(a), prettifier(b), None)
     }

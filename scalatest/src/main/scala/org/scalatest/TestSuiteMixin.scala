@@ -15,6 +15,28 @@
  */
 package org.scalatest
 
+/**
+ * Trait defining abstract "lifecycle" methods that are implemented in <a href="TestSuite.html#lifecycle-methods"><code>TestSuite</code></a>
+ * and can be overridden in stackable modification traits.
+ *
+ * <p>
+ * The main use case for this trait is to override <code>withFixture</code> in a mixin trait.
+ * Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * trait Builder extends TestSuiteMixin { this: TestSuite =&gt;
+ *
+ *   val builder = new StringBuilder
+ *
+ *   abstract override def withFixture(test: NoArgTest) = {
+ *     builder.append("ScalaTest is ")
+ *     try super.withFixture(test) // To be stackable, must call super.withFixture
+ *     finally builder.clear()
+ *   }
+ * }
+ * </pre>
+ */
 trait TestSuiteMixin extends SuiteMixin { this: TestSuite =>
 
   /**

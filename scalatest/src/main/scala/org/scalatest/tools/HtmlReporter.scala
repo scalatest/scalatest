@@ -32,7 +32,6 @@ import java.text.DecimalFormat
 import java.util.Iterator
 import java.util.Set
 import java.util.UUID
-import org.pegdown.PegDownProcessor
 import org.scalatest.exceptions.StackDepth
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
@@ -46,6 +45,11 @@ import StringReporter.makeDurationString
 import Suite.unparsedXml
 import Suite.xmlContent
 import org.scalatest.exceptions.TestFailedException
+
+import com.vladsch.flexmark.profiles.pegdown.Extensions
+import com.vladsch.flexmark.profiles.pegdown.PegdownOptionsAdapter
+import com.vladsch.flexmark.parser.Parser
+import com.vladsch.flexmark.html.HtmlRenderer
 
 /**
  * A <code>Reporter</code> that prints test status information in HTML format to a file.
@@ -80,7 +84,7 @@ private[scalatest] class HtmlReporter(
     try {
       val outputStream = new FileOutputStream(new File(toDir, targetFileName))
       try {
-        outputStream getChannel() transferFrom(Channels.newChannel(inputStream), 0, Long.MaxValue)
+        outputStream.getChannel().transferFrom(Channels.newChannel(inputStream), 0, Long.MaxValue)
       }
       finally {
         outputStream.flush()
@@ -94,11 +98,9 @@ private[scalatest] class HtmlReporter(
   
   private def getResource(resourceName: String): URL = 
     classOf[Suite].getClassLoader.getResource(resourceName)
-  
-  cssUrl match {
-    case Some(cssUrl) => copyResource(cssUrl, cssDir, "custom.css")
-    case None => // Do nothing.
-  }
+
+  cssUrl.foreach(copyResource(_, cssDir, "custom.css"))
+
   copyResource(getResource("org/scalatest/HtmlReporter.css"), cssDir, "styles.css")
   copyResource(getResource("org/scalatest/sorttable.js"), jsDir, "sorttable.js")
   copyResource(getResource("org/scalatest/d3.v2.min.js"), jsDir, "d3.v2.min.js")
@@ -110,11 +112,13 @@ private[scalatest] class HtmlReporter(
   copyResource(getResource("images/yellowbullet.gif"), imagesDir, "testpending.gif")
   copyResource(getResource("images/graybullet.gif"), imagesDir, "infoprovided.gif")
   
-  private val results = resultHolder match {
-    case Some(holder) => holder
-    case None => new SuiteResultHolder()
-  }
-  private val pegDown = new PegDownProcessor
+  private val results = resultHolder.getOrElse(new SuiteResultHolder)
+
+  private val pegdownOptions = PegdownOptionsAdapter.flexmarkOptions(Extensions.ALL)
+  private val markdownParser = Parser.builder(pegdownOptions).build()
+  private val htmlRenderer = HtmlRenderer.builder(pegdownOptions).build()
+  
+  private def markdownToHtml(s: String): String = htmlRenderer.render(markdownParser.parse(s))
 
   private def withPossibleLineNumber(stringToPrint: String, throwable: Option[Throwable]): String = {
     throwable match {
@@ -190,10 +194,7 @@ private[scalatest] class HtmlReporter(
   }
   
   private def getSuiteFileName(suiteResult: SuiteResult) = 
-    suiteResult.suiteClassName match {
-      case Some(suiteClassName) => suiteClassName
-      case None => suiteResult.suiteName
-    }
+    suiteResult.suiteClassName.getOrElse(suiteResult.suiteName)
   
   private def makeSuiteFile(suiteResult: SuiteResult): Unit = {
     val name = getSuiteFileName(suiteResult)
@@ -240,25 +241,25 @@ private[scalatest] class HtmlReporter(
             case None => NodeSeq.Empty
           }
         }
-        <script type="text/javascript"><![CDATA[
-          { unparsedXml(
-            "function toggleDetails(contentId, linkId) {" + "\n" + 
-            "  var ele = document.getElementById(contentId);" + "\n" + 
-            "  var text = document.getElementById(linkId);" + "\n" + 
-            "  if(ele.style.display == \"block\") {" + "\n" + 
-            "    ele.style.display = \"none\";" + "\n" + 
-            "    text.innerHTML = \"(Show Details)\";" + "\n" + 
-            "  }" + "\n" + 
-            "  else {" + "\n" + 
-            "    ele.style.display = \"block\";" + "\n" + 
-            "    text.innerHTML = \"(Hide Details)\";" + "\n" + 
-            "  }" + "\n" + 
-            "}" + "\n" + 
-            "function hideOpenInNewTabIfRequired() {" + "\n" + 
-            "  if (top === self) { document.getElementById('printlink').style.display = 'none'; }" + "\n" + 
-            "}" + "\n")
-          }
-        ]]></script>
+        <script type="text/javascript">
+        //<![CDATA[
+            function toggleDetails(contentId, linkId) { 
+              var ele = document.getElementById(contentId); 
+              var text = document.getElementById(linkId); 
+              if(ele.style.display == "block") { 
+                ele.style.display = "none"; 
+                text.innerHTML = "(Show Details)"; 
+              } 
+              else { 
+                ele.style.display = "block"; 
+                text.innerHTML = "(Hide Details)";
+              }
+            } 
+            function hideOpenInNewTabIfRequired() { 
+              if (top === self) { document.getElementById('printlink').style.display = 'none'; } 
+            }
+        //]]>
+        </script>
       </head>
       <body class="specification">
         <div id="suite_header_name">{ suiteResult.suiteName }</div>
@@ -402,7 +403,9 @@ private[scalatest] class HtmlReporter(
            <div id="printlink">(<a href={ getSuiteFileName(suiteResult) + ".html" } target="_blank">Open { suiteResult.suiteName } in new tab</a>)</div>
       </body>
       <script type="text/javascript">
-        { unparsedXml("hideOpenInNewTabIfRequired();") }
+        //<![CDATA[
+          hideOpenInNewTabIfRequired();
+        //]]>
       </script>
     </html>
 
@@ -520,50 +523,51 @@ private[scalatest] class HtmlReporter(
         }
         <script type="text/javascript" src="js/d3.v2.min.js"></script>
         <script type="text/javascript" src="js/sorttable.js"></script>
-        <script type="text/javascript"><![CDATA[
-          { unparsedXml(
-            "var tagMap = {};" + "\n" +     
-            "var SUCCEEDED_BIT = 1;" + "\n" + 
-            "var FAILED_BIT = 2;" + "\n" + 
-            "var IGNORED_BIT = 4;" + "\n" + 
-            "var PENDING_BIT = 8;" + "\n" + 
-            "var CANCELED_BIT = 16;" + "\n" + 
-            "function applyFilter() {" + "\n" + 
-            "  var mask = 0;" + "\n" + 
-            "  if (document.getElementById('succeeded_checkbox').checked)" + "\n" + 
-            "    mask |= SUCCEEDED_BIT;" + "\n" +  
-            "  if (document.getElementById('failed_checkbox').checked)" + "\n" + 
-            "    mask |= FAILED_BIT;" + "\n" + 
-            "  if (document.getElementById('ignored_checkbox').checked)" + "\n" + 
-            "    mask |= IGNORED_BIT;" + "\n" + 
-            "  if (document.getElementById('pending_checkbox').checked)" + "\n" + 
-            "    mask |= PENDING_BIT;" + "\n" + 
-            "  if (document.getElementById('canceled_checkbox').checked)" + "\n" + 
-            "    mask |= CANCELED_BIT;" + "\n" + 
-            "  for (var key in tagMap) {" + "\n" + 
-            "    if (tagMap.hasOwnProperty(key)) {" + "\n" + 
-            "      var bitSet = tagMap[key];" + "\n" + 
-            "      var element = document.getElementById(key);" + "\n" + 
-            "      if ((bitSet & mask) != 0)" + "\n" +  
-            "        element.style.display = \"table-row\";" + "\n" + 
-            "      else " + "\n" +  
-            "        element.style.display = \"none\";" + "\n" + 
-            "    }" + "\n" + 
-            "  }" + "\n" + 
-            "}" + "\n" + 
-            "function showDetails(suiteName) {" + "\n" + 
-            "  document.getElementById('details_view').innerHTML = \"<iframe src='\" + suiteName + \".html' width='100%' height='100%'></iframe>\";" + "\n" + 
-            "}" + "\n" + 
-            "function resizeDetailsView() {" + "\n" + 
-            "  var headerView = document.getElementById('scalatest-header');" + "\n" + 
-            "  var detailsView = document.getElementById('details_view');" + "\n" + 
-            "  var summaryView = document.getElementById('summary_view');" + "\n" + 
-            "  var left = summaryView.offsetWidth + 30;" + "\n" + 
-            "  detailsView.style.left = left + \"px\";" + "\n" + 
-            "  detailsView.style.width = (window.innerWidth - left - 30) + \"px\";" + "\n" + 
-            "  detailsView.style.height = (window.innerHeight - headerView.offsetHeight - 20) + \"px\";" + "\n" + 
-            "}\n") }
-        ]]></script>
+        <script type="text/javascript">
+        //<![CDATA[
+            var tagMap = {};     
+            var SUCCEEDED_BIT = 1; 
+            var FAILED_BIT = 2; 
+            var IGNORED_BIT = 4; 
+            var PENDING_BIT = 8;
+            var CANCELED_BIT = 16;
+            function applyFilter() {
+              var mask = 0;
+              if (document.getElementById('succeeded_checkbox').checked) 
+                mask |= SUCCEEDED_BIT;  
+              if (document.getElementById('failed_checkbox').checked) 
+                mask |= FAILED_BIT; 
+              if (document.getElementById('ignored_checkbox').checked) 
+                mask |= IGNORED_BIT; 
+              if (document.getElementById('pending_checkbox').checked) 
+                mask |= PENDING_BIT; 
+              if (document.getElementById('canceled_checkbox').checked)
+                mask |= CANCELED_BIT;
+              for (var key in tagMap) { 
+                if (tagMap.hasOwnProperty(key)) { 
+                  var bitSet = tagMap[key]; 
+                  var element = document.getElementById(key);
+                  if ((bitSet & mask) != 0) 
+                    element.style.display = "table-row"; 
+                  else  
+                    element.style.display = "none";
+                }
+              }
+            }
+            function showDetails(suiteName) {
+              document.getElementById('details_view').innerHTML = "<iframe src='" + suiteName + ".html' width='100%' height='100%'></iframe>";
+            }
+            function resizeDetailsView() {
+              var headerView = document.getElementById('scalatest-header'); 
+              var detailsView = document.getElementById('details_view'); 
+              var summaryView = document.getElementById('summary_view');
+              var left = summaryView.offsetWidth + 30;
+              detailsView.style.left = left + "px"; 
+              detailsView.style.width = (window.innerWidth - left - 30) + "px";
+              detailsView.style.height = (window.innerHeight - headerView.offsetHeight - 20) + "px";
+            }
+        //]]>
+        </script>
       </head>
       <body onresize="resizeDetailsView()">
         <div class="scalatest-report"> 
@@ -622,7 +626,9 @@ private[scalatest] class HtmlReporter(
           { unparsedXml(tagMapScript) }
         </script>
         <script type="text/javascript">
-          { unparsedXml("resizeDetailsView();") }
+          //<![CDATA[
+          resizeDetailsView();
+          //]]>
         </script>
       </body>
     </html>
@@ -725,10 +731,7 @@ private[scalatest] class HtmlReporter(
       prefix
       
   private def durationDisplay(duration: Option[Long]) = 
-    duration match {
-      case Some(duration) => duration
-      case None => "-"
-    }
+    duration.getOrElse("-")
     
   private def suiteSummary(elementId: String, suiteFileName: String, suiteResult: SuiteResult) = {
     import suiteResult._
@@ -826,13 +829,9 @@ private[scalatest] class HtmlReporter(
         case None => (List(), List())
       }
     
-    val throwableTitle = 
-      throwable match {
-        case Some(throwable) => Some(throwable.getClass.getName)
-        case None => None
-      }
+    val throwableTitle = throwable.map(_.getClass.getName)
     
-    val fileAndLineOption: Option[String] = 
+    val fileAndLineOption: Option[String] =
       throwable match {
         case Some(throwable) =>
           throwable match {
@@ -901,7 +900,7 @@ private[scalatest] class HtmlReporter(
   // TODO: probably actually show the exception in the HTML report rather than blowing up the reporter, because that means
   // the whole suite doesn't get recorded. May want to do this more generally though.
   private def markup(elementId: String, text: String, indentLevel: Int, styleName: String) = {
-    val htmlString = convertAmpersand(convertSingleParaToDefinition(pegDown.markdownToHtml(text)))
+    val htmlString = convertAmpersand(convertSingleParaToDefinition(markdownToHtml(text)))
     <div id={ elementId } class={ styleName } style={ "margin-left: " + (specIndent * twoLess(indentLevel)) + "px;" }>
        {
          try XML.loadString(htmlString)
@@ -1003,36 +1002,16 @@ private[scalatest] class HtmlReporter(
       
   def extractSuiteEvents(suiteId: String) = eventList partition { e => 
     e match {
-      case e: TestStarting => e.suiteId == suiteId
+      case e: TestStarting   => e.suiteId == suiteId
       case e: TestSucceeded  => e.suiteId == suiteId
       case e: TestIgnored    => e.suiteId == suiteId
       case e: TestFailed     => e.suiteId == suiteId
       case e: TestPending    => e.suiteId == suiteId
       case e: TestCanceled   => e.suiteId == suiteId
-      case e: InfoProvided   => 
-        e.nameInfo match {
-          case Some(nameInfo) => 
-            nameInfo.suiteId == suiteId
-          case None => false
-        }
-      case e: AlertProvided   => 
-        e.nameInfo match {
-          case Some(nameInfo) => 
-            nameInfo.suiteId == suiteId
-          case None => false
-        }
-      case e: NoteProvided   => 
-        e.nameInfo match {
-          case Some(nameInfo) => 
-            nameInfo.suiteId == suiteId
-          case None => false
-        }
-      case e: MarkupProvided => 
-        e.nameInfo match {
-          case Some(nameInfo) => 
-            nameInfo.suiteId == suiteId
-          case None => false
-        }
+      case e: InfoProvided   => e.nameInfo.exists(_.suiteId == suiteId)
+      case e: AlertProvided  => e.nameInfo.exists(_.suiteId == suiteId)
+      case e: NoteProvided   => e.nameInfo.exists(_.suiteId == suiteId)
+      case e: MarkupProvided => e.nameInfo.exists(_.suiteId == suiteId)
       case e: ScopeOpened    => e.nameInfo.suiteId == suiteId
       case e: ScopeClosed    => e.nameInfo.suiteId == suiteId
       case e: ScopePending   => e.nameInfo.suiteId == suiteId
