@@ -23,15 +23,15 @@ trait JsBuild { this: BuildCommons =>
     .settings(
       projectTitle := "Scalactic Macro.js",
       organization := "org.scalactic",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         // We'll delete JS_DEPENDENCIES in scalactic-macro.js
         Def.task{
-          GenScalacticJS.genMacroScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJSVM.genResources((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenAnyVals.genMain((sourceManaged in Compile).value / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, false) ++
-          GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenColCompatHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++ 
-          GenMacroContext.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
+          GenScalacticJS.genMacroScala((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genResources((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAnyVals.genMain((Compile / sourceManaged).value / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, false) ++
+          GenEvery.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenColCompatHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++ 
+          GenMacroContext.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // Disable publishing macros directly, included in scalactic main jar
@@ -39,13 +39,13 @@ trait JsBuild { this: BuildCommons =>
       publish := {},
       publishLocal := {},
       deleteJsDependenciesTask := Def.task {
-        val jsDependenciesFile = (classDirectory in Compile).value
+        val jsDependenciesFile = (Compile / classDirectory).value
         (jsDependenciesFile/ "JS_DEPENDENCIES").delete()
         ()
         //val loader: ClassLoader = ClasspathUtilities.toLoader(classpath.map(_.data).map(_.getAbsoluteFile))
         //loader.loadClass("your.class.Here").newInstance()
-      }.triggeredBy(compile in Compile).value,
-      scalacOptions in (Compile, doc) := List.empty
+      }.triggeredBy(Compile / compile).value,
+      Compile / doc / scalacOptions := List.empty
     ).enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticJS = project.in(file("js/scalactic"))
@@ -56,26 +56,26 @@ trait JsBuild { this: BuildCommons =>
       projectTitle := "Scalactic.js",
       organization := "org.scalactic",
       moduleName := "scalactic",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenScalacticJS.genScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
+          GenScalacticJS.genScala((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
-      resourceGenerators in Compile += {
+      Compile / resourceGenerators += {
         Def.task {
-          GenScalacticJS.genResource((resourceManaged in Compile).value, version.value, scalaVersion.value) ++
-          GenScalacticJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenScalacticJS.genResource((Compile / resourceManaged).value, version.value, scalaVersion.value) ++
+          GenScalacticJS.genHtml((Compile / resourceManaged).value, version.value, scalaVersion.value)
         }.taskValue
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       // include the macro classes and resources in the main jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalacticMacroJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalacticMacroJS / Compile / packageBin / mappings).value,
       // include the macro sources in the main source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacroJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalacticMacroJS / Compile / packageSrc / mappings).value,
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
       mimaBinaryIssueFilters ++= {
         Seq()
       }
@@ -112,14 +112,14 @@ trait JsBuild { this: BuildCommons =>
       moduleName := "scalatest-app",
       libraryDependencies ++= scalatestJSLibraryDependencies,
       // include the scalactic classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalacticJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalacticJS / Compile / packageBin / mappings).value,
       // include the scalactic sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalacticJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalacticJS / Compile / packageSrc / mappings).value,
       // include the scalatest classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestJS / Compile / packageBin / mappings).value,
       // include the scalatest sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestJS, Compile, packageSrc).value,
-      sourceGenerators in Compile += {
+      Compile / packageSrc / mappings ++= (scalatestJS / Compile / packageSrc / mappings).value,
+      Compile / sourceGenerators += {
         // Little trick to get rid of bnd error when publish.
         Def.task{
           (new File(crossTarget.value, "classes")).mkdirs()
@@ -127,7 +127,7 @@ trait JsBuild { this: BuildCommons =>
         }.taskValue
       },
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -237,16 +237,16 @@ trait JsBuild { this: BuildCommons =>
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task{
-          GenCommonTestJS.genMain((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
-          GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenCommonTestJS.genMain((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenCompatibleClasses.genTest((Compile / sourceManaged).value, version.value, scalaVersion.value)
         }.taskValue
       },
       publishArtifact := false,
       publish := {},
       publishLocal := {},
-      scalacOptions in (Compile, doc) := List.empty
+      Compile / doc / scalacOptions := List.empty
     ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS")).enablePlugins(ScalaJSPlugin)  
 
   lazy val scalacticTestJS = project.in(file("js/scalactic-test"))
@@ -254,7 +254,7 @@ trait JsBuild { this: BuildCommons =>
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
-      testOptions in Test ++=
+      Test / testOptions ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
       jsEnv := {
         import org.scalajs.jsenv.nodejs.NodeJSEnv
@@ -262,12 +262,12 @@ trait JsBuild { this: BuildCommons =>
           NodeJSEnv.Config()
             .withArgs(List(/*"--max_new_space_size=3000", */"--max_old_space_size=3000")))
       },
-      parallelExecution in Test := false,
-      fork in Test := false,
+      Test / parallelExecution := false,
+      Test / fork := false,
       //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalacticJS.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+          GenScalacticJS.genTest((Test / sourceManaged).value, version.value, scalaVersion.value)
         }.taskValue
       },
       publishArtifact := false,
@@ -290,9 +290,9 @@ trait JsBuild { this: BuildCommons =>
             .withArgs(List(/*"--max_new_space_size=3000", */"--max_old_space_size=3000")))
       },
       //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
-      testOptions in Test := scalatestTestJSOptions,
-      parallelExecution in Test := false,
-      fork in Test := false,
+      Test / testOptions := scalatestTestJSOptions,
+      Test / parallelExecution := false,
+      Test / fork := false,
       publishArtifact := false,
       publish := {},
       publishLocal := {},
@@ -305,18 +305,18 @@ trait JsBuild { this: BuildCommons =>
     .settings(
       projectTitle := "ScalaTest Test",
       scalaJSLinkerConfig ~= { _.withOptimizer(false).withSemantics(_.withStrictFloats(true)) },
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestJS.genTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+          GenScalaTestJS.genTest((Test / sourceManaged).value, version.value, scalaVersion.value)
         }.taskValue
       },
-      sourceGenerators in Test +=
+      Test / sourceGenerators +=
         Def.task {
-          GenGen.genTestForJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+          GenGen.genTestForJS((Test / sourceManaged).value, version.value, scalaVersion.value)
         },
-      sourceGenerators in Test +=
+      Test / sourceGenerators +=
         Def.task {
-          GenMustMatchersTests.genTestForScalaJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+          GenMustMatchersTests.genTestForScalaJS((Test / sourceManaged).value, version.value, scalaVersion.value)
         }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
      .aggregate(
@@ -335,9 +335,9 @@ trait JsBuild { this: BuildCommons =>
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest Diagrams Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestJS.genDiagramsTest((sourceManaged in Test).value, version.value, scalaVersion.value)
+          GenScalaTestJS.genDiagramsTest((Test / sourceManaged).value, version.value, scalaVersion.value)
         }.taskValue
       }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
@@ -347,10 +347,10 @@ trait JsBuild { this: BuildCommons =>
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest FeatureSpec Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestJS.genFeatureSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFeatureSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true)
+          GenScalaTestJS.genFeatureSpecTest((Test / sourceManaged).value, version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genFeatureSpecTest((Compile / sourceManaged).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
@@ -360,10 +360,10 @@ trait JsBuild { this: BuildCommons =>
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest FlatSpec Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestJS.genFlatSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFlatSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
+          GenScalaTestJS.genFlatSpecTest((Test / sourceManaged).value, version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genFlatSpecTest((Compile /sourceManaged).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
@@ -373,10 +373,10 @@ trait JsBuild { this: BuildCommons =>
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest FreeSpec Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestJS.genFreeSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFreeSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
+          GenScalaTestJS.genFreeSpecTest((Test / sourceManaged).value, version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genFreeSpecTest((Compile / sourceManaged).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
@@ -386,10 +386,10 @@ trait JsBuild { this: BuildCommons =>
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest FunSpec Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestJS.genFunSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value) ++
-          GenSafeStyles.genFunSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
+          GenScalaTestJS.genFunSpecTest((Test / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenSafeStyles.genFunSpecTest((Compile / sourceManaged).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
@@ -399,10 +399,10 @@ trait JsBuild { this: BuildCommons =>
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest FunSuite Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestJS.genFunSuiteTest((sourceManaged in Test).value, version.value, scalaVersion.value) ++
-          GenSafeStyles.genFunSuiteTest((sourceManaged in Compile).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
+          GenScalaTestJS.genFunSuiteTest((Test / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenSafeStyles.genFunSuiteTest((Compile / sourceManaged).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)         
@@ -412,10 +412,10 @@ trait JsBuild { this: BuildCommons =>
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest PropSpec Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestJS.genPropSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genPropSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
+          GenScalaTestJS.genPropSpecTest((Test / sourceManaged).value, version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genPropSpecTest((Compile / sourceManaged).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
@@ -425,25 +425,25 @@ trait JsBuild { this: BuildCommons =>
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest WordSpec Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestJS.genWordSpecTest((sourceManaged in Test).value, version.value, scalaVersion.value) ++
-          GenSafeStyles.genWordSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
+          GenScalaTestJS.genWordSpecTest((Test / sourceManaged).value, version.value, scalaVersion.value) ++
+          GenSafeStyles.genWordSpecTest((Compile / sourceManaged).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)         
 
   val scalatestJSDocTaskSetting =
-    doc in Compile := docTask((doc in Compile).value,
-      (resourceManaged in Compile).value,
+    Compile / doc := docTask((Compile / doc).value,
+      (Compile / resourceManaged).value,
       name.value)
 
   lazy val examplesJS = project.in(file("examples.js"))
     .settings(
       scalaVersionsSettings,
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenExamplesJS.genScala((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+          GenExamplesJS.genScala((Test / sourceManaged).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
     ).dependsOn(scalacticMacroJS, scalacticJS, scalatestJS).enablePlugins(ScalaJSPlugin)      
@@ -456,7 +456,7 @@ trait JsBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Core JS",
       organization := "org.scalatest",
       moduleName := "scalatest-core",
-      initialCommands in console := """|import org.scalatest._
+      console / initialCommands := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
@@ -464,35 +464,35 @@ trait JsBuild { this: BuildCommons =>
       //jsDependencies += RuntimeDOM % "test",
       Compile / sourceGenerators += {
         Def.task {
-          GenModulesJS.genScalaTestCore((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-          GenConfigMap.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          GenSafeStyles.genCore((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value, true)
+          GenModulesJS.genScalaTestCore((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenVersions.genScalaTestVersions((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genResources((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenGen.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+          GenConfigMap.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenSafeStyles.genCore((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value, true)
         }
       },
       javaSourceManaged := target.value / "java",
-      managedSourceDirectories in Compile += javaSourceManaged.value,
+      Compile / managedSourceDirectories += javaSourceManaged.value,
       Compile / sourceGenerators += {
         Def.task{
-          GenScalaTestJS.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenScalaTestJS.genJava((Compile / javaSourceManaged).value, version.value, scalaVersion.value)
         }
       },
 
       //unmanagedResourceDirectories in Compile <+= sourceManaged( _ / "resources" ),
       Compile / sourceGenerators += {
         Def.task{
-          GenScalaTestJS.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
-          GenTable.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
-          //GenSafeStyles.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
+          GenScalaTestJS.genHtml((Compile / resourceManaged).value, version.value, scalaVersion.value)
+          GenTable.genMainForScalaJS((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
+          //GenSafeStyles.genMainForScalaJS((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       scalatestJSDocTaskSetting,
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
       mimaBinaryIssueFilters ++= {
        Seq(
          exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.failAfterImpl"),  // New function not in current version
@@ -542,13 +542,13 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       Compile / sourceGenerators += {
         Def.task {
-          GenModulesJS.genScalaTestFeatureSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFeatureSpec((sourceManaged in Compile).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true)
+          GenModulesJS.genScalaTestFeatureSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genFeatureSpec((Compile / sourceManaged).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest.featurespec"
@@ -575,13 +575,13 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       Compile / sourceGenerators += {
         Def.task {
-          GenModulesJS.genScalaTestFlatSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFlatSpec((sourceManaged in Compile).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
+          GenModulesJS.genScalaTestFlatSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFlatSpec((Compile / sourceManaged).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest.flatspec"
@@ -608,13 +608,13 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       Compile / sourceGenerators += {
         Def.task {
-          GenModulesJS.genScalaTestFreeSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFreeSpec((sourceManaged in Compile).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
+          GenModulesJS.genScalaTestFreeSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFreeSpec((Compile / sourceManaged).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest.freespec"
@@ -641,13 +641,13 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       Compile / sourceGenerators += {
         Def.task {
-          GenModulesJS.genScalaTestFunSuite((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFunSuite((sourceManaged in Compile).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
+          GenModulesJS.genScalaTestFunSuite((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genFunSuite((Compile / sourceManaged).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest.funsuite"
@@ -674,13 +674,13 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       Compile / sourceGenerators += {
         Def.task {
-          GenModulesJS.genScalaTestFunSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFunSpec((sourceManaged in Compile).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
+          GenModulesJS.genScalaTestFunSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genFunSpec((Compile / sourceManaged).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest.funspec"
@@ -707,13 +707,13 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       Compile / sourceGenerators += {
         Def.task {
-          GenModulesJS.genScalaTestPropSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genPropSpec((sourceManaged in Compile).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
+          GenModulesJS.genScalaTestPropSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genPropSpec((Compile / sourceManaged).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest.propspec"
@@ -740,13 +740,13 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       Compile / sourceGenerators += {
         Def.task {
-          GenModulesJS.genScalaTestWordSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genWordSpec((sourceManaged in Compile).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
+          GenModulesJS.genScalaTestWordSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genWordSpec((Compile / sourceManaged).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest.wordspec"
@@ -773,12 +773,12 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       Compile / sourceGenerators += {
         Def.task {
-          GenModulesJS.genScalaTestDiagrams((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+          GenModulesJS.genScalaTestDiagrams((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest.diagrams"
@@ -805,13 +805,13 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       Compile / sourceGenerators += {
         Def.task {
-          GenModulesJS.genScalaTestMatchersCore((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
-          GenFactories.genMainJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
+          GenModulesJS.genScalaTestMatchersCore((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenFactories.genMainJS((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest.matchers", 
@@ -839,12 +839,12 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       Compile / sourceGenerators += {
         Def.task {
-          GenModulesJS.genScalaTestShouldMatchers((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+          GenModulesJS.genScalaTestShouldMatchers((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest.matchers.should"
@@ -871,12 +871,12 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       Compile / sourceGenerators += {
         Def.task {
-          GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
+          GenMatchers.genMainForScalaJS((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
         }
       },
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest.matchers.must"
@@ -903,8 +903,8 @@ trait JsBuild { this: BuildCommons =>
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
-      sourceGenerators in Compile += {
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
+      Compile / sourceGenerators += {
         // Little trick to get rid of bnd error when publish.
         Def.task{
           (new File(crossTarget.value, "classes")).mkdirs()

@@ -143,7 +143,7 @@ trait BuildCommons {
      docsrcDir := target.value / "docsrc"
 
   val docTaskSetting =
-    doc in Compile := docTask((doc in Compile).value,
-                              (sourceDirectory in Compile).value,
+    Compile / doc := docTask((Compile / doc).value,
+                              (Compile / sourceDirectory).value,
                               name.value)
 }
