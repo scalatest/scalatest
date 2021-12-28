@@ -6,7 +6,7 @@ import scala.io.Source
 trait BuildCommons {
 
   lazy val scalaVersionsSettings: Seq[Setting[_]] = Seq(
-    crossScalaVersions := Seq("2.13.4", "2.12.13", "2.11.12"),
+    crossScalaVersions := Seq("2.13.7", "2.12.15", "2.11.12"),
     scalaVersion := crossScalaVersions.value.head,
   )
 
