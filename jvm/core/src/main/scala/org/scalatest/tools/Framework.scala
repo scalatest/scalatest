@@ -819,24 +819,23 @@ import java.net.{ServerSocket, InetAddress}
       class Skeleton extends Runnable {
         
         val server = new ServerSocket(0)
+        lazy val socket = new AtomicReference(server.accept())
+        lazy val is = new AtomicReference(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
         
         def run(): Unit = {
-          val socket = server.accept()
-          val is = new SkeletonObjectInputStream(socket.getInputStream, getClass.getClassLoader)
-
           try {
-			      (new React(is)).react()
+			      (new React(server)).tryReact()
           } 
           finally {
-            is.close()	
-            socket.close()
+            is.get.close()	
+            socket.get.close()
 		      }
         }
         
-        class React(is: ObjectInputStream) {
+        class React(server: ServerSocket) {
           @annotation.tailrec 
           final def react(): Unit = { 
-            val event = is.readObject
+            val event = is.get.readObject
             event match {
               case e: TestStarting =>
                 dispatchReporter(e) 
@@ -886,8 +885,22 @@ import java.net.{ServerSocket, InetAddress}
               case e: RunCompleted => // Sub-process completed, just let the thread terminate
               case e: RunStopped => dispatchReporter(e)
               case e: RunAborted => dispatchReporter(e)
-	        }
+            }  
           }
+
+          @annotation.tailrec
+          final def tryReact(): Unit = 
+            try {
+              react()  
+            }
+            catch {
+              case t: Throwable => 
+                t.printStackTrace()
+                is.get.close()
+                socket.set(server.accept())
+                is.set(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
+                tryReact()
+            }
         }
         
         def host: String = server.getLocalSocketAddress.toString
