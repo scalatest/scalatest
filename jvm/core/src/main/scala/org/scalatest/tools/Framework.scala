@@ -895,7 +895,7 @@ import java.net.{ServerSocket, InetAddress}
             }
             catch {
               case t: Throwable => 
-                t.printStackTrace()
+                // Restart server socket
                 is.get.close()
                 socket.set(server.accept())
                 is.set(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))

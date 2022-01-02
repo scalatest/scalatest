@@ -281,6 +281,23 @@ sealed abstract class Event extends Ordered[Event] with Product with Serializabl
       }
     }
   }
+
+  private[events] def serializeRoundtrip(a: Any): Boolean = {
+    try {
+      val baos = new java.io.ByteArrayOutputStream
+      val oos = new java.io.ObjectOutputStream(baos)
+      oos.writeObject(a)
+      oos.flush()
+      val ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(baos.toByteArray))
+      ois.readObject
+      true
+    }
+    catch {
+      case _: Throwable => false
+    }
+  }
+
+  private[scalatest] def ensureSerializable(): Event
 }
 
 /**
@@ -395,6 +412,15 @@ final case class TestStarting (
     import EventJsonHelper._
     s"""{ "eventType": "TestStarting", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "testName": ${string(testName)}, "testText": ${string(testText)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -502,6 +528,15 @@ final case class TestSucceeded (
     import EventJsonHelper._
     s"""{ "eventType": "TestSucceeded", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -619,6 +654,24 @@ final case class TestFailed (
     import EventJsonHelper._
     s"""{ "eventType": "TestFailed", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = {
+    val serializablePayload = 
+      payload match {
+        case Some(p) if !serializeRoundtrip(p) =>
+          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          copy(payload = None)
+
+        case _ => this
+      }
+    serializablePayload.throwable match {
+      case Some(t) if !serializeRoundtrip(t) =>
+        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        serializablePayload.copy(throwable = None)
+
+      case _ => serializablePayload
+    }
+  }
 }
 
 /**
@@ -714,6 +767,15 @@ final case class TestIgnored (
     import EventJsonHelper._
     s"""{ "eventType": "TestIgnored", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "testName": ${string(testName)}, "testText": ${string(testText)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -810,6 +872,15 @@ final case class TestPending (
     import EventJsonHelper._
     s"""{ "eventType": "TestPending", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -920,6 +991,24 @@ final case class TestCanceled (
     import EventJsonHelper._
     s"""{ "eventType": "TestCanceled", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = {
+    val serializablePayload = 
+      payload match {
+        case Some(p) if !serializeRoundtrip(p) =>
+          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          copy(payload = None)
+
+        case _ => this
+      }
+    serializablePayload.throwable match {
+      case Some(t) if !serializeRoundtrip(t) =>
+        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        serializablePayload.copy(throwable = None)
+
+      case _ => serializablePayload
+    }
+  }
 }
 
 /**
@@ -1011,6 +1100,15 @@ final case class SuiteStarting (
     import EventJsonHelper._
     s"""{ "eventType": "SuiteStarting", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -1107,6 +1205,15 @@ final case class SuiteCompleted (
     import EventJsonHelper._
     s"""{ "eventType": "SuiteCompleted", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -1214,6 +1321,24 @@ final case class SuiteAborted (
     import EventJsonHelper._
     s"""{ "eventType": "SuiteAborted", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = {
+    val serializablePayload = 
+      payload match {
+        case Some(p) if !serializeRoundtrip(p) =>
+          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          copy(payload = None)
+
+        case _ => this
+      }
+    serializablePayload.throwable match {
+      case Some(t) if !serializeRoundtrip(t) =>
+        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        serializablePayload.copy(throwable = None)
+
+      case _ => serializablePayload
+    }
+  }
 }
 
 /**
@@ -1300,6 +1425,15 @@ final case class RunStarting (
     import EventJsonHelper._
     s"""{ "eventType": "RunStarting", "ordinal": ${ordinal.runStamp}, "testCount": ${testCount}, "configMap": { ${configMap.map(e => string(e._1) + ": " + string(e._2.toString)).mkString(", ")} }, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -1389,6 +1523,15 @@ final case class RunCompleted (
     import EventJsonHelper._
     s"""{ "eventType": "RunCompleted", "ordinal": ${ordinal.runStamp}, "duration": ${duration.getOrElse(0L)}, "summary": ${summaryOption(summary)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -1479,6 +1622,15 @@ final case class RunStopped (
     import EventJsonHelper._
     s"""{ "eventType": "RunStopped", "ordinal": ${ordinal.runStamp}, "duration": ${duration.getOrElse(0L)}, "summary": ${summaryOption(summary)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -1568,6 +1720,24 @@ final case class RunAborted (
     import EventJsonHelper._
     s"""{ "eventType": "RunAborted", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "throwable": ${throwableOption(throwable)}, "duration": ${duration.getOrElse(0L)}, "summary": ${summaryOption(summary)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = {
+    val serializablePayload = 
+      payload match {
+        case Some(p) if !serializeRoundtrip(p) =>
+          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          copy(payload = None)
+
+        case _ => this
+      }
+    serializablePayload.throwable match {
+      case Some(t) if !serializeRoundtrip(t) =>
+        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        serializablePayload.copy(throwable = None)
+
+      case _ => serializablePayload
+    }
+  }
 }
 
 /**
@@ -1650,6 +1820,24 @@ final case class InfoProvided (
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "InfoProvided", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nameInfoOption(nameInfo)}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
+  }
+
+  private[scalatest] def ensureSerializable(): Event = {
+    val serializablePayload = 
+      payload match {
+        case Some(p) if !serializeRoundtrip(p) =>
+          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          copy(payload = None)
+
+        case _ => this
+      }
+    serializablePayload.throwable match {
+      case Some(t) if !serializeRoundtrip(t) =>
+        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        serializablePayload.copy(throwable = None)
+
+      case _ => serializablePayload
+    }
   }
 }
 
@@ -1743,6 +1931,24 @@ final case class AlertProvided (
     import EventJsonHelper._
     s"""{ "eventType": "AlertProvided", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nameInfoOption(nameInfo)}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = {
+    val serializablePayload = 
+      payload match {
+        case Some(p) if !serializeRoundtrip(p) =>
+          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          copy(payload = None)
+
+        case _ => this
+      }
+    serializablePayload.throwable match {
+      case Some(t) if !serializeRoundtrip(t) =>
+        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        serializablePayload.copy(throwable = None)
+
+      case _ => serializablePayload
+    }
+  }
 }
 
 /**
@@ -1835,6 +2041,24 @@ final case class NoteProvided (
     import EventJsonHelper._
     s"""{ "eventType": "NoteProvided", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nameInfoOption(nameInfo)}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = {
+    val serializablePayload = 
+      payload match {
+        case Some(p) if !serializeRoundtrip(p) =>
+          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          copy(payload = None)
+
+        case _ => this
+      }
+    serializablePayload.throwable match {
+      case Some(t) if !serializeRoundtrip(t) =>
+        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        serializablePayload.copy(throwable = None)
+
+      case _ => serializablePayload
+    }
+  }
 }
 
 /**
@@ -1912,6 +2136,15 @@ final case class MarkupProvided (
     import EventJsonHelper._
     s"""{ "eventType": "MarkupProvided", "ordinal": ${ordinal.runStamp}, "text": ${string(text)}, "nameInfo": ${nameInfoOption(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -1988,6 +2221,15 @@ final case class ScopeOpened (
     import EventJsonHelper._
     s"""{ "eventType": "ScopeOpened", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nmInfo(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -2063,6 +2305,15 @@ final case class ScopeClosed (
     import EventJsonHelper._
     s"""{ "eventType": "ScopeClosed", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nmInfo(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -2136,6 +2387,15 @@ final case class ScopePending (
     import EventJsonHelper._
     s"""{ "eventType": "ScopePending", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nmInfo(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        copy(payload = None)
+
+      case _ => this
+    }
 }
 
 /**
@@ -2201,6 +2461,8 @@ final case class DiscoveryStarting (
     import EventJsonHelper._
     s"""{ "eventType": "DiscoveryStarting", "ordinal": ${ordinal.runStamp}, "configMap": { ${configMap.map(e => string(e._1) + ": " + string(e._2.toString)).mkString(", ")} }, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = this
 }
 
 /**
@@ -2257,5 +2519,7 @@ final case class DiscoveryCompleted (
     import EventJsonHelper._
     s"""{ "eventType": "DiscoveryCompleted", "ordinal": ${ordinal.runStamp}, "duration": ${duration.getOrElse(0L)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[scalatest] def ensureSerializable(): Event = this
 }
 

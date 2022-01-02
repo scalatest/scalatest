@@ -27,15 +27,6 @@ private[scalatest] class SocketReporter(host: String, port: Int) extends Resourc
   private val socket = new AtomicReference(new Socket(host, port))
   private val out = new AtomicReference(new ObjectOutputStream(socket.get.getOutputStream))
 
-  /*def serializeRoundtrip[A](a: A): A = {
-    val baos = new java.io.ByteArrayOutputStream
-    val oos = new java.io.ObjectOutputStream(baos)
-    oos.writeObject(a)
-    oos.flush()
-    val ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(baos.toByteArray))
-    ois.readObject.asInstanceOf[A]
-  }*/
-
   def refresh(): Unit = {
     try {
       out.get.close()
@@ -57,17 +48,9 @@ private[scalatest] class SocketReporter(host: String, port: Int) extends Resourc
       catch {
         case e: java.io.NotSerializableException =>
           refresh()
-          event match {
-            case testFailed: TestFailed => 
-              out.get.writeObject(testFailed.copy(throwable = None))
+          out.get.writeObject(event.ensureSerializable())
 
-            case _ =>  
-          }
-
-        case e: Throwable => 
-          refresh()
-          out.get.writeObject(event)
-          out.get.flush()  
+        case e: Throwable => refresh()
       }
     }
   }
