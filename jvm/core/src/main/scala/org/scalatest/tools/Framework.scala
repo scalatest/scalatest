@@ -896,6 +896,7 @@ import java.net.{ServerSocket, InetAddress}
             catch {
               case t: Throwable => 
                 // Restart server socket
+                println(Resources.unableToReadSerializedEvent)
                 is.get.close()
                 socket.set(server.accept())
                 is.set(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))

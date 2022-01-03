@@ -416,7 +416,7 @@ final case class TestStarting (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
@@ -532,7 +532,7 @@ final case class TestSucceeded (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
@@ -659,14 +659,14 @@ final case class TestFailed (
     val serializablePayload = 
       payload match {
         case Some(p) if !serializeRoundtrip(p) =>
-          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
           copy(payload = None)
 
         case _ => this
       }
     serializablePayload.throwable match {
       case Some(t) if !serializeRoundtrip(t) =>
-        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
         serializablePayload.copy(throwable = None)
 
       case _ => serializablePayload
@@ -771,7 +771,7 @@ final case class TestIgnored (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
@@ -876,7 +876,7 @@ final case class TestPending (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
@@ -996,14 +996,14 @@ final case class TestCanceled (
     val serializablePayload = 
       payload match {
         case Some(p) if !serializeRoundtrip(p) =>
-          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
           copy(payload = None)
 
         case _ => this
       }
     serializablePayload.throwable match {
       case Some(t) if !serializeRoundtrip(t) =>
-        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
         serializablePayload.copy(throwable = None)
 
       case _ => serializablePayload
@@ -1104,7 +1104,7 @@ final case class SuiteStarting (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
@@ -1209,7 +1209,7 @@ final case class SuiteCompleted (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
@@ -1326,14 +1326,14 @@ final case class SuiteAborted (
     val serializablePayload = 
       payload match {
         case Some(p) if !serializeRoundtrip(p) =>
-          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
           copy(payload = None)
 
         case _ => this
       }
     serializablePayload.throwable match {
       case Some(t) if !serializeRoundtrip(t) =>
-        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
         serializablePayload.copy(throwable = None)
 
       case _ => serializablePayload
@@ -1429,7 +1429,7 @@ final case class RunStarting (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
@@ -1527,7 +1527,7 @@ final case class RunCompleted (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
@@ -1626,7 +1626,7 @@ final case class RunStopped (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
@@ -1725,14 +1725,14 @@ final case class RunAborted (
     val serializablePayload = 
       payload match {
         case Some(p) if !serializeRoundtrip(p) =>
-          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
           copy(payload = None)
 
         case _ => this
       }
     serializablePayload.throwable match {
       case Some(t) if !serializeRoundtrip(t) =>
-        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
         serializablePayload.copy(throwable = None)
 
       case _ => serializablePayload
@@ -1826,14 +1826,14 @@ final case class InfoProvided (
     val serializablePayload = 
       payload match {
         case Some(p) if !serializeRoundtrip(p) =>
-          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
           copy(payload = None)
 
         case _ => this
       }
     serializablePayload.throwable match {
       case Some(t) if !serializeRoundtrip(t) =>
-        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
         serializablePayload.copy(throwable = None)
 
       case _ => serializablePayload
@@ -1936,14 +1936,14 @@ final case class AlertProvided (
     val serializablePayload = 
       payload match {
         case Some(p) if !serializeRoundtrip(p) =>
-          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
           copy(payload = None)
 
         case _ => this
       }
     serializablePayload.throwable match {
       case Some(t) if !serializeRoundtrip(t) =>
-        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
         serializablePayload.copy(throwable = None)
 
       case _ => serializablePayload
@@ -2046,14 +2046,14 @@ final case class NoteProvided (
     val serializablePayload = 
       payload match {
         case Some(p) if !serializeRoundtrip(p) =>
-          println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
           copy(payload = None)
 
         case _ => this
       }
     serializablePayload.throwable match {
       case Some(t) if !serializeRoundtrip(t) =>
-        println("Warning: Unable to serialize throwable of type " + t.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
         serializablePayload.copy(throwable = None)
 
       case _ => serializablePayload
@@ -2140,7 +2140,7 @@ final case class MarkupProvided (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
@@ -2225,7 +2225,7 @@ final case class ScopeOpened (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
@@ -2309,7 +2309,7 @@ final case class ScopeClosed (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
@@ -2391,7 +2391,7 @@ final case class ScopePending (
   private[scalatest] def ensureSerializable(): Event = 
     payload match {
       case Some(p) if !serializeRoundtrip(p) =>
-        println("Warning: Unable to serialize payload of type " + p.getClass().getName() + " for " + this.toString() + ", setting it to None.")
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
         copy(payload = None)
 
       case _ => this
