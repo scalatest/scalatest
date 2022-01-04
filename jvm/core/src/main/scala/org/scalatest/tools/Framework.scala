@@ -21,7 +21,7 @@ import ArgsParser._
 import SuiteDiscoveryHelper._
 
 import scala.collection.JavaConverters._
-import java.io.{PrintWriter, StringWriter}
+import java.io.{PrintWriter, StringWriter, IOException}
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
 import java.util.concurrent.{ExecutorService, Executors, LinkedBlockingQueue, ThreadFactory}
 
@@ -894,7 +894,7 @@ import java.net.{ServerSocket, InetAddress}
               react()  
             }
             catch {
-              case t: Throwable => 
+              case t: IOException => 
                 // Restart server socket
                 println(Resources.unableToReadSerializedEvent)
                 is.get.close()

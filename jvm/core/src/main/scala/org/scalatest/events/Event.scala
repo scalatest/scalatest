@@ -20,6 +20,7 @@ import org.scalactic.Requirements._
 import java.io.BufferedWriter
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.io.NotSerializableException
 import java.util.Date
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.xml.Elem
@@ -293,7 +294,7 @@ sealed abstract class Event extends Ordered[Event] with Product with Serializabl
       true
     }
     catch {
-      case _: Throwable => false
+      case _: NotSerializableException => false
     }
   }
 
