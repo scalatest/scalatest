@@ -799,8 +799,8 @@ class Framework extends SbtFramework {
 
     def remoteArgs: Array[String] = {
       import org.scalatest.events._
-import java.io.{ObjectInputStream, ObjectOutputStream}
-import java.net.{ServerSocket, InetAddress}
+      import java.io.{ObjectInputStream, ObjectOutputStream}
+      import java.net.{ServerSocket, InetAddress}
 
       class SkeletonObjectInputStream(in: java.io.InputStream, loader: ClassLoader) extends ObjectInputStream(in) {
 
@@ -824,7 +824,7 @@ import java.net.{ServerSocket, InetAddress}
         
         def run(): Unit = {
           try {
-			      (new React(server)).tryReact()
+			      (new React(server)).tryReact(0)
           } 
           finally {
             is.get.close()	
@@ -889,19 +889,24 @@ import java.net.{ServerSocket, InetAddress}
           }
 
           @annotation.tailrec
-          final def tryReact(): Unit = 
-            try {
-              react()  
-            }
-            catch {
-              case t: IOException => 
-                // Restart server socket
-                println(Resources.unableToReadSerializedEvent)
-                is.get.close()
-                socket.set(server.accept())
-                is.set(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
-                tryReact()
-            }
+          final def tryReact(count: Int): Unit = 
+            if (count < 3)
+              try {
+                react()  
+              }
+              catch {
+                case t: IOException => 
+                  // Restart server socket
+                  println(Resources.unableToReadSerializedEvent)
+                  is.get.close()
+                  socket.set(server.accept())
+                  is.set(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
+                  tryReact(count + 1)
+              }
+            else {
+              println(Resources.unableToContinueRun)
+              System.exit(-1)
+            }  
         }
         
         def host: String = server.getLocalSocketAddress.toString
