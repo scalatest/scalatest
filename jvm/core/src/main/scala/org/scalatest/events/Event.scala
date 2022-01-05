@@ -26,6 +26,7 @@ import java.util.Date
 import scala.xml.Elem
 // SKIP-SCALATESTJS,NATIVE-END
 import exceptions.StackDepthException
+import exceptions.NotSerializableWrapperException
 
 /**
  * A base class for the events that can be passed to the report function passed
@@ -316,8 +317,10 @@ sealed abstract class Event extends Ordered[Event] with Product with Serializabl
   private[scalatest] def ensureThrowableSerializable(throwable: Option[Throwable]): Event = 
     throwable match {
       case Some(t) if !serializeRoundtrip(t) =>
-        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
-        withThrowable(None)
+        val className = t.getClass().getName()
+        println(Resources.unableToSerializeThrowable(className, this.toString()))
+        val ex = new NotSerializableWrapperException(t.getMessage, className, t.getStackTrace)
+        withThrowable(Some(ex))
 
       case _ => this
     }  
