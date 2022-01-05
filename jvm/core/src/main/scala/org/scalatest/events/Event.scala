@@ -283,6 +283,10 @@ sealed abstract class Event extends Ordered[Event] with Product with Serializabl
     }
   }
 
+  private[events] def withPayload(newPayload: Option[Any]): Event
+
+  private[events] def withThrowable(newThrowable: Option[Throwable]): Event = this
+
   private[events] def serializeRoundtrip(a: Any): Boolean = {
     try {
       val baos = new java.io.ByteArrayOutputStream
@@ -298,7 +302,25 @@ sealed abstract class Event extends Ordered[Event] with Product with Serializabl
     }
   }
 
-  private[scalatest] def ensureSerializable(): Event
+  private[scalatest] def ensureSerializable(): Event = ensurePayloadSerializable(payload)
+
+  private[scalatest] def ensurePayloadSerializable(payload: Option[Any]): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
+        withPayload(None)
+
+      case _ => this
+    }  
+
+  private[scalatest] def ensureThrowableSerializable(throwable: Option[Throwable]): Event = 
+    throwable match {
+      case Some(t) if !serializeRoundtrip(t) =>
+        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
+        withThrowable(None)
+
+      case _ => this
+    }  
 }
 
 /**
@@ -414,14 +436,7 @@ final case class TestStarting (
     s"""{ "eventType": "TestStarting", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "testName": ${string(testName)}, "testText": ${string(testText)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
-
-      case _ => this
-    }
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -530,14 +545,8 @@ final case class TestSucceeded (
     s"""{ "eventType": "TestSucceeded", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 
-      case _ => this
-    }
 }
 
 /**
@@ -656,23 +665,12 @@ final case class TestFailed (
     s"""{ "eventType": "TestFailed", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = {
-    val serializablePayload = 
-      payload match {
-        case Some(p) if !serializeRoundtrip(p) =>
-          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-          copy(payload = None)
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 
-        case _ => this
-      }
-    serializablePayload.throwable match {
-      case Some(t) if !serializeRoundtrip(t) =>
-        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
-        serializablePayload.copy(throwable = None)
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
 
-      case _ => serializablePayload
-    }
-  }
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -769,14 +767,7 @@ final case class TestIgnored (
     s"""{ "eventType": "TestIgnored", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "testName": ${string(testName)}, "testText": ${string(testText)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
-
-      case _ => this
-    }
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -874,14 +865,7 @@ final case class TestPending (
     s"""{ "eventType": "TestPending", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
-
-      case _ => this
-    }
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -993,23 +977,12 @@ final case class TestCanceled (
     s"""{ "eventType": "TestCanceled", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = {
-    val serializablePayload = 
-      payload match {
-        case Some(p) if !serializeRoundtrip(p) =>
-          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-          copy(payload = None)
+  private[events] def withPayload(newPayload: Option[Any]) = this
 
-        case _ => this
-      }
-    serializablePayload.throwable match {
-      case Some(t) if !serializeRoundtrip(t) =>
-        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
-        serializablePayload.copy(throwable = None)
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
 
-      case _ => serializablePayload
-    }
-  }
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -1102,14 +1075,7 @@ final case class SuiteStarting (
     s"""{ "eventType": "SuiteStarting", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
-
-      case _ => this
-    }
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -1207,14 +1173,7 @@ final case class SuiteCompleted (
     s"""{ "eventType": "SuiteCompleted", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
-
-      case _ => this
-    }
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -1323,23 +1282,12 @@ final case class SuiteAborted (
     s"""{ "eventType": "SuiteAborted", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = {
-    val serializablePayload = 
-      payload match {
-        case Some(p) if !serializeRoundtrip(p) =>
-          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-          copy(payload = None)
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 
-        case _ => this
-      }
-    serializablePayload.throwable match {
-      case Some(t) if !serializeRoundtrip(t) =>
-        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
-        serializablePayload.copy(throwable = None)
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
 
-      case _ => serializablePayload
-    }
-  }
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -1427,14 +1375,7 @@ final case class RunStarting (
     s"""{ "eventType": "RunStarting", "ordinal": ${ordinal.runStamp}, "testCount": ${testCount}, "configMap": { ${configMap.map(e => string(e._1) + ": " + string(e._2.toString)).mkString(", ")} }, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
-
-      case _ => this
-    }
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -1525,14 +1466,7 @@ final case class RunCompleted (
     s"""{ "eventType": "RunCompleted", "ordinal": ${ordinal.runStamp}, "duration": ${duration.getOrElse(0L)}, "summary": ${summaryOption(summary)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
-
-      case _ => this
-    }
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -1624,14 +1558,7 @@ final case class RunStopped (
     s"""{ "eventType": "RunStopped", "ordinal": ${ordinal.runStamp}, "duration": ${duration.getOrElse(0L)}, "summary": ${summaryOption(summary)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
-
-      case _ => this
-    }
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -1722,23 +1649,12 @@ final case class RunAborted (
     s"""{ "eventType": "RunAborted", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "throwable": ${throwableOption(throwable)}, "duration": ${duration.getOrElse(0L)}, "summary": ${summaryOption(summary)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = {
-    val serializablePayload = 
-      payload match {
-        case Some(p) if !serializeRoundtrip(p) =>
-          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-          copy(payload = None)
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 
-        case _ => this
-      }
-    serializablePayload.throwable match {
-      case Some(t) if !serializeRoundtrip(t) =>
-        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
-        serializablePayload.copy(throwable = None)
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
 
-      case _ => serializablePayload
-    }
-  }
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -1823,23 +1739,12 @@ final case class InfoProvided (
     s"""{ "eventType": "InfoProvided", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nameInfoOption(nameInfo)}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = {
-    val serializablePayload = 
-      payload match {
-        case Some(p) if !serializeRoundtrip(p) =>
-          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-          copy(payload = None)
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 
-        case _ => this
-      }
-    serializablePayload.throwable match {
-      case Some(t) if !serializeRoundtrip(t) =>
-        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
-        serializablePayload.copy(throwable = None)
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
 
-      case _ => serializablePayload
-    }
-  }
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -1933,23 +1838,12 @@ final case class AlertProvided (
     s"""{ "eventType": "AlertProvided", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nameInfoOption(nameInfo)}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = {
-    val serializablePayload = 
-      payload match {
-        case Some(p) if !serializeRoundtrip(p) =>
-          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-          copy(payload = None)
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 
-        case _ => this
-      }
-    serializablePayload.throwable match {
-      case Some(t) if !serializeRoundtrip(t) =>
-        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
-        serializablePayload.copy(throwable = None)
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
 
-      case _ => serializablePayload
-    }
-  }
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -2043,23 +1937,12 @@ final case class NoteProvided (
     s"""{ "eventType": "NoteProvided", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nameInfoOption(nameInfo)}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = {
-    val serializablePayload = 
-      payload match {
-        case Some(p) if !serializeRoundtrip(p) =>
-          println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-          copy(payload = None)
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 
-        case _ => this
-      }
-    serializablePayload.throwable match {
-      case Some(t) if !serializeRoundtrip(t) =>
-        println(Resources.unableToSerializeThrowable(t.getClass().getName(), this.toString()))
-        serializablePayload.copy(throwable = None)
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
 
-      case _ => serializablePayload
-    }
-  }
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -2138,14 +2021,7 @@ final case class MarkupProvided (
     s"""{ "eventType": "MarkupProvided", "ordinal": ${ordinal.runStamp}, "text": ${string(text)}, "nameInfo": ${nameInfoOption(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
-
-      case _ => this
-    }
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -2223,14 +2099,7 @@ final case class ScopeOpened (
     s"""{ "eventType": "ScopeOpened", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nmInfo(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
-
-      case _ => this
-    }
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -2307,14 +2176,7 @@ final case class ScopeClosed (
     s"""{ "eventType": "ScopeClosed", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nmInfo(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
-
-      case _ => this
-    }
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -2389,14 +2251,7 @@ final case class ScopePending (
     s"""{ "eventType": "ScopePending", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nmInfo(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = 
-    payload match {
-      case Some(p) if !serializeRoundtrip(p) =>
-        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
-        copy(payload = None)
-
-      case _ => this
-    }
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -2463,7 +2318,9 @@ final case class DiscoveryStarting (
     s"""{ "eventType": "DiscoveryStarting", "ordinal": ${ordinal.runStamp}, "configMap": { ${configMap.map(e => string(e._1) + ": " + string(e._2.toString)).mkString(", ")} }, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = this
+  private[events] def withPayload(newPayload: Option[Any]) = this
+
+  private[scalatest] override def ensureSerializable(): Event = this
 }
 
 /**
@@ -2521,6 +2378,8 @@ final case class DiscoveryCompleted (
     s"""{ "eventType": "DiscoveryCompleted", "ordinal": ${ordinal.runStamp}, "duration": ${duration.getOrElse(0L)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
 
-  private[scalatest] def ensureSerializable(): Event = this
+  private[events] def withPayload(newPayload: Option[Any]) = this
+
+  private[scalatest] override def ensureSerializable(): Event = this
 }
 
