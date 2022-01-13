@@ -92,6 +92,22 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.inOrderDuplicate))
       }
+      it("should pass when evaluating List(5, 2, 5) should contain inOrder (5, 2)") {
+        List(5, 2, 5) should contain inOrder (5, 2)
+      }
+      it("should pass when evaluating List(1, 2, 3, 4, 5) should contain inOrder (1, 3, 5)") {
+        List(1, 2, 3, 4, 5) should contain inOrder (1, 3, 5)
+      }
+      it("should fail when evaluating List(1, 2, 3) should contain inOrder (1, 2, 8)") {
+        val e1 = intercept[TestFailedException] {
+          List(1, 2, 3) should contain inOrder (1, 2, 8)
+        }
+      }
+      it("should fail when evaluating List(0, 1, 2, 2, 99, 3, 3, 3, 5) should contain inOrder (1, 3, 99)") {
+        val e1 = intercept[TestFailedException] {
+          List(0, 1, 2, 2, 99, 3, 3, 3, 5) should contain inOrder (1, 3, 99)
+        }
+      }
     }
 
     describe("when used with (contain inOrder (..))") {
