@@ -17,6 +17,7 @@ package org.scalatest.tools
 
 import org.scalatest.events._
 import org.scalatest.ResourcefulReporter
+import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import java.net.Socket
 import java.io.ObjectOutputStream
 import java.io.BufferedOutputStream
@@ -33,7 +34,7 @@ private[scalatest] class SocketReporter(host: String, port: Int) extends Resourc
       socket.get.close()
     }
     catch {
-      case _: Throwable =>
+      case t: Throwable if anExceptionThatShouldCauseAnAbort(t) =>
     }
     socket.set(new Socket(host, port))
     out.set(new ObjectOutputStream(socket.get.getOutputStream))
@@ -50,7 +51,7 @@ private[scalatest] class SocketReporter(host: String, port: Int) extends Resourc
           refresh()
           out.get.writeObject(event.ensureSerializable())
 
-        case e: Throwable => refresh()
+        case e: Throwable if anExceptionThatShouldCauseAnAbort(e) => refresh()
       }
     }
   }
