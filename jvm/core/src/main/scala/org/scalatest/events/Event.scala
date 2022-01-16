@@ -319,7 +319,7 @@ sealed abstract class Event extends Ordered[Event] with Product with Serializabl
       case Some(t) if !serializeRoundtrip(t) =>
         val className = t.getClass().getName()
         println(Resources.unableToSerializeThrowable(className, this.toString()))
-        val ex = new NotSerializableWrapperException(t.getMessage, className, t.getStackTrace)
+        val ex = NotSerializableWrapperException(t.getMessage, className, t.getStackTrace)
         withThrowable(Some(ex))
 
       case _ => this

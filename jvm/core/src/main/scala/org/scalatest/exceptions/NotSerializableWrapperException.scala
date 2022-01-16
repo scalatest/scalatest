@@ -15,4 +15,13 @@
  */
 package org.scalatest.exceptions
 
-class NotSerializableWrapperException(msg: String, exceptionClassName: String, exceptionStackTrace: Array[StackTraceElement]) extends Exception with Serializable
+/**
+ * Wrapper exception that wraps an non-serializable exception encountered in <a href="../events/Event.html"><code>Event</code></a>.
+ *
+ * @param msg a string that explains the problem
+ * @param exceptionClassName the class name of the exception being wrapped
+ * @param exceptionStackTrace the stack trace of the exception being wrapped
+ *
+ * @throws NullArgumentException if either <code>message</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>
+ */
+case class NotSerializableWrapperException(msg: String, exceptionClassName: String, exceptionStackTrace: Array[StackTraceElement]) extends Exception with Serializable
