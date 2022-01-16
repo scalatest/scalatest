@@ -1489,8 +1489,17 @@ object Runner {
         // getDispatchReporter may complete abruptly with an exception, if there is an problem trying to load
         // or instantiate a custom reporter class.
         case ex: Throwable => {
-          System.err.println(Resources.bigProblemsMaybeCustomReporter)
+          val msg = Resources.bigProblemsMaybeCustomReporter
+          System.err.println(msg)
           ex.printStackTrace(System.err)
+          val tracker = new Tracker(new Ordinal(1))
+          val runAborted = RunAborted(tracker.nextOrdinal(), msg, None)
+          graphicReporter.foreach { rep =>
+            rep(runAborted)
+          }
+          passFailReporter.foreach { rep =>
+            rep(runAborted)
+          }
         }
       }
     }
