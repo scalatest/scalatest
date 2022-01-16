@@ -107,5 +107,9 @@ class EitherValuesSpec extends AnyFunSpec {
       val righty: Either[String, Map[String, Int]] = Right(Map("I" -> 1, "II" -> 2))
       righty.value("II") shouldBe 2
     }
+
+    it("should be able to used with OptionValues") {
+      class TestSpec extends AnyFunSpec with EitherValues with OptionValues
+    }
   } 
 }
