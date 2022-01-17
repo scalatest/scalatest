@@ -571,6 +571,18 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
+    it("should  throw TestFailedException with correct message and stack depth when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+      import scala.math.Ordering.Implicits.infixOrderingOps
+      val first = new java.lang.Integer(5)
+      val second = new java.lang.Integer(4)
+      val e = intercept[TestFailedException] {
+        assert(first < second)
+      }
+      assert(e.message === Some(wasNotLessThan(5, 4)))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
     it("should do nothing when is used to check bob == \"bob\"") {
       assert(bob == "bob")
     }
@@ -2023,6 +2035,18 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
+    it("should  throw TestFailedException with correct message and stack depth when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+      import scala.math.Ordering.Implicits.infixOrderingOps
+      val first = new java.lang.Integer(5)
+      val second = new java.lang.Integer(4)
+      val e = intercept[TestFailedException] {
+        assert(first < second, "; dude")
+      }
+      assert(e.message === Some(wasNotLessThan(5, 4) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
     it("should do nothing when is used to check bob == \"bob\"") {
       assert(bob == "bob", "dude")
     }
@@ -3462,6 +3486,18 @@ class AssertionsSpec extends AnyFunSpec {
         assume(6 <= b)
       }
       assert(e.message === Some(wasNotLessThanOrEqualTo(6, 5)))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should  throw TestFailedException with correct message and stack depth when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+      import scala.math.Ordering.Implicits.infixOrderingOps
+      val first = new java.lang.Integer(5)
+      val second = new java.lang.Integer(4)
+      val e = intercept[TestCanceledException] {
+        assume(first < second)
+      }
+      assert(e.message === Some(wasNotLessThan(5, 4)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -4911,6 +4947,18 @@ class AssertionsSpec extends AnyFunSpec {
         assume(6 <= b, "; dude")
       }
       assert(e.message === Some(wasNotLessThanOrEqualTo(6, 5) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should  throw TestFailedException with correct message and stack depth when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+      import scala.math.Ordering.Implicits.infixOrderingOps
+      val first = new java.lang.Integer(5)
+      val second = new java.lang.Integer(4)
+      val e = intercept[TestCanceledException] {
+        assume(first < second, "; dude")
+      }
+      assert(e.message === Some(wasNotLessThan(5, 4) + "; dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }

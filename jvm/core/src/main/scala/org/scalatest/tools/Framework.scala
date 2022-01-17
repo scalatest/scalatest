@@ -21,7 +21,7 @@ import ArgsParser._
 import SuiteDiscoveryHelper._
 
 import scala.collection.JavaConverters._
-import java.io.{PrintWriter, StringWriter}
+import java.io.{PrintWriter, StringWriter, IOException}
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
 import java.util.concurrent.{ExecutorService, Executors, LinkedBlockingQueue, ThreadFactory}
 
@@ -799,8 +799,8 @@ class Framework extends SbtFramework {
 
     def remoteArgs: Array[String] = {
       import org.scalatest.events._
-import java.io.{ObjectInputStream, ObjectOutputStream}
-import java.net.{ServerSocket, InetAddress}
+      import java.io.{ObjectInputStream, ObjectOutputStream}
+      import java.net.{ServerSocket, InetAddress}
 
       class SkeletonObjectInputStream(in: java.io.InputStream, loader: ClassLoader) extends ObjectInputStream(in) {
 
@@ -819,24 +819,23 @@ import java.net.{ServerSocket, InetAddress}
       class Skeleton extends Runnable {
         
         val server = new ServerSocket(0)
+        lazy val socket = new AtomicReference(server.accept())
+        lazy val is = new AtomicReference(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
         
         def run(): Unit = {
-          val socket = server.accept()
-          val is = new SkeletonObjectInputStream(socket.getInputStream, getClass.getClassLoader)
-
           try {
-			      (new React(is)).react()
+			      (new React(server)).tryReact(0)
           } 
           finally {
-            is.close()	
-            socket.close()
+            is.get.close()	
+            socket.get.close()
 		      }
         }
         
-        class React(is: ObjectInputStream) {
+        class React(server: ServerSocket) {
           @annotation.tailrec 
           final def react(): Unit = { 
-            val event = is.readObject
+            val event = is.get.readObject
             event match {
               case e: TestStarting =>
                 dispatchReporter(e) 
@@ -886,8 +885,28 @@ import java.net.{ServerSocket, InetAddress}
               case e: RunCompleted => // Sub-process completed, just let the thread terminate
               case e: RunStopped => dispatchReporter(e)
               case e: RunAborted => dispatchReporter(e)
-	        }
+            }  
           }
+
+          @annotation.tailrec
+          final def tryReact(count: Int): Unit = 
+            if (count < 3)
+              try {
+                react()  
+              }
+              catch {
+                case t: IOException => 
+                  // Restart server socket
+                  println(Resources.unableToReadSerializedEvent)
+                  is.get.close()
+                  socket.set(server.accept())
+                  is.set(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
+                  tryReact(count + 1)
+              }
+            else {
+              println(Resources.unableToContinueRun)
+              System.exit(-1)
+            }  
         }
         
         def host: String = server.getLocalSocketAddress.toString
