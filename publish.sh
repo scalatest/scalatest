@@ -11,7 +11,7 @@ sbt "project scalacticMacroJS" clean
 sbt ++2.11.12 "project scalacticJS" clean publishSigned
 sbt ++2.12.15 "project scalacticJS" clean publishSigned
 sbt ++2.13.6 "project scalacticJS" clean publishSigned
-export SCALANATIVE_VERSION=0.4.0
+export SCALANATIVE_VERSION=0.4.3
 sbt "project scalacticMacroNative" clean
 sbt ++2.11.12 "project scalacticNative" clean publishSigned
 sbt ++2.12.15 "project scalacticNative" clean publishSigned
@@ -36,7 +36,7 @@ sbt "project scalacticJS" clean
 sbt ++2.11.12 "project scalatestJS" clean publishSigned
 sbt ++2.12.15 "project scalatestJS" clean publishSigned
 sbt ++2.13.6 "project scalatestJS" clean publishSigned
-export SCALANATIVE_VERSION=0.4.0
+export SCALANATIVE_VERSION=0.4.3
 sbt "project scalacticMacroNative" clean
 sbt ++2.11.12 "project scalatestNative" clean publishSigned
 sbt ++2.12.15 "project scalatestNative" clean publishSigned
@@ -60,7 +60,7 @@ sbt "project scalacticJS" clean
 sbt ++2.11.12 "project scalatestAppJS" clean publishSigned
 sbt ++2.12.15 "project scalatestAppJS" clean publishSigned
 sbt ++2.13.6 "project scalatestAppJS" clean publishSigned
-export SCALANATIVE_VERSION=0.4.0
+export SCALANATIVE_VERSION=0.4.3
 sbt "project scalacticMacroNative" clean
 sbt ++2.11.12 "project scalatestAppNative" clean publishSigned
 sbt ++2.12.15 "project scalatestAppNative" clean publishSigned
