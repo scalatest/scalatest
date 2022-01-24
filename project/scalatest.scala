@@ -609,7 +609,9 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       mimaBinaryIssueFilters ++= {
         Seq(
           exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.failAfterImpl"),  // New function not in current version
-          exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.cancelAfterImpl")  // New function not in current version
+          exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.cancelAfterImpl"),  // New function not in current version
+          exclude[ReversedMissingMethodProblem]("org.scalatest.events.Event.withPayload"), // New private[scalatest] function not in current version
+          exclude[IncompatibleMethTypeProblem]("org.scalatest.tools.Framework#ScalaTestRunner#Skeleton#1#React.this")  // SBT integration class not meant for third-party use.
         )
       }
     ).settings(osgiSettings: _*).settings(
