@@ -460,7 +460,8 @@ trait JsBuild { this: BuildCommons =>
       mimaBinaryIssueFilters ++= {
        Seq(
          exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.failAfterImpl"),  // New function not in current version
-         exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.cancelAfterImpl")  // New function not in current version
+         exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.cancelAfterImpl"),  // New function not in current version
+         exclude[ReversedMissingMethodProblem]("org.scalatest.events.Event.withPayload") // New private[scalatest] function not in current version
        )
      }
     ).settings(osgiSettings: _*).settings(
