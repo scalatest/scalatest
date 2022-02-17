@@ -10,13 +10,15 @@ import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLinkerConfig, jsEnv}
 
+import scalanative.sbtplugin.ScalaNativePlugin
+
 import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.2")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.1.0")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
@@ -145,6 +147,63 @@ trait DottyBuild { this: BuildCommons =>
       "Bundle-Vendor" -> "Artima, Inc."
     )
   ).enablePlugins(ScalaJSPlugin)
+
+  lazy val scalacticDottyNative = project.in(file("dotty/scalactic.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(scalacticDocSettings: _*)
+    .settings(
+      projectTitle := "Scalactic",
+      organization := "org.scalactic",
+      moduleName := "scalactic",
+      initialCommands in console := "import org.scalactic._",
+      packageManagedSources,
+      sourceGenerators in Compile += {
+        Def.task {
+          // From scalactic-macro
+          GenScalacticDotty.genMacroScala((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genResources((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAnyVals.genMain((sourceManaged in Compile).value / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, true) ++
+          GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenColCompatHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          // end from scalactic-macro
+          GenScalacticDotty.genScalaNative((sourceManaged in Compile).value, version.value, scalaVersion.value) ++ 
+          GenVersions.genScalacticVersions((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      resourceGenerators in Compile += Def.task {
+        GenScalacticDotty.genResource((resourceManaged in Compile).value)
+      }.taskValue,
+      //scalacticDocSourcesSetting,
+      //docTaskSetting,
+      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalactic",
+      "org.scalactic.anyvals",
+      "org.scalactic.exceptions",
+      "org.scalactic.source"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "org.scalactic.*",
+      "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "Scalactic",
+      "Bundle-Description" -> "Scalactic is an open-source library for Scala projects.",
+      "Bundle-DocURL" -> "http://www.scalactic.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestCoreDotty = project.in(file("dotty/core"))
     .enablePlugins(SbtOsgi)
@@ -298,6 +357,83 @@ trait DottyBuild { this: BuildCommons =>
       "Main-Class" -> "org.scalatest.tools.Runner"
     )
   ).dependsOn(scalacticDottyJS).enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestCoreDottyNative = project.in(file("dotty/core.native"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Core Dotty",
+      organization := "org.scalatest",
+      moduleName := "scalatest-core",
+      initialCommands in console := """|import org.scalatest._
+                                       |import org.scalactic._
+                                       |import Matchers._""".stripMargin,
+      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.0.1", 
+      libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).withDottyCompat(dottyVersion), 
+      packageManagedSources,
+      sourceGenerators in Compile += Def.task {
+        GenModulesDotty.genScalaTestCoreJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+        GenScalaTestDotty.genScalaJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+        GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+        ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
+        ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)  ++
+        GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+      }.taskValue,
+      javaSourceManaged := target.value / "java",
+      managedSourceDirectories in Compile += javaSourceManaged.value,
+      sourceGenerators in Compile += Def.task {
+        GenScalaTestDotty.genJava((javaSourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      resourceGenerators in Compile += Def.task {
+          GenScalaTestDotty.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      sourceGenerators in Compile += Def.task {
+        GenTable.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+        //GenSafeStyles.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+      }.taskValue,
+      //scalatestJSDocTaskSetting,
+      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"),
+      mimaBinaryIssueFilters ++= {
+        Seq(
+          exclude[MissingClassProblem]("org.scalatest.tools.SbtCommandParser$"),
+          exclude[MissingClassProblem]("org.scalatest.tools.SbtCommandParser")
+        )
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest", 
+      "org.scalatest.compatible", 
+      "org.scalatest.concurrent",  
+      "org.scalatest.enablers",  
+      "org.scalatest.exceptions",  
+      "org.scalatest.events", 
+      "org.scalatest.fixture",  
+      "org.scalatest.prop", 
+      "org.scalatest.tags", 
+      "org.scalatest.tagobjects", 
+      "org.scalatest.time", 
+      "org.scalatest.tools",  
+      "org.scalatest.verbs"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "org.scalactic.*",
+      "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest Core Dotty",
+      "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc.",
+      "Main-Class" -> "org.scalatest.tools.Runner"
+    )
+  ).dependsOn(scalacticDottyNative).enablePlugins(ScalaNativePlugin)
 
   private implicit class DottyProjectEx(private val p: Project) {
     /** common settings for all scalatest modules */
