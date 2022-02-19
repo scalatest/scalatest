@@ -89,7 +89,7 @@ trait Configuration {
    *
    * @author Bill Venners
    */
-  sealed abstract class PropertyCheckConfigParam extends Product with Serializable
+  abstract class PropertyCheckConfigParam extends Product with Serializable
   
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the minimum number of successful
