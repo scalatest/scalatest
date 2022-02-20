@@ -300,7 +300,8 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
 
         case e: TestFailed =>
           endIndex = idx
-          testcase.failure = Some(e)
+          testcase.failed = true
+          testcase.failure = e.throwable
           testcase.time = e.timeStamp - testcase.timeStamp
           idx += idxAdjustmentForRecordedEvents(e.recordedEvents)
 
@@ -329,7 +330,13 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
         case e: RunCompleted   => unexpected(e)
         case e: RunStopped     => unexpected(e)
         case e: RunAborted     => unexpected(e)
-        case e: SuiteAborted   => unexpected(e)
+        case e: SuiteAborted   => 
+          endIndex = idx
+          testcase.failed = true
+          testcase.failure = e.throwable
+          testcase.time = e.timeStamp - testcase.timeStamp
+          idx += idxAdjustmentForRecordedEvents(collection.immutable.IndexedSeq.empty[RecordableEvent])
+
         case e: DiscoveryStarting  => unexpected(e)
         case e: DiscoveryCompleted => unexpected(e)
       }
@@ -362,7 +369,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
             if (testcase.ignored || testcase.pending || testcase.canceled)
               <skipped/>
             else
-              failureXml(testcase.failure)
+              failureXml(testcase.failed, testcase.failure)
           }
           </testcase>
         }
@@ -402,31 +409,28 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   }
 
   //
-  // Generates <failure> xml for TestFailed event, if specified Option
+  // Generates <failure> xml for Throwable, if specified Option
   // contains one.
   //
-  private def failureXml(failureOption: Option[TestFailed]): xml.NodeSeq = {
-    failureOption match {
-      case None =>
-        xml.NodeSeq.Empty
+  private def failureXml(failed: Boolean, failureOption: Option[Throwable]): xml.NodeSeq = 
+    if (failed) {
+      val (throwableType, throwableText) =
+        failureOption match {
+          case None =>
+            ("", "")
 
-      case Some(failure) =>
-        val (throwableType, throwableText) =
-          failure.throwable match {
-            case None => ("", "")
-
-            case Some(throwable) =>
-              val throwableType = "" + throwable.getClass
-              val throwableText = getStackTrace(throwable)
-              (throwableType, throwableText)
-          }
-        
-        <failure message = { failure.message.replaceAll("\n", "&#010;") }
-                 type    = { throwableType   } >
-          { throwableText }
-        </failure>
+          case Some(failure) =>
+            val throwableType = "" + failure.getClass
+            val throwableText = getStackTrace(failure)
+            (throwableType, throwableText)
+        }
+      <failure message = { throwableText.replaceAll("\n", "&#010;") }
+               type    = { throwableType   } >
+        { throwableText }
+      </failure>
     }
-  }
+    else
+      xml.NodeSeq.Empty
 
   //
   // Returns toString value of option contents if Some, or empty string if
@@ -513,6 +517,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     var pending = false
     var canceled = false
     var ignored = false
-    var failure: Option[TestFailed] = None
+    var failed = false
+    var failure: Option[Throwable] = None
   }
 }
