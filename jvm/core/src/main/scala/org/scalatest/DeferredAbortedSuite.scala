@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalactic.NameUtil
 
-private[scalatest] case class DeferredAbortedSuite(suiteClassName: String, t: Throwable) extends Suite {
+private[scalatest] case class DeferredAbortedSuite(override val suiteId: String, suiteClassName: String, t: Throwable) extends Suite {
 
   override def run(testName: Option[String], args: Args): Status = {
     throw t

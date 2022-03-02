@@ -1404,7 +1404,7 @@ private[scalatest] object Suite {
   def formatterForSuiteAborted(suite: Suite, message: String): Option[Formatter] = {
     val actualSuiteName =
       suite match {
-        case DeferredAbortedSuite(suiteClassName, deferredThrowable) => suiteClassName
+        case DeferredAbortedSuite(suiteId, suiteClassName, deferredThrowable) => suiteClassName
         case _ => suite.getClass.getName
       }
     Some(IndentedText(actualSuiteName, message, 0))

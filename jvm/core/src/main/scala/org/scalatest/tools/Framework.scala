@@ -449,7 +449,7 @@ class Framework extends SbtFramework {
             else
               suiteClass.newInstance.asInstanceOf[Suite] 
           } catch {
-            case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, t)
+            case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, suiteClass.getName, t)
           }
 
         if (useSbtLogInfoReporter) {
