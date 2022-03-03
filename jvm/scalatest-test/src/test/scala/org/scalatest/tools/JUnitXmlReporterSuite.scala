@@ -275,7 +275,7 @@ class JUnitXmlReporterSuite extends AnyFunSuite {
       
   val reporter = new JUnitXmlReporter("target")
 
-  /*test("SuiteAborted and SuiteCompleted are recognized as test terminators") {
+  test("SuiteAborted and SuiteCompleted are recognized as test terminators") {
     reporter(start1)
     reporter(start2)
     reporter(abort2)
@@ -323,7 +323,7 @@ class JUnitXmlReporterSuite extends AnyFunSuite {
     assert(!(tcFailed \ "failure").isEmpty)
     assert(!(tcPending \ "skipped").isEmpty)
     assert(!(tcCanceled \ "skipped").isEmpty)
-  }*/
+  }
   
   test("AlertProvided and NoteProvided should be ignored") {
     reporter(alertProvided1)
@@ -365,7 +365,7 @@ class JUnitXmlReporterSuite extends AnyFunSuite {
     assert(!(tcCanceled \ "skipped").isEmpty)
   }
 
-  /*test("testcase failure message xmlified properly"){
+  test("testcase failure message xmlified properly"){
     //"" - not used parameters
     val bigFail = TestFailed(new Ordinal(0),
         "Unusually formed message: \n less:'<', amp:'&', double-quote:\"",
@@ -374,12 +374,16 @@ class JUnitXmlReporterSuite extends AnyFunSuite {
         None,
         "",
         "",
-        null,
+        Vector.empty, 
+        Vector.empty, 
         Some(new Exception("Unusually formed exception: \n less:'<', more:'>' amp:'&', double-quote:\"")))
 
     val testsuite = reporter.Testsuite("TestSuite", 10L)
     testsuite.testcases += reporter.Testcase("TestCase", Some("someClass"), 1L)
-    testsuite.testcases.foreach(tc => tc.failure = Some(bigFail))
+    testsuite.testcases.foreach { tc => 
+      tc.failed = true
+      tc.failure = bigFail.throwable
+    }
 
     val rawXml:String = reporter.xmlify(testsuite)
 
@@ -387,6 +391,6 @@ class JUnitXmlReporterSuite extends AnyFunSuite {
     val res= scala.xml.XML.loadString(rawXml)
 
     val message = (res \\ "failure" \ "@message").toString
-    assert(message==="""Unusually formed message: &amp;#010; less:'&lt;', amp:'&amp;', double-quote:&quot;""","failure/@message is not as expected")
-  }*/
+    assert(message startsWith """java.lang.Exception: Unusually formed exception: &amp;#010; less:'&lt;', more:'&gt;' amp:'&amp;', double-quote:&quot;""","failure/@message is not as expected")
+  }
 }

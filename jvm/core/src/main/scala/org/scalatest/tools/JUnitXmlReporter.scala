@@ -171,6 +171,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
         case e: SuiteAborted =>
           assert(endIndex == idx)
           testsuite.errors += 1
+          testsuite.abortedError = e.throwable
           testsuite.time = e.timeStamp - testsuite.timeStamp
           idx += 1
 
@@ -348,6 +349,9 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   // Creates an xml string describing a run of a test suite.
   //
   def xmlify(testsuite: Testsuite): String = {
+
+    val errMsg = testsuite.abortedError.map(getStackTrace(_)).getOrElse("")
+
     val xmlVal =
       <testsuite
         errors    = { "" + testsuite.errors         }
@@ -374,8 +378,8 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
           </testcase>
         }
       }
-        <system-out><![CDATA[]]></system-out>
-        <system-err><![CDATA[]]></system-err>
+        <system-out></system-out>
+        <system-err>{ errMsg }</system-err>
       </testsuite>
 
     val prettified = (new PrettyPrinter(76, 2, true)).format(xmlVal)
@@ -505,6 +509,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     var errors   = 0
     var failures = 0
     var time     = 0L
+    var abortedError: Option[Throwable] = None
     val testcases = new ListBuffer[Testcase]
   }
 
