@@ -391,6 +391,10 @@ class JUnitXmlReporterSuite extends AnyFunSuite {
     val res= scala.xml.XML.loadString(rawXml)
 
     val message = (res \\ "failure" \ "@message").toString
-    assert(message startsWith """java.lang.Exception: Unusually formed exception: &amp;#010; less:'&lt;', more:'&gt;' amp:'&amp;', double-quote:&quot;""","failure/@message is not as expected")
+    
+    assert(message == """Unusually formed exception:   less:'&lt;', more:'&gt;' amp:'&amp;', double-quote:&quot;""")
+
+    val failureBodyText = (res \\ "failure").text.trim
+    assert(failureBodyText startsWith """java.lang.Exception: Unusually formed exception:""", "failure/@message is not as expected")
   }
 }

@@ -378,21 +378,13 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
           </testcase>
         }
       }
-        <system-out></system-out>
-        <system-err>{ errMsg }</system-err>
+        <system-out><![CDATA[]]></system-out>
+        <system-err>{scala.xml.Unparsed("<![CDATA[%s]]>".format(errMsg))}</system-err>
       </testsuite>
 
     val prettified = (new PrettyPrinter(76, 2, true)).format(xmlVal)
 
-    // scala xml strips out the <![CDATA[]]> elements, so restore them here
-    val withCDATA =
-      prettified.
-        replace("<system-out></system-out>",
-                "<system-out><![CDATA[]]></system-out>").
-        replace("<system-err></system-err>",
-                "<system-err><![CDATA[]]></system-err>")
-
-    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + withCDATA
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" + prettified
   }
 
   //
@@ -418,17 +410,18 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   //
   private def failureXml(failed: Boolean, failureOption: Option[Throwable]): xml.NodeSeq = 
     if (failed) {
-      val (throwableType, throwableText) =
+      val (throwableType, throwableMessage, throwableText) =
         failureOption match {
           case None =>
-            ("", "")
+            ("", "", "")
 
           case Some(failure) =>
             val throwableType = "" + failure.getClass
+            val throwableMessage = failure.getMessage()
             val throwableText = getStackTrace(failure)
-            (throwableType, throwableText)
+            (throwableType, throwableMessage, throwableText)
         }
-      <failure message = { throwableText.replaceAll("\n", "&#010;") }
+      <failure message = { throwableMessage }
                type    = { throwableType   } >
         { throwableText }
       </failure>
