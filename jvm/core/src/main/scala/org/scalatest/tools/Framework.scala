@@ -36,6 +36,7 @@ import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
 import Suite.mergeMap
+import Suite.getSuiteClassName
 // import org.scalatest.prop.Randomizer
 
 
@@ -259,6 +260,7 @@ class Framework extends SbtFramework {
     val suiteClass = suite.getClass
     val report = new SbtReporter(rerunSuiteId, taskDefinition.fullyQualifiedName, taskDefinition.fingerprint, eventHandler, suiteSortingReporter, summaryCounter)
     val formatter = formatterForSuiteStarting(suite)
+    val suiteClassName = getSuiteClassName(suite)
         
     val filter = 
       if ((selectors.length == 1 && selectors(0).isInstanceOf[SuiteSelector] && !explicitlySpecified))  // selectors will always at least have one SuiteSelector, according to javadoc of TaskDef
@@ -303,7 +305,7 @@ class Framework extends SbtFramework {
       }
 
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-      report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
+      report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
     val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty, false, None, Some(suiteSortingReporter))
 
@@ -327,10 +329,10 @@ class Framework extends SbtFramework {
       if (!suite.isInstanceOf[DistributedTestRunnerSuite]) {
         status.unreportedException match {
           case Some(ue) =>
-            report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
+            report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClassName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
 
           case None =>
-            report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+            report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), Some(duration), formatter, Some(TopOfClass(suiteClassName))))
         }
       }
     }
