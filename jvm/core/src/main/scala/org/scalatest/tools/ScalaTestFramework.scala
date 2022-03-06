@@ -217,7 +217,7 @@ class ScalaTestFramework extends SbtFramework {
           runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
           parseLongArgument(seedArgs, "-S") match {
-            case Some(seed) => Seed.defaultRef.getAndSet(Some(seed))
+            case Some(seed) => Seed.configuredRef.getAndSet(Some(seed))
             case None => // do nothing
           }
           

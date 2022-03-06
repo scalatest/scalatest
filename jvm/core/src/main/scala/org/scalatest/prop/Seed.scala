@@ -33,7 +33,7 @@ object Seed {
     * Runner can poke in a seed value to be used during a test run. If set, it will be used
     * as the seed for all calls to [[Seed.default]].
     */
-  private[scalatest] val defaultRef: AtomicReference[Option[Long]] = new AtomicReference(None)
+  private[scalatest] val configuredRef: AtomicReference[Option[Long]] = new AtomicReference(None)
 
   /**
    * Creates a new Seed using default approach, which is initialized based on the current time.
@@ -43,9 +43,11 @@ object Seed {
    */
   def default: Seed = 
     Seed(
-      defaultRef.get() match {
+      configuredRef.get() match {
         case Some(value) => value
         case None => System.currentTimeMillis()
       }
     )
+
+  def configured: Option[Seed] = configuredRef.get().map(Seed(_))  
 }

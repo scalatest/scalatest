@@ -859,7 +859,7 @@ object Runner {
     val testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", Suite.defaultTestSortingReporterTimeoutInSeconds), Seconds)
 
     seedList match {
-      case Some(seed) => Seed.defaultRef.getAndSet(Some(seed))
+      case Some(seed) => Seed.configuredRef.getAndSet(Some(seed))
       case None => // do nothing
     }
 
