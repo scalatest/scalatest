@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.Suite.formatterForSuiteAborted
 import org.scalatest.Suite.formatterForSuiteCompleted
 import org.scalatest.Suite.formatterForSuiteStarting
+import org.scalatest.Suite.getSuiteClassName
 import org.scalatest.events.SeeStackDepthException
 import org.scalatest.events.SuiteAborted
 import org.scalatest.events.SuiteCompleted
@@ -439,8 +440,9 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
             }
 
             val formatter = formatterForSuiteStarting(suite)
+            val suiteClassName = getSuiteClassName(suite)
 
-            report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
+            report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
             try {  // TODO: I had to pass Set.empty for chosen styles now. Fix this later.
               val status = suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty, false, None, None))
@@ -454,10 +456,10 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
 
               status.unreportedException match {
                 case Some(ue) =>
-                  report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
+                  report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClassName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
 
                 case None =>
-                  report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+                  report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), Some(duration), formatter, Some(TopOfClass(suiteClassName))))
               }
 
             }
@@ -468,11 +470,11 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
                 // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US
                 // TODO Chee Seng, I wonder why we couldn't access resources, and if that's still true. I'd rather get this stuff
                 // from the resource file so we can later localize.
-                val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClass.getName
+                val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClassName
                 val formatter = formatterForSuiteAborted(suite, rawString)
 
                 val duration = System.currentTimeMillis - suiteStartTime
-                report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
+                report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClassName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
               }
             }
           }

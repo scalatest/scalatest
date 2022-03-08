@@ -68,6 +68,7 @@ import Suite.getTopOfMethod
 import Suite.isTestMethodGoodies
 import Suite.reportTestIgnored
 import Suite.takesInformer
+import Suite.getSuiteClassName
 import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import annotation.tailrec
 import collection.GenTraversable
@@ -788,6 +789,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
           dynaTags = DynaTags(Map.empty, Map(suiteId -> taggedTests))
         )
       }
+    val suiteClassName = getSuiteClassName(thisSuite)  
     val runStartTime = System.currentTimeMillis
     if (stats)
       dispatch(RunStarting(tracker.nextOrdinal(), expectedTestCount(filter), configMap))
@@ -802,13 +804,13 @@ trait Suite extends Assertions with Serializable { thisSuite =>
           Resources.runOnSuiteExceptionWithMessage(eMessage)
       val formatter = formatterForSuiteAborted(thisSuite, rawString)
       val duration = System.currentTimeMillis - suiteStartTime
-      dispatch(SuiteAborted(tracker.nextOrdinal(), rawString, thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
+      dispatch(SuiteAborted(tracker.nextOrdinal(), rawString, thisSuite.suiteName, thisSuite.suiteId, Some(suiteClassName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
     }
 
     try {
 
       val formatter = formatterForSuiteStarting(thisSuite)
-      dispatch(SuiteStarting(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), formatter, Some(getTopOfClass(thisSuite))))
+      dispatch(SuiteStarting(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.suiteId, Some(suiteClassName), formatter, Some(getTopOfClass(thisSuite))))
 
       val status =
         run(
@@ -824,7 +826,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       status.waitUntilCompleted()
       val suiteCompletedFormatter = formatterForSuiteCompleted(thisSuite)
       val duration = System.currentTimeMillis - suiteStartTime
-      dispatch(SuiteCompleted(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), Some(duration), suiteCompletedFormatter, Some(getTopOfClass(thisSuite))))
+      dispatch(SuiteCompleted(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.suiteId, Some(suiteClassName), Some(duration), suiteCompletedFormatter, Some(getTopOfClass(thisSuite))))
       if (stats) {
         val duration = System.currentTimeMillis - runStartTime
         dispatch(RunCompleted(tracker.nextOrdinal(), Some(duration)))
@@ -1165,10 +1167,11 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
         val rawString = Resources.suiteExecutionStarting
         val formatter = formatterForSuiteStarting(nestedSuite)
+        val suiteClassName = getSuiteClassName(nestedSuite)
 
         val suiteStartTime = System.currentTimeMillis
 
-        report(SuiteStarting(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
+        report(SuiteStarting(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName)), nestedSuite.rerunner))
 
         try { // TODO: pass runArgs down and that will get the chosenStyles passed down
           // Same thread, so OK to send same tracker
@@ -1181,11 +1184,11 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
           status.unreportedException match {
             case Some(ue) =>
-              report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException), nestedSuite.rerunner))
+              report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException), nestedSuite.rerunner))
               FailedStatus
 
             case None =>
-              report(SuiteCompleted(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(duration), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
+              report(SuiteCompleted(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), Some(duration), formatter, Some(TopOfClass(suiteClassName)), nestedSuite.rerunner))
               SucceededStatus
           }
         }
@@ -1200,7 +1203,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
             val formatter = formatterForSuiteAborted(nestedSuite, rawString)
 
             val duration = System.currentTimeMillis - suiteStartTime
-            report(SuiteAborted(tracker.nextOrdinal(), rawString, nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException), nestedSuite.rerunner))
+            report(SuiteAborted(tracker.nextOrdinal(), rawString, nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), Some(e), Some(duration), formatter, Some(SeeStackDepthException), nestedSuite.rerunner))
             if (NonFatal(e.getCause))
               FailedStatus
             else
@@ -1404,11 +1407,17 @@ private[scalatest] object Suite {
   def formatterForSuiteAborted(suite: Suite, message: String): Option[Formatter] = {
     val actualSuiteName =
       suite match {
-        case DeferredAbortedSuite(suiteClassName, deferredThrowable) => suiteClassName
+        case DeferredAbortedSuite(suiteId, suiteClassName, deferredThrowable) => suiteClassName
         case _ => suite.getClass.getName
       }
     Some(IndentedText(actualSuiteName, message, 0))
   }
+
+  def getSuiteClassName(suite: Suite): String = 
+    suite match {
+      case DeferredAbortedSuite(suiteId, suiteClassName, deferredThrowable) => suiteClassName
+      case _ => suite.getClass.getName
+    }
 
 /*
   def simpleNameForTest(testName: String) =
@@ -2013,9 +2022,9 @@ used for test events like succeeded/failed, etc.
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
-  def getTopOfClass(theSuite: Suite) = TopOfClass(theSuite.getClass.getName)
-  def getTopOfMethod(theSuite: Suite, method: Method) = TopOfMethod(theSuite.getClass.getName, method.toGenericString())
-  def getTopOfMethod(theSuite: Suite, testName: String) = TopOfMethod(theSuite.getClass.getName, getMethodForTestName(theSuite, testName).toGenericString())
+  def getTopOfClass(theSuite: Suite) = TopOfClass(getSuiteClassName(theSuite))
+  def getTopOfMethod(theSuite: Suite, method: Method) = TopOfMethod(getSuiteClassName(theSuite), method.toGenericString())
+  def getTopOfMethod(theSuite: Suite, testName: String) = TopOfMethod(getSuiteClassName(theSuite), getMethodForTestName(theSuite, testName).toGenericString())
 
   // Factored out to share this with FixtureSuite.runTest
   def getSuiteRunTestGoodies(theSuite: Suite, stopper: Stopper, reporter: Reporter, testName: String): (Stopper, Reporter, Method, Long) = {
