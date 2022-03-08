@@ -31,7 +31,8 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
     tagsToIncludeArgs,
     tagsToExcludeArgs,
     membersOnlyArgs,
-    wildcardArgs
+    wildcardArgs, 
+    seedArgs
   ) = parseArgs(args)
 
   val (
@@ -71,6 +72,12 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
       throw new IllegalArgumentException("Only one -o can be passed in as test argument.")
     else
       (false, !sbtNoFormat, false, false, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
+  }
+
+  parseLongArgument(seedArgs, "-S") match {
+    case Some(seed) => // Randomizer.defaultSeed.getAndSet(Some(seed))
+      println("Note: -S for setting the Randomizer seed is not yet supported.")
+    case None => // do nothing
   }
 
   val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
