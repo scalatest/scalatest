@@ -19,6 +19,7 @@ import org.scalatest.{Resources, Tracker}
 import org.scalatest.events.Summary
 import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => SbtStatus, _}
 import ArgsParser._
+import org.scalatest.prop.Seed
 
 import scala.compat.Platform
 
@@ -75,8 +76,7 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
   }
 
   parseLongArgument(seedArgs, "-S") match {
-    case Some(seed) => // Randomizer.defaultSeed.getAndSet(Some(seed))
-      println("Note: -S for setting the Randomizer seed is not yet supported.")
+    case Some(seed) => Seed.configuredRef.getAndSet(Some(seed))
     case None => // do nothing
   }
 
