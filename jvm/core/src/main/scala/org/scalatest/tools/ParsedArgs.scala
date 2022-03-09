@@ -34,8 +34,8 @@ private[scalatest] case class ParsedArgs(
   concurrent: List[String],
   // SKIP-SCALATESTJS,NATIVE-END
   membersOnly: List[String],
-  // SKIP-SCALATESTJS,NATIVE-START
   wildcard: List[String],
+  // SKIP-SCALATESTJS,NATIVE-START
   testNGXMLFiles: List[String],
   genSuffixesPattern: Option[Pattern],
   chosenStyles: List[String], 

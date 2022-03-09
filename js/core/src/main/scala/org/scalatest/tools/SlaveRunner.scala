@@ -21,6 +21,7 @@ import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => Sbt
 import ArgsParser._
 
 import scala.compat.Platform
+import org.scalatest.prop.Seed
 
 class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClassLoader: ClassLoader, notifyServer: String => Unit) extends Runner {
 
@@ -31,7 +32,8 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
     tagsToIncludeArgs,
     tagsToExcludeArgs,
     membersOnlyArgs,
-    wildcardArgs
+    wildcardArgs, 
+    seedArgs
   ) = parseArgs(args)
 
   val (
@@ -71,6 +73,11 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
       throw new IllegalArgumentException("Only one -o can be passed in as test argument.")
     else
       (false, !sbtNoFormat, false, false, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
+  }
+
+  parseLongArgument(seedArgs, "-S") match {
+    case Some(seed) => Seed.configuredRef.getAndSet(Some(seed))
+    case None => // do nothing
   }
 
   val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")

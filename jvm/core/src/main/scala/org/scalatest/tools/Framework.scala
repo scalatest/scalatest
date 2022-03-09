@@ -38,6 +38,7 @@ import Suite.formatterForSuiteStarting
 import Suite.mergeMap
 import Suite.getSuiteClassName
 // import org.scalatest.prop.Randomizer
+import org.scalatest.prop.Seed
 
 
 /**
@@ -1029,8 +1030,7 @@ class Framework extends SbtFramework {
     runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
     parseLongArgument(seedArgs, "-S") match {
-      case Some(seed) => // Randomizer.defaultSeed.getAndSet(Some(seed))
-        println("Note: -S for setting the Randomizer seed is not yet supported.")
+      case Some(seed) => Seed.configuredRef.getAndSet(Some(seed))
       case None => // do nothing
     }
 
