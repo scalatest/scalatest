@@ -468,8 +468,8 @@ private[tools] object ArgsParser {
       concurrent.toList,
       // SKIP-SCALATESTJS,NATIVE-END
       membersOnly.toList,
-      // SKIP-SCALATESTJS,NATIVE-START
       wildcard.toList,
+      // SKIP-SCALATESTJS,NATIVE-START
       testNGXMLFiles.toList,
       genSuffixesPattern(suffixes.toList),
       chosenStyles.toList,

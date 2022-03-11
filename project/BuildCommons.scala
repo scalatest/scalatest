@@ -19,8 +19,7 @@ trait BuildCommons {
     )
 
   val releaseVersion = "3.3.0-SNAP3"
-
-  val previousReleaseVersion = "3.2.10"
+  val previousReleaseVersion = "3.2.11"
 
   val plusJUnitVersion = "3.2.10.0"
   val plusTestNGVersion = "3.2.10.0"

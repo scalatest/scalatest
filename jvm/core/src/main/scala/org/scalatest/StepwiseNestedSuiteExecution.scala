@@ -20,6 +20,7 @@ import org.scalatest.events._
 import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
+import Suite.getSuiteClassName
 import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import collection.mutable.ListBuffer
 
@@ -55,10 +56,11 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
       if (!stopper.stopRequested) {
         val rawString = Resources.suiteExecutionStarting
         val formatter = formatterForSuiteStarting(nestedSuite)
+        val suiteClassName = getSuiteClassName(nestedSuite)
 
         val suiteStartTime = System.currentTimeMillis
 
-        report(SuiteStarting(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
+        report(SuiteStarting(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
 
         try { // TODO: pass runArgs down and that will get the chosenStyles passed down
           // Same thread, so OK to send same tracker
@@ -68,7 +70,7 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
           val formatter = formatterForSuiteCompleted(nestedSuite)
 
           val duration = System.currentTimeMillis - suiteStartTime
-          report(SuiteCompleted(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(duration), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
+          report(SuiteCompleted(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), Some(duration), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
           SucceededStatus
         }
         catch {       
@@ -82,7 +84,7 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
             val formatter = formatterForSuiteAborted(nestedSuite, rawString)
 
             val duration = System.currentTimeMillis - suiteStartTime
-            report(SuiteAborted(tracker.nextOrdinal(), rawString, nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException), nestedSuite.rerunner))
+            report(SuiteAborted(tracker.nextOrdinal(), rawString, nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), Some(e), Some(duration), formatter, Some(SeeStackDepthException), nestedSuite.rerunner))
             FailedStatus
           }
         }
