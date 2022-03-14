@@ -2202,13 +2202,6 @@ object Randomizer {
   import java.util.concurrent.atomic.AtomicReference
 
   /**
-    * This seed is empty under ordinary circumstances. It is here so that the test
-    * Runner can poke in a seed value to be used during a test run. If set, it will be used
-    * as the seed for all calls to [[Randomizer.default]].
-    */
-  private[scalatest] val defaultSeed: AtomicReference[Option[Long]] = new AtomicReference(None)
-
-  /**
     * Creates a new Randomizer, whose seed is initialized based on the current time.
     *
     * This should not be considered a strong source of randomness -- in cases where high entropy really
@@ -2216,13 +2209,7 @@ object Randomizer {
     *
     * @return A Randomizer, ready to begin producing random values.
     */
-  def default: Randomizer =
-    apply(
-      defaultSeed.get() match {
-        case Some(seed) => seed
-        case None => System.currentTimeMillis()
-      }
-    )
+  def default: Randomizer = new Randomizer(Seed.default.value)
 
   /**
     * A Randomizer, initialized with the specified seed value.

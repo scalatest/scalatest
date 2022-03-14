@@ -20,6 +20,7 @@ import org.scalatest.events._
 import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
+import Suite.getSuiteClassName
 import org.scalatest.exceptions.NotAllowedException
 import scala.util.{Success, Failure}
 
@@ -33,13 +34,14 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
     if (!stopper.stopRequested) {
       val rawString = Resources.suiteExecutionStarting
       val formatter = formatterForSuiteStarting(suite)
+      val suiteClassName = getSuiteClassName(suite)
       val dispatch = args.reporter
       val tracker = args.tracker
 
       val suiteStartTime = System.currentTimeMillis
 
       if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-        dispatch(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
+        dispatch(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
         
       try {
         val runStatus = suite.run(None, args)
@@ -56,11 +58,11 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
                 if (!succeeded)
                   status.setFailed()
                 if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-                  dispatch(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
+                  dispatch(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), Some(duration), formatter, Some(TopOfClass(suiteClassName)), suite.rerunner))
               case Failure(ue) =>
                 status.setFailed() // Don't forward the unreportedException to the returned status, because reporting it here in this SuiteAborted
                 if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-                  dispatch(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException), suite.rerunner))
+                  dispatch(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClassName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException), suite.rerunner))
             }
           }
           finally status.setCompleted()
