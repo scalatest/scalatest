@@ -369,28 +369,28 @@ class XmlSocketReporterSpec extends AnyFunSpec with Eventually {
       assert(eventRecorder.scopePendingEvents.length === 1)
       checkScopeEvents(eventRecorder.scopePendingEvents(0), "A Pending Feature", spec.suiteName, spec.suiteId, 
                      Some(spec.getClass.getName), "XmlSocketReporterSpec.scala", thisLineNumber - 27)
-                     
+      val rerunner = if (Suite.checkForPublicNoArgConstructor(spec.getClass)) Some(spec.getClass.getName) else None // Logic from SuiteRerunner
       assert(eventRecorder.testStartingEvents.length === 4)
       checkTestStarting(eventRecorder.testStartingEvents(0), spec.suiteName, spec.suiteId, Some(spec.getClass.getName), 
                         "A Feature should succeed", "should succeed", "XmlSocketReporterSpec.scala", thisLineNumber - 37, 
-                        None) // rerunner should be none, as the suite is an inner class.
+                        rerunner)
       checkTestStarting(eventRecorder.testStartingEvents(1), spec.suiteName, spec.suiteId, Some(spec.getClass.getName), 
                         "A Feature should failed", "should failed", "XmlSocketReporterSpec.scala", thisLineNumber - 39, 
-                        None)
+                        rerunner)
       checkTestStarting(eventRecorder.testStartingEvents(2), spec.suiteName, spec.suiteId, Some(spec.getClass.getName), 
                         "A Feature should pending", "should pending", "XmlSocketReporterSpec.scala", thisLineNumber - 40, 
-                        None)
+                        rerunner)
       checkTestStarting(eventRecorder.testStartingEvents(3), spec.suiteName, spec.suiteId, Some(spec.getClass.getName), 
                         "A Feature should canceled", "should canceled", "XmlSocketReporterSpec.scala", thisLineNumber - 42, 
-                        None)
+                        rerunner)
       
       assert(eventRecorder.testSucceededEvents.length === 1)
       checkTestSucceeded(eventRecorder.testSucceededEvents(0), spec.suiteName, spec.suiteId, Some(spec.getClass.getName), 
-                         "A Feature should succeed", "should succeed", "XmlSocketReporterSpec.scala", thisLineNumber - 51, None)
+                         "A Feature should succeed", "should succeed", "XmlSocketReporterSpec.scala", thisLineNumber - 51, rerunner)
       
       assert(eventRecorder.testFailedEvents.length === 1)
       checkTestFailed(eventRecorder.testFailedEvents(0), "1 did not equal 2", spec.suiteName, spec.suiteId, Some(spec.getClass.getName), 
-                      "A Feature should failed", "should failed", None)
+                      "A Feature should failed", "should failed", rerunner)
 
       assert(eventRecorder.testPendingEvents.length === 1)
       checkTestPending(eventRecorder.testPendingEvents(0), spec.suiteName, spec.suiteId, Some(spec.getClass.getName), 
