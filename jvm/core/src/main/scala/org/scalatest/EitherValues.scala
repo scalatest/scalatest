@@ -106,7 +106,10 @@ trait EitherValues extends Serializable {
    *
    * @param either the <code>Either</code> on which to add the <code>value</code> method
    */
+  // SKIP-DOTTY-START  
   implicit def convertEitherToValuable[L, R](either: Either[L, R])(implicit pos: source.Position): Valuable[L, R] = new Valuable(either, pos)
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY implicit def convertEitherToValuable[L, R](either: Either[L, R])(implicit pos: source.Position): EitherValuable[L, R] = new EitherValuable(either, pos)
 
   /**
    * Wrapper class that adds a <code>value</code> method to <code>LeftProjection</code>, allowing
@@ -164,7 +167,7 @@ trait EitherValues extends Serializable {
     }
   }
 
-
+  // SKIP-DOTTY-START
   /**
    * Wrapper class that adds a <code>value</code> method to <code>Either</code>, allowing
    * you to make statements to inspect the value if a Right, like:
@@ -175,8 +178,21 @@ trait EitherValues extends Serializable {
    *
    * @param either An <code>Either</code> to convert to <code>Valuable</code>, which provides the
    *   <code>value</code> method.
-   */
+   */ 
   class Valuable[L, R](either: Either[L, R], pos: source.Position) extends Serializable {
+  // SKIP-DOTTY-END
+  //DOTTY-ONLY /**
+  //DOTTY-ONLY  * Wrapper class that adds a <code>value</code> method to <code>Either</code>, allowing
+  //DOTTY-ONLY  * you to make statements to inspect the value if a Right, like:
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * <pre class="stHighlight">
+  //DOTTY-ONLY  * either.value should be &gt; 9
+  //DOTTY-ONLY  * </pre>
+  //DOTTY-ONLY  *
+  //DOTTY-ONLY  * @param either An <code>Either</code> to convert to <code>EitherValuable</code>, which provides the
+  //DOTTY-ONLY  *   <code>value</code> method.
+  //DOTTY-ONLY  */ 
+  //DOTTY-ONLY class EitherValuable[L, R](either: Either[L, R], pos: source.Position) extends Serializable {
 
     /**
      * Returns the <code>Right</code> value contained in the wrapped <code>RightProjection</code>, if defined as a <code>Right</code>, else throws <code>TestFailedException</code> with

@@ -16,7 +16,7 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.0")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.0.2")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
@@ -236,7 +236,7 @@ trait DottyBuild { this: BuildCommons =>
       initialCommands in console := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.0.0", 
+      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.0.1", 
       libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).withDottyCompat(dottyVersion), 
       packageManagedSources,
       sourceGenerators in Compile += Def.task {
@@ -703,42 +703,6 @@ trait DottyBuild { this: BuildCommons =>
       scalatestWordSpecTestDotty
     )
 
-  def scalatestTestDottyJSOptions =
-    Seq(Tests.Argument(TestFrameworks.ScalaTest,
-      "-l", "org.scalatest.tags.Slow",
-      "-m", "org.scalatest",
-      "-m", "org.scalactic",
-      "-m", "org.scalactic.anyvals",
-      "-m", "org.scalactic.algebra",
-      "-m", "org.scalactic.enablers",
-      "-m", "org.scalatest.fixture",
-      "-m", "org.scalatest.concurrent",
-      "-m", "org.scalatest.events",
-      "-m", "org.scalatest.prop",
-      "-m", "org.scalatest.tools",
-      "-m", "org.scalatest.matchers",
-      "-m", "org.scalatest.matchers",
-      "-m", "org.scalatest.matchers.should",
-      "-m", "org.scalatest.matchers.must",
-      "-m", "org.scalatest.matchers.dsl",
-      "-m", "org.scalatest.verbs",
-      "-m", "org.scalatest.suiteprop",
-      "-m", "org.scalatest.path",
-      "-m", "org.scalatest.exceptions",
-      "-m", "org.scalatest.time",
-      "-m", "org.scalatest.words",
-      "-m", "org.scalatest.enablers",
-      "-m", "org.scalatest.expectations",
-      "-m", "org.scalatest.diagrams",
-      "-m", "org.scalatest.featurespec",
-      "-m", "org.scalatest.flatspec",
-      "-m", "org.scalatest.freespec",
-      "-m", "org.scalatest.funspec",
-      "-m", "org.scalatest.funsuite",
-      "-m", "org.scalatest.propspec",
-      "-m", "org.scalatest.wordspec",
-      "-oDIF"))    
-
   def sharedTestSettingsDottyJS: Seq[Setting[_]] = 
     Seq(
       organization := "org.scalatest",
@@ -753,7 +717,7 @@ trait DottyBuild { this: BuildCommons =>
             .withArgs(List(/*"--max_new_space_size=3000", */"--max_old_space_size=3000")))
       },
       //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
-      testOptions in Test := scalatestTestDottyJSOptions,
+      testOptions in Test := scalatestTestJSNativeOptions,
       parallelExecution in Test := false,
       fork in Test := false,
       publishArtifact := false,

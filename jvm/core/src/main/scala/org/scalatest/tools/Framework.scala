@@ -21,7 +21,7 @@ import ArgsParser._
 import SuiteDiscoveryHelper._
 
 import scala.collection.JavaConverters._
-import java.io.{PrintWriter, StringWriter}
+import java.io.{PrintWriter, StringWriter, IOException}
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
 import java.util.concurrent.{ExecutorService, Executors, LinkedBlockingQueue, ThreadFactory}
 
@@ -36,7 +36,9 @@ import Suite.formatterForSuiteAborted
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteStarting
 import Suite.mergeMap
+import Suite.getSuiteClassName
 // import org.scalatest.prop.Randomizer
+import org.scalatest.prop.Seed
 
 
 /**
@@ -259,6 +261,7 @@ class Framework extends SbtFramework {
     val suiteClass = suite.getClass
     val report = new SbtReporter(rerunSuiteId, taskDefinition.fullyQualifiedName, taskDefinition.fingerprint, eventHandler, suiteSortingReporter, summaryCounter)
     val formatter = formatterForSuiteStarting(suite)
+    val suiteClassName = getSuiteClassName(suite)
         
     val filter = 
       if ((selectors.length == 1 && selectors(0).isInstanceOf[SuiteSelector] && !explicitlySpecified))  // selectors will always at least have one SuiteSelector, according to javadoc of TaskDef
@@ -303,7 +306,7 @@ class Framework extends SbtFramework {
       }
 
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-      report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
+      report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
     val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty, false, None, Some(suiteSortingReporter))
 
@@ -327,10 +330,10 @@ class Framework extends SbtFramework {
       if (!suite.isInstanceOf[DistributedTestRunnerSuite]) {
         status.unreportedException match {
           case Some(ue) =>
-            report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
+            report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClassName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
 
           case None =>
-            report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+            report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), Some(duration), formatter, Some(TopOfClass(suiteClassName))))
         }
       }
     }
@@ -449,7 +452,7 @@ class Framework extends SbtFramework {
             else
               suiteClass.newInstance.asInstanceOf[Suite] 
           } catch {
-            case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, t)
+            case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, suiteClass.getName, t)
           }
 
         if (useSbtLogInfoReporter) {
@@ -799,8 +802,8 @@ class Framework extends SbtFramework {
 
     def remoteArgs: Array[String] = {
       import org.scalatest.events._
-import java.io.{ObjectInputStream, ObjectOutputStream}
-import java.net.{ServerSocket, InetAddress}
+      import java.io.{ObjectInputStream, ObjectOutputStream}
+      import java.net.{ServerSocket, InetAddress}
 
       class SkeletonObjectInputStream(in: java.io.InputStream, loader: ClassLoader) extends ObjectInputStream(in) {
 
@@ -819,24 +822,23 @@ import java.net.{ServerSocket, InetAddress}
       class Skeleton extends Runnable {
         
         val server = new ServerSocket(0)
+        lazy val socket = new AtomicReference(server.accept())
+        lazy val is = new AtomicReference(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
         
         def run(): Unit = {
-          val socket = server.accept()
-          val is = new SkeletonObjectInputStream(socket.getInputStream, getClass.getClassLoader)
-
           try {
-			      (new React(is)).react()
+			      (new React(server)).tryReact(0)
           } 
           finally {
-            is.close()	
-            socket.close()
+            is.get.close()	
+            socket.get.close()
 		      }
         }
         
-        class React(is: ObjectInputStream) {
+        class React(server: ServerSocket) {
           @annotation.tailrec 
           final def react(): Unit = { 
-            val event = is.readObject
+            val event = is.get.readObject
             event match {
               case e: TestStarting =>
                 dispatchReporter(e) 
@@ -886,8 +888,28 @@ import java.net.{ServerSocket, InetAddress}
               case e: RunCompleted => // Sub-process completed, just let the thread terminate
               case e: RunStopped => dispatchReporter(e)
               case e: RunAborted => dispatchReporter(e)
-	        }
+            }  
           }
+
+          @annotation.tailrec
+          final def tryReact(count: Int): Unit = 
+            if (count < 3)
+              try {
+                react()  
+              }
+              catch {
+                case t: IOException => 
+                  // Restart server socket
+                  println(Resources.unableToReadSerializedEvent)
+                  is.get.close()
+                  socket.set(server.accept())
+                  is.set(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
+                  tryReact(count + 1)
+              }
+            else {
+              println(Resources.unableToContinueRun)
+              System.exit(-1)
+            }  
         }
         
         def host: String = server.getLocalSocketAddress.toString
@@ -1008,8 +1030,7 @@ import java.net.{ServerSocket, InetAddress}
     runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
     parseLongArgument(seedArgs, "-S") match {
-      case Some(seed) => // Randomizer.defaultSeed.getAndSet(Some(seed))
-        println("Note: -S for setting the Randomizer seed is not yet supported.")
+      case Some(seed) => Seed.configuredRef.getAndSet(Some(seed))
       case None => // do nothing
     }
 

@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG}
 import ArgsParser._
 import org.scalactic.Requirements._
-// import org.scalatest.prop.Randomizer
+import org.scalatest.prop.Seed
 
 /*
 Command line args:
@@ -859,8 +859,7 @@ object Runner {
     val testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", Suite.defaultTestSortingReporterTimeoutInSeconds), Seconds)
 
     seedList match {
-      case Some(seed) => // Randomizer.defaultSeed.getAndSet(Some(seed))
-        println("Note: -S for setting the Randomizer seed is not yet supported.")
+      case Some(seed) => Seed.configuredRef.getAndSet(Some(seed))
       case None => // do nothing
     }
 
@@ -1489,8 +1488,17 @@ object Runner {
         // getDispatchReporter may complete abruptly with an exception, if there is an problem trying to load
         // or instantiate a custom reporter class.
         case ex: Throwable => {
-          System.err.println(Resources.bigProblemsMaybeCustomReporter)
+          val msg = Resources.bigProblemsMaybeCustomReporter
+          System.err.println(msg)
           ex.printStackTrace(System.err)
+          val tracker = new Tracker(new Ordinal(1))
+          val runAborted = RunAborted(tracker.nextOrdinal(), msg, None)
+          graphicReporter.foreach { rep =>
+            rep(runAborted)
+          }
+          passFailReporter.foreach { rep =>
+            rep(runAborted)
+          }
         }
       }
     }

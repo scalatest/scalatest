@@ -94,6 +94,12 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
   def woof(f: => Unit) = "woof"
   def meow(x: Int = 0, y: Int = 3) = "meow"
 
+  def varargs(x: Int, y: String*): (Int, Seq[String]) = (x, y.toSeq)
+  class CustomList(value: List[Int]) {
+    def contains(x: Int*): Boolean = x.forall(value.contains(_))
+  }
+  val cList1 = new CustomList(List(1, 2, 3))
+ 
   describe("DiagrammedAssertions") {
 
     val a = 3
@@ -582,6 +588,26 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
         )
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 15))
+      }
+      
+      it("should do nothing when is used to check Seq(a, b) == Seq(3, 5)") {
+        org.scalatest.diagrams.Diagrams.assert(Seq(a, b) == Seq(3, 5))
+      }
+
+      it("should throw TestFailedException when is used to check Set(a, b) == Set(4)") {
+        val e = intercept[TestFailedException] {
+          org.scalatest.diagrams.Diagrams.assert(Set(a, b) == Set(4))
+        }
+        e.failedCodeFileName should be (Some(fileName))
+        e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+      }
+
+      it("should do nothing when is used to check varargs(1, y, z) == 1 -> Seq(y, z)") {
+        org.scalatest.diagrams.Diagrams.assert(varargs(1, "y", "z") == 1 -> Seq("y", "z"))
+      }
+
+      it("should do nothing when is used to check cList1.contains(1, 2)") {
+        org.scalatest.diagrams.Diagrams.assert(cList1.contains(1, 2))
       }
 
       it("should do nothing when is used to check a === 3") {

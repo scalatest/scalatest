@@ -27,6 +27,7 @@ import org.scalactic.source
 import scala.compat.Platform.EOL
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.tagobjects.Flicker
 
 class JavaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with JavaFutures with SeveredStackTraces {
 
@@ -166,7 +167,7 @@ class JavaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with Ja
         }
       }
 
-      it("should eventually blow up with a TFE if the future is never ready") {
+      it("should eventually blow up with a TFE if the future is never ready", Flicker) {
 
         val execSvc: ExecutorService = Executors.newFixedThreadPool(1)
         try {
