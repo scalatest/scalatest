@@ -15,6 +15,7 @@ sbt "project scalacticMacroJS" clean
 sbt "project scalacticJS" clean
 sbt "project scalatestJS" clean +publishSigned
 sbt "project scalacticMacroNative" clean
+sbt "project scalacticNative" clean
 sbt "project scalatestNative" clean +publishSigned
 sbt "project scalatestDotty" clean publishSigned
 sbt "project scalatestDottyJS" clean publishSigned
@@ -24,7 +25,10 @@ sbt clean
 sbt "project scalatestApp" clean +publishSigned
 sbt "project scalacticMacroJS" clean
 sbt "project scalacticJS" clean
+sbt "project scalatestJS" clean
 sbt "project scalatestAppJS" clean +publishSigned
 sbt "project scalacticMacroNative" clean
+sbt "project scalacticNative" clean
+sbt "project scalatestNative" clean
 sbt "project scalatestAppNative" clean +publishSigned
 sbt "project scalatest" sonatypeBundleUpload

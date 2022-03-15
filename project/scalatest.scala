@@ -130,12 +130,10 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def scalaXmlDependency(theScalaVersion: String): Seq[ModuleID] =
     CrossVersion.partialVersion(theScalaVersion) match {
-      case Some((scalaEpoch, scalaMajor)) if scalaEpoch == 3 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.0.0"))
-      case Some((scalaEpoch, scalaMajor)) if scalaEpoch == 2 && scalaMajor >= 11 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
-      case other =>
-        Seq.empty
+      case Some((2, 10)) => Seq.empty
+      case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
+      case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
+        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.0.1"))
     }
 
   def scalaLibraries(theScalaVersion: String) =
@@ -148,7 +146,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
       "com.google.inject" % "guice" % "4.0" % "optional",
-      "org.apache.ant" % "ant" % "1.7.1" % "optional",
+      "org.apache.ant" % "ant" % "1.10.12" % "optional",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
       flexmarkAll
     )
@@ -166,46 +164,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       "org.scalatestplus" %% "testng-6-7" % plusTestNGVersion % "test",
       "org.scalatestplus" %% "junit-4-13" % plusJUnitVersion % "test"
     )
-
-  def scalatestTestOptions =
-    Seq(Tests.Argument(TestFrameworks.ScalaTest,
-      "-l", "org.scalatest.tags.Slow",
-      "-m", "org.scalatest",
-      "-m", "org.scalactic",
-      "-m", "org.scalactic.anyvals",
-      "-m", "org.scalactic.algebra",
-      "-m", "org.scalactic.enablers",
-      "-m", "org.scalatest.fixture",
-      "-m", "org.scalatest.concurrent",
-      "-m", "org.scalatest.deprecated",
-      "-m", "org.scalatest.events",
-      "-m", "org.scalatest.prop",
-      "-m", "org.scalatest.tools",
-      "-m", "org.scalatest.matchers",
-      "-m", "org.scalatest.matchers.should",
-      "-m", "org.scalatest.matchers.must",
-      "-m", "org.scalatest.matchers.dsl",
-      "-m", "org.scalatest.verbs",
-      "-m", "org.scalatest.suiteprop",
-      "-m", "org.scalatest.path",
-      "-m", "org.scalatest.exceptions",
-      "-m", "org.scalatest.time",
-      "-m", "org.scalatest.words",
-      "-m", "org.scalatest.enablers",
-      "-m", "org.scalatest.expectations",
-      "-m", "org.scalatest.diagrams",
-      "-m", "org.scalatest.featurespec",
-      "-m", "org.scalatest.flatspec",
-      "-m", "org.scalatest.freespec",
-      "-m", "org.scalatest.funspec",
-      "-m", "org.scalatest.funsuite",
-      "-m", "org.scalatest.propspec",
-      "-m", "org.scalatest.wordspec",
-      "-oDIF",
-      "-W", "120", "60",
-      "-h", "target/html",
-      "-u", "target/junit",
-      "-fW", "target/result.txt"))
 
   lazy val commonTest = Project("common-test", file("jvm/common-test"))
     .settings(sharedSettings: _*)
@@ -669,7 +627,9 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       mimaBinaryIssueFilters ++= {
         Seq(
           exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.failAfterImpl"),  // New function not in current version
-          exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.cancelAfterImpl")  // New function not in current version
+          exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.cancelAfterImpl"),  // New function not in current version
+          exclude[ReversedMissingMethodProblem]("org.scalatest.events.Event.withPayload"), // New private[scalatest] function not in current version
+          exclude[IncompatibleMethTypeProblem]("org.scalatest.tools.Framework#ScalaTestRunner#Skeleton#1#React.this")  // SBT integration class not meant for third-party use.
         )
       }
     ).settings(osgiSettings: _*).settings(

@@ -197,12 +197,12 @@ import org.scalatest.Suite
  * <a name="asyncExecutionModel"></a><h2>Asynchronous execution model</h2>
  *
  * <p>
- * <code>AsyncFreeSpec</code> extends <a href="AsyncTestSuite.html"><code>AsyncTestSuite</code></a>, which provides an
+ * <code>AsyncFreeSpec</code> extends <a href="../AsyncTestSuite.html"><code>AsyncTestSuite</code></a>, which provides an
  * implicit <code>scala.concurrent.ExecutionContext</code>
  * named <code>executionContext</code>. This
  * execution context is used by <code>AsyncFreeSpec</code> to 
  * transform the <code>Future[Assertion]</code>s returned by each test
- * into the <a href="FutureOutcome.html"><code>FutureOutcome</code></a> returned by the <code>test</code> function
+ * into the <a href="../FutureOutcome.html"><code>FutureOutcome</code></a> returned by the <code>test</code> function
  * passed to <code>withFixture</code>.
  * This <code>ExecutionContext</code> is also intended to be used in the tests,
  * including when you map assertions onto futures.
@@ -274,7 +274,7 @@ import org.scalatest.Suite
  * enable <a href="Runner.scala#slowpokeNotifications">slowpoke notifications</a>.) If you really do 
  * want to block in your tests, you may wish to just use a
  * traditional <a href="AnyFreeSpec.html"><code>AnyFreeSpec</code></a> with
- * <a href="concurrent/ScalaFutures.html"><code>ScalaFutures</code></a> instead. Alternatively, you could override
+ * <a href="../concurrent/ScalaFutures.html"><code>ScalaFutures</code></a> instead. Alternatively, you could override
  * the <code>executionContext</code> and use a traditional <code>ExecutionContext</code> backed by a thread pool. This
  * will enable you to block in an asynchronous-style test on the JVM, but you'll need to worry about synchronizing access to
  * shared mutable state.
@@ -317,7 +317,7 @@ import org.scalatest.Suite
  * <p>
  * If you want the tests of an <code>AsyncFreeSpec</code> to be executed in parallel, you
  * must mix in <code>ParallelTestExecution</code> and enable parallel execution of tests in your build.
- * You enable parallel execution in <a href="tools/Runner$.html"><code>Runner</code></a> with the <code>-P</code> command line flag. 
+ * You enable parallel execution in <a href="../tools/Runner$.html"><code>Runner</code></a> with the <code>-P</code> command line flag.
  * In the ScalaTest Maven Plugin, set <code>parallel</code> to <code>true</code>.
  * In <code>sbt</code>, parallel execution is the default, but to be explicit you can write:
  * 
@@ -325,9 +325,9 @@ import org.scalatest.Suite
  * parallelExecution in Test := true // the default in sbt
  * </pre>
  * 
- * On the JVM, if both <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in and 
+ * On the JVM, if both <a href="../ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in and 
  * parallel execution is enabled in the build, tests in an async-style suite will be started in parallel, using threads from
- * the <a href="Distributor"><code>Distributor</code></a>, and allowed to complete in parallel, using threads from the
+ * the <a href="../Distributor"><code>Distributor</code></a>, and allowed to complete in parallel, using threads from the
  * <code>executionContext</code>. If you are using ScalaTest's serial execution context, the JVM default, asynchronous tests will
  * run in parallel very much like traditional (such as <a href="AnyFreeSpec.html"><code>AnyFreeSpec</code></a>) tests run in
  * parallel: 1) Because <code>ParallelTestExecution</code> extends
@@ -339,7 +339,7 @@ import org.scalatest.Suite
  * </p>
  * 
  * <p>
- * If <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in but
+ * If <a href="../ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in but
  * parallel execution of suites is <em>not</em> enabled, asynchronous tests on the JVM will be started sequentially, by the single thread
  * that invoked <code>run</code>, but without waiting for one test to complete before the next test is started. As a result,
  * asynchronous tests will be allowed to <em>complete</em> in parallel, using threads
@@ -364,7 +364,7 @@ import org.scalatest.Suite
  * <p>
  * If you need to test for expected exceptions in the context of futures, you can use the
  * <code>recoverToSucceededIf</code> and <code>recoverToExceptionIf</code> methods of trait
- * <a href="RecoverMethods.html"><code>RecoverMethods</code></a>. Because this trait is mixed into
+ * <a href="../RecoverMethods.html"><code>RecoverMethods</code></a>. Because this trait is mixed into
  * supertrait <code>AsyncTestSuite</code>, both of these methods are
  * available by default in an <code>AsyncFreeSpec</code>.
  * </p>
@@ -382,7 +382,7 @@ import org.scalatest.Suite
  *
  * <p>
  * The <code>recoverToSucceededIf</code> method performs a job similar to
- * <a href="Assertions.html#assertThrowsMethod"><code>assertThrows</code></a>, except
+ * <a href="../Assertions.html#assertThrowsMethod"><code>assertThrows</code></a>, except
  * in the context of a future. It transforms a <code>Future</code> of any type into a
  * <code>Future[Assertion]</code> that succeeds only if the original future fails with the specified
  * exception. Here's an example in the REPL:
@@ -449,8 +449,8 @@ import org.scalatest.Suite
  *
  * <p>
  * In other words, <code>recoverToExpectionIf</code> is to
- * <a href="Assertions.html#interceptMethod"><code>intercept</code></a> as
- * <code>recovertToSucceededIf</code> is to <a href="Assertions.html#assertThrowsMethod"><code>assertThrows</code></a>. The first one allows you to
+ * <a href="../Assertions.html#interceptMethod"><code>intercept</code></a> as
+ * <code>recovertToSucceededIf</code> is to <a href="../Assertions.html#assertThrowsMethod"><code>assertThrows</code></a>. The first one allows you to
  * perform further assertions on the expected exception. The second one gives you a result type that will satisfy the type checker
  * at the end of the test body. Here's an example showing <code>recoverToExceptionIf</code> in the REPL:
  * </p>
@@ -592,7 +592,7 @@ import org.scalatest.Suite
  * Note that marking a test class as ignored won't prevent it from being discovered by ScalaTest. Ignored classes
  * will be discovered and run, and all their tests will be reported as ignored. This is intended to keep the ignored
  * class visible, to encourage the developers to eventually fix and &ldquo;un-ignore&rdquo; it. If you want to
- * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a>
+ * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="../DoNotDiscover.html"><code>DoNotDiscover</code></a>
  * annotation instead.
  * </p>
  *
@@ -607,21 +607,21 @@ import org.scalatest.Suite
  * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
- * One of the parameters to <code>AsyncFreeSpec</code>'s <code>run</code> method is a <a href="Reporter.html"><code>Reporter</code></a>, which
+ * One of the parameters to <code>AsyncFreeSpec</code>'s <code>run</code> method is a <a href="../Reporter.html"><code>Reporter</code></a>, which
  * will collect and report information about the running suite of tests.
  * Information about suites and tests that were run, whether tests succeeded or failed, 
  * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
  * Most often the reporting done by default by <code>AsyncFreeSpec</code>'s methods will be sufficient, but
  * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
- * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
+ * For this purpose, an <a href="../Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
  * is provided via the <code>info</code> parameterless method.
  * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
- * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="events/InfoProvided.html"><code>InfoProvided</code></a> event.
+ * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/InfoProvided.html"><code>InfoProvided</code></a> event.
  * </p>
  * 
  * <p>
  * One use case for the <code>Informer</code> is to pass more information about a specification to the reporter. For example,
- * the <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> trait provides methods that use the implicit <code>info</code> provided by <code>AsyncFreeSpec</code>
+ * the <a href="../GivenWhenThen.html"><code>GivenWhenThen</code></a> trait provides methods that use the implicit <code>info</code> provided by <code>AsyncFreeSpec</code>
  * to pass such information to the reporter. Here's an example:
  * </p>
  *
@@ -672,10 +672,10 @@ import org.scalatest.Suite
  * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
- * <code>AsyncFreeSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
+ * <code>AsyncFreeSpec</code> also provides a <code>markup</code> method that returns a <a href="../Documenter.html"><code>Documenter</code></a>, which allows you to send
  * to the <code>Reporter</code> text formatted in <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown syntax</a>.
  * You can pass the extra information to the <code>Documenter</code> via its <code>apply</code> method.
- * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
+ * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="../events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
  * </p>
  *
  * <p>
@@ -757,8 +757,8 @@ import org.scalatest.Suite
  * </p>
  *
  * <p>
- * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
- * (an <a href="Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
+ * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="../Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
+ * (an <a href="../Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
  * </p>
  *
  * <pre class="stHighlight">
@@ -798,7 +798,7 @@ import org.scalatest.Suite
  * </pre>
  *
  * <p>
- * Another example is <a href="tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
+ * Another example is <a href="../tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
  * If you find a test is taking a long time to complete, but you're not sure which test, you can enable 
  * slowpoke notifications. ScalaTest will use an <code>Alerter</code> to fire an event whenever a test has been running
  * longer than a specified amount of time.
@@ -912,7 +912,7 @@ import org.scalatest.Suite
  * optionally be included and/or excluded. To tag an <code>AsyncFreeSpec</code>'s tests,
  * you pass objects that extend class <code>org.scalatest.Tag</code> to methods
  * that register tests. Class <code>Tag</code> takes one parameter, a string name.  If you have
- * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
+ * created tag annotation interfaces as described in the <a href="../Tag.html"><code>Tag</code> documentation</a>, then you
  * will probably want to use tag names on your test functions that match. To do so, simply
  * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
  * defined a tag annotation interface with fully qualified name,
@@ -983,7 +983,7 @@ import org.scalatest.Suite
  * It is recommended, though not required, that you create a corresponding tag annotation when you
  * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of an <code>AsyncFreeSpec</code> in
  * one stroke by annotating the class. For more information and examples, see the
- * <a href="Tag.html">documentation for class <code>Tag</code></a>. On Scala.js, to tag all tests of a suite, you'll need to
+ * <a href="../Tag.html">documentation for class <code>Tag</code></a>. On Scala.js, to tag all tests of a suite, you'll need to
  * tag each test individually at the test site.
  * </p>
  *
@@ -1160,7 +1160,7 @@ import org.scalatest.Suite
  * Although the get-fixture method approach takes care of setting up a fixture at the beginning of each
  * test, it doesn't address the problem of cleaning up a fixture at the end of the test. If you just need to perform a side-effect at the beginning or end of
  * a test, and don't need to actually pass any fixture objects into the test, you can override <code>withFixture(NoArgAsyncTest)</code>, a
- * method defined in trait <a href="AsyncTestSuite.html"><code>AsyncTestSuite</code></a>, a supertrait of <code>AsyncFreeSpec</code>.
+ * method defined in trait <a href="../AsyncTestSuite.html"><code>AsyncTestSuite</code></a>, a supertrait of <code>AsyncFreeSpec</code>.
  * </p>
  *
  * <p>
@@ -1180,7 +1180,7 @@ import org.scalatest.Suite
  * <p>
  * You can, therefore, override <code>withFixture</code> to perform setup before invoking the test function,
  * and/or perform cleanup after the test completes. The recommended way to ensure cleanup is performed after a test completes is
- * to use the <code>complete</code>-<code>lastly</code> syntax, defined in supertrait <a href="CompleteLastly.html"><code>CompleteLastly</code></a>.
+ * to use the <code>complete</code>-<code>lastly</code> syntax, defined in supertrait <a href="../CompleteLastly.html"><code>CompleteLastly</code></a>.
  * The <code>complete</code>-<code>lastly</code> syntax will ensure that
  * cleanup will occur whether future-producing code completes abruptly by throwing an exception, or returns
  * normally yielding a future. In the latter case, <code>complete</code>-<code>lastly</code> will register the cleanup code
@@ -1283,8 +1283,8 @@ import org.scalatest.Suite
  * </pre>
  *
  * <p>
- * Note that the <a href="Suite$NoArgTest.html"><code>NoArgAsyncTest</code></a> passed to <code>withFixture</code>, in addition to
- * an <code>apply</code> method that executes the test, also includes the test name and the <a href="ConfigMap.html">config
+ * Note that the <a href="../Suite$NoArgTest.html"><code>NoArgAsyncTest</code></a> passed to <code>withFixture</code>, in addition to
+ * an <code>apply</code> method that executes the test, also includes the test name and the <a href="../ConfigMap.html">config
  * map</a> passed to <code>runTest</code>. Thus you can also use the test name and configuration objects in your <code>withFixture</code>
  * implementation.
  * </p>
@@ -1567,7 +1567,7 @@ import org.scalatest.Suite
  * performed <em>during</em> the test.  This means that if an exception occurs during any of these activities, it will be reported as a test failure.
  * Sometimes, however, you may want setup to happen <em>before</em> the test starts, and cleanup <em>after</em> the test has completed, so that if an
  * exception occurs during setup or cleanup, the entire suite aborts and no more tests are attempted. The simplest way to accomplish this in ScalaTest is
- * to mix in trait <a href="BeforeAndAfter.html"><code>BeforeAndAfter</code></a>.  With this trait you can denote a bit of code to run before each test
+ * to mix in trait <a href="../BeforeAndAfter.html"><code>BeforeAndAfter</code></a>.  With this trait you can denote a bit of code to run before each test
  * with <code>before</code> and/or after each test each test with <code>after</code>, like this:
  * </p>
  *
@@ -1796,8 +1796,8 @@ import org.scalatest.Suite
  * </pre>
  *
  * <p>
- * Another way to create stackable fixture traits is by extending the <a href="BeforeAndAfterEach.html"><code>BeforeAndAfterEach</code></a>
- * and/or <a href="BeforeAndAfterAll.html"><code>BeforeAndAfterAll</code></a> traits.
+ * Another way to create stackable fixture traits is by extending the <a href="../BeforeAndAfterEach.html"><code>BeforeAndAfterEach</code></a>
+ * and/or <a href="../BeforeAndAfterAll.html"><code>BeforeAndAfterAll</code></a> traits.
  * <code>BeforeAndAfterEach</code> has a <code>beforeEach</code> method that will be run before each test (like JUnit's <code>setUp</code>),
  * and an <code>afterEach</code> method that will be run after (like JUnit's <code>tearDown</code>).
  * Similarly, <code>BeforeAndAfterAll</code> has a <code>beforeAll</code> method that will be run before all tests,
@@ -1921,7 +1921,7 @@ import org.scalatest.Suite
  * that setup and cleanup code happens before and after the test in <code>BeforeAndAfterEach</code>, but at the beginning and
  * end of the test in <code>withFixture</code>. Thus if a <code>withFixture</code> method completes abruptly with an exception, it is
  * considered a failed test. By contrast, if any of the <code>beforeEach</code> or <code>afterEach</code> methods of <code>BeforeAndAfterEach</code>
- * complete abruptly, it is considered an aborted suite, which will result in a <a href="events/SuiteAborted.html"><code>SuiteAborted</code></a> event.
+ * complete abruptly, it is considered an aborted suite, which will result in a <a href="../events/SuiteAborted.html"><code>SuiteAborted</code></a> event.
  * </p>
  *
  * <a name="sharedTests"></a><h2>Shared tests</h2>

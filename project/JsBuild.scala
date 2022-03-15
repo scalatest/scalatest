@@ -196,42 +196,6 @@ trait JsBuild { this: BuildCommons =>
       scalatestMustMatchersJS % "compile-internal")
      .enablePlugins(ScalaJSPlugin)  
 
-  def scalatestTestJSOptions =
-    Seq(Tests.Argument(TestFrameworks.ScalaTest,
-      "-l", "org.scalatest.tags.Slow",
-      "-m", "org.scalatest",
-      "-m", "org.scalactic",
-      "-m", "org.scalactic.anyvals",
-      "-m", "org.scalactic.algebra",
-      "-m", "org.scalactic.enablers",
-      "-m", "org.scalatest.fixture",
-      "-m", "org.scalatest.concurrent",
-      "-m", "org.scalatest.events",
-      "-m", "org.scalatest.prop",
-      "-m", "org.scalatest.tools",
-      "-m", "org.scalatest.matchers",
-      "-m", "org.scalatest.matchers",
-      "-m", "org.scalatest.matchers.should",
-      "-m", "org.scalatest.matchers.must",
-      "-m", "org.scalatest.matchers.dsl",
-      "-m", "org.scalatest.verbs",
-      "-m", "org.scalatest.suiteprop",
-      "-m", "org.scalatest.path",
-      "-m", "org.scalatest.exceptions",
-      "-m", "org.scalatest.time",
-      "-m", "org.scalatest.words",
-      "-m", "org.scalatest.enablers",
-      "-m", "org.scalatest.expectations",
-      "-m", "org.scalatest.diagrams",
-      "-m", "org.scalatest.featurespec",
-      "-m", "org.scalatest.flatspec",
-      "-m", "org.scalatest.freespec",
-      "-m", "org.scalatest.funspec",
-      "-m", "org.scalatest.funsuite",
-      "-m", "org.scalatest.propspec",
-      "-m", "org.scalatest.wordspec",
-      "-oDIF"))  
-
   lazy val commonTestJS = project.in(file("js/common-test"))
     .settings(sharedSettings: _*)
     .settings(
@@ -290,7 +254,7 @@ trait JsBuild { this: BuildCommons =>
             .withArgs(List(/*"--max_new_space_size=3000", */"--max_old_space_size=3000")))
       },
       //Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
-      Test / testOptions := scalatestTestJSOptions,
+      Test / testOptions := scalatestTestJSNativeOptions,
       Test / parallelExecution := false,
       Test / fork := false,
       publishArtifact := false,
@@ -496,7 +460,8 @@ trait JsBuild { this: BuildCommons =>
       mimaBinaryIssueFilters ++= {
        Seq(
          exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.failAfterImpl"),  // New function not in current version
-         exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.cancelAfterImpl")  // New function not in current version
+         exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.cancelAfterImpl"),  // New function not in current version
+         exclude[ReversedMissingMethodProblem]("org.scalatest.events.Event.withPayload") // New private[scalatest] function not in current version
        )
      }
     ).settings(osgiSettings: _*).settings(

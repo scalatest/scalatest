@@ -21,7 +21,7 @@ import SharedHelpers._
 import scala.concurrent.ExecutionContext.Implicits._
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
-import org.scalatest.tagobjects.Retryable
+import org.scalatest.tagobjects.{Retryable, Flicker}
 import scala.concurrent.Future
 import SharedHelpers.thisLineNumber
 import time.{Span, Millis}
@@ -69,7 +69,7 @@ class WaitersSpec extends funspec.FixtureAnyFunSpec with Matchers with Conductor
   describe("A Waiter") {
 
     it("should throw a NotAllowedException if await is called by a thread different from the" +
-    		"thread that constructed the Waiter", Retryable) { con => import con._
+    		"thread that constructed the Waiter", Retryable, Flicker) { con => import con._
       val w = new Waiter
       thread {
         val caught =
@@ -84,7 +84,7 @@ class WaitersSpec extends funspec.FixtureAnyFunSpec with Matchers with Conductor
       con.conduct()
     }
  
-    it("should continue when dismissed.") { con => import con._
+    it("should continue when dismissed.", Flicker) { con => import con._
       @volatile var w: Waiter = null
       thread {
         w = new Waiter
@@ -97,7 +97,7 @@ class WaitersSpec extends funspec.FixtureAnyFunSpec with Matchers with Conductor
       con.conduct()
     }
 
-    it("should receive a complaint sent from a different thread sent during an await") { con => import con._
+    it("should receive a complaint sent from a different thread sent during an await", Flicker) { con => import con._
       @volatile var w: Waiter = null
       thread {
         w = new Waiter
@@ -133,7 +133,7 @@ class WaitersSpec extends funspec.FixtureAnyFunSpec with Matchers with Conductor
       con.conduct()
     }
   
-    it("should wait for multiple dismissals when requested", Retryable) { con => import con._
+    it("should wait for multiple dismissals when requested", Retryable, Flicker) { con => import con._
       @volatile var w: Waiter = null
       @volatile var doneWaiting = false
       @volatile var awaitReturnedPrematurely = false
@@ -175,7 +175,7 @@ class WaitersSpec extends funspec.FixtureAnyFunSpec with Matchers with Conductor
         fail("stack depth was " + caught.failedCodeLineNumber.value + " but expected " + (thisLineNumber - 4), caught)
     }
 
-    it("should still return the thrown exception if thrown before await is called") { con => import con._
+    it("should still return the thrown exception if thrown before await is called", Flicker) { con => import con._
       @volatile var w: Waiter = null
       thread {
         w = new Waiter
@@ -194,7 +194,7 @@ class WaitersSpec extends funspec.FixtureAnyFunSpec with Matchers with Conductor
       con.conduct()
     }
   
-    it("should still complete normally if await without a timeout is called after dismiss is called.") { con => import con._
+    it("should still complete normally if await without a timeout is called after dismiss is called.", Flicker) { con => import con._
       @volatile var w: Waiter = null
       thread {
         w = new Waiter
@@ -208,7 +208,7 @@ class WaitersSpec extends funspec.FixtureAnyFunSpec with Matchers with Conductor
       con.conduct()
     }
 
-    it("should report just the first exception thrown at it", Retryable) { con => import con._
+    it("should report just the first exception thrown at it", Retryable, Flicker) { con => import con._
 
       @volatile var w: Waiter = null
       thread {
@@ -258,7 +258,7 @@ class WaitersSpec extends funspec.FixtureAnyFunSpec with Matchers with Conductor
       con.conduct()
     }
     
-    it("should should handle many dismissals without races", Retryable) { con => import con._
+    it("should should handle many dismissals without races", Retryable, Flicker) { con => import con._
 
       @volatile var w: Waiter = null
       
