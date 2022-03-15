@@ -100,7 +100,6 @@ trait OptionValues {
    * @param opt An option to convert to <code>OptionValuable</code>, which provides the <code>value</code> method.
    */
   class OptionValuable[T](opt: Option[T], pos: source.Position) {
-
     /**
      * Returns the value contained in the wrapped <code>Option</code>, if defined, else throws <code>TestFailedException</code> with
      * a detail message indicating the option was not defined.

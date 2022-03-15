@@ -27,6 +27,7 @@ import SharedHelpers.serializeRoundtrip
 import scala.concurrent.Future
 import org.scalatest.funspec.AsyncFunSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.tagobjects.Flicker
 
 class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with SeveredStackTraces*/ {
 
@@ -358,7 +359,7 @@ class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with
       }
     }
 
-    it("should, if an alternate implicit Timeout is provided, invoke an always-failing by-name by at least the specified timeout") {
+    it("should, if an alternate implicit Timeout is provided, invoke an always-failing by-name by at least the specified timeout", Flicker) {
 
       implicit val patienceConfig = PatienceConfig(timeout = Span(1500, Millis))
 
@@ -376,7 +377,7 @@ class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with
       }
     }
 
-    it("should, if an alternate explicit timeout is provided, invoke an always-failing by-name by at least the specified timeout") {
+    it("should, if an alternate explicit timeout is provided, invoke an always-failing by-name by at least the specified timeout", Flicker) {
 
       var startTime: Option[Long] = None
       recoverToSucceededIf[TestFailedException] {
@@ -475,6 +476,30 @@ class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with
         serializeRoundtrip(e)
         succeed
       }
+    }
+    // SKIP-SCALATESTJS,NATIVE-END
+
+    // SKIP-SCALATESTJS,NATIVE-START
+    it("should retry the future function even when exception is thrown during the execution of the function to produce future") {
+      var count = 0
+      def getValue(): Int = throw new RuntimeException("on purpose")
+
+      implicit val execCtx = new SerialExecutionContext() // Make a implicit execution context in scope so we get Retrying[Future[Assertion]] 
+
+      val caught = the [TestFailedException] thrownBy {
+        eventually {
+          count += 1
+          val x = getValue()
+          Future.successful(x shouldBe 3)
+        }
+      }
+
+      caught.message.value should include ("Attempted " + count.toString + " times")
+      caught.message.value should include ("on purpose")
+      caught.failedCodeLineNumber.value should equal (thisLineNumber - 9)
+      caught.failedCodeFileName.value should be ("EventuallySpec.scala")
+      caught.getCause.getClass.getName should be ("java.lang.RuntimeException")
+      caught.getCause.getMessage should be ("on purpose")
     }
     // SKIP-SCALATESTJS,NATIVE-END
   }

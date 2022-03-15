@@ -20,11 +20,13 @@ import org.scalactic.Requirements._
 import java.io.BufferedWriter
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.io.NotSerializableException
 import java.util.Date
 // SKIP-SCALATESTJS,NATIVE-START
 import scala.xml.Elem
 // SKIP-SCALATESTJS,NATIVE-END
 import exceptions.StackDepthException
+import exceptions.NotSerializableWrapperException
 
 /**
  * A base class for the events that can be passed to the report function passed
@@ -281,6 +283,47 @@ sealed abstract class Event extends Ordered[Event] with Product with Serializabl
       }
     }
   }
+
+  private[events] def withPayload(newPayload: Option[Any]): Event
+
+  private[events] def withThrowable(newThrowable: Option[Throwable]): Event = this
+
+  private[events] def serializeRoundtrip(a: Any): Boolean = {
+    try {
+      val baos = new java.io.ByteArrayOutputStream
+      val oos = new java.io.ObjectOutputStream(baos)
+      oos.writeObject(a)
+      oos.flush()
+      val ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(baos.toByteArray))
+      ois.readObject
+      true
+    }
+    catch {
+      case _: NotSerializableException => false
+    }
+  }
+
+  private[scalatest] def ensureSerializable(): Event = ensurePayloadSerializable(payload)
+
+  private[scalatest] def ensurePayloadSerializable(payload: Option[Any]): Event = 
+    payload match {
+      case Some(p) if !serializeRoundtrip(p) =>
+        println(Resources.unableToSerializePayload(p.getClass().getName(), this.toString()))
+        withPayload(None)
+
+      case _ => this
+    }  
+
+  private[scalatest] def ensureThrowableSerializable(throwable: Option[Throwable]): Event = 
+    throwable match {
+      case Some(t) if !serializeRoundtrip(t) =>
+        val className = t.getClass().getName()
+        println(Resources.unableToSerializeThrowable(className, this.toString()))
+        val ex = NotSerializableWrapperException(t.getMessage, className, t.getStackTrace)
+        withThrowable(Some(ex))
+
+      case _ => this
+    }  
 }
 
 /**
@@ -395,6 +438,8 @@ final case class TestStarting (
     import EventJsonHelper._
     s"""{ "eventType": "TestStarting", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "testName": ${string(testName)}, "testText": ${string(testText)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -502,6 +547,9 @@ final case class TestSucceeded (
     import EventJsonHelper._
     s"""{ "eventType": "TestSucceeded", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
+
 }
 
 /**
@@ -619,6 +667,13 @@ final case class TestFailed (
     import EventJsonHelper._
     s"""{ "eventType": "TestFailed", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
+
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
+
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -714,6 +769,8 @@ final case class TestIgnored (
     import EventJsonHelper._
     s"""{ "eventType": "TestIgnored", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "testName": ${string(testName)}, "testText": ${string(testText)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -810,6 +867,8 @@ final case class TestPending (
     import EventJsonHelper._
     s"""{ "eventType": "TestPending", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -920,6 +979,13 @@ final case class TestCanceled (
     import EventJsonHelper._
     s"""{ "eventType": "TestCanceled", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = this
+
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
+
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -1011,6 +1077,8 @@ final case class SuiteStarting (
     import EventJsonHelper._
     s"""{ "eventType": "SuiteStarting", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -1107,6 +1175,8 @@ final case class SuiteCompleted (
     import EventJsonHelper._
     s"""{ "eventType": "SuiteCompleted", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -1214,6 +1284,13 @@ final case class SuiteAborted (
     import EventJsonHelper._
     s"""{ "eventType": "SuiteAborted", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
+
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
+
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -1237,7 +1314,7 @@ final case class SuiteAborted (
  * @param ordinal an <a href="Ordinal.html"><code>Ordinal</code></a> that can be used to place this event in order in the context of
  *        other events reported during the same run
  * @param testCount the number of tests expected during this run
- * @param configMap a <a href="../ConfigMap.html"><code>ConfigMap</code></a> of key-value pairs that can be used by custom <a href="Reporter.html"><code>Reporter</code></a>s
+ * @param configMap a <a href="../ConfigMap.html"><code>ConfigMap</code></a> of key-value pairs that can be used by custom <a href="../Reporter.html"><code>Reporter</code></a>s
  * @param formatter an optional <a href="Formatter.html"><code>Formatter</code></a> that provides extra information that can be used by reporters in determining
  *        how to present this event to the user
  * @param location An optional <a href="Location.html"><code>Location</code></a> that provides information indicating where in the source code an event originated.
@@ -1300,6 +1377,8 @@ final case class RunStarting (
     import EventJsonHelper._
     s"""{ "eventType": "RunStarting", "ordinal": ${ordinal.runStamp}, "testCount": ${testCount}, "configMap": { ${configMap.map(e => string(e._1) + ": " + string(e._2.toString)).mkString(", ")} }, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -1389,6 +1468,8 @@ final case class RunCompleted (
     import EventJsonHelper._
     s"""{ "eventType": "RunCompleted", "ordinal": ${ordinal.runStamp}, "duration": ${duration.getOrElse(0L)}, "summary": ${summaryOption(summary)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -1479,6 +1560,8 @@ final case class RunStopped (
     import EventJsonHelper._
     s"""{ "eventType": "RunStopped", "ordinal": ${ordinal.runStamp}, "duration": ${duration.getOrElse(0L)}, "summary": ${summaryOption(summary)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -1568,6 +1651,13 @@ final case class RunAborted (
     import EventJsonHelper._
     s"""{ "eventType": "RunAborted", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "throwable": ${throwableOption(throwable)}, "duration": ${duration.getOrElse(0L)}, "summary": ${summaryOption(summary)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
+
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
+
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -1651,6 +1741,13 @@ final case class InfoProvided (
     import EventJsonHelper._
     s"""{ "eventType": "InfoProvided", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nameInfoOption(nameInfo)}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
+
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
+
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -1743,6 +1840,13 @@ final case class AlertProvided (
     import EventJsonHelper._
     s"""{ "eventType": "AlertProvided", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nameInfoOption(nameInfo)}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
+
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
+
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -1835,6 +1939,13 @@ final case class NoteProvided (
     import EventJsonHelper._
     s"""{ "eventType": "NoteProvided", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nameInfoOption(nameInfo)}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
+
+  private[events] override def withThrowable(newThrowable: Option[Throwable]): Event = copy(throwable = newThrowable)
+
+  private[scalatest] override def ensureSerializable(): Event = 
+    ensurePayloadSerializable(payload).ensureThrowableSerializable(throwable)
 }
 
 /**
@@ -1912,6 +2023,8 @@ final case class MarkupProvided (
     import EventJsonHelper._
     s"""{ "eventType": "MarkupProvided", "ordinal": ${ordinal.runStamp}, "text": ${string(text)}, "nameInfo": ${nameInfoOption(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -1988,6 +2101,8 @@ final case class ScopeOpened (
     import EventJsonHelper._
     s"""{ "eventType": "ScopeOpened", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nmInfo(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -2063,6 +2178,8 @@ final case class ScopeClosed (
     import EventJsonHelper._
     s"""{ "eventType": "ScopeClosed", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nmInfo(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -2136,6 +2253,8 @@ final case class ScopePending (
     import EventJsonHelper._
     s"""{ "eventType": "ScopePending", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nmInfo(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = copy(payload = newPayload)
 }
 
 /**
@@ -2201,6 +2320,10 @@ final case class DiscoveryStarting (
     import EventJsonHelper._
     s"""{ "eventType": "DiscoveryStarting", "ordinal": ${ordinal.runStamp}, "configMap": { ${configMap.map(e => string(e._1) + ": " + string(e._2.toString)).mkString(", ")} }, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = this
+
+  private[scalatest] override def ensureSerializable(): Event = this
 }
 
 /**
@@ -2257,5 +2380,9 @@ final case class DiscoveryCompleted (
     import EventJsonHelper._
     s"""{ "eventType": "DiscoveryCompleted", "ordinal": ${ordinal.runStamp}, "duration": ${duration.getOrElse(0L)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
   }
+
+  private[events] def withPayload(newPayload: Option[Any]) = this
+
+  private[scalatest] override def ensureSerializable(): Event = this
 }
 

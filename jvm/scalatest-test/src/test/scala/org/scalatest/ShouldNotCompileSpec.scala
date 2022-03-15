@@ -107,7 +107,6 @@ class ShouldNotCompileSpec extends AnyFunSpec {
       }
     }
 
-    // SKIP-DOTTY-START
     describe("when work with triple quotes string literal with stripMargin") {
 
       it("should do nothing when type check failed") {
@@ -157,7 +156,6 @@ class ShouldNotCompileSpec extends AnyFunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
       }
     }
-    // SKIP-DOTTY-END
 
   }
 
