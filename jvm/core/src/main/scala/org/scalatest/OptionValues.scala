@@ -87,12 +87,8 @@ trait OptionValues {
    *
    * @param opt the <code>Option</code> on which to add the <code>value</code> method
    */
-  // SKIP-DOTTY-START 
-  implicit def convertOptionToValuable[T](opt: Option[T])(implicit pos: source.Position): Valuable[T] = new Valuable(opt, pos)
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY implicit def convertOptionToValuable[T](opt: Option[T])(implicit pos: source.Position): OptionValuable[T] = new OptionValuable(opt, pos)
+  implicit def convertOptionToValuable[T](opt: Option[T])(implicit pos: source.Position): OptionValuable[T] = new OptionValuable(opt, pos)
 
-  // SKIP-DOTTY-START
   /**
    * Wrapper class that adds a <code>value</code> method to <code>Option</code>, allowing
    * you to make statements like:
@@ -101,22 +97,9 @@ trait OptionValues {
    * opt.value should be &gt; 9
    * </pre>
    *
-   * @param opt An option to convert to <code>Valuable</code>, which provides the <code>value</code> method.
+   * @param opt An option to convert to <code>OptionValuable</code>, which provides the <code>value</code> method.
    */
-  class Valuable[T](opt: Option[T], pos: source.Position) {
-  // SKIP-DOTTY-END
-  //DOTTY-ONLY /**
-  //DOTTY-ONLY  * Wrapper class that adds a <code>value</code> method to <code>Option</code>, allowing
-  //DOTTY-ONLY  * you to make statements like:
-  //DOTTY-ONLY  *
-  //DOTTY-ONLY  * <pre class="stHighlight">
-  //DOTTY-ONLY  * opt.value should be &gt; 9
-  //DOTTY-ONLY  * </pre>
-  //DOTTY-ONLY  *
-  //DOTTY-ONLY  * @param opt An option to convert to <code>OptionValuable</code>, which provides the <code>value</code> method.
-  //DOTTY-ONLY  */
-  //DOTTY-ONLY class OptionValuable[T](opt: Option[T], pos: source.Position) {  
-
+  class OptionValuable[T](opt: Option[T], pos: source.Position) {
     /**
      * Returns the value contained in the wrapped <code>Option</code>, if defined, else throws <code>TestFailedException</code> with
      * a detail message indicating the option was not defined.
