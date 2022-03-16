@@ -6,7 +6,7 @@ import scala.io.Source
 trait BuildCommons {
 
   lazy val scalaVersionsSettings: Seq[Setting[_]] = Seq(
-    crossScalaVersions := Seq("2.13.6", "2.12.15", "2.11.12"),
+    crossScalaVersions := Seq("2.13.8", "2.12.15", "2.11.12"),
     scalaVersion := crossScalaVersions.value.head,
   )
 
@@ -142,8 +142,8 @@ trait BuildCommons {
      docsrcDir := target.value / "docsrc"
 
   val docTaskSetting =
-    doc in Compile := docTask((doc in Compile).value,
-                              (sourceDirectory in Compile).value,
+    Compile / doc := docTask((Compile / doc).value,
+                              (Compile / sourceDirectory).value,
                               name.value)
 
   def scalatestTestOptions =

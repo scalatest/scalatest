@@ -37,7 +37,7 @@ trait NativeBuild { this: BuildCommons =>
     // [error] * T89org.scalatest.tools.FrameworkL29org.scalatest.tools.Framework$SN$ReflectivelyInstantiate$
     //
     // Details: https://github.com/scala-native/scala-native/issues/1930
-    resourceDirectories in Compile += (classDirectory in Compile).value
+    Compile / resourceDirectories += (Compile / classDirectory).value
   )
 
   lazy val scalacticMacroNative = project.in(file("native/scalactic-macro"))
@@ -45,21 +45,21 @@ trait NativeBuild { this: BuildCommons =>
     .settings(
       projectTitle := "Scalactic Macro.native",
       organization := "org.scalactic",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task{
-          GenScalacticNative.genMacroScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenAnyVals.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, false) ++
-          GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenColCompatHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
-          GenMacroContext.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
+          GenScalacticNative.genMacroScala((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genResources((Compile / sourceManaged).value / "scala" / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenAnyVals.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value, false) ++
+          GenEvery.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenColCompatHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value) ++
+          GenMacroContext.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
       // Disable publishing macros directly, included in scalactic main jar
       publishArtifact := false,
       publish := {},
       publishLocal := {},
-      scalacOptions in (Compile, doc) := List.empty
+      Compile / doc / scalacOptions := List.empty
     ).enablePlugins(ScalaNativePlugin)
 
   lazy val scalacticNative = project.in(file("native/scalactic"))
@@ -70,16 +70,16 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "Scalactic.native",
       organization := "org.scalactic",
       moduleName := "scalactic",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenScalacticNative.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-          ScalacticGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-          GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
+          GenScalacticNative.genScala((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          ScalacticGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenArrayHelper.genMain((Compile / sourceManaged).value / "org" / "scalactic", version.value, scalaVersion.value)
         }.taskValue
       },
-      resourceGenerators in Compile += {
+      Compile / resourceGenerators += {
         Def.task {
-          GenScalacticJS.genResource((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+          GenScalacticJS.genResource((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -113,7 +113,7 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Native",
       organization := "org.scalatest",
       moduleName := "scalatest",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         // Little trick to get rid of bnd error when publish.
         Def.task{
           (new File(crossTarget.value, "classes")).mkdirs()
@@ -166,14 +166,14 @@ trait NativeBuild { this: BuildCommons =>
         libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
         libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
         // include the scalactic classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalacticNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalacticNative / Compile / packageBin / mappings).value,
         // include the scalactic sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalacticNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalacticNative / Compile / packageSrc / mappings).value,
         // include the scalatest classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalacticNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalacticNative / Compile / packageBin / mappings).value,
         // include the scalatest sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalacticNative, Compile, packageSrc).value,
-        sourceGenerators in Compile += {
+        Compile / packageSrc / mappings ++= (scalacticNative / Compile / packageSrc / mappings).value,
+        Compile / sourceGenerators += {
           // Little trick to get rid of bnd error when publish.
           Def.task{
             (new File(crossTarget.value, "classes")).mkdirs()
@@ -258,35 +258,35 @@ trait NativeBuild { this: BuildCommons =>
       moduleName := "scalatest-core",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenScalaTestNative.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenScalaTestNative.genHtml((Compile / resourceManaged).value, version.value, scalaVersion.value)
 
-          GenModulesNative.genScalaTestCore((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-          GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-          GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-          GenConfigMap.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++  
-          GenSafeStyles.genCore((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value, true)
+          GenModulesNative.genScalaTestCore((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenVersions.genScalaTestVersions((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genResources((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          ScalaTestGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+          GenGen.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+          GenConfigMap.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++  
+          GenSafeStyles.genCore((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value, true)
         }.taskValue
       },
       javaSourceManaged := target.value / "java",
-      managedSourceDirectories in Compile += javaSourceManaged.value,
-      sourceGenerators in Compile += {
+      Compile / managedSourceDirectories += javaSourceManaged.value,
+      Compile / sourceGenerators += {
         Def.task{
-          GenScalaTestNative.genJava((javaSourceManaged in Compile).value / "java", version.value, scalaVersion.value)
+          GenScalaTestNative.genJava((Compile / javaSourceManaged).value / "java", version.value, scalaVersion.value)
         }.taskValue
       },
-      resourceGenerators in Compile += {
+      Compile / resourceGenerators += {
         Def.task {
-          GenScalaTestNative.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
+          GenScalaTestNative.genHtml((Compile / resourceManaged).value, version.value, scalaVersion.value)
         }.taskValue
       },
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task{
-          GenTable.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
-          //GenSafeStyles.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+          GenTable.genMainForScalaJS((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
+          //GenSafeStyles.genMainForScalaJS((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
       scalatestJSDocTaskSetting
@@ -331,10 +331,10 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FeatureSpec Native",
       organization := "org.scalatest",
       moduleName := "scalatest-featurespec",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenModulesNative.genScalaTestFeatureSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFeatureSpec((sourceManaged in Compile).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true)
+          GenModulesNative.genScalaTestFeatureSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genFeatureSpec((Compile / sourceManaged).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -361,10 +361,10 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FlatSpec Native",
       organization := "org.scalatest",
       moduleName := "scalatest-flatspec",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenModulesNative.genScalaTestFlatSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFlatSpec((sourceManaged in Compile).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
+          GenModulesNative.genScalaTestFlatSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genFlatSpec((Compile / sourceManaged).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -391,10 +391,10 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FreeSpec Native",
       organization := "org.scalatest",
       moduleName := "scalatest-freespec",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenModulesNative.genScalaTestFreeSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFreeSpec((sourceManaged in Compile).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
+          GenModulesNative.genScalaTestFreeSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFreeSpec((Compile / sourceManaged).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -421,10 +421,10 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FunSuite Native",
       organization := "org.scalatest",
       moduleName := "scalatest-funsuite",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenModulesNative.genScalaTestFunSuite((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFunSuite((sourceManaged in Compile).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
+          GenModulesNative.genScalaTestFunSuite((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFunSuite((Compile / sourceManaged).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -451,10 +451,10 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest FunSpec Native",
       organization := "org.scalatest",
       moduleName := "scalatest-funspec",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenModulesNative.genScalaTestFunSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genFunSpec((sourceManaged in Compile).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
+          GenModulesNative.genScalaTestFunSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genFunSpec((Compile / sourceManaged).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -481,10 +481,10 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest PropSpec Native",
       organization := "org.scalatest",
       moduleName := "scalatest-propspec",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenModulesNative.genScalaTestPropSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genPropSpec((sourceManaged in Compile).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
+          GenModulesNative.genScalaTestPropSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genPropSpec((Compile / sourceManaged).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -511,10 +511,10 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest WordSpec Native",
       organization := "org.scalatest",
       moduleName := "scalatest-wordspec",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenModulesNative.genScalaTestWordSpec((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genWordSpec((sourceManaged in Compile).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
+          GenModulesNative.genScalaTestWordSpec((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genWordSpec((Compile / sourceManaged).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -541,9 +541,9 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Diagrams Native",
       organization := "org.scalatest",
       moduleName := "scalatest-diagrams",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenModulesNative.genScalaTestDiagrams((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+          GenModulesNative.genScalaTestDiagrams((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -570,10 +570,10 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Matchers Core Native",
       organization := "org.scalatest",
       moduleName := "scalatest-matchers-core",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenModulesNative.genScalaTestMatchersCore((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
-          GenFactories.genMainJS((sourceManaged in Compile).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
+          GenModulesNative.genScalaTestMatchersCore((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenFactories.genMainJS((Compile / sourceManaged).value / "org" / "scalatest" / "matchers", version.value, scalaVersion.value)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -601,9 +601,9 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Should Matchers Native",
       organization := "org.scalatest",
       moduleName := "scalatest-shouldmatchers",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenModulesNative.genScalaTestShouldMatchers((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+          GenModulesNative.genScalaTestShouldMatchers((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -630,9 +630,9 @@ trait NativeBuild { this: BuildCommons =>
       projectTitle := "ScalaTest Must Matchers Native",
       organization := "org.scalatest",
       moduleName := "scalatest-mustmatchers",
-      sourceGenerators in Compile += {
+      Compile / sourceGenerators += {
         Def.task {
-          GenMatchers.genMainForScalaJS((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
+          GenMatchers.genMainForScalaJS((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       }
     ).settings(osgiSettings: _*).settings(
@@ -655,16 +655,16 @@ trait NativeBuild { this: BuildCommons =>
       .settings(sharedSettings ++ sharedNativeSettings)
       .settings(
         projectTitle := "Common test classes used by scalactic.native and scalatest.native",
-        sourceGenerators in Compile += {
+        Compile / sourceGenerators += {
           Def.task{
-            GenCommonTestNative.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
-            GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
+            GenCommonTestNative.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value) ++
+            GenCompatibleClasses.genTest((Compile / sourceManaged).value, version.value, scalaVersion.value)
           }.taskValue
         },
         publishArtifact := false,
         publish := {},
         publishLocal := {},
-        scalacOptions in (Compile, doc) := List.empty
+        Compile / doc / scalacOptions := List.empty
       ).dependsOn(scalacticMacroNative, LocalProject("scalatestNative")).enablePlugins(ScalaNativePlugin)
 
   lazy val scalacticTestNative = project.in(file("native/scalactic-test"))
@@ -672,12 +672,12 @@ trait NativeBuild { this: BuildCommons =>
     .settings(
       projectTitle := "Scalactic Test.native",
       organization := "org.scalactic",
-      testOptions in Test ++=
+      Test / testOptions ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
-      nativeLinkStubs in Test := true,
-      sourceGenerators in Test += {
+      Test / nativeLinkStubs := true,
+      Test / sourceGenerators += {
         Def.task {
-          GenScalacticNative.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+          GenScalacticNative.genTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       },
       publishArtifact := false,
@@ -690,10 +690,10 @@ trait NativeBuild { this: BuildCommons =>
       organization := "org.scalatest",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
-      fork in test := false,
-      nativeLinkStubs in Test := true,
-      nativeDump in Test := false, 
-      testOptions in Test := scalatestTestJSNativeOptions,
+      test / fork := false,
+      Test / nativeLinkStubs := true,
+      Test / nativeDump := false, 
+      Test / testOptions := scalatestTestJSNativeOptions,
       publishArtifact := false,
       publish := {},
       publishLocal := {}
@@ -704,18 +704,18 @@ trait NativeBuild { this: BuildCommons =>
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestNative.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+          GenScalaTestNative.genTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       },
-      sourceGenerators in Test +=
+      Test / sourceGenerators +=
         Def.task {
-          GenGen.genTestForNative((sourceManaged in Test).value, version.value, scalaVersion.value)
+          GenGen.genTestForNative((Test / sourceManaged).value, version.value, scalaVersion.value)
         }/*,  // OOM even with 14gb heap size, will turn this one when 32gb machine is common or if newer scala-native use lesser memory.
-      sourceGenerators in Test +=
+      Test / sourceGenerators +=
         Def.task {
-          GenMustMatchersTests.genTestForScalaNative((sourceManaged in Test).value, version.value, scalaVersion.value)
+          GenMustMatchersTests.genTestForScalaNative((Test / sourceManaged).value, version.value, scalaVersion.value)
         }*/
     ).dependsOn(scalatestNative % "test", commonTestNative % "test")
      .enablePlugins(ScalaNativePlugin)
@@ -736,9 +736,9 @@ trait NativeBuild { this: BuildCommons =>
     .settings(
       projectTitle := "ScalaTest Diagrams Test",
       nativeLink := file("test.hnir"),
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestNative.genDiagramsTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+          GenScalaTestNative.genDiagramsTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
@@ -749,10 +749,10 @@ trait NativeBuild { this: BuildCommons =>
     .settings(
       projectTitle := "ScalaTest FeatureSpec Test",
       nativeLink := file("test2.hnir"),
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestNative.genFeatureSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFeatureSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true)
+          GenScalaTestNative.genFeatureSpecTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFeatureSpecTest((Compile / sourceManaged).value / "org" / "scalatest" / "featurespec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
@@ -762,10 +762,10 @@ trait NativeBuild { this: BuildCommons =>
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest FlatSpec Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestNative.genFlatSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFlatSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
+          GenScalaTestNative.genFlatSpecTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFlatSpecTest((Compile / sourceManaged).value / "org" / "scalatest" / "flatspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
@@ -775,10 +775,10 @@ trait NativeBuild { this: BuildCommons =>
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest FreeSpec Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestNative.genFreeSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFreeSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
+          GenScalaTestNative.genFreeSpecTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFreeSpecTest((Compile / sourceManaged).value / "org" / "scalatest" / "freespec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
@@ -788,10 +788,10 @@ trait NativeBuild { this: BuildCommons =>
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest FunSpec Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestNative.genFunSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFunSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
+          GenScalaTestNative.genFunSpecTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFunSpecTest((Compile / sourceManaged).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
@@ -801,10 +801,10 @@ trait NativeBuild { this: BuildCommons =>
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest FunSuite Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestNative.genFunSuiteTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFunSuiteTest((sourceManaged in Test).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
+          GenScalaTestNative.genFunSuiteTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
+          GenSafeStyles.genFunSuiteTest((Test / sourceManaged).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
@@ -814,10 +814,10 @@ trait NativeBuild { this: BuildCommons =>
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest PropSpec Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestNative.genPropSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genPropSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
+          GenScalaTestNative.genPropSpecTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genPropSpecTest((Compile / sourceManaged).value / "org" / "scalatest" / "propspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
@@ -827,10 +827,10 @@ trait NativeBuild { this: BuildCommons =>
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest WordSpec Test",
-      sourceGenerators in Test += {
+      Test / sourceGenerators += {
         Def.task {
-          GenScalaTestNative.genWordSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genWordSpecTest((sourceManaged in Compile).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
+          GenScalaTestNative.genWordSpecTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
+          GenSafeStyles.genWordSpecTest((Compile / sourceManaged).value / "org" / "scalatest" / "wordspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)  
@@ -841,7 +841,7 @@ trait NativeBuild { this: BuildCommons =>
       publishArtifact := false,
       publish := {},
       publishLocal := {},
-      scalacOptions in (Compile, doc) := List.empty
+      Compile / doc / scalacOptions := List.empty
     ).aggregate(
       scalatestCoreNative, 
       scalatestFeatureSpecNative, 
