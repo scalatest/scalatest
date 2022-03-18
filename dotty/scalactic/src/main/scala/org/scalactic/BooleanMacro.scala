@@ -181,9 +181,25 @@ object BooleanMacro {
                     }
                   }
                 }.asExprOf[Bool]
+
+              case Apply(Apply(TypeApply(Ident(infixOrderingOps), List(_)), List(wrapped)), List(Ident(evidence$1))) if infixOrderingOps == "infixOrderingOps" =>
+                let(Symbol.spliceOwner, lhs) { left =>
+                  let(Symbol.spliceOwner, rhs) { right =>
+                    val app = left.select(sel.symbol).appliedTo(right)
+                    let(Symbol.spliceOwner, app) { result =>
+                      val l = wrapped.asExpr
+                      val r = right.asExpr
+                      val b = result.asExprOf[Boolean]
+                      val code = '{ Bool.binaryMacroBool($l, ${Expr(op)}, $r, $b, $prettifier) }
+                      code.asTerm
+                    }
+                  }
+                }.asExprOf[Bool]
                         
               case _ => binaryDefault
             }
+
+          // Apply(Apply(TypeApply(Ident(infixOrderingOps),List(TypeTree[TypeRef(NoPrefix,type A)])),List(Ident(first))),List(Ident(evidence$1)))  
 
           case "exists" =>
             rhs match {

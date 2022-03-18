@@ -607,6 +607,47 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                   case _ => simpleMacroBool(tree.duplicate, getText(tree), prettifierTree) // something else, just call simpleMacroBool
                 }
 
+              case "<=" | "<" | ">" | ">=" =>
+                val wrappedTree: Tree = 
+                  leftTree match {
+                    case Apply(
+                           Apply(
+                             TypeApply(
+                               Select(
+                                 Select(
+                                   Select(
+                                     Select(
+                                       Ident(scalaPackage), 
+                                       mathPackage
+                                     ), 
+                                     orderingClass
+                                   ), 
+                                   implicitsClass
+                                 ), 
+                                 infixOrderingOps
+                               ), 
+                               List(TypeTree())
+                             ), 
+                             List(wrapped)
+                           ), 
+                           List(Ident(_))
+                         ) 
+                         if infixOrderingOps.decodedName.toString() == "infixOrderingOps" &&
+                            implicitsClass.decodedName.toString() == "Implicits" &&
+                            orderingClass.decodedName.toString() == "Ordering" &&
+                            mathPackage.decodedName.toString() == "math" && 
+                            scalaPackage.decodedName.toString() == "scala" =>  
+                      wrapped
+
+                    case other => other
+                  }
+
+                Block(
+                  valDef("$org_scalatest_assert_macro_left", wrappedTree),
+                  valDef("$org_scalatest_assert_macro_right", rightTree),
+                  binaryMacroBool(select.duplicate, prettifierTree)
+                )
+
               case _ =>
                 /**
                  * something else but still a binary macro bool, generate AST for the following code:
