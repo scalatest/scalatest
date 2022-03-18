@@ -18,6 +18,8 @@ package org.scalactic
 import scala.quoted._
 
 object BooleanMacro {
+  // Reference: https://www.scala-lang.org/api/3.0.0/scala/quoted/Quotes$reflectModule.html
+
   private val logicOperators = Set("&&", "||", "&", "|")
 
   private val supportedBinaryOperations =
@@ -168,21 +170,16 @@ object BooleanMacro {
 
           case ">" | "<" | ">=" | "<=" =>
             lhs match {
-              case Apply(Apply(TypeApply(Ident(infixOrderingOps), List(_)), List(wrapped)), List(Apply(TypeApply(Ident(_), List(_)), List(TypeApply(Ident(_), List(_)))))) if infixOrderingOps == "infixOrderingOps" =>
-                let(Symbol.spliceOwner, lhs) { left =>
-                  let(Symbol.spliceOwner, rhs) { right =>
-                    val app = left.select(sel.symbol).appliedTo(right)
-                    let(Symbol.spliceOwner, app) { result =>
-                      val l = wrapped.asExpr
-                      val r = right.asExpr
-                      val b = result.asExprOf[Boolean]
-                      val code = '{ Bool.binaryMacroBool($l, ${Expr(op)}, $r, $b, $prettifier) }
-                      code.asTerm
-                    }
-                  }
-                }.asExprOf[Bool]
-
-              case Apply(Apply(TypeApply(Ident(infixOrderingOps), List(_)), List(wrapped)), List(Ident(evidence$1))) if infixOrderingOps == "infixOrderingOps" =>
+              case Apply(
+                     Apply(
+                       TypeApply(
+                         Ident(infixOrderingOps), 
+                         List(_)
+                       ), 
+                       List(wrapped)
+                     ), 
+                     List(_)
+                   ) if infixOrderingOps == "infixOrderingOps" =>
                 let(Symbol.spliceOwner, lhs) { left =>
                   let(Symbol.spliceOwner, rhs) { right =>
                     val app = left.select(sel.symbol).appliedTo(right)
@@ -198,8 +195,6 @@ object BooleanMacro {
                         
               case _ => binaryDefault
             }
-
-          // Apply(Apply(TypeApply(Ident(infixOrderingOps),List(TypeTree[TypeRef(NoPrefix,type A)])),List(Ident(first))),List(Ident(evidence$1)))  
 
           case "exists" =>
             rhs match {

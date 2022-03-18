@@ -630,7 +630,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                              ), 
                              List(wrapped)
                            ), 
-                           List(Ident(_))
+                           List(_)
                          ) 
                          if infixOrderingOps.decodedName.toString() == "infixOrderingOps" &&
                             implicitsClass.decodedName.toString() == "Implicits" &&
