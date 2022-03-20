@@ -49,7 +49,7 @@ import verbs.BehaveWord
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 //SCALATESTNATIVE-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scalatest.FixtureTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
 

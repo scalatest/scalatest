@@ -80,14 +80,6 @@ object GenSafeStyles {
     outputFile
   }
 
-  def genCore(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
-    targetDir.mkdirs()
-
-    Seq(
-      translateFile(targetDir, "FixtureSafeTestRegistration.scala", "jvm/core/src/main/scala/org/scalatest/FixtureTestRegistration.scala", scalaVersion, scalaJS, translateLine("TestRegistration")),
-    )
-  }
-
   def genFunSuite(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Seq[File] = {
     targetDir.mkdirs()
 

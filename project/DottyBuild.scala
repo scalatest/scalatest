@@ -166,8 +166,7 @@ trait DottyBuild { this: BuildCommons =>
           ScalaTestGenResourcesJVM.genResources((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++
           ScalaTestGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)  ++
           GenGen.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-          GenConfigMap.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
-          GenSafeStyles.genCore((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value, false)
+          GenConfigMap.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue,
       javaSourceManaged := target.value / "java",
       Compile / managedSourceDirectories += javaSourceManaged.value,
@@ -245,8 +244,7 @@ trait DottyBuild { this: BuildCommons =>
         ScalaTestGenResourcesJSVM.genResources((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++
         ScalaTestGenResourcesJSVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)  ++
         GenGen.genMain((Compile / sourceManaged).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-        GenConfigMap.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
-        GenSafeStyles.genCore((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value, true)
+        GenConfigMap.genMain((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value)
       }.taskValue,
       javaSourceManaged := target.value / "java",
       Compile / managedSourceDirectories += javaSourceManaged.value,

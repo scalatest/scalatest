@@ -50,7 +50,7 @@ StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 //SCALATESTNATIVE-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with org.scalatest.FixtureTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAnyWordSpecLike extends org.scalatest.FixtureTestSuite with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureWordSpecMod, "FixtureWordSpec")
 
