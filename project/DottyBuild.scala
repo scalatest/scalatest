@@ -731,7 +731,7 @@ trait DottyBuild { this: BuildCommons =>
     .settings(sharedTestSettingsDottyJS)
     .settings(
       projectTitle := "ScalaTest Test",
-      scalaJSLinkerConfig ~= { _.withOptimizer(false).withSemantics(_.withStrictFloats(true)) },
+      scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       Test / sourceGenerators += Def.task {
         //GenRegularTests4.genJava((Compile / javaSourceManaged).value) ++
         GenScalaTestDotty.genTestJS((Test / sourceManaged).value, version.value, scalaVersion.value)
