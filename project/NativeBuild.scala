@@ -14,8 +14,6 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 trait NativeBuild { this: BuildCommons =>
 
-  val scalaNativeVersion = Option(System.getenv("SCALANATIVE_VERSION")).getOrElse("0.4.4")
-
   lazy val nativeCrossBuildLibraryDependencies = Def.setting {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 10)) => Seq.empty
@@ -164,7 +162,7 @@ trait NativeBuild { this: BuildCommons =>
         organization := "org.scalatest",
         moduleName := "scalatest-app",
         libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-        libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
+        libraryDependencies += "org.scala-native" %%% "test-interface" % nativeVersion,
         // include the scalactic classes and resources in the jar
         Compile / packageBin / mappings ++= (scalacticNative / Compile / packageBin / mappings).value,
         // include the scalactic sources in the source jar
@@ -257,7 +255,7 @@ trait NativeBuild { this: BuildCommons =>
       organization := "org.scalatest",
       moduleName := "scalatest-core",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-      libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
+      libraryDependencies += "org.scala-native" %%% "test-interface" % nativeVersion,
       Compile / sourceGenerators += {
         Def.task {
           GenScalaTestNative.genHtml((Compile / resourceManaged).value, version.value, scalaVersion.value)
