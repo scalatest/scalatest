@@ -21,7 +21,7 @@ trait NativeBuild { this: BuildCommons =>
       case Some((2, 10)) => Seq.empty
       case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
       case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.0.1"))
+        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.1.0"))
     }
   }
 
