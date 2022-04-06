@@ -35,8 +35,8 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
   
   // Chee Seng: What's the UUID for?
   // Each test gets one slot, but other events such as an info from an after an also get a slot i think.
-  case class Slot(uuid: UUID, eventList: ListBuffer[Event], completed: Boolean, completedEvent: Boolean, ready: Boolean)
-  
+  private case class Slot(uuid: UUID, eventList: ListBuffer[Event], completed: Boolean, completedEvent: Boolean, ready: Boolean)
+
   private val waitingBuffer = new ListBuffer[Slot]()
   private val slotMap = new collection.mutable.HashMap[String, Slot]()  // testName -> Slot
   @volatile private var completedTestCount = 0 // Called within synchronized. Don't need volatile and it wouldn't work anyway.
@@ -44,7 +44,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
   checkCompletedTests()   // In case the suite does not comtain any test.
 
   // Passed slot will always be the head of waitingBuffer
-  class TimeoutTask(val slot: Slot) extends TimerTask {
+  private class TimeoutTask(val slot: Slot) extends TimerTask {
     override def run(): Unit = {
       timeout()
     }
