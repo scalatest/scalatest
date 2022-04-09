@@ -111,7 +111,7 @@ trait DottyBuild { this: BuildCommons =>
           GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenColCompatHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           // end from scalactic-macro
-          GenScalacticDotty.genScalaJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenScalacticDotty.genScalaNative((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
           GenVersions.genScalacticVersions((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           ScalacticGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
@@ -370,11 +370,11 @@ trait DottyBuild { this: BuildCommons =>
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
       libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.1.0", 
-      libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).withDottyCompat(dottyVersion), 
+      libraryDependencies += ("org.scala-native" %% "test-interface_native0.4" % scalaNativeVersion), 
       packageManagedSources,
       sourceGenerators in Compile += Def.task {
         GenModulesDotty.genScalaTestCoreJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
-        GenScalaTestDotty.genScalaJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+        GenScalaTestDotty.genScalaNative((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
         GenVersions.genScalaTestVersions((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
         ScalaTestGenResourcesJSVM.genResources((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value) ++
         ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)  ++
@@ -481,6 +481,13 @@ trait DottyBuild { this: BuildCommons =>
         .settings(
           OsgiKeys.exportPackage := Seq(s"org.scalatest.$style"),
         ).dependsOn(scalatestCoreDottyJS).enablePlugins(ScalaJSPlugin)
+
+    /** common settings for all scalatest native `style` modules such as `featurespec`, `funsuite`,.. */
+    def scalatestStyleModuleNative(style: String, title: String): Project =
+      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty.applyJS(style))
+        .settings(
+          OsgiKeys.exportPackage := Seq(s"org.scalatest.$style"),
+        ).dependsOn(scalatestCoreDottyNative).enablePlugins(ScalaNativePlugin)    
         
   }
   
@@ -488,49 +495,73 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestStyleModule("featurespec", "ScalaTest FeatureSpec Dotty")
 
   lazy val scalatestFeatureSpecDottyJS = project.in(file("dotty/featurespec.js"))
-    .scalatestStyleModuleJS("featurespec", "ScalaTest FeatureSpec Dotty JS")  
+    .scalatestStyleModuleJS("featurespec", "ScalaTest FeatureSpec Dotty JS")
+
+  lazy val scalatestFeatureSpecDottyNative = project.in(file("dotty/featurespec.native"))
+    .scalatestStyleModuleNative("featurespec", "ScalaTest FeatureSpec Dotty Native")    
 
   lazy val scalatestFlatSpecDotty = project.in(file("dotty/flatspec"))
     .scalatestStyleModule("flatspec", "ScalaTest FlatSpec Dotty")
 
   lazy val scalatestFlatSpecDottyJS = project.in(file("dotty/flatspec.js"))
-    .scalatestStyleModuleJS("flatspec", "ScalaTest FlatSpec Dotty JS")  
+    .scalatestStyleModuleJS("flatspec", "ScalaTest FlatSpec Dotty JS")
+
+  lazy val scalatestFlatSpecDottyNative = project.in(file("dotty/flatspec.native"))
+    .scalatestStyleModuleNative("flatspec", "ScalaTest FlatSpec Dotty Native")    
 
   lazy val scalatestFreeSpecDotty = project.in(file("dotty/freespec"))
     .scalatestStyleModule("freespec", "ScalaTest FreeSpec Dotty")
 
   lazy val scalatestFreeSpecDottyJS = project.in(file("dotty/freespec.js"))
-    .scalatestStyleModuleJS("freespec", "ScalaTest FreeSpec Dotty JS")  
+    .scalatestStyleModuleJS("freespec", "ScalaTest FreeSpec Dotty JS")
+
+  lazy val scalatestFreeSpecDottyNative = project.in(file("dotty/freespec.native"))
+    .scalatestStyleModuleNative("freespec", "ScalaTest FreeSpec Dotty Native")    
 
   lazy val scalatestFunSuiteDotty = project.in(file("dotty/funsuite"))
     .scalatestStyleModule("funsuite", "ScalaTest FunSuite Dotty")
 
   lazy val scalatestFunSuiteDottyJS = project.in(file("dotty/funsuite.js"))
-    .scalatestStyleModuleJS("funsuite", "ScalaTest FunSuite Dotty JS")  
+    .scalatestStyleModuleJS("funsuite", "ScalaTest FunSuite Dotty JS")
+
+  lazy val scalatestFunSuiteDottyNative = project.in(file("dotty/funsuite.native"))
+    .scalatestStyleModuleNative("funsuite", "ScalaTest FunSuite Dotty Native")    
 
   lazy val scalatestFunSpecDotty = project.in(file("dotty/funspec"))
     .scalatestStyleModule("funspec", "ScalaTest FunSpec Dotty")
 
   lazy val scalatestFunSpecDottyJS = project.in(file("dotty/funspec.js"))
-    .scalatestStyleModuleJS("funspec", "ScalaTest FunSpec Dotty JS")  
+    .scalatestStyleModuleJS("funspec", "ScalaTest FunSpec Dotty JS")
+
+  lazy val scalatestFunSpecDottyNative = project.in(file("dotty/funspec.native"))
+    .scalatestStyleModuleNative("funspec", "ScalaTest FunSpec Dotty Native")    
 
   lazy val scalatestPropSpecDotty = project.in(file("dotty/propspec"))
     .scalatestStyleModule("propspec", "ScalaTest PropSpec Dotty")
 
   lazy val scalatestPropSpecDottyJS = project.in(file("dotty/propspec.js"))
-    .scalatestStyleModuleJS("propspec", "ScalaTest PropSpec Dotty JS")  
+    .scalatestStyleModuleJS("propspec", "ScalaTest PropSpec Dotty JS")
+
+  lazy val scalatestPropSpecDottyNative = project.in(file("dotty/propspec.native"))
+    .scalatestStyleModuleNative("propspec", "ScalaTest PropSpec Dotty Native")    
 
   lazy val scalatestRefSpecDotty = project.in(file("dotty/refspec"))
     .scalatestStyleModule("refspec", "ScalaTest RefSpec Dotty")
 
   lazy val scalatestRefSpecDottyJS = project.in(file("dotty/refspec.js"))
-    .scalatestStyleModuleJS("refspec", "ScalaTest RefSpec Dotty JS")  
+    .scalatestStyleModuleJS("refspec", "ScalaTest RefSpec Dotty JS")
+
+  lazy val scalatestRefSpecDottyNative = project.in(file("dotty/refspec.native"))
+    .scalatestStyleModuleNative("refspec", "ScalaTest RefSpec Dotty Native")    
 
   lazy val scalatestWordSpecDotty = project.in(file("dotty/wordspec"))
     .scalatestStyleModule("wordspec", "ScalaTest WordSpec Dotty")
 
   lazy val scalatestWordSpecDottyJS = project.in(file("dotty/wordspec.js"))
-    .scalatestStyleModuleJS("wordspec", "ScalaTest WordSpec Dotty JS")  
+    .scalatestStyleModuleJS("wordspec", "ScalaTest WordSpec Dotty JS")
+
+  lazy val scalatestWordSpecDottyNative = project.in(file("dotty/wordspec.native"))
+    .scalatestStyleModuleNative("wordspec", "ScalaTest WordSpec Dotty Native")    
 
   lazy val scalatestDiagramsDotty = project.in(file("dotty/diagrams"))
     .scalatestStyleModule("diagrams", "ScalaTest Diagrams Dotty")
@@ -547,6 +578,19 @@ trait DottyBuild { this: BuildCommons =>
         "org.scalatest.diagrams"
       ),
     ).dependsOn(scalatestCoreDottyJS).enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestDiagramsDottyNative = project.in(file("dotty/diagrams.native"))
+    .scalatestSubModule(
+      "scalatest-diagrams", 
+      "ScalaTest Diagrams Dotty Native", 
+      (targetDir, version, scalaVersion) =>
+        GenScalaTestDotty.genDiagramsScalaJS(targetDir / "org" / "scalatest", version, scalaVersion)
+    ).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest", 
+        "org.scalatest.diagrams"
+      ),
+    ).dependsOn(scalatestCoreDottyNative).enablePlugins(ScalaNativePlugin)  
 
   lazy val scalatestMatchersCoreDotty = project.in(file("dotty/matchers-core"))
     .scalatestSubModule(
@@ -579,6 +623,22 @@ trait DottyBuild { this: BuildCommons =>
       ),
     ).dependsOn(scalatestCoreDottyJS).enablePlugins(ScalaJSPlugin)
 
+  lazy val scalatestMatchersCoreDottyNative = project.in(file("dotty/matchers-core.native"))
+    .scalatestSubModule(
+      "scalatest-matchers-core",
+      "ScalaTest Matchers Core Dotty Native",
+      (targetDir, version, scalaVersion) => {
+        GenModulesDotty.genScalaTestMatchersCoreJS(targetDir, version, scalaVersion) ++
+        GenScalaTestDotty.genMatchersCoreScalaJS(targetDir, version, scalaVersion) ++
+        GenFactoriesDotty.genMain(targetDir / "org" / "scalatest" / "matchers" / "dsl", version, scalaVersion)
+      }
+    ).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.matchers",
+        "org.scalatest.matchers.dsl"
+      ),
+    ).dependsOn(scalatestCoreDottyNative).enablePlugins(ScalaNativePlugin)  
+
   lazy val scalatestShouldMatchersDotty = project.in(file("dotty/shouldmatchers"))
     .scalatestSubModule(
       "scalatest-shouldmatchers",
@@ -600,6 +660,18 @@ trait DottyBuild { this: BuildCommons =>
       OsgiKeys.exportPackage := Seq("org.scalatest.matchers.should"),
     ).dependsOn(scalatestMatchersCoreDottyJS).enablePlugins(ScalaJSPlugin)
 
+  lazy val scalatestShouldMatchersDottyNative = project.in(file("dotty/shouldmatchers.native"))
+    .scalatestSubModule(
+      "scalatest-shouldmatchers",
+      "ScalaTest Should Matchers Dotty Native",
+      (targetDir, version, scalaVersion) => {
+        GenModulesDotty.genScalaTestShouldMatchersJS(targetDir, version, scalaVersion) ++ 
+        GenScalaTestDotty.genShouldMatchersScalaJS(targetDir, version, scalaVersion)
+      }
+    ).settings(
+      OsgiKeys.exportPackage := Seq("org.scalatest.matchers.should"),
+    ).dependsOn(scalatestMatchersCoreDottyNative).enablePlugins(ScalaNativePlugin)  
+
   lazy val scalatestMustMatchersDotty = project.in(file("dotty/mustmatchers"))
     .scalatestSubModule(
       "scalatest-mustmatchers",
@@ -613,13 +685,24 @@ trait DottyBuild { this: BuildCommons =>
   lazy val scalatestMustMatchersDottyJS = project.in(file("dotty/mustmatchers.js"))
     .scalatestSubModule(
       "scalatest-mustmatchers",
-      "ScalaTest Must Matchers DottyJS ",
+      "ScalaTest Must Matchers Dotty JS ",
       (targetDir, version, scalaVersion) =>
         GenMatchers.genMainForDottyJS(targetDir / "org" / "scalatest", version, scalaVersion) ++ 
         GenScalaTestDotty.genMustMatchersScalaJS(targetDir, version, scalaVersion)
     ).settings(
     OsgiKeys.exportPackage := Seq("org.scalatest.matchers.must"),
   ).dependsOn(scalatestMatchersCoreDottyJS).enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestMustMatchersDottyNative = project.in(file("dotty/mustmatchers.native"))
+    .scalatestSubModule(
+      "scalatest-mustmatchers",
+      "ScalaTest Must Matchers Dotty Native ",
+      (targetDir, version, scalaVersion) =>
+        GenMatchers.genMainForDottyJS(targetDir / "org" / "scalatest", version, scalaVersion) ++ 
+        GenScalaTestDotty.genMustMatchersScalaJS(targetDir, version, scalaVersion)
+    ).settings(
+    OsgiKeys.exportPackage := Seq("org.scalatest.matchers.must"),
+  ).dependsOn(scalatestMatchersCoreDottyNative).enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestModulesDotty = project.in(file("modules/dotty/modules-aggregation"))
     .settings(sharedSettings: _*)
@@ -718,7 +801,46 @@ trait DottyBuild { this: BuildCommons =>
       scalatestMatchersCoreDottyJS, 
       scalatestShouldMatchersDottyJS, 
       scalatestMustMatchersDottyJS
-    ).enablePlugins(ScalaJSPlugin) 
+    ).enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestDottyNative = project.in(file("dotty/scalatest.native"))
+    .scalatestModule("scalatest", "ScalaTest Dotty Native")
+    .settings(
+      // Little trick to get rid of bnd error when publish.
+      sourceGenerators in Compile += Def.task {
+        (crossTarget.value / "classes").mkdirs()
+        Seq.empty[File]
+      }.taskValue,
+      OsgiKeys.privatePackage := Seq.empty, 
+    ).dependsOn(
+      scalatestCoreDottyNative, 
+      scalatestFeatureSpecDottyNative, 
+      scalatestFlatSpecDottyNative, 
+      scalatestFreeSpecDottyNative, 
+      scalatestFunSuiteDottyNative, 
+      scalatestFunSpecDottyNative, 
+      scalatestPropSpecDottyNative, 
+      scalatestRefSpecDottyNative, 
+      scalatestWordSpecDottyNative, 
+      scalatestDiagramsDottyNative, 
+      scalatestMatchersCoreDottyNative, 
+      scalatestShouldMatchersDottyNative, 
+      scalatestMustMatchersDottyNative
+    ).aggregate(
+      scalatestCoreDottyNative, 
+      scalatestFeatureSpecDottyNative, 
+      scalatestFlatSpecDottyNative, 
+      scalatestFreeSpecDottyNative, 
+      scalatestFunSuiteDottyNative, 
+      scalatestFunSpecDottyNative, 
+      scalatestPropSpecDottyNative, 
+      scalatestRefSpecDottyNative, 
+      scalatestWordSpecDottyNative, 
+      scalatestDiagramsDottyNative, 
+      scalatestMatchersCoreDottyNative, 
+      scalatestShouldMatchersDottyNative, 
+      scalatestMustMatchersDottyNative
+    ).enablePlugins(ScalaNativePlugin)   
 
   private lazy val noPublishSettings = Seq(
     publishArtifact := false,
@@ -753,6 +875,20 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
       noPublishSettings,
     ).dependsOn(scalacticDottyJS, LocalProject("scalatestDottyJS")).enablePlugins(ScalaJSPlugin)
+
+  lazy val commonTestDottyNative = project.in(file("dotty/common-test.native"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(
+      projectTitle := "Common test classes used by scalactic and scalatest",
+      libraryDependencies ++= crossBuildTestLibraryDependencies.value,
+      sourceGenerators in Compile += Def.task {
+        GenCommonTestDotty.genMainJS((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value) ++
+        GenGen.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
+        GenCompatibleClasses.genTest((sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      noPublishSettings,
+    ).dependsOn(scalacticDottyNative, LocalProject("scalatestDottyNative")).enablePlugins(ScalaNativePlugin)  
 
   lazy val scalacticTestDotty = project.in(file("dotty/scalactic-test"))
     .settings(sharedSettings: _*)
@@ -796,6 +932,22 @@ trait DottyBuild { this: BuildCommons =>
         GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)*/
       }.taskValue
     ).dependsOn(scalacticDottyJS, scalatestDottyJS % "test", commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalacticTestDottyNative = project.in(file("dotty/scalactic-test.native"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "Scalactic Test Native",
+      organization := "org.scalactic",
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}, 
+      sourceGenerators in Test += Def.task {
+        GenScalacticDotty.genTestNative((sourceManaged in Test).value, version.value, scalaVersion.value) /*++
+        GenAnyVals.genTest((sourceManaged in Test).value / "scala" / "org" / "scalactic" / "anyvals", version.value, scalaVersion.value)*/
+      }.taskValue
+    ).dependsOn(scalacticDottyNative, scalatestDottyNative % "test", commonTestDottyNative % "test").enablePlugins(ScalaNativePlugin)  
 
   def sharedTestSettingsDotty: Seq[Setting[_]] = 
     Seq(
@@ -881,6 +1033,29 @@ trait DottyBuild { this: BuildCommons =>
        scalatestPropSpecTestDottyJS, 
        scalatestWordSpecTestDottyJS
      ).enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestTestDottyNative = project.in(file("dotty/scalatest-test.native"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest Test",
+      scalaJSLinkerConfig ~= { _.withOptimizer(false).withSemantics(_.withStrictFloats(true)) },
+      sourceGenerators in Test += Def.task {
+        //GenRegularTests4.genJava((javaSourceManaged in Compile).value) ++
+        GenScalaTestDotty.genTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(scalacticDottyNative, scalatestDottyNative % "test", commonTestDottyNative % "test").enablePlugins(ScalaNativePlugin)
+     /*.aggregate(
+       scalatestDiagramsTestDottyNative, 
+       scalatestFeatureSpecTestDottyNative, 
+       scalatestFlatSpecTestDottyNative, 
+       scalatestFreeSpecTestDottyNative, 
+       scalatestFunSpecTestDottyNative, 
+       scalatestFunSuiteTestDottyNative, 
+       scalatestPropSpecTestDottyNative, 
+       scalatestWordSpecTestDottyNative
+     )*/.enablePlugins(ScalaNativePlugin)   
 
 
   lazy val scalatestDiagramsTestDotty = project.in(file("dotty/diagrams-test"))

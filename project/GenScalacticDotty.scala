@@ -151,6 +151,47 @@ object GenScalacticDotty {
     }
   }
 
+  private def copyFileNative(sourceFile: File, destFile: File): File = {
+    val destWriter = new BufferedWriter(new FileWriter(destFile))
+    try {
+      val lines = Source.fromFile(sourceFile).getLines.toList
+      var skipMode = false
+      for (line <- lines) {
+        if (line.trim == "// SKIP-DOTTY-START" || line.trim == "// SKIP-DOTTY-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-DOTTY-END" || line.trim == "// SKIP-DOTTY-END")
+          skipMode = false
+        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTNATIVE-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTNATIVE-END")
+          skipMode = false
+        else if (!skipMode) {
+          destWriter.write(transformLine(line))
+          destWriter.newLine()
+        }
+      }
+      destFile
+    }
+    finally {
+      destWriter.flush()
+      destWriter.close()
+      println("Copied " + destFile.getAbsolutePath)
+    }
+  }
+
+  def copyDirNative(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
+    val packageDir = new File(targetDir, packageDirName)
+    packageDir.mkdirs()
+    val sourceDir = new File(sourceDirName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
+      val destFile = new File(packageDir, sourceFile.getName)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFileNative(sourceFile, destFile)
+
+      destFile
+    }
+  }
+
   def copyResourceDir(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
@@ -198,10 +239,10 @@ object GenScalacticDotty {
     copyDir("dotty/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) ++
     copyDirJS("dotty/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++ 
-    copyDir("js/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
+    copyDir("js/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) 
 
   def genScalaNative(targetDir: File, version: String, scalaVersion: String): Seq[File] =
-    copyDir("jvm/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir,
+    copyDirNative("jvm/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir,
       List(
         "BooleanMacro.scala", // Re-implemented
         "Requirements.scala", // Re-implemented
@@ -218,8 +259,7 @@ object GenScalacticDotty {
     copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) ++
-    copyDirJS("dotty/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++ 
-    copyDir("jvm/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)  
+    copyDirJS("dotty/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
 
   def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("jvm/scalactic-macro/src/main/scala/org/scalactic", "org/scalactic", targetDir,
@@ -277,5 +317,20 @@ object GenScalacticDotty {
         "OddInt.scala"        // not used, scala2 macros
       )) ++
     copyDirJS("jvm/scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty)
+
+  def genTestNative(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDirNative("jvm/scalactic-test/src/test/scala/org/scalactic", "org/scalactic", targetDir,
+      List(
+        "TripleEqualsSpec.for210",  // Old staff, we shall delete this soon.
+        "FutureSugarSpec.scala",     // instability, occasional timeout in CI
+        // uses java.util.Date(int, int, int)
+        "AccumulationSpec.scala"
+      )) ++
+    copyDirNative("jvm/scalactic-test/src/test/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir,
+      List(
+        "OddIntMacro.scala",  // not used, scala2 macros
+        "OddInt.scala"        // not used, scala2 macros
+      )) ++
+    copyDirNative("jvm/scalactic-test/src/test/scala/org/scalactic/source", "org/scalactic/source", targetDir, List("ObjectMetaSpec.scala"))  
 
 }

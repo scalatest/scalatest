@@ -23,14 +23,14 @@ import scala.compat.Platform
 
 class Framework extends BaseFramework {
   
-  def name: String = "ScalaTest"
+  def name(): String = "ScalaTest"
 
-  def fingerprints: Array[Fingerprint] =
+  def fingerprints(): Array[Fingerprint] =
     Array(
       new SubclassFingerprint {
-        def superclassName = "org.scalatest.Suite"
-        def isModule = false
-        def requireNoArgConstructor = true
+        def superclassName(): String = "org.scalatest.Suite"
+        def isModule(): Boolean = false
+        def requireNoArgConstructor(): Boolean = true
       })
 
 

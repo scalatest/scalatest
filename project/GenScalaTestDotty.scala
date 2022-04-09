@@ -372,6 +372,67 @@ object GenScalaTestDotty {
         "XmlSocketReporter.scala"
       ))
 
+  def genScalaNative(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDir("dotty/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
+    copyDir("dotty/core/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDir("dotty/core/src/main/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++ 
+    copyDir("native/core/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++ 
+    copyDir("native/core/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++ 
+    copyDir("native/core/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++ 
+    copyDir("native/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++ 
+    copyDirJS("jvm/core/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, 
+      List(
+        "AboutJDialog.scala",
+        //"AnsiColor.scala",
+        "AnsiReset.scala",
+        "ColorBar.scala",
+        "DashboardReporter.scala",
+        "DiscoverySuite.scala",
+        "Durations.scala",
+        "EventHolder.scala",
+        "EventToPresent.scala",
+        "EventHolderDefaultListModel.scala", 
+        "EventHolderListCellRenderer.scala", 
+        "FileReporter.scala",
+        "FilterReporter.scala",
+        "Framework.scala",
+        "FriendlyParamsTranslator.scala",
+        "HtmlReporter.scala",
+        "IconEmbellishedListCellRenderer.scala",
+        "JUnitXmlReporter.scala",
+        "Memento.scala",
+        "MemoryReporter.scala",
+        "NarrowJOptionPane.scala",
+        "NestedSuiteParam.scala",
+        //"ParsedArgs.scala",
+        "PrintReporter.scala",
+        "ProgressBarPanel.scala",
+        //"ReporterConfigParam.scala",
+        "ReporterConfiguration.scala",
+        "ReporterFactory.scala",
+        "RunDoneListener.scala",
+        "Runner.scala",
+        "RunnerGUI.scala",
+        "RunnerGUIState.scala",
+        "RunnerJFrame.scala",
+        "SbtCommandParser.scala",
+        "SbtDispatchReporter.scala",
+        "ScalaTestAntTask.scala",
+        "ScalaTestFramework.scala",
+        "SocketReporter.scala",
+        "StandardErrReporter.scala",
+        "StandardOutReporter.scala",
+        "StatusJPanel.scala",
+        "SuiteDiscoveryHelper.scala",
+        "SuiteParam.scala",
+        "SuiteResult.scala",
+        "SuiteResultHolder.scala",
+        //"SuiteRunner.scala",
+        "TestSpec.scala",
+        "XmlReporter.scala",
+        "XmlSocketReporter.scala"
+      ))    
+
   def genMatchersCoreScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDirJS("dotty/matchers-core/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDirJS("dotty/matchers-core/src/main/scala/org/scalatest/matchers/dsl", "org/scalatest/matchers/dsl", targetDir, List.empty)
