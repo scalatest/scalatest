@@ -1084,7 +1084,7 @@ object GenScalaTestDotty {
     ) ++
     copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
-    /*copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
+    copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
       List(
         "TestLocationJUnit3Suite.scala", // Not supported by scala-js
         "TestLocationJUnitSuite.scala", // Not supported by scala-js
@@ -1095,7 +1095,7 @@ object GenScalaTestDotty {
         "LocationMethodSuiteProp.scala", // Not supported by scala-js
       )
     ) ++
-    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
+    /*copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "NoArgSpec.scala",  // skipped because tests failed.
