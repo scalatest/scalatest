@@ -560,6 +560,10 @@ object GenScalaTestDotty {
     copyDirJS("dotty/matchers-core/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDirJS("dotty/matchers-core/src/main/scala/org/scalatest/matchers/dsl", "org/scalatest/matchers/dsl", targetDir, List.empty)
 
+  def genMatchersCoreScalaNative(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDirNative("dotty/matchers-core/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
+    copyDirNative("dotty/matchers-core/src/main/scala/org/scalatest/matchers/dsl", "org/scalatest/matchers/dsl", targetDir, List.empty)  
+
   def genShouldMatchersScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDirJS("dotty/shouldmatchers/src/main/scala/org/scalatest/matchers/should", "org/scalatest/matchers/should", targetDir, List.empty)
 

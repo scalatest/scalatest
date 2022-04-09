@@ -628,8 +628,8 @@ trait DottyBuild { this: BuildCommons =>
       "scalatest-matchers-core",
       "ScalaTest Matchers Core Dotty Native",
       (targetDir, version, scalaVersion) => {
-        GenModulesDotty.genScalaTestMatchersCoreJS(targetDir, version, scalaVersion) ++
-        GenScalaTestDotty.genMatchersCoreScalaJS(targetDir, version, scalaVersion) ++
+        GenModulesDotty.genScalaTestMatchersCoreNative(targetDir, version, scalaVersion) ++
+        GenScalaTestDotty.genMatchersCoreScalaNative(targetDir, version, scalaVersion) ++
         GenFactoriesDotty.genMain(targetDir / "org" / "scalatest" / "matchers" / "dsl", version, scalaVersion)
       }
     ).settings(
