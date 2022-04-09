@@ -484,7 +484,7 @@ trait DottyBuild { this: BuildCommons =>
 
     /** common settings for all scalatest native `style` modules such as `featurespec`, `funsuite`,.. */
     def scalatestStyleModuleNative(style: String, title: String): Project =
-      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty.applyJS(style))
+      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty.applyNative(style))
         .settings(
           OsgiKeys.exportPackage := Seq(s"org.scalatest.$style"),
         ).dependsOn(scalatestCoreDottyNative).enablePlugins(ScalaNativePlugin)    

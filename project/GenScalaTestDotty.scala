@@ -174,21 +174,18 @@ object GenScalaTestDotty {
     val destWriter = new BufferedWriter(new FileWriter(destFile))
     try {
       val lines = Source.fromFile(sourceFile).getLines.toList
-      var skipMode = false
+      var skipDottyMode = false
+      var skipNativeMode = false
       for (line <- lines) {
-        if (line.trim == "// SKIP-DOTTY-START" || line.trim == "// SKIP-DOTTY-START")
-          skipMode = true
-        else if (line.trim == "// SKIP-DOTTY-END" || line.trim == "// SKIP-DOTTY-END")
-          skipMode = false
-        else if (line.trim == "// SKIP-SCALACTICJS,NATIVE-START" || line.trim == "// SKIP-SCALACTICNATIVE-START")
-          skipMode = true
-        else if (line.trim == "// SKIP-SCALACTICJS,NATIVE-END" || line.trim == "// SKIP-SCALACTICNATIVE-END")
-          skipMode = false  
-        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTNATIVE-START")
-          skipMode = true
-        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTNATIVE-END")
-          skipMode = false
-        else if (!skipMode) {
+        if (!skipNativeMode && line.trim == "// SKIP-DOTTY-START")
+          skipDottyMode = true
+        else if (!skipNativeMode && line.trim == "// SKIP-DOTTY-END")
+          skipDottyMode = false
+        else if (!skipDottyMode && (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTNATIVE-START"))
+          skipNativeMode = true
+        else if (!skipDottyMode && (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTNATIVE-END"))
+          skipNativeMode = false  
+        else if (!skipDottyMode && !skipNativeMode) {
           destWriter.write(transformLineNative(line))
           destWriter.newLine()
         }
@@ -200,7 +197,7 @@ object GenScalaTestDotty {
       destWriter.close()
       println("Copied " + destFile.getAbsolutePath)
     }
-  }
+  }  
 
   def copyDirNative(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
