@@ -1060,8 +1060,9 @@ object GenScalaTestDotty {
     copyDirNative("dotty/scalatest-test/src/test/scala/org/scalatest/matchers/should", "org/scalatest/matchers/should", targetDir, List.empty) ++
     copyDirNative("dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must", "org/scalatest/matchers/must", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++ 
-    /*copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, 
+    copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, 
       List(
+        "AbstractPatienceConfigurationSpec.scala", 
         "WaitersSpec.scala",    // skipped because Waiters not supported.
         "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions (deprecated name for Waiters) not supported.
         "ConductorFixtureSuite.scala",  // skipped because Conductors not supported.
@@ -1077,10 +1078,11 @@ object GenScalaTestDotty {
         "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
         "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
         "TimeoutsSpec.scala",            // skipped because Timeouts not supported.
-        "UltimatelySpec.scala"   // skipped because Eventually not supported.
+        "UltimatelySpec.scala",   // skipped because Eventually not supported.
+        "ScalaFuturesSpec.scala"
       )
     ) ++
-    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    /*copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/events", "org/scalatest/events", targetDir,
       List(
