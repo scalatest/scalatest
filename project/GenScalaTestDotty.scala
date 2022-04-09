@@ -1095,8 +1095,8 @@ object GenScalaTestDotty {
         "LocationMethodSuiteProp.scala", // Not supported by scala-js
       )
     ) ++
-    /*copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
-    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
+    copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
+    /*copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "NoArgSpec.scala",  // skipped because tests failed.
         "SuiteSpec.scala"    // skipped because depends on java reflections
