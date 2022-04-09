@@ -154,16 +154,14 @@ object GenScalacticDotty {
   private def uncommentNativeExportNative(line: String): String =
     if (line.trim.startsWith("//DOTTY-ONLY "))
       line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
-    else if (line.trim.startsWith("//DOTTY-ONLY "))
-      line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
     else if (line.trim.startsWith("//SCALACTICJS,NATIVE-ONLY "))
       line.substring(line.indexOf("//SCALACTICJS,NATIVE-ONLY ") + 26)
     else if (line.trim.startsWith("//SCALACTICNATIVE-ONLY "))
-      line.substring(line.indexOf("//SCALACTICNATIVE-ONLY ") + 19)
+      line.substring(line.indexOf("//SCALACTICNATIVE-ONLY ") + 23)
     else if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
       line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26)
     else if (line.trim.startsWith("//SCALATESTNATIVE-ONLY "))
-      line.substring(line.indexOf("//SCALATESTNATIVE-ONLY ") + 19)    
+      line.substring(line.indexOf("//SCALATESTNATIVE-ONLY ") + 23)    
     else
       line
 

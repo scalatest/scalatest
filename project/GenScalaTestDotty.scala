@@ -153,6 +153,68 @@ object GenScalaTestDotty {
     }
   }
 
+  private def uncommentNativeExportNative(line: String): String =
+    if (line.trim.startsWith("//DOTTY-ONLY "))
+      line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
+    else if (line.trim.startsWith("//SCALACTICJS,NATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALACTICJS,NATIVE-ONLY ") + 26)
+    else if (line.trim.startsWith("//SCALACTICNATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALACTICNATIVE-ONLY ") + 23)
+    else if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26)
+    else if (line.trim.startsWith("//SCALATESTNATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALATESTNATIVE-ONLY ") + 23)    
+    else
+      line
+
+  private def transformLineNative(line: String): String =
+    uncommentNativeExportNative(line)
+
+  private def copyFileNative(sourceFile: File, destFile: File): File = {
+    val destWriter = new BufferedWriter(new FileWriter(destFile))
+    try {
+      val lines = Source.fromFile(sourceFile).getLines.toList
+      var skipMode = false
+      for (line <- lines) {
+        if (line.trim == "// SKIP-DOTTY-START" || line.trim == "// SKIP-DOTTY-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-DOTTY-END" || line.trim == "// SKIP-DOTTY-END")
+          skipMode = false
+        else if (line.trim == "// SKIP-SCALACTICJS,NATIVE-START" || line.trim == "// SKIP-SCALACTICNATIVE-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-SCALACTICJS,NATIVE-END" || line.trim == "// SKIP-SCALACTICNATIVE-END")
+          skipMode = false  
+        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTNATIVE-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTNATIVE-END")
+          skipMode = false
+        else if (!skipMode) {
+          destWriter.write(transformLineNative(line))
+          destWriter.newLine()
+        }
+      }
+      destFile
+    }
+    finally {
+      destWriter.flush()
+      destWriter.close()
+      println("Copied " + destFile.getAbsolutePath)
+    }
+  }
+
+  def copyDirNative(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
+    val packageDir = new File(targetDir, packageDirName)
+    packageDir.mkdirs()
+    val sourceDir = new File(sourceDirName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && !skipList.contains(f.getName) && (f.getName.endsWith(".scala") || f.getName.endsWith(".java"))).map { sourceFile =>
+      val destFile = new File(packageDir, sourceFile.getName)
+      if (!destFile.exists || sourceFile.lastModified > destFile.lastModified)
+        copyFileNative(sourceFile, destFile)
+
+      destFile
+    }
+  }
+
   def copyResourceDir(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
@@ -304,7 +366,71 @@ object GenScalaTestDotty {
       "org/scalatest/refspec" -> List.empty, 
       "org/scalatest/words" -> List.empty, 
       "org/scalatest/wordspec" -> List.empty
-    )  
+    )
+
+  val genScalaPackagesNative: Map[String, List[String]] = 
+    Map(
+      "org/scalatest" -> List(
+        "Assertions.scala",                 // Re-implemented
+        "AssertionsMacro.scala",            // Re-implemented
+        "CompileMacro.scala",               // Re-implemented
+        "DiagrammedAssertions.scala",       // Re-implemented
+        "DiagrammedAssertionsMacro.scala",  // Re-implemented
+        "DiagrammedExprMacro.scala",        // Re-implemented
+        "DiagrammedExpr.scala",             // Re-implemented
+        "Expectations.scala",               // Re-implemented
+        "ExpectationsMacro.scala",          // Re-implemented
+        "Inspectors.scala",                 // Re-implemented without path-dependent type
+        "Shell.scala",                      // Not supported on scala-native
+        "run.scala",                        // Not supported on scala-native
+        "SuiteRerunner.scala",              // Not supported on scala-native
+        "JavaClassesWrappers.scala",        // Re-implemented in scala-native
+        "DispatchReporter.scala"            // Not supported on scala-native
+      ), 
+      "org/scalatest/concurrent" -> List(
+        "SleepHelper.scala"
+      ), 
+      "org/scalatest/diagrams" -> List(
+        "Diagrams.scala", 
+        "DiagramsMacro.scala"
+      ), 
+      "org/scalatest/exceptions" -> List.empty, 
+      "org/scalatest/enablers" -> List(
+        "InspectorAsserting.scala"     // Re-implemented without path-dependent type
+      ), 
+      "org/scalatest/events" -> List.empty, 
+      "org/scalatest/fixture" -> List.empty, 
+      "org/scalatest/featurespec" -> List.empty, 
+      "org/scalatest/funspec" -> List.empty, 
+      "org/scalatest/funsuite" -> List.empty, 
+      "org/scalatest/freespec" -> List.empty, 
+      "org/scalatest/flatspec" -> List.empty, 
+      "org/scalatest/matchers" -> List(
+        "Matcher.scala",           // Re-implemented with new macro
+        "MatchPatternMacro.scala", // Re-implemented with new macro
+        "TypeMatcherMacro.scala"   // Re-implemented with new macro
+      ), 
+      "org/scalatest/matchers/dsl" -> List(
+        "BeWord.scala", 
+        "JavaCollectionWrapper.scala",
+        "JavaMapWrapper.scala",
+        "MatchPatternWord.scala",
+        "NotWord.scala",
+        "ResultOfNotWordForAny.scala"
+      ),
+      "org/scalatest/expectations" -> List.empty,  
+      "org/scalatest/matchers/should" -> List.empty, 
+      "org/scalatest/path" -> List.empty, 
+      "org/scalatest/prop" -> List.empty, 
+      "org/scalatest/propspec" -> List.empty, 
+      "org/scalatest/tagobjects" -> List.empty, 
+      "org/scalatest/time" -> List.empty, 
+      "org/scalatest/verbs" -> List.empty, 
+      "org/scalatest/tools" -> List.empty, 
+      "org/scalatest/refspec" -> List.empty, 
+      "org/scalatest/words" -> List.empty, 
+      "org/scalatest/wordspec" -> List.empty
+    )    
 
   /*def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     genScalaPackages.filter(_._1 != "org/scalatest/tools").flatMap { case (packagePath, skipList) =>
@@ -380,7 +506,7 @@ object GenScalaTestDotty {
     copyDir("native/core/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++ 
     copyDir("native/core/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++ 
     copyDir("native/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++ 
-    copyDirJS("jvm/core/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, 
+    copyDirNative("jvm/core/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, 
       List(
         "AboutJDialog.scala",
         //"AnsiColor.scala",
