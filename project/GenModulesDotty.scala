@@ -166,4 +166,6 @@ object GenModulesDotty {
   val genScalaTestShouldMatchers: GenFn = apply("shouldmatchers", Seq("org/scalatest/matchers/should"))
 
   val genScalaTestShouldMatchersJS: GenFn = applyJS("shouldmatchers", Seq("org/scalatest/matchers/should"))
+
+  val genScalaTestShouldMatchersNative: GenFn = applyNative("shouldmatchers", Seq("org/scalatest/matchers/should"))
 }
