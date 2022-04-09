@@ -1037,13 +1037,12 @@ trait DottyBuild { this: BuildCommons =>
   lazy val scalatestTestDottyNative = project.in(file("dotty/scalatest-test.native"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
-    .settings(sharedTestSettingsDottyJS)
+    .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest Test",
-      scalaJSLinkerConfig ~= { _.withOptimizer(false).withSemantics(_.withStrictFloats(true)) },
       sourceGenerators in Test += Def.task {
         //GenRegularTests4.genJava((javaSourceManaged in Compile).value) ++
-        GenScalaTestDotty.genTestJS((sourceManaged in Test).value, version.value, scalaVersion.value)
+        GenScalaTestDotty.genTestNative((sourceManaged in Test).value, version.value, scalaVersion.value)
       }.taskValue,
     ).dependsOn(scalacticDottyNative, scalatestDottyNative % "test", commonTestDottyNative % "test").enablePlugins(ScalaNativePlugin)
      /*.aggregate(
