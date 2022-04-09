@@ -698,7 +698,7 @@ trait DottyBuild { this: BuildCommons =>
       "scalatest-mustmatchers",
       "ScalaTest Must Matchers Dotty Native ",
       (targetDir, version, scalaVersion) =>
-        GenMatchers.genMainForDottyJS(targetDir / "org" / "scalatest", version, scalaVersion) ++ 
+        GenMatchers.genMainForDottyNative(targetDir / "org" / "scalatest", version, scalaVersion) ++ 
         GenScalaTestDotty.genMustMatchersScalaJS(targetDir, version, scalaVersion)
     ).settings(
     OsgiKeys.exportPackage := Seq("org.scalatest.matchers.must"),
