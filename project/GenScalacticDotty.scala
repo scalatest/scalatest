@@ -151,6 +151,25 @@ object GenScalacticDotty {
     }
   }
 
+  private def uncommentNativeExportNative(line: String): String =
+    if (line.trim.startsWith("//DOTTY-ONLY "))
+      line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
+    else if (line.trim.startsWith("//DOTTY-ONLY "))
+      line.substring(line.indexOf("//DOTTY-ONLY ") + 13)
+    else if (line.trim.startsWith("//SCALACTICJS,NATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALACTICJS,NATIVE-ONLY ") + 26)
+    else if (line.trim.startsWith("//SCALACTICNATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALACTICNATIVE-ONLY ") + 19)
+    else if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALATESTJS,NATIVE-ONLY ") + 26)
+    else if (line.trim.startsWith("//SCALATESTNATIVE-ONLY "))
+      line.substring(line.indexOf("//SCALATESTNATIVE-ONLY ") + 19)    
+    else
+      line
+
+  private def transformLineNative(line: String): String =
+    uncommentNativeExportNative(line)
+
   private def copyFileNative(sourceFile: File, destFile: File): File = {
     val destWriter = new BufferedWriter(new FileWriter(destFile))
     try {
@@ -161,12 +180,16 @@ object GenScalacticDotty {
           skipMode = true
         else if (line.trim == "// SKIP-DOTTY-END" || line.trim == "// SKIP-DOTTY-END")
           skipMode = false
+        else if (line.trim == "// SKIP-SCALACTICJS,NATIVE-START" || line.trim == "// SKIP-SCALACTICNATIVE-START")
+          skipMode = true
+        else if (line.trim == "// SKIP-SCALACTICJS,NATIVE-END" || line.trim == "// SKIP-SCALACTICNATIVE-END")
+          skipMode = false  
         else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START" || line.trim == "// SKIP-SCALATESTNATIVE-START")
           skipMode = true
         else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END" || line.trim == "// SKIP-SCALATESTNATIVE-END")
           skipMode = false
         else if (!skipMode) {
-          destWriter.write(transformLine(line))
+          destWriter.write(transformLineNative(line))
           destWriter.newLine()
         }
       }
@@ -259,7 +282,7 @@ object GenScalacticDotty {
     copyDir("jvm/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic", "org/scalactic", targetDir, List.empty) ++
     copyDir("dotty/scalactic/src/main/scala/org/scalactic/source", "org/scalactic/source", targetDir, List.empty) ++
-    copyDirJS("dotty/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
+    copyDirNative("dotty/scalactic/src/main/scala/org/scalactic/anyvals", "org/scalactic/anyvals", targetDir, List.empty)
 
   def genMacroScala(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("jvm/scalactic-macro/src/main/scala/org/scalactic", "org/scalactic", targetDir,
