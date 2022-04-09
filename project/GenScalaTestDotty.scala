@@ -568,7 +568,11 @@ object GenScalaTestDotty {
 
   def genDiagramsScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDirJS("dotty/diagrams/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
-    copyDirJS("dotty/diagrams/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)    
+    copyDirJS("dotty/diagrams/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
+
+  def genDiagramsScalaNative(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDirNative("dotty/diagrams/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
+    copyDirNative("dotty/diagrams/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)      
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 

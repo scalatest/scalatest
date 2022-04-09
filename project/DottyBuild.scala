@@ -584,7 +584,7 @@ trait DottyBuild { this: BuildCommons =>
       "scalatest-diagrams", 
       "ScalaTest Diagrams Dotty Native", 
       (targetDir, version, scalaVersion) =>
-        GenScalaTestDotty.genDiagramsScalaJS(targetDir / "org" / "scalatest", version, scalaVersion)
+        GenScalaTestDotty.genDiagramsScalaNative(targetDir / "org" / "scalatest", version, scalaVersion)
     ).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest", 
