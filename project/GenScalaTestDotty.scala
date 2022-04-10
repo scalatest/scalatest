@@ -1201,5 +1201,8 @@ object GenScalaTestDotty {
     copyDir("jvm/wordspec-test/src/test/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)
 
   def genWordSpecTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDirJS("jvm/wordspec-test/src/test/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)      
+    copyDirJS("jvm/wordspec-test/src/test/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)
+
+  def genWordSpecTestNative(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDirNative("jvm/wordspec-test/src/test/scala/org/scalatest/wordspec", "org/scalatest/wordspec", targetDir, List.empty)        
 }
