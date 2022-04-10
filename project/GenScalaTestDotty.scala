@@ -1107,8 +1107,8 @@ object GenScalaTestDotty {
     copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/tagobjects", "org/scalatest/tagobjects", targetDir, List.empty) ++
-    copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) /*++
-    copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
+    copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/verbs", "org/scalatest/verbs", targetDir, List.empty) ++
+    copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
         "DashboardReporterSpec.scala",
         "DiscoverySuiteSuite.scala",
@@ -1131,7 +1131,7 @@ object GenScalaTestDotty {
         "SuiteDiscoveryHelperSuite.scala",
         "XmlSocketReporterSpec.scala"
       )
-    )*/
+    )
   }
 
   def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
