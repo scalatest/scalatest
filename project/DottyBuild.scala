@@ -1178,6 +1178,17 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
     ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
 
+  lazy val scalatestFreeSpecTestDottyNative = project.in(file("dotty/freespec-test.native"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsNative)
+    .settings(
+      projectTitle := "ScalaTest FreeSpec Test",
+      sourceGenerators in Test += Def.task {
+        GenScalaTestDotty.genFreeSpecTestNative((sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyNative % "test").enablePlugins(ScalaNativePlugin)  
+
   lazy val scalatestFunSpecTestDotty = project.in(file("dotty/funspec-test"))
     .settings(sharedSettings: _*)
     .settings(dottySettings: _*)
