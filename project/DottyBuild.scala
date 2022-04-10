@@ -111,7 +111,7 @@ trait DottyBuild { this: BuildCommons =>
           GenEvery.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenColCompatHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           // end from scalactic-macro
-          GenScalacticDotty.genScalaNative((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
+          GenScalacticDotty.genScalaJS((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
           GenVersions.genScalacticVersions((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           ScalacticGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value) ++
           GenArrayHelper.genMain((sourceManaged in Compile).value / "org" / "scalactic", version.value, scalaVersion.value)
