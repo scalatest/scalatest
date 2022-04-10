@@ -1047,13 +1047,13 @@ trait DottyBuild { this: BuildCommons =>
     ).dependsOn(scalacticDottyNative, scalatestDottyNative % "test", commonTestDottyNative % "test").enablePlugins(ScalaNativePlugin)
      .aggregate(
        scalatestDiagramsTestDottyNative, 
-       /*scalatestFeatureSpecTestDottyNative, 
+       scalatestFeatureSpecTestDottyNative, 
        scalatestFlatSpecTestDottyNative, 
        scalatestFreeSpecTestDottyNative, 
        scalatestFunSpecTestDottyNative, 
        scalatestFunSuiteTestDottyNative, 
        scalatestPropSpecTestDottyNative, 
-       scalatestWordSpecTestDottyNative*/
+       scalatestWordSpecTestDottyNative
      ).enablePlugins(ScalaNativePlugin)   
 
 
