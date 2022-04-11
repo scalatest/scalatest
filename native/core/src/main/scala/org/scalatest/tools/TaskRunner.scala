@@ -138,11 +138,12 @@ println("GOT TO THIS RECOVER CALL")
 
     val formatter = Suite.formatterForSuiteStarting(suite)
     val suiteClass = suite.getClass
+    val suiteClassName = Suite.getSuiteClassName(suite)
 
     val reporter = new SbtReporter(suite.suiteId, task.fullyQualifiedName(), task.fingerprint(), eventHandler, sbtLogInfoReporter)
 
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-      reporter(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
+      reporter(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
     val args = Args(reporter, Stopper.default, filter, ConfigMap.empty, None, tracker, Set.empty)
 
@@ -155,23 +156,23 @@ println("GOT TO THIS RECOVER CALL")
           val duration = Platform.currentTime
           status.unreportedException match {
             case Some(ue) =>
-              reporter(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
+              reporter(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClassName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
               promise.complete(scala.util.Failure(ue))
 
             case None =>
-              reporter(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+              reporter(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), Some(duration), formatter, Some(TopOfClass(suiteClassName))))
               promise.complete(Success(()))
           }
         }
         promise.future
       } catch {
           case e: Throwable =>
-            val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClass.getName
+            val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClassName
             val formatter = Suite.formatterForSuiteAborted(suite, rawString)
   
             val duration = Platform.currentTime - suiteStartTime
             // Do fire SuiteAborted even if a DistributedTestRunnerSuite, consistent with SuiteRunner behavior
-            reporter(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
+            reporter(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClassName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
         Future.failed(e)
       }
 

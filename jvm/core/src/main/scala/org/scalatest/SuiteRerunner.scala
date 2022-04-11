@@ -64,7 +64,7 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
         val rawString = Resources.suiteExecutionStarting
         val formatter = formatterForSuiteStarting(suite)
 
-        report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
+        report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
         // TODO: I had to pass Set.empty for chosenStyles now. Fix this later.
         suite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
 
@@ -72,7 +72,7 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
         val formatter2 = formatterForSuiteCompleted(suite)
         val duration = System.currentTimeMillis - suiteStartTime
 
-        report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter2, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
+        report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), Some(duration), formatter2, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
       }
       catch {
         case e: RuntimeException => {
@@ -85,7 +85,7 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
           val formatter3 = formatterForSuiteAborted(suite, rawString3)
 
           val duration = System.currentTimeMillis - suiteStartTime
-          report(SuiteAborted(tracker.nextOrdinal(), rawString3, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(e), Some(duration), formatter3, Some(SeeStackDepthException), suite.rerunner))
+          report(SuiteAborted(tracker.nextOrdinal(), rawString3, suite.suiteName, suite.suiteId, Some(suiteClassName), Some(e), Some(duration), formatter3, Some(SeeStackDepthException), suite.rerunner))
         }
       }
 

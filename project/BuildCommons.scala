@@ -23,7 +23,7 @@ trait BuildCommons {
 
   val scalaNativeVersion = Option(System.getenv("SCALANATIVE_VERSION")).getOrElse("0.4.4")  
 
-  val releaseVersion = "3.2.11"
+  val releaseVersion = "3.2.12-RC1"
 
   val previousReleaseVersion = "3.2.10"
 
