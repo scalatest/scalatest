@@ -32,11 +32,14 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
       suiteSorter.distributingTests(suiteId)
     case None =>
   }
-  
-  // Chee Seng: What's the UUID for?
+
+  /** An object-identity-based ID for `Slot`. */
+  private final class SlotID
+
+  // Chee Seng: What's the SlotID for? (formerly a UUID)
   // Each test gets one slot, but other events such as an info from an after an also get a slot i think.
-  case class Slot(uuid: UUID, eventList: ListBuffer[Event], completed: Boolean, completedEvent: Boolean, ready: Boolean)
-  
+  private case class Slot(slotID: SlotID, eventList: ListBuffer[Event], completed: Boolean, completedEvent: Boolean, ready: Boolean)
+
   private val waitingBuffer = new ListBuffer[Slot]()
   private val slotMap = new collection.mutable.HashMap[String, Slot]()  // testName -> Slot
   @volatile private var completedTestCount = 0 // Called within synchronized. Don't need volatile and it wouldn't work anyway.
@@ -44,7 +47,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
   checkCompletedTests()   // In case the suite does not comtain any test.
 
   // Passed slot will always be the head of waitingBuffer
-  class TimeoutTask(val slot: Slot) extends TimerTask {
+  private class TimeoutTask(val slot: Slot) extends TimerTask {
     override def run(): Unit = {
       timeout()
     }
@@ -63,7 +66,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
     synchronized {
       if (slotMap.contains(testName))
         throw new IllegalArgumentException("The passed testname: " + testName + ", was already passed to distributedTests.")
-      val slot = Slot(UUID.randomUUID, new ListBuffer[Event](), false, false, false)
+      val slot = Slot(new SlotID, new ListBuffer[Event](), false, false, false)
       slotMap.put(testName, slot)
       waitingBuffer += slot
       // if it is the head, we should start the timer, because it is possible that this slot has no event coming later and it keeps blocking 
@@ -187,7 +190,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
   private def handleSuiteEvent(event: Event): Unit = {
     val listBuffer = new ListBuffer[Event]()
     listBuffer += event
-    val slot = Slot(UUID.randomUUID, listBuffer, true, true, true)  // Already ready already!
+    val slot = Slot(new SlotID, listBuffer, true, true, true)  // Already ready already!
     waitingBuffer += slot
     // This is outside a test. That's why he calls it a SuiteEvent.
     // If inside a test, it comes through the other apply.
@@ -259,7 +262,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
     val head = waitingBuffer.head  // Assumes waitingBuffer is non-empty. Put a require there to make that obvious.
     timeoutTask match {
         case Some((oldTask, oldTimer)) => 
-          if (head.uuid != oldTask.slot.uuid) {
+          if (head.slotID != oldTask.slot.slotID) {
             oldTask.cancel()
             oldTimer.cancel()
             val (task, timer) = (new TimeoutTask(head), new Timer)
@@ -289,7 +292,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
       if (waitingBuffer.size > 0) {
         val head = waitingBuffer.head
         val (task, _) = timeoutTask.get
-        if (task.slot.uuid == head.uuid) { // Probably a double check, or just in case there's race condition
+        if (task.slot.slotID == head.slotID) { // Probably a double check, or just in case there's race condition
           val newSlot = head.copy(ready = true) // Essentially, if time out, just say that one is ready. This test's events go out, and
           waitingBuffer.update(0, newSlot)
         }
@@ -305,5 +308,5 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
 }
 
 // Maybe can use a LinkedHashMap instead of two structures.
-// Could maybe let the timeout use the actual object instead of the uuid, and just use
-// eq instead of equal. Then don't need a uuid.
+// Could maybe let the timeout use the actual object instead of the slotID, and just use
+// eq instead of equal. Then don't need a slotID.

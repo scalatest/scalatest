@@ -1799,7 +1799,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     }
 
   def sortedSet[T](elements: T*): SortedSet[T] = {
-    val orderMap = Map.empty[T, Int] ++ elements.zipWithIndex
+    val orderMap = Map.empty[T, Int] ++ elements.distinct.zipWithIndex
     val comparator = orderMapComparator(orderMap)
     implicit val ordering = new Ordering[T] {
       def compare(x: T, y: T): Int = comparator.compare(x, y)
@@ -1808,16 +1808,16 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   }
 
   def sortedMap[K, V](elements: (K, V)*): SortedMap[K, V] = {
-    val orderMap = Map.empty[K, Int] ++ elements.map(_._1).zipWithIndex
+    val orderMap = Map.empty[K, Int] ++ elements.distinct.map(_._1).zipWithIndex
     val comparator = orderMapComparator(orderMap)
     implicit val ordering = new Ordering[K] {
       def compare(x: K, y: K): Int = comparator.compare(x, y)
     }
-    SortedMap.empty[K, V] ++ elements
+    SortedMap.empty[K, V] ++ elements.distinct
   }
 
   def javaSortedSet[T](elements: T*): java.util.SortedSet[T] = {
-    val orderMap = Map.empty[T, Int] ++ elements.zipWithIndex
+    val orderMap = Map.empty[T, Int] ++ elements.distinct.zipWithIndex
     val comparator = orderMapComparator(orderMap)
     val sortedSet = new java.util.TreeSet[T](comparator)
     elements.foreach(sortedSet.add(_))
@@ -1825,10 +1825,10 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   }
 
   def javaSortedMap[K, V](elements: Entry[K, V]*): java.util.SortedMap[K, V] = {
-    val orderMap = Map.empty[K, Int] ++ elements.map(_.getKey).zipWithIndex
+    val orderMap = Map.empty[K, Int] ++ elements.distinct.map(_.getKey).zipWithIndex
     val comparator = orderMapComparator(orderMap)
     val sortedMap = new java.util.TreeMap[K, V](comparator)
-    elements.foreach(e => sortedMap.put(e.getKey, e.getValue))
+    elements.distinct.foreach(e => sortedMap.put(e.getKey, e.getValue))
     sortedMap
   }
 

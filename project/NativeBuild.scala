@@ -153,7 +153,7 @@ trait NativeBuild { this: BuildCommons =>
         organization := "org.scalatest",
         moduleName := "scalatest-app",
         libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-        libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
+        libraryDependencies += "org.scala-native" %%% "test-interface" % nativeVersion,
         // include the scalactic classes and resources in the jar
         mappings in (Compile, packageBin) ++= mappings.in(scalacticNative, Compile, packageBin).value,
         // include the scalactic sources in the source jar
@@ -246,7 +246,7 @@ trait NativeBuild { this: BuildCommons =>
       organization := "org.scalatest",
       moduleName := "scalatest-core",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-      libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
+      libraryDependencies += "org.scala-native" %%% "test-interface" % nativeVersion,
       sourceGenerators in Compile += {
         Def.task {
           GenScalaTestNative.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)

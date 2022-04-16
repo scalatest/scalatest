@@ -7,6 +7,24 @@ import scala.io.Source
 object GenTheyWord {
 
   val generatorSource = new File("GenTheyWord.scala")
+
+  private def copyFile(sourceFile: File, destFile: File): File = {
+    val destWriter = new BufferedWriter(new FileWriter(destFile))
+    try {
+      val lines = Source.fromFile(sourceFile).getLines.toList
+      var skipMode = false
+      for (line <- lines) {
+          destWriter.write(line)
+          destWriter.newLine()
+      }
+      destFile
+    }
+    finally {
+      destWriter.flush()
+      destWriter.close()
+      println("Copied " + destFile.getAbsolutePath)
+    }
+  }
   
   def generateFile(srcFileDir: String, srcClassName: String, targetFileDir: String, targetClassName: String): File = {
     val targetDir = new File(targetFileDir)
@@ -60,13 +78,13 @@ object GenTheyWord {
                    "FunSpecSpec",
                    (new File(dir, "path")).getAbsolutePath,
                    "PathFunSpecSpecUsingThey"),
-      generateFile("jvm/scalatest-test/src/test/scala/org/scalatest/fixture",
-                   "FunSpecSpec",
-                   (new File(dir, "fixture")).getAbsolutePath,
+      generateFile("jvm/funspec-test/src/test/scala/org/scalatest/funspec",
+                   "FixtureFunSpecSpec",
+                   dir.getAbsolutePath,
                    "FixtureFunSpecSpecUsingThey"),
-      generateFile("jvm/scalatest-test/src/test/scala/org/scalatest/fixture",
-                   "FlatSpecSpec",
-                   (new File(dir, "fixture")).getAbsolutePath,
+      generateFile("jvm/flatspec-test/src/test/scala/org/scalatest/flatspec",
+                   "FixtureFlatSpecSpec",
+                   dir.getAbsolutePath,
                    "FixtureFlatSpecSpecUsingThey")
     )
   }

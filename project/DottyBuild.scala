@@ -1,4 +1,5 @@
 import dotty.tools.sbtplugin.DottyPlugin.autoImport._
+import scalanative.sbtplugin.ScalaNativePlugin.autoImport.nativeVersion
 import sbt._
 import Keys._
 import com.typesafe.tools.mima.plugin.MimaKeys.{mimaPreviousArtifacts, mimaCurrentClassfiles, mimaBinaryIssueFilters}
@@ -370,7 +371,7 @@ trait DottyBuild { this: BuildCommons =>
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
       libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.1.0", 
-      libraryDependencies += ("org.scala-native" %% "test-interface_native0.4" % scalaNativeVersion), 
+      libraryDependencies += ("org.scala-native" %% "test-interface_native0.4" % nativeVersion), 
       packageManagedSources,
       sourceGenerators in Compile += Def.task {
         GenModulesDotty.genScalaTestCoreNative((sourceManaged in Compile).value, version.value, scalaVersion.value) ++
