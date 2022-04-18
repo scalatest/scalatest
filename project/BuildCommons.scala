@@ -3,6 +3,9 @@ import Keys._
 import java.io.PrintWriter
 import scala.io.Source
 
+import scalanative.sbtplugin.ScalaNativePlugin
+import ScalaNativePlugin.autoImport.{nativeLinkStubs, nativeDump}
+
 trait BuildCommons {
 
   lazy val scalaVersionsSettings: Seq[Setting[_]] = Seq(
@@ -237,5 +240,28 @@ trait BuildCommons {
           (if (runFlickerTests) Seq.empty[String] else Seq("-l", "org.scalatest.tags.Flicker")) 
         ): _*
       )
-    )                                
+    )    
+
+  def nativeCrossBuildLibraryDependencies = Def.setting {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 10)) => Seq.empty
+      case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
+      case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
+        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.1.0"))
+    }
+  }    
+
+  def sharedTestSettingsNative: Seq[Setting[_]] =
+    Seq(
+      organization := "org.scalatest",
+      libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
+      // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
+      fork in test := false,
+      nativeLinkStubs in Test := true,
+      nativeDump in Test := false, 
+      testOptions in Test := scalatestTestJSNativeOptions,
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
+    )                          
 }

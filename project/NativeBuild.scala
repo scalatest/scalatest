@@ -14,17 +14,6 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 trait NativeBuild { this: BuildCommons =>
 
-  val scalaNativeVersion = Option(System.getenv("SCALANATIVE_VERSION")).getOrElse("0.4.4")
-
-  lazy val nativeCrossBuildLibraryDependencies = Def.setting {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 10)) => Seq.empty
-      case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
-      case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.1.0"))
-    }
-  }
-
   private lazy val sharedNativeSettings = Seq(
     // This hack calls class directory as "resource" that forces to add all NIRs that was generated
     // by scala-native for classes that has `EnableReflectiveInstantiation` annotation
@@ -164,7 +153,7 @@ trait NativeBuild { this: BuildCommons =>
         organization := "org.scalatest",
         moduleName := "scalatest-app",
         libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-        libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
+        libraryDependencies += "org.scala-native" %%% "test-interface" % nativeVersion,
         // include the scalactic classes and resources in the jar
         mappings in (Compile, packageBin) ++= mappings.in(scalacticNative, Compile, packageBin).value,
         // include the scalactic sources in the source jar
@@ -257,7 +246,7 @@ trait NativeBuild { this: BuildCommons =>
       organization := "org.scalatest",
       moduleName := "scalatest-core",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-      libraryDependencies += "org.scala-native" %%% "test-interface" % scalaNativeVersion,
+      libraryDependencies += "org.scala-native" %%% "test-interface" % nativeVersion,
       sourceGenerators in Compile += {
         Def.task {
           GenScalaTestNative.genHtml((resourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -676,20 +665,6 @@ trait NativeBuild { this: BuildCommons =>
       publish := {},
       publishLocal := {}
     ).dependsOn(scalacticNative, scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)
-
-  def sharedTestSettingsNative: Seq[Setting[_]] =
-    Seq(
-      organization := "org.scalatest",
-      libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-      // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
-      fork in test := false,
-      nativeLinkStubs in Test := true,
-      nativeDump in Test := false, 
-      testOptions in Test := scalatestTestJSNativeOptions,
-      publishArtifact := false,
-      publish := {},
-      publishLocal := {}
-    )
 
   lazy val scalatestTestNative = project.in(file("native/scalatest-test"))
     .settings(sharedSettings ++ sharedNativeSettings)

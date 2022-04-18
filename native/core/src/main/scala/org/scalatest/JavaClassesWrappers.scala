@@ -77,7 +77,7 @@ private[scalatest] object NameTransformer {
 private[scalatest] trait TimerTask extends Runnable {
   // var timerTaskRef: Option[java.util.TimerTask] = None
 
-  def run()
+  def run(): Unit
 
   def cancel(): Unit = {
     // timerTaskRef.foreach(_.cancel())
