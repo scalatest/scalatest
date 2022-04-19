@@ -15,18 +15,18 @@ trait BuildCommons {
 
   val runFlickerTests = Option(System.getenv("SCALATEST_RUN_FLICKER_TESTS")).getOrElse("FALSE").toUpperCase == "TRUE"
 
-  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.7.1")
+  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.8.0")
   def scalatestJSLibraryDependencies =
     Seq(
       "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
     )
 
-  val releaseVersion = "3.2.12-RC2"
+  val releaseVersion = "3.2.12"
 
-  val previousReleaseVersion = "3.2.10"
+  val previousReleaseVersion = "3.2.11"
 
-  val plusJUnitVersion = "3.2.10.0"
-  val plusTestNGVersion = "3.2.10.0"
+  val plusJUnitVersion = "3.2.11.0"
+  val plusTestNGVersion = "3.2.11.0"
   val flexmarkVersion = "0.62.2"
 
   def rootProject: Project
