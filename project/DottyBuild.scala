@@ -405,19 +405,7 @@ trait DottyBuild { this: BuildCommons =>
       }
     ).settings(osgiSettings: _*).settings(
     OsgiKeys.exportPackage := Seq(
-      "org.scalatest", 
-      "org.scalatest.compatible", 
-      "org.scalatest.concurrent",  
-      "org.scalatest.enablers",  
-      "org.scalatest.exceptions",  
-      "org.scalatest.events", 
-      "org.scalatest.fixture",  
-      "org.scalatest.prop", 
-      "org.scalatest.tags", 
-      "org.scalatest.tagobjects", 
-      "org.scalatest.time", 
-      "org.scalatest.tools",  
-      "org.scalatest.verbs"
+      "org.scalatest.*"
     ),
     OsgiKeys.importPackage := Seq(
       "org.scalatest.*",
@@ -487,7 +475,7 @@ trait DottyBuild { this: BuildCommons =>
     def scalatestStyleModuleNative(style: String, title: String): Project =
       scalatestSubModule(s"scalatest-$style", title, GenModulesDotty.applyNative(style))
         .settings(
-          OsgiKeys.exportPackage := Seq(s"org.scalatest.$style"),
+          OsgiKeys.exportPackage := Seq(s"org.scalatest.$style.*"),
         ).dependsOn(scalatestCoreDottyNative).enablePlugins(ScalaNativePlugin)    
         
   }
