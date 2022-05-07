@@ -23,39 +23,39 @@ private[tools] class SummaryCounter {
   var testsSucceededCount, testsFailedCount, testsIgnoredCount, testsPendingCount, testsCanceledCount, suitesCompletedCount, suitesAbortedCount, scopesPendingCount = 0
   val reminderEventsQueue = new ListBuffer[ExceptionalEvent]
 
-  def incrementTestsSucceededCount() {
+  def incrementTestsSucceededCount(): Unit = {
     testsSucceededCount = testsSucceededCount + 1
   }
 
-  def incrementTestsFailedCount() {
+  def incrementTestsFailedCount(): Unit = {
     testsFailedCount = testsFailedCount + 1
   }
 
-  def incrementTestsIgnoredCount() {
+  def incrementTestsIgnoredCount(): Unit = {
     testsIgnoredCount = testsIgnoredCount + 1
   }
 
-  def incrementTestsPendingCount() {
+  def incrementTestsPendingCount(): Unit = {
     testsPendingCount = testsPendingCount + 1
   }
 
-  def incrementTestsCanceledCount() {
+  def incrementTestsCanceledCount(): Unit = {
     testsCanceledCount = testsCanceledCount + 1
   }
 
-  def incrementSuitesCompletedCount() {
+  def incrementSuitesCompletedCount(): Unit = {
     suitesCompletedCount = suitesCompletedCount + 1
   }
 
-  def incrementSuitesAbortedCount() {
+  def incrementSuitesAbortedCount(): Unit = {
     suitesAbortedCount = suitesAbortedCount + 1
   }
 
-  def incrementScopesPendingCount() {
+  def incrementScopesPendingCount(): Unit = {
     scopesPendingCount = scopesPendingCount + 1
   }
 
-  def recordReminderEvents(events: ExceptionalEvent) {
+  def recordReminderEvents(events: ExceptionalEvent): Unit = {
     reminderEventsQueue += events
   }
 }

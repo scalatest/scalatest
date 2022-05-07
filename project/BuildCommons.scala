@@ -3,6 +3,9 @@ import Keys._
 import java.io.PrintWriter
 import scala.io.Source
 
+import scalanative.sbtplugin.ScalaNativePlugin
+import ScalaNativePlugin.autoImport.{nativeLinkStubs, nativeDump}
+
 trait BuildCommons {
 
   lazy val scalaVersionsSettings: Seq[Setting[_]] = Seq(
@@ -12,14 +15,14 @@ trait BuildCommons {
 
   val runFlickerTests = Option(System.getenv("SCALATEST_RUN_FLICKER_TESTS")).getOrElse("FALSE").toUpperCase == "TRUE"
 
-  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.6.0")
+  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.8.0")
   def scalatestJSLibraryDependencies =
     Seq(
       "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
     )
 
   val releaseVersion = "3.3.0-SNAP3"
-  val previousReleaseVersion = "3.2.11"
+  val previousReleaseVersion = "3.2.12"
 
   val plusJUnitVersion = "3.2.10.0"
   val plusTestNGVersion = "3.2.10.0"
@@ -236,5 +239,28 @@ trait BuildCommons {
           (if (runFlickerTests) Seq.empty[String] else Seq("-l", "org.scalatest.tags.Flicker")) 
         ): _*
       )
-    )                                
+    )    
+
+  def nativeCrossBuildLibraryDependencies = Def.setting {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 10)) => Seq.empty
+      case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
+      case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
+        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.1.0"))
+    }
+  }    
+
+  def sharedTestSettingsNative: Seq[Setting[_]] =
+    Seq(
+      organization := "org.scalatest",
+      libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
+      // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
+      fork in test := false,
+      nativeLinkStubs in Test := true,
+      nativeDump in Test := false, 
+      testOptions in Test := scalatestTestJSNativeOptions,
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
+    )                          
 }

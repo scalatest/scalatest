@@ -17,10 +17,19 @@ package org.scalatest.tools
 
 import sbt.testing._
 
-private[tools] case class ScalaTestSbtEvent(
-  fullyQualifiedName: String,
-  fingerprint: Fingerprint,
-  selector: Selector,
-  status: Status,
-  throwable: OptionalThrowable,
-  duration: Long) extends Event
+private[tools] class ScalaTestSbtEvent(
+  passedFullyQualifiedName: String,
+  passedFingerprint: Fingerprint,
+  passedSelector: Selector,
+  passedStatus: Status,
+  passedThrowable: OptionalThrowable,
+  passedDuration: Long) extends Event {
+
+  def fullyQualifiedName(): String = passedFullyQualifiedName
+  def fingerprint(): Fingerprint = passedFingerprint
+  def selector(): Selector = passedSelector
+  def status(): Status = passedStatus
+  def throwable(): OptionalThrowable = passedThrowable
+  def duration(): Long = passedDuration
+
+}
