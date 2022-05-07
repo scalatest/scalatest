@@ -7793,7 +7793,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START
     def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldCompileImpl
     // SKIP-DOTTY-END
-    //DOTTY-ONLY extension (inline leftSideString: String)(using pos: source.Position, prettifier: Prettifier) transparent inline def should(compileWord: CompileWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldCompileImpl('{leftSideString}, '{typeChecks(leftSideString)}, '{compileWord})('{pos}) }
+    //DOTTY-ONLY extension (inline leftSideString: String)(using pos: source.Position, prettifier: Prettifier) transparent inline def should(compileWord: CompileWord): Assertion = ${ org.scalatest.matchers.should.CompileMacro.shouldCompileImpl('{leftSideString}, '{typeCheckErrors(leftSideString)}, '{compileWord})('{pos}) }
 
     /**
      * This method enables syntax such as the following:

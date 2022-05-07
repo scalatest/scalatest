@@ -26,16 +26,30 @@ import scala.compiletime.testing.{Error, ErrorKind}
 object CompileMacro {
 
   // check that a code snippet compiles
-  def assertCompileImpl[T](self: Expr[T], typeChecked: Expr[Boolean], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
+  def assertCompileImpl[T](self: Expr[T], typeChecked: Expr[List[Error]], compileWord: Expr[CompileWord], pos: Expr[source.Position])(shouldOrMust: String)(using Quotes): Expr[Assertion] = {
     import quotes.reflect._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
-    def checkCompile(code: String): Expr[Assertion] =
-      if (typeChecked.valueOrError) '{ Succeeded }
-      else '{
-        val messageExpr = Resources.expectedNoErrorButGotTypeError("", ${ Expr(code) })
-        throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
+    def checkCompile(code: String): Expr[Assertion] = {
+      // For some reason `typeChecked.valueOrError` is failing here, so instead we grab
+      // the varargs argument to List.apply and use that to extract the list of errors
+      val errors = typeChecked.asTerm.underlyingArgument match {
+        case Apply(TypeApply(Select(Ident("List"), "apply"), _), List(seq)) =>
+          seq.asExprOf[Seq[Error]].valueOrError.toList
       }
+
+      errors match {
+        case Error(msg, _, _, ErrorKind.Typer) :: _ => '{
+          val messageExpr = Resources.expectedNoErrorButGotTypeError(${ Expr(msg) }, ${ Expr(code) })
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
+        }
+        case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
+          val messageExpr = Resources.expectedNoErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
+          throw new TestFailedException((_: StackDepthException) => Some(messageExpr), None, $pos)
+        }
+        case Nil => '{ Succeeded }
+      }
+    }
 
     self.asTerm.underlyingArgument match {
 
