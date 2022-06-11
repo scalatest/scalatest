@@ -183,51 +183,40 @@ object Prettifier {
    */
   implicit val default: Prettifier =
     new Prettifier {
-      def apply(o: Any): String = {
-        try {
+      private def prettify(o: Any, processed: Set[Any]): String = 
+        if (processed.contains(o))
+          throw new StackOverflowError("Cyclic relationship detected, let's fail early!")
+        else  
           o match {
             case null => "null"
             case aUnit: Unit => "<(), the Unit value>"
             case aString: String => "\"" + aString + "\""
             case aStringWrapper: org.scalactic.ColCompatHelper.StringOps => "\"" + aStringWrapper.mkString + "\""
             case aChar: Char =>  "\'" + aChar + "\'"
-            case Some(e) => "Some(" + apply(e) + ")"
-            case Success(e) => "Success(" + apply(e) + ")"
-            case Left(e) => "Left(" + apply(e) + ")"
-            case Right(e) => "Right(" + apply(e) + ")"
+            case Some(e) => "Some(" + prettify(e, processed) + ")"
+            case Success(e) => "Success(" + prettify(e, processed) + ")"
+            case Left(e) => "Left(" + prettify(e, processed) + ")"
+            case Right(e) => "Right(" + prettify(e, processed) + ")"
             case s: Symbol => "'" + s.name
-            case Good(e) => "Good(" + apply(e) + ")"
-            case Bad(e) => "Bad(" + apply(e) + ")"
-            case One(e) => "One(" + apply(e) + ")"
-            case many: Many[_] => "Many(" + many.toIterator.map(apply(_)).mkString(", ") + ")"
-            case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
-            case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
-            case anArrayOps if ArrayHelper.isArrayOps(anArrayOps) => "Array(" + (ArrayHelper.asArrayOps(anArrayOps) map apply).mkString(", ") + ")"
+            case Good(e) => "Good(" + prettify(e, processed) + ")"
+            case Bad(e) => "Bad(" + prettify(e, processed) + ")"
+            case One(e) => "One(" + prettify(e, processed) + ")"
+            case many: Many[_] => "Many(" + many.map(prettify(_, processed + many)).mkString(", ") + ")"
+            case anArray: Array[_] =>  "Array(" + anArray.map(prettify(_, processed + anArray)).mkString(", ") + ")"
+            case aWrappedArray: WrappedArray[_] => "Array(" + aWrappedArray.map(prettify(_, processed + aWrappedArray)).mkString(", ") + ")"
+            case anArrayOps if ArrayHelper.isArrayOps(anArrayOps) => "Array(" + ArrayHelper.asArrayOps(anArrayOps).map(prettify(_, processed + anArrayOps)).mkString(", ") + ")"
             case aGenMap: scala.collection.GenMap[_, _] =>
               ColCompatHelper.className(aGenMap) + "(" +
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
-                apply(key) + " -> " + apply(value)
+                prettify(key, processed + aGenMap) + " -> " + prettify(value, processed + aGenMap)
               }).mkString(", ") + ")"
             case aGenTraversable: GenTraversable[_] =>
-              val isSelf =
-                if (aGenTraversable.size == 1) {
-                  aGenTraversable.head match {
-                    case ref: AnyRef => ref eq aGenTraversable
-                    case other => other == aGenTraversable
-                  }
-                }
-                else
-                  false    
-              if (isSelf)
-                aGenTraversable.toString
-              else {
                 val className = aGenTraversable.getClass.getName
-                if (className.startsWith("scala.xml.NodeSeq$") || className == "scala.xml.NodeBuffer")
+                if (className.startsWith("scala.xml.NodeSeq$") || className == "scala.xml.NodeBuffer" || className == "scala.xml.Elem")
                   aGenTraversable.mkString
                 else
-                  ColCompatHelper.className(aGenTraversable) + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
-              }  
-                
+                  ColCompatHelper.className(aGenTraversable) + "(" + aGenTraversable.toIterator.map(prettify(_, processed + aGenTraversable)).mkString(", ") + ")" // toIterator is needed for consistent ordering
+                      
             // SKIP-SCALATESTJS-START
             case javaCol: java.util.Collection[_] =>
               // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
@@ -235,7 +224,7 @@ object Prettifier {
               import scala.collection.JavaConverters._
               val theToString = javaCol.toString
               if (theToString.startsWith("[") && theToString.endsWith("]"))
-                "[" + javaCol.iterator().asScala.map(apply(_)).mkString(", ") + "]"
+                "[" + javaCol.iterator().asScala.map(prettify(_, processed + javaCol)).mkString(", ") + "]"
               else
                 theToString
             case javaMap: java.util.Map[_, _] =>
@@ -245,13 +234,17 @@ object Prettifier {
               val theToString = javaMap.toString
               if (theToString.startsWith("{") && theToString.endsWith("}"))
                 "{" + javaMap.entrySet.iterator.asScala.map { entry =>
-                  apply(entry.getKey) + "=" + apply(entry.getValue)
+                  prettify(entry.getKey, processed + javaMap) + "=" + prettify(entry.getValue, processed + javaMap)
                 }.mkString(", ") + "}"
               else
                 theToString
             // SKIP-SCALATESTJS,NATIVE-END
             case anythingElse => anythingElse.toString
-          }
+          } 
+
+      def apply(o: Any): String = {
+        try {
+          prettify(o, Set.empty)
         }
         catch {
           // This is in case of crazy designs like the one for scala.xml.Node. We handle Node
