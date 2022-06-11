@@ -183,6 +183,9 @@ object Prettifier {
    */
   implicit val default: Prettifier =
     new Prettifier {
+
+      val colSizeLimit: Int = Option(System.getProperty("scalactic.prettifier.collection.size.limit")).map(_.toInt).getOrElse(0)
+
       private def prettify(o: Any, processed: Set[Any]): String = 
         if (processed.contains(o))
           throw new StackOverflowError("Cyclic relationship detected, let's fail early!")
@@ -201,13 +204,15 @@ object Prettifier {
             case Good(e) => "Good(" + prettify(e, processed) + ")"
             case Bad(e) => "Bad(" + prettify(e, processed) + ")"
             case One(e) => "One(" + prettify(e, processed) + ")"
-            case many: Many[_] => "Many(" + many.map(prettify(_, processed + many)).mkString(", ") + ")"
-            case anArray: Array[_] =>  "Array(" + anArray.map(prettify(_, processed + anArray)).mkString(", ") + ")"
-            case aWrappedArray: WrappedArray[_] => "Array(" + aWrappedArray.map(prettify(_, processed + aWrappedArray)).mkString(", ") + ")"
-            case anArrayOps if ArrayHelper.isArrayOps(anArrayOps) => "Array(" + ArrayHelper.asArrayOps(anArrayOps).map(prettify(_, processed + anArrayOps)).mkString(", ") + ")"
+            case many: Many[_] => "Many(" + (if (colSizeLimit > 0) many.toIterator.take(colSizeLimit) else many.toIterator).map(prettify(_, processed + many)).mkString(", ") + ")"
+            case anArray: Array[_] =>  "Array(" + (if (colSizeLimit > 0) anArray.take(colSizeLimit) else anArray).map(prettify(_, processed + anArray)).mkString(", ") + ")"
+            case aWrappedArray: WrappedArray[_] => "Array(" + (if (colSizeLimit > 0) aWrappedArray.take(colSizeLimit) else aWrappedArray).map(prettify(_, processed + aWrappedArray)).mkString(", ") + ")"
+            case a if ArrayHelper.isArrayOps(a) => 
+              val anArrayOps = ArrayHelper.asArrayOps(a).iterator
+              "Array(" + (if (colSizeLimit > 0) anArrayOps.take(colSizeLimit) else anArrayOps).map(prettify(_, processed + anArrayOps)).mkString(", ") + ")"
             case aGenMap: scala.collection.GenMap[_, _] =>
               ColCompatHelper.className(aGenMap) + "(" +
-              (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
+              ((if (colSizeLimit > 0) aGenMap.take(colSizeLimit) else aGenMap).toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
                 prettify(key, processed + aGenMap) + " -> " + prettify(value, processed + aGenMap)
               }).mkString(", ") + ")"
             case aGenTraversable: GenTraversable[_] =>
@@ -215,7 +220,7 @@ object Prettifier {
                 if (className.startsWith("scala.xml.NodeSeq$") || className == "scala.xml.NodeBuffer" || className == "scala.xml.Elem")
                   aGenTraversable.mkString
                 else
-                  ColCompatHelper.className(aGenTraversable) + "(" + aGenTraversable.toIterator.map(prettify(_, processed + aGenTraversable)).mkString(", ") + ")" // toIterator is needed for consistent ordering
+                  ColCompatHelper.className(aGenTraversable) + "(" + (if (colSizeLimit > 0) aGenTraversable.take(colSizeLimit) else aGenTraversable).toIterator.map(prettify(_, processed + aGenTraversable)).mkString(", ") + ")" // toIterator is needed for consistent ordering
                       
             // SKIP-SCALATESTJS-START
             case javaCol: java.util.Collection[_] =>
@@ -223,8 +228,10 @@ object Prettifier {
               // let's do our best to prettify its element when it is not overriden
               import scala.collection.JavaConverters._
               val theToString = javaCol.toString
-              if (theToString.startsWith("[") && theToString.endsWith("]"))
-                "[" + javaCol.iterator().asScala.map(prettify(_, processed + javaCol)).mkString(", ") + "]"
+              if (theToString.startsWith("[") && theToString.endsWith("]")) {
+                val itr = javaCol.iterator().asScala
+                "[" + (if (colSizeLimit > 0) itr.take(colSizeLimit) else itr).map(prettify(_, processed + javaCol)).mkString(", ") + "]"
+              }
               else
                 theToString
             case javaMap: java.util.Map[_, _] =>
@@ -232,10 +239,12 @@ object Prettifier {
               // let's do our best to prettify its element when it is not overriden
               import scala.collection.JavaConverters._
               val theToString = javaMap.toString
-              if (theToString.startsWith("{") && theToString.endsWith("}"))
-                "{" + javaMap.entrySet.iterator.asScala.map { entry =>
+              if (theToString.startsWith("{") && theToString.endsWith("}")) {
+                val itr = javaMap.entrySet.iterator.asScala
+                "{" + (if (colSizeLimit > 0) itr.take(colSizeLimit) else itr).map { entry =>
                   prettify(entry.getKey, processed + javaMap) + "=" + prettify(entry.getValue, processed + javaMap)
                 }.mkString(", ") + "}"
+              }
               else
                 theToString
             // SKIP-SCALATESTJS,NATIVE-END
