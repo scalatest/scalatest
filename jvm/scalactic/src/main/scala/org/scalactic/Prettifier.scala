@@ -131,6 +131,159 @@ trait Prettifier extends Serializable { // I removed the extends (Any => String)
   }
 }
 
+private[scalactic] class DefaultPrettifier extends Prettifier {
+
+  protected def prettifyCollection(o: Any, processed: Set[Any]): String = 
+    o match {
+      case many: Many[_] => "Many(" + many.toIterator.map(prettify(_, processed + many)).mkString(", ") + ")"
+      case anArray: Array[_] =>  "Array(" + anArray.map(prettify(_, processed + anArray)).mkString(", ") + ")"
+      case aWrappedArray: WrappedArray[_] => "Array(" + aWrappedArray.map(prettify(_, processed + aWrappedArray)).mkString(", ") + ")"
+      case a if ArrayHelper.isArrayOps(a) => 
+        val anArrayOps = ArrayHelper.asArrayOps(a).iterator
+        "Array(" + anArrayOps.map(prettify(_, processed + anArrayOps)).mkString(", ") + ")"
+      case aGenMap: scala.collection.GenMap[_, _] =>
+        ColCompatHelper.className(aGenMap) + "(" +
+        (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
+          prettify(key, processed + aGenMap) + " -> " + prettify(value, processed + aGenMap)
+        }).mkString(", ") + ")"
+      case aGenTraversable: GenTraversable[_] =>
+        val className = aGenTraversable.getClass.getName
+        if (className.startsWith("scala.xml.NodeSeq$") || className == "scala.xml.NodeBuffer" || className == "scala.xml.Elem")
+          aGenTraversable.mkString
+        else
+          ColCompatHelper.className(aGenTraversable) + "(" + aGenTraversable.toIterator.map(prettify(_, processed + aGenTraversable)).mkString(", ") + ")" // toIterator is needed for consistent ordering
+                      
+      // SKIP-SCALATESTJS-START
+      case javaCol: java.util.Collection[_] =>
+        // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
+        // let's do our best to prettify its element when it is not overriden
+        import scala.collection.JavaConverters._
+        val theToString = javaCol.toString
+        if (theToString.startsWith("[") && theToString.endsWith("]")) {
+          val itr = javaCol.iterator().asScala
+          "[" + itr.map(prettify(_, processed + javaCol)).mkString(", ") + "]"
+        }
+        else
+          theToString
+      case javaMap: java.util.Map[_, _] =>
+        // By default java map follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractMap.html#toString()
+        // let's do our best to prettify its element when it is not overriden
+        import scala.collection.JavaConverters._
+        val theToString = javaMap.toString
+        if (theToString.startsWith("{") && theToString.endsWith("}")) {
+          val itr = javaMap.entrySet.iterator.asScala
+          "{" + itr.map { entry =>
+            prettify(entry.getKey, processed + javaMap) + "=" + prettify(entry.getValue, processed + javaMap)
+          }.mkString(", ") + "}"
+        }
+        else
+          theToString
+      // SKIP-SCALATESTJS,NATIVE-END
+      case anythingElse => anythingElse.toString
+    }
+
+  protected def prettify(o: Any, processed: Set[Any]): String = 
+    if (processed.contains(o))
+      throw new StackOverflowError("Cyclic relationship detected, let's fail early!")
+    else  
+      o match {
+        case null => "null"
+        case aUnit: Unit => "<(), the Unit value>"
+        case aString: String => "\"" + aString + "\""
+        case aStringWrapper: org.scalactic.ColCompatHelper.StringOps => "\"" + aStringWrapper.mkString + "\""
+        case aChar: Char =>  "\'" + aChar + "\'"
+        case Some(e) => "Some(" + prettify(e, processed) + ")"
+        case Success(e) => "Success(" + prettify(e, processed) + ")"
+        case Left(e) => "Left(" + prettify(e, processed) + ")"
+        case Right(e) => "Right(" + prettify(e, processed) + ")"
+        case s: Symbol => "'" + s.name
+        case Good(e) => "Good(" + prettify(e, processed) + ")"
+        case Bad(e) => "Bad(" + prettify(e, processed) + ")"
+        case One(e) => "One(" + prettify(e, processed) + ")"
+        case other => prettifyCollection(other, processed)
+      } 
+
+  def apply(o: Any): String = {
+    try {
+      prettify(o, Set.empty)
+    }
+    catch {
+      // This is in case of crazy designs like the one for scala.xml.Node. We handle Node
+      // specially above, but in case someone else creates a collection whose iterator
+      // returns itself, which will cause infinite recursion, at least we'll pop out and
+      // give them a string back.
+      case _: StackOverflowError => o.toString
+    }
+  }      
+
+}
+
+private[scalactic] class TruncatingPrettifier(sizeLimit: SizeLimit) extends DefaultPrettifier {
+
+  private def dotDotDotIfTruncated(value: Boolean): String =
+    if (value) ", ..." else ""
+
+  override protected def prettifyCollection(o: Any, processed: Set[Any]): String = {
+    o match {
+      case many: Many[_] => 
+        val (taken, truncated) = if (many.size > sizeLimit.value) (many.toIterator.take(sizeLimit.value), true) else (many.toIterator, false)  
+        "Many(" + taken.map(prettify(_, processed + many)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
+      case anArray: Array[_] =>  
+        val (taken, truncated) = if (anArray.size > sizeLimit.value) (anArray.take(sizeLimit.value), true) else (anArray, false)
+        "Array(" + taken.map(prettify(_, processed + anArray)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
+      case aWrappedArray: WrappedArray[_] => 
+        val (taken, truncated) = if (aWrappedArray.size > sizeLimit.value) (aWrappedArray.take(sizeLimit.value), true) else (aWrappedArray, false)
+        "Array(" + taken.map(prettify(_, processed + aWrappedArray)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
+      case a if ArrayHelper.isArrayOps(a) => 
+        val anArrayOps = ArrayHelper.asArrayOps(a)//
+        val (taken, truncated) = if (anArrayOps.size > sizeLimit.value) (anArrayOps.iterator.take(sizeLimit.value), true) else (anArrayOps.iterator, false)
+        "Array(" + taken.map(prettify(_, processed + anArrayOps)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
+      case aGenMap: scala.collection.GenMap[_, _] =>
+        val (taken, truncated) = if (aGenMap.size > sizeLimit.value) (aGenMap.toIterator.take(sizeLimit.value), true) else (aGenMap.toIterator, false)
+        ColCompatHelper.className(aGenMap) + "(" +
+        (taken.map { case (key, value) => // toIterator is needed for consistent ordering
+          prettify(key, processed + aGenMap) + " -> " + prettify(value, processed + aGenMap)
+        }).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
+      case aGenTraversable: GenTraversable[_] =>
+        val (taken, truncated) = if (aGenTraversable.size > sizeLimit.value) (aGenTraversable.take(sizeLimit.value), true) else (aGenTraversable, false)
+        val className = aGenTraversable.getClass.getName
+        if (className.startsWith("scala.xml.NodeSeq$") || className == "scala.xml.NodeBuffer" || className == "scala.xml.Elem")
+          aGenTraversable.mkString
+        else
+          ColCompatHelper.className(aGenTraversable) + "(" + taken.toIterator.map(prettify(_, processed + aGenTraversable)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")" // toIterator is needed for consistent ordering                
+      // SKIP-SCALATESTJS-START
+      case javaCol: java.util.Collection[_] =>
+        // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
+        // let's do our best to prettify its element when it is not overriden
+        import scala.collection.JavaConverters._
+        val theToString = javaCol.toString
+        if (theToString.startsWith("[") && theToString.endsWith("]")) {
+          val itr = javaCol.iterator().asScala
+          val (taken, truncated) = if (javaCol.size > sizeLimit.value) (itr.take(sizeLimit.value), true) else (itr, false)
+          "[" + taken.map(prettify(_, processed + javaCol)).mkString(", ") + dotDotDotIfTruncated(truncated) + "]"
+        }
+        else
+          theToString
+      case javaMap: java.util.Map[_, _] =>
+        // By default java map follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractMap.html#toString()
+        // let's do our best to prettify its element when it is not overriden
+        import scala.collection.JavaConverters._
+        val theToString = javaMap.toString
+        if (theToString.startsWith("{") && theToString.endsWith("}")) {
+          val itr = javaMap.entrySet.iterator.asScala
+          val (taken, truncated) = if (javaMap.size > sizeLimit.value) (itr.take(sizeLimit.value), true) else (itr, false)
+          "{" + taken.map { entry =>
+            prettify(entry.getKey, processed + javaMap) + "=" + prettify(entry.getValue, processed + javaMap)
+          }.mkString(", ") + dotDotDotIfTruncated(truncated) + "}"
+        }
+        else
+          theToString
+      // SKIP-SCALATESTJS,NATIVE-END
+      case anythingElse => anythingElse.toString
+    }
+  }
+}
+
 /**
  * Companion object for `Prettifier` that provides a default `Prettifier` implementation.
  */
@@ -181,87 +334,12 @@ object Prettifier {
    * For anything else, it returns the result of invoking `toString`.
    * </p>
    */
-  implicit val default: Prettifier =
-    new Prettifier {
-      def apply(o: Any): String = {
-        try {
-          o match {
-            case null => "null"
-            case aUnit: Unit => "<(), the Unit value>"
-            case aString: String => "\"" + aString + "\""
-            case aStringWrapper: org.scalactic.ColCompatHelper.StringOps => "\"" + aStringWrapper.mkString + "\""
-            case aChar: Char =>  "\'" + aChar + "\'"
-            case Some(e) => "Some(" + apply(e) + ")"
-            case Success(e) => "Success(" + apply(e) + ")"
-            case Left(e) => "Left(" + apply(e) + ")"
-            case Right(e) => "Right(" + apply(e) + ")"
-            case s: Symbol => "'" + s.name
-            case Good(e) => "Good(" + apply(e) + ")"
-            case Bad(e) => "Bad(" + apply(e) + ")"
-            case One(e) => "One(" + apply(e) + ")"
-            case many: Many[_] => "Many(" + many.toIterator.map(apply(_)).mkString(", ") + ")"
-            case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
-            case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
-            case anArrayOps if ArrayHelper.isArrayOps(anArrayOps) => "Array(" + (ArrayHelper.asArrayOps(anArrayOps) map apply).mkString(", ") + ")"
-            case aGenMap: scala.collection.GenMap[_, _] =>
-              ColCompatHelper.className(aGenMap) + "(" +
-              (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
-                apply(key) + " -> " + apply(value)
-              }).mkString(", ") + ")"
-            case aGenTraversable: GenTraversable[_] =>
-              val isSelf =
-                if (aGenTraversable.size == 1) {
-                  aGenTraversable.head match {
-                    case ref: AnyRef => ref eq aGenTraversable
-                    case other => other == aGenTraversable
-                  }
-                }
-                else
-                  false    
-              if (isSelf)
-                aGenTraversable.toString
-              else {
-                val className = aGenTraversable.getClass.getName
-                if (className.startsWith("scala.xml.NodeSeq$") || className == "scala.xml.NodeBuffer")
-                  aGenTraversable.mkString
-                else
-                  ColCompatHelper.className(aGenTraversable) + "(" + aGenTraversable.toIterator.map(apply(_)).mkString(", ") + ")" // toIterator is needed for consistent ordering
-              }  
-                
-            // SKIP-SCALATESTJS-START
-            case javaCol: java.util.Collection[_] =>
-              // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
-              // let's do our best to prettify its element when it is not overriden
-              import scala.collection.JavaConverters._
-              val theToString = javaCol.toString
-              if (theToString.startsWith("[") && theToString.endsWith("]"))
-                "[" + javaCol.iterator().asScala.map(apply(_)).mkString(", ") + "]"
-              else
-                theToString
-            case javaMap: java.util.Map[_, _] =>
-              // By default java map follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractMap.html#toString()
-              // let's do our best to prettify its element when it is not overriden
-              import scala.collection.JavaConverters._
-              val theToString = javaMap.toString
-              if (theToString.startsWith("{") && theToString.endsWith("}"))
-                "{" + javaMap.entrySet.iterator.asScala.map { entry =>
-                  apply(entry.getKey) + "=" + apply(entry.getValue)
-                }.mkString(", ") + "}"
-              else
-                theToString
-            // SKIP-SCALATESTJS,NATIVE-END
-            case anythingElse => anythingElse.toString
-          }
-        }
-        catch {
-          // This is in case of crazy designs like the one for scala.xml.Node. We handle Node
-          // specially above, but in case someone else creates a collection whose iterator
-          // returns itself, which will cause infinite recursion, at least we'll pop out and
-          // give them a string back.
-          case _: StackOverflowError => o.toString
-        }
-      }
-    }
+  implicit val default: Prettifier = new DefaultPrettifier()
+
+  /**
+   * Create a default prettifier instance with collection size limit.
+   */
+  def truncateAt(limit: SizeLimit): Prettifier = new TruncatingPrettifier(limit)
 
   /**
    * A basic `Prettifier`.
