@@ -397,6 +397,11 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
       Prettifier.default(new Fred) shouldBe "It's Fred all the way down"
     }
     // SKIP-DOTTY-END
+    it("should truncate collection when used with Prettifier.truncateAt") {
+      val col = List(1, 2, 3)
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      prettifier(col) shouldBe "List(1, 2, ...)"
+    }
   }
 }
 
