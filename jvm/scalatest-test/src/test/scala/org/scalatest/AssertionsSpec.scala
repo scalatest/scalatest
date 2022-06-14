@@ -571,7 +571,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should  throw TestFailedException with correct message and stack depth when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
       import scala.math.Ordering.Implicits.infixOrderingOps
       val first = new java.lang.Integer(5)
       val second = new java.lang.Integer(4)
@@ -581,6 +581,28 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.message === Some(wasNotLessThan(5, 4)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used in another function to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+      import scala.math.Ordering.Implicits.infixOrderingOps
+
+      @scala.annotation.tailrec
+      def assertInOrder2[A : Ordering](list: List[A]): Assertion =
+        list match {
+          case first :: (more @ second :: _) =>
+            assert(first <= second)
+            assertInOrder2[A](more)
+          case _ => Succeeded
+        }
+
+      val first = new java.lang.Integer(5)
+      val second = new java.lang.Integer(4)
+      val e = intercept[TestFailedException] {
+        assertInOrder2(List(first, second))
+      }
+      assert(e.message === Some(wasNotLessThanOrEqualTo(5, 4)))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 12)))
     }
 
     it("should do nothing when is used to check bob == \"bob\"") {
@@ -2035,7 +2057,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should  throw TestFailedException with correct message and stack depth when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+    it("should throw TestFailedException with correct message and stack depth when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
       import scala.math.Ordering.Implicits.infixOrderingOps
       val first = new java.lang.Integer(5)
       val second = new java.lang.Integer(4)
@@ -2045,6 +2067,28 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.message === Some(wasNotLessThan(5, 4) + "; dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used in another function to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+      import scala.math.Ordering.Implicits.infixOrderingOps
+
+      @scala.annotation.tailrec
+      def assertInOrder2[A : Ordering](list: List[A]): Assertion =
+        list match {
+          case first :: (more @ second :: _) =>
+            assert(first <= second, "; dude")
+            assertInOrder2[A](more)
+          case _ => Succeeded
+        }
+
+      val first = new java.lang.Integer(5)
+      val second = new java.lang.Integer(4)
+      val e = intercept[TestFailedException] {
+        assertInOrder2(List(first, second))
+      }
+      assert(e.message === Some(wasNotLessThanOrEqualTo(5, 4) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 12)))
     }
 
     it("should do nothing when is used to check bob == \"bob\"") {
@@ -3490,7 +3534,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should  throw TestFailedException with correct message and stack depth when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+    it("should  throw TestCanceledException with correct message and stack depth when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
       import scala.math.Ordering.Implicits.infixOrderingOps
       val first = new java.lang.Integer(5)
       val second = new java.lang.Integer(4)
@@ -3500,6 +3544,28 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.message === Some(wasNotLessThan(5, 4)))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used in another function to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+      import scala.math.Ordering.Implicits.infixOrderingOps
+
+      @scala.annotation.tailrec
+      def assertInOrder2[A : Ordering](list: List[A]): Assertion =
+        list match {
+          case first :: (more @ second :: _) =>
+            assume(first <= second)
+            assertInOrder2[A](more)
+          case _ => Succeeded
+        }
+
+      val first = new java.lang.Integer(5)
+      val second = new java.lang.Integer(4)
+      val e = intercept[TestCanceledException] {
+        assertInOrder2(List(first, second))
+      }
+      assert(e.message === Some(wasNotLessThanOrEqualTo(5, 4)))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 12)))
     }
 
     it("should do nothing when is used to check bob == \"bob\"") {
@@ -4951,7 +5017,7 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
 
-    it("should  throw TestFailedException with correct message and stack depth when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+    it("should  throw TestCanceledException with correct message and stack depth when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
       import scala.math.Ordering.Implicits.infixOrderingOps
       val first = new java.lang.Integer(5)
       val second = new java.lang.Integer(4)
@@ -4961,6 +5027,28 @@ class AssertionsSpec extends AnyFunSpec {
       assert(e.message === Some(wasNotLessThan(5, 4) + "; dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
+    }
+
+    it("should throw TestCanceledException with correct message and stack depth when is used in another function to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+      import scala.math.Ordering.Implicits.infixOrderingOps
+
+      @scala.annotation.tailrec
+      def assertInOrder2[A : Ordering](list: List[A]): Assertion =
+        list match {
+          case first :: (more @ second :: _) =>
+            assume(first <= second, "; dude")
+            assertInOrder2[A](more)
+          case _ => Succeeded
+        }
+
+      val first = new java.lang.Integer(5)
+      val second = new java.lang.Integer(4)
+      val e = intercept[TestCanceledException] {
+        assertInOrder2(List(first, second))
+      }
+      assert(e.message === Some(wasNotLessThanOrEqualTo(5, 4) + "; dude"))
+      assert(e.failedCodeFileName === (Some(fileName)))
+      assert(e.failedCodeLineNumber === (Some(thisLineNumber - 12)))
     }
 
     it("should do nothing when is used to check bob == \"bob\"") {

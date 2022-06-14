@@ -98,7 +98,7 @@ class ListShouldContainInOrderSpec extends AnyFunSpec with Matchers {
       it("should pass when evaluating List(1, 2, 3, 4, 5) should contain inOrder (1, 3, 5)") {
         List(1, 2, 3, 4, 5) should contain inOrder (1, 3, 5)
       }
-      it("should fail when evaluating List(1, 2, 3) should contain inOrder (1, 2, 8)") {
+      it("should fail when evaluating " + List(1, 2, 3) + " should contain inOrder (1, 2, 8)") {
         val e1 = intercept[TestFailedException] {
           List(1, 2, 3) should contain inOrder (1, 2, 8)
         }

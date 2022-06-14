@@ -14,15 +14,6 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 trait NativeBuild { this: BuildCommons =>
 
-  lazy val nativeCrossBuildLibraryDependencies = Def.setting {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 10)) => Seq.empty
-      case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
-      case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.0.1"))
-    }
-  }
-
   private lazy val sharedNativeSettings = Seq(
     // This hack calls class directory as "resource" that forces to add all NIRs that was generated
     // by scala-native for classes that has `EnableReflectiveInstantiation` annotation
@@ -682,20 +673,6 @@ trait NativeBuild { this: BuildCommons =>
       publish := {},
       publishLocal := {}
     ).dependsOn(scalacticNative, scalatestNative % "test", commonTestNative % "test").enablePlugins(ScalaNativePlugin)
-
-  def sharedTestSettingsNative: Seq[Setting[_]] =
-    Seq(
-      organization := "org.scalatest",
-      libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-      // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
-      test / fork := false,
-      Test / nativeLinkStubs := true,
-      Test / nativeDump := false, 
-      Test / testOptions := scalatestTestJSNativeOptions,
-      publishArtifact := false,
-      publish := {},
-      publishLocal := {}
-    )
 
   lazy val scalatestTestNative = project.in(file("native/scalatest-test"))
     .settings(sharedSettings ++ sharedNativeSettings)
