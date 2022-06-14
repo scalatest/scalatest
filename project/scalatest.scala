@@ -133,7 +133,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       case Some((2, 10)) => Seq.empty
       case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
       case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.0.1"))
+        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.1.0"))
     }
 
   def scalaLibraries(theScalaVersion: String) =
@@ -153,7 +153,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def crossBuildTestLibraryDependencies = Def.setting {
     Seq(
-      "org.scala-lang.modules" %%% "scala-parser-combinators" % "2.0.0"
+      "org.scala-lang.modules" %%% "scala-parser-combinators" % "2.1.1"
     )
   }
 
@@ -625,10 +625,17 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
       mimaBinaryIssueFilters ++= {
         Seq(
-          exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.failAfterImpl"),  // New function not in current version
-          exclude[DirectMissingMethodProblem]("org.scalatest.concurrent.TimeLimits.cancelAfterImpl"),  // New function not in current version
-          exclude[ReversedMissingMethodProblem]("org.scalatest.events.Event.withPayload"), // New private[scalatest] function not in current version
-          exclude[IncompatibleMethTypeProblem]("org.scalatest.tools.Framework#ScalaTestRunner#Skeleton#1#React.this")  // SBT integration class not meant for third-party use.
+          exclude[DirectMissingMethodProblem]("org.scalatest.DeferredAbortedSuite.copy"), // New function in not in current version
+          exclude[IncompatibleResultTypeProblem]("org.scalatest.DeferredAbortedSuite.copy$default$2"), // New function not in current version
+          exclude[DirectMissingMethodProblem]("org.scalatest.DeferredAbortedSuite.this"), // New function not in current version
+          exclude[MissingTypesProblem]("org.scalatest.DeferredAbortedSuite$"), // New type not in current version
+          exclude[DirectMissingMethodProblem]("org.scalatest.DeferredAbortedSuite.apply"), // New function not in current version
+          exclude[DirectMissingMethodProblem]("org.scalatest.tools.TestSortingReporter#Slot.uuid"), // New function not in current version
+          exclude[IncompatibleMethTypeProblem]("org.scalatest.tools.TestSortingReporter#Slot.copy"), // Private class function
+          exclude[IncompatibleResultTypeProblem]("org.scalatest.tools.TestSortingReporter#Slot.copy$default$1"), // Private class function
+          exclude[IncompatibleMethTypeProblem]("org.scalatest.tools.TestSortingReporter#Slot.this"), // Private class function
+          exclude[IncompatibleMethTypeProblem]("org.scalatest.tools.TestSortingReporter#Slot.apply"), // Private class function
+          exclude[DirectMissingMethodProblem]("org.scalatest.tools.TestSortingReporter.Slot") // Private class function
         )
       }
     ).settings(osgiSettings: _*).settings(

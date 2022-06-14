@@ -41,7 +41,7 @@ import Suite.autoTagClassAnnotations
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
-//SCALATESTNATIVE-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
+//SCALATESTNATIVE-ONLY @scala.scalanative.reflect.annotation.EnableReflectiveInstantiation
 trait AnyPropSpecLike extends TestSuite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentPropSpecMod, "PropSpec")
