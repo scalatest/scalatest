@@ -43,7 +43,7 @@ import scala.util.Try
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 //SCALATESTNATIVE-ONLY @scala.scalanative.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait AsyncPropSpecLike extends AsyncTestSuite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncEngine(Resources.concurrentPropSpecMod, "PropSpec")
 

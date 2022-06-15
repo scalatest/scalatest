@@ -617,8 +617,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
          ScalaTestGenResourcesJVM.genFailureMessages((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
          GenVersions.genScalaTestVersions((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value) ++ 
          GenGen.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "prop", version.value, scalaVersion.value) ++
-         GenCompatibleClasses.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value) ++ 
-         GenSafeStyles.genCore((Compile / sourceManaged).value / "org" / "scalatest", version.value, scalaVersion.value, false)
+         GenCompatibleClasses.genMain((Compile / sourceManaged).value / "org" / "scalatest" / "tools", version.value, scalaVersion.value)
        }.taskValue
       },
       scalatestDocSettings,

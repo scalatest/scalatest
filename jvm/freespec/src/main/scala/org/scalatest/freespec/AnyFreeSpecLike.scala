@@ -46,7 +46,7 @@ import org.scalatest.exceptions._
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 //SCALATESTNATIVE-ONLY @scala.scalanative.reflect.annotation.EnableReflectiveInstantiation
-trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait AnyFreeSpecLike extends TestSuite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentFreeSpecMod, "FreeSpec")
   import engine._

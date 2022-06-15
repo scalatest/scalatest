@@ -43,7 +43,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 //SCALATESTNATIVE-ONLY @scala.scalanative.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait FixtureAnyPropSpecLike extends org.scalatest.FixtureTestSuite with org.scalatest.FixtureTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FixtureAnyPropSpecLike extends org.scalatest.FixtureTestSuite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixturePropSpecMod, "FixturePropSpec")
 

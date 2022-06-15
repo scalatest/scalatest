@@ -48,7 +48,7 @@ import scala.util.Try
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 //SCALATESTNATIVE-ONLY @scala.scalanative.reflect.annotation.EnableReflectiveInstantiation
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait AsyncFreeSpecLike extends AsyncTestSuite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncTestHolder =
     () => {
