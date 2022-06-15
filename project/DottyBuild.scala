@@ -295,7 +295,7 @@ trait DottyBuild { this: BuildCommons =>
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
       libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.1.0", 
-      libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).cross(CrossVersion.for3Use2_13), 
+      libraryDependencies ++= scalatestJSLibraryDependencies, 
       packageManagedSources,
       Compile / sourceGenerators += Def.task {
         GenModulesDotty.genScalaTestCoreJS((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
@@ -1007,7 +1007,7 @@ trait DottyBuild { this: BuildCommons =>
     .settings(sharedTestSettingsDottyJS)
     .settings(
       projectTitle := "ScalaTest Test",
-      scalaJSLinkerConfig ~= { _.withOptimizer(false).withSemantics(_.withStrictFloats(true)) },
+      scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       Test / sourceGenerators += Def.task {
         //GenRegularTests4.genJava((Compile / javaSourceManaged).value) ++
         GenScalaTestDotty.genTestJS((Test / sourceManaged).value, version.value, scalaVersion.value)

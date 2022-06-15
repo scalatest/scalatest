@@ -268,7 +268,7 @@ trait JsBuild { this: BuildCommons =>
     .settings(sharedTestSettingsJS: _*)
     .settings(
       projectTitle := "ScalaTest Test",
-      scalaJSLinkerConfig ~= { _.withOptimizer(false).withSemantics(_.withStrictFloats(true)) },
+      scalaJSLinkerConfig ~= { _.withOptimizer(false) },
       Test / sourceGenerators += {
         Def.task {
           GenScalaTestJS.genTest((Test / sourceManaged).value, version.value, scalaVersion.value)

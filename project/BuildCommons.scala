@@ -3,6 +3,7 @@ import Keys._
 import java.io.PrintWriter
 import scala.io.Source
 
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.scalaJSVersion
 import scalanative.sbtplugin.ScalaNativePlugin
 import ScalaNativePlugin.autoImport.{nativeLinkStubs, nativeDump}
 
@@ -15,10 +16,9 @@ trait BuildCommons {
 
   val runFlickerTests = Option(System.getenv("SCALATEST_RUN_FLICKER_TESTS")).getOrElse("FALSE").toUpperCase == "TRUE"
 
-  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.8.0")
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
+      ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).cross(CrossVersion.for3Use2_13)
     )
 
   val releaseVersion = "3.3.0-SNAP3"
