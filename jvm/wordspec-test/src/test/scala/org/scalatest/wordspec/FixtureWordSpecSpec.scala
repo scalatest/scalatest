@@ -4496,5 +4496,30 @@ class FixtureWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature can test 1")))
     }
 
+    it("should throw DuplicateTestNameException when duplicate test name is detected inside in a forAll") {
+      class TestSpec extends wordspec.FixtureAnyWordSpec {
+        type FixtureParam = String
+        def withFixture(test: OneArgTest): Outcome = { test("hi") }
+        "a feature" can {
+          //DOTTY-ONLY ()
+        }
+        import org.scalatest.prop.TableDrivenPropertyChecks._
+        "trying something" should {
+          val scenarios = Table("value", "first", "first")
+          
+          forAll(scenarios) { value =>
+            s"work as expected for $value " in { fixture =>
+            }
+          } 
+        }
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("FixtureWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.message == Some(FailureMessages.duplicateTestName(prettifier, UnquotedString("trying something should work as expected for first"))))
+    }
+
   }
 }
