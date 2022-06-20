@@ -21,6 +21,7 @@ import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => Sbt
 
 import scala.compat.Platform
 import ArgsParser._
+import org.scalatest.prop.Seed
 
 class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClassLoader: ClassLoader) extends Runner {
 
@@ -43,7 +44,8 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
   tagsToIncludeArgs,
   tagsToExcludeArgs,
   membersOnlyArgs,
-  wildcardArgs
+  wildcardArgs, 
+  seedArgs
   ) = parseArgs(args)
 
   val (
@@ -83,6 +85,11 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
       throw new IllegalArgumentException("Only one -o can be passed in as test argument.")
     else
       (false, !sbtNoFormat, false, false, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
+  }
+
+  parseLongArgument(seedArgs, "-S") match {
+    case Some(seed) => Seed.configuredRef.getAndSet(Some(seed))
+    case None => // do nothing
   }
 
   val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
@@ -150,21 +157,18 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
 
   def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
     def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
-      taskDefs.filter(td => paths.exists(td.fullyQualifiedName.startsWith(_)))
+      taskDefs.filter(td => paths.exists(td.fullyQualifiedName().startsWith(_)))
 
     def filterMembersOnly(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
       taskDefs.filter { td =>
-        paths.exists(path => td.fullyQualifiedName.startsWith(path) && td.fullyQualifiedName.substring(path.length).lastIndexOf('.') <= 0)
+        paths.exists(path => td.fullyQualifiedName().startsWith(path) && td.fullyQualifiedName().substring(path.length).lastIndexOf('.') <= 0)
       }
 
     def createTask(t: TaskDef): Task =
-      new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+      new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
         presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(send))
 
-    for {
-      taskDef <- if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
-      val task = createTask(taskDef)
-    } yield task
+    (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
   }
 
   private def send(msg: String): Unit = {
@@ -200,7 +204,7 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
 
   def deserializeTask(task: String, deserializer: (String) => TaskDef): Task = {
     val taskDef = deserializer(task)
-    new TaskRunner(taskDef, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+    new TaskRunner(taskDef, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
       presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(send))
   }
 

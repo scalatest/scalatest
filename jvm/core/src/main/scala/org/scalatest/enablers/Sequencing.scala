@@ -159,6 +159,7 @@ object Sequencing {
   }
   
   private def checkInOrder[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+
     @tailrec
     def lastIndexOf(itr: Iterator[T], element: Any, idx: Option[Int], i: Int): Option[Int] = {
       if (itr.hasNext) {
@@ -171,14 +172,35 @@ object Sequencing {
       else
         idx
     }
+
+    @tailrec
+    def checkEqual(leftItr: Iterator[T], currentRight: Any, matchedCurrentRight: Boolean, rightItr: Iterator[Any]): Boolean = 
+      if (leftItr.hasNext) {
+        val left = leftItr.next
+        if (equality.areEqual(left, currentRight)) {
+          if (rightItr.hasNext) {
+            val right = rightItr.next
+            checkEqual(leftItr, right, false, rightItr)
+          }
+          else
+            true
+        }
+        else 
+          checkEqual(leftItr, currentRight, matchedCurrentRight, rightItr)
+      }
+      else 
+        matchedCurrentRight && !rightItr.hasNext
   
     @tailrec
-    def checkEqual(left: GenTraversable[T], rightItr: Iterator[Any]): Boolean = {
+    def checkEqualRec(left: GenTraversable[T], rightItr: Iterator[Any]): Boolean = {
       if (rightItr.hasNext) {
         val nextRight = rightItr.next
         lastIndexOf(left.toIterator, nextRight, None, 0) match {
           case Some(idx) => 
-            checkEqual(left.drop(idx).tail, rightItr)
+            if (checkEqual(left.drop(idx).toIterator, nextRight, false, rightItr))
+              true
+            else
+              checkEqualRec(left.take(idx), right.toIterator)
           case None => 
             false // Element not found, let's fail early
         }
@@ -186,7 +208,7 @@ object Sequencing {
       else // No more element in right, left contains all of right.
         true
     }
-    checkEqual(left, right.toIterator)
+    checkEqualRec(left, right.toIterator)
   }
 
   import scala.language.higherKinds

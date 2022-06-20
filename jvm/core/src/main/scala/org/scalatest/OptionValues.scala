@@ -87,7 +87,7 @@ trait OptionValues {
    *
    * @param opt the <code>Option</code> on which to add the <code>value</code> method
    */
-  implicit def convertOptionToValuable[T](opt: Option[T])(implicit pos: source.Position): Valuable[T] = new Valuable(opt, pos)
+  implicit def convertOptionToValuable[T](opt: Option[T])(implicit pos: source.Position): OptionValuable[T] = new OptionValuable(opt, pos)
 
   /**
    * Wrapper class that adds a <code>value</code> method to <code>Option</code>, allowing
@@ -97,10 +97,9 @@ trait OptionValues {
    * opt.value should be &gt; 9
    * </pre>
    *
-   * @param opt An option to convert to <code>Valuable</code>, which provides the <code>value</code> method.
+   * @param opt An option to convert to <code>OptionValuable</code>, which provides the <code>value</code> method.
    */
-  class Valuable[T](opt: Option[T], pos: source.Position) {
-
+  class OptionValuable[T](opt: Option[T], pos: source.Position) {
     /**
      * Returns the value contained in the wrapped <code>Option</code>, if defined, else throws <code>TestFailedException</code> with
      * a detail message indicating the option was not defined.

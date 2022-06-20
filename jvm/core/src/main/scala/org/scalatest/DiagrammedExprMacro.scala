@@ -177,9 +177,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
 
   // inspired from https://github.com/scala/async/blob/master/src/main/scala/scala/async/internal/TransformUtils.scala#L112-L127
   private def isByName(fun: Tree, i: Int, j: Int): Boolean = {
-    //val paramss = fun.tpe.asInstanceOf[scala.reflect.internal.Types#Type].paramss
-    //TODO: We could use fun.tpe.paramss when we no longer need to support scala 2.10.
-    val byNamess = paramss(fun.tpe).map(_.map(_.asTerm.isByNameParam))
+    val byNamess = fun.tpe.paramss.map(_.map(_.asTerm.isByNameParam))
     util.Try(byNamess(i)(j)).getOrElse(false)
   }
 

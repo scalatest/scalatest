@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.Suite.formatterForSuiteAborted
 import org.scalatest.Suite.formatterForSuiteCompleted
 import org.scalatest.Suite.formatterForSuiteStarting
+import org.scalatest.Suite.getSuiteClassName
 import org.scalatest.events.SeeStackDepthException
 import org.scalatest.events.SuiteAborted
 import org.scalatest.events.SuiteCompleted
@@ -33,18 +34,18 @@ import org.scalatest.events.SuiteStarting
 import org.scalatest.events.TopOfClass
 import org.scalatest.time.{Seconds, Span}
 import org.scalatools.testing.{Framework => SbtFramework, _}
-// import org.scalatest.prop.Randomizer
+import org.scalatest.prop.Seed
 
 /**
  * Class that makes ScalaTest tests visible to SBT (prior to version 0.13).
  *
  * <p>
  * To use ScalaTest in SBT, you should add ScalaTest as dependency in your SBT build file, the following shows an example
- * for using ScalaTest 2.0 with Scala 2.10.x project:
+ * for using ScalaTest 3.3.0 with Scala 2.13.x project:
  * </p>
  *
  * <pre class="stHighlight">
- * "org.scalatest" % "scalatest_2.10" % "2.0" % "test"
+ * "org.scalatest" %% "scalatest" % "3.3.0" % "test"
  * </pre>
  *
  * <p>
@@ -217,8 +218,7 @@ class ScalaTestFramework extends SbtFramework {
           runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
           parseLongArgument(seedArgs, "-S") match {
-            case Some(seed) => // Randomizer.defaultSeed.getAndSet(Some(seed))
-              println("Note: -S for setting the Randomizer seed is not yet supported.")
+            case Some(seed) => Seed.configuredRef.getAndSet(Some(seed))
             case None => // do nothing
           }
           
@@ -439,8 +439,9 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
             }
 
             val formatter = formatterForSuiteStarting(suite)
+            val suiteClassName = getSuiteClassName(suite)
 
-            report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
+            report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
             try {  // TODO: I had to pass Set.empty for chosen styles now. Fix this later.
               val status = suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty, false, None, None))
@@ -454,10 +455,10 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
 
               status.unreportedException match {
                 case Some(ue) =>
-                  report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
+                  report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClassName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
 
                 case None =>
-                  report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+                  report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), Some(duration), formatter, Some(TopOfClass(suiteClassName))))
               }
 
             }
@@ -468,11 +469,11 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
                 // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US
                 // TODO Chee Seng, I wonder why we couldn't access resources, and if that's still true. I'd rather get this stuff
                 // from the resource file so we can later localize.
-                val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClass.getName
+                val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClassName
                 val formatter = formatterForSuiteAborted(suite, rawString)
 
                 val duration = System.currentTimeMillis - suiteStartTime
-                report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
+                report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClassName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
               }
             }
           }

@@ -38,7 +38,7 @@ package org.scalatest
  * package com.mycompany.myproject.testing.tags;
  *
  * import java.lang.annotation.*; 
- * import org.scalatest.TagAnnotation
+ * import org.scalatest.TagAnnotation;
  *
  * @TagAnnotation
  * @Retention(RetentionPolicy.RUNTIME)

@@ -106,7 +106,7 @@ trait EitherValues extends Serializable {
    *
    * @param either the <code>Either</code> on which to add the <code>value</code> method
    */
-  implicit def convertEitherToValuable[L, R](either: Either[L, R])(implicit pos: source.Position): Valuable[L, R] = new Valuable(either, pos)
+  implicit def convertEitherToValuable[L, R](either: Either[L, R])(implicit pos: source.Position): EitherValuable[L, R] = new EitherValuable(either, pos)
 
   /**
    * Wrapper class that adds a <code>value</code> method to <code>LeftProjection</code>, allowing
@@ -164,7 +164,6 @@ trait EitherValues extends Serializable {
     }
   }
 
-
   /**
    * Wrapper class that adds a <code>value</code> method to <code>Either</code>, allowing
    * you to make statements to inspect the value if a Right, like:
@@ -173,11 +172,10 @@ trait EitherValues extends Serializable {
    * either.value should be &gt; 9
    * </pre>
    *
-   * @param either An <code>Either</code> to convert to <code>Valuable</code>, which provides the
+   * @param either An <code>Either</code> to convert to <code>EitherValuable</code>, which provides the
    *   <code>value</code> method.
-   */
-  class Valuable[L, R](either: Either[L, R], pos: source.Position) extends Serializable {
-
+   */ 
+  class EitherValuable[L, R](either: Either[L, R], pos: source.Position) extends Serializable {
     /**
      * Returns the <code>Right</code> value contained in the wrapped <code>RightProjection</code>, if defined as a <code>Right</code>, else throws <code>TestFailedException</code> with
      * a detail message indicating the <code>Either</code> was defined as a <code>Right</code>, not a <code>Left</code>.

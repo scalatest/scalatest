@@ -107,7 +107,35 @@ object GenModulesDotty {
   
   def applyJS(style: String): GenFn = applyJS(style, Seq(s"org/scalatest/$style"))
 
+  def applyNative(moduleDirName: String, packagePaths: Seq[String]): GenFn = (targetDir, version, scalaVersion) => {
+    GenScalaTestDotty.genScalaPackagesNative
+      .filter { case (packagePath, _) => packagePaths.contains(packagePath) }
+      .flatMap { case (packagePath, skipList) =>
+        GenScalaTestDotty.copyDirNative(s"jvm/$moduleDirName/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+      }.toList
+  }
+
+  def applyNative(style: String): GenFn = applyNative(style, Seq(s"org/scalatest/$style"))
+
   val genScalaTestCoreJS: GenFn = applyJS(
+    "core",
+    Seq(
+      "org/scalatest",
+      "org/scalatest/compatible",
+      "org/scalatest/concurrent",
+      "org/scalatest/enablers",
+      "org/scalatest/exceptions",
+      "org/scalatest/events",
+      "org/scalatest/fixture",
+      "org/scalatest/prop",
+      "org/scalatest/tagobjects",
+      "org/scalatest/tags",
+      "org/scalatest/time",
+      "org/scalatest/verbs",
+    )
+  )
+
+  val genScalaTestCoreNative: GenFn = applyNative(
     "core",
     Seq(
       "org/scalatest",
@@ -141,7 +169,17 @@ object GenModulesDotty {
     )
   )
 
+  val genScalaTestMatchersCoreNative: GenFn = applyNative(
+    "matchers-core",
+    Seq(
+      "org/scalatest/matchers",
+      "org/scalatest/matchers/dsl"
+    )
+  )
+
   val genScalaTestShouldMatchers: GenFn = apply("shouldmatchers", Seq("org/scalatest/matchers/should"))
 
   val genScalaTestShouldMatchersJS: GenFn = applyJS("shouldmatchers", Seq("org/scalatest/matchers/should"))
+
+  val genScalaTestShouldMatchersNative: GenFn = applyNative("shouldmatchers", Seq("org/scalatest/matchers/should"))
 }
