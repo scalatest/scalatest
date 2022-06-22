@@ -141,17 +141,15 @@ private[scalactic] class DefaultPrettifier extends Prettifier {
       case a if ArrayHelper.isArrayOps(a) => 
         val anArrayOps = ArrayHelper.asArrayOps(a).iterator
         "Array(" + anArrayOps.map(prettify(_, processed + anArrayOps)).mkString(", ") + ")"
-      case aGenMap: scala.collection.GenMap[_, _] =>
-        ColCompatHelper.className(aGenMap) + "(" +
-        (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
-          prettify(key, processed + aGenMap) + " -> " + prettify(value, processed + aGenMap)
-        }).mkString(", ") + ")"
-      case aGenTraversable: GenTraversable[_] =>
-        val className = aGenTraversable.getClass.getName
+      case i: Iterable[_] =>
+        val className = i.getClass.getName
         if (className.startsWith("scala.xml.NodeSeq$") || className == "scala.xml.NodeBuffer" || className == "scala.xml.Elem")
-          aGenTraversable.mkString
+          i.mkString  
         else
-          ColCompatHelper.className(aGenTraversable) + "(" + aGenTraversable.toIterator.map(prettify(_, processed + aGenTraversable)).mkString(", ") + ")" // toIterator is needed for consistent ordering
+          ColCompatHelper.className(i) + "(" + i.toIterator.map { 
+            case (key, value) if className.contains("Map") => prettify(key, processed + i) + " -> " + prettify(value, processed + i)
+            case other => prettify(other, processed + i) 
+          }.mkString(", ") + ")" // toIterator is needed for consistent ordering
                       
       // SKIP-SCALATESTJS-START
       case javaCol: java.util.Collection[_] =>
