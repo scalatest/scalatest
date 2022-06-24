@@ -129,7 +129,7 @@ class ShouldCompileSpec extends AnyFunSpec {
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
-        assert(e.message.get.indexOf(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "')' expected, but eof found" else "unclosed string literal") >= 0)
+        assert(e.message.get.indexOf(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "expression expected but erroneous token found" else "unclosed string literal") >= 0)
       }
     }
   }
