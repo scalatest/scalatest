@@ -148,7 +148,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       "com.google.inject" % "guice" % "4.0" % "optional",
       "org.apache.ant" % "ant" % "1.10.12" % "optional",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
-      flexmarkAll
+      commonmark
     )
 
   def crossBuildTestLibraryDependencies = Def.setting {
@@ -157,7 +157,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     )
   }
 
-  val flexmarkAll = "com.vladsch.flexmark" % "flexmark-all" % flexmarkVersion % "optional"
+  val commonmark = "org.commonmark" % "commonmark" % commonmarkVersion % "optional"
 
   def scalatestTestLibraryDependencies(theScalaVersion: String) =
     Seq(
@@ -1202,7 +1202,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def gentestsLibraryDependencies =
     Seq(
-      flexmarkAll,
       "org.scalatestplus" %% "testng-6-7" % plusTestNGVersion % "test",
       "org.scalatestplus" %% "junit-4-13" % plusJUnitVersion % "test"
     )
