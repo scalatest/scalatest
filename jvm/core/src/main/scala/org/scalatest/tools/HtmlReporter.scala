@@ -113,11 +113,11 @@ private[scalatest] class HtmlReporter(
   private val results = resultHolder.getOrElse(new SuiteResultHolder)
   
   try {
-    Class.forName("com.vladsch.flexmark.profile.pegdown.PegdownOptionsAdapter")
+    Class.forName("org.commonmark.renderer.html.HtmlRenderer")
   }
   catch {
     case _: ClassNotFoundException => 
-      throw new ClassNotFoundException(Resources.flexmarkClassNotFound)
+      throw new ClassNotFoundException(Resources.commonmarkClassNotFound)
   }
 
   private val parser = Parser.builder().build()
