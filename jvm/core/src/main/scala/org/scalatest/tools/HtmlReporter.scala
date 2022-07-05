@@ -117,7 +117,7 @@ private[scalatest] class HtmlReporter(
   }
   catch {
     case _: ClassNotFoundException => 
-      new ClassNotFoundException(Resources.flexmarkClassNotFound)
+      throw new ClassNotFoundException(Resources.flexmarkClassNotFound)
   }
 
   private val parser = Parser.builder().build()
