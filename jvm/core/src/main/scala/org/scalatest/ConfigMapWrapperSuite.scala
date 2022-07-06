@@ -85,7 +85,7 @@ final class ConfigMapWrapperSuite(clazz: Class[_ <: Suite]) extends Suite {
     constructor.newInstance(Map.empty)
   }
 
-  override def suiteId = clazz.getName
+  override def suiteId = wrappedSuite.suiteId
 
   override def suiteName = wrappedSuite.suiteName
 
