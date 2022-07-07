@@ -1560,7 +1560,10 @@ import org.scalatest.{Suite, Finders}
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
 //SCALATESTNATIVE-ONLY @scala.scalanative.reflect.annotation.EnableReflectiveInstantiation
+// SKIP-DOTTY-START
 class AnyFunSuite extends AnyFunSuiteLike {
+// SKIP-DOTTY-END
+//DOTTY-ONLY open class AnyFunSuite extends AnyFunSuiteLike {
 
   /**
     * Returns a user friendly string for this suite, composed of the
