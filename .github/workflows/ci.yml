@@ -13,5 +13,6 @@ jobs:
       with:
         distribution: temurin
         java-version: 8
+        cache: 'sbt'
     - name: Build and Test
-      run: sbt -v +test 
+      run: sbt +test 
