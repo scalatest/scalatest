@@ -64,7 +64,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         caught.failedCodeLineNumber.value should equal(thisLineNumber - 6)
       }
 
-      it("should pass normally when the timeout is not reached") {
+      it("should pass normally when the timeout is not reached", Retryable) {
         failAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
         }
@@ -277,7 +277,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future") {
+      it("should pass normally when the timeout is not reached in main block that create the future", Retryable) {
         failAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
           Future.successful(Success("test"))
@@ -286,7 +286,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself") {
+      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself", Retryable) {
         failAfter(Span(200, Millis)) {
           Future {
             SleepHelper.sleep(100)
@@ -531,7 +531,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future") {
+      it("should pass normally when the timeout is not reached in main block that create the future", Retryable) {
         val futureOutcome = failAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
           FutureOutcome(Future.successful(Succeeded))
