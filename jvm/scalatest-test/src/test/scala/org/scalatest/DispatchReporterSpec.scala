@@ -136,7 +136,7 @@ class DispatchReporterSpec extends AnyFunSpec {
           )
         )
       }
-      it("should stop sending out AlertProvided events after a detected slowpoke fails") {
+      it("should stop sending out AlertProvided events after a detected slowpoke fails", Flicker) {
         doTestStartingAndFinishedEvents(
           TestFailed(
             ordinal = TestFinishedOrdinal,

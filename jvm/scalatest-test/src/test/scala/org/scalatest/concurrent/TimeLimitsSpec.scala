@@ -1039,7 +1039,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future") {
+      it("should pass normally when the timeout is not reached in main block that create the future", Flicker) {
         val futureOutcome = cancelAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
           FutureOutcome(Future.successful(Succeeded))
@@ -1049,7 +1049,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself") {
+      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself", Flicker) {
         val futureOutcome = cancelAfter(Span(2000, Millis)) {
           FutureOutcome(Future {
             SleepHelper.sleep(1000)
@@ -1168,7 +1168,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         caught.cause.value shouldBe a [TestPendingException]
       }
 
-      it("should pass normally when the timeout is not reached") {
+      it("should pass normally when the timeout is not reached", Flicker) {
         cancelAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
           Succeeded
