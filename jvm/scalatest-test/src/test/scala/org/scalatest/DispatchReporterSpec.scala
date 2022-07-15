@@ -123,7 +123,7 @@ class DispatchReporterSpec extends AnyFunSpec {
         }
         dispatch.doDispose()
       }
-      it("should stop sending out AlertProvided events after a detected slowpoke succeeds") {
+      it("should stop sending out AlertProvided events after a detected slowpoke succeeds", Flicker) {
         doTestStartingAndFinishedEvents(
           TestSucceeded(
             ordinal = TestFinishedOrdinal,
