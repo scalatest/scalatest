@@ -32,6 +32,7 @@ import org.scalatest.time._
 import org.scalatest._
 import org.scalatest.exceptions.{TestPendingException, TestFailedException, TestCanceledException}
 import org.scalatest.tagobjects.Retryable
+import org.scalatest.tagobjects.Flicker
 import scala.concurrent.Future
 
 import scala.util.{Try, Success, Failure}
@@ -531,7 +532,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future", Retryable) {
+      it("should pass normally when the timeout is not reached in main block that create the future", Retryable, Flicker) {
         val futureOutcome = failAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
           FutureOutcome(Future.successful(Succeeded))
