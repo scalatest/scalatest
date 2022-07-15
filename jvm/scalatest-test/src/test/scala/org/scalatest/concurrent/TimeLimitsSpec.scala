@@ -542,7 +542,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself") {
+      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself", Flicker) {
         val futureOutcome = failAfter(Span(200, Millis)) {
           FutureOutcome(Future {
             SleepHelper.sleep(100)
