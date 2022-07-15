@@ -287,7 +287,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself", Retryable) {
+      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself", Retryable, Flicker) {
         failAfter(Span(200, Millis)) {
           Future {
             SleepHelper.sleep(100)
