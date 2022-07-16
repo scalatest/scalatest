@@ -18,5 +18,13 @@ jobs:
         distribution: temurin
         java-version: 8
         cache: 'sbt'
-    - name: Build and Test
-      run: sbt test 
+    - name: Build and Test Scalactic and ScalaTest using Scala 2.13
+      run: sbt test
+    - name: Build and Test ScalaTest using Scala 3
+      run: sbt scalatestTestDotty/test
+    - name: Build and Test Scalactic using Scala 3
+      run: sbt scalacticTestDotty/test
+    - name: Build and Test ScalaTest-JS using Scala 3
+      run: sbt scalatestTestJS/test
+    - name: Build and Test Scalactic-JS using Scala 3
+      run: sbt scalacticTestJS/test         
