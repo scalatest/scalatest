@@ -65,7 +65,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         caught.failedCodeLineNumber.value should equal(thisLineNumber - 6)
       }
 
-      it("should pass normally when the timeout is not reached", Retryable) {
+      it("should pass normally when the timeout is not reached", Retryable, Flicker) {
         failAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
         }
