@@ -60,7 +60,7 @@ class EventuallySpec extends AsyncFunSpec with Matchers with OptionValues /*with
       result should equal (99)
     }
 
-    it("should invoke the function five times if the by-name throws an exception four times before finally returning normally the fifth time") {
+    it("should invoke the function five times if the by-name throws an exception four times before finally returning normally the fifth time", Flicker) {
 
       var count = 0
       eventually {
