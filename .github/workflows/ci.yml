@@ -7,7 +7,7 @@ on:
     branches: [ "main", "3.2.x-new" ]
 
 jobs:
-  test-scala-2.13:
+  test-scala-2-13:
     runs-on: macos-latest
     steps:
     - name: Checkout
@@ -20,7 +20,7 @@ jobs:
         cache: 'sbt'
     - name: Build and Test Scalactic and ScalaTest using Scala 2.13
       run: sbt test
-  test-scala-2.10:
+  test-scala-2-10:
     runs-on: macos-latest
     steps:
     - name: Checkout
