@@ -7,7 +7,7 @@ on:
     branches: [ "main", "3.2.x-new" ]
 
 jobs:
-  test:
+  test-scala-2:
     runs-on: macos-latest
     steps:
     - name: Checkout
@@ -19,12 +19,34 @@ jobs:
         java-version: 8
         cache: 'sbt'
     - name: Build and Test Scalactic and ScalaTest using Scala 2.13
-      run: sbt test
+      run: sbt test    
+  test-scala-3:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+        cache: 'sbt'
     - name: Build and Test ScalaTest using Scala 3
       run: sbt scalatestTestDotty/test
     - name: Build and Test Scalactic using Scala 3
       run: sbt scalacticTestDotty/test
-    - name: Build and Test ScalaTest-JS using Scala 2.13
+  test-scala-js:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+        cache: 'sbt'
+    - name: Build and Test ScalaTest using Scala-js
       run: sbt scalatestTestJS/test
-    - name: Build and Test Scalactic-JS using Scala 2.13
-      run: sbt scalacticTestJS/test         
+    - name: Build and Test Scalactic using Scala-js
+      run: sbt scalacticTestJS/test            
