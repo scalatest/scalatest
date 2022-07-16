@@ -24,7 +24,7 @@ jobs:
       run: sbt scalatestTestDotty/test
     - name: Build and Test Scalactic using Scala 3
       run: sbt scalacticTestDotty/test
-    - name: Build and Test ScalaTest-JS using Scala 3
+    - name: Build and Test ScalaTest-JS using Scala 2.13
       run: sbt scalatestTestJS/test
-    - name: Build and Test Scalactic-JS using Scala 3
+    - name: Build and Test Scalactic-JS using Scala 2.13
       run: sbt scalacticTestJS/test         
