@@ -62,4 +62,17 @@ jobs:
     - name: Build and Test ScalaTest using Scala-js
       run: sbt scalatestTestJS/test
     - name: Build and Test Scalactic using Scala-js
-      run: sbt scalacticTestJS/test            
+      run: sbt scalacticTestJS/test
+  gentests:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+        cache: 'sbt'
+    - name: Build and Run Generated Tests
+      run: sbt gentests/test
