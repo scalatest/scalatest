@@ -63,6 +63,21 @@ jobs:
       run: sbt scalatestTestJS/test
     - name: Build and Test Scalactic using Scala-js
       run: sbt scalacticTestJS/test
+  test-scala-native:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+        cache: 'sbt'
+    - name: Build and Test ScalaTest using Scala-native
+      run: sbt scalatestTestDottyNative/test
+    - name: Build and Test Scalactic using Scala-native
+      run: sbt scalacticTestDottyNative/test    
   gentests:
     runs-on: macos-latest
     steps:
