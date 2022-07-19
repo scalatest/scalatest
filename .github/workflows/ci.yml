@@ -9,6 +9,8 @@ on:
 jobs:
   test-scala-2-13:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -22,6 +24,8 @@ jobs:
       run: sbt test
   test-scala-2-10:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -35,6 +39,8 @@ jobs:
       run: sbt ++2.10.7 test        
   test-scala-3:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -50,6 +56,8 @@ jobs:
       run: sbt scalacticTestDotty/test
   test-scala-js:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -65,6 +73,8 @@ jobs:
       run: sbt scalacticTestJS/test
   test-scala-native:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -80,6 +90,8 @@ jobs:
       run: sbt scalacticTestDottyNative/test    
   gentests:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
     steps:
     - name: Checkout
       uses: actions/checkout@v2
