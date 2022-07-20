@@ -85,7 +85,9 @@ final class ConfigMapWrapperSuite(clazz: Class[_ <: Suite]) extends Suite {
     constructor.newInstance(Map.empty)
   }
 
-  override def suiteId = clazz.getName
+  override def suiteId = wrappedSuite.suiteId
+
+  override def suiteName = wrappedSuite.suiteName
 
   /**
    * Returns the result obtained from invoking <code>expectedTestCount</code> on an instance of the wrapped
