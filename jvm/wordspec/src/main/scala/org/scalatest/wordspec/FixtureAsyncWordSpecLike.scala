@@ -187,6 +187,18 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       case "can" => FailureMessages.exceptionWasThrownInCanClause(Prettifier.default, className, description, errorMessage)
     }
 
+  private def rethrowIfCauseIsNAEOrDTNE(e: StackDepthException, pos: source.Position): Unit = 
+    e.cause match {  
+      case Some(c) if c.isInstanceOf[NotAllowedException] || c.isInstanceOf[DuplicateTestNameException] =>
+        throw c 
+      case _ => 
+        throw new NotAllowedException(
+          FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, 
+          Some(e), 
+          e.position.getOrElse(pos)
+        )
+    }  
+
   private def registerBranch(description: String, childPrefix: Option[String], verb: String, pos: source.Position, fun: () => Unit): Unit = {
     def registrationClosedMessageFun: String =
       verb match {
@@ -202,8 +214,8 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
       registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, None, pos)
     }
     catch {
-      case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e.position.getOrElse(pos))
-      case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e.position.getOrElse(pos))
+      case e: TestFailedException => rethrowIfCauseIsNAEOrDTNE(e, pos)
+      case e: TestCanceledException => rethrowIfCauseIsNAEOrDTNE(e, pos)
       case nae: NotAllowedException => throw nae
       case trce: TestRegistrationClosedException => throw trce
       case e: DuplicateTestNameException => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.position.getOrElse(pos))
@@ -236,8 +248,8 @@ trait FixtureAsyncWordSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
                 registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, None, pos)
               }
               catch {
-                case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e.position.getOrElse(pos))
-                case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e.position.getOrElse(pos))
+                case e: TestFailedException => rethrowIfCauseIsNAEOrDTNE(e, pos)
+                case e: TestCanceledException => rethrowIfCauseIsNAEOrDTNE(e, pos)
                 case nae: NotAllowedException => throw nae
                 case trce: TestRegistrationClosedException => throw trce
                 case e: DuplicateTestNameException => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(e.getClass.getName), descriptionText, e.getMessage), Some(e), e.position.getOrElse(pos))

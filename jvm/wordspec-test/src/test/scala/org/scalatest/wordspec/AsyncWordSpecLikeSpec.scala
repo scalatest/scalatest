@@ -1142,6 +1142,33 @@ class AsyncWordSpecLikeSpec extends AnyFunSpec {
       assert(reporter.testSucceededEventsReceived.length == 3)
     }
 
+    it("should throw DuplicateTestNameException when duplicate test name is detected inside in a forAll") {
+      class TestSpec extends AsyncWordSpecLike {
+
+        // SKIP-SCALATESTJS,NATIVE-START
+        override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS,NATIVE-END
+        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+
+        import org.scalatest.prop.TableDrivenPropertyChecks._
+        "trying something" should {
+          val scenarios = Table("value", "first", "first")
+          
+          forAll(scenarios) { value =>
+            s"work as expected for $value " in {
+              succeed
+            }
+          } 
+        }
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("AsyncWordSpecLikeSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 10)
+      assert(e.message == Some(FailureMessages.duplicateTestName(prettifier, UnquotedString("trying something should work as expected for first"))))
+    }
+
   }
 
 }
