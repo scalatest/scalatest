@@ -32,6 +32,7 @@ import org.scalatest.time._
 import org.scalatest._
 import org.scalatest.exceptions.{TestPendingException, TestFailedException, TestCanceledException}
 import org.scalatest.tagobjects.Retryable
+import org.scalatest.tagobjects.Flicker
 import scala.concurrent.Future
 
 import scala.util.{Try, Success, Failure}
@@ -64,7 +65,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         caught.failedCodeLineNumber.value should equal(thisLineNumber - 6)
       }
 
-      it("should pass normally when the timeout is not reached") {
+      it("should pass normally when the timeout is not reached", Retryable, Flicker) {
         failAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
         }
@@ -277,7 +278,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future") {
+      it("should pass normally when the timeout is not reached in main block that create the future", Retryable, Flicker) {
         failAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
           Future.successful(Success("test"))
@@ -286,7 +287,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself") {
+      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself", Retryable, Flicker) {
         failAfter(Span(200, Millis)) {
           Future {
             SleepHelper.sleep(100)
@@ -531,7 +532,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future") {
+      it("should pass normally when the timeout is not reached in main block that create the future", Retryable, Flicker) {
         val futureOutcome = failAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
           FutureOutcome(Future.successful(Succeeded))
@@ -541,7 +542,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself") {
+      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself", Flicker) {
         val futureOutcome = failAfter(Span(200, Millis)) {
           FutureOutcome(Future {
             SleepHelper.sleep(100)
@@ -815,7 +816,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future") {
+      it("should pass normally when the timeout is not reached in main block that create the future", Flicker) {
         cancelAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
           Future.successful(Success("test"))
@@ -824,7 +825,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself") {
+      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself", Flicker) {
         cancelAfter(Span(200, Millis)) {
           Future {
             SleepHelper.sleep(100)
@@ -1038,7 +1039,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future") {
+      it("should pass normally when the timeout is not reached in main block that create the future", Flicker) {
         val futureOutcome = cancelAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
           FutureOutcome(Future.successful(Succeeded))
@@ -1048,7 +1049,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
-      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself") {
+      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself", Flicker) {
         val futureOutcome = cancelAfter(Span(2000, Millis)) {
           FutureOutcome(Future {
             SleepHelper.sleep(1000)
@@ -1167,7 +1168,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         caught.cause.value shouldBe a [TestPendingException]
       }
 
-      it("should pass normally when the timeout is not reached") {
+      it("should pass normally when the timeout is not reached", Flicker) {
         cancelAfter(Span(200, Millis)) {
           SleepHelper.sleep(100)
           Succeeded

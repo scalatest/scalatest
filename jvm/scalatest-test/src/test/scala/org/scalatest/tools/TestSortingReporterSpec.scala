@@ -161,7 +161,7 @@ class TestSortingReporterSpec extends AnyFunSpec with Matchers {
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
-    it("should wait and fire blocking event when timeout, and just fire the missing event directly without waiting when received later.") {
+    it("should wait and fire blocking event when timeout, and just fire the missing event directly without waiting when received later.", Flicker) {
     
       val recordingReporter = new EventRecordingReporter()
       val dispatch = new TestSortingReporter("aSuite", recordingReporter, Span(3, Seconds), 7, None, new PrintStream(new ByteArrayOutputStream))

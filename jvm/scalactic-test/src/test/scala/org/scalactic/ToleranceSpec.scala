@@ -1667,11 +1667,10 @@ class ToleranceSpec extends funspec.AnyFunSpec with TripleEquals with Tolerance 
       val caught2 = intercept[IllegalArgumentException] {
         assert(sevenDotOh === (7.1 +- -0.2f))
       }
-      // SKIP-SCALATESTJS,NATIVE-START
+      // SKIP-SCALATESTJS-START
       assert(caught2.getMessage === "-0.20000000298023224 passed to +- was zero or negative. Must be a positive non-zero number.")
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY assert(caught2.getMessage === (-0.2f).toString + " passed to +- was zero or negative. Must be a positive non-zero number.")
-
+      // SKIP-SCALATESTJS-END
+      
       // Double +- Long
       val caught3 = intercept[IllegalArgumentException] {
         assert(sevenDotOh === (7.1 +- -2L))

@@ -1,0 +1,105 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main", "3.2.x-new" ]
+  pull_request:
+    branches: [ "main", "3.2.x-new" ]
+
+jobs:
+  test-scala-2-13:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+        cache: 'sbt'
+    - name: Build and Test Scalactic and ScalaTest using Scala 2.13
+      run: sbt test
+  test-scala-2-10:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+        cache: 'sbt'
+    - name: Build and Test Scalactic and ScalaTest using Scala 2.10
+      run: sbt ++2.10.7 test        
+  test-scala-3:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+        cache: 'sbt'
+    - name: Build and Test ScalaTest using Scala 3
+      run: sbt scalatestTestDotty/test
+    - name: Build and Test Scalactic using Scala 3
+      run: sbt scalacticTestDotty/test
+  test-scala-js:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+        cache: 'sbt'
+    - name: Build and Test ScalaTest using Scala-js
+      run: sbt scalatestTestJS/test
+    - name: Build and Test Scalactic using Scala-js
+      run: sbt scalacticTestJS/test
+  test-scala-native:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+        cache: 'sbt'
+    - name: Build and Test ScalaTest using Scala-native
+      run: sbt scalatestTestDottyNative/test
+    - name: Build and Test Scalactic using Scala-native
+      run: sbt scalacticTestDottyNative/test    
+  gentests:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+        cache: 'sbt'
+    - name: Build and Run Generated Tests
+      run: sbt gentests/test

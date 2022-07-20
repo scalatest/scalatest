@@ -123,7 +123,7 @@ class DispatchReporterSpec extends AnyFunSpec {
         }
         dispatch.doDispose()
       }
-      it("should stop sending out AlertProvided events after a detected slowpoke succeeds") {
+      it("should stop sending out AlertProvided events after a detected slowpoke succeeds", Flicker) {
         doTestStartingAndFinishedEvents(
           TestSucceeded(
             ordinal = TestFinishedOrdinal,
@@ -136,7 +136,7 @@ class DispatchReporterSpec extends AnyFunSpec {
           )
         )
       }
-      it("should stop sending out AlertProvided events after a detected slowpoke fails") {
+      it("should stop sending out AlertProvided events after a detected slowpoke fails", Flicker) {
         doTestStartingAndFinishedEvents(
           TestFailed(
             ordinal = TestFinishedOrdinal,
@@ -151,7 +151,7 @@ class DispatchReporterSpec extends AnyFunSpec {
           )
         )
       }
-      it("should stop sending out AlertProvided events after a detected slowpoke is canceled") {
+      it("should stop sending out AlertProvided events after a detected slowpoke is canceled", Flicker) {
         doTestStartingAndFinishedEvents(
           TestCanceled(
             ordinal = TestFinishedOrdinal,
