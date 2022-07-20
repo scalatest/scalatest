@@ -1876,8 +1876,10 @@ import org.scalatest.{ Suite, Finders }
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
+// SKIP-DOTTY-START
 class AnyWordSpec extends AnyWordSpecLike {
-
+// SKIP-DOTTY-END
+//DOTTY-ONLY open class AnyWordSpec extends AnyWordSpecLike {
   /**
    * Returns a user friendly string for this suite, composed of the
    * simple name of the class (possibly simplified further by removing dollar signs if added by the Scala interpeter) and, if this suite

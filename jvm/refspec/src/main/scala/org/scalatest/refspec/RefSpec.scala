@@ -1328,7 +1328,10 @@ import RefSpec.isTestMethod
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
+// SKIP-DOTTY-START
 class RefSpec extends RefSpecLike {
+// SKIP-DOTTY-END
+//DOTTY-ONLY open class RefSpec extends RefSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
