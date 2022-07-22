@@ -608,17 +608,8 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
       mimaBinaryIssueFilters ++= {
         Seq(
-          exclude[DirectMissingMethodProblem]("org.scalatest.DeferredAbortedSuite.copy"), // New function in not in current version
-          exclude[IncompatibleResultTypeProblem]("org.scalatest.DeferredAbortedSuite.copy$default$2"), // New function not in current version
-          exclude[DirectMissingMethodProblem]("org.scalatest.DeferredAbortedSuite.this"), // New function not in current version
-          exclude[MissingTypesProblem]("org.scalatest.DeferredAbortedSuite$"), // New type not in current version
-          exclude[DirectMissingMethodProblem]("org.scalatest.DeferredAbortedSuite.apply"), // New function not in current version
-          exclude[DirectMissingMethodProblem]("org.scalatest.tools.TestSortingReporter#Slot.uuid"), // New function not in current version
-          exclude[IncompatibleMethTypeProblem]("org.scalatest.tools.TestSortingReporter#Slot.copy"), // Private class function
-          exclude[IncompatibleResultTypeProblem]("org.scalatest.tools.TestSortingReporter#Slot.copy$default$1"), // Private class function
-          exclude[IncompatibleMethTypeProblem]("org.scalatest.tools.TestSortingReporter#Slot.this"), // Private class function
-          exclude[IncompatibleMethTypeProblem]("org.scalatest.tools.TestSortingReporter#Slot.apply"), // Private class function
-          exclude[DirectMissingMethodProblem]("org.scalatest.tools.TestSortingReporter.Slot") // Private class function
+          exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.cannotLoadDiscoveredSuite"), // Private class function
+          exclude[DirectMissingMethodProblem]("org.scalatest.Resources.cannotLoadDiscoveredSuite") // Private class function
         )
       }
     ).settings(osgiSettings: _*).settings(
