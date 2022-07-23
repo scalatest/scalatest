@@ -115,7 +115,7 @@ class WaitersSpec extends funspec.FixtureAnyFunSpec with Matchers with Conductor
       con.conduct()
     }
     
-    it("should pass through even exceptions that would not normally cause a test to fail") { con => import con._
+    it("should pass through even exceptions that would not normally cause a test to fail", Flicker) { con => import con._
       @volatile var w: Waiter = null
       thread {
         w = new Waiter

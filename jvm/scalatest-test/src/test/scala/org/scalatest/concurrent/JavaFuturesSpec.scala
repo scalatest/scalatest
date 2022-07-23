@@ -57,7 +57,7 @@ class JavaFuturesSpec extends AnyFunSpec with Matchers with OptionValues with Ja
 
     describe("when using the isReadyWithin method") {
 
-      it("can be queried to make sure it is ready within a certain time span") {
+      it("can be queried to make sure it is ready within a certain time span", Flicker) {
         val execSvc: ExecutorService = Executors.newFixedThreadPool(1)
         try {
           val futureIsNow = execSvc.submit(new Sleeper(Span(0, Millis)))

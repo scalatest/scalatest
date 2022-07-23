@@ -872,8 +872,10 @@ import org.scalatest.{Finders, Suite}
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
+// SKIP-DOTTY-START
 class AnyPropSpec extends AnyPropSpecLike {
-
+// SKIP-DOTTY-END
+//DOTTY-ONLY open class AnyPropSpec extends AnyPropSpecLike {
   /**
    * Returns a user friendly string for this suite, composed of the
    * simple name of the class (possibly simplified further by removing dollar signs if added by the Scala interpeter) and, if this suite
