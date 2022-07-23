@@ -22,7 +22,7 @@ jobs:
         cache: 'sbt'
     - name: Build and Test Scalactic and ScalaTest using Scala 2.13
       run: sbt test
-  test-scala-2-10:
+  test-scala-2-11:
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -36,7 +36,7 @@ jobs:
         java-version: 8
         cache: 'sbt'
     - name: Build and Test Scalactic and ScalaTest using Scala 2.10
-      run: sbt ++2.10.7 test        
+      run: sbt ++2.11.12 test        
   test-scala-3:
     runs-on: macos-latest
     strategy:
