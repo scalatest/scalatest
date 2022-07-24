@@ -77,7 +77,7 @@ println("GOT TO THIS RECOVER CALL")
 
   def executionFuture(eventHandler: EventHandler, loggers: Array[Logger]): Future[Unit] = {
     val suiteStartTime = Platform.currentTime
-    val suite = TestUtils.newInstance(task.fullyQualifiedName, cl)(Seq.empty).asInstanceOf[Suite]
+    val suite = TestUtils.newInstance(task.fullyQualifiedName(), cl)(Seq.empty).asInstanceOf[Suite]
     val sbtLogInfoReporter = new SbtLogInfoReporter(
       loggers,
       presentAllDurations,
@@ -108,22 +108,22 @@ println("GOT TO THIS RECOVER CALL")
             case suiteSelector: SuiteSelector =>
               suiteTags = mergeMap[String, Set[String]](List(suiteTags, Map(suite.suiteId -> Set(SELECTED_TAG)))) { _ ++ _ }
             case testSelector: TestSelector =>
-              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(suite.suiteId -> Map(testSelector.testName -> Set(SELECTED_TAG))))) { (testMap1, testMap2) =>
+              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(suite.suiteId -> Map(testSelector.testName() -> Set(SELECTED_TAG))))) { (testMap1, testMap2) =>
                 mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
               }
               hasTest = true
             case testWildcardSelector: TestWildcardSelector =>
-              val filteredTestNames = suite.testNames.filter(_.contains(testWildcardSelector.testWildcard))
+              val filteredTestNames = suite.testNames.filter(_.contains(testWildcardSelector.testWildcard()))
               val selectorTestTags = Map.empty ++ filteredTestNames.map(_ -> Set(SELECTED_TAG))
               testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(suite.suiteId -> selectorTestTags))) { (testMap1, testMap2) =>
                 mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
               }
               hasTest = true
             case nestedSuiteSelector: NestedSuiteSelector =>
-              suiteTags = mergeMap[String, Set[String]](List(suiteTags, Map(nestedSuiteSelector.suiteId -> Set(SELECTED_TAG)))) { _ ++ _ }
+              suiteTags = mergeMap[String, Set[String]](List(suiteTags, Map(nestedSuiteSelector.suiteId() -> Set(SELECTED_TAG)))) { _ ++ _ }
               hasNested = true
             case nestedTestSelector: NestedTestSelector =>
-              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(nestedTestSelector.suiteId -> Map(nestedTestSelector.testName -> Set(SELECTED_TAG))))) { (testMap1, testMap2) =>
+              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(nestedTestSelector.suiteId() -> Map(nestedTestSelector.testName() -> Set(SELECTED_TAG))))) { (testMap1, testMap2) =>
                 mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
               }
               hasNested = true
@@ -138,11 +138,12 @@ println("GOT TO THIS RECOVER CALL")
 
     val formatter = Suite.formatterForSuiteStarting(suite)
     val suiteClass = suite.getClass
+    val suiteClassName = Suite.getSuiteClassName(suite)
 
-    val reporter = new SbtReporter(suite.suiteId, task.fullyQualifiedName, task.fingerprint, eventHandler, sbtLogInfoReporter)
+    val reporter = new SbtReporter(suite.suiteId, task.fullyQualifiedName(), task.fingerprint(), eventHandler, sbtLogInfoReporter)
 
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-      reporter(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
+      reporter(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
     val args = Args(reporter, Stopper.default, filter, ConfigMap.empty, None, tracker, Set.empty)
 
@@ -155,23 +156,23 @@ println("GOT TO THIS RECOVER CALL")
           val duration = Platform.currentTime
           status.unreportedException match {
             case Some(ue) =>
-              reporter(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
+              reporter(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClassName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
               promise.complete(scala.util.Failure(ue))
 
             case None =>
-              reporter(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+              reporter(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), Some(duration), formatter, Some(TopOfClass(suiteClassName))))
               promise.complete(Success(()))
           }
         }
         promise.future
       } catch {
           case e: Throwable =>
-            val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClass.getName
+            val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClassName
             val formatter = Suite.formatterForSuiteAborted(suite, rawString)
   
             val duration = Platform.currentTime - suiteStartTime
             // Do fire SuiteAborted even if a DistributedTestRunnerSuite, consistent with SuiteRunner behavior
-            reporter(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
+            reporter(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClassName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
         Future.failed(e)
       }
 
@@ -206,9 +207,9 @@ println("GOT TO THIS RECOVER CALL")
     presentJson
   ) {
 
-    protected def printPossiblyInColor(fragment: Fragment) {
+    protected def printPossiblyInColor(fragment: Fragment): Unit = {
       loggers.foreach { logger =>
-        logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
+        logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported() && presentInColor))
       }
     }
 
@@ -218,7 +219,7 @@ println("GOT TO THIS RECOVER CALL")
       }
     }
 
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       /*event match {
         case ee: ExceptionalEvent if presentReminder =>
           if (!presentReminderWithoutCanceledTests || event.isInstanceOf[TestFailed]) {

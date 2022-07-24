@@ -1487,9 +1487,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     * @return a copy of this <code>NonEmptyString</code> with the character at position <code>idx</code> replaced by <code>c</code>.
     */
   final def updated(idx: Int, c: Char): NonEmptyString =
-    try new NonEmptyString(theString.updated(idx, c))
-    catch { case _: UnsupportedOperationException => throw new IndexOutOfBoundsException(idx.toString) } // This is needed for 2.10 support. Can drop after.
-  // Because 2.11 throws IndexOutOfBoundsException.
+    new NonEmptyString(theString.updated(idx, c))
 
   /**
     * Returns a <code>NonEmptyString</code> formed from this <code>NonEmptyString</code> and an iterable collection by combining corresponding

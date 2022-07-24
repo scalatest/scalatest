@@ -65,8 +65,8 @@ class ArgsParserSpec extends AnyFunSpec {
       concurrentList,
       // SKIP-SCALATESTJS,NATIVE-END
       memberOfList,
-      // SKIP-SCALATESTJS,NATIVE-START
       beginsWithList,
+      // SKIP-SCALATESTJS,NATIVE-START
       testNGList,
       suffixes,
       chosenStyleList,
@@ -545,8 +545,8 @@ class ArgsParserSpec extends AnyFunSpec {
       concurrentList,
       // SKIP-SCALATESTJS,NATIVE-END
       memberOfList,
-      // SKIP-SCALATESTJS,NATIVE-START
       beginsWithList,
+      // SKIP-SCALATESTJS,NATIVE-START
       testNGList,
       suffixes,
       chosenStyleList,

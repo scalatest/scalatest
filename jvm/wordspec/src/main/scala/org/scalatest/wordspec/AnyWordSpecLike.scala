@@ -40,8 +40,8 @@ import verbs.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
-//SCALATESTNATIVE-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
-trait AnyWordSpecLike extends TestSuite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+//SCALATESTNATIVE-ONLY @scala.scalanative.reflect.annotation.EnableReflectiveInstantiation
+trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentWordSpecMod, "WordSpecLike")
   import engine._

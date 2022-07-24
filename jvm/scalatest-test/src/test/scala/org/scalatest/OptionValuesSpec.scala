@@ -48,6 +48,10 @@ class OptionValuesSpec extends AnyFunSpec {
       val opt: Option[Map[String, Int]] = Some(Map("I" -> 1, "II" -> 2))
       opt.value("II") shouldBe 2
     }
+
+    it("should be able to used with EitherValues") {
+      class TestSpec extends AnyFunSpec with OptionValues with EitherValues
+    }
   }
 }
 

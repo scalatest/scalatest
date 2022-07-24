@@ -15,28 +15,51 @@
  */
 package org.scalatest.tools
 
-import org.scalatest.events.Event
+import org.scalatest.events._
 import org.scalatest.ResourcefulReporter
+import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import java.net.Socket
 import java.io.ObjectOutputStream
 import java.io.BufferedOutputStream
+import java.util.concurrent.atomic.AtomicReference
 
 private[scalatest] class SocketReporter(host: String, port: Int) extends ResourcefulReporter {
 
-  private val socket = new Socket(host, port)
-  private val out = new ObjectOutputStream(socket.getOutputStream)
+  private val socket = new AtomicReference(new Socket(host, port))
+  private val out = new AtomicReference(new ObjectOutputStream(socket.get.getOutputStream))
+
+  def refresh(): Unit = {
+    try {
+      out.get.close()
+      socket.get.close()
+    }
+    catch {
+      case t: Throwable if anExceptionThatShouldCauseAnAbort(t) =>
+    }
+    socket.set(new Socket(host, port))
+    out.set(new ObjectOutputStream(socket.get.getOutputStream))
+  }
   
   def apply(event: Event): Unit = {
     synchronized {
-      out.writeObject(event)
-      out.flush()
+      try {
+        out.get.writeObject(event)
+        out.get.flush()
+      }
+      catch {
+        case e: java.io.NotSerializableException =>
+          refresh()
+          out.get.writeObject(event.ensureSerializable())
+
+        case e: Throwable if anExceptionThatShouldCauseAnAbort(e) => refresh()
+      }
     }
   }
 
   def dispose(): Unit = {
-    out.flush()
-    out.close()
-    socket.close()
+    out.get.flush()
+    out.get.close()
+    socket.get.close()
   }
   
 }

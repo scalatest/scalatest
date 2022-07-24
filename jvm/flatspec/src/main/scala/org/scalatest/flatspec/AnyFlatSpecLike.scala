@@ -47,8 +47,8 @@ import verbs.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
-//SCALATESTNATIVE-ONLY @scala.scalajs.reflect.annotation.EnableReflectiveInstantiation
-trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+//SCALATESTNATIVE-ONLY @scala.scalanative.reflect.annotation.EnableReflectiveInstantiation
+trait AnyFlatSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentSpecMod, "Spec")
   import engine._

@@ -22,6 +22,7 @@ import scala.collection.immutable.SortedMap
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.Inspectors.{forAll => inspectAll}
+import org.scalatest.tagobjects.Flicker
 
 class GeneratorSpec extends AnyFunSpec with Matchers {
 
@@ -3134,7 +3135,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         orCanon.toList should contain theSameElementsAs((gCanon.map(Good(_)) ++ bCanon.map(Bad(_))).toList)
       }
 
-      it("should produce an appropriate mix of Good and Bad") {
+      it("should produce an appropriate mix of Good and Bad", Flicker) {
         import Generator._
         import org.scalactic._
         val gen = orGenerator[Int, String]
@@ -3145,7 +3146,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         }
 
         // It's arbitrary, but we know that it produces Bad about a quarter of the time:
-        classification.percentages("Bad").value should be (25 +- 2)
+        classification.percentages("Bad").value should be (25 +- 3)
       }
 
       it("should use the base types to shrink") {

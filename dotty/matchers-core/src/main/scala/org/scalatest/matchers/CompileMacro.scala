@@ -43,6 +43,9 @@ object CompileMacro {
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
         checkCompile(code.toString)
 
+      case Apply(Select(_, "stripMargin"), List(Literal(StringConstant(code)))) =>
+        checkCompile(code.stripMargin.toString)  
+
       case other =>
         report.throwError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
     }
@@ -65,6 +68,9 @@ object CompileMacro {
       case Literal(StringConstant(code)) =>  
         // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
         checkNotCompile(code.toString)
+
+      case Apply(Select(_, "stripMargin"), List(Literal(StringConstant(code)))) =>
+        checkNotCompile(code.stripMargin.toString)  
 
       case other =>
         report.throwError("The '" + shouldOrMust + " compile' syntax only works with String literals.")
@@ -119,7 +125,7 @@ object CompileMacro {
         checkNotTypeCheck(code.toString)
 
       case Apply(Select(_, "stripMargin"), List(Literal(StringConstant(code)))) =>
-        checkNotTypeCheck(code.toString.stripMargin)
+        checkNotTypeCheck(code.stripMargin)
 
       case _ =>
         report.throwError("The '" + shouldOrMust + "Not typeCheck' syntax only works with String literals.")
