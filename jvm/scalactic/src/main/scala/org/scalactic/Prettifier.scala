@@ -177,6 +177,13 @@ private[scalactic] class DefaultPrettifier extends Prettifier {
         else
           theToString
       // SKIP-SCALATESTJS,NATIVE-END
+      case caseClazz: Product if caseClazz.productArity != 0 =>
+        // If the case class's toString starts with .productPrefix its likely the .toString hasn't been
+        // overridden so lets use our custom prettifying otherwise we just use .toString.
+        if (caseClazz.toString.startsWith(s"${caseClazz.productPrefix}("))
+          s"${caseClazz.productPrefix}(" + caseClazz.productIterator.map(prettify(_, processed + caseClazz)).mkString(", ") + ")"
+        else
+          caseClazz.toString
       case anythingElse => anythingElse.toString
     }
 
@@ -277,7 +284,10 @@ private[scalactic] class TruncatingPrettifier(sizeLimit: SizeLimit) extends Defa
         else
           theToString
       // SKIP-SCALATESTJS,NATIVE-END
-      case caseClazz: Product =>
+      case caseClazz: Product if caseClazz.productArity != 0 =>
+        // Unlike in DefaultPrettifier where we check if a custom `.toString` has been overridden, with
+        // TruncatingPrettifier the priority is truncating the enclosed data at all costs hence why we always
+        // truncate the inner fields.
         s"${caseClazz.productPrefix}(" + caseClazz.productIterator.map(prettify(_, processed + caseClazz)).mkString(", ") + ")"
       case anythingElse => anythingElse.toString
     }

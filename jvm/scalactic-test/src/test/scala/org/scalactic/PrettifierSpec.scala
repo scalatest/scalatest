@@ -345,6 +345,10 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
     it("should pretty print nested string Java Map") {
       Prettifier.default(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{\"akey\"={1=\"one\", 2=\"two\", 3=\"three\"}}")
     }
+    case class CaseClazzWithArray(data: Array[Int])
+    it("should pretty print data inside a case class") {
+      Prettifier.default(CaseClazzWithArray(Array(1,2,3))) should be ("CaseClazzWithArray(Array(1, 2, 3))")
+    }
     it("should pretty print xml <a></a>") {
       Prettifier.default(<a></a>) should be ("<a></a>")
     }
