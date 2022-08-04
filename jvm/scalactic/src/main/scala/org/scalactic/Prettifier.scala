@@ -101,7 +101,7 @@ import scala.util.Success
  * <li>`org.scalactic.Bad` to: `Bad("3")`</li>
  * <li>`org.scalactic.One` to: `One("3")`</li>
  * <li>`org.scalactic.Many` to: `Many("1", "2", "3")`</li>
- * <li>`scala.collection.GenTraversable` to: `List("1", "2", "3")`</li>
+ * <li>`scala.collection.Iterable` to: `List("1", "2", "3")`</li>
  * <li>`java.util.Collection` to: `["1", "2", "3"]`</li>
  * <li>`java.util.Map` to: `{1="one", 2="two", 3="three"}`</li>
  * </ul>
@@ -242,13 +242,13 @@ private[scalactic] class TruncatingPrettifier(sizeLimit: SizeLimit) extends Defa
         (taken.map { case (key, value) => // toIterator is needed for consistent ordering
           prettify(key, processed + aGenMap) + " -> " + prettify(value, processed + aGenMap)
         }).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
-      case aGenTraversable: GenTraversable[_] =>
-        val (taken, truncated) = if (aGenTraversable.size > sizeLimit.value) (aGenTraversable.take(sizeLimit.value), true) else (aGenTraversable, false)
-        val className = aGenTraversable.getClass.getName
+      case aIterable: Iterable[_] =>
+        val (taken, truncated) = if (aIterable.size > sizeLimit.value) (aIterable.take(sizeLimit.value), true) else (aIterable, false)
+        val className = aIterable.getClass.getName
         if (className.startsWith("scala.xml.NodeSeq$") || className == "scala.xml.NodeBuffer" || className == "scala.xml.Elem")
-          aGenTraversable.mkString
+          aIterable.mkString
         else
-          ColCompatHelper.className(aGenTraversable) + "(" + taken.toIterator.map(prettify(_, processed + aGenTraversable)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")" // toIterator is needed for consistent ordering                
+          ColCompatHelper.className(aIterable) + "(" + taken.toIterator.map(prettify(_, processed + aIterable)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")" // toIterator is needed for consistent ordering                
       // SKIP-SCALATESTJS-START
       case javaCol: java.util.Collection[_] =>
         // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
@@ -322,7 +322,7 @@ object Prettifier {
    * <li>`org.scalactic.Bad` to: `Bad("3")`</li>
    * <li>`org.scalactic.One` to: `One("3")`</li>
    * <li>`org.scalactic.Many` to: `Many("1", "2", "3")`</li>
-   * <li>`scala.collection.GenTraversable` to: `List("1", "2", "3")`</li>
+   * <li>`scala.collection.Iterable` to: `List("1", "2", "3")`</li>
    * <li>`java.util.Collection` to: `["1", "2", "3"]`</li>
    * <li>`java.util.Map` to: `{1="one", 2="two", 3="three"}`</li>
    * </ul>
