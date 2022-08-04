@@ -402,6 +402,14 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
       val prettifier = Prettifier.truncateAt(SizeLimit(2))
       prettifier(col) shouldBe "List(1, 2, ...)"
     }
+
+    case class CaseClazz(data: List[Int])
+
+    it("should truncate collection inside of a case class when used with Prettifier.truncateAt") {
+      val caseClass = CaseClazz(List(1, 2, 3))
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      prettifier(caseClass) shouldBe "CaseClazz(List(1, 2, ...))"
+    }
   }
 }
 

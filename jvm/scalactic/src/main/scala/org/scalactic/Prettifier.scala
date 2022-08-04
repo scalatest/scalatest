@@ -277,6 +277,8 @@ private[scalactic] class TruncatingPrettifier(sizeLimit: SizeLimit) extends Defa
         else
           theToString
       // SKIP-SCALATESTJS,NATIVE-END
+      case caseClazz: Product =>
+        s"${caseClazz.productPrefix}(" + caseClazz.productIterator.map(prettify(_, processed + caseClazz)).mkString(", ") + ")"
       case anythingElse => anythingElse.toString
     }
   }
