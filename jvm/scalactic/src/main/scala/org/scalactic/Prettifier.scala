@@ -224,26 +224,26 @@ private[scalactic] class TruncatingPrettifier(sizeLimit: SizeLimit) extends Defa
   override protected def prettifyCollection(o: Any, processed: Set[Any]): String = {
     o match {
       case many: Many[_] => 
-        val (taken, truncated) = if (many.size > sizeLimit.value) (many.toIterator.take(sizeLimit.value), true) else (many.toIterator, false)  
+        val (taken, truncated) = if (!many.hasDefiniteSize || many.size > sizeLimit.value) (many.toIterator.take(sizeLimit.value), true) else (many.toIterator, false)  
         "Many(" + taken.map(prettify(_, processed + many)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
       case anArray: Array[_] =>  
-        val (taken, truncated) = if (anArray.size > sizeLimit.value) (anArray.take(sizeLimit.value), true) else (anArray, false)
+        val (taken, truncated) = if (!anArray.hasDefiniteSize || anArray.size > sizeLimit.value) (anArray.take(sizeLimit.value), true) else (anArray, false)
         "Array(" + taken.map(prettify(_, processed + anArray)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
       case aWrappedArray: WrappedArray[_] => 
-        val (taken, truncated) = if (aWrappedArray.size > sizeLimit.value) (aWrappedArray.take(sizeLimit.value), true) else (aWrappedArray, false)
+        val (taken, truncated) = if (!aWrappedArray.hasDefiniteSize || aWrappedArray.size > sizeLimit.value) (aWrappedArray.take(sizeLimit.value), true) else (aWrappedArray, false)
         "Array(" + taken.map(prettify(_, processed + aWrappedArray)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
       case a if ArrayHelper.isArrayOps(a) => 
         val anArrayOps = ArrayHelper.asArrayOps(a)//
         val (taken, truncated) = if (anArrayOps.size > sizeLimit.value) (anArrayOps.iterator.take(sizeLimit.value), true) else (anArrayOps.iterator, false)
         "Array(" + taken.map(prettify(_, processed + anArrayOps)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
       case aGenMap: scala.collection.GenMap[_, _] =>
-        val (taken, truncated) = if (aGenMap.size > sizeLimit.value) (aGenMap.toIterator.take(sizeLimit.value), true) else (aGenMap.toIterator, false)
+        val (taken, truncated) = if (!aGenMap.hasDefiniteSize || aGenMap.size > sizeLimit.value) (aGenMap.toIterator.take(sizeLimit.value), true) else (aGenMap.toIterator, false)
         ColCompatHelper.className(aGenMap) + "(" +
         (taken.map { case (key, value) => // toIterator is needed for consistent ordering
           prettify(key, processed + aGenMap) + " -> " + prettify(value, processed + aGenMap)
         }).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
       case aIterable: Iterable[_] =>
-        val (taken, truncated) = if (aIterable.size > sizeLimit.value) (aIterable.take(sizeLimit.value), true) else (aIterable, false)
+        val (taken, truncated) = if (!aIterable.hasDefiniteSize || aIterable.size > sizeLimit.value) (aIterable.take(sizeLimit.value), true) else (aIterable, false)
         val className = aIterable.getClass.getName
         if (className.startsWith("scala.xml.NodeSeq$") || className == "scala.xml.NodeBuffer" || className == "scala.xml.Elem")
           aIterable.mkString
