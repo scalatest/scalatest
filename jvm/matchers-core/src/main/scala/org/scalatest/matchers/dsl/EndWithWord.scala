@@ -39,7 +39,10 @@ final class EndWithWord {
    *                        ^
    * </pre>
    */
+  //DOTTY-ONLY infix def apply(right: String): Matcher[String] =
+  // SKIP-DOTTY-START 
   def apply(right: String): Matcher[String] =
+  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult =
         MatchResult(
@@ -60,7 +63,10 @@ final class EndWithWord {
    *                        ^
    * </pre>
    */
+  //DOTTY-ONLY infix def regex[T <: String](right: T): Matcher[T] = regex(right.r)
+  // SKIP-DOTTY-START 
   def regex[T <: String](right: T): Matcher[T] = regex(right.r)
+  // SKIP-DOTTY-END
   
   /**
    * This method enables the following syntax:
@@ -69,13 +75,17 @@ final class EndWithWord {
    * string should not { endWith regex ("a(b*)c" withGroup "bb") } 
    *                             ^
    * </pre>
-   */	
+   */
+  //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups) = 
+  // SKIP-DOTTY-START 	
   def regex(regexWithGroups: RegexWithGroups) = 
+  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       override def toString: String = "endWith regex " + Prettifier.default(regexWithGroups)
     }
+  // SKIP-DOTTY-END  
 
   /**
    * This method enables the following syntax:
@@ -86,7 +96,10 @@ final class EndWithWord {
    *                        ^
    * </pre>
    */
+  //DOTTY-ONLY infix def regex(rightRegex: Regex): Matcher[String] = 
+  // SKIP-DOTTY-START 
   def regex(rightRegex: Regex): Matcher[String] =
+  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult = {
         val allMatches = rightRegex.findAllIn(left)

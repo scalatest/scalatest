@@ -45,7 +45,10 @@ final class ContainWord {
    *                     ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def apply(nullValue: Null): MatcherFactory1[Any, Containing] =
+  // SKIP-DOTTY-START
   def apply(nullValue: Null): MatcherFactory1[Any, Containing] =
+  // SKIP-DOTTY-END
     new MatcherFactory1[Any, Containing] {
       def matcher[U <: Any : Containing]: Matcher[U] =
         new Matcher[U] {
@@ -71,7 +74,10 @@ final class ContainWord {
    *                             ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def apply(expectedElement: Any): MatcherFactory1[Any, Containing] =
+  // SKIP-DOTTY-START 
   def apply(expectedElement: Any): MatcherFactory1[Any, Containing] =
+  // SKIP-DOTTY-END
     new MatcherFactory1[Any, Containing] {
       def matcher[U <: Any : Containing]: Matcher[U] = 
         new Matcher[U] {
@@ -116,7 +122,10 @@ final class ContainWord {
    * This will enable the matcher returned by this method to be used against any <code>Map</code> that has
    * the inferred key type.
    */
+  //DOTTY-ONLY infix def key[K](expectedKey: Any): MatcherFactory1[Any, KeyMapping] = 
+  // SKIP-DOTTY-START 
   def key[K](expectedKey: Any): MatcherFactory1[Any, KeyMapping] =
+  // SKIP-DOTTY-END
     new MatcherFactory1[Any, KeyMapping] {
       def matcher[U <: Any : KeyMapping]: Matcher[U] = 
         new Matcher[U] {
@@ -162,7 +171,10 @@ final class ContainWord {
    * the inferred value type.
    *
    */
+  //DOTTY-ONLY infix def value[K](expectedValue: Any): MatcherFactory1[Any, ValueMapping] =
+  // SKIP-DOTTY-START 
   def value[K](expectedValue: Any): MatcherFactory1[Any, ValueMapping] =
+  // SKIP-DOTTY-END
     new MatcherFactory1[Any, ValueMapping] {
       def matcher[U <: Any : ValueMapping]: Matcher[U] = 
         new Matcher[U] {
@@ -188,7 +200,10 @@ final class ContainWord {
    *                                ^
    * </pre>
    **/
+  //DOTTY-ONLY infix private[scalatest] def a[T](aMatcher: AMatcher[T]): Matcher[GenTraversable[T]] =
+  // SKIP-DOTTY-START 
   private[scalatest] def a[T](aMatcher: AMatcher[T]): Matcher[GenTraversable[T]] =
+  // SKIP-DOTTY-END
     new Matcher[GenTraversable[T]] {
       def apply(left: GenTraversable[T]): MatchResult = {
         val matched = left.find(aMatcher(_).matches)
@@ -211,7 +226,10 @@ final class ContainWord {
    *                                ^
    * </pre>
    **/
+  //DOTTY-ONLY infix private[scalatest] def an[T](anMatcher: AnMatcher[T]): Matcher[GenTraversable[T]] =
+  // SKIP-DOTTY-START 
   private[scalatest] def an[T](anMatcher: AnMatcher[T]): Matcher[GenTraversable[T]] =
+  // SKIP-DOTTY-END
     new Matcher[GenTraversable[T]] {
       def apply(left: GenTraversable[T]): MatchResult = {
         val matched = left.find(anMatcher(_).matches)
@@ -226,7 +244,10 @@ final class ContainWord {
       override def toString: String = "contain an " + Prettifier.default(anMatcher)
     }
 
+  //DOTTY-ONLY infix def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Containing] = {
+  // SKIP-DOTTY-START
   def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Containing] = {
+  // SKIP-DOTTY-END  
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.oneOfDuplicate, pos)
@@ -248,7 +269,10 @@ final class ContainWord {
     }
   }
 
+  //DOTTY-ONLY infix def oneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Containing] = {
+  // SKIP-DOTTY-START
   def oneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Containing] = {
+  // SKIP-DOTTY-END  
     val right = elements.toList
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
@@ -268,7 +292,10 @@ final class ContainWord {
     }
   }
 
+  //DOTTY-ONLY infix def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-START
   def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-END  
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, pos)
@@ -290,7 +317,10 @@ final class ContainWord {
     }
   }
 
+  //DOTTY-ONLY infix def atLeastOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-START
   def atLeastOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-END  
     val right = elements.toList
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
@@ -310,7 +340,10 @@ final class ContainWord {
     }
   }
   
+  //DOTTY-ONLY infix def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Containing] = {
+  // SKIP-DOTTY-START
   def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Containing] = {
+  // SKIP-DOTTY-END  
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.noneOfDuplicate, pos)
@@ -332,7 +365,10 @@ final class ContainWord {
     }
   }
 
+  //DOTTY-ONLY infix def noElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Containing] = {
+  // SKIP-DOTTY-START
   def noElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Containing] = {
+  // SKIP-DOTTY-END  
     val right = elements.toList
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
@@ -352,7 +388,10 @@ final class ContainWord {
     }
   }
   
+  //DOTTY-ONLY infix def theSameElementsAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-START
   def theSameElementsAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-END  
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -371,7 +410,10 @@ final class ContainWord {
     }
   }
   
+  //DOTTY-ONLY infix def theSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
+  // SKIP-DOTTY-START
   def theSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
+  // SKIP-DOTTY-END  
     new MatcherFactory1[Any, Sequencing] {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -390,7 +432,10 @@ final class ContainWord {
     }
   }
   
+  //DOTTY-ONLY infix def only(right: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-START
   def only(right: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-END  
     if (right.isEmpty)
       throw new NotAllowedException(FailureMessages.onlyEmpty, pos)
     if (right.distinct.size != right.size)
@@ -414,7 +459,10 @@ final class ContainWord {
     }
   }
 
+  //DOTTY-ONLY infix def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Sequencing] = {
+  // SKIP-DOTTY-START
   def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Sequencing] = {
+  // SKIP-DOTTY-END  
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, pos)
@@ -436,7 +484,10 @@ final class ContainWord {
     }
   }
   
+  //DOTTY-ONLY infix def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-START
   def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-END
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.allOfDuplicate, pos)
@@ -458,7 +509,10 @@ final class ContainWord {
     }
   }
 
+  //DOTTY-ONLY infix def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-START
   def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-END  
     val right = elements.toList
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
@@ -478,7 +532,10 @@ final class ContainWord {
     }
   }
   
+  //DOTTY-ONLY infix def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Sequencing] = {
+  // SKIP-DOTTY-START
   def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Sequencing] = {
+  // SKIP-DOTTY-END  
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.inOrderDuplicate, pos)
@@ -500,7 +557,10 @@ final class ContainWord {
     }
   }
 
+  //DOTTY-ONLY infix def inOrderElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
+  // SKIP-DOTTY-START
   def inOrderElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
+  // SKIP-DOTTY-END  
     val right = elements.toList
     new MatcherFactory1[Any, Sequencing] {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
@@ -520,7 +580,10 @@ final class ContainWord {
     }
   }
   
+  //DOTTY-ONLY infix def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-START
   def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-END  
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, pos)
@@ -542,7 +605,10 @@ final class ContainWord {
     }
   }
 
+  //DOTTY-ONLY infix def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-START
   def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  // SKIP-DOTTY-END  
     val right = elements.toList
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {

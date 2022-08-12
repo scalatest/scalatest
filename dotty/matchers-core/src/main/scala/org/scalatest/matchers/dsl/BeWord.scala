@@ -90,7 +90,7 @@ final class BeWord {
    *                       ^
    * </pre>
    **/
-  def <[T : Ordering](right: T): Matcher[T] =
+  infix def <[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val ordering = implicitly[Ordering[T]]
@@ -129,7 +129,7 @@ final class BeWord {
    *                       ^
    * </pre>
    **/
-  def >[T : Ordering](right: T): Matcher[T] =
+  infix def >[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val ordering = implicitly[Ordering[T]]
@@ -168,7 +168,7 @@ final class BeWord {
    *                       ^
    * </pre>
    **/
-  def <=[T : Ordering](right: T): Matcher[T] =
+  infix def <=[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val ordering = implicitly[Ordering[T]]
@@ -207,7 +207,7 @@ final class BeWord {
    *                       ^
    * </pre>
    **/
-  def >=[T : Ordering](right: T): Matcher[T] =
+  infix def >=[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val ordering = implicitly[Ordering[T]]
@@ -234,7 +234,7 @@ final class BeWord {
    * </p>
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
-  def ===(right: Any)(implicit pos: source.Position): Matcher[Any] = {
+  infix def ===(right: Any)(implicit pos: source.Position): Matcher[Any] = {
     throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed, pos)
   }
 
@@ -247,7 +247,7 @@ final class BeWord {
    *                          ^
    * </pre>
    **/
-  def a(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
+  infix def a(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, true, prettifier, pos)
       override def toString: String = "be a " + prettifier(right)
@@ -263,7 +263,7 @@ final class BeWord {
    *                          ^
    * </pre>
    **/
-  def a[S <: AnyRef](bePropertyMatcher: BePropertyMatcher[S]): Matcher[S] =
+  infix def a[S <: AnyRef](bePropertyMatcher: BePropertyMatcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = {
         val result = bePropertyMatcher(left)
@@ -285,7 +285,7 @@ final class BeWord {
    *                   ^
    * </pre>
    **/
-  def a[S](aMatcher: AMatcher[S]): Matcher[S] =
+  infix def a[S](aMatcher: AMatcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = aMatcher(left)
       override def toString: String = "be a " + Prettifier.default(aMatcher)
@@ -300,7 +300,7 @@ final class BeWord {
    *                        ^
    * </pre>
    **/
-  def an(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
+  infix def an(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, false, prettifier, pos)
       override def toString: String = "be an " + Prettifier.default(right)
@@ -316,7 +316,7 @@ final class BeWord {
    *                          ^
    * </pre>
    **/
-  def an[S <: AnyRef](bePropertyMatcher: BePropertyMatcher[S]): Matcher[S] =
+  infix def an[S <: AnyRef](bePropertyMatcher: BePropertyMatcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = {
         val result = bePropertyMatcher(left)
@@ -338,7 +338,7 @@ final class BeWord {
    *                   ^
    * </pre>
    **/
-  def an[S](anMatcher: AnMatcher[S]): Matcher[S] =
+  infix def an[S](anMatcher: AnMatcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = anMatcher(left)
       override def toString: String = "be an " + Prettifier.default(anMatcher)
@@ -352,7 +352,7 @@ final class BeWord {
    *                      ^
    * </pre>
    **/
-  def apply[U](spread: Spread[U]): Matcher[U] =
+  infix def apply[U](spread: Spread[U]): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult = {
         MatchResult(
@@ -373,7 +373,7 @@ final class BeWord {
    *                  ^
    * </pre>
    **/
-  def theSameInstanceAs(right: AnyRef): Matcher[AnyRef] =
+  infix def theSameInstanceAs(right: AnyRef): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult =
         MatchResult(
@@ -393,7 +393,7 @@ final class BeWord {
    *                  ^
    * </pre>
    **/
-  def apply(right: Boolean): Matcher[Boolean] =
+  infix def apply(right: Boolean): Matcher[Boolean] =
     new Matcher[Boolean] {
       def apply(left: Boolean): MatchResult =
         MatchResult(
@@ -413,7 +413,7 @@ final class BeWord {
    *                  ^
    * </pre>
    **/
-  def apply(o: Null): Matcher[AnyRef] =
+  infix def apply(o: Null): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
@@ -436,7 +436,7 @@ final class BeWord {
    * set should be ('empty)
    *               ^
    * </pre>
-  def apply[T](right: AType[T]): Matcher[Any] =
+  infix def apply[T](right: AType[T]): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult =
         MatchResult(
@@ -458,7 +458,7 @@ final class BeWord {
    *               ^
    * </pre>
    **/
-  def apply(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
+  infix def apply(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, false, false, prettifier, pos)
       override def toString: String = "be (" + Prettifier.default(right) + ")"
@@ -474,7 +474,7 @@ final class BeWord {
    *               ^
    * </pre>
    **/
-  def apply[T](right: BeMatcher[T]): Matcher[T] =
+  infix def apply[T](right: BeMatcher[T]): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = right(left)
       override def toString: String = "be (" + Prettifier.default(right) + ")"
@@ -488,7 +488,7 @@ final class BeWord {
    *                ^
    * </pre>
    **/
-  def apply[T](bePropertyMatcher: BePropertyMatcher[T]): Matcher[T] =
+  infix def apply[T](bePropertyMatcher: BePropertyMatcher[T]): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val result = bePropertyMatcher(left)
@@ -518,7 +518,7 @@ final class BeWord {
    *               ^
    * </pre>
    **/
-  def apply(right: Any): Matcher[Any] =
+  infix def apply(right: Any): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
         new EqualMatchResult(
@@ -540,7 +540,7 @@ final class BeWord {
    *                          ^
    * </pre>
    **/
-  def apply(right: SortedWord): MatcherFactory1[Any, Sortable] =
+  infix def apply(right: SortedWord): MatcherFactory1[Any, Sortable] =
     new MatcherFactory1[Any, Sortable] {
       def matcher[T <: Any : Sortable]: Matcher[T] =
         new Matcher[T] {
@@ -566,7 +566,7 @@ final class BeWord {
    *                     ^
    * </pre>
    **/
-  def definedAt[A, U <: PartialFunction[A, _]](right: A): Matcher[U] =
+  infix def definedAt[A, U <: PartialFunction[A, _]](right: A): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult =
         MatchResult(
@@ -586,7 +586,7 @@ final class BeWord {
    *                         ^
    * </pre>
    **/
-  def thrownBy(code: => Unit) = new ResultOfBeThrownBy(Vector(() => code))
+  infix def thrownBy(code: => Unit) = new ResultOfBeThrownBy(Vector(() => code))
 
   /**
    * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:
@@ -596,7 +596,7 @@ final class BeWord {
    *                  ^
    * </pre>
    **/
-  def apply[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[U] =
+  infix def apply[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult =
         MatchResult(
@@ -618,7 +618,7 @@ final class BeWord {
    *               ^
    * </pre>
    **/
-  inline def apply(aType: ResultOfATypeInvocation[_]): Matcher[Any] =
+  infix inline def apply(aType: ResultOfATypeInvocation[_]): Matcher[Any] =
     ${ TypeMatcherMacro.aTypeMatcherImpl('{aType}) }
 
   /**
@@ -629,7 +629,7 @@ final class BeWord {
    *               ^
    * </pre>
    **/
-  inline def apply(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] =
+  infix inline def apply(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] =
     ${ TypeMatcherMacro.anTypeMatcherImpl('{anType}) }
 
   /**
@@ -640,7 +640,7 @@ final class BeWord {
    *                ^
    * </pre>
    **/
-  def apply(readable: ReadableWord): MatcherFactory1[Any, Readability] =
+  infix def apply(readable: ReadableWord): MatcherFactory1[Any, Readability] =
     new MatcherFactory1[Any, Readability] {
       def matcher[T <: Any : Readability]: Matcher[T] =
         new Matcher[T] {
@@ -666,7 +666,7 @@ final class BeWord {
    *                 ^
    * </pre>
    **/
-  def apply(writable: WritableWord): MatcherFactory1[Any, Writability] =
+  infix def apply(writable: WritableWord): MatcherFactory1[Any, Writability] =
     new MatcherFactory1[Any, Writability] {
       def matcher[T <: Any : Writability]: Matcher[T] =
         new Matcher[T] {
@@ -692,7 +692,7 @@ final class BeWord {
    *                 ^
    * </pre>
    **/
-  def apply(empty: EmptyWord): MatcherFactory1[Any, Emptiness] =
+  infix def apply(empty: EmptyWord): MatcherFactory1[Any, Emptiness] =
     new MatcherFactory1[Any, Emptiness] {
       def matcher[T <: Any : Emptiness]: Matcher[T] =
         new Matcher[T] {
@@ -718,7 +718,7 @@ final class BeWord {
    *                 ^
    * </pre>
    **/
-  def apply(defined: DefinedWord): MatcherFactory1[Any, Definition] =
+  infix def apply(defined: DefinedWord): MatcherFactory1[Any, Definition] =
     new MatcherFactory1[Any, Definition] {
       def matcher[T <: Any : Definition]: Matcher[T] =
         new Matcher[T] {
