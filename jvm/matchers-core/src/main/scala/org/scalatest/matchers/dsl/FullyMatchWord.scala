@@ -39,7 +39,10 @@ final class FullyMatchWord {
    *                          ^
    * </pre>
    */
+  //DOTTY-ONLY infix def regex(rightRegexString: String): Matcher[String] =
+  // SKIP-DOTTY-START 
   def regex(rightRegexString: String): Matcher[String] =
+  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult =
         MatchResult(
@@ -58,8 +61,11 @@ final class FullyMatchWord {
    * string should not { fullyMatch regex ("a(b*)c" withGroup "bb") } 
    *                          ^
    * </pre>
-   */	
+   */
+  //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups) = 
+  // SKIP-DOTTY-START 	
   def regex(regexWithGroups: RegexWithGroups) = 
+  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
@@ -75,7 +81,10 @@ final class FullyMatchWord {
    *                          ^
    * </pre>
    */
+  //DOTTY-ONLY infix def regex(rightRegex: Regex): Matcher[String] =
+  // SKIP-DOTTY-START 
   def regex(rightRegex: Regex): Matcher[String] =
+  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult =
         MatchResult(
