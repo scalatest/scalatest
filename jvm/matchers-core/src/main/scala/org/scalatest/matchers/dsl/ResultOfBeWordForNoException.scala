@@ -35,7 +35,10 @@ final class ResultOfBeWordForNoException(pos: source.Position) {
    *                       ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def thrownBy(fun: => Any): Assertion = {
+  // SKIP-DOTTY-START 
   def thrownBy(fun: => Any): Assertion = {
+  // SKIP-DOTTY-END  
     checkNoException(fun, pos)
   }
 
