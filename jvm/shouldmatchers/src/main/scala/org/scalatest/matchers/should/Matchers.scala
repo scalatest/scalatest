@@ -3428,7 +3428,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
+    //DOTTY-ONLY infix def be(comparison: ResultOfLessThanComparison[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def be(comparison: ResultOfLessThanComparison[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (comparison(e) != shouldBeTrue) {
           indicateFailure(if (shouldBeTrue) FailureMessages.wasNotLessThan(prettifier, e, comparison.right) else FailureMessages.wasLessThan(prettifier, e, comparison.right), None, pos)
@@ -3445,7 +3448,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
+    //DOTTY-ONLY infix def be(comparison: ResultOfGreaterThanComparison[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def be(comparison: ResultOfGreaterThanComparison[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (comparison(e) != shouldBeTrue) {
           indicateFailure(if (shouldBeTrue) FailureMessages.wasNotGreaterThan(prettifier, e, comparison.right) else FailureMessages.wasGreaterThan(prettifier, e, comparison.right), None, pos)
@@ -3467,7 +3473,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </p>
      */
     @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
+    //DOTTY-ONLY infix def be(comparison: TripleEqualsInvocation[_]): Nothing = {
+    // SKIP-DOTTY-START
     def be(comparison: TripleEqualsInvocation[_]): Nothing = {
+    // SKIP-DOTTY-END  
       throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed, pos)
     }
 
@@ -3480,7 +3489,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
+    //DOTTY-ONLY infix def be(beMatcher: BeMatcher[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def be(beMatcher: BeMatcher[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = beMatcher(e)
         if (result.matches != shouldBeTrue) {
@@ -3499,7 +3511,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
+    //DOTTY-ONLY infix def be(bePropertyMatcher: BePropertyMatcher[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def be(bePropertyMatcher: BePropertyMatcher[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = bePropertyMatcher(e)
         if (result.matches != shouldBeTrue) {
@@ -3518,7 +3533,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
+    //DOTTY-ONLY infix def be[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]): Assertion = {
+    // SKIP-DOTTY-START 
     def be[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = resultOfAWordApplication.bePropertyMatcher(e)
         if (result.matches != shouldBeTrue) {
@@ -3537,7 +3555,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                           ^
      * </pre>
      */
+    //DOTTY-ONLY infix def be[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U]): Assertion = {
+    // SKIP-DOTTY-START 
     def be[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = resultOfAnWordApplication.bePropertyMatcher(e)
         if (result.matches != shouldBeTrue) {
@@ -3555,7 +3576,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
+    //DOTTY-ONLY infix def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication): Assertion = {
+    // SKIP-DOTTY-START 
     def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         e match {
           case ref: AnyRef =>
@@ -3577,7 +3601,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
+    //DOTTY-ONLY infix def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
+    // SKIP-DOTTY-START 
     def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (e.isDefinedAt(resultOfDefinedAt.right) != shouldBeTrue)
           indicateFailure(if (shouldBeTrue) FailureMessages.wasNotDefinedAt(prettifier, e, resultOfDefinedAt.right) else FailureMessages.wasDefinedAt(prettifier, e, resultOfDefinedAt.right), None, pos)
@@ -3599,7 +3626,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      *
      */
+    //DOTTY-ONLY infix def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val right = resultOfLengthWordApplication.expectedLength
         val leftLength = len.lengthOf(e)
@@ -3619,7 +3649,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      *
      */
+    //DOTTY-ONLY infix def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val right = resultOfSizeWordApplication.expectedSize
         val leftSize = sz.sizeOf(e)
@@ -3639,7 +3672,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def have[U >: T](firstPropertyMatcher: HavePropertyMatcher[U, _], propertyMatchers: HavePropertyMatcher[U, _]*): Assertion = {
+    // SKIP-DOTTY-START 
     def have[U >: T](firstPropertyMatcher: HavePropertyMatcher[U, _], propertyMatchers: HavePropertyMatcher[U, _]*): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
 
         val results =
@@ -3727,7 +3763,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
+    //DOTTY-ONLY infix def be(o: Null)(implicit ev: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-START 
     def be(o: Null)(implicit ev: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e == null) != shouldBeTrue) {
           indicateFailure(if (shouldBeTrue) FailureMessages.wasNotNull(prettifier, e) else FailureMessages.wasNull, None, pos)
