@@ -4474,7 +4474,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                          ^
      * </pre>
      */
+    //DOTTY-ONLY infix def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(implicit keyMapping: KeyMapping[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(implicit keyMapping: KeyMapping[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { map =>
         val expectedKey = resultOfKeyWordApplication.expectedKey
         if ((keyMapping.containsKey(map, expectedKey)) != shouldBeTrue) {
@@ -4504,7 +4507,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                          ^
      * </pre>
      */
+    //DOTTY-ONLY infix def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(implicit valueMapping: ValueMapping[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(implicit valueMapping: ValueMapping[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { map =>
         val expectedValue = resultOfValueWordApplication.expectedValue
         if ((valueMapping.containsValue(map, expectedValue)) != shouldBeTrue) {
@@ -4534,7 +4540,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
+    //DOTTY-ONLY infix def startWith(right: String)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-START 
     def startWith(right: String)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e.indexOf(right) == 0) != shouldBeTrue)
           indicateFailure(
@@ -4567,7 +4576,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * or a <code>scala.util.matching.Regex</code>.
      * </p>
      */
+    //DOTTY-ONLY infix def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-START 
     def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = startWithRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
@@ -4596,7 +4608,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
+    //DOTTY-ONLY infix def endWith(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-START 
     def endWith(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e endsWith expectedSubstring) != shouldBeTrue)
           indicateFailure(
@@ -4624,7 +4639,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
+    //DOTTY-ONLY infix def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-START 
     def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = endWithRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
@@ -4658,7 +4676,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * or a <code>scala.util.matching.Regex</code>.
      * </p>
      */
+    //DOTTY-ONLY infix def include(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-START 
     def include(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = includeRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
@@ -4687,7 +4708,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
+    //DOTTY-ONLY infix def include(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-START 
     def include(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e.indexOf(expectedSubstring) >= 0) != shouldBeTrue)
           indicateFailure(
@@ -4720,7 +4744,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * or a <code>scala.util.matching.Regex</code>.
      * </p>
      */
+    //DOTTY-ONLY infix def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-START 
     def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = fullyMatchRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
