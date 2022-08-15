@@ -6699,7 +6699,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                      ^
      * </pre>
      */
+    //DOTTY-ONLY infix def length(expectedLength: Long)(implicit len: Length[A]): Assertion = {
+    // SKIP-DOTTY-START 
     def length(expectedLength: Long)(implicit len: Length[A]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val eLength = len.lengthOf(e)
         if ((eLength == expectedLength) != shouldBeTrue)
@@ -6728,7 +6731,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                      ^
      * </pre>
      */
+    //DOTTY-ONLY infix def size(expectedSize: Long)(implicit sz: Size[A]): Assertion = {
+    // SKIP-DOTTY-START 
     def size(expectedSize: Long)(implicit sz: Size[A]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val eSize = sz.sizeOf(e)
         if ((eSize == expectedSize) != shouldBeTrue)
@@ -6773,7 +6779,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def regex(rightRegexString: String): Assertion = { checkRegex(rightRegexString.r) }
+    //DOTTY-ONLY infix def regex(rightRegexString: String): Assertion = 
+    // SKIP-DOTTY-START 
+    def regex(rightRegexString: String): Assertion = 
+    // SKIP-DOTTY-END
+      checkRegex(rightRegexString.r)
 
     /**
      * This method enables the following syntax:
@@ -6783,7 +6793,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def regex(regexWithGroups: RegexWithGroups): Assertion = { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
+    //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups): Assertion = 
+    // SKIP-DOTTY-START 
+    def regex(regexWithGroups: RegexWithGroups): Assertion = 
+    // SKIP-DOTTY-END
+      checkRegex(regexWithGroups.regex, regexWithGroups.groups)
 
     /**
      * This method enables the following syntax:
@@ -6793,7 +6807,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def regex(rightRegex: Regex): Assertion = { checkRegex(rightRegex) }
+    //DOTTY-ONLY infix def regex(rightRegex: Regex): Assertion = 
+    // SKIP-DOTTY-START 
+    def regex(rightRegex: Regex): Assertion = 
+    // SKIP-DOTTY-END
+      checkRegex(rightRegex)
 
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
@@ -6841,7 +6859,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    def regex(rightRegexString: String): Assertion = { checkRegex(rightRegexString.r) }
+    //DOTTY-ONLY infix def regex(rightRegexString: String): Assertion = 
+    // SKIP-DOTTY-START 
+    def regex(rightRegexString: String): Assertion = 
+    // SKIP-DOTTY-END
+      checkRegex(rightRegexString.r)
 
     /**
      * This method enables the following syntax:
@@ -6851,7 +6873,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    def regex(regexWithGroups: RegexWithGroups): Assertion = { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
+    //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups): Assertion = 
+    // SKIP-DOTTY-START 
+    def regex(regexWithGroups: RegexWithGroups): Assertion = 
+    // SKIP-DOTTY-END
+      checkRegex(regexWithGroups.regex, regexWithGroups.groups)
 
     /**
      * This method enables the following syntax:
@@ -6861,7 +6887,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    def regex(rightRegex: Regex): Assertion = { checkRegex(rightRegex) }
+    //DOTTY-ONLY infix def regex(rightRegex: Regex): Assertion = 
+    // SKIP-DOTTY-START 
+    def regex(rightRegex: Regex): Assertion = 
+    // SKIP-DOTTY-END
+      checkRegex(rightRegex)
 
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
