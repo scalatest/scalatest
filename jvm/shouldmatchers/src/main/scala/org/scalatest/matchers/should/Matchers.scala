@@ -5408,7 +5408,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
+    //DOTTY-ONLY infix def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-START 
     def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((toAnyRef(e) eq right) != shouldBeTrue)
           indicateFailure(
@@ -5437,7 +5440,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
+    //DOTTY-ONLY infix def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-START 
     def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, true, prettifier, pos)
         if (matcherResult.matches != shouldBeTrue) {
@@ -5467,7 +5473,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
+    //DOTTY-ONLY infix def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-START 
     def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, false, prettifier, pos)
         if (matcherResult.matches != shouldBeTrue) {
@@ -5499,7 +5508,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                      ^
      * </pre>
      */
+    //DOTTY-ONLY infix def a[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try supporting 2.10 AnyVals
+    // SKIP-DOTTY-START 
     def a[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try supporting 2.10 AnyVals
+    // SKIP-DOTTY-END
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = bePropertyMatcher(e.asInstanceOf[U])
         if (result.matches != shouldBeTrue) {
@@ -5530,7 +5542,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                      ^
      * </pre>
      */
+    //DOTTY-ONLY infix def an[U <: T](beTrueMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try supporting 2.10 AnyVals
+    // SKIP-DOTTY-START 
     def an[U <: T](beTrueMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try supporting 2.10 AnyVals
+    // SKIP-DOTTY-END
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val beTrueMatchResult = beTrueMatcher(e.asInstanceOf[U])
         if (beTrueMatchResult.matches != shouldBeTrue) {
@@ -5560,7 +5575,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
+    //DOTTY-ONLY infix def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
+    // SKIP-DOTTY-START 
     def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, xs, prettifier, pos) { e =>
       if (e.isDefinedAt(right) != shouldBeTrue)
         indicateFailure(
