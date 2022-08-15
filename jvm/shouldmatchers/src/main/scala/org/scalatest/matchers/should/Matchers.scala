@@ -4793,7 +4793,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages.oneOfDuplicate, pos)
@@ -4824,7 +4827,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsOneOf(e, right.distinct) != shouldBeTrue)
@@ -4853,7 +4859,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, pos)
@@ -4884,7 +4893,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtLeastOneOf(e, right.distinct) != shouldBeTrue)
@@ -4913,7 +4925,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[T]): Assertion = {
+    // SKIP-DOTTY-END
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages.noneOfDuplicate, pos)
@@ -4944,7 +4959,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsNoneOf(e, right.distinct) != shouldBeTrue)
@@ -4973,7 +4991,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
           indicateFailure(
@@ -5001,7 +5022,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
           indicateFailure(
@@ -5029,7 +5053,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def only(right: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def only(right: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-END  
       if (right.isEmpty)
         throw new NotAllowedException(FailureMessages.onlyEmpty, pos)
       if (right.distinct.size != right.size)
@@ -5069,7 +5096,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, pos)
@@ -5100,7 +5130,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages.allOfDuplicate, pos)
@@ -5131,7 +5164,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def allElementsOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def allElementsOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAllOf(e, right.distinct) != shouldBeTrue)
@@ -5160,7 +5196,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages.inOrderDuplicate, pos)
@@ -5191,7 +5230,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
+    //DOTTY-ONLY infix def inOrderElementsOf(elements: GenTraversable[Any])(implicit sequencing: Sequencing[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def inOrderElementsOf(elements: GenTraversable[Any])(implicit sequencing: Sequencing[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrder(e, right.distinct) != shouldBeTrue)
@@ -5220,7 +5262,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
+    //DOTTY-ONLY infix def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
         throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, pos)
@@ -5251,7 +5296,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
+    //DOTTY-ONLY infix def atMostOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def atMostOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtMostOneOf(e, right.distinct) != shouldBeTrue)
@@ -5280,7 +5328,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                              ^
      * </pre>
      */
+    //DOTTY-ONLY infix def key(expectedKey: Any)(implicit keyMapping: KeyMapping[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def key(expectedKey: Any)(implicit keyMapping: KeyMapping[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { map =>
         if (keyMapping.containsKey(map, expectedKey) != shouldBeTrue)
           indicateFailure(
@@ -5308,7 +5359,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                              ^
      * </pre>
      */
+    //DOTTY-ONLY infix def value(expectedValue: Any)(implicit valueMapping: ValueMapping[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def value(expectedValue: Any)(implicit valueMapping: ValueMapping[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { map =>
         if (valueMapping.containsValue(map, expectedValue) != shouldBeTrue)
           indicateFailure(
