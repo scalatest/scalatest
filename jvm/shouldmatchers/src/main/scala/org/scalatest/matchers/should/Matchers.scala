@@ -6041,7 +6041,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *              ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(comparison: ResultOfLessThanComparison[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(comparison: ResultOfLessThanComparison[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!comparison(e)) {
           indicateFailure(
@@ -6065,7 +6068,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *              ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(comparison: ResultOfLessThanOrEqualToComparison[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(comparison: ResultOfLessThanOrEqualToComparison[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!comparison(e)) {
           indicateFailure(
@@ -6089,7 +6095,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *               ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(comparison: ResultOfGreaterThanComparison[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(comparison: ResultOfGreaterThanComparison[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!comparison(e)) {
           indicateFailure(
@@ -6113,7 +6122,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *               ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(comparison: ResultOfGreaterThanOrEqualToComparison[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(comparison: ResultOfGreaterThanOrEqualToComparison[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!comparison(e)) {
           indicateFailure(
@@ -6137,7 +6149,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(beMatcher: BeMatcher[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(beMatcher: BeMatcher[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = beMatcher.apply(e)
         if (!result.matches)
@@ -6154,7 +6169,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(spread: Spread[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(spread: Spread[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!spread.isWithin(e))
           indicateFailure(FailureMessages.wasNotPlusOrMinus(prettifier, e, spread.pivot, spread.tolerance), None, pos)
@@ -6170,7 +6188,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (toAnyRef(e) ne resultOfSameInstanceAsApplication.right)
           indicateFailure(
@@ -6194,7 +6215,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, true, prettifier, pos)
         if (!matcherResult.matches)
@@ -6211,7 +6235,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true, prettifier, pos)
         if (!matcherResult.matches) {
@@ -6229,7 +6256,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false, prettifier, pos)
         if (!matcherResult.matches) {
@@ -6248,7 +6278,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(o: Null)(implicit ev: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(o: Null)(implicit ev: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (e != null)
          indicateFailure(FailureMessages.wasNotNull(prettifier, e), None, pos)
@@ -6264,7 +6297,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try supporting this with 2.10 AnyVals
+    // SKIP-DOTTY-START 
     def shouldBe[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try supporting this with 2.10 AnyVals
+    // SKIP-DOTTY-END
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches)
@@ -6281,7 +6317,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe[U <: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
+    // SKIP-DOTTY-START 
     def shouldBe[U <: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
+    // SKIP-DOTTY-END
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = resultOfAWordApplication.bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches)
