@@ -6337,7 +6337,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe[U <: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
+    // SKIP-DOTTY-START 
     def shouldBe[U <: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
+    // SKIP-DOTTY-END
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = resultOfAnWordApplication.bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches)
@@ -6354,7 +6357,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldNot[U <: T](rightMatcherX1: Matcher[U]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldNot[U <: T](rightMatcherX1: Matcher[U]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         try  {
           val result = rightMatcherX1.apply(e.asInstanceOf[U])
@@ -6377,7 +6383,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val rightMatcher = rightMatcherFactory1.matcher
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = rightMatcher(e)
@@ -6397,7 +6406,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: T CanEqual U): Assertion = {
+    // SKIP-DOTTY-START 
     def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: T CanEqual U): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((constraint.areEqual(e, inv.right)) != inv.expectingEqual)
           indicateFailure(
@@ -6420,7 +6432,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((inv.spread.isWithin(e)) != inv.expectingEqual)
           indicateFailure(
@@ -6443,7 +6458,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldNot(beWord: BeWord): ResultOfBeWordForCollectedAny[T] =
+    // SKIP-DOTTY-START 
     def shouldNot(beWord: BeWord): ResultOfBeWordForCollectedAny[T] =
+    // SKIP-DOTTY-END
       new ResultOfBeWordForCollectedAny[T](collected, xs, original, false, prettifier, pos)
 
    /**
@@ -6454,7 +6472,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should(containWord: ContainWord): ResultOfContainWordForCollectedAny[T] = {
+    // SKIP-DOTTY-START 
     def should(containWord: ContainWord): ResultOfContainWordForCollectedAny[T] = {
+    // SKIP-DOTTY-END  
       new ResultOfContainWordForCollectedAny(collected, xs, original, true, prettifier, pos)
     }
 
@@ -6466,7 +6487,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldNot(containWord: ContainWord): ResultOfContainWordForCollectedAny[T] = {
+    // SKIP-DOTTY-START 
     def shouldNot(containWord: ContainWord): ResultOfContainWordForCollectedAny[T] = {
+    // SKIP-DOTTY-END  
       new ResultOfContainWordForCollectedAny(collected, xs, original, false, prettifier, pos)
     }
 
@@ -6478,7 +6502,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def should(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!existence.exists(e))
           indicateFailure(
@@ -6498,7 +6525,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (existence.exists(e))
           indicateFailure(
@@ -6518,7 +6548,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (existence.exists(e))
           indicateFailure(
@@ -6538,7 +6571,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString =
+    // SKIP-DOTTY-START 
     def should(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString =
+    // SKIP-DOTTY-END
       new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true, prettifier, pos)
 
     /**
@@ -6549,7 +6585,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString =
+    // SKIP-DOTTY-START 
     def should(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString =
+    // SKIP-DOTTY-END
       new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true, prettifier, pos)
 
     /**
@@ -6560,7 +6599,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString =
+    // SKIP-DOTTY-START 
     def should(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString =
+    // SKIP-DOTTY-END
       new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true, prettifier, pos)
 
     /**
@@ -6571,7 +6613,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString =
+    // SKIP-DOTTY-START 
     def should(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString =
+    // SKIP-DOTTY-END
       new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true, prettifier, pos)
 
     /**
@@ -6582,7 +6627,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldNot(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString =
+    // SKIP-DOTTY-START 
     def shouldNot(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString =
+    // SKIP-DOTTY-END
       new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false, prettifier, pos)
 
     /**
@@ -6593,7 +6641,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldNot(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString =
+    // SKIP-DOTTY-START 
     def shouldNot(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString =
+    // SKIP-DOTTY-END
       new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false, prettifier, pos)
 
     /**
@@ -6604,7 +6655,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldNot(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString =
+    // SKIP-DOTTY-START 
     def shouldNot(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString =
+    // SKIP-DOTTY-END
       new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false, prettifier, pos)
 
     /**
@@ -6615,7 +6669,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *             ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString =
+    // SKIP-DOTTY-START 
     def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString =
+    // SKIP-DOTTY-END
       new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false, prettifier, pos)
 
     /**
