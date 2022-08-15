@@ -5625,7 +5625,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                           ^
      * </pre>
      */
+    //DOTTY-ONLY infix def apply(right: Symbol): Matcher[Array[T]] =
+    // SKIP-DOTTY-START 
     def apply(right: Symbol): Matcher[Array[T]] =
+    // SKIP-DOTTY-END
       new Matcher[Array[T]] {
         def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(deep(left), right, false, false, prettifier, pos)
       }
@@ -5678,7 +5681,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should(rightMatcher: Matcher[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def should(rightMatcher: Matcher[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = rightMatcher(e)
         result match {
@@ -5708,7 +5714,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldEqual(right: Any)(implicit equality: Equality[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldEqual(right: Any)(implicit equality: Equality[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!equality.areEqual(e, right)) {
           val prettyPair = prettifier(e, right)
@@ -5726,7 +5735,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^doCollected
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldEqual(spread: Spread[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldEqual(spread: Spread[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!spread.isWithin(e)) {
           indicateFailure(FailureMessages.didNotEqualPlusOrMinus(prettifier, e, spread.pivot, spread.tolerance), None, pos)
@@ -5743,7 +5755,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(sortedWord: SortedWord)(implicit sortable: Sortable[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(sortedWord: SortedWord)(implicit sortable: Sortable[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!sortable.isSorted(e))
           indicateFailure(FailureMessages.wasNotSorted(prettifier, e), None, pos)
@@ -5759,7 +5774,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(readableWord: ReadableWord)(implicit readability: Readability[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(readableWord: ReadableWord)(implicit readability: Readability[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!readability.isReadable(e))
           indicateFailure(FailureMessages.wasNotReadable(prettifier, e), None, pos)
@@ -5775,7 +5793,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(writableWord: WritableWord)(implicit writability: Writability[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(writableWord: WritableWord)(implicit writability: Writability[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!writability.isWritable(e))
           indicateFailure(FailureMessages.wasNotWritable(prettifier, e), None, pos)
@@ -5791,7 +5812,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!emptiness.isEmpty(e))
           indicateFailure(FailureMessages.wasNotEmpty(prettifier, e), None, pos)
@@ -5807,7 +5831,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(definedWord: DefinedWord)(implicit definition: Definition[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(definedWord: DefinedWord)(implicit definition: Definition[T]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!definition.isDefined(e))
           indicateFailure(FailureMessages.wasNotDefined(prettifier, e), None, pos)
@@ -5823,7 +5850,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(aType: ResultOfATypeInvocation[_]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(aType: ResultOfATypeInvocation[_]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!aType.clazz.isAssignableFrom(e.getClass))
           indicateFailure(FailureMessages.wasNotAnInstanceOf(prettifier, e, UnquotedString(aType.clazz.getName), UnquotedString(e.getClass.getName)), None, pos)
@@ -5839,7 +5869,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldBe(anType: ResultOfAnTypeInvocation[_]): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldBe(anType: ResultOfAnTypeInvocation[_]): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!anType.clazz.isAssignableFrom(e.getClass))
           indicateFailure(FailureMessages.wasNotAnInstanceOf(prettifier, e, UnquotedString(anType.clazz.getName), UnquotedString(e.getClass.getName)), None, pos)
@@ -5855,7 +5888,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
+    //DOTTY-ONLY infix def shouldEqual(right: Null)(implicit ev: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-START 
     def shouldEqual(right: Null)(implicit ev: T <:< AnyRef): Assertion = {
+    // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (e != null) {
           indicateFailure(FailureMessages.didNotEqualNull(prettifier, e), None, pos)
@@ -5872,7 +5908,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val rightMatcher = rightMatcherFactory1.matcher
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = rightMatcher(e)
@@ -5903,7 +5942,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]): Assertion = {
+    // SKIP-DOTTY-START 
     def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]): Assertion = {
+    // SKIP-DOTTY-END  
       val rightMatcher = rightMatcherFactory2.matcher
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = rightMatcher(e)
@@ -5934,7 +5976,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should(beWord: BeWord): ResultOfBeWordForCollectedAny[T] =
+    // SKIP-DOTTY-START 
     def should(beWord: BeWord): ResultOfBeWordForCollectedAny[T] =
+    // SKIP-DOTTY-END
       new ResultOfBeWordForCollectedAny[T](collected, xs, original, true, prettifier, pos)
 
     /**
@@ -5945,7 +5990,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should(notWord: NotWord): ResultOfNotWordForCollectedAny[T] =
+    // SKIP-DOTTY-START 
     def should(notWord: NotWord): ResultOfNotWordForCollectedAny[T] =
+    // SKIP-DOTTY-END
       new ResultOfNotWordForCollectedAny(collected, xs, original, false, prettifier, pos)
 
     /**
@@ -5958,7 +6006,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
+    //DOTTY-ONLY infix def should(haveWord: HaveWord): ResultOfHaveWordForCollectedExtent[T] =
+    // SKIP-DOTTY-START 
     def should(haveWord: HaveWord): ResultOfHaveWordForCollectedExtent[T] =
+    // SKIP-DOTTY-END
       new ResultOfHaveWordForCollectedExtent(collected, xs, original, true, prettifier, pos)
 
     /**
@@ -5972,7 +6023,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START 
     def shouldBe(right: Any): Assertion = {
     // SKIP-DOTTY-END
-    //DOTTY-ONLY def shouldBe[R](right: R)(implicit caneq: scala.CanEqual[T, R]): Assertion = {
+    //DOTTY-ONLY infix def shouldBe[R](right: R)(implicit caneq: scala.CanEqual[T, R]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (e != right) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
