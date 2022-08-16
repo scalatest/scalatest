@@ -90,7 +90,7 @@ final class BeWord {
    *                       ^
    * </pre>
    **/
-  infix def <[T : Ordering](right: T): Matcher[T] =
+  def <[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val ordering = implicitly[Ordering[T]]
@@ -129,7 +129,7 @@ final class BeWord {
    *                       ^
    * </pre>
    **/
-  infix def >[T : Ordering](right: T): Matcher[T] =
+  def >[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val ordering = implicitly[Ordering[T]]
@@ -168,7 +168,7 @@ final class BeWord {
    *                       ^
    * </pre>
    **/
-  infix def <=[T : Ordering](right: T): Matcher[T] =
+  def <=[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val ordering = implicitly[Ordering[T]]
@@ -207,7 +207,7 @@ final class BeWord {
    *                       ^
    * </pre>
    **/
-  infix def >=[T : Ordering](right: T): Matcher[T] =
+  def >=[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val ordering = implicitly[Ordering[T]]
