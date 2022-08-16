@@ -70,7 +70,7 @@ final class NotWord {
    *                      ^
    * </pre>
    **/
-  infix def apply[S, TYPECLASS[_]](matcherGen1: MatcherFactory1[S, TYPECLASS]): MatcherFactory1[S, TYPECLASS] = {
+  def apply[S, TYPECLASS[_]](matcherGen1: MatcherFactory1[S, TYPECLASS]): MatcherFactory1[S, TYPECLASS] = {
     new MatcherFactory1[S, TYPECLASS] {
       def matcher[V <: S : TYPECLASS]: Matcher[V] = {
         val innerMatcher: Matcher[V] = matcherGen1.matcher
@@ -123,7 +123,7 @@ final class NotWord {
    * num should not be (odd)
    * </pre>
    */
-  infix def apply[S](beMatcher: BeMatcher[S]): BeMatcher[S] =
+  def apply[S](beMatcher: BeMatcher[S]): BeMatcher[S] =
     new BeMatcher[S] {
       def apply(left: S): MatchResult = beMatcher(left).negated
       override def toString: String = "not (" + Prettifier.default(beMatcher) + ")"
@@ -137,7 +137,7 @@ final class NotWord {
    *             ^
    * </pre>
    **/
-  infix def apply(existWord: ExistWord): ResultOfNotExist =
+  def apply(existWord: ExistWord): ResultOfNotExist =
     new ResultOfNotExist(this)
 
   /*
