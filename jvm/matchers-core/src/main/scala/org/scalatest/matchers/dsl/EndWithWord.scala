@@ -38,11 +38,8 @@ final class EndWithWord {
    * "1.7b" should (endWith ("1.7b") and endWith ("7b"))
    *                        ^
    * </pre>
-   */
-  //DOTTY-ONLY infix def apply(right: String): Matcher[String] =
-  // SKIP-DOTTY-START 
+   */ 
   def apply(right: String): Matcher[String] =
-  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult =
         MatchResult(

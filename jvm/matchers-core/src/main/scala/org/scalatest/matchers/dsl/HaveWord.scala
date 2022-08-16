@@ -137,19 +137,13 @@ final class HaveWord {
 
   /**
    * Enables parentheses to be placed around <code>length (N)</code> in expressions of the form: <code>should have (length (N))</code>.
-   */
-  //DOTTY-ONLY infix def apply[T](resultOfLengthWordApplication: ResultOfLengthWordApplication): MatcherFactory1[Any, Length] = length(resultOfLengthWordApplication.expectedLength)
-  // SKIP-DOTTY-START 
+   */ 
   def apply[T](resultOfLengthWordApplication: ResultOfLengthWordApplication): MatcherFactory1[Any, Length] = length(resultOfLengthWordApplication.expectedLength)
-  // SKIP-DOTTY-END
 
   /**
    * Enables parentheses to be placed around <code>size (N)</code> in expressions of the form: <code>should have (size (N))</code>.
-   */
-  //DOTTY-ONLY infix def apply[T](resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory1[Any, Size] = size(resultOfSizeWordApplication.expectedSize)
-  // SKIP-DOTTY-START 
+   */ 
   def apply[T](resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory1[Any, Size] = size(resultOfSizeWordApplication.expectedSize)
-  // SKIP-DOTTY-END
 
   /**
    * This method enables the following syntax:
@@ -159,10 +153,7 @@ final class HaveWord {
    *                  ^
    * </pre>
    */
-  //DOTTY-ONLY infix def apply[T](firstPropertyMatcher: HavePropertyMatcher[T, _], propertyMatchers: HavePropertyMatcher[T, _]*): Matcher[T] =
-  // SKIP-DOTTY-START 
   def apply[T](firstPropertyMatcher: HavePropertyMatcher[T, _], propertyMatchers: HavePropertyMatcher[T, _]*): Matcher[T] =
-  // SKIP-DOTTY-END
 
     new Matcher[T] {
 

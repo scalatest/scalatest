@@ -45,10 +45,7 @@ final class ContainWord {
    *                     ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def apply(nullValue: Null): MatcherFactory1[Any, Containing] =
-  // SKIP-DOTTY-START
   def apply(nullValue: Null): MatcherFactory1[Any, Containing] =
-  // SKIP-DOTTY-END
     new MatcherFactory1[Any, Containing] {
       def matcher[U <: Any : Containing]: Matcher[U] =
         new Matcher[U] {
@@ -73,11 +70,8 @@ final class ContainWord {
    * Array(1, 2) should (contain (2) and contain (1))
    *                             ^
    * </pre>
-   **/
-  //DOTTY-ONLY infix def apply(expectedElement: Any): MatcherFactory1[Any, Containing] =
-  // SKIP-DOTTY-START 
+   **/ 
   def apply(expectedElement: Any): MatcherFactory1[Any, Containing] =
-  // SKIP-DOTTY-END
     new MatcherFactory1[Any, Containing] {
       def matcher[U <: Any : Containing]: Matcher[U] = 
         new Matcher[U] {
