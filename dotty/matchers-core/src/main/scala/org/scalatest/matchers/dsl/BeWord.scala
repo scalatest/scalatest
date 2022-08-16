@@ -234,7 +234,7 @@ final class BeWord {
    * </p>
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
-  infix def ===(right: Any)(implicit pos: source.Position): Matcher[Any] = {
+  def ===(right: Any)(implicit pos: source.Position): Matcher[Any] = {
     throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed, pos)
   }
 
