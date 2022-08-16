@@ -30,11 +30,8 @@ final class LengthWord {
    * "hi" should not have length (3)
    *                             ^
    * </pre>
-   */
-  //DOTTY-ONLY infix def apply(expectedLength: Long): ResultOfLengthWordApplication = new ResultOfLengthWordApplication(expectedLength)
-  // SKIP-DOTTY-START 
+   */ 
   def apply(expectedLength: Long): ResultOfLengthWordApplication = new ResultOfLengthWordApplication(expectedLength)
-  // SKIP-DOTTY-END
   
   /**
    * Overrides toString to return "length"

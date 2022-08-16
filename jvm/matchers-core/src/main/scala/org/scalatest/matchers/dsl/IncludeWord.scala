@@ -37,11 +37,8 @@ final class IncludeWord {
    * "1.7" should (include ("1.7") and include ("1.8"))
    *                       ^
    * </pre>
-   */
-  //DOTTY-ONLY infix def apply(expectedSubstring: String): Matcher[String] =
-  // SKIP-DOTTY-START 
+   */ 
   def apply(expectedSubstring: String): Matcher[String] =
-  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult =
         MatchResult(
