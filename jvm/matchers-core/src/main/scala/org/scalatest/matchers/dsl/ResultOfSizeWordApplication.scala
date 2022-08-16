@@ -29,10 +29,7 @@ import org.scalactic.Prettifier
 final class ResultOfSizeWordApplication(val expectedSize: Long) {
 
   // TODO: SCALADOC
-  //DOTTY-ONLY infix def apply[T : Size](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, Long] = {
-  // SKIP-DOTTY-START
-  def apply[T : Size](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, Long] = {
-  // SKIP-DOTTY-END  
+  def apply[T : Size](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, Long] = {  
     new HavePropertyMatcher[T, Long] {
       def apply(t: T): HavePropertyMatchResult[Long] = {
         val sz = implicitly[Size[T]]

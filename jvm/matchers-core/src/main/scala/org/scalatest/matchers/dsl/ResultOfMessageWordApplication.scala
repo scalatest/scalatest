@@ -30,10 +30,7 @@ import org.scalactic.Prettifier
 final class ResultOfMessageWordApplication(val expectedMessage: String) {
 
   // TODO: SCALADOC
-  //DOTTY-ONLY infix def apply[T : Messaging](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, String] = {
-  // SKIP-DOTTY-START
-  def apply[T : Messaging](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, String] = {
-  // SKIP-DOTTY-END  
+  def apply[T : Messaging](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, String] = {  
     new HavePropertyMatcher[T, String] {
       def apply(t: T): HavePropertyMatchResult[String] = {
         val messaging = implicitly[Messaging[T]]
