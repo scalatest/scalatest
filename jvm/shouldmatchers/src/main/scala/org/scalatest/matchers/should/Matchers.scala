@@ -2887,11 +2887,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * num should (not be &lt; (10) and not be &gt; (17))
    *                    ^
    * </pre>
-   */
-  //DOTTY-ONLY infix def <[T : Ordering] (right: T): ResultOfLessThanComparison[T] =
-  // SKIP-DOTTY-START 
+   */ 
   def <[T : Ordering] (right: T): ResultOfLessThanComparison[T] =
-  // SKIP-DOTTY-END
     new ResultOfLessThanComparison(right)
 
   /**
@@ -2901,11 +2898,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * num should (not be &gt; (10) and not be &lt; (7))
    *                    ^
    * </pre>
-   */
-  //DOTTY-ONLY infix def >[T : Ordering] (right: T): ResultOfGreaterThanComparison[T] =
-  // SKIP-DOTTY-START 
+   */ 
   def >[T : Ordering] (right: T): ResultOfGreaterThanComparison[T] =
-  // SKIP-DOTTY-END
     new ResultOfGreaterThanComparison(right)
 
   /**
@@ -2915,11 +2909,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * num should (not be &lt;= (10) and not be &gt; (17))
    *                    ^
    * </pre>
-   */
-  //DOTTY-ONLY infix def <=[T : Ordering] (right: T): ResultOfLessThanOrEqualToComparison[T] =
-  // SKIP-DOTTY-START 
+   */ 
   def <=[T : Ordering] (right: T): ResultOfLessThanOrEqualToComparison[T] =
-  // SKIP-DOTTY-END
     new ResultOfLessThanOrEqualToComparison(right)
 
   /**
@@ -2929,11 +2920,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * num should (not be &gt;= (10) and not be < (7))
    *                    ^
    * </pre>
-   */
-  //DOTTY-ONLY infix def >=[T : Ordering] (right: T): ResultOfGreaterThanOrEqualToComparison[T] =
-  // SKIP-DOTTY-START 
+   */ 
   def >=[T : Ordering] (right: T): ResultOfGreaterThanOrEqualToComparison[T] =
-  // SKIP-DOTTY-END
     new ResultOfGreaterThanOrEqualToComparison(right)
 
   /**
