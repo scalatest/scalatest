@@ -352,7 +352,7 @@ final class BeWord {
    *                      ^
    * </pre>
    **/
-  infix def apply[U](spread: Spread[U]): Matcher[U] =
+  def apply[U](spread: Spread[U]): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult = {
         MatchResult(
@@ -393,7 +393,7 @@ final class BeWord {
    *                  ^
    * </pre>
    **/
-  infix def apply(right: Boolean): Matcher[Boolean] =
+  def apply(right: Boolean): Matcher[Boolean] =
     new Matcher[Boolean] {
       def apply(left: Boolean): MatchResult =
         MatchResult(
@@ -413,7 +413,7 @@ final class BeWord {
    *                  ^
    * </pre>
    **/
-  infix def apply(o: Null): Matcher[AnyRef] =
+  def apply(o: Null): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
@@ -436,7 +436,7 @@ final class BeWord {
    * set should be ('empty)
    *               ^
    * </pre>
-  infix def apply[T](right: AType[T]): Matcher[Any] =
+  def apply[T](right: AType[T]): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult =
         MatchResult(
@@ -458,7 +458,7 @@ final class BeWord {
    *               ^
    * </pre>
    **/
-  infix def apply(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
+  def apply(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, false, false, prettifier, pos)
       override def toString: String = "be (" + Prettifier.default(right) + ")"
@@ -474,7 +474,7 @@ final class BeWord {
    *               ^
    * </pre>
    **/
-  infix def apply[T](right: BeMatcher[T]): Matcher[T] =
+  def apply[T](right: BeMatcher[T]): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = right(left)
       override def toString: String = "be (" + Prettifier.default(right) + ")"
@@ -488,7 +488,7 @@ final class BeWord {
    *                ^
    * </pre>
    **/
-  infix def apply[T](bePropertyMatcher: BePropertyMatcher[T]): Matcher[T] =
+  def apply[T](bePropertyMatcher: BePropertyMatcher[T]): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         val result = bePropertyMatcher(left)
@@ -518,7 +518,7 @@ final class BeWord {
    *               ^
    * </pre>
    **/
-  infix def apply(right: Any): Matcher[Any] =
+  def apply(right: Any): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
         new EqualMatchResult(
@@ -540,7 +540,7 @@ final class BeWord {
    *                          ^
    * </pre>
    **/
-  infix def apply(right: SortedWord): MatcherFactory1[Any, Sortable] =
+  def apply(right: SortedWord): MatcherFactory1[Any, Sortable] =
     new MatcherFactory1[Any, Sortable] {
       def matcher[T <: Any : Sortable]: Matcher[T] =
         new Matcher[T] {
@@ -596,7 +596,7 @@ final class BeWord {
    *                  ^
    * </pre>
    **/
-  infix def apply[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[U] =
+  def apply[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult =
         MatchResult(
@@ -618,7 +618,7 @@ final class BeWord {
    *               ^
    * </pre>
    **/
-  infix inline def apply(aType: ResultOfATypeInvocation[_]): Matcher[Any] =
+  inline def apply(aType: ResultOfATypeInvocation[_]): Matcher[Any] =
     ${ TypeMatcherMacro.aTypeMatcherImpl('{aType}) }
 
   /**
@@ -629,7 +629,7 @@ final class BeWord {
    *               ^
    * </pre>
    **/
-  infix inline def apply(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] =
+  inline def apply(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] =
     ${ TypeMatcherMacro.anTypeMatcherImpl('{anType}) }
 
   /**
@@ -640,7 +640,7 @@ final class BeWord {
    *                ^
    * </pre>
    **/
-  infix def apply(readable: ReadableWord): MatcherFactory1[Any, Readability] =
+  def apply(readable: ReadableWord): MatcherFactory1[Any, Readability] =
     new MatcherFactory1[Any, Readability] {
       def matcher[T <: Any : Readability]: Matcher[T] =
         new Matcher[T] {
@@ -666,7 +666,7 @@ final class BeWord {
    *                 ^
    * </pre>
    **/
-  infix def apply(writable: WritableWord): MatcherFactory1[Any, Writability] =
+  def apply(writable: WritableWord): MatcherFactory1[Any, Writability] =
     new MatcherFactory1[Any, Writability] {
       def matcher[T <: Any : Writability]: Matcher[T] =
         new Matcher[T] {
@@ -692,7 +692,7 @@ final class BeWord {
    *                 ^
    * </pre>
    **/
-  infix def apply(empty: EmptyWord): MatcherFactory1[Any, Emptiness] =
+  def apply(empty: EmptyWord): MatcherFactory1[Any, Emptiness] =
     new MatcherFactory1[Any, Emptiness] {
       def matcher[T <: Any : Emptiness]: Matcher[T] =
         new Matcher[T] {
@@ -718,7 +718,7 @@ final class BeWord {
    *                 ^
    * </pre>
    **/
-  infix def apply(defined: DefinedWord): MatcherFactory1[Any, Definition] =
+  def apply(defined: DefinedWord): MatcherFactory1[Any, Definition] =
     new MatcherFactory1[Any, Definition] {
       def matcher[T <: Any : Definition]: Matcher[T] =
         new Matcher[T] {
