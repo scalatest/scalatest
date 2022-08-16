@@ -30,11 +30,8 @@ final class SizeWord {
    * set should not have size (3)
    *                          ^
    * </pre>
-   */
-  //DOTTY-ONLY infix def apply(expectedSize: Long): ResultOfSizeWordApplication = new ResultOfSizeWordApplication(expectedSize)
-  // SKIP-DOTTY-START 
+   */ 
   def apply(expectedSize: Long): ResultOfSizeWordApplication = new ResultOfSizeWordApplication(expectedSize)
-  // SKIP-DOTTY-END
   
   /**
    * Overrides toString to return "size"

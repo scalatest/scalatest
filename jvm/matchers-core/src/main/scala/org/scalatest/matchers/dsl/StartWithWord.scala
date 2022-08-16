@@ -37,11 +37,8 @@ final class StartWithWord {
    * "1.7b" should (startWith ("1.7") and startWith ("1.7b"))
    *                          ^
    * </pre>
-   */
-  //DOTTY-ONLY infix def apply(right: String): Matcher[String] =
-  // SKIP-DOTTY-START 
+   */ 
   def apply(right: String): Matcher[String] =
-  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult =
         MatchResult(
