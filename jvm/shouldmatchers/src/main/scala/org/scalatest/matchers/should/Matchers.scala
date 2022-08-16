@@ -1871,10 +1871,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * book should have (convertSymbolToHavePropertyMatcherGenerator('title).apply("A Tale of Two Cities"))
      * </pre>
      */
-    //DOTTY-ONLY infix def apply(expectedValue: Any): HavePropertyMatcher[AnyRef, Any] =
-    // SKIP-DOTTY-START 
     def apply(expectedValue: Any): HavePropertyMatcher[AnyRef, Any] =
-    // SKIP-DOTTY-END
       new HavePropertyMatcher[AnyRef, Any] {
 
         /**
@@ -1900,11 +1897,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
          * </p>
          * TODO continue the story
          */
-        //DOTTY-ONLY infix def apply(objectWithProperty: AnyRef): HavePropertyMatchResult[Any] = {
-        // SKIP-DOTTY-START 
         def apply(objectWithProperty: AnyRef): HavePropertyMatchResult[Any] = {
-        // SKIP-DOTTY-END  
-
+        
           // If 'empty passed, propertyName would be "empty"
           val propertyName = symbol.name
 
@@ -2159,10 +2153,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                                     ^
      * </pre>
      */
-    //DOTTY-ONLY infix def apply(regexString: String): ResultOfRegexWordApplication =
-    // SKIP-DOTTY-START 
     def apply(regexString: String): ResultOfRegexWordApplication = 
-    // SKIP-DOTTY-END
       new ResultOfRegexWordApplication(regexString, IndexedSeq.empty)
 
     /**
@@ -2173,10 +2164,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                                     ^
      * </pre>
      */
-    //DOTTY-ONLY infix def apply(regex: Regex): ResultOfRegexWordApplication =
-    // SKIP-DOTTY-START 
     def apply(regex: Regex): ResultOfRegexWordApplication = 
-    // SKIP-DOTTY-END
       new ResultOfRegexWordApplication(regex, IndexedSeq.empty)
 
     /**
@@ -2187,10 +2175,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                                    ^
      * </pre>
      */
-    //DOTTY-ONLY infix def apply(regexWithGroups: RegexWithGroups) =
-    // SKIP-DOTTY-START 
     def apply(regexWithGroups: RegexWithGroups) =
-    // SKIP-DOTTY-END
       new ResultOfRegexWordApplication(regexWithGroups.regex, regexWithGroups.groups)
 
     /**
@@ -2544,10 +2529,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                            ^
      * </pre>
      */
-    //DOTTY-ONLY infix def apply(expectedKey: Any): ResultOfKeyWordApplication =
-    // SKIP-DOTTY-START 
     def apply(expectedKey: Any): ResultOfKeyWordApplication = 
-    // SKIP-DOTTY-END
       new ResultOfKeyWordApplication(expectedKey)
 
     /**
@@ -2583,11 +2565,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * map should not contain key (10)
      *                            ^
      * </pre>
-     */
-    //DOTTY-ONLY infix def apply(expectedValue: Any): ResultOfValueWordApplication =
-    // SKIP-DOTTY-START 
+     */ 
     def apply(expectedValue: Any): ResultOfValueWordApplication =
-    // SKIP-DOTTY-END 
       new ResultOfValueWordApplication(expectedValue)
 
     /**
@@ -2624,10 +2603,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def apply(symbol: Symbol): ResultOfAWordToSymbolApplication =
-    // SKIP-DOTTY-START 
     def apply(symbol: Symbol): ResultOfAWordToSymbolApplication =
-    // SKIP-DOTTY-END 
       new ResultOfAWordToSymbolApplication(symbol)
 
     /**
@@ -2639,10 +2615,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def apply[T](beTrueMatcher: BePropertyMatcher[T]): ResultOfAWordToBePropertyMatcherApplication[T] =
-    // SKIP-DOTTY-START 
     def apply[T](beTrueMatcher: BePropertyMatcher[T]): ResultOfAWordToBePropertyMatcherApplication[T] = 
-    // SKIP-DOTTY-END
       new ResultOfAWordToBePropertyMatcherApplication(beTrueMatcher)
 
     /**
@@ -2653,10 +2626,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    //DOTTY-ONLY infix def apply[T](aMatcher: AMatcher[T]): ResultOfAWordToAMatcherApplication[T] =
-    // SKIP-DOTTY-START 
     def apply[T](aMatcher: AMatcher[T]): ResultOfAWordToAMatcherApplication[T] = 
-    // SKIP-DOTTY-END
       new ResultOfAWordToAMatcherApplication(aMatcher)
 
     /**
@@ -2693,10 +2663,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                          ^
      * </pre>
      */
-    //DOTTY-ONLY infix def apply(symbol: Symbol): ResultOfAnWordToSymbolApplication =
-    // SKIP-DOTTY-START 
     def apply(symbol: Symbol): ResultOfAnWordToSymbolApplication = 
-    // SKIP-DOTTY-END
       new ResultOfAnWordToSymbolApplication(symbol)
 
     /**
@@ -2708,10 +2675,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                          ^
      * </pre>
      */
-    //DOTTY-ONLY infix def apply[T](beTrueMatcher: BePropertyMatcher[T]): ResultOfAnWordToBePropertyMatcherApplication[T] =
-    // SKIP-DOTTY-START 
     def apply[T](beTrueMatcher: BePropertyMatcher[T]): ResultOfAnWordToBePropertyMatcherApplication[T] = 
-    // SKIP-DOTTY-END
       new ResultOfAnWordToBePropertyMatcherApplication(beTrueMatcher)
 
     /**
@@ -2722,10 +2686,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    //DOTTY-ONLY infix def apply[T](anMatcher: AnMatcher[T]): ResultOfAnWordToAnMatcherApplication[T] =
-    // SKIP-DOTTY-START 
     def apply[T](anMatcher: AnMatcher[T]): ResultOfAnWordToAnMatcherApplication[T] = 
-    // SKIP-DOTTY-END
       new ResultOfAnWordToAnMatcherApplication(anMatcher)
 
     /**
@@ -2762,10 +2723,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                                           ^
      * </pre>
      */
-    //DOTTY-ONLY infix def apply(anyRef: AnyRef): ResultOfTheSameInstanceAsApplication =
-    // SKIP-DOTTY-START 
     def apply(anyRef: AnyRef): ResultOfTheSameInstanceAsApplication =
-    // SKIP-DOTTY-END 
       new ResultOfTheSameInstanceAsApplication(anyRef)
 
     /**
@@ -5613,10 +5571,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                           ^
      * </pre>
      */
-    //DOTTY-ONLY infix def apply(right: Symbol): Matcher[Array[T]] =
-    // SKIP-DOTTY-START 
     def apply(right: Symbol): Matcher[Array[T]] =
-    // SKIP-DOTTY-END
       new Matcher[Array[T]] {
         def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(deep(left), right, false, false, prettifier, pos)
       }
