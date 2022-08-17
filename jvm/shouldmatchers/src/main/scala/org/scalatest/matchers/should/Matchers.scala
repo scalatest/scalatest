@@ -2469,10 +2469,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def equal[T](spread: Spread[T]): Matcher[T] = {
-  // SKIP-DOTTY-START 
   def equal[T](spread: Spread[T]): Matcher[T] = {
-  // SKIP-DOTTY-END  
     new Matcher[T] {
       def apply(left: T): MatchResult = {
         MatchResult(
@@ -2493,11 +2490,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * result should equal (null)
    *               ^
    * </pre>
-   */
-  //DOTTY-ONLY infix def equal(o: Null): Matcher[AnyRef] =
-  // SKIP-DOTTY-START 
+   */ 
   def equal(o: Null): Matcher[AnyRef] =
-  // SKIP-DOTTY-END
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = {
         MatchResult(
@@ -2890,10 +2884,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                     ^
    * </pre>
    */
-  //DOTTY-ONLY infix def definedAt[T](right: T): ResultOfDefinedAt[T] =
-  // SKIP-DOTTY-START 
   def definedAt[T](right: T): ResultOfDefinedAt[T] =
-  // SKIP-DOTTY-END
     new ResultOfDefinedAt(right)
 
   /**
@@ -2904,10 +2895,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-START 
   def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-END  
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages.oneOfDuplicate, pos)
@@ -2922,10 +2910,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def oneElementOf(elements: GenTraversable[Any]) = {
-  // SKIP-DOTTY-START 
   def oneElementOf(elements: GenTraversable[Any]) = {
-  // SKIP-DOTTY-END  
     val xs = elements.toList
     new ResultOfOneElementOfApplication(xs)
   }
@@ -2938,10 +2923,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-START 
   def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-END  
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, pos)
@@ -2956,10 +2938,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def atLeastOneElementOf(elements: GenTraversable[Any]) = {
-  // SKIP-DOTTY-START 
   def atLeastOneElementOf(elements: GenTraversable[Any]) = {
-  // SKIP-DOTTY-END  
     val xs = elements.toList
     new ResultOfAtLeastOneElementOfApplication(xs)
   }
@@ -2972,10 +2951,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-START 
   def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-END  
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages.noneOfDuplicate, pos)
@@ -2990,10 +2966,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def noElementsOf(elements: GenTraversable[Any]) = {
-  // SKIP-DOTTY-START 
   def noElementsOf(elements: GenTraversable[Any]) = {
-  // SKIP-DOTTY-END  
     val xs = elements.toList
     new ResultOfNoElementsOfApplication(xs)
   }
@@ -3006,10 +2979,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def theSameElementsAs(xs: GenTraversable[_]) =
-  // SKIP-DOTTY-START 
   def theSameElementsAs(xs: GenTraversable[_]) = 
-  // SKIP-DOTTY-END
     new ResultOfTheSameElementsAsApplication(xs)
 
   /**
@@ -3020,10 +2990,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def theSameElementsInOrderAs(xs: GenTraversable[_]) =
-  // SKIP-DOTTY-START 
   def theSameElementsInOrderAs(xs: GenTraversable[_]) = 
-  // SKIP-DOTTY-END
     new ResultOfTheSameElementsInOrderAsApplication(xs)
 
   /**
@@ -3034,10 +3001,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def only(xs: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-START 
   def only(xs: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-END  
     if (xs.isEmpty)
       throw new NotAllowedException(FailureMessages.onlyEmpty, pos)
     if (xs.distinct.size != xs.size)
@@ -3053,10 +3017,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def inOrderOnly[T](firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-START 
   def inOrderOnly[T](firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-END  
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, pos)
@@ -3071,10 +3032,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-START 
   def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-END  
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages.allOfDuplicate, pos)
@@ -3089,10 +3047,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def allElementsOf[R](elements: GenTraversable[R]) = {
-  // SKIP-DOTTY-START 
   def allElementsOf[R](elements: GenTraversable[R]) = {
-  // SKIP-DOTTY-END  
     val xs = elements.toList
     new ResultOfAllElementsOfApplication(xs)
   }
@@ -3105,10 +3060,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-START 
   def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-END  
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages.inOrderDuplicate, pos)
@@ -3123,10 +3075,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def inOrderElementsOf[R](elements: GenTraversable[R]) = {
-  // SKIP-DOTTY-START 
   def inOrderElementsOf[R](elements: GenTraversable[R]) = {
-  // SKIP-DOTTY-END  
     val xs = elements.toList
     new ResultOfInOrderElementsOfApplication(xs)
   }
@@ -3139,10 +3088,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-START 
   def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
-  // SKIP-DOTTY-END  
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
       throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, pos)
@@ -3157,10 +3103,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  //DOTTY-ONLY infix def atMostOneElementOf[R](elements: GenTraversable[R]) = {
-  // SKIP-DOTTY-START 
   def atMostOneElementOf[R](elements: GenTraversable[R]) = {
-  // SKIP-DOTTY-END  
     val xs = elements.toList
     new ResultOfAtMostOneElementOfApplication(xs)
   }
@@ -3173,10 +3116,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                                ^
    * </pre>
    */
-  //DOTTY-ONLY infix def thrownBy(fun: => Any) =
-  // SKIP-DOTTY-START 
   def thrownBy(fun: => Any) = 
-  // SKIP-DOTTY-END
     new ResultOfThrownByApplication(fun)
 
   /**
@@ -3187,10 +3127,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                           ^
    * </pre>
    */
-  //DOTTY-ONLY infix def message(expectedMessage: String) =
-  // SKIP-DOTTY-START 
   def message(expectedMessage: String) = 
-  // SKIP-DOTTY-END
     new ResultOfMessageWordApplication(expectedMessage)
 
 /*
@@ -7033,10 +6970,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def all[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] = 
-  // SKIP-DOTTY-START 
   def all[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7047,10 +6981,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
-  //DOTTY-ONLY infix def all[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] = 
-  // SKIP-DOTTY-START  
   def all[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7061,10 +6992,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def all[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-START 
   def all[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7075,10 +7003,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def all(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-START 
   def all(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7089,10 +7014,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def atLeast[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-START 
   def atLeast[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7103,10 +7025,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
-  //DOTTY-ONLY infix def atLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-  // SKIP-DOTTY-START  
   def atLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7117,10 +7036,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def atLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-START 
   def atLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7131,10 +7047,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def atLeast(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-START 
   def atLeast(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7145,10 +7058,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def every[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-START 
   def every[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7159,10 +7069,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
-  //DOTTY-ONLY infix def every[K, V, MAP[k, v] <: scala.collection.Map[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-  // SKIP-DOTTY-START  
   def every[K, V, MAP[k, v] <: scala.collection.Map[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7170,13 +7077,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * <pre class="stHighlight">
    * every(jmap) should fullymatch regex ("Hel*o world".r)
+  
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def every[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-START 
   def every[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7187,10 +7092,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def every(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-START 
   def every(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7201,10 +7103,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def exactly[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-START 
   def exactly[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7215,10 +7114,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
-  //DOTTY-ONLY infix def exactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-  // SKIP-DOTTY-START  
   def exactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7229,10 +7125,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def exactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-START 
   def exactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7243,10 +7136,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def exactly(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-START 
   def exactly(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7256,11 +7146,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * no(xs) should fullymatch regex ("Hel*o world".r)
    * ^
    * </pre>
-   */
-  //DOTTY-ONLY infix def no[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-START 
+   */ 
   def no[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7271,10 +7158,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def no[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-START 
   def no[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7285,10 +7169,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def no(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-START 
   def no(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7299,10 +7180,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def between[E, C[_]](from: Int, upTo:Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-START 
   def between[E, C[_]](from: Int, upTo:Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7313,10 +7191,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def between[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo:Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-START 
   def between[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo:Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7327,10 +7202,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def between(from: Int, upTo:Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-START 
   def between(from: Int, upTo:Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7341,10 +7213,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def atMost[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-START 
   def atMost[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7355,10 +7224,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
-  //DOTTY-ONLY infix def atMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-  // SKIP-DOTTY-START  
   def atMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7369,10 +7235,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def atMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-START 
   def atMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7383,10 +7246,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def atMost(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-START 
   def atMost(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-  // SKIP-DOTTY-END
     new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7397,10 +7257,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def a[T: ClassTag]: ResultOfATypeInvocation[T] =
-  // SKIP-DOTTY-START 
   def a[T: ClassTag]: ResultOfATypeInvocation[T] =
-  // SKIP-DOTTY-END
     new ResultOfATypeInvocation(classTag)
 
   /**
@@ -7411,10 +7268,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def an[T : ClassTag]: ResultOfAnTypeInvocation[T] =
-  // SKIP-DOTTY-START 
   def an[T : ClassTag]: ResultOfAnTypeInvocation[T] =
-  // SKIP-DOTTY-END
     new ResultOfAnTypeInvocation(classTag)
 
   /**
@@ -7425,10 +7279,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  //DOTTY-ONLY infix def the[T : ClassTag](implicit pos: source.Position): ResultOfTheTypeInvocation[T] =
-  // SKIP-DOTTY-START 
   def the[T : ClassTag](implicit pos: source.Position): ResultOfTheTypeInvocation[T] =
-  // SKIP-DOTTY-END
     new ResultOfTheTypeInvocation(classTag, pos)
 
   // This is where ShouldMatchers.scala started
@@ -8564,11 +8415,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * book should have (message ("A TALE OF TWO CITIES") (of [Book]), title ("A Tale of Two Cities"))
    *                                                     ^
    * </pre>
-   */
-  //DOTTY-ONLY infix def of[T](implicit ev: ClassTag[T]): ResultOfOfTypeInvocation[T] =
-  // SKIP-DOTTY-START 
+   */ 
   def of[T](implicit ev: ClassTag[T]): ResultOfOfTypeInvocation[T] = 
-  // SKIP-DOTTY-END
     new ResultOfOfTypeInvocation[T]
 }
 
