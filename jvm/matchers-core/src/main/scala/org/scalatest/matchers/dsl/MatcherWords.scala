@@ -290,10 +290,7 @@ trait MatcherWords {
    * </p>
    *
    */
-  //DOTTY-ONLY infix def equal(right: Any): MatcherFactory1[Any, Equality] =
-  // SKIP-DOTTY-START 
   def equal(right: Any): MatcherFactory1[Any, Equality] =
-  // SKIP-DOTTY-END
     new MatcherFactory1[Any, Equality] {
       def matcher[T <: Any : Equality]: Matcher[T] = {
         val equality = implicitly[Equality[T]]
