@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic._
+import org.scalactic.{Resources => _, _}
 import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestFailedException
 
@@ -134,7 +134,9 @@ trait EitherValues extends Serializable {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherLeftValueNotDefined(leftProj.e)), Some(cause), pos)
+          val e = leftProj.e
+          val p = pos
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherLeftValueNotDefined(e)), Some(cause), p)
       }
     }
   }
@@ -162,7 +164,9 @@ trait EitherValues extends Serializable {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherRightValueNotDefined(rightProj.e)), Some(cause), pos)
+          val e = rightProj.e
+          val p = pos
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherRightValueNotDefined(e)), Some(cause), p)
       }
     }
   }
@@ -202,7 +206,9 @@ trait EitherValues extends Serializable {
       either match {
         case Right(r) => r
         case _ =>
-          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherValueNotDefined(either)), None, pos)
+          val e = either
+          val p = pos
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherValueNotDefined(e)), None, p)
       }
     }
   }
