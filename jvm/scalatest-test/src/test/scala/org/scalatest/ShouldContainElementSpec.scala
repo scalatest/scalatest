@@ -1290,7 +1290,7 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should contain ("three" -> 3)
         }
-        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (three,3)")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"three\", 3)")
       }
 
       it("should throw TestFailedException if contains the specified element when used with not") {
@@ -1298,17 +1298,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should (not contain ("two" -> 2))
         }
-        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
 
         val caught2 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should not (contain ("two" -> 2))
         }
-        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
 
         val caught3 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should not contain ("two" -> 2)
         }
-        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified element and used in a logical-and expression") {
@@ -1316,17 +1316,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { contain ("five" -> 5) and (contain ("two" -> 2)) }
         }
-        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (five,5)")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"five\", 5)")
 
         val caught2 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should ((contain ("five" -> 5)) and (contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (five,5)")
+        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"five\", 5)")
 
         val caught3 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should (contain ("five" -> 5) and contain ("two" -> 2))
         }
-        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (five,5)")
+        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"five\", 5)")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified element and used in a logical-or expression") {
@@ -1334,17 +1334,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { contain ("fifty five" -> 55) or (contain ("twenty two" -> 22)) }
         }
-        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (fifty five,55), and Map(\"one\" -> 1, \"two\" -> 2) did not contain element (twenty two,22)")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"fifty five\", 55), and Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"twenty two\", 22)")
 
         val caught2 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should ((contain ("fifty five" -> 55)) or (contain ("twenty two" -> 22)))
         }
-        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (fifty five,55), and Map(\"one\" -> 1, \"two\" -> 2) did not contain element (twenty two,22)")
+        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"fifty five\", 55), and Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"twenty two\", 22)")
 
         val caught3 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should (contain ("fifty five" -> 55) or contain ("twenty two" -> 22))
         }
-        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (fifty five,55), and Map(\"one\" -> 1, \"two\" -> 2) did not contain element (twenty two,22)")
+        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"fifty five\", 55), and Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"twenty two\", 22)")
       }
 
       it("should throw an TestFailedException when map contains specified element and used in a logical-and expression with not") {
@@ -1352,17 +1352,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { not { contain ("three" -> 3) } and not { contain ("two" -> 2) }}
         }
-        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (three,3), but Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"three\", 3), but Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
 
         val caught2 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should ((not contain ("three" -> 3)) and (not contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (three,3), but Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"three\", 3), but Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
 
         val caught3 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should (not contain ("three" -> 3) and not contain ("two" -> 2))
         }
-        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (three,3), but Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"three\", 3), but Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
       }
 
       it("should throw an TestFailedException when map contains specified element and used in a logical-or expression with not") {
@@ -1370,17 +1370,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should { not { contain ("two" -> 2) } or not { contain ("two" -> 2) }}
         }
-        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
 
         val caught2 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should ((not contain ("two" -> 2)) or (not contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
 
         val caught3 = intercept[TestFailedException] {
           Map("one" -> 1, "two" -> 2) should (not contain ("two" -> 2) or not contain ("two" -> 2))
         }
-        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
       }
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -1435,7 +1435,7 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {(
           map should contain ("three" -> 3)
         )}
-        assert(caught1.getMessage === decorateToStringValue(prettifier, map) + " did not contain element (three,3)")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map) + " did not contain element (\"three\", 3)")
       }
 
       it("should throw TestFailedException if contains the specified element when used with not") {
@@ -1443,19 +1443,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {(
           map1 should (not contain ("two" -> 2))
         )}
-        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " contained element (two,2)")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " contained element (\"two\", 2)")
         
         val map2 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {(
           map2 should not (contain ("two" -> 2))
         )}
-        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " contained element (two,2)")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " contained element (\"two\", 2)")
 
         val map3 = mutable.Map("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
            map3 should not contain ("two" -> 2)
         }
-        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained element (two,2)")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained element (\"two\", 2)")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified element and used in a logical-and expression") {
@@ -1463,19 +1463,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map1 should { contain ("five" -> 5) and (contain ("two" -> 2)) }
         }
-        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain element (five,5)")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain element (\"five\", 5)")
 
         val map2 = mutable.Map("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
           map2 should ((contain ("five" -> 5)) and (contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain element (five,5)")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain element (\"five\", 5)")
 
         val map3 = mutable.Map("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
           map3 should (contain ("five" -> 5) and contain ("two" -> 2))
         }
-        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain element (five,5)")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain element (\"five\", 5)")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified element and used in a logical-or expression") {
@@ -1483,19 +1483,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map1 should { contain ("fifty five" -> 55) or (contain ("twenty two" -> 22)) }
         }
-        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain element (fifty five,55), and " + decorateToStringValue(prettifier, map1) + " did not contain element (twenty two,22)")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain element (\"fifty five\", 55), and " + decorateToStringValue(prettifier, map1) + " did not contain element (\"twenty two\", 22)")
 
         val map2 = mutable.Map("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
           map2 should ((contain ("fifty five" -> 55)) or (contain ("twenty two" -> 22)))
         }
-        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain element (fifty five,55), and " + decorateToStringValue(prettifier, map2) + " did not contain element (twenty two,22)")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain element (\"fifty five\", 55), and " + decorateToStringValue(prettifier, map2) + " did not contain element (\"twenty two\", 22)")
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {(
           map3 should (contain ("fifty five" -> 55) or contain ("twenty two" -> 22)))
         }
-        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain element (fifty five,55), and " + decorateToStringValue(prettifier, map3) + " did not contain element (twenty two,22)")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain element (\"fifty five\", 55), and " + decorateToStringValue(prettifier, map3) + " did not contain element (\"twenty two\", 22)")
       }
 
       it("should throw an TestFailedException when map contains specified element and used in a logical-and expression with not") {
@@ -1503,19 +1503,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map1 should { not { contain ("three" -> 3) } and not { contain ("two" -> 2) }}
         }
-        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain element (three,3), but " + decorateToStringValue(prettifier, map1) + " contained element (two,2)")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain element (\"three\", 3), but " + decorateToStringValue(prettifier, map1) + " contained element (\"two\", 2)")
 
         val map2 = mutable.Map("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
           map2 should ((not contain ("three" -> 3)) and (not contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain element (three,3), but " + decorateToStringValue(prettifier, map2) + " contained element (two,2)")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain element (\"three\", 3), but " + decorateToStringValue(prettifier, map2) + " contained element (\"two\", 2)")
 
         val map3 = mutable.Map("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
           map3 should (not contain ("three" -> 3) and not contain ("two" -> 2))
         }
-        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain element (three,3), but " + decorateToStringValue(prettifier, map3) + " contained element (two,2)")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain element (\"three\", 3), but " + decorateToStringValue(prettifier, map3) + " contained element (\"two\", 2)")
       }
 
       it("should throw an TestFailedException when map contains specified element and used in a logical-or expression with not") {
@@ -1523,19 +1523,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map1 should { not { contain ("two" -> 2) } or not { contain ("two" -> 2) }}
         }
-        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " contained element (two,2), and " + decorateToStringValue(prettifier, map1) + " contained element (two,2)")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " contained element (\"two\", 2), and " + decorateToStringValue(prettifier, map1) + " contained element (\"two\", 2)")
         
         val map2 = mutable.Map("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
           map2 should ((not contain ("two" -> 2)) or (not contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " contained element (two,2), and " + decorateToStringValue(prettifier, map2) + " contained element (two,2)")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " contained element (\"two\", 2), and " + decorateToStringValue(prettifier, map2) + " contained element (\"two\", 2)")
         
         val map3 = mutable.Map("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
           map3 should (not contain ("two" -> 2) or not contain ("two" -> 2))
         }
-        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained element (two,2), and " + decorateToStringValue(prettifier, map3) + " contained element (two,2)")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained element (\"two\", 2), and " + decorateToStringValue(prettifier, map3) + " contained element (\"two\", 2)")
       }
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -1589,7 +1589,7 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map should contain ("three" -> 3)
         }
-        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (three,3)")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"three\", 3)")
       }
 
       it("should throw TestFailedException if contains the specified element when used with not") {
@@ -1597,17 +1597,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map should (not contain ("two" -> 2))
         }
-        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
 
         val caught2 = intercept[TestFailedException] {
           map should not (contain ("two" -> 2))
         }
-        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
 
         val caught3 = intercept[TestFailedException] {
           map should not contain ("two" -> 2)
         }
-        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified element and used in a logical-and expression") {
@@ -1615,17 +1615,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map should { contain ("five" -> 5) and (contain ("two" -> 2)) }
         }
-        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (five,5)")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"five\", 5)")
 
         val caught2 = intercept[TestFailedException] {
           map should ((contain ("five" -> 5)) and (contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (five,5)")
+        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"five\", 5)")
 
         val caught3 = intercept[TestFailedException] {
           map should (contain ("five" -> 5) and contain ("two" -> 2))
         }
-        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (five,5)")
+        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"five\", 5)")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified element and used in a logical-or expression") {
@@ -1633,17 +1633,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map should { contain ("fifty five" -> 55) or (contain ("twenty two" -> 22)) }
         }
-        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (fifty five,55), and Map(\"one\" -> 1, \"two\" -> 2) did not contain element (twenty two,22)")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"fifty five\", 55), and Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"twenty two\", 22)")
 
         val caught2 = intercept[TestFailedException] {
           map should ((contain ("fifty five" -> 55)) or (contain ("twenty two" -> 22)))
         }
-        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (fifty five,55), and Map(\"one\" -> 1, \"two\" -> 2) did not contain element (twenty two,22)")
+        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"fifty five\", 55), and Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"twenty two\", 22)")
 
         val caught3 = intercept[TestFailedException] {
           map should (contain ("fifty five" -> 55) or contain ("twenty two" -> 22))
         }
-        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (fifty five,55), and Map(\"one\" -> 1, \"two\" -> 2) did not contain element (twenty two,22)")
+        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"fifty five\", 55), and Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"twenty two\", 22)")
       }
 
       it("should throw an TestFailedException when map contains specified element and used in a logical-and expression with not") {
@@ -1651,17 +1651,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map should { not { contain ("three" -> 3) } and not { contain ("two" -> 2) }}
         }
-        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (three,3), but Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"three\", 3), but Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
 
         val caught2 = intercept[TestFailedException] {
           map should ((not contain ("three" -> 3)) and (not contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (three,3), but Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"three\", 3), but Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
 
         val caught3 = intercept[TestFailedException] {
           map should (not contain ("three" -> 3) and not contain ("two" -> 2))
         }
-        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (three,3), but Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) did not contain element (\"three\", 3), but Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
       }
 
       it("should throw an TestFailedException when map contains specified element and used in a logical-or expression with not") {
@@ -1669,17 +1669,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map should { not { contain ("two" -> 2) } or not { contain ("two" -> 2) }}
         }
-        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught1.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
 
         val caught2 = intercept[TestFailedException] {
           map should ((not contain ("two" -> 2)) or (not contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught2.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
 
         val caught3 = intercept[TestFailedException] {
           map should (not contain ("two" -> 2) or not contain ("two" -> 2))
         }
-        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (two,2)")
+        assert(caught3.getMessage === "Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2), and Map(\"one\" -> 1, \"two\" -> 2) contained element (\"two\", 2)")
       }
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -1733,7 +1733,7 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should contain ("three" -> 3)
         }
-        assert(caught1.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (three,3)"))
+        assert(caught1.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"three\", 3)"))
       }
 
       it("should throw TestFailedException if contains the specified element when used with not") {
@@ -1741,17 +1741,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should (not contain ("two" -> 2))
         }
-        assert(caught1.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (two,2)"))
+        assert(caught1.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2)"))
         
         val caught2 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should not (contain ("two" -> 2))
         }
-        assert(caught2.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (two,2)"))
+        assert(caught2.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2)"))
 
         val caught3 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should not contain ("two" -> 2)
         }
-        assert(caught3.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (two,2)"))
+        assert(caught3.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2)"))
       }
 
       it("should throw an TestFailedException when map doesn't contain specified element and used in a logical-and expression") {
@@ -1759,17 +1759,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should { contain ("five" -> 5) and (contain ("two" -> 2)) }
         }
-        assert(caught1.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (five,5)"))
+        assert(caught1.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"five\", 5)"))
         
         val caught2 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should ((contain ("five" -> 5)) and (contain ("two" -> 2)))
         }
-        assert(caught2.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (five,5)"))
+        assert(caught2.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"five\", 5)"))
         
         val caught3 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should (contain ("five" -> 5) and contain ("two" -> 2))
         }
-        assert(caught3.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (five,5)"))
+        assert(caught3.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"five\", 5)"))
       }
 
       it("should throw an TestFailedException when map doesn't contain specified element and used in a logical-or expression") {
@@ -1777,17 +1777,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should { contain ("fifty five" -> 55) or (contain ("twenty two" -> 22)) }
         }
-        assert(caught1.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (fifty five,55), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (twenty two,22)"))
+        assert(caught1.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"fifty five\", 55), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"twenty two\", 22)"))
         
         val caught2 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should ((contain ("fifty five" -> 55)) or (contain ("twenty two" -> 22)))
         }
-        assert(caught2.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (fifty five,55), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (twenty two,22)"))
+        assert(caught2.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"fifty five\", 55), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"twenty two\", 22)"))
         
         val caught3 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should (contain ("fifty five" -> 55) or contain ("twenty two" -> 22))
         }
-        assert(caught3.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (fifty five,55), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (twenty two,22)"))
+        assert(caught3.getMessage == (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"fifty five\", 55), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"twenty two\", 22)"))
       }
 
       it("should throw an TestFailedException when map contains specified element and used in a logical-and expression with not") {
@@ -1795,17 +1795,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should { not { contain ("three" -> 3) } and not { contain ("two" -> 2) }}
         }
-        assert(caught1.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (three,3), but " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (two,2)"))
+        assert(caught1.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"three\", 3), but " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2)"))
         
         val caught2 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should ((not contain ("three" -> 3)) and (not contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (three,3), but " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (two,2)"))
+        assert(caught2.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"three\", 3), but " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2)"))
         
         val caught3 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should (not contain ("three" -> 3) and not contain ("two" -> 2))
         }
-        assert(caught3.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (three,3), but " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (two,2)"))
+        assert(caught3.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " did not contain element (\"three\", 3), but " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2)"))
       }
 
       it("should throw an TestFailedException when map contains specified element and used in a logical-or expression with not") {
@@ -1813,17 +1813,17 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should { not { contain ("two" -> 2) } or not { contain ("two" -> 2) }}
         }
-        assert(caught1.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (two,2), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (two,2)"))
+        assert(caught1.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2)"))
         
         val caught2 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should ((not contain ("two" -> 2)) or (not contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (two,2), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (two,2)"))
+        assert(caught2.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2)"))
 
         val caught3 = intercept[TestFailedException] {
           HashMap("one" -> 1, "two" -> 2) should (not contain ("two" -> 2) or not contain ("two" -> 2))
         }
-        assert(caught3.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (two,2), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (two,2)"))
+        assert(caught3.getMessage === (Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2), and " + Prettifier.default(HashMap("one" -> 1, "two" -> 2)) + " contained element (\"two\", 2)"))
       }
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -1878,7 +1878,7 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map should contain ("three" -> 3)
         }
-        assert(caught1.getMessage === decorateToStringValue(prettifier, map) + " did not contain element (three,3)")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map) + " did not contain element (\"three\", 3)")
       }
 
       it("should throw TestFailedException if contains the specified element when used with not") {
@@ -1886,19 +1886,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {(
           map1 should (not contain ("two" -> 2)))
         }
-        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " contained element (two,2)")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " contained element (\"two\", 2)")
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {(
           map2 should not (contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " contained element (two,2)")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " contained element (\"two\", 2)")
         
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {(
           map3 should not contain ("two" -> 2))
         }
-        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained element (two,2)")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained element (\"two\", 2)")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified element and used in a logical-and expression") {
@@ -1906,19 +1906,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map1 should { contain ("five" -> 5) and (contain ("two" -> 2)) }
         }
-        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain element (five,5)")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain element (\"five\", 5)")
         
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught2 = intercept[TestFailedException] {(
           map2 should ((contain ("five" -> 5)) and (contain ("two" -> 2))))
         }
-        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain element (five,5)")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain element (\"five\", 5)")
         
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2) 
         val caught3 = intercept[TestFailedException] {(
           map3 should (contain ("five" -> 5) and contain ("two" -> 2)))
         }
-        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain element (five,5)")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain element (\"five\", 5)")
       }
 
       it("should throw an TestFailedException when map doesn't contain specified element and used in a logical-or expression") {
@@ -1926,19 +1926,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {(
           map1 should { contain ("fifty five" -> 55) or (contain ("twenty two" -> 22)) }
         )}
-        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain element (fifty five,55), and " + decorateToStringValue(prettifier, map1) + " did not contain element (twenty two,22)")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain element (\"fifty five\", 55), and " + decorateToStringValue(prettifier, map1) + " did not contain element (\"twenty two\", 22)")
 
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
           map2 should ((contain ("fifty five" -> 55)) or (contain ("twenty two" -> 22)))
         }
-        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain element (fifty five,55), and " + decorateToStringValue(prettifier, map2) + " did not contain element (twenty two,22)")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain element (\"fifty five\", 55), and " + decorateToStringValue(prettifier, map2) + " did not contain element (\"twenty two\", 22)")
 
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
           map3 should (contain ("fifty five" -> 55) or contain ("twenty two" -> 22))
         }
-        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain element (fifty five,55), and " + decorateToStringValue(prettifier, map3) + " did not contain element (twenty two,22)")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain element (\"fifty five\", 55), and " + decorateToStringValue(prettifier, map3) + " did not contain element (\"twenty two\", 22)")
       }
 
       it("should throw an TestFailedException when map contains specified element and used in a logical-and expression with not") {
@@ -1946,19 +1946,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map1 should { not { contain ("three" -> 3) } and not { contain ("two" -> 2) }}
         }
-        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain element (three,3), but " + decorateToStringValue(prettifier, map1) + " contained element (two,2)")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " did not contain element (\"three\", 3), but " + decorateToStringValue(prettifier, map1) + " contained element (\"two\", 2)")
 
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
           map2 should ((not contain ("three" -> 3)) and (not contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain element (three,3), but " + decorateToStringValue(prettifier, map2) + " contained element (two,2)")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " did not contain element (\"three\", 3), but " + decorateToStringValue(prettifier, map2) + " contained element (\"two\", 2)")
 
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
           map3 should (not contain ("three" -> 3) and not contain ("two" -> 2))
         }
-        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain element (three,3), but " + decorateToStringValue(prettifier, map3) + " contained element (two,2)")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " did not contain element (\"three\", 3), but " + decorateToStringValue(prettifier, map3) + " contained element (\"two\", 2)")
       }
 
       it("should throw an TestFailedException when map contains specified element and used in a logical-or expression with not") {
@@ -1966,19 +1966,19 @@ class ShouldContainElementSpec extends AnyFunSpec with PropertyChecks with Retur
         val caught1 = intercept[TestFailedException] {
           map1 should { not { contain ("two" -> 2) } or not { contain ("two" -> 2) }}
         }
-        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " contained element (two,2), and " + decorateToStringValue(prettifier, map1) + " contained element (two,2)")
+        assert(caught1.getMessage === decorateToStringValue(prettifier, map1) + " contained element (\"two\", 2), and " + decorateToStringValue(prettifier, map1) + " contained element (\"two\", 2)")
 
         val map2 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught2 = intercept[TestFailedException] {
           map2 should ((not contain ("two" -> 2)) or (not contain ("two" -> 2)))
         }
-        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " contained element (two,2), and " + decorateToStringValue(prettifier, map2) + " contained element (two,2)")
+        assert(caught2.getMessage === decorateToStringValue(prettifier, map2) + " contained element (\"two\", 2), and " + decorateToStringValue(prettifier, map2) + " contained element (\"two\", 2)")
 
         val map3 = mutable.HashMap("one" -> 1, "two" -> 2)
         val caught3 = intercept[TestFailedException] {
           map3 should (not contain ("two" -> 2) or not contain ("two" -> 2))
         }
-        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained element (two,2), and " + decorateToStringValue(prettifier, map3) + " contained element (two,2)")
+        assert(caught3.getMessage === decorateToStringValue(prettifier, map3) + " contained element (\"two\", 2), and " + decorateToStringValue(prettifier, map3) + " contained element (\"two\", 2)")
       }
 
       // SKIP-SCALATESTJS,NATIVE-START

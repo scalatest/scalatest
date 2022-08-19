@@ -182,6 +182,8 @@ private[scalactic] class DefaultPrettifier extends Prettifier {
         // overridden so lets use our custom prettifying otherwise we just use .toString.
         if (caseClazz.toString.startsWith(s"${caseClazz.productPrefix}("))
           s"${caseClazz.productPrefix}(" + caseClazz.productIterator.map(prettify(_, processed + caseClazz)).mkString(", ") + ")"
+        else if (caseClazz.productPrefix.startsWith("Tuple"))
+          "(" + caseClazz.productIterator.map(prettify(_, processed + caseClazz)).mkString(", ") + ")"
         else
           caseClazz.toString
       case anythingElse => anythingElse.toString
@@ -288,7 +290,10 @@ private[scalactic] class TruncatingPrettifier(sizeLimit: SizeLimit) extends Defa
         // Unlike in DefaultPrettifier where we check if a custom `.toString` has been overridden, with
         // TruncatingPrettifier the priority is truncating the enclosed data at all costs hence why we always
         // truncate the inner fields.
-        s"${caseClazz.productPrefix}(" + caseClazz.productIterator.map(prettify(_, processed + caseClazz)).mkString(", ") + ")"
+        if (caseClazz.productPrefix.startsWith("Tuple"))
+          s"(" + caseClazz.productIterator.map(prettify(_, processed + caseClazz)).mkString(", ") + ")"
+        else
+          s"${caseClazz.productPrefix}(" + caseClazz.productIterator.map(prettify(_, processed + caseClazz)).mkString(", ") + ")"
       case anythingElse => anythingElse.toString
     }
   }
