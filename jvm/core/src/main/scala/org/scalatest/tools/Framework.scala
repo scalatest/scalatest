@@ -206,7 +206,7 @@ class Framework extends SbtFramework {
    * @return <code>ScalaTest</code>
    */
   def name = "ScalaTest"
- 
+
   private val resultHolder = new SuiteResultHolder()
 
   /**
@@ -222,12 +222,12 @@ class Framework extends SbtFramework {
         def superclassName = "org.scalatest.Suite"
         def isModule = false
         def requireNoArgConstructor = true
-      }, 
+      },
       new AnnotatedFingerprint {
         def annotationName = "org.scalatest.WrapWith"
         def isModule = false
       })
-      
+
   private def runSuite(
     taskDefinition: TaskDef,
     rerunSuiteId: String,
@@ -235,11 +235,11 @@ class Framework extends SbtFramework {
     loader: ClassLoader,
     suiteSortingReporter: SuiteSortingReporter,
     tracker: Tracker,
-    eventHandler: EventHandler, 
+    eventHandler: EventHandler,
     tagsToInclude: Set[String],
     tagsToExclude: Set[String],
     selectors: Array[Selector],
-    explicitlySpecified: Boolean, 
+    explicitlySpecified: Boolean,
     configMap: ConfigMap,
     summaryCounter: SummaryCounter,
     statefulStatus: Option[ScalaTestStatefulStatus],
@@ -249,7 +249,7 @@ class Framework extends SbtFramework {
     presentAllDurations: Boolean,
     presentInColor: Boolean,
     presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean, 
+    presentFullStackTraces: Boolean,
     presentUnformatted: Boolean,
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
@@ -262,8 +262,8 @@ class Framework extends SbtFramework {
     val report = new SbtReporter(rerunSuiteId, taskDefinition.fullyQualifiedName, taskDefinition.fingerprint, eventHandler, suiteSortingReporter, summaryCounter)
     val formatter = formatterForSuiteStarting(suite)
     val suiteClassName = getSuiteClassName(suite)
-        
-    val filter = 
+
+    val filter =
       if ((selectors.length == 1 && selectors(0).isInstanceOf[SuiteSelector] && !explicitlySpecified))  // selectors will always at least have one SuiteSelector, according to javadoc of TaskDef
         Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)
       else {
@@ -274,10 +274,10 @@ class Framework extends SbtFramework {
 
         selectors.foreach { selector =>
           selector match {
-            case suiteSelector: SuiteSelector => 
+            case suiteSelector: SuiteSelector =>
               suiteTags = mergeMap[String, Set[String]](List(suiteTags, Map(suite.suiteId -> Set(SELECTED_TAG)))) { _ ++ _ }
             case testSelector: TestSelector =>
-              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(suite.suiteId -> Map(testSelector.testName -> Set(SELECTED_TAG))))) { (testMap1, testMap2) => 
+              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(suite.suiteId -> Map(testSelector.testName -> Set(SELECTED_TAG))))) { (testMap1, testMap2) =>
                 mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
               }
               hasTest = true
@@ -288,11 +288,11 @@ class Framework extends SbtFramework {
                 mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
               }
               hasTest = true
-            case nestedSuiteSelector: NestedSuiteSelector => 
+            case nestedSuiteSelector: NestedSuiteSelector =>
               suiteTags = mergeMap[String, Set[String]](List(suiteTags, Map(nestedSuiteSelector.suiteId -> Set(SELECTED_TAG)))) { _ ++ _ }
               hasNested = true
-            case nestedTestSelector: NestedTestSelector => 
-              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(nestedTestSelector.suiteId -> Map(nestedTestSelector.testName -> Set(SELECTED_TAG))))) { (testMap1, testMap2) => 
+            case nestedTestSelector: NestedTestSelector =>
+              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(nestedTestSelector.suiteId -> Map(nestedTestSelector.testName -> Set(SELECTED_TAG))))) { (testMap1, testMap2) =>
                 mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
               }
               hasNested = true
@@ -337,8 +337,9 @@ class Framework extends SbtFramework {
         }
       }
     }
-    catch {       
+    catch {
       case e: Throwable => {
+        suiteSortingReporter.completedTests(suite.suiteId)
 
         // TODO: Could not get this from Resources. Got:
         // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US
@@ -370,25 +371,25 @@ class Framework extends SbtFramework {
         case None => // Do nothing
       }
     }
-    
+
     Array.empty
   }
-      
+
   private class ScalaTestTask(
-    taskDefinition: TaskDef, 
+    taskDefinition: TaskDef,
     loader: ClassLoader,
     suiteSortingReporter: SuiteSortingReporter,
     tracker: Tracker,
-    tagsToInclude: Set[String], 
+    tagsToInclude: Set[String],
     tagsToExclude: Set[String],
     selectors: Array[Selector],
-    explicitlySpecified: Boolean, 
-    configMap: ConfigMap, 
+    explicitlySpecified: Boolean,
+    configMap: ConfigMap,
     summaryCounter: SummaryCounter,
     statusList: LinkedBlockingQueue[Status],
     useSbtLogInfoReporter: Boolean,
     presentAllDurations: Boolean,
-    presentInColor: Boolean, 
+    presentInColor: Boolean,
     presentShortStackTraces: Boolean,
     presentFullStackTraces: Boolean,
     presentUnformatted: Boolean,
@@ -401,30 +402,30 @@ class Framework extends SbtFramework {
     configSet: Set[ReporterConfigParam],
     execService: ExecutorService
   ) extends Task {
-    
+
     def loadSuiteClass = {
       try {
         Class.forName(taskDefinition.fullyQualifiedName, true, loader)
       }
       catch {
-        case e: Exception => 
+        case e: Exception =>
           throw new IllegalArgumentException("Unable to load class: " + taskDefinition.fullyQualifiedName)
       }
     }
-    
+
     lazy val suiteClass = loadSuiteClass
     lazy val accessible = isAccessibleSuite(suiteClass)
     lazy val runnable = isRunnable(suiteClass)
-    lazy val shouldDiscover = 
+    lazy val shouldDiscover =
       taskDefinition.explicitlySpecified || ((accessible || runnable) && isDiscoverableSuite(suiteClass))
-    
-    def tags = 
-      for { 
+
+    def tags =
+      for {
         a <- suiteClass.getAnnotations
         annotationClass = a.annotationType
-        if (annotationClass.isAnnotationPresent(classOf[TagAnnotation]) || annotationClass.isAssignableFrom(classOf[TagAnnotation])) 
+        if (annotationClass.isAnnotationPresent(classOf[TagAnnotation]) || annotationClass.isAssignableFrom(classOf[TagAnnotation]))
       } yield {
-        val value = 
+        val value =
           if (a.isInstanceOf[TagAnnotation])
             a.asInstanceOf[TagAnnotation].value
           else
@@ -434,7 +435,7 @@ class Framework extends SbtFramework {
         else
           value
       }
-    
+
     def execute(eventHandler: EventHandler, loggers: Array[Logger]) = {
       if (accessible || runnable) {
         val suite =
@@ -450,7 +451,7 @@ class Framework extends SbtFramework {
               constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
             }
             else
-              suiteClass.newInstance.asInstanceOf[Suite] 
+              suiteClass.newInstance.asInstanceOf[Suite]
           } catch {
             case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, suiteClass.getName, t)
           }
@@ -497,7 +498,7 @@ class Framework extends SbtFramework {
           tagsToInclude,
           tagsToExclude,
           selectors,
-          explicitlySpecified, 
+          explicitlySpecified,
           configMap,
           summaryCounter,
           None,
@@ -516,54 +517,54 @@ class Framework extends SbtFramework {
           execService
         )
       }
-       else 
+       else
          throw new IllegalArgumentException("Class " + taskDefinition.fullyQualifiedName + " is neither accessible accesible org.scalatest.Suite nor runnable.")
     }
-    
+
     def taskDef = taskDefinition
   }
-  
+
   private[tools] class SummaryCounter {
     val testsSucceededCount, testsFailedCount, testsIgnoredCount, testsPendingCount, testsCanceledCount, suitesCompletedCount, suitesAbortedCount, scopesPendingCount = new AtomicInteger
     val reminderEventsQueue = new LinkedBlockingQueue[ExceptionalEvent]
-    
-    def incrementTestsSucceededCount(): Unit = { 
-      testsSucceededCount.incrementAndGet() 
+
+    def incrementTestsSucceededCount(): Unit = {
+      testsSucceededCount.incrementAndGet()
     }
-    
+
     def incrementTestsFailedCount(): Unit = {
       testsFailedCount.incrementAndGet()
     }
-    
+
     def incrementTestsIgnoredCount(): Unit = {
       testsIgnoredCount.incrementAndGet()
     }
-    
+
     def incrementTestsPendingCount(): Unit = {
       testsPendingCount.incrementAndGet()
     }
-    
+
     def incrementTestsCanceledCount(): Unit = {
       testsCanceledCount.incrementAndGet()
     }
-    
+
     def incrementSuitesCompletedCount(): Unit = {
       suitesCompletedCount.incrementAndGet()
     }
-    
+
     def incrementSuitesAbortedCount(): Unit = {
       suitesAbortedCount.incrementAndGet()
     }
-    
+
     def incrementScopesPendingCount(): Unit = {
       scopesPendingCount.incrementAndGet()
     }
-    
+
     def recordReminderEvents(events: ExceptionalEvent): Unit = {
       reminderEventsQueue.put(events)
     }
   }
-  
+
   private class SbtLogInfoReporter(
     loggers: Array[Logger],
     presentAllDurations: Boolean,
@@ -603,7 +604,7 @@ class Framework extends SbtFramework {
         logger.info(text)
       }
     }
-    
+
     override def apply(event: Event): Unit = {
       event match {
         case ee: ExceptionalEvent if presentReminder =>
@@ -633,16 +634,16 @@ class Framework extends SbtFramework {
 
     def dispose(): Unit = ()
   }
-  
+
   private[scalatest] class ScalaTestRunner(
     runArgs: Array[String],
     loader: ClassLoader,
     tagsToInclude: Set[String],
     tagsToExclude: Set[String],
-    membersOnly: List[String], 
+    membersOnly: List[String],
     wildcard: List[String],
     autoSelectors: List[Selector],
-    configMap: ConfigMap, 
+    configMap: ConfigMap,
     val repConfig: ReporterConfigurations,
     val useSbtLogInfoReporter: Boolean,
     val presentAllDurations: Boolean,
@@ -669,7 +670,7 @@ class Framework extends SbtFramework {
     val tracker = new Tracker
     val summaryCounter = new SummaryCounter
     val runStartTime = System.currentTimeMillis
-    
+
     val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod)
 
     val suiteSortingReporter =
@@ -680,7 +681,7 @@ class Framework extends SbtFramework {
 
     if (detectSlowpokes)
       dispatchReporter.registerSlowpokeReporter(suiteSortingReporter)
-    
+
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
 
     private val atomicThreadCounter = new AtomicInteger
@@ -706,17 +707,17 @@ class Framework extends SbtFramework {
         Executors.newFixedThreadPool(poolSize, threadFactory)
       else
         Executors.newCachedThreadPool(threadFactory)
-    
-    private def createTask(td: TaskDef): ScalaTestTask = 
+
+    private def createTask(td: TaskDef): ScalaTestTask =
       new ScalaTestTask(
-          td, 
+          td,
           loader,
           suiteSortingReporter,
           tracker,
           tagsToInclude,
           tagsToExclude,
           td.selectors ++ autoSelectors,
-          td.explicitlySpecified, 
+          td.explicitlySpecified,
           configMap,
           summaryCounter,
           statusList,
@@ -735,22 +736,22 @@ class Framework extends SbtFramework {
           configSet,
           execSvc
         )
-    
-    private def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] = 
+
+    private def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
       taskDefs.filter(td => paths.exists(td.fullyQualifiedName.startsWith(_)))
-      
+
     private def filterMembersOnly(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
       taskDefs.filter { td =>
         paths.exists(path => td.fullyQualifiedName.startsWith(path) && td.fullyQualifiedName.substring(path.length).lastIndexOf('.') <= 0)
       }
-      
-    def tasks(taskDefs: Array[TaskDef]): Array[Task] = 
-      for { 
+
+    def tasks(taskDefs: Array[TaskDef]): Array[Task] =
+      for {
         taskDef <- if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
         task = createTask(taskDef)
         if task.shouldDiscover
       } yield task
-    
+
     def done = {
       if (!isDone.getAndSet(true)) {
 
@@ -772,7 +773,7 @@ class Framework extends SbtFramework {
         }
 
         val duration = System.currentTimeMillis - runStartTime
-        val summary = new Summary(summaryCounter.testsSucceededCount.get, summaryCounter.testsFailedCount.get, summaryCounter.testsIgnoredCount.get, summaryCounter.testsPendingCount.get, 
+        val summary = new Summary(summaryCounter.testsSucceededCount.get, summaryCounter.testsFailedCount.get, summaryCounter.testsIgnoredCount.get, summaryCounter.testsPendingCount.get,
                                   summaryCounter.testsCanceledCount.get, summaryCounter.suitesCompletedCount.get, summaryCounter.suitesAbortedCount.get, summaryCounter.scopesPendingCount.get)
         dispatchReporter(RunCompleted(tracker.nextOrdinal(), Some(duration), Some(summary)))
         dispatchReporter.dispatchDisposeAndWaitUntilDone()
@@ -791,7 +792,7 @@ class Framework extends SbtFramework {
             presentReminderWithFullStackTraces,
             presentReminderWithoutCanceledTests,
             presentFilePathname
-          ) 
+          )
         fragments.map(_.toPossiblyColoredText(presentInColor)).mkString("\n")
       }
       else
@@ -820,63 +821,63 @@ class Framework extends SbtFramework {
       }
 
       class Skeleton extends Runnable {
-        
+
         val server = new ServerSocket(0)
         lazy val socket = new AtomicReference(server.accept())
         lazy val is = new AtomicReference(new SkeletonObjectInputStream(socket.get.getInputStream, getClass.getClassLoader))
-        
+
         def run(): Unit = {
           try {
 			      (new React(server)).tryReact(0)
-          } 
+          }
           finally {
-            is.get.close()	
+            is.get.close()
             socket.get.close()
 		      }
         }
-        
+
         class React(server: ServerSocket) {
-          @annotation.tailrec 
-          final def react(): Unit = { 
+          @annotation.tailrec
+          final def react(): Unit = {
             val event = is.get.readObject
             event match {
               case e: TestStarting =>
-                dispatchReporter(e) 
+                dispatchReporter(e)
                 react()
-              case e: TestSucceeded => 
-                dispatchReporter(e) 
+              case e: TestSucceeded =>
+                dispatchReporter(e)
                 summaryCounter.incrementTestsSucceededCount()
                 react()
-              case e: TestFailed => 
-                dispatchReporter(e) 
+              case e: TestFailed =>
+                dispatchReporter(e)
                 summaryCounter.incrementTestsFailedCount()
                 react()
-              case e: TestIgnored => 
+              case e: TestIgnored =>
                 dispatchReporter(e)
                 summaryCounter.incrementTestsIgnoredCount()
                 react()
-              case e: TestPending => 
+              case e: TestPending =>
                 dispatchReporter(e)
                 summaryCounter.incrementTestsPendingCount()
                 react()
-              case e: TestCanceled => 
+              case e: TestCanceled =>
                 dispatchReporter(e)
                 summaryCounter.incrementTestsCanceledCount()
                 react()
-              case e: SuiteStarting => 
+              case e: SuiteStarting =>
                 dispatchReporter(e)
                 react()
-              case e: SuiteCompleted => 
+              case e: SuiteCompleted =>
                 dispatchReporter(e)
                 summaryCounter.incrementSuitesCompletedCount()
                 react()
-              case e: SuiteAborted => 
+              case e: SuiteAborted =>
                 dispatchReporter(e)
                 summaryCounter.incrementSuitesAbortedCount()
                 react()
               case e: ScopeOpened => dispatchReporter(e); react()
               case e: ScopeClosed => dispatchReporter(e); react()
-              case e: ScopePending => 
+              case e: ScopePending =>
                 dispatchReporter(e)
                 summaryCounter.incrementScopesPendingCount()
                 react()
@@ -888,17 +889,17 @@ class Framework extends SbtFramework {
               case e: RunCompleted => // Sub-process completed, just let the thread terminate
               case e: RunStopped => dispatchReporter(e)
               case e: RunAborted => dispatchReporter(e)
-            }  
+            }
           }
 
           @annotation.tailrec
-          final def tryReact(count: Int): Unit = 
+          final def tryReact(count: Int): Unit =
             if (count < 3)
               try {
-                react()  
+                react()
               }
               catch {
-                case t: IOException => 
+                case t: IOException =>
                   // Restart server socket
                   println(Resources.unableToReadSerializedEvent)
                   is.get.close()
@@ -909,13 +910,13 @@ class Framework extends SbtFramework {
             else {
               println(Resources.unableToContinueRun)
               System.exit(-1)
-            }  
+            }
         }
-        
+
         def host: String = server.getLocalSocketAddress.toString
         def port: Int = server.getLocalPort
       }
-      
+
       val skeleton = new Skeleton()
       val thread = new Thread(skeleton)
       thread.start()
@@ -973,20 +974,20 @@ class Framework extends SbtFramework {
       membersOnlyArgs,
       wildcardArgs,
       testNGArgs,
-      suffixes, 
-      chosenStyles, 
-      spanScaleFactors, 
+      suffixes,
+      chosenStyles,
+      spanScaleFactors,
       testSortingReporterTimeouts,
       slowpokeArgs,
       seedArgs
     ) = parseArgs(args)
-    
+
     if (!runpathArgs.isEmpty)
       throw new IllegalArgumentException("Specifying a runpath (-R <runpath>) is not supported when running ScalaTest from sbt.")
-    
+
     if (!againArgs.isEmpty)
       throw new IllegalArgumentException("Run again (-A) is not supported when running ScalaTest from sbt; Please use sbt's test-quick instead.")
-    
+
     if (!junitArgs.isEmpty)
       throw new IllegalArgumentException("Running JUnit tests (-j <junit>) is not supported when running ScalaTest from sbt.")
 
@@ -997,12 +998,12 @@ class Framework extends SbtFramework {
       throw new IllegalArgumentException("Discovery suffixes (-q) is not supported when running ScalaTest from sbt; Please use sbt's test-only or test filter instead.")
 
     val testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", Suite.defaultTestSortingReporterTimeoutInSeconds), Seconds)
-    
+
     val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgs)
     val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
     if (propertiesMap.isDefinedAt(Suite.CHOSEN_STYLES))
       throw new IllegalArgumentException("Property name '" + Suite.CHOSEN_STYLES + "' is used by ScalaTest, please choose other property name.")
-    val configMap: ConfigMap = 
+    val configMap: ConfigMap =
       if (chosenStyleSet.isEmpty)
         propertiesMap
       else
@@ -1010,7 +1011,7 @@ class Framework extends SbtFramework {
 
     if (chosenStyleSet.nonEmpty)
       println(Resources.deprecatedChosenStyleWarning)
-      
+
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
     val membersOnly: List[String] = parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")
@@ -1041,8 +1042,8 @@ class Framework extends SbtFramework {
       val (stderrArgs, others) = nonStdoutArgs.partition(_.startsWith("-e"))
       (stdoutArgs.take(1), stderrArgs.take(1), others)
     }
-    
-    val fullReporterConfigurations: ReporterConfigurations = 
+
+    val fullReporterConfigurations: ReporterConfigurations =
       if (remoteArgs.isEmpty) {
         // Creating the normal/main runner, should create reporters as specified by args.
         // If no reporters specified, just give them a default stdout reporter
@@ -1069,16 +1070,16 @@ class Framework extends SbtFramework {
       presentFilePathname,
       presentJson,
       configSet
-    ) = 
+    ) =
       fullReporterConfigurations.standardOutReporterConfiguration match {
         case Some(stdoutConfig) =>
           val configSet = stdoutConfig.configSet
           (
-            true, 
+            true,
             configSet.contains(PresentAllDurations),
             !configSet.contains(PresentWithoutColor) && !sbtNoFormat,
             configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
-            configSet.contains(PresentFullStackTraces), 
+            configSet.contains(PresentFullStackTraces),
             configSet.contains(PresentUnformatted),
             configSet.exists { ele =>
               ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || ele == PresentReminderWithFullStackTraces
@@ -1097,7 +1098,7 @@ class Framework extends SbtFramework {
           // able to get the Array[Logger] to create SbtInfoLoggerReporter.
           (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, !sbtNoFormat, false, false, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
       }
-    
+
     //val reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
     // If there's a graphic reporter, we need to leave it out of
     // reporterSpecs, because we want to pass all reporterSpecs except
@@ -1124,12 +1125,12 @@ class Framework extends SbtFramework {
       testClassLoader,
       tagsToInclude,
       tagsToExclude,
-      membersOnly, 
+      membersOnly,
       wildcard,
       autoSelectors,
       configMap,
       reporterConfigs,
-      useStdout, 
+      useStdout,
       presentAllDurations,
       presentInColor,
       presentShortStackTraces,
@@ -1149,66 +1150,66 @@ class Framework extends SbtFramework {
       testSortingReporterTimeout
     )
   }
-  
+
   private case class ScalaTestSbtEvent(
-      fullyQualifiedName: String, 
-      fingerprint: Fingerprint, 
-      selector: Selector, 
-      status: SbtStatus, 
-      throwable: OptionalThrowable, 
+      fullyQualifiedName: String,
+      fingerprint: Fingerprint,
+      selector: Selector,
+      status: SbtStatus,
+      throwable: OptionalThrowable,
       duration: Long) extends SbtEvent
-  
+
   private class SbtReporter(suiteId: String, fullyQualifiedName: String, fingerprint: Fingerprint, eventHandler: EventHandler, report: Reporter, summaryCounter: SummaryCounter) extends Reporter {
-      
+
       import org.scalatest.events._
-      
+
       private def getTestSelector(eventSuiteId: String, testName: String) = {
         if (suiteId == eventSuiteId)
           new TestSelector(testName)
         else
           new NestedTestSelector(eventSuiteId, testName)
       }
-      
+
       private def getSuiteSelector(eventSuiteId: String) = {
         if (suiteId == eventSuiteId)
           new SuiteSelector
         else
           new NestedSuiteSelector(eventSuiteId)
       }
-      
-      private def getOptionalThrowable(throwable: Option[Throwable]): OptionalThrowable = 
+
+      private def getOptionalThrowable(throwable: Option[Throwable]): OptionalThrowable =
         throwable match {
           case Some(t) => new OptionalThrowable(t)
           case None => new OptionalThrowable
         }
-      
+
       override def apply(event: Event): Unit = {
         report(event)
         event match {
           // the results of running an actual test
-          case t: TestPending => 
+          case t: TestPending =>
             summaryCounter.incrementTestsPendingCount()
             eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Pending, new OptionalThrowable, t.duration.getOrElse(0)))
-          case t: TestFailed => 
+          case t: TestFailed =>
             summaryCounter.incrementTestsFailedCount()
             eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Failure, getOptionalThrowable(t.throwable), t.duration.getOrElse(0)))
-          case t: TestSucceeded => 
+          case t: TestSucceeded =>
             summaryCounter.incrementTestsSucceededCount()
             eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Success, new OptionalThrowable, t.duration.getOrElse(0)))
-          case t: TestIgnored => 
+          case t: TestIgnored =>
             summaryCounter.incrementTestsIgnoredCount()
             eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Ignored, new OptionalThrowable, -1))
           case t: TestCanceled =>
             summaryCounter.incrementTestsCanceledCount()
             eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getTestSelector(t.suiteId, t.testName), SbtStatus.Canceled, new OptionalThrowable, t.duration.getOrElse(0)))
-          case t: SuiteCompleted => 
+          case t: SuiteCompleted =>
             summaryCounter.incrementSuitesCompletedCount()
-          case t: SuiteAborted => 
+          case t: SuiteAborted =>
             summaryCounter.incrementSuitesAbortedCount()
             eventHandler.handle(ScalaTestSbtEvent(fullyQualifiedName, fingerprint, getSuiteSelector(t.suiteId), SbtStatus.Error, getOptionalThrowable(t.throwable), t.duration.getOrElse(0)))
-          case t: ScopePending => 
+          case t: ScopePending =>
             summaryCounter.incrementScopesPendingCount()
-          case _ => 
+          case _ =>
         }
       }
     }
