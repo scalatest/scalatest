@@ -54,7 +54,7 @@ final class NotWord {
    *                     ^
    * </pre>
    **/
-  infix def apply[S](matcher: Matcher[S]): Matcher[S] =
+  def apply[S](matcher: Matcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = matcher(left).negated
       override def toString: String = "not (" + Prettifier.default(matcher) + ")"
@@ -83,7 +83,7 @@ final class NotWord {
     }
   }
 
-  infix def apply[S, TYPECLASS1[_], TYPECLASS2[_]](matcherGen2: MatcherFactory2[S, TYPECLASS1, TYPECLASS2]): MatcherFactory2[S, TYPECLASS1, TYPECLASS2] = {
+  def apply[S, TYPECLASS1[_], TYPECLASS2[_]](matcherGen2: MatcherFactory2[S, TYPECLASS1, TYPECLASS2]): MatcherFactory2[S, TYPECLASS1, TYPECLASS2] = {
     new MatcherFactory2[S, TYPECLASS1, TYPECLASS2] {
       def matcher[V <: S : TYPECLASS1 : TYPECLASS2]: Matcher[V] = {
         val innerMatcher: Matcher[V] = matcherGen2.matcher
