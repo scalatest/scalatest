@@ -38,9 +38,9 @@ object GenScalaTestDotty {
       val lines = Source.fromFile(sourceFile).getLines.toList
       var skipMode = false
       for (line <- lines) {
-        if (line.trim == "// SKIP-DOTTY-START" || line.trim == "// SKIP-DOTTY-START")
+        if (line.trim == "// SKIP-DOTTY-START")
           skipMode = true
-        else if (line.trim == "// SKIP-DOTTY-END" || line.trim == "// SKIP-DOTTY-END")
+        else if (line.trim == "// SKIP-DOTTY-END")
           skipMode = false
         else if (!skipMode) {
           destWriter.write(transformLine(line))

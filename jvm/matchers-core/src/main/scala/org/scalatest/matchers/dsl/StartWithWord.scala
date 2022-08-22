@@ -37,7 +37,7 @@ final class StartWithWord {
    * "1.7b" should (startWith ("1.7") and startWith ("1.7b"))
    *                          ^
    * </pre>
-   */
+   */ 
   def apply(right: String): Matcher[String] =
     new Matcher[String] {
       def apply(left: String): MatchResult =
@@ -59,7 +59,11 @@ final class StartWithWord {
    *                          ^
    * </pre>
    */
-  def regex[T <: String](right: T): Matcher[T] = regex(right.r)
+  //DOTTY-ONLY infix def regex[T <: String](right: T): Matcher[T] =
+  // SKIP-DOTTY-START 
+  def regex[T <: String](right: T): Matcher[T] = 
+  // SKIP-DOTTY-END
+    regex(right.r)
   
   /**
    * This method enables the following syntax:
@@ -68,8 +72,11 @@ final class StartWithWord {
    * string should not { startWith regex ("a(b*)c" withGroup "bb") } 
    *                               ^
    * </pre>
-   */	
+   */
+  //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups) =
+  // SKIP-DOTTY-START 	
   def regex(regexWithGroups: RegexWithGroups) = 
+  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
@@ -85,7 +92,10 @@ final class StartWithWord {
    *                         ^
    * </pre>
    */
+  //DOTTY-ONLY infix def regex(rightRegex: Regex): Matcher[String] =
+  // SKIP-DOTTY-START 
   def regex(rightRegex: Regex): Matcher[String] =
+  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult =
         MatchResult(

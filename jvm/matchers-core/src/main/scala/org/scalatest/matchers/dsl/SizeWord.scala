@@ -30,7 +30,7 @@ final class SizeWord {
    * set should not have size (3)
    *                          ^
    * </pre>
-   */
+   */ 
   def apply(expectedSize: Long): ResultOfSizeWordApplication = new ResultOfSizeWordApplication(expectedSize)
   
   /**

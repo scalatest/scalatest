@@ -30,7 +30,7 @@ final class LengthWord {
    * "hi" should not have length (3)
    *                             ^
    * </pre>
-   */
+   */ 
   def apply(expectedLength: Long): ResultOfLengthWordApplication = new ResultOfLengthWordApplication(expectedLength)
   
   /**
