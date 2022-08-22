@@ -28,7 +28,7 @@ class AllElementsOfContainMatcherSpec extends funspec.AnyFunSpec {
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
       val leftText = Prettifier.default(left)
       val rightText = Prettifier.default(right)
-      e.message should be (Some(leftText + " did not contain all elements of " + right))
+      e.message should be (Some(leftText + " did not contain all elements of " + rightText))
       e.failedCodeFileName should be (Some("AllElementsOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
