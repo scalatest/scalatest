@@ -101,7 +101,7 @@ import scala.util.Success
  * <li>`org.scalactic.Bad` to: `Bad("3")`</li>
  * <li>`org.scalactic.One` to: `One("3")`</li>
  * <li>`org.scalactic.Many` to: `Many("1", "2", "3")`</li>
- * <li>`scala.collection.GenTraversable` to: `List("1", "2", "3")`</li>
+ * <li>`scala.collection.Iterable` to: `List("1", "2", "3")`</li>
  * <li>`java.util.Collection` to: `["1", "2", "3"]`</li>
  * <li>`java.util.Map` to: `{1="one", 2="two", 3="three"}`</li>
  * </ul>
@@ -177,6 +177,15 @@ private[scalactic] class DefaultPrettifier extends Prettifier {
         else
           theToString
       // SKIP-SCALATESTJS,NATIVE-END
+      case caseClazz: Product if caseClazz.productArity != 0 =>
+        // If the case class's toString starts with .productPrefix its likely the .toString hasn't been
+        // overridden so lets use our custom prettifying otherwise we just use .toString.
+        if (caseClazz.toString.startsWith(s"${caseClazz.productPrefix}("))
+          s"${caseClazz.productPrefix}(" + caseClazz.productIterator.map(prettify(_, processed + caseClazz)).mkString(", ") + ")"
+        else if (caseClazz.productPrefix.startsWith("Tuple"))
+          "(" + caseClazz.productIterator.map(prettify(_, processed + caseClazz)).mkString(", ") + ")"
+        else
+          caseClazz.toString
       case anythingElse => anythingElse.toString
     }
 
@@ -224,31 +233,31 @@ private[scalactic] class TruncatingPrettifier(sizeLimit: SizeLimit) extends Defa
   override protected def prettifyCollection(o: Any, processed: Set[Any]): String = {
     o match {
       case many: Many[_] => 
-        val (taken, truncated) = if (many.size > sizeLimit.value) (many.toIterator.take(sizeLimit.value), true) else (many.toIterator, false)  
+        val (taken, truncated) = if (!many.hasDefiniteSize || many.size > sizeLimit.value) (many.toIterator.take(sizeLimit.value), true) else (many.toIterator, false)  
         "Many(" + taken.map(prettify(_, processed + many)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
       case anArray: Array[_] =>  
-        val (taken, truncated) = if (anArray.size > sizeLimit.value) (anArray.take(sizeLimit.value), true) else (anArray, false)
+        val (taken, truncated) = if (!anArray.hasDefiniteSize || anArray.size > sizeLimit.value) (anArray.take(sizeLimit.value), true) else (anArray, false)
         "Array(" + taken.map(prettify(_, processed + anArray)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
       case aWrappedArray: WrappedArray[_] => 
-        val (taken, truncated) = if (aWrappedArray.size > sizeLimit.value) (aWrappedArray.take(sizeLimit.value), true) else (aWrappedArray, false)
+        val (taken, truncated) = if (!aWrappedArray.hasDefiniteSize || aWrappedArray.size > sizeLimit.value) (aWrappedArray.take(sizeLimit.value), true) else (aWrappedArray, false)
         "Array(" + taken.map(prettify(_, processed + aWrappedArray)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
       case a if ArrayHelper.isArrayOps(a) => 
         val anArrayOps = ArrayHelper.asArrayOps(a)//
         val (taken, truncated) = if (anArrayOps.size > sizeLimit.value) (anArrayOps.iterator.take(sizeLimit.value), true) else (anArrayOps.iterator, false)
         "Array(" + taken.map(prettify(_, processed + anArrayOps)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
       case aGenMap: scala.collection.GenMap[_, _] =>
-        val (taken, truncated) = if (aGenMap.size > sizeLimit.value) (aGenMap.toIterator.take(sizeLimit.value), true) else (aGenMap.toIterator, false)
+        val (taken, truncated) = if (!aGenMap.hasDefiniteSize || aGenMap.size > sizeLimit.value) (aGenMap.toIterator.take(sizeLimit.value), true) else (aGenMap.toIterator, false)
         ColCompatHelper.className(aGenMap) + "(" +
         (taken.map { case (key, value) => // toIterator is needed for consistent ordering
           prettify(key, processed + aGenMap) + " -> " + prettify(value, processed + aGenMap)
         }).mkString(", ") + dotDotDotIfTruncated(truncated) + ")"
-      case aGenTraversable: GenTraversable[_] =>
-        val (taken, truncated) = if (aGenTraversable.size > sizeLimit.value) (aGenTraversable.take(sizeLimit.value), true) else (aGenTraversable, false)
-        val className = aGenTraversable.getClass.getName
+      case aIterable: Iterable[_] =>
+        val (taken, truncated) = if (!aIterable.hasDefiniteSize || aIterable.size > sizeLimit.value) (aIterable.take(sizeLimit.value), true) else (aIterable, false)
+        val className = aIterable.getClass.getName
         if (className.startsWith("scala.xml.NodeSeq$") || className == "scala.xml.NodeBuffer" || className == "scala.xml.Elem")
-          aGenTraversable.mkString
+          aIterable.mkString
         else
-          ColCompatHelper.className(aGenTraversable) + "(" + taken.toIterator.map(prettify(_, processed + aGenTraversable)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")" // toIterator is needed for consistent ordering                
+          ColCompatHelper.className(aIterable) + "(" + taken.toIterator.map(prettify(_, processed + aIterable)).mkString(", ") + dotDotDotIfTruncated(truncated) + ")" // toIterator is needed for consistent ordering                
       // SKIP-SCALATESTJS-START
       case javaCol: java.util.Collection[_] =>
         // By default java collection follows http://download.java.net/jdk7/archive/b123/docs/api/java/util/AbstractCollection.html#toString()
@@ -277,6 +286,14 @@ private[scalactic] class TruncatingPrettifier(sizeLimit: SizeLimit) extends Defa
         else
           theToString
       // SKIP-SCALATESTJS,NATIVE-END
+      case caseClazz: Product if caseClazz.productArity != 0 =>
+        // Unlike in DefaultPrettifier where we check if a custom `.toString` has been overridden, with
+        // TruncatingPrettifier the priority is truncating the enclosed data at all costs hence why we always
+        // truncate the inner fields.
+        if (caseClazz.productPrefix.startsWith("Tuple"))
+          s"(" + caseClazz.productIterator.map(prettify(_, processed + caseClazz)).mkString(", ") + ")"
+        else
+          s"${caseClazz.productPrefix}(" + caseClazz.productIterator.map(prettify(_, processed + caseClazz)).mkString(", ") + ")"
       case anythingElse => anythingElse.toString
     }
   }
@@ -322,7 +339,7 @@ object Prettifier {
    * <li>`org.scalactic.Bad` to: `Bad("3")`</li>
    * <li>`org.scalactic.One` to: `One("3")`</li>
    * <li>`org.scalactic.Many` to: `Many("1", "2", "3")`</li>
-   * <li>`scala.collection.GenTraversable` to: `List("1", "2", "3")`</li>
+   * <li>`scala.collection.Iterable` to: `List("1", "2", "3")`</li>
    * <li>`java.util.Collection` to: `["1", "2", "3"]`</li>
    * <li>`java.util.Map` to: `{1="one", 2="two", 3="three"}`</li>
    * </ul>

@@ -345,6 +345,10 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
     it("should pretty print nested string Java Map") {
       Prettifier.default(javaSortedMap(Entry("akey", javaSortedMap(Entry(1, "one"), Entry(2, "two"), Entry(3, "three"))))) should be ("{\"akey\"={1=\"one\", 2=\"two\", 3=\"three\"}}")
     }
+    case class CaseClazzWithArray(data: Array[Int])
+    it("should pretty print data inside a case class") {
+      Prettifier.default(CaseClazzWithArray(Array(1,2,3))) should be ("CaseClazzWithArray(Array(1, 2, 3))")
+    }
     it("should pretty print xml <a></a>") {
       Prettifier.default(<a></a>) should be ("<a></a>")
     }
@@ -397,10 +401,37 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
       Prettifier.default(new Fred) shouldBe "It's Fred all the way down"
     }
     // SKIP-DOTTY-END
-    it("should truncate collection when used with Prettifier.truncateAt") {
+
+    case class Person(name: String, age: Int)
+
+    it("should pretty print case class") {
+      val p = Person("John Lee", 35)
+      Prettifier.default(p) should be ("Person(\"John Lee\", 35)")
+    }
+
+    it("should pretty print Tuple") {
+      Prettifier.default(("John Lee", 35)) should be ("(\"John Lee\", 35)")
+    }
+  }
+
+  describe("the truncating Prettifier") {
+    it("should truncate collection") {
       val col = List(1, 2, 3)
       val prettifier = Prettifier.truncateAt(SizeLimit(2))
       prettifier(col) shouldBe "List(1, 2, ...)"
+    }
+
+    case class CaseClazz(data: List[Int])
+
+    it("should truncate collection inside of a case class") {
+      val caseClass = CaseClazz(List(1, 2, 3))
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      prettifier(caseClass) shouldBe "CaseClazz(List(1, 2, ...))"
+    }
+
+    it("should pretty print Tuple") {
+      val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      prettifier(("John Lee", 35)) should be ("(\"John Lee\", 35)")
     }
   }
 }

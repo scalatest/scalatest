@@ -42,7 +42,7 @@ final class ResultOfLessThanComparison[T : Ordering](val right: T) {
    * num should (not be &lt; (10) and not be &gt; (17))
    *                 ^  ... invoked by this be method
    * </pre>
-   */
+   */ 
   def apply(left: T): Boolean = {
     val ordering = implicitly[Ordering[T]]
     ordering.lt(left, right) // left < right

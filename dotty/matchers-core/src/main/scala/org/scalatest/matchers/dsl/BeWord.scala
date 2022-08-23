@@ -247,7 +247,7 @@ final class BeWord {
    *                          ^
    * </pre>
    **/
-  def a(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
+  infix def a(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, true, prettifier, pos)
       override def toString: String = "be a " + prettifier(right)
@@ -263,7 +263,7 @@ final class BeWord {
    *                          ^
    * </pre>
    **/
-  def a[S <: AnyRef](bePropertyMatcher: BePropertyMatcher[S]): Matcher[S] =
+  infix def a[S <: AnyRef](bePropertyMatcher: BePropertyMatcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = {
         val result = bePropertyMatcher(left)
@@ -285,7 +285,7 @@ final class BeWord {
    *                   ^
    * </pre>
    **/
-  def a[S](aMatcher: AMatcher[S]): Matcher[S] =
+  infix def a[S](aMatcher: AMatcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = aMatcher(left)
       override def toString: String = "be a " + Prettifier.default(aMatcher)
@@ -300,7 +300,7 @@ final class BeWord {
    *                        ^
    * </pre>
    **/
-  def an(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
+  infix def an(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, false, prettifier, pos)
       override def toString: String = "be an " + Prettifier.default(right)
@@ -316,7 +316,7 @@ final class BeWord {
    *                          ^
    * </pre>
    **/
-  def an[S <: AnyRef](bePropertyMatcher: BePropertyMatcher[S]): Matcher[S] =
+  infix def an[S <: AnyRef](bePropertyMatcher: BePropertyMatcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = {
         val result = bePropertyMatcher(left)
@@ -338,7 +338,7 @@ final class BeWord {
    *                   ^
    * </pre>
    **/
-  def an[S](anMatcher: AnMatcher[S]): Matcher[S] =
+  infix def an[S](anMatcher: AnMatcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = anMatcher(left)
       override def toString: String = "be an " + Prettifier.default(anMatcher)
@@ -373,7 +373,7 @@ final class BeWord {
    *                  ^
    * </pre>
    **/
-  def theSameInstanceAs(right: AnyRef): Matcher[AnyRef] =
+  infix def theSameInstanceAs(right: AnyRef): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult =
         MatchResult(
@@ -566,7 +566,7 @@ final class BeWord {
    *                     ^
    * </pre>
    **/
-  def definedAt[A, U <: PartialFunction[A, _]](right: A): Matcher[U] =
+  infix def definedAt[A, U <: PartialFunction[A, _]](right: A): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult =
         MatchResult(
@@ -586,7 +586,7 @@ final class BeWord {
    *                         ^
    * </pre>
    **/
-  def thrownBy(code: => Unit) = new ResultOfBeThrownBy(Vector(() => code))
+  infix def thrownBy(code: => Unit) = new ResultOfBeThrownBy(Vector(() => code))
 
   /**
    * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:

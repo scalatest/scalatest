@@ -805,6 +805,7 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       }
       
       val myFile = MyFile("test", true, false)
+      val myFilePrettified = "MyFile(\"test\", true, false)"
       val file = new FileBePropertyMatcher
       
       val mt = not be (file)
@@ -817,10 +818,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe s"$myFile was file"
-        mr.negatedFailureMessage shouldBe s"$myFile was not file"
-        mr.midSentenceFailureMessage shouldBe s"$myFile was file"
-        mr.midSentenceNegatedFailureMessage shouldBe s"$myFile was not file"
+        mr.failureMessage shouldBe s"$myFilePrettified was file"
+        mr.negatedFailureMessage shouldBe s"$myFilePrettified was not file"
+        mr.midSentenceFailureMessage shouldBe s"$myFilePrettified was file"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was not file"
         mr.rawFailureMessage shouldBe "{0} was {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} was not {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} was {1}"
@@ -836,10 +837,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe s"$myFile was not file"
-        nmr.negatedFailureMessage shouldBe s"$myFile was file"
-        nmr.midSentenceFailureMessage shouldBe s"$myFile was not file"
-        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFile was file"
+        nmr.failureMessage shouldBe s"$myFilePrettified was not file"
+        nmr.negatedFailureMessage shouldBe s"$myFilePrettified was file"
+        nmr.midSentenceFailureMessage shouldBe s"$myFilePrettified was not file"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was file"
         nmr.rawFailureMessage shouldBe "{0} was not {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} was {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} was not {1}"
@@ -915,6 +916,7 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       }
       
       val myFile = MyFile("test", true, false)
+      val myFilePrettified = "MyFile(\"test\", true, false)"
       val file = new FileBePropertyMatcher
       
       val mt = not be a (file)
@@ -927,10 +929,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe s"$myFile was a file"
-        mr.negatedFailureMessage shouldBe s"$myFile was not a file"
-        mr.midSentenceFailureMessage shouldBe s"$myFile was a file"
-        mr.midSentenceNegatedFailureMessage shouldBe s"$myFile was not a file"
+        mr.failureMessage shouldBe s"$myFilePrettified was a file"
+        mr.negatedFailureMessage shouldBe s"$myFilePrettified was not a file"
+        mr.midSentenceFailureMessage shouldBe s"$myFilePrettified was a file"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was not a file"
         mr.rawFailureMessage shouldBe "{0} was a {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} was not a {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} was a {1}"
@@ -946,10 +948,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe s"$myFile was not a file"
-        nmr.negatedFailureMessage shouldBe s"$myFile was a file"
-        nmr.midSentenceFailureMessage shouldBe s"$myFile was not a file"
-        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFile was a file"
+        nmr.failureMessage shouldBe s"$myFilePrettified was not a file"
+        nmr.negatedFailureMessage shouldBe s"$myFilePrettified was a file"
+        nmr.midSentenceFailureMessage shouldBe s"$myFilePrettified was not a file"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was a file"
         nmr.rawFailureMessage shouldBe "{0} was not a {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} was a {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} was not a {1}"
@@ -971,6 +973,7 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       val file = AMatcher[MyFile]("file") { _.file  }
       val myFile = MyFile("test", true, false)
+      val myFilePrettified = "MyFile(\"test\", true, false)"
       
       val mt = not be a (file)
       
@@ -982,10 +985,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe s"$myFile was a file"
-        mr.negatedFailureMessage shouldBe s"$myFile was not a file"
-        mr.midSentenceFailureMessage shouldBe s"$myFile was a file"
-        mr.midSentenceNegatedFailureMessage shouldBe s"$myFile was not a file"
+        mr.failureMessage shouldBe s"$myFilePrettified was a file"
+        mr.negatedFailureMessage shouldBe s"$myFilePrettified was not a file"
+        mr.midSentenceFailureMessage shouldBe s"$myFilePrettified was a file"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was not a file"
         mr.rawFailureMessage shouldBe "{0} was a {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} was not a {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} was a {1}"
@@ -1001,10 +1004,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe s"$myFile was not a file"
-        nmr.negatedFailureMessage shouldBe s"$myFile was a file"
-        nmr.midSentenceFailureMessage shouldBe s"$myFile was not a file"
-        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFile was a file"
+        nmr.failureMessage shouldBe s"$myFilePrettified was not a file"
+        nmr.negatedFailureMessage shouldBe s"$myFilePrettified was a file"
+        nmr.midSentenceFailureMessage shouldBe s"$myFilePrettified was not a file"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was a file"
         nmr.rawFailureMessage shouldBe "{0} was not a {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} was a {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} was not a {1}"
@@ -1080,6 +1083,7 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       }
       
       val myFile = MyFile("test", true, false)
+      val myFilePrettified = "MyFile(\"test\", true, false)"
       val file = new FileBePropertyMatcher
       
       val mt = not be an (file)
@@ -1092,10 +1096,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe s"$myFile was an file"
-        mr.negatedFailureMessage shouldBe s"$myFile was not an file"
-        mr.midSentenceFailureMessage shouldBe s"$myFile was an file"
-        mr.midSentenceNegatedFailureMessage shouldBe s"$myFile was not an file"
+        mr.failureMessage shouldBe s"$myFilePrettified was an file"
+        mr.negatedFailureMessage shouldBe s"$myFilePrettified was not an file"
+        mr.midSentenceFailureMessage shouldBe s"$myFilePrettified was an file"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was not an file"
         mr.rawFailureMessage shouldBe "{0} was an {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} was not an {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} was an {1}"
@@ -1111,10 +1115,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe s"$myFile was not an file"
-        nmr.negatedFailureMessage shouldBe s"$myFile was an file"
-        nmr.midSentenceFailureMessage shouldBe s"$myFile was not an file"
-        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFile was an file"
+        nmr.failureMessage shouldBe s"$myFilePrettified was not an file"
+        nmr.negatedFailureMessage shouldBe s"$myFilePrettified was an file"
+        nmr.midSentenceFailureMessage shouldBe s"$myFilePrettified was not an file"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was an file"
         nmr.rawFailureMessage shouldBe "{0} was not an {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} was an {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} was not an {1}"
@@ -1136,6 +1140,7 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       val file = AnMatcher[MyFile]("file") { _.file  }
       val myFile = MyFile("test", true, false)
+      val myFilePrettified = "MyFile(\"test\", true, false)"
       
       val mt = not be an (file)
       
@@ -1147,10 +1152,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe s"$myFile was an file"
-        mr.negatedFailureMessage shouldBe s"$myFile was not an file"
-        mr.midSentenceFailureMessage shouldBe s"$myFile was an file"
-        mr.midSentenceNegatedFailureMessage shouldBe s"$myFile was not an file"
+        mr.failureMessage shouldBe s"$myFilePrettified was an file"
+        mr.negatedFailureMessage shouldBe s"$myFilePrettified was not an file"
+        mr.midSentenceFailureMessage shouldBe s"$myFilePrettified was an file"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was not an file"
         mr.rawFailureMessage shouldBe "{0} was an {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} was not an {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} was an {1}"
@@ -1166,10 +1171,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe s"$myFile was not an file"
-        nmr.negatedFailureMessage shouldBe s"$myFile was an file"
-        nmr.midSentenceFailureMessage shouldBe s"$myFile was not an file"
-        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFile was an file"
+        nmr.failureMessage shouldBe s"$myFilePrettified was not an file"
+        nmr.negatedFailureMessage shouldBe s"$myFilePrettified was an file"
+        nmr.midSentenceFailureMessage shouldBe s"$myFilePrettified was not an file"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was an file"
         nmr.rawFailureMessage shouldBe "{0} was not an {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} was an {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} was not an {1}"
@@ -1191,21 +1196,23 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       val myFileLeft = MyFile("left", true, false)
       val myFileRight = MyFile("right", true, false)
-      
+      val myFileLeftPrettified = "MyFile(\"left\", true, false)"
+      val myFileRightPrettified = "MyFile(\"right\", true, false)"
+
       val mt = not be theSameInstanceAs (myFileRight)
       
-      it("should have pretty toString") {
-        mt.toString should be ("not be theSameInstanceAs (" + s"$myFileRight)")
+      it("should have pretty via DefaultPrettifier") {
+        mt.toString should be ("not be theSameInstanceAs (" + s"$myFileRightPrettified)")
       }
       
       val mr = mt(myFileLeft)
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe s"$myFileLeft was the same instance as " + myFileRight
-        mr.negatedFailureMessage shouldBe s"$myFileLeft was not the same instance as " + myFileRight
-        mr.midSentenceFailureMessage shouldBe s"$myFileLeft was the same instance as " + myFileRight
-        mr.midSentenceNegatedFailureMessage shouldBe s"$myFileLeft was not the same instance as " + myFileRight
+        mr.failureMessage shouldBe s"$myFileLeftPrettified was the same instance as " + myFileRightPrettified
+        mr.negatedFailureMessage shouldBe s"$myFileLeftPrettified was not the same instance as " + myFileRightPrettified
+        mr.midSentenceFailureMessage shouldBe s"$myFileLeftPrettified was the same instance as " + myFileRightPrettified
+        mr.midSentenceNegatedFailureMessage shouldBe s"$myFileLeftPrettified was not the same instance as " + myFileRightPrettified
         mr.rawFailureMessage shouldBe "{0} was the same instance as {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} was not the same instance as {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} was the same instance as {1}"
@@ -1221,10 +1228,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe s"$myFileLeft was not the same instance as " + myFileRight
-        nmr.negatedFailureMessage shouldBe s"$myFileLeft was the same instance as " + myFileRight
-        nmr.midSentenceFailureMessage shouldBe s"$myFileLeft was not the same instance as " + myFileRight
-        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFileLeft was the same instance as " + myFileRight
+        nmr.failureMessage shouldBe s"$myFileLeftPrettified was not the same instance as " + myFileRightPrettified
+        nmr.negatedFailureMessage shouldBe s"$myFileLeftPrettified was the same instance as " + myFileRightPrettified
+        nmr.midSentenceFailureMessage shouldBe s"$myFileLeftPrettified was not the same instance as " + myFileRightPrettified
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFileLeftPrettified was the same instance as " + myFileRightPrettified
         nmr.rawFailureMessage shouldBe "{0} was not the same instance as {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} was the same instance as {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} was not the same instance as {1}"
@@ -1345,24 +1352,26 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       )
 
       val myFileRight = MyFile("test right", true, false)
+      val myFileRightPrettified = "MyFile(\"test right\", true, false)"
       
       val mt = not be (myFileRight)
       
-      it("should have pretty toString") {
-        mt.toString should be ("not be " + myFileRight)
+      it("should have pretty via DefaultPrettifier") {
+        mt.toString should be ("not be " + myFileRightPrettified)
       }
       
       describe("when left is not null") {
       
         val myFileLeft = MyFile("test left", true, false)
+        val myFileLeftPrettified = "MyFile(\"test left\", true, false)"
         val mr = mt(myFileLeft)
       
         it("should have correct MatcherResult") {
           mr.matches shouldBe true
-          mr.failureMessage shouldBe s"$myFileLeft was equal to " + myFileRight
-          mr.negatedFailureMessage shouldBe s"$myFileLeft was not equal to " + myFileRight
-          mr.midSentenceFailureMessage shouldBe s"$myFileLeft was equal to " + myFileRight
-          mr.midSentenceNegatedFailureMessage shouldBe s"$myFileLeft was not equal to " + myFileRight
+          mr.failureMessage shouldBe s"$myFileLeftPrettified was equal to " + myFileRightPrettified
+          mr.negatedFailureMessage shouldBe s"$myFileLeftPrettified was not equal to " + myFileRightPrettified
+          mr.midSentenceFailureMessage shouldBe s"$myFileLeftPrettified was equal to " + myFileRightPrettified
+          mr.midSentenceNegatedFailureMessage shouldBe s"$myFileLeftPrettified was not equal to " + myFileRightPrettified
           mr.rawFailureMessage shouldBe "{0} was equal to {1}"
           mr.rawNegatedFailureMessage shouldBe "{0} was not equal to {1}"
           mr.rawMidSentenceFailureMessage shouldBe "{0} was equal to {1}"
@@ -1378,10 +1387,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
         it("should have correct negated MatcherResult") {
           nmr.matches shouldBe false
-          nmr.failureMessage shouldBe s"$myFileLeft was not equal to " + myFileRight
-          nmr.negatedFailureMessage shouldBe s"$myFileLeft was equal to " + myFileRight
-          nmr.midSentenceFailureMessage shouldBe s"$myFileLeft was not equal to " + myFileRight
-          nmr.midSentenceNegatedFailureMessage shouldBe s"$myFileLeft was equal to " + myFileRight
+          nmr.failureMessage shouldBe s"$myFileLeftPrettified was not equal to " + myFileRightPrettified
+          nmr.negatedFailureMessage shouldBe s"$myFileLeftPrettified was equal to " + myFileRightPrettified
+          nmr.midSentenceFailureMessage shouldBe s"$myFileLeftPrettified was not equal to " + myFileRightPrettified
+          nmr.midSentenceNegatedFailureMessage shouldBe s"$myFileLeftPrettified was equal to " + myFileRightPrettified
           nmr.rawFailureMessage shouldBe "{0} was not equal to {1}"
           nmr.rawNegatedFailureMessage shouldBe "{0} was equal to {1}"
           nmr.rawMidSentenceFailureMessage shouldBe "{0} was not equal to {1}"
@@ -1402,9 +1411,9 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
         it("should have correct MatcherResult") {
           mr.matches shouldBe true
           mr.failureMessage shouldBe "The reference was null"
-          mr.negatedFailureMessage shouldBe s"$myFileRight was not null"
+          mr.negatedFailureMessage shouldBe s"$myFileRightPrettified was not null"
           mr.midSentenceFailureMessage shouldBe "the reference was null"
-          mr.midSentenceNegatedFailureMessage shouldBe s"$myFileRight was not null"
+          mr.midSentenceNegatedFailureMessage shouldBe s"$myFileRightPrettified was not null"
           mr.rawFailureMessage shouldBe "The reference was null"
           mr.rawNegatedFailureMessage shouldBe "{0} was not null"
           mr.rawMidSentenceFailureMessage shouldBe "the reference was null"
@@ -1420,9 +1429,9 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
         it("should have correct negated MatcherResult") {
           nmr.matches shouldBe false
-          nmr.failureMessage shouldBe s"$myFileRight was not null"
+          nmr.failureMessage shouldBe s"$myFileRightPrettified was not null"
           nmr.negatedFailureMessage shouldBe "The reference was null"
-          nmr.midSentenceFailureMessage shouldBe s"$myFileRight was not null"
+          nmr.midSentenceFailureMessage shouldBe s"$myFileRightPrettified was not null"
           nmr.midSentenceNegatedFailureMessage shouldBe "the reference was null"
           nmr.rawFailureMessage shouldBe "{0} was not null"
           nmr.rawNegatedFailureMessage shouldBe "The reference was null"
@@ -1713,15 +1722,16 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       }
       
       val myFile = new MyFile("test", true, false)
+      val myFilePrettified = "MyFile(\"test\", true, false)"
       
       val mr = mt(myFile)
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe s"$myFile was an instance of " + clazz.getName
-        mr.negatedFailureMessage shouldBe s"$myFile was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
-        mr.midSentenceFailureMessage shouldBe s"$myFile was an instance of " + clazz.getName
-        mr.midSentenceNegatedFailureMessage shouldBe s"$myFile was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        mr.failureMessage shouldBe s"$myFilePrettified was an instance of " + clazz.getName
+        mr.negatedFailureMessage shouldBe s"$myFilePrettified was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        mr.midSentenceFailureMessage shouldBe s"$myFilePrettified was an instance of " + clazz.getName
+        mr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
         mr.rawFailureMessage shouldBe "{0} was an instance of {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} was an instance of {1}"
@@ -1737,10 +1747,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe s"$myFile was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
-        nmr.negatedFailureMessage shouldBe s"$myFile was an instance of " + clazz.getName
-        nmr.midSentenceFailureMessage shouldBe s"$myFile was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
-        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFile was an instance of " + clazz.getName
+        nmr.failureMessage shouldBe s"$myFilePrettified was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        nmr.negatedFailureMessage shouldBe s"$myFilePrettified was an instance of " + clazz.getName
+        nmr.midSentenceFailureMessage shouldBe s"$myFilePrettified was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was an instance of " + clazz.getName
         nmr.rawFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
         nmr.rawNegatedFailureMessage shouldBe "{0} was an instance of {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
@@ -1771,15 +1781,16 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       }
       
       val myFile = new MyFile("test", true, false)
+      val myFilePrettified = "MyFile(\"test\", true, false)"
       
       val mr = mt(myFile)
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe s"$myFile was an instance of " + clazz.getName
-        mr.negatedFailureMessage shouldBe s"$myFile was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
-        mr.midSentenceFailureMessage shouldBe s"$myFile was an instance of " + clazz.getName
-        mr.midSentenceNegatedFailureMessage shouldBe s"$myFile was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        mr.failureMessage shouldBe s"$myFilePrettified was an instance of " + clazz.getName
+        mr.negatedFailureMessage shouldBe s"$myFilePrettified was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        mr.midSentenceFailureMessage shouldBe s"$myFilePrettified was an instance of " + clazz.getName
+        mr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
         mr.rawFailureMessage shouldBe "{0} was an instance of {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} was an instance of {1}"
@@ -1795,10 +1806,10 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe s"$myFile was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
-        nmr.negatedFailureMessage shouldBe s"$myFile was an instance of " + clazz.getName
-        nmr.midSentenceFailureMessage shouldBe s"$myFile was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
-        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFile was an instance of " + clazz.getName
+        nmr.failureMessage shouldBe s"$myFilePrettified was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        nmr.negatedFailureMessage shouldBe s"$myFilePrettified was an instance of " + clazz.getName
+        nmr.midSentenceFailureMessage shouldBe s"$myFilePrettified was not an instance of " + clazz.getName + ", but an instance of " + myFile.getClass.getName
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$myFilePrettified was an instance of " + clazz.getName
         nmr.rawFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
         nmr.rawNegatedFailureMessage shouldBe "{0} was an instance of {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} was not an instance of {1}, but an instance of {2}"
@@ -2805,6 +2816,7 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       val file = AMatcher[MyFile]("file") { _.file  }
       val myFile = MyFile("test", true, false)
+      val myFilePrettified = "MyFile(\"test\", true, false)"
       
       val mt = not contain a (file)
       
@@ -2813,21 +2825,22 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       }
       
       val leftList = List(myFile)
+      val leftListPrettified = "List(MyFile(\"test\", true, false))"
       val mr = mt(leftList)
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe s"$leftList contained a file: $myFile was a file"
-        mr.negatedFailureMessage shouldBe s"$leftList did not contain a file"
-        mr.midSentenceFailureMessage shouldBe s"$leftList contained a file: $myFile was a file"
-        mr.midSentenceNegatedFailureMessage shouldBe s"$leftList did not contain a file"
+        mr.failureMessage shouldBe s"$leftListPrettified contained a file: $myFilePrettified was a file"
+        mr.negatedFailureMessage shouldBe s"$leftListPrettified did not contain a file"
+        mr.midSentenceFailureMessage shouldBe s"$leftListPrettified contained a file: $myFilePrettified was a file"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$leftListPrettified did not contain a file"
         mr.rawFailureMessage shouldBe "{0} contained a {1}: {2}"
         mr.rawNegatedFailureMessage shouldBe "{0} did not contain a {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} contained a {1}: {2}"
         mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain a {1}"
-        mr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was a file"))
+        mr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was a file"))
         mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        mr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was a file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was a file"))
         mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
 
       }
@@ -2836,18 +2849,18 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe s"$leftList did not contain a file"
-        nmr.negatedFailureMessage shouldBe s"$leftList contained a file: $myFile was a file"
-        nmr.midSentenceFailureMessage shouldBe s"$leftList did not contain a file"
-        nmr.midSentenceNegatedFailureMessage shouldBe s"$leftList contained a file: $myFile was a file"
+        nmr.failureMessage shouldBe s"$leftListPrettified did not contain a file"
+        nmr.negatedFailureMessage shouldBe s"$leftListPrettified contained a file: $myFilePrettified was a file"
+        nmr.midSentenceFailureMessage shouldBe s"$leftListPrettified did not contain a file"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$leftListPrettified contained a file: $myFilePrettified was a file"
         nmr.rawFailureMessage shouldBe "{0} did not contain a {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} contained a {1}: {2}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain a {1}"
         nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained a {1}: {2}"
         nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        nmr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was a file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was a file"))
         nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was a file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was a file"))
 
       }
     }
@@ -2861,6 +2874,7 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       val file = AnMatcher[MyFile]("file") { _.file  }
       val myFile = MyFile("test", true, false)
+      val myFilePrettified = "MyFile(\"test\", true, false)"
       
       val mt = not contain an (file)
       
@@ -2869,21 +2883,22 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       }
       
       val leftList = List(myFile)
+      val leftListPrettified = "List(MyFile(\"test\", true, false))"
       val mr = mt(leftList)
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe s"$leftList contained an file: $myFile was an file"
-        mr.negatedFailureMessage shouldBe s"$leftList did not contain an file"
-        mr.midSentenceFailureMessage shouldBe s"$leftList contained an file: $myFile was an file"
-        mr.midSentenceNegatedFailureMessage shouldBe s"$leftList did not contain an file"
+        mr.failureMessage shouldBe s"$leftListPrettified contained an file: $myFilePrettified was an file"
+        mr.negatedFailureMessage shouldBe s"$leftListPrettified did not contain an file"
+        mr.midSentenceFailureMessage shouldBe s"$leftListPrettified contained an file: $myFilePrettified was an file"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$leftListPrettified did not contain an file"
         mr.rawFailureMessage shouldBe "{0} contained an {1}: {2}"
         mr.rawNegatedFailureMessage shouldBe "{0} did not contain an {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} contained an {1}: {2}"
         mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain an {1}"
-        mr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was an file"))
+        mr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was an file"))
         mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        mr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was an file"))
+        mr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was an file"))
         mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
 
       }
@@ -2892,18 +2907,18 @@ class NotWordSpec extends AnyFunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe s"$leftList did not contain an file"
-        nmr.negatedFailureMessage shouldBe s"$leftList contained an file: $myFile was an file"
-        nmr.midSentenceFailureMessage shouldBe s"$leftList did not contain an file"
-        nmr.midSentenceNegatedFailureMessage shouldBe s"$leftList contained an file: $myFile was an file"
+        nmr.failureMessage shouldBe s"$leftListPrettified did not contain an file"
+        nmr.negatedFailureMessage shouldBe s"$leftListPrettified contained an file: $myFilePrettified was an file"
+        nmr.midSentenceFailureMessage shouldBe s"$leftListPrettified did not contain an file"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$leftListPrettified contained an file: $myFilePrettified was an file"
         nmr.rawFailureMessage shouldBe "{0} did not contain an {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} contained an {1}: {2}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain an {1}"
         nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained an {1}: {2}"
         nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        nmr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was an file"))
+        nmr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was an file"))
         nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was an file"))
+        nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was an file"))
 
       }
     }

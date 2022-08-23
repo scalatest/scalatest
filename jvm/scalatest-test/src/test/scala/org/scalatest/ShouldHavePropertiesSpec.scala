@@ -33,6 +33,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
     describe("on an object with properties") {
 
       val book = new Book("A Tale of Two Cities", "Dickens", 1859, 45, true)
+      val bookPrettified = "Book(\"A Tale of Two Cities\", \"Dickens\", 1859, 45, true)"
       val badBook = new Book("A Tale of Two Cities", "Dickens", 1859, 45, false)
       // val bookshelf = new Bookshelf(book, badBook, book)
 
@@ -248,13 +249,13 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         val caught1 = intercept[TestFailedException] {
           book should have (author ("Gibson"))
         }
-        assert(caught1.getMessage === "The author property had value \"Dickens\", instead of its expected value \"Gibson\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught1.getMessage === "The author property had value \"Dickens\", instead of its expected value \"Gibson\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught2 = intercept[TestFailedException] {
           book should have (Symbol("author") ("Gibson"))
         }
-        assert(caught2.getMessage === "The author property had value \"Dickens\", instead of its expected value \"Gibson\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught2.getMessage === "The author property had value \"Dickens\", instead of its expected value \"Gibson\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
       }
 
@@ -267,7 +268,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
             pubYear (1859)
           )
         }
-        assert(caught1.getMessage === "The author property had value \"Dickens\", instead of its expected value \"Gibson\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught1.getMessage === "The author property had value \"Dickens\", instead of its expected value \"Gibson\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught2 = intercept[TestFailedException] {
@@ -277,7 +278,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
             pubYear (1859)
           )
         }
-        assert(caught2.getMessage === "The author property had value \"Dickens\", instead of its expected value \"Gibson\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught2.getMessage === "The author property had value \"Dickens\", instead of its expected value \"Gibson\", on object " + bookPrettified)
 
         val caught3 = intercept[TestFailedException] {
           book should have (
@@ -286,7 +287,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
             Symbol("pubYear") (1959)
           )
         }
-        assert(caught3.getMessage === "The pubYear property had value 1859, instead of its expected value 1959, on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught3.getMessage === "The pubYear property had value 1859, instead of its expected value 1959, on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
       }
 
@@ -295,13 +296,13 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         val caught1 = intercept[TestFailedException] {
           book should not have (author ("Dickens"))
         }
-        assert(caught1.getMessage === "The author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught1.getMessage === "The author property had its expected value \"Dickens\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught2 = intercept[TestFailedException] {
           book should not have (Symbol("author") ("Dickens"))
         }
-        assert(caught2.getMessage === "The author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught2.getMessage === "The author property had its expected value \"Dickens\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
       }
 
@@ -342,7 +343,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
             author ("Dickens")
           )
         }
-        assert(caught1.getMessage === "All properties had their expected values, respectively, on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught1.getMessage === "All properties had their expected values, respectively, on object " + bookPrettified)
       }
 
       it("should throw TestFailedException if at least one property does not match, when used with and") {
@@ -351,69 +352,69 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         val caught1 = intercept[TestFailedException] {
           book should (have (title ("A Tale of Two Cities")) and (have (author ("Melville"))))
         }
-        assert(caught1.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had value \"Dickens\", instead of its expected value \"Melville\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught1.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified + ", but the author property had value \"Dickens\", instead of its expected value \"Melville\", on object " + bookPrettified)
 
         val caught2 = intercept[TestFailedException] {
           book should (have (title ("A Tale of Two Cities")) and have (author ("Melville")))
         }
-        assert(caught2.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had value \"Dickens\", instead of its expected value \"Melville\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught2.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified + ", but the author property had value \"Dickens\", instead of its expected value \"Melville\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught3 = intercept[TestFailedException] {
           book should (have (Symbol("title") ("A Tale of Two Cities")) and (have (Symbol("author") ("Melville"))))
         }
-        assert(caught3.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had value \"Dickens\", instead of its expected value \"Melville\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught3.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified + ", but the author property had value \"Dickens\", instead of its expected value \"Melville\", on object " + bookPrettified)
 
         val caught4 = intercept[TestFailedException] {
           book should (have (Symbol("title") ("A Tale of Two Cities")) and have (Symbol("author") ("Melville")))
         }
-        assert(caught4.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had value \"Dickens\", instead of its expected value \"Melville\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught4.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified + ", but the author property had value \"Dickens\", instead of its expected value \"Melville\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
 
         // first false
         val caught11 = intercept[TestFailedException] {
           book should (have (title ("Moby Dick")) and (have (author ("Dickens"))))
         }
-        assert(caught11.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught11.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified)
 
         val caught12 = intercept[TestFailedException] {
           book should (have (title ("Moby Dick")) and have (author ("Dickens")))
         }
-        assert(caught12.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught12.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught13 = intercept[TestFailedException] {
           book should (have (Symbol("title") ("Moby Dick")) and (have (Symbol("author") ("Dickens"))))
         }
-        assert(caught13.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught13.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified)
 
         val caught14 = intercept[TestFailedException] {
           book should (have (Symbol("title") ("Moby Dick")) and have (Symbol("author") ("Dickens")))
         }
-        assert(caught14.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught14.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
 
         // both false
         val caught21 = intercept[TestFailedException] {
           book should (have (title ("Moby Dick")) and (have (author ("Melville"))))
         }
-        assert(caught21.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught21.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified)
 
         val caught22 = intercept[TestFailedException] {
           book should (have (title ("Moby Dick")) and have (author ("Melville")))
         }
-        assert(caught22.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught22.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught23 = intercept[TestFailedException] {
           book should (have (Symbol("title") ("Moby Dick")) and (have (Symbol("author") ("Melville"))))
         }
-        assert(caught23.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught23.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified)
 
         val caught24 = intercept[TestFailedException] {
           book should (have (Symbol("title") ("Moby Dick")) and have (Symbol("author") ("Melville")))
         }
-        assert(caught24.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught24.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
       }
 
@@ -423,23 +424,23 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         val caught21 = intercept[TestFailedException] {
           book should (have (title ("Moby Dick")) or (have (author ("Melville"))))
         }
-        assert(caught21.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had value \"Dickens\", instead of its expected value \"Melville\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught21.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified + ", and the author property had value \"Dickens\", instead of its expected value \"Melville\", on object " + bookPrettified)
 
         val caught22 = intercept[TestFailedException] {
           book should (have (title ("Moby Dick")) or have (author ("Melville")))
         }
-        assert(caught22.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had value \"Dickens\", instead of its expected value \"Melville\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught22.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified + ", and the author property had value \"Dickens\", instead of its expected value \"Melville\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught23 = intercept[TestFailedException] {
           book should (have (Symbol("title") ("Moby Dick")) or (have (Symbol("author") ("Melville"))))
         }
-        assert(caught23.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had value \"Dickens\", instead of its expected value \"Melville\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught23.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified + ", and the author property had value \"Dickens\", instead of its expected value \"Melville\", on object " + bookPrettified)
 
         val caught24 = intercept[TestFailedException] {
           book should (have (Symbol("title") ("Moby Dick")) or have (Symbol("author") ("Melville")))
         }
-        assert(caught24.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had value \"Dickens\", instead of its expected value \"Melville\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught24.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified + ", and the author property had value \"Dickens\", instead of its expected value \"Melville\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
       }
 
@@ -449,105 +450,105 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         val caught1 = intercept[TestFailedException] {
           book should (not have (title ("A Tale of Two Cities")) and not (have (author ("Melville"))))
         }
-        assert(caught1.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught1.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified)
 
         val caught2 = intercept[TestFailedException] {
           book should (not have (title ("A Tale of Two Cities")) and not have (author ("Melville")))
         }
-        assert(caught2.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught2.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught3 = intercept[TestFailedException] {
           book should (not have (Symbol("title") ("A Tale of Two Cities")) and not (have (Symbol("author") ("Melville"))))
         }
-        assert(caught3.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught3.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified)
 
         val caught4 = intercept[TestFailedException] {
           book should (not have (Symbol("title") ("A Tale of Two Cities")) and not have (Symbol("author") ("Melville")))
         }
-        assert(caught4.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught4.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
 
         val caught5 = intercept[TestFailedException] {
           book should (not have (title ("A Tale of Two Cities")) and (not have (author ("Melville"))))
         }
-        assert(caught5.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught5.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught6 = intercept[TestFailedException] {
           book should (not have (Symbol("title") ("A Tale of Two Cities")) and (not have (Symbol("author") ("Melville"))))
         }
-        assert(caught6.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught6.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
 
         // first false
         val caught11 = intercept[TestFailedException] {
           book should (not have (title ("Moby Dick")) and not (have (author ("Dickens"))))
         }
-        assert(caught11.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught11.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified + ", but the author property had its expected value \"Dickens\", on object " + bookPrettified)
 
         val caught12 = intercept[TestFailedException] {
           book should (not have (title ("Moby Dick")) and not have (author ("Dickens")))
         }
-        assert(caught12.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught12.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified + ", but the author property had its expected value \"Dickens\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught13 = intercept[TestFailedException] {
           book should (not have (Symbol("title") ("Moby Dick")) and (not have (Symbol("author") ("Dickens"))))
         }
-        assert(caught13.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught13.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified + ", but the author property had its expected value \"Dickens\", on object " + bookPrettified)
 
         val caught14 = intercept[TestFailedException] {
           book should (not have (Symbol("title") ("Moby Dick")) and not have (Symbol("author") ("Dickens")))
         }
-        assert(caught14.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught14.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified + ", but the author property had its expected value \"Dickens\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
 
         val caught15 = intercept[TestFailedException] {
           book should (not have (title ("Moby Dick")) and (not have (author ("Dickens"))))
         }
-        assert(caught15.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught15.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified + ", but the author property had its expected value \"Dickens\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught16 = intercept[TestFailedException] {
           book should (not have (Symbol("title") ("Moby Dick")) and (not have (Symbol("author") ("Dickens"))))
         }
-        assert(caught16.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), but the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught16.getMessage === "The title property had value \"A Tale of Two Cities\", instead of its expected value \"Moby Dick\", on object " + bookPrettified + ", but the author property had its expected value \"Dickens\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
 
         // both true
         val caught21 = intercept[TestFailedException] {
           book should (not have (title ("A Tale of Two Cities")) and (not have (author ("Dickens"))))
         }
-        assert(caught21.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught21.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified)
 
         val caught22 = intercept[TestFailedException] {
           book should (not have (title ("A Tale of Two Cities")) and not have (author ("Dickens")))
         }
-        assert(caught22.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught22.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught23 = intercept[TestFailedException] {
           book should (not have (Symbol("title") ("A Tale of Two Cities")) and (not have (Symbol("author") ("Dickens"))))
         }
-        assert(caught23.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught23.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified)
 
         val caught24 = intercept[TestFailedException] {
           book should (not have (Symbol("title") ("A Tale of Two Cities")) and not have (Symbol("author") ("Dickens")))
         }
-        assert(caught24.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught24.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
 
         val caught25 = intercept[TestFailedException] {
           book should (not have (title ("A Tale of Two Cities")) and (not (have (author ("Dickens")))))
         }
-        assert(caught25.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught25.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught26 = intercept[TestFailedException] {
           book should (not have (Symbol("title") ("A Tale of Two Cities")) and (not (have (Symbol("author") ("Dickens")))))
         }
-        assert(caught26.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught26.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
       }
 
@@ -557,35 +558,35 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
         val caught21 = intercept[TestFailedException] {
           book should (not have (title ("A Tale of Two Cities")) or (not have (author ("Dickens"))))
         }
-        assert(caught21.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught21.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified + ", and the author property had its expected value \"Dickens\", on object " + bookPrettified)
 
         val caught22 = intercept[TestFailedException] {
           book should (not have (title ("A Tale of Two Cities")) or not have (author ("Dickens")))
         }
-        assert(caught22.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught22.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified + ", and the author property had its expected value \"Dickens\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught23 = intercept[TestFailedException] {
           book should (not have (Symbol("title") ("A Tale of Two Cities")) or (not have (Symbol("author") ("Dickens"))))
         }
-        assert(caught23.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught23.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified + ", and the author property had its expected value \"Dickens\", on object " + bookPrettified)
 
         val caught24 = intercept[TestFailedException] {
           book should (not have (Symbol("title") ("A Tale of Two Cities")) or not have (Symbol("author") ("Dickens")))
         }
-        assert(caught24.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught24.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified + ", and the author property had its expected value \"Dickens\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
 
         val caught25 = intercept[TestFailedException] {
           book should (not have (title ("A Tale of Two Cities")) or (not have (author ("Dickens"))))
         }
-        assert(caught25.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught25.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified + ", and the author property had its expected value \"Dickens\", on object " + bookPrettified)
 
         // SKIP-SCALATESTJS,NATIVE-START
         val caught26 = intercept[TestFailedException] {
           book should (not have (Symbol("title") ("A Tale of Two Cities")) or (not have (Symbol("author") ("Dickens"))))
         }
-        assert(caught26.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object Book(A Tale of Two Cities,Dickens,1859,45,true), and the author property had its expected value \"Dickens\", on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught26.getMessage === "The title property had its expected value \"A Tale of Two Cities\", on object " + bookPrettified + ", and the author property had its expected value \"Dickens\", on object " + bookPrettified)
         // SKIP-SCALATESTJS,NATIVE-END
 
         // A double one, so that I can see the mid-sentence version of the 'all properties...' error message
@@ -600,7 +601,7 @@ class ShouldHavePropertiesSpec extends AnyFunSpec with ReturnsNormallyThrowsAsse
             )
           )
         }
-        assert(caught31.getMessage === "All properties had their expected values, respectively, on object Book(A Tale of Two Cities,Dickens,1859,45,true), and all properties had their expected values, respectively, on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
+        assert(caught31.getMessage === "All properties had their expected values, respectively, on object " + bookPrettified + ", and all properties had their expected values, respectively, on object " + bookPrettified)
       }
 
 /*
@@ -632,7 +633,7 @@ hard to read. Better to have people pull things out and then just do a non-neste
           book should have (length (43))
         }
         // assert(caught1.getMessage === "The length property had value 45, instead of its expected value 43, on object Book(A Tale of Two Cities,Dickens,1859,45,true)")
-        assert(caught1.getMessage === "Book(A Tale of Two Cities,Dickens,1859,45,true) had length 45 instead of expected length 43")
+        assert(caught1.getMessage === bookPrettified + " had length 45 instead of expected length 43")
       }
 
       it("should work with size not a symbol without anything special, in case someone forgets you don't need the parens with size") {

@@ -194,26 +194,27 @@ object GenMatchers {
       val outputWriter = new BufferedWriter(new FileWriter(outputFile))
       try {
         val lines = Source.fromFile(new File(sourceFileName)).getLines.toList
-        var skipMode = false
+        var skipDottyMode = false
+        var skipJSMode = false
         for (line <- lines) {
           val mustLine: String =
-            if (line.trim == "// SKIP-DOTTY-START") {
-              skipMode = true
+            if (!skipJSMode && line.trim == "// SKIP-DOTTY-START") {
+              skipDottyMode = true
               ""
             }
-            else if (line.trim == "// SKIP-DOTTY-END") {
-              skipMode = false
+            else if (!skipJSMode && line.trim == "// SKIP-DOTTY-END") {
+              skipDottyMode = false
               ""
             }
-            else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START") {
-              skipMode = true
+            else if (!skipDottyMode && line.trim == "// SKIP-SCALATESTJS,NATIVE-START") {
+              skipJSMode = true
               ""
             }
-            else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END") {
-              skipMode = false
+            else if (!skipDottyMode && line.trim == "// SKIP-SCALATESTJS,NATIVE-END") {
+              skipJSMode = false
               ""
             }
-            else if (!skipMode) {
+            else if (!skipDottyMode && !skipJSMode) {
               if (line.trim.startsWith("//DOTTY-ONLY "))
                 translateFun(line.substring(line.indexOf("//DOTTY-ONLY ") + 13))
               else if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
@@ -243,26 +244,27 @@ object GenMatchers {
       val outputWriter = new BufferedWriter(new FileWriter(outputFile))
       try {
         val lines = Source.fromFile(new File(sourceFileName)).getLines.toList
-        var skipMode = false
+        var skipDottyMode = false
+        var skipNativeMode = false
         for (line <- lines) {
           val mustLine: String =
-            if (line.trim == "// SKIP-DOTTY-START") {
-              skipMode = true
+            if (!skipNativeMode && line.trim == "// SKIP-DOTTY-START") {
+              skipDottyMode = true
               ""
             }
-            else if (line.trim == "// SKIP-DOTTY-END") {
-              skipMode = false
+            else if (!skipNativeMode && line.trim == "// SKIP-DOTTY-END") {
+              skipDottyMode = false
               ""
             }
-            else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-START") {
-              skipMode = true
+            else if (!skipDottyMode && line.trim == "// SKIP-SCALATESTJS,NATIVE-START") {
+              skipNativeMode = true
               ""
             }
-            else if (line.trim == "// SKIP-SCALATESTJS,NATIVE-END") {
-              skipMode = false
+            else if (!skipDottyMode && line.trim == "// SKIP-SCALATESTJS,NATIVE-END") {
+              skipNativeMode = false
               ""
             }
-            else if (!skipMode) {
+            else if (!skipDottyMode && !skipNativeMode) {
               if (line.trim.startsWith("//DOTTY-ONLY "))
                 translateFun(line.substring(line.indexOf("//DOTTY-ONLY ") + 13))
               else if (line.trim.startsWith("//SCALATESTJS,NATIVE-ONLY "))
