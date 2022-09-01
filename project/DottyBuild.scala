@@ -66,7 +66,6 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
       //scalacticDocSourcesSetting,
       //docTaskSetting,
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
@@ -123,7 +122,6 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
       //scalacticDocSourcesSetting,
       //docTaskSetting,
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
@@ -180,7 +178,6 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
       //scalacticDocSourcesSetting,
       //docTaskSetting,
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
@@ -241,7 +238,6 @@ trait DottyBuild { this: BuildCommons =>
         //GenSafeStyles.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
       }.taskValue,
       //scalatestJSDocTaskSetting,
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"),
       mimaBinaryIssueFilters ++= {
@@ -317,7 +313,6 @@ trait DottyBuild { this: BuildCommons =>
         //GenSafeStyles.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
       }.taskValue,
       //scalatestJSDocTaskSetting,
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"),
       mimaBinaryIssueFilters ++= {
@@ -394,7 +389,6 @@ trait DottyBuild { this: BuildCommons =>
         //GenSafeStyles.genMain((sourceManaged in Compile).value / "org" / "scalatest", version.value, scalaVersion.value)
       }.taskValue,
       //scalatestJSDocTaskSetting,
-      publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"),
       mimaBinaryIssueFilters ++= {
@@ -435,7 +429,6 @@ trait DottyBuild { this: BuildCommons =>
         organization := "org.scalatest",
         moduleName := name,
         packageManagedSources,
-        publishArtifact in (Compile, packageDoc) := false, // Temporary disable publishing of doc, can't get it to build.
         osgiSettings,
         OsgiKeys.additionalHeaders := Map(
           "Bundle-Name" -> title,
