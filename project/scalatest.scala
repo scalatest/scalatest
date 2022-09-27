@@ -153,23 +153,13 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def crossBuildTestLibraryDependencies = Def.setting {
     CrossVersion.partialVersion(scalaVersion.value) match {
-      // if scala 2.13+ is used, add dependency on scala-parallel-collections module
-      case Some((2, scalaMajor)) if scalaMajor >= 13 =>
-        Seq(
-          //"org.scala-lang.modules" %% "scala-parallel-collections" % "0.1.2",
-          "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.2"
-        )
+      case Some((2, scalaMajor)) if scalaMajor == 10 =>
+        Seq.empty
 
-      case Some((3, _)) =>
+      case _ => // for scala 2.11, 2.12, 2.13 and 3.x
         Seq(
           "org.scala-lang.modules" %%% "scala-parser-combinators" % "2.1.1"
-        )  
-
-      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-        Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.1")
-
-      case _ =>
-        Seq.empty
+        )
     }
   }
 
