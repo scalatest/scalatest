@@ -161,7 +161,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def scalatestTestLibraryDependencies(theScalaVersion: String) =
     Seq(
-      "org.scalatestplus" %% "testng-6-7" % plusTestNGVersion % "test",
+      "org.scalatestplus" %% "testng-7-5" % plusTestNGVersion % "test",
       "org.scalatestplus" %% "junit-4-13" % plusJUnitVersion % "test"
     )
 
@@ -1193,7 +1193,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def gentestsLibraryDependencies =
     Seq(
-      "org.scalatestplus" %% "testng-6-7" % plusTestNGVersion % "test",
+      "org.scalatestplus" %% "testng-7-5" % plusTestNGVersion % "test",
       "org.scalatestplus" %% "junit-4-13" % plusJUnitVersion % "test", 
       commonmark
     )

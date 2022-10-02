@@ -938,7 +938,7 @@ trait DottyBuild { this: BuildCommons =>
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++= 
         Seq(
-          "org.scalatestplus" %% "testng-6-7" % plusTestNGVersion % "test",
+          "org.scalatestplus" %% "testng-7-5" % plusTestNGVersion % "test",
           "org.scalatestplus" %% "junit-4-13" % plusJUnitVersion % "test"
         ),
       Test / testOptions := scalatestTestOptions,
