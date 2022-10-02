@@ -80,7 +80,7 @@ trait NonTestColonEscapeExamples extends Tables {
     (spec, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")),
     (junit3Suite, Some("- test: A Succeeded Test(org.scalatest.TestColonEscapeExampleJUnit3Suite)"), Some("- test: A Failed Test(org.scalatest.TestColonEscapeExampleJUnit3Suite)"), None, None, None),
     (junitSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), None, None),
-    (testngSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), None, None),
+    (testngSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), None, None, Some("- test: An Canceled Test")),
     // SKIP-SCALATESTJS,NATIVE-END
     (funSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")),
     (fixtureFunSuite, Some("- test: A Succeeded Test"), Some("- test: A Failed Test"), Some("- test: An Ignored Test"), Some("- test: A Pending Test"), Some("- test: A Canceled Test")), 
@@ -119,7 +119,7 @@ class  TestColonEscapeExampleJUnitSuite extends JUnitSuite {
 class TestColonEscapeExampleTestNGSuite extends TestNGSuite {
   @TestNGTest def `test: A Succeeded Test`(): Unit = { }
   @TestNGTest(groups = Array("run")) def `test: A Failed Test`(): Unit = { _root_.org.testng.Assert.assertEquals(1, 2) }
-  @TestNGTest(dependsOnGroups = Array("run")) def `test: An Ignored Test`(): Unit = {}
+  @TestNGTest(dependsOnGroups = Array("run")) def `test: An Canceled Test`(): Unit = {}
 }
 // SKIP-SCALATESTJS,NATIVE-END
 
