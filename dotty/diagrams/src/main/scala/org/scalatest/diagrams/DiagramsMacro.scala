@@ -65,8 +65,7 @@ object DiagramsMacro {
         def getAnchor(expr: Term): Expr[Int] = {
           // -1 to match scala2 position
           // Expr((expr.asTerm.pos.endColumn + expr.asTerm.pos.startColumn - 1) / 2 - Position.ofMacroExpansion.startColumn)
-          //val line = expr.pos.sourceCode.getOrElse("").split('\n').apply(expr.pos.startLine - 1)
-          Expr(expr.pos.startColumn - Position.ofMacroExpansion.startColumn)// - adjustment
+          Expr(expr.pos.startColumn - Position.ofMacroExpansion.startColumn)
         }
 
         def handleArgs(argTps: List[TypeRepr], args: List[Term]): (List[Term], List[Term]) =

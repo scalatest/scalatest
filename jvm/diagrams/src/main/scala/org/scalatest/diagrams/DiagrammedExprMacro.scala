@@ -50,10 +50,6 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
               val c = line.charAt(anchor)
               if (c == '<') 0 else 1
           }
-        //val p = getPosition(expr)
-        //val line = p.source.lineToString(p.line - 1)
-        //val anchor = getAnchor(x)
-        //val c = line.charAt(anchor)
         anchor - adjustment
       case Apply(x, ys) => getAnchor(x) + 0
       case TypeApply(x, ys) => ;getAnchor(x) + 0
