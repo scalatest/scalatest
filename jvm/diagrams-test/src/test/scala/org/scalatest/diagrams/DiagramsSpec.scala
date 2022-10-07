@@ -2455,10 +2455,9 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
             """
               |
               |assert(<person>Dude</person> == <person>Mary</person>)
-              |        |                    |   |
-              |        |                    |   <person>Mary</person>
-              |        |                    false
-              |        <person>Dude</person>
+              |       |                     |  |
+              |       <person>Dude</person> |  <person>Mary</person>
+              |                             false
               |""".stripMargin
           )
         )
@@ -4918,10 +4917,9 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
             """this is a clue
               |
               |assert(<person>Dude</person> == <person>Mary</person>, "this is a clue")
-              |        |                    |   |
-              |        |                    |   <person>Mary</person>
-              |        |                    false
-              |        <person>Dude</person>
+              |       |                     |  |
+              |       <person>Dude</person> |  <person>Mary</person>
+              |                             false
               |""".stripMargin
           )
         )
@@ -7384,10 +7382,9 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
             """
               |
               |assume(<person>Dude</person> == <person>Mary</person>)
-              |        |                    |   |
-              |        |                    |   <person>Mary</person>
-              |        |                    false
-              |        <person>Dude</person>
+              |       |                     |  |
+              |       <person>Dude</person> |  <person>Mary</person>
+              |                             false
               |""".stripMargin
           )
         )
@@ -9849,10 +9846,9 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
             """this is a clue
               |
               |assume(<person>Dude</person> == <person>Mary</person>, "this is a clue")
-              |        |                    |   |
-              |        |                    |   <person>Mary</person>
-              |        |                    false
-              |        <person>Dude</person>
+              |       |                     |  |
+              |       <person>Dude</person> |  <person>Mary</person>
+              |                             false
               |""".stripMargin
           )
         )

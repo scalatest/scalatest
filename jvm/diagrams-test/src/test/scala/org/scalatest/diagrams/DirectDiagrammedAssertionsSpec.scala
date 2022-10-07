@@ -2455,10 +2455,9 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
             """
               |
               |org.scalatest.diagrams.Diagrams.assert(<person>Dude</person> == <person>Mary</person>)
-              |                                        |                    |   |
-              |                                        |                    |   <person>Mary</person>
-              |                                        |                    false
-              |                                        <person>Dude</person>
+              |                                       |                     |  |
+              |                                       <person>Dude</person> |  <person>Mary</person>
+              |                                                             false
               |""".stripMargin
           )
         )
@@ -4914,10 +4913,9 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
             """this is a clue
               |
               |org.scalatest.diagrams.Diagrams.assert(<person>Dude</person> == <person>Mary</person>, "this is a clue")
-              |                                        |                    |   |
-              |                                        |                    |   <person>Mary</person>
-              |                                        |                    false
-              |                                        <person>Dude</person>
+              |                                       |                     |  |
+              |                                       <person>Dude</person> |  <person>Mary</person>
+              |                                                             false
               |""".stripMargin
           )
         )
@@ -7373,10 +7371,9 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
             """
               |
               |org.scalatest.diagrams.Diagrams.assume(<person>Dude</person> == <person>Mary</person>)
-              |                                        |                    |   |
-              |                                        |                    |   <person>Mary</person>
-              |                                        |                    false
-              |                                        <person>Dude</person>
+              |                                       |                     |  |
+              |                                       <person>Dude</person> |  <person>Mary</person>
+              |                                                             false
               |""".stripMargin
           )
         )
@@ -9832,10 +9829,9 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
             """this is a clue
               |
               |org.scalatest.diagrams.Diagrams.assume(<person>Dude</person> == <person>Mary</person>, "this is a clue")
-              |                                        |                    |   |
-              |                                        |                    |   <person>Mary</person>
-              |                                        |                    false
-              |                                        <person>Dude</person>
+              |                                       |                     |  |
+              |                                       <person>Dude</person> |  <person>Mary</person>
+              |                                                             false
               |""".stripMargin
           )
         )
