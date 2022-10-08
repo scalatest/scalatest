@@ -214,7 +214,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       ofImpl(description, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def of(description: String): Unit = {
+    //DOTTY-ONLY inline infix def of(description: String): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ofImpl(description, pos) }) } 
     //DOTTY-ONLY }
   }
@@ -300,7 +300,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -327,7 +327,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToRun(verb.trim + " " + name.trim, "is", tags, () => { testFun; succeed }, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "is", tags, () => { testFun; succeed }, pos) }) } 
     //DOTTY-ONLY }
 
@@ -354,7 +354,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos) }) } 
     //DOTTY-ONLY }
   }
@@ -427,7 +427,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -453,7 +453,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToRun(verb.trim + " " + name.trim, "is", List(), () => { testFun; succeed }, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "is", List(), () => { testFun; succeed }, pos) }) } 
     //DOTTY-ONLY }
 
@@ -479,7 +479,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -500,6 +500,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
       new ItVerbStringTaggedAs(verb, name, tagList)
@@ -551,6 +552,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def should(string: String) = new ItVerbString("should", string)
 
     /**
@@ -570,6 +572,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def must(string: String) = new ItVerbString("must", string)
 
     /**
@@ -589,6 +592,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def can(string: String) = new ItVerbString("can", string)
 
     /**
@@ -608,6 +612,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -627,6 +632,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def must(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -646,6 +652,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def can(behaveWord: BehaveWord) = behaveWord
   }
 
@@ -736,7 +743,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", () => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -771,7 +778,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "is", () => { testFun; succeed }, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "is", () => { testFun; succeed }, pos) }) } 
     //DOTTY-ONLY }
 
@@ -844,7 +851,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", () => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -878,7 +885,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "is", () => { testFun; succeed }, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "is", () => { testFun; succeed }, pos) }) } 
     //DOTTY-ONLY }
 
@@ -901,6 +908,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
       new IgnoreVerbStringTaggedAs(verb, name, tagList)
@@ -944,6 +952,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def should(string: String) = new IgnoreVerbString("should", string)
 
     /**
@@ -963,6 +972,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def must(string: String) = new IgnoreVerbString("must", string)
 
     /**
@@ -982,6 +992,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def can(string: String) = new IgnoreVerbString("can", string)
   }
 
@@ -1066,7 +1077,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "in", tags, () => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1093,7 +1104,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToRun(verb.trim + " " + name.trim, "is", tags, () => { testFun; succeed }, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "is", tags, () => { testFun; succeed }, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1120,7 +1131,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", () => testFun, pos) }) } 
     //DOTTY-ONLY }
   }
@@ -1193,7 +1204,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "in", List(), () => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1219,7 +1230,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToRun(verb.trim + " " + name.trim, "is", List(), () => { testFun; succeed }, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, "is", List(), () => { testFun; succeed }, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1245,7 +1256,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", () => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1266,6 +1277,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
       new ItVerbStringTaggedAs(verb, name, tagList)
@@ -1317,6 +1329,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def should(string: String) = new ItVerbString("should", string)
 
     /**
@@ -1336,6 +1349,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def must(string: String) = new ItVerbString("must", string)
 
     /**
@@ -1355,6 +1369,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def can(string: String) = new ItVerbString("can", string)
 
     /**
@@ -1374,6 +1389,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -1393,6 +1409,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def must(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -1412,6 +1429,7 @@ trait AnyFlatSpecLike extends TestSuite with TestRegistration with ShouldVerb wi
      * in the main documentation for trait <code>AnyFlatSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def can(behaveWord: BehaveWord) = behaveWord
   }
 
@@ -1509,7 +1527,7 @@ import resultOfStringPassedToVerb.verb
       registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + rest.trim, "in", List(), () => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1535,7 +1553,7 @@ import resultOfStringPassedToVerb.verb
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", () => testFun, pos) }) } 
     //DOTTY-ONLY }
   }
@@ -1617,7 +1635,7 @@ import resultOfStringPassedToVerb.verb
       registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, () => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1645,7 +1663,7 @@ import resultOfStringPassedToVerb.verb
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", () => testFun, pos) }) } 
     //DOTTY-ONLY }
   }
@@ -1690,11 +1708,13 @@ import resultOfStringPassedToVerb.verb
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "AnyFlatSpecLike.scala", "apply", stackDepth, 0, Some(pos))
         new ResultOfStringPassedToVerb(verb, rest) {
 
+          //DOTTY-ONLY         infix
           def is(testFun: => PendingStatement): Unit = {
             registerTestToRun(this.verb.trim + " " + this.rest.trim, "is", List(), () => { testFun; succeed }, pos)
           }
           // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
           // to say is (fixture => pending), rather just say is (pending)
+          //DOTTY-ONLY         infix
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
             val tagList = firstTestTag :: otherTestTags.toList
             new ResultOfTaggedAsInvocation(this.verb, this.rest, tagList) {
