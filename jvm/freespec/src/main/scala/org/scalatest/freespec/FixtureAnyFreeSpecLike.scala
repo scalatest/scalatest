@@ -237,6 +237,7 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
       registerTestToRun(specText, tags, "in", testFun, pos)
     }
@@ -259,6 +260,7 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def in(testFun: () => Any /* Assertion */): Unit = {
       registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun), pos)
     }
@@ -281,6 +283,7 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def is(testFun: => PendingStatement): Unit = {
       registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun, pos)
     }
@@ -303,6 +306,7 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
       registerTestToIgnore(specText, tags, "ignore", testFun, pos)
     }
@@ -325,6 +329,7 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def ignore(testFun: () => Any /* Assertion */): Unit = {
       registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun), pos)
     }
@@ -355,6 +360,7 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      * implementation of this method will register the text (passed to the contructor of <code>FreeSpecStringWrapper</code>
      * and immediately invoke the passed function.
      */
+    //DOTTY-ONLY     infix  
     def -(fun: => Unit): Unit = {
 
       // SKIP-SCALATESTJS,NATIVE-START
@@ -393,6 +399,7 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
       registerTestToRun(string, List(), "in", testFun, pos)
     }
@@ -415,6 +422,7 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def in(testFun: () => Any /* Assertion */): Unit = {
       registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun), pos)
     }
@@ -437,6 +445,7 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def is(testFun: => PendingStatement): Unit = {
       registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun, pos)
     }
@@ -459,6 +468,7 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
       registerTestToIgnore(string, List(), "ignore", testFun, pos)
     }
@@ -481,6 +491,7 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def ignore(testFun: () => Any /* Assertion */): Unit = {
       registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun), pos)
     }
@@ -504,6 +515,7 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      * @param firstTestTag the first mandatory test tag
      * @param otherTestTags the others additional test tags
      */
+    //DOTTY-ONLY     infix  
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = {
       val tagList = firstTestTag :: otherTestTags.toList
       new ResultOfTaggedAsInvocationOnString(string, tagList, pos)
