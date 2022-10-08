@@ -238,6 +238,7 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -259,6 +260,7 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
@@ -387,6 +389,7 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -408,6 +411,7 @@ trait FixtureAnyFunSpecLike extends org.scalatest.FixtureTestSuite with org.scal
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
