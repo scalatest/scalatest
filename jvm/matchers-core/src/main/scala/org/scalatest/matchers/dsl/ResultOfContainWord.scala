@@ -45,7 +45,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]): Assertion = {
+  // SKIP-DOTTY-END  
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.oneOfDuplicate, pos)
@@ -74,7 +77,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
+  // SKIP-DOTTY-END  
     val right = elements.toList
     if (containing.containsOneOf(left, right.distinct) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainOneElementOf(prettifier, left, right) else FailureMessages.containedOneElementOf(prettifier, left, right), None, pos)
@@ -89,7 +95,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-END  
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, pos)
@@ -118,7 +127,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-END  
     val right = elements.toList
     if (aggregating.containsAtLeastOneOf(left, right.distinct) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAtLeastOneElementOf(prettifier, left, right) else FailureMessages.containedAtLeastOneElementOf(prettifier, left, right), None, pos)
@@ -134,7 +146,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]): Assertion = {
+  // SKIP-DOTTY-END  
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.noneOfDuplicate, pos)
@@ -163,7 +178,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
+  // SKIP-DOTTY-END  
     val right = elements.toList
     if (containing.containsNoneOf(left, right.distinct) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.containedAtLeastOneElementOf(prettifier, left, right) else FailureMessages.didNotContainAtLeastOneElementOf(prettifier, left, right), None, pos)
@@ -179,7 +197,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-END  
     if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElements(prettifier, left, right) else FailureMessages.containedSameElements(prettifier, left, right), None, pos)
     else
@@ -194,7 +215,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[L]): Assertion = {
+  // SKIP-DOTTY-END  
     if (sequencing.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElementsInOrder(prettifier, left, right) else FailureMessages.containedSameElementsInOrder(prettifier, left, right), None, pos)
     else
@@ -209,7 +233,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def only(right: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def only(right: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-END  
     if (right.isEmpty)
       throw new NotAllowedException(FailureMessages.onlyEmpty, pos)
     if (right.distinct.size != right.size)
@@ -255,7 +282,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[L]): Assertion = {
+  // SKIP-DOTTY-END
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, pos)
@@ -284,7 +314,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-END  
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.allOfDuplicate, pos)
@@ -313,7 +346,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-END  
     val right = elements.toList
     if (aggregating.containsAllOf(left, right.distinct) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAllElementsOf(prettifier, left, right) else FailureMessages.containedAllElementsOf(prettifier, left, right), None, pos)
@@ -329,7 +365,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[L]): Assertion = {
+  // SKIP-DOTTY-END  
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.inOrderDuplicate, pos)
@@ -358,7 +397,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: Sequencing[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: Sequencing[L]): Assertion = {
+  // SKIP-DOTTY-END  
     val right = elements.toList
     if (sequencing.containsInOrder(left, right.distinct) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAllElementsOfInOrder(prettifier, left, right) else FailureMessages.containedAllElementsOfInOrder(prettifier, left, right), None, pos)
@@ -374,7 +416,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                    ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def key(expectedKey: Any)(implicit keyMapping: KeyMapping[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def key(expectedKey: Any)(implicit keyMapping: KeyMapping[L]): Assertion = {
+  // SKIP-DOTTY-END
     if (keyMapping.containsKey(left, expectedKey) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainKey(prettifier, left, expectedKey) else FailureMessages.containedKey(prettifier, left, expectedKey), None, pos)
     else
@@ -389,7 +434,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                    ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def value(expectedValue: Any)(implicit valueMapping: ValueMapping[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def value(expectedValue: Any)(implicit valueMapping: ValueMapping[L]): Assertion = {
+  // SKIP-DOTTY-END  
     if (valueMapping.containsValue(left, expectedValue) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainValue(prettifier, left, expectedValue) else FailureMessages.containedValue(prettifier, left, expectedValue), None, pos)
     else
@@ -404,7 +452,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-END  
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, pos)
@@ -433,7 +484,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
+  //DOTTY-ONLY infix def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-START 
   def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
+  // SKIP-DOTTY-END  
     val right = elements.toList
     if (aggregating.containsAtMostOneOf(left, right.distinct) != shouldBeTrue)
       indicateFailure(

@@ -24,7 +24,11 @@ import org.scalatest.OptionValues._
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers._
+// SKIP-SCALATESTJS,NATIVE-START
+import SharedHelpers.serializeRoundtrip
+// SKIP-SCALATESTJS,NATIVE-END
 
 class EitherValuesSpec extends AnyFunSpec {
   describe("values on Either") {
@@ -111,5 +115,18 @@ class EitherValuesSpec extends AnyFunSpec {
     it("should be able to used with OptionValues") {
       class TestSpec extends AnyFunSpec with EitherValues with OptionValues
     }
+
+    // SKIP-SCALATESTJS,NATIVE-START
+    it("should throw TestFailedException that is serializable") {
+      class TestEitherValues extends AnyFunSuite with EitherValues
+      val spec = new TestEitherValues
+      val e = Left("error"): Either[String, Int]
+      val v = spec.convertEitherToValuable(e)
+      val caught = intercept[TestFailedException] {
+        v.value
+      }
+      serializeRoundtrip(caught)
+    }
+    // SKIP-SCALATESTJS,NATIVE-END
   } 
 }

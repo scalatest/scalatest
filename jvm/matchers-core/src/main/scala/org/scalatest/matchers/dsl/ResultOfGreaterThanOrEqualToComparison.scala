@@ -42,7 +42,7 @@ final class ResultOfGreaterThanOrEqualToComparison[T : Ordering](val right: T) {
    * num should (not be &gt;= (10) and not be &lt; (7))
    *                 ^  ... invoked by this be method
    * </pre>
-   */
+   */ 
   def apply(left: T): Boolean = {
     val ordering = implicitly[Ordering[T]]
     ordering.gteq(left, right) // left >= right

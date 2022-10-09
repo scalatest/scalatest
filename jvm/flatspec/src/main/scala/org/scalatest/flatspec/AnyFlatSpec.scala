@@ -1682,7 +1682,10 @@ import org.scalatest.{Finders, Suite}
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
+// SKIP-DOTTY-START
 class AnyFlatSpec extends AnyFlatSpecLike {
+// SKIP-DOTTY-END
+//DOTTY-ONLY open class AnyFlatSpec extends AnyFlatSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

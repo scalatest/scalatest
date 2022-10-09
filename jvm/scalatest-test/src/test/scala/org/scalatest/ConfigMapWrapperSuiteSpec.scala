@@ -53,4 +53,16 @@ class ConfigMapWrapperSuiteSpec extends AnyFunSuite with SeveredStackTraces {
     val suite = new ConfigMapWrapperSuite(clazz)
     assert(suite.tags === Map("blue test" -> Set("org.scalatest.FastAsLight"), "ignore me" -> Set("org.scalatest.Ignore")))
   }
+
+  test("configMap's suiteId method should return the underlying's value") {
+    val clazz = getClass.getClassLoader.loadClass("org.scalatest.SavesConfigMapSuite").asInstanceOf[Class[_ <: Suite]]
+    val suite = new ConfigMapWrapperSuite(clazz)
+    assert(suite.suiteId === "suite_id_of_SavesConfigMapSuite")
+  }
+
+  test("configMap's suiteName method should return the underlying's value") {
+    val clazz = getClass.getClassLoader.loadClass("org.scalatest.SavesConfigMapSuite").asInstanceOf[Class[_ <: Suite]]
+    val suite = new ConfigMapWrapperSuite(clazz)
+    assert(suite.suiteName === "suite_name_of_SavesConfigMapSuite")
+  }
 }

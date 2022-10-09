@@ -4053,5 +4053,24 @@ class AnyWordSpecSpec extends AnyFunSpec with GivenWhenThen {
       assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature can test 1")))
     }
 
+    it("should throw DuplicateTestNameException when duplicate test name is detected inside in a forAll") {
+      class TestSpec extends AnyWordSpec {
+        import org.scalatest.prop.TableDrivenPropertyChecks._
+        "trying something" should {
+          val scenarios = Table("value", "first", "first")
+          
+          forAll(scenarios) { value =>
+            s"work as expected for $value " in {/* ASSERTION_SUCCEED */}
+          } 
+        }
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("AnyWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 8)
+      assert(e.message == Some(FailureMessages.duplicateTestName(prettifier, UnquotedString("trying something should work as expected for first"))))
+    }
+
   }
 }

@@ -31,6 +31,8 @@ class SavesConfigMapSuite(configMap: Map[String, Any]) extends AnyFunSuite {
     override val suiteId = getClass.getName + "-" + UUID.randomUUID.toString
   }
   override def nestedSuites: Vector[Suite] = Vector(new NSuite, new NSuite, new NSuite)
+  override def suiteId: String = "suite_id_of_SavesConfigMapSuite"
+  override def suiteName: String = "suite_name_of_SavesConfigMapSuite"
 }
 
 object SavesConfigMapSuite {

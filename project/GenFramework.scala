@@ -161,9 +161,10 @@ class RecoverToExceptionIfTemplate(declaration: String, assertion: String, fileN
 }
 
 class MessageTemplate(autoQuoteString: Boolean) extends Template {
-  def wrapStringIfNecessary(value: Any): String = 
+  def decorateIfNecessary(value: Any): String = 
     value match {
       case strValue: String if autoQuoteString => "\\\"" + strValue + "\\\""
+      case (a, b) => "(" + decorateIfNecessary(a) + ", " + decorateIfNecessary(b) + ")"
       case other => other.toString
     }
 }
@@ -181,7 +182,7 @@ abstract class LeftMessageTemplate(left: Any, autoQuoteString: Boolean = true) e
 abstract class LeftRightMessageTemplate(left: Any, right: Any, autoQuoteString: Boolean = true) extends LeftMessageTemplate(left, autoQuoteString) {
   val message: String
   override def toString =
-    left + message + wrapStringIfNecessary(right)
+    left + message + decorateIfNecessary(right)
 }
             
 class EqualedMessageTemplate(left: Any, right: Any, autoQuoteString: Boolean = true) extends LeftRightMessageTemplate(left, right, autoQuoteString) {
@@ -272,12 +273,12 @@ class WasNotTheSameInstanceAsMessageTemplate(left: Any, right: Any, autoQuoteStr
             
 class PropertyHadUnexpectedValueMessageTemplate(propertyName: String, expectedValue: Any, value: Any, target: Any, autoQuoteString: Boolean = true) extends MessageTemplate(autoQuoteString) {
   override def toString = 
-    "The " + propertyName + " property had value " + wrapStringIfNecessary(value) + ", instead of its expected value " + wrapStringIfNecessary(expectedValue) + ", on object " + wrapStringIfNecessary(target)
+    "The " + propertyName + " property had value " + decorateIfNecessary(value) + ", instead of its expected value " + decorateIfNecessary(expectedValue) + ", on object " + decorateIfNecessary(target)
 }
 
 class PropertyHadExpectedValueMessageTemplate(propertyName: String, expectedValue: Any, target: Any, autoQuoteString: Boolean = true) extends MessageTemplate(autoQuoteString) {
   override def toString = 
-    "The " + propertyName + " property had its expected value " + wrapStringIfNecessary(expectedValue) + ", on object " + wrapStringIfNecessary(target) 
+    "The " + propertyName + " property had its expected value " + decorateIfNecessary(expectedValue) + ", on object " + decorateIfNecessary(target) 
 }
 
 class HadLengthMessageTemplate(left: Any, right: Any, autoQuoteString: Boolean = true) extends LeftRightMessageTemplate(left, right, autoQuoteString) {

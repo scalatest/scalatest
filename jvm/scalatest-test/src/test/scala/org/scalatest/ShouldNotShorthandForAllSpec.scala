@@ -265,6 +265,7 @@ class ShouldNotShorthandForAllSpec extends AnyFunSpec with EmptyMocks with BookP
       val myFile = new MyFile("temp.txt", true, false)
 
       val book = new Book("A Tale of Two Cities", "Dickens", 1859, 45, true)
+      val bookPrettified = "Book(\"A Tale of Two Cities\", \"Dickens\", 1859, 45, true)"
       val badBook = new Book("A Tale of Two Cities", "Dickens", 1859, 45, false)
       
       all(List(badBook)) shouldNot be (goodRead)
@@ -275,7 +276,7 @@ class ShouldNotShorthandForAllSpec extends AnyFunSpec with EmptyMocks with BookP
       val caught1 = intercept[TestFailedException] {
         all(list1) shouldNot be (goodRead)
       }
-      assert(caught1.message === Some(errorMessage(0, "Book(A Tale of Two Cities,Dickens,1859,45,true) was goodRead", thisLineNumber - 2, list1)))
+      assert(caught1.message === Some(errorMessage(0, s"$bookPrettified was goodRead", thisLineNumber - 2, list1)))
       assert(caught1.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -283,7 +284,7 @@ class ShouldNotShorthandForAllSpec extends AnyFunSpec with EmptyMocks with BookP
       val caught2 = intercept[TestFailedException] {
         all(list2) shouldNot be a goodRead
       }
-      assert(caught2.message === Some(errorMessage(0, "Book(A Tale of Two Cities,Dickens,1859,45,true) was a goodRead", thisLineNumber - 2, list2)))
+      assert(caught2.message === Some(errorMessage(0, s"$bookPrettified was a goodRead", thisLineNumber - 2, list2)))
       assert(caught2.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -291,7 +292,7 @@ class ShouldNotShorthandForAllSpec extends AnyFunSpec with EmptyMocks with BookP
       val caught3 = intercept[TestFailedException] {
         all(list3) shouldNot be an goodRead
       }
-      assert(caught3.message === Some(errorMessage(0, "Book(A Tale of Two Cities,Dickens,1859,45,true) was an goodRead", thisLineNumber - 2, list3)))
+      assert(caught3.message === Some(errorMessage(0, s"$bookPrettified was an goodRead", thisLineNumber - 2, list3)))
       assert(caught3.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -299,7 +300,7 @@ class ShouldNotShorthandForAllSpec extends AnyFunSpec with EmptyMocks with BookP
       val caught4 = intercept[TestFailedException] {
         all(list4) shouldNot (be (goodRead))
       }
-      assert(caught4.message === Some(errorMessage(0, "Book(A Tale of Two Cities,Dickens,1859,45,true) was goodRead", thisLineNumber - 2, list4)))
+      assert(caught4.message === Some(errorMessage(0, s"$bookPrettified was goodRead", thisLineNumber - 2, list4)))
       assert(caught4.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -307,7 +308,7 @@ class ShouldNotShorthandForAllSpec extends AnyFunSpec with EmptyMocks with BookP
       val caught5 = intercept[TestFailedException] {
         all(list5) shouldNot (be a (goodRead))
       }
-      assert(caught5.message === Some(errorMessage(0, "Book(A Tale of Two Cities,Dickens,1859,45,true) was a goodRead", thisLineNumber - 2, list5)))
+      assert(caught5.message === Some(errorMessage(0, s"$bookPrettified was a goodRead", thisLineNumber - 2, list5)))
       assert(caught5.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
 
@@ -315,7 +316,7 @@ class ShouldNotShorthandForAllSpec extends AnyFunSpec with EmptyMocks with BookP
       val caught6 = intercept[TestFailedException] {
         all(list6) shouldNot (be an (goodRead))
       }
-      assert(caught6.message === Some(errorMessage(0, "Book(A Tale of Two Cities,Dickens,1859,45,true) was an goodRead", thisLineNumber - 2, list6)))
+      assert(caught6.message === Some(errorMessage(0, s"$bookPrettified was an goodRead", thisLineNumber - 2, list6)))
       assert(caught6.failedCodeFileName === Some("ShouldNotShorthandForAllSpec.scala"))
       assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
     }

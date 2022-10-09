@@ -303,14 +303,15 @@ class HaveWordSpec extends AnyFunSpec with Matchers {
       describe("when evaluate to true") {
         
         val lhs = Person("Bob")
+        val lhsPrettified = "Person(\"Bob\")"
         val mr = mt(lhs)
       
         it("should have correct MatcherResult") {
           mr.matches shouldBe true
-          mr.failureMessage shouldBe "The name property had its expected value \"Bob\", on object " + lhs
-          mr.negatedFailureMessage shouldBe "The name property had its expected value \"Bob\", on object " + lhs
-          mr.midSentenceFailureMessage shouldBe "the name property had its expected value \"Bob\", on object " + lhs
-          mr.midSentenceNegatedFailureMessage shouldBe "the name property had its expected value \"Bob\", on object " + lhs
+          mr.failureMessage shouldBe "The name property had its expected value \"Bob\", on object " + lhsPrettified
+          mr.negatedFailureMessage shouldBe "The name property had its expected value \"Bob\", on object " + lhsPrettified
+          mr.midSentenceFailureMessage shouldBe "the name property had its expected value \"Bob\", on object " + lhsPrettified
+          mr.midSentenceNegatedFailureMessage shouldBe "the name property had its expected value \"Bob\", on object " + lhsPrettified
           mr.rawFailureMessage shouldBe "The {0} property had its expected value {1}, on object {2}"
           mr.rawNegatedFailureMessage shouldBe "The {0} property had its expected value {1}, on object {2}"
           mr.rawMidSentenceFailureMessage shouldBe "the {0} property had its expected value {1}, on object {2}"
@@ -326,10 +327,10 @@ class HaveWordSpec extends AnyFunSpec with Matchers {
       
         it("should have correct negated MatcherResult") {
           nmr.matches shouldBe false
-          nmr.failureMessage shouldBe "The name property had its expected value \"Bob\", on object " + lhs
-          nmr.negatedFailureMessage shouldBe "The name property had its expected value \"Bob\", on object " + lhs
-          nmr.midSentenceFailureMessage shouldBe "the name property had its expected value \"Bob\", on object " + lhs
-          nmr.midSentenceNegatedFailureMessage shouldBe "the name property had its expected value \"Bob\", on object " + lhs
+          nmr.failureMessage shouldBe "The name property had its expected value \"Bob\", on object " + lhsPrettified
+          nmr.negatedFailureMessage shouldBe "The name property had its expected value \"Bob\", on object " + lhsPrettified
+          nmr.midSentenceFailureMessage shouldBe "the name property had its expected value \"Bob\", on object " + lhsPrettified
+          nmr.midSentenceNegatedFailureMessage shouldBe "the name property had its expected value \"Bob\", on object " + lhsPrettified
           nmr.rawFailureMessage shouldBe "The {0} property had its expected value {1}, on object {2}"
           nmr.rawNegatedFailureMessage shouldBe "The {0} property had its expected value {1}, on object {2}"
           nmr.rawMidSentenceFailureMessage shouldBe "the {0} property had its expected value {1}, on object {2}"
@@ -346,14 +347,15 @@ class HaveWordSpec extends AnyFunSpec with Matchers {
       describe("when evaluate to false") {
         
         val lhs = Person("Alice")
+        val lhsPrettified = "Person(\"Alice\")"
         val mr = mt(lhs)
       
         it("should have correct MatcherResult") {
           mr.matches shouldBe false
-          mr.failureMessage shouldBe "The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
-          mr.negatedFailureMessage shouldBe "The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
-          mr.midSentenceFailureMessage shouldBe "the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
-          mr.midSentenceNegatedFailureMessage shouldBe "the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
+          mr.failureMessage shouldBe "The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhsPrettified
+          mr.negatedFailureMessage shouldBe "The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhsPrettified
+          mr.midSentenceFailureMessage shouldBe "the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhsPrettified
+          mr.midSentenceNegatedFailureMessage shouldBe "the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhsPrettified
           mr.rawFailureMessage shouldBe "The {0} property had value {2}, instead of its expected value {1}, on object {3}"
           mr.rawNegatedFailureMessage shouldBe "The {0} property had value {2}, instead of its expected value {1}, on object {3}"
           mr.rawMidSentenceFailureMessage shouldBe "the {0} property had value {2}, instead of its expected value {1}, on object {3}"
@@ -369,10 +371,10 @@ class HaveWordSpec extends AnyFunSpec with Matchers {
       
         it("should have correct negated MatcherResult") {
           nmr.matches shouldBe true
-          nmr.failureMessage shouldBe "The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
-          nmr.negatedFailureMessage shouldBe "The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
-          nmr.midSentenceFailureMessage shouldBe "the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
-          nmr.midSentenceNegatedFailureMessage shouldBe "the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhs
+          nmr.failureMessage shouldBe "The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhsPrettified
+          nmr.negatedFailureMessage shouldBe "The name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhsPrettified
+          nmr.midSentenceFailureMessage shouldBe "the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhsPrettified
+          nmr.midSentenceNegatedFailureMessage shouldBe "the name property had value \"Alice\", instead of its expected value \"Bob\", on object " + lhsPrettified
           nmr.rawFailureMessage shouldBe "The {0} property had value {2}, instead of its expected value {1}, on object {3}"
           nmr.rawNegatedFailureMessage shouldBe "The {0} property had value {2}, instead of its expected value {1}, on object {3}"
           nmr.rawMidSentenceFailureMessage shouldBe "the {0} property had value {2}, instead of its expected value {1}, on object {3}"

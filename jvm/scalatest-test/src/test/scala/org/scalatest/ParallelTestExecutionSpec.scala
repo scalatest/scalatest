@@ -392,7 +392,7 @@ class ParallelTestExecutionSpec extends AnyFunSpec with EventHelpers {
       checkSuiteCompleted(reverseOrderEvents(47), spec2SuiteId)
     }
     
-    it("should have the blocking suite's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired") {
+    it("should have the blocking suite's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired", Flicker) {
       val outOfOrderConcurrentDistributor = new ControlledOrderConcurrentDistributor(2)
       try {
         val recordingReporter = new EventRecordingReporter
