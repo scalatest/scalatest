@@ -10,12 +10,12 @@ export SCALAJS_VERSION=1.8.0
 sbt "project scalacticMacroJS" clean
 sbt ++2.11.12 "project scalacticJS" clean publishSigned
 sbt ++2.12.15 "project scalacticJS" clean publishSigned
-sbt ++2.13.6 "project scalacticJS" clean publishSigned
+sbt ++2.13.9 "project scalacticJS" clean publishSigned
 export SCALANATIVE_VERSION=0.4.5
 sbt "project scalacticMacroNative" clean
 sbt ++2.11.12 "project scalacticNative" clean publishSigned
 sbt ++2.12.15 "project scalacticNative" clean publishSigned
-sbt ++2.13.6 "project scalacticNative" clean publishSigned
+sbt ++2.13.9 "project scalacticNative" clean publishSigned
 sbt "project scalacticDotty" clean publishSigned
 sbt "project scalacticDottyJS" clean publishSigned
 sbt "project scalacticDottyNative" clean publishSigned
@@ -36,12 +36,12 @@ sbt "project scalacticMacroJS" clean
 sbt "project scalacticJS" clean
 sbt ++2.11.12 "project scalatestJS" clean publishSigned
 sbt ++2.12.15 "project scalatestJS" clean publishSigned
-sbt ++2.13.6 "project scalatestJS" clean publishSigned
+sbt ++2.13.9 "project scalatestJS" clean publishSigned
 export SCALANATIVE_VERSION=0.4.5
 sbt "project scalacticMacroNative" clean
 sbt ++2.11.12 "project scalatestNative" clean publishSigned
 sbt ++2.12.15 "project scalatestNative" clean publishSigned
-sbt ++2.13.6 "project scalatestNative" clean publishSigned
+sbt ++2.13.9 "project scalatestNative" clean publishSigned
 sbt "project scalatestDotty" clean publishSigned
 sbt "project scalatestDottyJS" clean publishSigned
 sbt "project scalatestDottyNative" clean publishSigned
@@ -61,10 +61,10 @@ sbt "project scalacticMacroJS" clean
 sbt "project scalacticJS" clean
 sbt ++2.11.12 "project scalatestAppJS" clean publishSigned
 sbt ++2.12.15 "project scalatestAppJS" clean publishSigned
-sbt ++2.13.6 "project scalatestAppJS" clean publishSigned
+sbt ++2.13.9 "project scalatestAppJS" clean publishSigned
 export SCALANATIVE_VERSION=0.4.5
 sbt "project scalacticMacroNative" clean
 sbt ++2.11.12 "project scalatestAppNative" clean publishSigned
 sbt ++2.12.15 "project scalatestAppNative" clean publishSigned
-sbt ++2.13.6 "project scalatestAppNative" clean publishSigned
+sbt ++2.13.9 "project scalatestAppNative" clean publishSigned
 sbt "project scalatest" sonatypeBundleUpload
