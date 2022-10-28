@@ -482,6 +482,17 @@ class DifferSpec extends funspec.AnyFunSpec {
       assert(e.analysis(0) == "List(1: 2 -> 6)")
     }
 
+    it("should use passed in prettifier to prettify element values") {
+      val a = List("one", "two", "three")
+      val b = List("one", "six", "three")
+
+      val e = intercept[TestFailedException] {
+        all(List(a)) should equal (b)
+      }
+      assert(e.analysis.length == 1)
+      assert(e.analysis(0) == "List(1: \"two\" -> \"six\")")
+    }
+
   }
 
   describe("GenSetDiffer") {
@@ -550,6 +561,17 @@ class DifferSpec extends funspec.AnyFunSpec {
       assert(e.analysis(0) == "Set(missingInLeft: [6], missingInRight: [2])")
     }
 
+    it("should use passed in prettifier to prettify element values") {
+      val a = Set("one", "two", "three")
+      val b = Set("one", "six", "three")
+
+      val e = intercept[TestFailedException] {
+        all(List(a)) should equal (b)
+      }
+      assert(e.analysis.length == 1)
+      assert(e.analysis(0) == "Set(missingInLeft: [\"six\"], missingInRight: [\"two\"])")
+    }
+
   }
 
   describe("GenMapDiffer") {
@@ -559,15 +581,15 @@ class DifferSpec extends funspec.AnyFunSpec {
     }
 
     it("should produce difference when element in left and right is different") {
-      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(1 -> "one", 6 -> "six", 3 -> "three"), Prettifier.default).analysis == Some("Map(2: two -> , 6: -> six)"))
+      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(1 -> "one", 6 -> "six", 3 -> "three"), Prettifier.default).analysis == Some("Map(2: \"two\" -> , 6: -> \"six\")"))
     }
 
     it("should product difference when element exist in left, but not in right") {
-      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(1 -> "one", 2 -> "two"), Prettifier.default).analysis == Some("Map(3: three -> )"))
+      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(1 -> "one", 2 -> "two"), Prettifier.default).analysis == Some("Map(3: \"three\" -> )"))
     }
 
     it("should product difference when element exist in right, but not in left") {
-      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two"), Map(1 -> "one", 2 -> "two", 3 -> "three"), Prettifier.default).analysis == Some("Map(3: -> three)"))
+      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two"), Map(1 -> "one", 2 -> "two", 3 -> "three"), Prettifier.default).analysis == Some("Map(3: -> \"three\")"))
     }
 
     it("should not produce difference when elements in left and right is same but in different order") {
@@ -582,7 +604,7 @@ class DifferSpec extends funspec.AnyFunSpec {
         a shouldEqual b
       }
       assert(e.analysis.length == 1)
-      assert(e.analysis(0) == "Map(2: two -> , 6: -> six)")
+      assert(e.analysis(0) == "Map(2: \"two\" -> , 6: -> \"six\")")
     }
 
     it("should be used when GenMap is being compared with should equal matcher") {
@@ -593,7 +615,7 @@ class DifferSpec extends funspec.AnyFunSpec {
         a should equal (b)
       }
       assert(e.analysis.length == 1)
-      assert(e.analysis(0) == "Map(2: two -> , 6: -> six)")
+      assert(e.analysis(0) == "Map(2: \"two\" -> , 6: -> \"six\")")
     }
 
     it("should be used when GenMap is being compared with 'all' shouldEqual matcher") {
@@ -604,7 +626,7 @@ class DifferSpec extends funspec.AnyFunSpec {
         all(List(a)) shouldEqual (b)
       }
       assert(e.analysis.length == 1)
-      assert(e.analysis(0) == "Map(2: two -> , 6: -> six)")
+      assert(e.analysis(0) == "Map(2: \"two\" -> , 6: -> \"six\")")
     }
 
     it("should be used when GenMap is being compared with 'all' should equal matcher") {
@@ -615,7 +637,18 @@ class DifferSpec extends funspec.AnyFunSpec {
         all(List(a)) should equal (b)
       }
       assert(e.analysis.length == 1)
-      assert(e.analysis(0) == "Map(2: two -> , 6: -> six)")
+      assert(e.analysis(0) == "Map(2: \"two\" -> , 6: -> \"six\")")
+    }
+
+    it("should use passed in prettifier to prettify keys and values") {
+      val a = Map("1" -> "one", "2" -> "two", "3" -> "three")
+      val b = Map("1" -> "one", "6" -> "six", "3" -> "three")
+
+      val e = intercept[TestFailedException] {
+        all(List(a)) should equal (b)
+      }
+      assert(e.analysis.length == 1)
+      assert(e.analysis(0) == "Map(\"2\": \"two\" -> , \"6\": -> \"six\")")
     }
 
   }

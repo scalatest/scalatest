@@ -124,15 +124,15 @@ private[scalactic] class GenSeqDiffer extends Differ {
             if (bSeq.isDefinedAt(i)) {
               val rightEl = bSeq(i)
               if (leftEl != rightEl)
-                Some(i + ": " + leftEl + " -> " + rightEl)
+                Some(i + ": " + prettifier(leftEl) + " -> " + prettifier(rightEl))
               else
                 None
             }
             else
-              Some(i + ": " + leftEl + " -> ")
+              Some(i + ": " + prettifier(leftEl) + " -> ")
           }).toSet ++
             ((aSeq.length until bSeq.length) flatMap { i =>
-              Some(i + ": -> " + bSeq(i))
+              Some(i + ": -> " + prettifier(bSeq(i)))
             }).toSet
 
         val shortName = Differ.simpleClassName(aSeq)
@@ -163,8 +163,8 @@ private[scalactic] class GenSetDiffer extends Differ {
         else {
           val diffList =
             List(
-              if (missingInLeft.isEmpty) "" else "missingInLeft: [" + missingInLeft.mkString(", ") + "]",
-              if (missingInRight.isEmpty) "" else "missingInRight: [" + missingInRight.mkString(", ") + "]"
+              if (missingInLeft.isEmpty) "" else "missingInLeft: [" + missingInLeft.map(prettifier.apply).mkString(", ") + "]",
+              if (missingInRight.isEmpty) "" else "missingInRight: [" + missingInRight.map(prettifier.apply).mkString(", ") + "]"
             ).filter(_.nonEmpty)
           PrettyPair(prettifier(a), prettifier(b), Some(shortName + "(" + diffList.mkString(", ") + ")"))
         }
@@ -198,17 +198,17 @@ private[scalactic] class GenMapDiffer[K, V] extends Differ {
             // as bMap(k) previously was assuming.
             val rightValue = bMap.collect { case (nextK, nextV) if nextK == k => nextV }.head
             if (leftValue != rightValue)
-              Some(k.toString + ": " + leftValue + " -> " + rightValue)
+              Some(prettifier(k) + ": " + prettifier(leftValue) + " -> " + prettifier(rightValue))
             else
               None
           }.toSet ++
             missingKeyInLeft.flatMap { k =>
               val rightValue = bMap(k)
-              Option(k.toString + ": -> " + rightValue)
+              Option(prettifier(k) + ": -> " + prettifier(rightValue))
             }.toSet ++
             missingKeyInRight.flatMap { k =>
               val leftValue = aMap(k)
-              Option(k.toString + ": " + leftValue + " -> ")
+              Option(prettifier(k) + ": " + prettifier(leftValue) + " -> ")
             }.toSet
 
         val shortName = Differ.simpleClassName(aMap)
