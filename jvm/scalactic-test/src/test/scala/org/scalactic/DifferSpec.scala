@@ -493,6 +493,17 @@ class DifferSpec extends funspec.AnyFunSpec {
       assert(e.analysis(0) == "List(1: \"two\" -> \"six\")")
     }
 
+    it("should find diff elements according to limit size of prettifier when available") {
+      val a = List(1, 2, 3, 4, 5)
+      val b = List(1, 3, 2, 5, 6)
+      implicit val prettifier = Prettifier.truncateAt(SizeLimit(3))
+      val e = intercept[TestFailedException] {
+        all(List(a)) should equal (b)
+      }
+      assert(e.analysis.length == 1)
+      assert(e.analysis(0) == "List(1: 2 -> 3, 2: 3 -> 2, 3: 4 -> 5, ...)")
+    }
+
   }
 
   describe("GenSetDiffer") {

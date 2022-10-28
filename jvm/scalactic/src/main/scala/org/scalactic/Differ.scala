@@ -18,6 +18,7 @@ package org.scalactic
 // SKIP-SCALATESTNATIVE-START
 import org.scalactic.source.ObjectMeta
 // SKIP-SCALATESTNATIVE-END
+import scala.annotation.tailrec
 
 private[scalactic] trait Differ {
 
@@ -115,31 +116,36 @@ private[scalactic] object StringDiffer extends StringDiffer
 
 private[scalactic] class GenSeqDiffer extends Differ {
 
+  @tailrec
+  private def recurDiff(prettifier: Prettifier, aSeq: scala.collection.GenSeq[_], bSeq: scala.collection.GenSeq[_], limit: Int, idx: Int = 0, result: Vector[String] = Vector.empty): Vector[String] = 
+    if (result.length <= limit)
+      (aSeq.headOption, bSeq.headOption) match {
+        case (Some(leftEl), Some(rightEl)) => 
+          recurDiff(prettifier, aSeq.tail, bSeq.tail, limit, idx + 1, 
+                    result ++ (if (leftEl != rightEl) Vector(idx + ": " + prettifier(leftEl) + " -> " + prettifier(rightEl)) else Vector.empty))
+        case (Some(leftEl), None) =>
+          recurDiff(prettifier, aSeq.tail, bSeq, limit, idx + 1, result :+ (idx + ": " + prettifier(leftEl) + " -> "))
+        case (None, Some(rightEl)) =>
+          recurDiff(prettifier, aSeq, bSeq.tail, limit, idx + 1, result :+ (idx + ": -> " + prettifier(rightEl)))
+        case (None, None) =>  
+          result                    
+      }
+    else result.dropRight(1) :+ "..."
+
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
     (a, b) match {
       case (aSeq: scala.collection.GenSeq[_], bSeq: scala.collection.GenSeq[_]) =>
-        val diffSet =
-          ((0 until aSeq.length) flatMap { i =>
-            val leftEl = aSeq(i)
-            if (bSeq.isDefinedAt(i)) {
-              val rightEl = bSeq(i)
-              if (leftEl != rightEl)
-                Some(i + ": " + prettifier(leftEl) + " -> " + prettifier(rightEl))
-              else
-                None
-            }
-            else
-              Some(i + ": " + prettifier(leftEl) + " -> ")
-          }).toSet ++
-            ((aSeq.length until bSeq.length) flatMap { i =>
-              Some(i + ": -> " + prettifier(bSeq(i)))
-            }).toSet
-
+        val limit = 
+          prettifier match {
+            case tp: TruncatingPrettifier => tp.sizeLimit.value
+            case _ => math.max(aSeq.length, bSeq.length)
+          }
+        val diffs = recurDiff(prettifier, aSeq, bSeq, limit)
         val shortName = Differ.simpleClassName(aSeq)
-        if (diffSet.isEmpty)
+        if (diffs.isEmpty)
           PrettyPair(prettifier(a), prettifier(b), None)
         else
-          PrettyPair(prettifier(a), prettifier(b), Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")"))
+          PrettyPair(prettifier(a), prettifier(b), Some(shortName + "(" + diffs.mkString(", ") + ")"))
 
       case _ => PrettyPair(prettifier(a), prettifier(b), None)
     }
