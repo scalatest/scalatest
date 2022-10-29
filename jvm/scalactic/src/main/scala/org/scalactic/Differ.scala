@@ -173,7 +173,7 @@ private[scalactic] class GenSetDiffer extends Differ {
         val limitedMissingInLeft: List[String] = if (missingInLeft.length > limit) missingInLeft.take(limit) :+ "..." else missingInLeft
 
         val shortName = Differ.simpleClassName(aSet)
-        println("####shortName: " + shortName)
+        println("####shortName: " + shortName + ", ")
         if (missingInLeft.isEmpty && missingInRight.isEmpty)
           PrettyPair(prettifier(a), prettifier(b), None)
         else {
@@ -195,43 +195,46 @@ private[scalactic] object GenSetDiffer extends GenSetDiffer
 
 private[scalactic] class GenMapDiffer[K, V] extends Differ {
 
+  @tailrec
+  private def recurDiff[AK, AV, BK, BV](prettifier: Prettifier, aMap: scala.collection.GenMap[AK, AV], bMap: scala.collection.GenMap[BK, BV], limit: Int, result: Vector[String] = Vector.empty): Vector[String] = 
+    if (result.length <= limit)
+      aMap.headOption match {
+        case Some((aKey, aValue)) => 
+          // This gives a compiler error due to k being a wildcard type:
+          // val rightValue = bMap(k)
+          // Not sure why aMap(k) doesn't give the same error, but regardless, fixing it
+          // by pulling the value out for the key using a == comparison, which for now
+          // works because of universal equality, then assuming the value exists, just
+          // as bMap(k) previously was assuming.
+          bMap.collect { case (nextK, nextV) if nextK == aKey => nextV }.headOption match {
+            case Some(bValue) =>
+              recurDiff(prettifier, aMap.tail, bMap.filter(_._1 != aKey), limit, 
+                    result ++ (if (aValue != bValue) Vector(prettifier(aKey) + ": " + prettifier(aValue) + " -> " + prettifier(bValue)) else Vector.empty))
+            case None => 
+              recurDiff(prettifier, aMap.tail, bMap, limit, result :+ (prettifier(aKey) + ": " + prettifier(aValue) + " -> "))
+          }
+        case None => 
+          result ++ bMap.map { case (bKey, bValue) =>
+            prettifier(bKey) + ": -> " + prettifier(bValue)
+          }
+      }
+    else result.dropRight(1) :+ "..."
+
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair =
     (a, b) match {
       case (aMap: scala.collection.GenMap[_, _], bMap: scala.collection.GenMap[_, _]) =>
-        val leftKeySet = aMap.keySet
-        val rightKeySet = bMap.keySet
-        val missingKeyInRight = leftKeySet.toList.diff(rightKeySet.toList)
-        val missingKeyInLeft = rightKeySet.toList.diff(leftKeySet.toList)
-        val intersectKeys = leftKeySet.toList.intersect(rightKeySet.toList)
-        val diffSet =
-          intersectKeys.flatMap { k =>
-            val leftValue = aMap(k)
-            // This gives a compiler error due to k being a wildcard type:
-            // val rightValue = bMap(k)
-            // Not sure why aMap(k) doesn't give the same error, but regardless, fixing it
-            // by pulling the value out for the key using a == comparison, which for now
-            // works because of universal equality, then assuming the value exists, just
-            // as bMap(k) previously was assuming.
-            val rightValue = bMap.collect { case (nextK, nextV) if nextK == k => nextV }.head
-            if (leftValue != rightValue)
-              Some(prettifier(k) + ": " + prettifier(leftValue) + " -> " + prettifier(rightValue))
-            else
-              None
-          }.toSet ++
-            missingKeyInLeft.flatMap { k =>
-              val rightValue = bMap(k)
-              Option(prettifier(k) + ": -> " + prettifier(rightValue))
-            }.toSet ++
-            missingKeyInRight.flatMap { k =>
-              val leftValue = aMap(k)
-              Option(prettifier(k) + ": " + prettifier(leftValue) + " -> ")
-            }.toSet
+        val limit = 
+          prettifier match {
+            case tp: TruncatingPrettifier => tp.sizeLimit.value
+            case _ => math.max(aMap.size, bMap.size)
+          }    
+        val diffs = recurDiff(prettifier, aMap, bMap, limit) 
 
         val shortName = Differ.simpleClassName(aMap)
-        if (diffSet.isEmpty)
+        if (diffs.isEmpty)
           PrettyPair(prettifier(a), prettifier(b), None)
         else
-          PrettyPair(prettifier(a), prettifier(b), Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")"))
+          PrettyPair(prettifier(a), prettifier(b), Some(shortName + "(" + diffs.mkString(", ") + ")"))
 
       case _ =>
         PrettyPair(prettifier(a), prettifier(b), None)

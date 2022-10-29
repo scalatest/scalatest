@@ -667,10 +667,21 @@ class DifferSpec extends funspec.AnyFunSpec {
       val b = Map("1" -> "one", "6" -> "six", "3" -> "three")
 
       val e = intercept[TestFailedException] {
-        all(List(a)) should equal (b)
+        a should equal (b)
       }
       assert(e.analysis.length == 1)
       assert(e.analysis(0) == "Map(\"2\": \"two\" -> , \"6\": -> \"six\")")
+    }
+
+    it("should find diff elements according to limit size of prettifier when available") {
+      val a = Map(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")
+      val b = Map(1 -> "one", 2 -> "t2wo", 3 -> "th3ree", 4 -> "fou4r", 5 -> "f5ive")
+      implicit val prettifier = Prettifier.truncateAt(SizeLimit(3))
+      val e = intercept[TestFailedException] {
+        a should equal (b)
+      }
+      assert(e.analysis.length == 1)
+      assert(e.analysis(0) endsWith "(5: \"five\" -> \"f5ive\", 2: \"two\" -> \"t2wo\", 3: \"three\" -> \"th3ree\", ...)")
     }
 
   }
