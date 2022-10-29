@@ -160,17 +160,27 @@ private[scalactic] class GenSetDiffer extends Differ {
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
     (a, b) match {
       case (aSet: scala.collection.GenSet[_], bSet: scala.collection.GenSet[_]) =>
-        val missingInRight = aSet.toList.diff(bSet.toList)
-        val missingInLeft = bSet.toList.diff(aSet.toList)
+        val missingInRight = aSet.toList.diff(bSet.toList).map(prettifier.apply)
+        val missingInLeft = bSet.toList.diff(aSet.toList).map(prettifier.apply)
+
+        val limit = 
+          prettifier match {
+            case tp: TruncatingPrettifier => tp.sizeLimit.value
+            case _ => math.max(aSet.size, bSet.size)
+          }
+
+        val limitedMissingInRight: List[String] = if (missingInRight.length > limit) missingInRight.take(limit) :+ "..." else missingInRight
+        val limitedMissingInLeft: List[String] = if (missingInLeft.length > limit) missingInLeft.take(limit) :+ "..." else missingInLeft
 
         val shortName = Differ.simpleClassName(aSet)
+        println("####shortName: " + shortName)
         if (missingInLeft.isEmpty && missingInRight.isEmpty)
           PrettyPair(prettifier(a), prettifier(b), None)
         else {
           val diffList =
             List(
-              if (missingInLeft.isEmpty) "" else "missingInLeft: [" + missingInLeft.map(prettifier.apply).mkString(", ") + "]",
-              if (missingInRight.isEmpty) "" else "missingInRight: [" + missingInRight.map(prettifier.apply).mkString(", ") + "]"
+              if (limitedMissingInLeft.isEmpty) "" else "missingInLeft: [" + limitedMissingInLeft.mkString(", ") + "]",
+              if (limitedMissingInRight.isEmpty) "" else "missingInRight: [" + limitedMissingInRight.mkString(", ") + "]"
             ).filter(_.nonEmpty)
           PrettyPair(prettifier(a), prettifier(b), Some(shortName + "(" + diffList.mkString(", ") + ")"))
         }

@@ -487,7 +487,7 @@ class DifferSpec extends funspec.AnyFunSpec {
       val b = List("one", "six", "three")
 
       val e = intercept[TestFailedException] {
-        all(List(a)) should equal (b)
+        a should equal (b)
       }
       assert(e.analysis.length == 1)
       assert(e.analysis(0) == "List(1: \"two\" -> \"six\")")
@@ -498,7 +498,7 @@ class DifferSpec extends funspec.AnyFunSpec {
       val b = List(1, 3, 2, 5, 6)
       implicit val prettifier = Prettifier.truncateAt(SizeLimit(3))
       val e = intercept[TestFailedException] {
-        all(List(a)) should equal (b)
+        a should equal (b)
       }
       assert(e.analysis.length == 1)
       assert(e.analysis(0) == "List(1: 2 -> 3, 2: 3 -> 2, 3: 4 -> 5, ...)")
@@ -577,10 +577,21 @@ class DifferSpec extends funspec.AnyFunSpec {
       val b = Set("one", "six", "three")
 
       val e = intercept[TestFailedException] {
-        all(List(a)) should equal (b)
+        a should equal (b)
       }
       assert(e.analysis.length == 1)
       assert(e.analysis(0) == "Set(missingInLeft: [\"six\"], missingInRight: [\"two\"])")
+    }
+
+    it("should find diff elements according to limit size of prettifier when available") {
+      val a = Set(1, 2, 3, 4, 5)
+      val b = Set(4, 5, 6, 7, 8)
+      implicit val prettifier = Prettifier.truncateAt(SizeLimit(2))
+      val e = intercept[TestFailedException] {
+        a should equal (b)
+      }
+      assert(e.analysis.length == 1)
+      assert(e.analysis(0) endsWith "(missingInLeft: [6, 7, ...], missingInRight: [1, 2, ...])")
     }
 
   }
