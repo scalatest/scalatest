@@ -47,6 +47,12 @@ private[scalactic] object Differ {
     else
       shortName
   }
+
+  def prettifierLimit(prettifier: Prettifier): Option[Int] = 
+    prettifier match {
+      case tp: TruncatingPrettifier => Some(tp.sizeLimit.value)
+      case _ => None
+    }
 }
 
 private[scalactic] trait StringDiffer extends Differ {
@@ -135,11 +141,7 @@ private[scalactic] class GenSeqDiffer extends Differ {
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
     (a, b) match {
       case (aSeq: scala.collection.GenSeq[_], bSeq: scala.collection.GenSeq[_]) =>
-        val limit = 
-          prettifier match {
-            case tp: TruncatingPrettifier => tp.sizeLimit.value
-            case _ => math.max(aSeq.length, bSeq.length)
-          }
+        val limit = Differ.prettifierLimit(prettifier).getOrElse(math.max(aSeq.length, bSeq.length))
         val diffs = recurDiff(prettifier, aSeq, bSeq, limit)
         val shortName = Differ.simpleClassName(aSeq)
         if (diffs.isEmpty)
@@ -163,11 +165,7 @@ private[scalactic] class GenSetDiffer extends Differ {
         val missingInRight = aSet.toList.diff(bSet.toList).map(prettifier.apply)
         val missingInLeft = bSet.toList.diff(aSet.toList).map(prettifier.apply)
 
-        val limit = 
-          prettifier match {
-            case tp: TruncatingPrettifier => tp.sizeLimit.value
-            case _ => math.max(aSet.size, bSet.size)
-          }
+        val limit = Differ.prettifierLimit(prettifier).getOrElse(math.max(aSet.size, bSet.size))  
 
         val limitedMissingInRight: List[String] = if (missingInRight.length > limit) missingInRight.take(limit) :+ "..." else missingInRight
         val limitedMissingInLeft: List[String] = if (missingInLeft.length > limit) missingInLeft.take(limit) :+ "..." else missingInLeft
@@ -222,11 +220,7 @@ private[scalactic] class GenMapDiffer[K, V] extends Differ {
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair =
     (a, b) match {
       case (aMap: scala.collection.GenMap[_, _], bMap: scala.collection.GenMap[_, _]) =>
-        val limit = 
-          prettifier match {
-            case tp: TruncatingPrettifier => tp.sizeLimit.value
-            case _ => math.max(aMap.size, bMap.size)
-          }    
+        val limit = Differ.prettifierLimit(prettifier).getOrElse(math.max(aMap.size, bMap.size))      
         val diffs = recurDiff(prettifier, aMap, bMap, limit) 
 
         val shortName = Differ.simpleClassName(aMap)
