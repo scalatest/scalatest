@@ -173,7 +173,6 @@ private[scalactic] class GenSetDiffer extends Differ {
         val limitedMissingInLeft: List[String] = if (missingInLeft.length > limit) missingInLeft.take(limit) :+ "..." else missingInLeft
 
         val shortName = Differ.simpleClassName(aSet)
-        println("####shortName: " + shortName + ", ")
         if (missingInLeft.isEmpty && missingInRight.isEmpty)
           PrettyPair(prettifier(a), prettifier(b), None)
         else {
