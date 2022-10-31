@@ -63,7 +63,10 @@ import org.scalactic.exceptions.NullArgumentException
  *
  * @author Bill Venners
  */
+// SKIP-DOTTY-START 
 class Sequential(suitesToNest: Suite*) extends Suite with SequentialNestedSuiteExecution { thisSuite => 
+// SKIP-DOTTY-END
+//DOTTY-ONLY open class Sequential(suitesToNest: Suite*) extends Suite with SequentialNestedSuiteExecution { thisSuite =>
 
   requireNonNull(suitesToNest)
 
