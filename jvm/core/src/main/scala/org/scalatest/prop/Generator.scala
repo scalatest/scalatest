@@ -785,7 +785,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Float = if (n >= 0.0f) n.floor else n.ceil
             val half: Float = value / 2.0f
-            (List(nearest, half).distinct.map(i => NextRoseTree(i)), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(i)), rndPassedToShrinks)
           }
           else {
             val half: Float = value / 2.0f
@@ -836,7 +836,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Double = if (n >= 0.0) n.floor else n.ceil
             val half: Double = value / 2.0
-            (List(nearest, half).distinct.map(i => NextRoseTree(i)), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(i)), rndPassedToShrinks)
           }
           else {
             val half: Double = value / 2.0
@@ -1029,7 +1029,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Float = if (n >= 0.0f) n.floor else n.ceil
             val half: Float = fv / 2.0f
-            (List(nearest, half).distinct.map(i => NextRoseTree(PosFloat.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(PosFloat.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Float = fv / 2.0f
@@ -1079,7 +1079,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Float = if (n >= 0.0f) n.floor else n.ceil
             val half: Float = fv / 2.0f
-            (List(nearest, half).distinct.map(i => NextRoseTree(PosFiniteFloat.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(PosFiniteFloat.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Float = fv / 2.0f
@@ -1128,7 +1128,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest = if (n >= 0.0f) n.floor else n.ceil
             val half: Float = fv / 2.0f
-            (List(nearest, half).distinct.map(i => NextRoseTree(FiniteFloat.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(FiniteFloat.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Float = fv / 2.0f
@@ -1177,7 +1177,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest = if (n >= 0.0f) n.floor else n.ceil
             val half: Double = dv / 2.0f
-            (List(nearest, half).distinct.map(i => NextRoseTree(FiniteDouble.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(FiniteDouble.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Double = dv / 2.0f
@@ -1227,7 +1227,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Float = if (n >= 0.0f) n.floor else n.ceil
             val half: Float = fv / 2.0f
-            (List(nearest, half).distinct.map(i => NextRoseTree(PosZFloat.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(PosZFloat.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Float = fv / 2.0f
@@ -1277,7 +1277,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Float = if (n >= 0.0f) n.floor else n.ceil
             val half: Float = fv / 2.0f
-            (List(nearest, half).distinct.map(i => NextRoseTree(PosZFiniteFloat.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(PosZFiniteFloat.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Float = fv / 2.0f
@@ -1327,7 +1327,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Double = if (n >= 0.0) n.floor else n.ceil
             val half: Double = dv / 2.0
-            (List(nearest, half).distinct.map(i => NextRoseTree(PosDouble.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(PosDouble.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Double = dv / 2.0
@@ -1377,7 +1377,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Double = if (n >= 0.0) n.floor else n.ceil
             val half: Double = dv / 2.0
-            (List(nearest, half).distinct.map(i => NextRoseTree(PosFiniteDouble.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(PosFiniteDouble.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Double = dv / 2.0
@@ -1427,7 +1427,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Double = if (n >= 0.0) n.floor else n.ceil
             val half: Double = dv / 2.0
-            (List(nearest, half).distinct.map(i => NextRoseTree(PosZDouble.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(PosZDouble.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Double = dv / 2.0
@@ -1477,7 +1477,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Double = if (n >= 0.0) n.floor else n.ceil
             val half: Double = dv / 2.0
-            (List(nearest, half).distinct.map(i => NextRoseTree(PosZFiniteDouble.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(PosZFiniteDouble.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Double = dv / 2.0
@@ -1531,7 +1531,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Double = if (n > 0.0) n.floor else n.ceil
             val half: Double = dv / 2.0
-            (List(nearest, half).filter(_ != 0.0).distinct.map(i => NextRoseTree(NonZeroDouble.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).filter(_ != 0.0).distinct.map(i => NextRoseTree(NonZeroDouble.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Double = dv / 2.0
@@ -1579,7 +1579,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Double = if (n > 0.0) n.floor else n.ceil
             val half: Double = dv / 2.0
-            (List(nearest, half).filter(d => d != 0.0 && d != Double.PositiveInfinity && d != Double.NegativeInfinity).distinct.map(i => NextRoseTree(NonZeroFiniteDouble.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).filter(d => d != 0.0 && d != Double.PositiveInfinity && d != Double.NegativeInfinity).distinct.map(i => NextRoseTree(NonZeroFiniteDouble.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Double = dv / 2.0
@@ -1633,7 +1633,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Float = if (n > 0.0f) n.floor else n.ceil
             val half: Float = fv / 2.0f
-            (List(nearest, half).filter(_ != 0.0f).distinct.map(i => NextRoseTree(NonZeroFloat.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).filter(_ != 0.0f).distinct.map(i => NextRoseTree(NonZeroFloat.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Float = fv / 2.0f
@@ -1682,7 +1682,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Float = if (n > 0.0f) n.floor else n.ceil
             val half: Float = fv / 2.0f
-            (List(nearest, half).filter(f => f != 0.0f && f != Float.PositiveInfinity && f != Float.NegativeInfinity).distinct.map(i => NextRoseTree(NonZeroFiniteFloat.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).filter(f => f != 0.0f && f != Float.PositiveInfinity && f != Float.NegativeInfinity).distinct.map(i => NextRoseTree(NonZeroFiniteFloat.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Float = fv / 2.0f
@@ -1804,7 +1804,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Double = n.ceil
             val half: Double = dv / 2.0
-            (List(nearest, half).filter(_ < 0.0).distinct.map(i => NextRoseTree(NegDouble.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).filter(_ < 0.0).distinct.map(i => NextRoseTree(NegDouble.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Double = dv / 2.0
@@ -1854,7 +1854,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Double = n.ceil
             val half: Double = dv / 2.0
-            (List(nearest, half).filter(_ < 0.0).distinct.map(i => NextRoseTree(NegFiniteDouble.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).filter(_ < 0.0).distinct.map(i => NextRoseTree(NegFiniteDouble.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Double = dv / 2.0
@@ -1904,7 +1904,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Float = n.ceil
             val half: Float = fv / 2.0f
-            (List(nearest, half).filter(_ < 0.0f).distinct.map(i => NextRoseTree(NegFloat.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).filter(_ < 0.0f).distinct.map(i => NextRoseTree(NegFloat.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Float = fv / 2.0f
@@ -1954,7 +1954,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Float = n.ceil
             val half: Float = fv / 2.0f
-            (List(nearest, half).filter(_ < 0.0f).distinct.map(i => NextRoseTree(NegFiniteFloat.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).filter(_ < 0.0f).distinct.map(i => NextRoseTree(NegFiniteFloat.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Float = fv / 2.0f
@@ -2076,7 +2076,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Double = n.ceil
             val half: Double = dv / 2.0
-            (List(nearest, half).distinct.map(i => NextRoseTree(NegZDouble.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(NegZDouble.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Double = dv / 2.0
@@ -2127,7 +2127,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Double = n.ceil
             val half: Double = dv / 2.0
-            (List(nearest, half).distinct.map(i => NextRoseTree(NegZFiniteDouble.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(NegZFiniteDouble.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Double = dv / 2.0
@@ -2177,7 +2177,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Float = n.ceil
             val half: Float = fv / 2.0f
-            (List(nearest, half).distinct.map(i => NextRoseTree(NegZFloat.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(NegZFloat.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Float = fv / 2.0f
@@ -2227,7 +2227,7 @@ object Generator {
             // Nearest whole numbers closer to zero
             val nearest: Float = n.ceil
             val half: Float = fv / 2.0f
-            (List(nearest, half).distinct.map(i => NextRoseTree(NegZFiniteFloat.ensuringValid(i))), rndPassedToShrinks)
+            (List(half, nearest).distinct.map(i => NextRoseTree(NegZFiniteFloat.ensuringValid(i))), rndPassedToShrinks)
           }
           else {
             val half: Float = fv / 2.0f
