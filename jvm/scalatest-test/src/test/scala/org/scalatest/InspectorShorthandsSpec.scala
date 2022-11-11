@@ -1929,13 +1929,13 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirstNot[GenMap[String, String]](col, (map: GenMap[String, String]) => map.size == 3 && map.exists(e => e._1 == "1" && e._2 == "one") && map.exists(e => e._1 == "2" && e._2 == "two") && map.exists(e => e._1 == "8" && e._2 == "eight") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " did not contain the same elements as " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " did not contain the same elements as " + decorateToStringValue(prettifier, right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(decorateToStringValue(prettifier, firstViolation) + " did not contain the same elements as " + right.toString))
+              tfe.message should be (Some(decorateToStringValue(prettifier, firstViolation) + " did not contain the same elements as " + decorateToStringValue(prettifier, right)))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2343,7 +2343,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       }
     
       it("should throw TestFailedException with correct message and stack depth when all(map) should contain failed") {
-        val right = "(" + Array("1" -> "one", "2" -> "two", "8" -> "eight").mkString(", ") + ")"
+        val right = "(" + Array("1" -> "one", "2" -> "two", "8" -> "eight").map(t => decorateToStringValue(prettifier, t)).mkString(", ") + ")"
         forAll(mapExamples) { colFun => 
           val col = colFun(Set(Map("1" -> "one", "2" -> "two", "8" -> "eight"), Map("2" -> "two", "3" -> "three", "1" -> "one"), Map("3" -> "three", "8" -> "eight", "1" -> "one")))
           val e = intercept[exceptions.TestFailedException] {
@@ -2463,7 +2463,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       }
     
       it("should throw TestFailedException with correct message and stack depth when all(map) should not contain failed") {
-        val right = Array("1" -> "one", "2" -> "two", "8" -> "eight")
+        val right = Array("1" -> "one", "2" -> "two", "8" -> "eight").map(e => decorateToStringValue(prettifier, e)).mkString(", ")
         forAll(mapExamples) { colFun => 
           val col = colFun(Set(Map("1" -> "one", "2" -> "two", "8" -> "eight"), Map("2" -> "two", "3" -> "three", "1" -> "one"), Map("3" -> "three", "8" -> "eight", "1" -> "one")))
           val e = intercept[exceptions.TestFailedException] {
@@ -2473,13 +2473,13 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenMap[String, String]](col, map => map.size == 3 && map.toList(0)._1 == "1" && map.toList(0)._2 == "one" && map.toList(1)._1 == "2" && map.toList(1)._2 == "two" && map.toList(2)._1 == "8" && map.toList(2)._2 == "eight" )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained all of (" + right.mkString(", ") + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained all of (" + right + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(decorateToStringValue(prettifier, firstViolation) + " contained all of (" + right.mkString(", ") + ")"))
+              tfe.message should be (Some(decorateToStringValue(prettifier, firstViolation) + " contained all of (" + right + ")"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -2767,7 +2767,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       }
     
       it("should throw TestFailedException with correct message and stack depth when all(map) should contain failed") {
-        val right = "(" + Array("3" -> "three", "5" -> "five", "7" -> "seven").mkString(", ") + ")"
+        val right = "(" + Array("3" -> "three", "5" -> "five", "7" -> "seven").map(e => decorateToStringValue(prettifier, e)).mkString(", ") + ")"
         forAll(mapExamples) { colFun => 
           val col = colFun(Set(Map("1" -> "one", "2" -> "two", "8" -> "eight"), Map("2" -> "two", "3" -> "three", "1" -> "one"), Map("3" -> "three", "8" -> "eight", "1" -> "one")))
           val e = intercept[exceptions.TestFailedException] {
@@ -2887,7 +2887,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       }
     
       it("should throw TestFailedException with correct message and stack depth when all(map) should not contain failed") {
-        val right = Array("6" -> "six", "7" -> "seven", "8" -> "eight")
+        val right = Array("6" -> "six", "7" -> "seven", "8" -> "eight").map(e => decorateToStringValue(prettifier, e)).mkString(", ")
         forAll(mapExamples) { colFun => 
           val col = colFun(Set(Map("1" -> "one", "2" -> "two", "8" -> "eight"), Map("2" -> "two", "3" -> "three", "1" -> "one"), Map("3" -> "three", "8" -> "eight", "1" -> "one")))
           val e = intercept[exceptions.TestFailedException] {
@@ -2897,13 +2897,13 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenMap[String, String]](col, map => map.exists(t => t._1 == "6" && t._2 == "six") || map.exists(t => t._1 == "7" && t._2 == "seven") || map.exists(t => t._1 == "8" && t._2 == "eight") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained at least one of (" + right.mkString(", ") + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained at least one of (" + right + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(decorateToStringValue(prettifier, firstViolation) + " contained at least one of (" + right.mkString(", ") + ")"))
+              tfe.message should be (Some(decorateToStringValue(prettifier, firstViolation) + " contained at least one of (" + right + ")"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3010,7 +3010,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       }
     
       it("should throw TestFailedException with correct message and stack depth when all(map) should contain failed") {
-        val right = "(" + Array("1" -> "one", "2" -> "two", "8" -> "eight").mkString(", ") + ")"
+        val right = "(" + Array("1" -> "one", "2" -> "two", "8" -> "eight").map(e => decorateToStringValue(prettifier, e)).mkString(", ") + ")"
         forAll(mapExamples) { colFun => 
           val col = colFun(Set(Map("1" -> "one", "2" -> "two", "8" -> "eight"), Map("2" -> "two", "3" -> "three", "1" -> "one"), Map("3" -> "three", "8" -> "eight", "1" -> "one")))
           val e = intercept[exceptions.TestFailedException] {
@@ -3130,7 +3130,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       }
     
       it("should throw TestFailedException with correct message and stack depth when all(map) should not contain failed") {
-        val right = Array("1" -> "one", "2" -> "two", "8" -> "eight")
+        val right = Array("1" -> "one", "2" -> "two", "8" -> "eight").map(e => decorateToStringValue(prettifier, e)).mkString(", ")
         forAll(mapExamples) { colFun => 
           val col = colFun(Set(Map("1" -> "one", "2" -> "two", "8" -> "eight"), Map("2" -> "two", "3" -> "three", "1" -> "one"), Map("3" -> "three", "8" -> "eight", "1" -> "one")))
           val e = intercept[exceptions.TestFailedException] {
@@ -3140,13 +3140,13 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenMap[String, String]](col, map => map.size == 3 && map.exists(t => t._1 == "1" && t._2 == "one") && map.exists(t => t._1 == "2" && t._2 == "two") && map.exists(t => t._1 == "8" && t._2 == "eight") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained only (" + right.mkString(", ") + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained only (" + right + ") (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(decorateToStringValue(prettifier, firstViolation) + " contained only (" + right.mkString(", ") + ")"))
+              tfe.message should be (Some(decorateToStringValue(prettifier, firstViolation) + " contained only (" + right + ")"))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3443,13 +3443,13 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenMap[String, String]](col, map => map.exists(e => e._1 == "1" && e._2 == "one") || map.exists(e => e._1 == "2" && e._2 == "two") || map.exists(e => e._1 == "8" && e._2 == "eight") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + FailureMessages.containedAtLeastOneOf(prettifier, firstViolation, UnquotedString("(1,one), (2,two), (8,eight)")) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + FailureMessages.containedAtLeastOneOf(prettifier, firstViolation, UnquotedString("(\"1\", \"one\"), (\"2\", \"two\"), (\"8\", \"eight\")")) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(FailureMessages.containedAtLeastOneOf(prettifier, firstViolation, UnquotedString("(1,one), (2,two), (8,eight)"))))
+              tfe.message should be (Some(FailureMessages.containedAtLeastOneOf(prettifier, firstViolation, UnquotedString("(\"1\", \"one\"), (\"2\", \"two\"), (\"8\", \"eight\")"))))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }
@@ -3552,7 +3552,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
       }
     
       it("should throw TestFailedException with correct message and stack depth when all(map) should not contain failed") {
-        val right = Array("6" -> "six", "7" -> "seven", "9" -> "nine")
+        val right = Array("6" -> "six", "7" -> "seven", "9" -> "nine").map(e => decorateToStringValue(prettifier, e)).mkString(", ")
         forAll(mapExamples) { colFun => 
           val col = colFun(Set(Map("1" -> "one", "2" -> "two", "8" -> "eight"), Map("2" -> "two", "3" -> "three", "1" -> "one"), Map("3" -> "three", "8" -> "eight", "1" -> "one")))
           val e = intercept[exceptions.TestFailedException] {
@@ -3562,13 +3562,13 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
           val firstViolation = getFirst[GenMap[String, String]](col, map => map.exists(t => t._1 != "6" && t._2 != "six") && map.exists(t => t._1 != "7" && t._2 != "seven") && map.exists(t => t._1 != "9" && t._2 != "nine") )
           e.message should be (Some("'all' inspection failed, because: \n" +
-                                    "  at index " + getIndex(col, firstViolation) + ", " + FailureMessages.didNotContainAtLeastOneOf(prettifier, firstViolation, UnquotedString(right.mkString(", "))) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
+                                    "  at index " + getIndex(col, firstViolation) + ", " + FailureMessages.didNotContainAtLeastOneOf(prettifier, firstViolation, UnquotedString(right)) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
           e.getCause match {
             case tfe: exceptions.TestFailedException =>
               tfe.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
               tfe.failedCodeLineNumber should be (Some(thisLineNumber - 11))
-              tfe.message should be (Some(FailureMessages.didNotContainAtLeastOneOf(prettifier, firstViolation, UnquotedString(right.mkString(", ")))))
+              tfe.message should be (Some(FailureMessages.didNotContainAtLeastOneOf(prettifier, firstViolation, UnquotedString(right))))
               tfe.getCause should be (null)
             case other => fail("Expected cause to be TestFailedException, but got: " + other)
           }

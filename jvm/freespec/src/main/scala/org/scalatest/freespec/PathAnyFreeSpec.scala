@@ -692,7 +692,10 @@ import org.scalatest._
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 // SKIP-SCALATESTJS,NATIVE-START
+// SKIP-DOTTY-START
 class PathAnyFreeSpec extends org.scalatest.freespec.PathAnyFreeSpecLike {
+// SKIP-DOTTY-END
+//DOTTY-ONLY open class PathAnyFreeSpec extends org.scalatest.freespec.PathAnyFreeSpecLike {
 // SKIP-SCALATESTJS,NATIVE-END
 //SCALATESTJS,NATIVE-ONLY abstract class PathAnyFreeSpec extends org.scalatest.freespec.PathAnyFreeSpecLike {
 

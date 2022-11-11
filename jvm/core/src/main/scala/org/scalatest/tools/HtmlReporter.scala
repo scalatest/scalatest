@@ -46,10 +46,8 @@ import Suite.unparsedXml
 import Suite.xmlContent
 import org.scalatest.exceptions.TestFailedException
 
-import com.vladsch.flexmark.parser.PegdownExtensions
-import com.vladsch.flexmark.profile.pegdown.PegdownOptionsAdapter
-import com.vladsch.flexmark.parser.Parser
-import com.vladsch.flexmark.html.HtmlRenderer
+import org.commonmark.parser.Parser
+import org.commonmark.renderer.html.HtmlRenderer
 
 /**
  * A <code>Reporter</code> that prints test status information in HTML format to a file.
@@ -115,18 +113,17 @@ private[scalatest] class HtmlReporter(
   private val results = resultHolder.getOrElse(new SuiteResultHolder)
   
   try {
-    Class.forName("com.vladsch.flexmark.profile.pegdown.PegdownOptionsAdapter")
+    Class.forName("org.commonmark.renderer.html.HtmlRenderer")
   }
   catch {
     case _: ClassNotFoundException => 
-      new ClassNotFoundException(Resources.flexmarkClassNotFound)
+      throw new ClassNotFoundException(Resources.commonmarkClassNotFound)
   }
 
-  private val pegdownOptions = PegdownOptionsAdapter.flexmarkOptions(PegdownExtensions.ALL)
-  private val markdownParser = Parser.builder(pegdownOptions).build()
-  private val htmlRenderer = HtmlRenderer.builder(pegdownOptions).build()
+  private val parser = Parser.builder().build()
+  private val renderer = HtmlRenderer.builder().build()
   
-  private def markdownToHtml(s: String): String = htmlRenderer.render(markdownParser.parse(s))
+  private def markdownToHtml(s: String): String = renderer.render(parser.parse(s))
 
   private def withPossibleLineNumber(stringToPrint: String, throwable: Option[Throwable]): String = {
     throwable match {

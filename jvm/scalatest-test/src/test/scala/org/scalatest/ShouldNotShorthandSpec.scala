@@ -232,6 +232,7 @@ class ShouldNotShorthandSpec extends AnyFunSpec with EmptyMocks with BookPropert
       val myFile = new MyFile("temp.txt", true, false)
 
       val book = new Book("A Tale of Two Cities", "Dickens", 1859, 45, true)
+      val badBookPrettified = "Book(\"A Tale of Two Cities\", \"Dickens\", 1859, 45, true)"
       val badBook = new Book("A Tale of Two Cities", "Dickens", 1859, 45, false)
 
       badBook shouldNot be (goodRead)
@@ -241,42 +242,42 @@ class ShouldNotShorthandSpec extends AnyFunSpec with EmptyMocks with BookPropert
       val caught1 = intercept[TestFailedException] {
         book shouldNot be (goodRead)
       }
-      assert(caught1.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,true) was goodRead"))
+      assert(caught1.message === Some(s"$badBookPrettified was goodRead"))
       assert(caught1.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val caught2 = intercept[TestFailedException] {
         book shouldNot be a goodRead
       }
-      assert(caught2.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,true) was a goodRead"))
+      assert(caught2.message === Some(s"$badBookPrettified was a goodRead"))
       assert(caught2.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val caught3 = intercept[TestFailedException] {
         book shouldNot be an goodRead
       }
-      assert(caught3.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,true) was an goodRead"))
+      assert(caught3.message === Some(s"$badBookPrettified was an goodRead"))
       assert(caught3.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val caught4 = intercept[TestFailedException] {
         book shouldNot (be (goodRead))
       }
-      assert(caught4.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,true) was goodRead"))
+      assert(caught4.message === Some(s"$badBookPrettified was goodRead"))
       assert(caught4.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught4.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val caught5 = intercept[TestFailedException] {
         book shouldNot (be a (goodRead))
       }
-      assert(caught5.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,true) was a goodRead"))
+      assert(caught5.message === Some(s"$badBookPrettified was a goodRead"))
       assert(caught5.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught5.failedCodeLineNumber === Some(thisLineNumber - 4))
 
       val caught6 = intercept[TestFailedException] {
         book shouldNot (be an (goodRead))
       }
-      assert(caught6.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,true) was an goodRead"))
+      assert(caught6.message === Some(s"$badBookPrettified was an goodRead"))
       assert(caught6.failedCodeFileName === Some("ShouldNotShorthandSpec.scala"))
       assert(caught6.failedCodeLineNumber === Some(thisLineNumber - 4))
     }

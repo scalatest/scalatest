@@ -30,7 +30,7 @@ class AllOfContainMatcherSpec extends funspec.AnyFunSpec {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
-      e.message should be (Some(leftText + " did not contain all of (" + right.mkString(", ") + ")"))
+      e.message should be (Some(leftText + " did not contain all of (" + right.map(e => FailureMessages.decorateToStringValue(prettifier, e)).mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("AllOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
@@ -194,7 +194,7 @@ class AllOfContainMatcherSpec extends funspec.AnyFunSpec {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
-      e.message should be (Some(leftText + " contained all of (" + right.mkString(", ") + ")"))
+      e.message should be (Some(leftText + " contained all of (" + right.map(e => FailureMessages.decorateToStringValue(prettifier, e)).mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("AllOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

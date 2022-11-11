@@ -445,7 +445,7 @@ import StringReporter.withPossibleLineNumber
     val failingLineNumber = thisLineNumber - 6
     assert(rep.content ==
       s"""- test *** FAILED ***
-        |  Person(Student 1,22) did not equal Person(Student 2,23) (StringReporterSuite.scala:$failingLineNumber)
+        |  Person("Student 1", 22) did not equal Person("Student 2", 23) (StringReporterSuite.scala:$failingLineNumber)
         |  Analysis:
         |  StringReporterSuite$$Person(age: 22 -> 23, name: "Student [1]" -> "Student [2]")
         |""".stripMargin

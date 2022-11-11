@@ -643,7 +643,7 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but '}' found.", "\nprintln(\"test)\n"))
         else if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError(
-            "')' expected, but eof found",
+            "expression expected but erroneous token found",
             """
               |println("test)
               |""".stripMargin
@@ -788,7 +788,7 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but '}' found.", "\nprintln(\"test)\n"))
         else if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
           assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError(
-            "')' expected, but eof found",
+            "expression expected but erroneous token found",
             """
               |println("test)
               |""".stripMargin

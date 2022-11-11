@@ -22,11 +22,11 @@ trait BuildCommons {
     )
 
   val releaseVersion = "3.3.0-SNAP3"
-  val previousReleaseVersion = "3.2.12"
+  val previousReleaseVersion = "3.2.14"
 
-  val plusJUnitVersion = "3.2.10.0"
-  val plusTestNGVersion = "3.2.10.0"
-  val flexmarkVersion = "0.62.2"
+  val plusJUnitVersion = "3.2.14.0"
+  val plusTestNGVersion = "3.2.14.0"
+  val commonmarkVersion = "0.19.0"
 
   def rootProject: Project
 

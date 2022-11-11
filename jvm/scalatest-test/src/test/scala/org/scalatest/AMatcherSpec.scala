@@ -345,10 +345,11 @@ class AMatcherSpec extends funspec.AnyFunSpec {
       
       it("should throw TestFailedException with correct stack depth and message when 'should be a' assertion failed") {
         val tom = Person("Tom", 60)
+        val tomPrettified = "Person(\"Tom\", 60)"
         val e = intercept[exceptions.TestFailedException] {
           tom should be a youngMan
         }
-        e.message should be (Some(s"${tom.toString()} was not a young man"))
+        e.message should be (Some(s"$tomPrettified was not a young man"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }
@@ -359,10 +360,11 @@ class AMatcherSpec extends funspec.AnyFunSpec {
       
       it("should throw TestFailedException with correct stack depth and message when 'should not be a' assertion failed") {
         val tom = Person("Tom", 30)
+        val tomPrettified = "Person(\"Tom\", 30)"
         val e = intercept[exceptions.TestFailedException] {
           tom should not be a (youngMan)
         }
-        e.message should be (Some(s"${tom.toString()} was a young man"))
+        e.message should be (Some(s"$tomPrettified was a young man"))
         e.failedCodeFileName should be (Some("AMatcherSpec.scala"))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 4))
       }

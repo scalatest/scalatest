@@ -37,7 +37,7 @@ final class IncludeWord {
    * "1.7" should (include ("1.7") and include ("1.8"))
    *                       ^
    * </pre>
-   */
+   */ 
   def apply(expectedSubstring: String): Matcher[String] =
     new Matcher[String] {
       def apply(left: String): MatchResult =
@@ -59,7 +59,10 @@ final class IncludeWord {
    *                         ^
    * </pre>
    */
+  //DOTTY-ONLY infix def regex[T <: String](right: T): Matcher[T] = regex(right.r)
+  // SKIP-DOTTY-START 
   def regex[T <: String](right: T): Matcher[T] = regex(right.r)
+  // SKIP-DOTTY-END
   
   /**
    * This method enables the following syntax:
@@ -68,8 +71,11 @@ final class IncludeWord {
    * string should not { include regex ("a(b*)c" withGroup "bb") } 
    *                             ^
    * </pre>
-   */	
+   */
+  //DOTTY-ONLY infix def regex(regexWithGroups: RegexWithGroups) = 
+  // SKIP-DOTTY-START 	
   def regex(regexWithGroups: RegexWithGroups) = 
+  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
@@ -85,7 +91,10 @@ final class IncludeWord {
    *                        ^
    * </pre>
    */
+  //DOTTY-ONLY infix def regex(expectedRegex: Regex): Matcher[String] =
+  // SKIP-DOTTY-START 
   def regex(expectedRegex: Regex): Matcher[String] =
+  // SKIP-DOTTY-END
     new Matcher[String] {
       def apply(left: String): MatchResult =
         MatchResult(
