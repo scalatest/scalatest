@@ -360,7 +360,6 @@ trait FixtureAnyFreeSpecLike extends org.scalatest.FixtureTestSuite with org.sca
      * implementation of this method will register the text (passed to the contructor of <code>FreeSpecStringWrapper</code>
      * and immediately invoke the passed function.
      */
-    //DOTTY-ONLY     infix  
     def -(fun: => Unit): Unit = {
 
       // SKIP-SCALATESTJS,NATIVE-START

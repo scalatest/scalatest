@@ -282,7 +282,6 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * implementation of this method will register the text (passed to the contructor of <code>FreeSpecStringWrapper</code>
      * and immediately invoke the passed function.
      */
-    //DOTTY-ONLY     infix  
     def -(fun: => Unit): Unit = {
 
       try {

@@ -276,7 +276,6 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
      * implementation of this method will register the text (passed to the contructor of <code>FreeSpecStringWrapper</code>
      * and immediately invoke the passed function.
      */
-    //DOTTY-ONLY     infix  
     def -(fun: => Unit): Unit = {
 
       // SKIP-SCALATESTJS,NATIVE-START

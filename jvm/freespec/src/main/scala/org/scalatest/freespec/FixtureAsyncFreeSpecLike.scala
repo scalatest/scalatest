@@ -339,7 +339,6 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      * implementation of this method will register the text (passed to the contructor of <code>FreeSpecStringWrapper</code>
      * and immediately invoke the passed function.
      */
-    //DOTTY-ONLY     infix  
     def -(fun: => Unit): Unit = {
       try {
         registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, None, pos)

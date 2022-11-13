@@ -266,7 +266,6 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
      * the <a href="#howItExecutes">How it executes</a> section of the main documentation for trait
      * <code>org.scalatest.freespec.PathAnyFreeSpec</code>.
      */
-    //DOTTY-ONLY     infix  
     def -(fun: => Unit): Unit = {
 
       // SKIP-SCALATESTJS,NATIVE-START
