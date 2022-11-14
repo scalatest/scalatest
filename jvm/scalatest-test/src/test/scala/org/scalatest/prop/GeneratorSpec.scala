@@ -3082,12 +3082,21 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             if (i == 0)
               shrinks shouldBe List(None)
             else {
-              shrinks should have length 2
-              shrinks(0) shouldBe (Some(i / 2))
               if (i > 1)
-                shrinks(1) shouldBe (Some(i - 1))
-              else
-                shrinks(1) shouldBe (Some(i + 1))
+                shrinks.head.value should be > 0
+              else if (i < -1)
+                shrinks.head.value should be < 0
+
+              import org.scalatest.Inspectors._
+              val revShrinks = shrinks.reverse
+              val pairs: List[(Option[Int], Option[Int])] = revShrinks.zip(revShrinks.tail)
+              forAll(pairs) {
+                case (Some(x), Some(y)) =>
+                  assert(x == 0 || x == -y || x.abs == y.abs / 2)
+                case (None, Some(_)) => succeed
+                case (Some(_), None) => fail("None was ahead of a Some in shrinks (i.e., before being reversed)")
+                case (None, None) => fail("None showed up twice in shrinks")
+              }
             }
           }
         }
