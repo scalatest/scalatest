@@ -41,20 +41,7 @@ trait RoseTree[T] { thisRoseTreeOfT =>
           }
           else {
             // The function call succeeded, let's continue to try the sibling.
-            // Use view to be 'lazy'
-            tail.view.map(rt => (rt, fun(rt.value)))
-                     .find(!_._2._1) match {
-              case Some((rt, (result, errDataOpt))) =>
-                // Sibling with counter example found, we'll continue from sibling.
-                val (rtChildrenRTs, nextRnd) = rt.shrinks(currentRnd)
-                val newProceesed = processed + head.value + rt.value
-                shrinkLoop(rt, errDataOpt, rtChildrenRTs.filter(c => !newProceesed.contains(c.value)), newProceesed, nextRnd)
-              case None => 
-                // No sibling with counter example found, we'll continue to look from half.
-                val (headChildrenRTs, nextRnd) = head.shrinks(currentRnd)
-                val newProceesed = processed + head.value
-                shrinkLoop(lastFailure, errDataOpt, headChildrenRTs.filter(rt => !newProceesed.contains(rt.value)), newProceesed,  nextRnd)
-            }
+            shrinkLoop(lastFailure, lastFailureData, tail, processed + head.value, currentRnd)
           }
 
         case Nil => // No more further sibling to try, return the last failure
