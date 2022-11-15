@@ -19,12 +19,15 @@ import org.scalatest._
 import org.scalactic.Equality
 import scala.collection.immutable
 import prop.GeneratorDrivenPropertyChecks
-import org.scalactic.anyvals.PosZInt
+import org.scalactic.anyvals.{PosZInt, PosInt}
 import exceptions.TestFailedException
 import OptionValues._
 import scala.concurrent.Future
 import org.scalatest.funspec.AsyncFunSpec
 import org.scalatest.matchers.should.Matchers
+import scala.util.Try
+import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
+import org.scalatest.prop.PropertyArgument
 
 class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with GeneratorDrivenPropertyChecks with LineNumberHelper {
 
@@ -47,14 +50,11 @@ class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with Gene
     }
 
     it("forAll taking a Function1 that result in Future[Assertion] should attempt to shrink the values that cause a property to fail") {
-      implicit val stNonZeroIntGen =
-        for {
-         i <- ints
-         j = if (i == 0) 1 else i
-       } yield j
+      implicit val stNonZeroIntGen = posInts
        var xs: List[Int] = Nil
        val forAllFutureAssertion =
-         forAll { (i: Int) =>
+         forAll { (pi: PosInt) =>
+           val i = pi.value
            xs ::= i
            Future { assert(i / i == 1 && (i < 1000 && i != 3)) }
          }
@@ -67,8 +67,14 @@ class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with Gene
          values were tried.
        */
       forAllFutureAssertion.recoverWith {
-        case tfe: TestFailedException =>
-          tfe.cause.value.getMessage should endWith ("3 equaled 3")
+        case tfe: org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException =>
+          tfe.args.headOption match {
+            case Some(arg) if Try(arg.asInstanceOf[PropertyArgument].value == PosInt(3)).getOrElse(false) =>
+              tfe.cause.value.getMessage should endWith ("3 equaled 3")
+            case _ =>
+              tfe.cause.value.getMessage should endWith ("1000 was not less than 1000")  
+          }
+          
       }
     }
 

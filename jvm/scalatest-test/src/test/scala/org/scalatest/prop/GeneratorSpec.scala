@@ -20,57 +20,20 @@ import org.scalatest.exceptions.TestFailedException
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.SortedMap
 import org.scalatest.funspec.AnyFunSpec
-import org.scalatest.matchers.should.Matchers._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.Inspectors.{forAll => inspectAll}
 import org.scalatest.tagobjects.Flicker
 
-/**
-  * Boilerplate reduction for those `(Iterator[T], Randomizer)` pairs returned
-  * from `canonicals()` and `shrink()`
-  *
-  * @param pair the returned values from the Generator method
-  * @tparam T the type of the Generator
-  */
-// SKIP-DOTTY-START  
-class GeneratorIteratorPairOps[T](pair: (Iterator[T], Randomizer)) {
-// SKIP-DOTTY-END
-//DOTTY-ONLY implicit class GeneratorIteratorPairOps[T](pair: (Iterator[T], Randomizer)) {  
-  /**
-    * Helper method for testing canonicals and shrinks, which should always be
-    * "growing".
-    *
-    * The definition of "growing" means, essentially, "moving further from zero".
-    * Sometimes that's in the positive direction (eg, PosInt), sometimes negative
-    * (NegFloat), sometimes both (NonZeroInt).
-    *
-    * This returns Unit, because it's all about the assertion.
-    *
-    * This is a bit loose and approximate, but sufficient for the various
-    * Scalactic types.
-    *
-    * @param iter an Iterator over a type, typically a Scalactic type
-    * @param conv a conversion function from the Scalactic type to an ordinary Numeric
-    * @tparam T the Scalactic type
-    * @tparam N the underlying ordered numeric type
-    */
-  def shouldGrowWith[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {
-    val iter: Iterator[T] = pair._1
-    iter.reduce { (last, cur) =>
-      // Duplicates not allowed:
-      last should not equal cur
-      val nLast = nOps.abs(conv(last))
-      val nCur = nOps.abs(conv(cur))
-      nLast should be <= nCur
-      cur
+class GeneratorSpec extends AnyFunSpec with Matchers {
+
+  implicit def roseTreeGenerator[A](implicit genOfA: Generator[A]): Generator[RoseTree[A]]  = {
+    new Generator[RoseTree[A]] {
+      def next(szp: SizeParam, edges: List[RoseTree[A]], rnd: Randomizer): (RoseTree[RoseTree[A]], List[RoseTree[A]], Randomizer) = {
+        val (rtOfRTOfA, edgesOfRTOfA, nxtRnd) = genOfA.next(szp, List.empty, rnd)
+        (Rose(rtOfRTOfA), List.empty, nxtRnd)
+      }
     }
   }
-}
-
-class GeneratorSpec extends AnyFunSpec {
-
-  // SKIP-DOTTY-START
-  implicit def convertToGeneratorIteratorPairOps[T](pair: (Iterator[T], Randomizer)): GeneratorIteratorPairOps[T] = 
-    new GeneratorIteratorPairOps(pair)
-  // SKIP-DOTTY-END  
 
   describe("A Generator") {
     it("should offer a map and flatMap method that composes the next methods") {
@@ -95,29 +58,30 @@ class GeneratorSpec extends AnyFunSpec {
       a2.value shouldEqual b2.value
       a3.value shouldEqual b3.value
     }
-    it("should offer a map method that composes canonicals methods and offers a shrink that uses the canonicals methods") {
+    it("should offer a map method that composes canonicals methods") {
 
       import Generator._
 
-      val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
-      val expectedTupCanonicals = intCanonicalsIt.map(i => ('A', i)).toList
+      val rnd = Randomizer.default
+      val (intCanonicalsIt, nextRnd) = intGenerator.canonicals(rnd)
+      val (charRt, _, _) = charGenerator.next(SizeParam(1, 0, 1), List.empty, nextRnd)
+      val charValue = charRt.value
+      val expectedTupCanonicals = intCanonicalsIt.map(i => (charValue, i)).toList
 
-      val tupGen = for (i <- intGenerator) yield ('A', i)
-      val (tupShrinkRoseTree, _) = tupGen.shrink(('A', 100), Randomizer.default)
-      val (tupCanonicalsIt, _) = tupGen.canonicals(Randomizer.default)
-      val tupShrink = tupShrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+      val tupGen = for (i <- intGenerator) yield (charValue, i)
+      val (tupCanonicalsIt, _) = tupGen.canonicals(rnd)
       val tupCanonicals = tupCanonicalsIt.toList
 
-      tupShrink shouldBe expectedTupCanonicals
       tupCanonicals shouldBe expectedTupCanonicals
     }
-    it("should offer a flatMap method that composes canonicals methods and offers a shrink that uses the canonicals methods") {
+    it("should offer a flatMap method that composes canonicals methods") {
 
       import Generator._
 
-      val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
+      val rnd = Randomizer.default
+      val (intCanonicalsIt, _) = intGenerator.canonicals(rnd)
       val intCanonicals = intCanonicalsIt.toList
-      val (doubleCanonicalsIt, _) = doubleGenerator.canonicals(Randomizer.default)
+      val (doubleCanonicalsIt, _) = doubleGenerator.canonicals(rnd)
       val doubleCanonicals = doubleCanonicalsIt.toList
       val expectedTupCanonicals: List[(Int, Double)] =
         for {
@@ -130,12 +94,9 @@ class GeneratorSpec extends AnyFunSpec {
           i <- intGenerator
           d <- doubleGenerator
         }  yield (i, d)
-      val (tupShrinkRoseTree, _) = tupGen.shrink((100, 100.0), Randomizer.default)
-      val (tupCanonicalsIt, _) = tupGen.canonicals(Randomizer.default)
-      val tupShrink = tupShrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+      val (tupCanonicalsIt, _) = tupGen.canonicals(rnd)
       val tupCanonicals = tupCanonicalsIt.toList
 
-      tupShrink shouldBe expectedTupCanonicals
       tupCanonicals shouldBe expectedTupCanonicals
     }
     it("should offer a filter method so that pattern matching can be used in for expressions with Generator generators") {
@@ -378,25 +339,21 @@ class GeneratorSpec extends AnyFunSpec {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(0, 1, -1, 2, -2, 3, -3).map(_.toByte)
       }
-      it("should shrink Bytes by repeatedly halving and negating") {
+      it("should shrink Bytes by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
-        forAll { (b: Byte) =>
-          val generator = implicitly[Generator[Byte]]
-          val (shrinkRoseTree, _) = generator.shrink(b, Randomizer.default)
+        forAll { (shrinkRoseTree: RoseTree[Byte]) =>
+          val i = shrinkRoseTree.value
           val shrinks: List[Byte] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (b == 0)
+          if (i == 0)
             shrinks shouldBe empty
           else {
-            if (b > 1.toByte)
-              shrinks.head should be > 0.toByte
-            else if (b < -1.toByte)
-              shrinks.head should be < 0.toByte
-            import org.scalatest.Inspectors._
-            val revShrinks = shrinks.reverse
-            val pairs: List[(Byte, Byte)] = revShrinks.zip(revShrinks.tail)
-            forAll (pairs) { case (x, y) =>
-              assert(x == 0 || x == -y || x.abs == y.abs / 2)
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i >= 0)
+                s should be < i
+              else
+                s should be > i  
             }
           }
         }
@@ -447,25 +404,21 @@ class GeneratorSpec extends AnyFunSpec {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(0, 1, -1, 2, -2, 3, -3).map(_.toShort)
       }
-      it("should shrink Shorts by repeatedly halving and negating") {
+      it("should shrink Shorts by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
-        forAll { (n: Short) =>
-          val generator = implicitly[Generator[Short]]
-          val (shrinkRoseTree, _) = generator.shrink(n, Randomizer.default)
+        forAll { (shrinkRoseTree: RoseTree[Short]) =>
+          val i = shrinkRoseTree.value
           val shrinks: List[Short] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (n == 0)
+          if (i == 0)
             shrinks shouldBe empty
           else {
-            if (n > 1.toShort)
-              shrinks.head should be > 0.toShort
-            else if (n < -1.toShort)
-              shrinks.head should be < 0.toShort
-            import org.scalatest.Inspectors._
-            val revShrinks = shrinks.reverse
-            val pairs: List[(Short, Short)] = revShrinks.zip(revShrinks.tail)
-            forAll (pairs) { case (x, y) =>
-              assert(x == 0 || x == -y || x.abs == y.abs / 2)
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i >= 0)
+                s should be < i
+              else
+                s should be > i  
             }
           }
         }
@@ -516,25 +469,21 @@ class GeneratorSpec extends AnyFunSpec {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(0, 1, -1, 2, -2, 3, -3)
       }
-      it("should shrink Ints by repeatedly halving and negating") {
+      it("should shrink Ints by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
-        forAll { (i: Int) =>
-          val generator = implicitly[Generator[Int]]
-          val (shrinkRoseTree, _) = generator.shrink(i, Randomizer.default)
+        forAll { (shrinkRoseTree: RoseTree[Int]) =>
+          val i = shrinkRoseTree.value
           val shrinks: List[Int] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i == 0)
             shrinks shouldBe empty
           else {
-            if (i > 1)
-              shrinks.head should be > 0
-            else if (i < -1)
-              shrinks.head should be < 0
-            import org.scalatest.Inspectors._
-            val revShrinks = shrinks.reverse
-            val pairs: List[(Int, Int)] = revShrinks.zip(revShrinks.tail)
-            forAll (pairs) { case (x, y) =>
-              assert(x == 0 || x == -y || x.abs == y.abs / 2)
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i >= 0)
+                s should be < i
+              else
+                s should be > i  
             }
           }
         }
@@ -585,31 +534,22 @@ class GeneratorSpec extends AnyFunSpec {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(0L, 1L, -1L, 2L, -2L, 3L, -3L)
       }
-      it("should shrink Longs by repeatedly halving and negating") {
+      it("should shrink Longs by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
-        forAll { (n: Long) =>
-          val generator = implicitly[Generator[Long]]
-          val (shrinkRoseTree, _) = generator.shrink(n, Randomizer.default)
+        forAll { (shrinkRoseTree: RoseTree[Long]) =>
+          val i = shrinkRoseTree.value
           val shrinks: List[Long] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (n == 0)
+          if (i == 0)
             shrinks shouldBe empty
           else {
-            if (n > 1L)
-              shrinks.head should be > 0L
-            else if (n < -1L)
-              shrinks.head should be < 0L
-            import org.scalatest.Inspectors._
-            val revShrinks = shrinks.reverse
-            val pairs: List[(Long, Long)] = revShrinks.zip(revShrinks.tail)
-            forAll (pairs) { case (x, y) =>
-              assert(x == 0 || x == -y || x.abs == y.abs / 2)
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i >= 0)
+                s should be < i
+              else
+                s should be > i  
             }
-  /*
-            all (pairs) should satisfy { case (x, y) =>
-              y == 0 || y == -x || y.abs == x.abs / 2
-            }
-  */
           }
         }
       }
@@ -660,8 +600,8 @@ class GeneratorSpec extends AnyFunSpec {
         import GeneratorDrivenPropertyChecks._
         val expectedChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toList
         val generator = implicitly[Generator[Char]]
-        forAll { (c: Char) =>
-          val (shrinkRoseTree, _) = generator.shrink(c, Randomizer.default)
+        forAll { (shrinkRoseTree: RoseTree[Char]) =>
+          val c = shrinkRoseTree.value
           val shrinks: List[Char] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z')
@@ -670,8 +610,8 @@ class GeneratorSpec extends AnyFunSpec {
             shrinks.reverse shouldEqual expectedChars
         }
         import org.scalatest.Inspectors
-        Inspectors.forAll (expectedChars) { (c: Char) => 
-          val (shrinkRoseTree, _) = generator.shrink(c, Randomizer.default)
+        Inspectors.forAll (expectedChars) { (c: Char) =>
+          val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(c), Randomizer.default)
           val shrinks: List[Char] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks shouldBe empty
         }
@@ -724,35 +664,22 @@ class GeneratorSpec extends AnyFunSpec {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(0.0f, 1.0f, -1.0f, 2.0f, -2.0f, 3.0f, -3.0f)
       }
-      it("should shrink Floats by dropping the fraction part then repeatedly 'square-rooting' and negating") {
+      it("should shrink Floats with an algo towards 0") {
         import GeneratorDrivenPropertyChecks._
-        forAll { (f: Float) =>
-          val generator = implicitly[Generator[Float]]
-          val (shrinkRoseTree, _) = generator.shrink(f, Randomizer.default)
+        forAll { (shrinkRoseTree: RoseTree[Float]) =>
+          val i = shrinkRoseTree.value
           val shrinks: List[Float] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (f == 0.0f) {
+          if (i == 0.0f)
             shrinks shouldBe empty
-          } else {
-            val n =
-              if (f == Float.PositiveInfinity || f == Float.NaN)
-                Float.MaxValue
-              else if (f == Float.NegativeInfinity)
-                Float.MinValue
-              else f
-            if (n > 1.0f)
-              shrinks.head should be > 0.0f
-            else if (n < -1.0f)
-              shrinks.head should be < 0.0f
-            import org.scalatest.Inspectors._
-            if (!n.isWhole) {
-              shrinks.head shouldEqual (if (n > 0.0f) n.floor else n.ceil)
-            }
-            val revShrinks = shrinks.reverse
-            val pairs: List[(Float, Float)] = revShrinks.zip(revShrinks.tail)
-            forAll (pairs) { case (x, y) =>
-              assert(x == 0.0f || x == -y || x.abs < y.abs)
-            }
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i >= 0.0f)
+                s should be < i
+              else
+                s should be > i  
+            }  
           }
         }
       }
@@ -804,37 +731,22 @@ class GeneratorSpec extends AnyFunSpec {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0)
       }
-      it("should shrink Doubles by dropping the fraction part then repeatedly 'square-rooting' and negating") {
+      it("should shrink Doubles with an algo towards 0") {
         import GeneratorDrivenPropertyChecks._
-  // try with -173126.1489439121
-        forAll { (d: Double) =>
-          val generator = implicitly[Generator[Double]]
-          val (shrinkRoseTree, _) = generator.shrink(d, Randomizer.default)
+        forAll { (shrinkRoseTree: RoseTree[Double]) =>
+          val i = shrinkRoseTree.value
           val shrinks: List[Double] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (d == 0.0) {
+          if (i == 0.0)
             shrinks shouldBe empty
-          }
           else {
-            val n =
-              if (d == Double.PositiveInfinity || d == Double.NaN)
-                Double.MaxValue
-              else if (d == Double.NegativeInfinity)
-                Double.MinValue
-              else d
-            if (n > 1.0)
-              shrinks.head should be > 0.0
-            else if (n < -1.0)
-              shrinks.head should be < 0.0
-            if (!n.isWhole) {
-              shrinks.head shouldEqual (if (n > 0.0) n.floor else n.ceil)
-            }
-            val revShrinks = shrinks.reverse
-            val pairs: List[(Double, Double)] = revShrinks.zip(revShrinks.tail)
-            import org.scalatest.Inspectors._
-            forAll (pairs) { case (x, y) =>
-              assert(x == 0.0 || x == -y || x.abs < y.abs)
-            }
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i >= 0.0)
+                s should be < i
+              else
+                s should be > i  
+            }  
           }
         }
       }
@@ -885,7 +797,7 @@ class GeneratorSpec extends AnyFunSpec {
     // SKIP-DOTTY-START  
     }
     // SKIP-DOTTY-END
-    
+
     // SKIP-DOTTY-START
     implicit class GeneratorRoseTreePairOps[T](pair: (RoseTree[T], Randomizer)) {
     // SKIP-DOTTY-END  
@@ -908,9 +820,9 @@ class GeneratorSpec extends AnyFunSpec {
         * @tparam N the underlying ordered numeric type
         */
       // SKIP-DOTTY-START  
-      def shouldGrowWith[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {
+      def shouldGrowWithForGeneratorRoseTreePair[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {
       // SKIP-DOTTY-END  
-      //DOTTY-ONLY extension [T](pair: (RoseTree[T], Randomizer)) def shouldGrowWith[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {  
+      //DOTTY-ONLY extension [T](pair: (RoseTree[T], Randomizer)) def shouldGrowWithForGeneratorRoseTreePair[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {  
         val roseTree: RoseTree[T] = pair._1
         roseTree.shrinks(Randomizer.default)._1.map(_.value).reduce { (last, cur) =>
           // Duplicates not allowed:
@@ -921,19 +833,49 @@ class GeneratorSpec extends AnyFunSpec {
           cur
         }
       }
+    // SKIP-DOTTY-START  
+    }
+    // SKIP-DOTTY-END
 
+    // SKIP-DOTTY-START
+    implicit class GeneratorOps[T](gen: Generator[T]) {
+    // SKIP-DOTTY-END  
+      /**
+       * Helper method for testing shrinks, which should always be
+       * "growing".
+       *
+       * The definition of "growing" means, essentially, "moving further from zero".
+       * Sometimes that's in the positive direction (eg, PosInt), sometimes negative
+       * (NegFloat), sometimes both (NonZeroInt).
+       *
+       * This returns Unit, because it's all about the assertion.
+       *
+       * This is a bit loose and approximate, but sufficient for the various
+       * Scalactic types.
+       *
+       * @param iter an Iterator over a type, typically a Scalactic type
+       * @param conv a conversion function from the Scalactic type to an ordinary Numeric
+       * @tparam T the Scalactic type
+       * @tparam N the underlying ordered numeric type
+       */
       // SKIP-DOTTY-START
       def shouldGrowWithForShrink[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {
-      // SKIP-DOTTY-END  
-      //DOTTY-ONLY extension [T](pair: (RoseTree[T], Randomizer)) def shouldGrowWithForShrink[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {  
-        val roseTree: RoseTree[T] = pair._1
-        roseTree.shrinks(Randomizer.default)._1.map(_.value).reverse.reduce { (last, cur) =>
-          // Duplicates not allowed:
-          last should not equal cur
-          val nLast = nOps.abs(conv(last))
-          val nCur = nOps.abs(conv(cur))
-          nLast should be <= nCur
-          cur
+      // SKIP-DOTTY-END
+      //DOTTY-ONLY extension [T](gen: Generator[T]) def shouldGrowWithForShrink[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {
+        val rnd = Randomizer.default
+        val maxSize = PosZInt(100)
+        val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 100, inclusive
+        val (roseTree, _, _) = gen.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
+        val shrunken = roseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
+        if (shrunken.length > 0) {
+          shrunken.reduce { (last, cur) =>
+            // Duplicates not allowed:
+            last should not equal cur
+            val nLast = nOps.abs(conv(last))
+            val nCur = nOps.abs(conv(cur))
+            nLast should be <= nCur
+            cur
+          }
         }
       }
     // SKIP-DOTTY-START  
@@ -974,12 +916,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (PosInt.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = posIntGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosInt(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+      
+      it("should shrink PosInts by algo towards 1") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosInt]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 1)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosZInts") {
@@ -1018,12 +976,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (PosZInt.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = posZIntGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZInt(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink PosZInts by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosZInt]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosZInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosLongs") {
@@ -1060,12 +1034,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (PosLong.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = posLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosLong(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink PosLongs by algo towards 1") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosLong]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 1L)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosZLongs") {
@@ -1104,12 +1094,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (PosZLong.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = posZLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZLong(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink PosZLongs by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosZLong]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosZLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0L)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosFloat") {
@@ -1150,12 +1156,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (PosFloat.PositiveInfinity)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = posFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosFloat(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink PosFloat by algo towards positive min value") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == Float.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosFiniteFloat") {
@@ -1194,12 +1216,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (PosFiniteFloat.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = posFiniteFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosFiniteFloat(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink PosFiniteFloat by algo towards positive min value") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosFiniteFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == Float.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosZFloat") {
@@ -1248,8 +1286,24 @@ class GeneratorSpec extends AnyFunSpec {
         import Generator._
         val gen = posZFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZFloat(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink PosZFloat by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosZFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosZFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0f)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosZFiniteFloat") {
@@ -1296,8 +1350,24 @@ class GeneratorSpec extends AnyFunSpec {
         import Generator._
         val gen = posZFiniteFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZFiniteFloat(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink PosZFiniteFloat by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosFiniteFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0f)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosDouble") {
@@ -1338,12 +1408,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (PosDouble.PositiveInfinity)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = posDoubleGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosDouble(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink PosDouble by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == Double.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosFiniteDouble") {
@@ -1382,12 +1468,29 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (PosFiniteDouble.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
+        // TODO: Got: [info]     java.lang.AssertionError: Infinity was not a valid FiniteDouble
         import Generator._
         val gen = posFiniteDoubleGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosFiniteDouble(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink PosFiniteDouble by algo towards positive min value") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosFiniteDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == Float.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosZDouble") {
@@ -1432,12 +1535,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (PosZDouble.PositiveInfinity)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = posZDoubleGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZDouble(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink PosZDouble by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosZDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosZDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for PosZFiniteDouble") {
@@ -1480,12 +1599,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (PosZFiniteDouble.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = posZFiniteDoubleGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(PosZFiniteDouble(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink PosZFiniteDouble by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[PosZFiniteDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[PosZFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be < i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegInts") {
@@ -1522,12 +1657,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NegInt.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = negIntGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegInt(-10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NegInts by algo towards -1") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegInt]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == -1)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegZInts") {
@@ -1566,12 +1717,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NegZInt.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = negZIntGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZInt(-10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NegZInts by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegZInt]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegZInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegLongs") {
@@ -1608,12 +1775,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NegLong.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = negLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegLong(-10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NegLongs by algo towards -1") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegLong]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == -1L)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegZLongs") {
@@ -1652,12 +1835,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NegZLong.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = negZLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZLong(-10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NegZLongs by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegZLong]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegZLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0L)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegFloat") {
@@ -1698,12 +1897,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NegFloat.NegativeInfinity)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = negFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegFloat(-10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NegFloat by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == -Float.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegFiniteFloat") {
@@ -1746,8 +1961,24 @@ class GeneratorSpec extends AnyFunSpec {
         import Generator._
         val gen = negFiniteFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegFiniteFloat(-10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NegFiniteFloat by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegFiniteFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == -Float.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegZFloat") {
@@ -1792,12 +2023,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NegZFloat.NegativeInfinity)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = negZFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZFloat(-10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NegZFloat by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegZFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegZFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0f)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegZFiniteFloat") {
@@ -1840,12 +2087,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NegZFiniteFloat.MinValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = negZFiniteFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZFiniteFloat(-10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NegZFiniteFloat by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegFiniteFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0f)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegDouble") {
@@ -1886,12 +2149,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NegDouble.NegativeInfinity)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = negDoubleGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegDouble(-10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NegDouble by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == -Double.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegFiniteDouble") {
@@ -1930,12 +2209,28 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NegFiniteDouble.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = negFiniteDoubleGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegFiniteDouble(-10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NegFiniteDouble by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegFiniteDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == -Float.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegZDouble") {
@@ -1984,8 +2279,24 @@ class GeneratorSpec extends AnyFunSpec {
         import Generator._
         val gen = negZDoubleGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZDouble(-10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NegZDouble by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegZDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegZDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NegZFiniteDouble") {
@@ -2032,8 +2343,24 @@ class GeneratorSpec extends AnyFunSpec {
         import Generator._
         val gen = negZFiniteDoubleGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NegZFiniteDouble(-10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NegZFiniteDouble by algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NegZFiniteDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NegZFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value should be > i.value  
+            }
+          }
+        }
       }
     }
     describe("for NonZeroInts") {
@@ -2079,25 +2406,21 @@ class GeneratorSpec extends AnyFunSpec {
         val (canonicals, _) = gen.canonicals(Randomizer.default)
         canonicals.toList shouldBe List(NonZeroInt(1), NonZeroInt(-1), NonZeroInt(2), NonZeroInt(-2), NonZeroInt(3), NonZeroInt(-3))
       }
-      it("should shrink NonZeroInts by repeatedly halving and negating") {
+      it("should shrink NonZeroInts by algo towards min positive and negative values") {
         import GeneratorDrivenPropertyChecks._
-        forAll { (i: NonZeroInt) =>
-          val generator = implicitly[Generator[NonZeroInt]]
-          val (shrinkRoseTree, _) = generator.shrink(i, Randomizer.default)
+        forAll { (shrinkRoseTree: RoseTree[NonZeroInt]) =>
+          val i = shrinkRoseTree.value
           val shrinks: List[NonZeroInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 1 || i.value == -1)
             shrinks shouldBe empty
           else {
-            if (i > 1)
-              shrinks.head.value should be >= 1
-            else if (i < -1)
-              shrinks.head.value should be <= 1
-            import org.scalatest.Inspectors._
-            val revShrinks = shrinks.reverse
-            val pairs: List[(NonZeroInt, NonZeroInt)] = revShrinks.zip(revShrinks.tail)
-            forAll (pairs) { case (x, y) =>
-              assert(x == -y || x.value.abs == y.value.abs / 2)
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i.value > 0)
+                s.value should be < i.value
+              else
+                s.value should be > i.value
             }
           }
         }
@@ -2141,12 +2464,31 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NonZeroLong.MinValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = nonZeroLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NonZeroLong(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NonZeroLongs by algo towards min positive and negative values") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NonZeroLong]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NonZeroLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 1L || i.value == -1L)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i.value > 0L)
+                s.value should be < i.value
+              else
+                s.value should be > i.value
+            }
+          }
+        }
       }
     }
     describe("for NonZeroFloat") {
@@ -2195,12 +2537,31 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NonZeroFloat.PositiveInfinity)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = nonZeroFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NonZeroFloat(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NonZeroFloats with an algo towards min positive or negative value") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NonZeroFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NonZeroFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == Float.MinPositiveValue || i.value == -Float.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i.value >= 0.0f)
+                s.value should be < i.value
+              else
+                s.value should be > i.value
+            }  
+          }
+        }
       }
     }
     describe("for NonZeroFiniteFloat") {
@@ -2245,12 +2606,31 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NonZeroFiniteFloat.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = nonZeroFiniteFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NonZeroFiniteFloat(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NonZeroFiniteFloats with an algo towards min positive or negative value") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NonZeroFiniteFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NonZeroFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == Float.MinPositiveValue || i.value == -Float.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i.value >= 0.0f)
+                s.value should be < i.value
+              else
+                s.value should be > i.value
+            }  
+          }
+        }
       }
     }
     describe("for NonZeroDouble") {
@@ -2299,12 +2679,31 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NonZeroDouble.PositiveInfinity)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = nonZeroDoubleGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NonZeroDouble(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NonZeroDoubles with an algo towards min positive or negative value") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NonZeroDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NonZeroDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == Double.MinPositiveValue || i.value == -Double.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i.value >= 0.0)
+                s.value should be < i.value
+              else
+                s.value should be > i.value
+            }  
+          }
+        }
       }
     }
     describe("for NonZeroFiniteDouble") {
@@ -2349,12 +2748,31 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (NonZeroFiniteDouble.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = nonZeroFiniteDoubleGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(NonZeroFiniteDouble(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink NonZeroFiniteDoubles with an algo towards min positive or negative value") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NonZeroFiniteDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NonZeroFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == Double.MinPositiveValue || i.value == -Double.MinPositiveValue)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              if (i.value >= 0.0)
+                s.value should be < i.value
+              else
+                s.value should be > i.value
+            }  
+          }
+        }
       }
     }
     describe("for FiniteFloat") {
@@ -2401,12 +2819,30 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (FiniteFloat.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = finiteFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(FiniteFloat(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink FiniteFloats with an algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[FiniteFloat]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[FiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0f)
+            shrinks shouldBe empty
+          else {
+            inspectAll(shrinks) { s =>
+              if (i.value >= 0)
+                s.value should be < i.value
+              else
+                s.value should be > i.value  
+            }  
+          }
+        }
       }
     }
     describe("for FiniteDouble") {
@@ -2453,12 +2889,30 @@ class GeneratorSpec extends AnyFunSpec {
         edges should contain (FiniteDouble.MaxValue)
       }
 
-      it("should have legitimate canonicals and shrink") {
+      it("should have legitimate canonicals") {
         import Generator._
         val gen = finiteDoubleGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWith(_.value)
-        gen.shrink(FiniteDouble(10000), rnd).shouldGrowWithForShrink(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink FiniteDoubles with an algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[FiniteDouble]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[FiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == 0.0)
+            shrinks shouldBe empty
+          else {
+            inspectAll(shrinks) { s =>
+              if (i.value >= 0.0)
+                s.value should be < i.value
+              else
+                s.value should be > i.value  
+            }  
+          }
+        }
       }
     }
     describe("for NumericChar") {
@@ -2492,58 +2946,67 @@ class GeneratorSpec extends AnyFunSpec {
         val (a2, _, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         List(a1, a2).map(_.value) should contain theSameElementsAs List(NumericChar('0'), NumericChar('9'))
       }
+
+      it("should have legitimate canonicals") {
+        import Generator._
+        val gen = numericCharGenerator
+        val rnd = Randomizer.default
+        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+      }
+
+      it("should shrink FiniteDoubles with an algo towards 0") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[NumericChar]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[NumericChar] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.value == '0')
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.value.toInt should be < i.value.toInt  
+            }  
+          }
+        }
+      }
     }
 
     describe("for Strings") {
       it("should offer a String generator that returns a string whose length equals the passed size") {
-  
+
         import Generator._
         val gen = stringGenerator
-  
+
         val (s1, _, r1) = gen.next(szp = SizeParam(PosZInt(0), 100, 0), edges = Nil, rnd = Randomizer(100))
         s1.value.length shouldBe 0
-  
+
         val (s2, _, r2) = gen.next(szp = SizeParam(PosZInt(0), 100, 3), edges = Nil, rnd = r1)
         s2.value.length shouldBe 3
-  
+
         val (s3, _, r3) = gen.next(szp = SizeParam(PosZInt(0), 100, 38), edges = Nil, rnd = r2)
         s3.value.length shouldBe 38
-  
+
         val (s4, _, r4) = gen.next(szp = SizeParam(PosZInt(0), 100, 88), edges = Nil, rnd = r3)
         s4.value.length shouldBe 88
-  
+
         val (s5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = r4)
         s5.value.length shouldBe 100
       }
-      it("should shrink Strings using strategery") {
+      it("should shrink String with an algo towards empty string") {
         import GeneratorDrivenPropertyChecks._
-        forAll { (s: String) =>
-          val generator = implicitly[Generator[String]]
-          val (shrinkRoseTree, _) = generator.shrink(s, Randomizer.default)
-          val shrinks: List[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
-          if (s.isEmpty)
+        forAll { (shrinkRoseTree: RoseTree[String]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i == "")
             shrinks shouldBe empty
           else {
-            shrinks(0) shouldBe ""
-            shrinks(1) should have length 1
-            shrinks(1).head should (be >= 'a' and be <= 'z')
-            shrinks(2) should have length 1
-            shrinks(2).head should (be >= 'A' and be <= 'Z')
-            shrinks(3) should have length 1
-            shrinks(3).head should (be >= '0' and be <= '9')
-  
-            val theChars = shrinks.drop(4)
-            val distincts: List[String] = s.distinct.toList.map(_.toString)
-            theChars.take(distincts.length).toList shouldEqual distincts
-  
-            val theHalves = shrinks.drop(4 + distincts.length)
-            if (theHalves.length > 1) {
-              import org.scalatest.Inspectors
-              val zipped = theHalves.zip(theHalves.tail) 
-              Inspectors.forAll (zipped) { case (s, t) => 
-                s.length should be < t.length
-              }
-            } else succeed
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              s.length should be < i.length  
+              i should contain allElementsOf s
+            }  
           }
         }
       }
@@ -2572,7 +3035,7 @@ class GeneratorSpec extends AnyFunSpec {
           case None => "None"
         }
 
-        classified.portions("None") should be (0.1 +- 0.03)
+        classified.portions("None") should be (0.01 +- 0.008)
       }
 
       it("should use the base type for edges") {
@@ -2602,19 +3065,41 @@ class GeneratorSpec extends AnyFunSpec {
         optCanon.filter(_.isDefined).map(_.get) should contain theSameElementsAs intCanon.toList
       }
 
-      it("should use the base type for shrinking") {
-        import Generator._
-        val baseGen = intGenerator
-        val gen = optionGenerator[Int]
+      it("should use the base type for shrinking, without producing None") {
+        import org.scalatest.OptionValues._
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[Option[Int]]) =>
+          val optI = shrinkRoseTree.value
+          val shrinks: List[Option[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          // shrinks.last shouldBe None
+          // Decided to not bother with having None at the end of the shrink line, because it is an edge and
+          // one out of every 100 or so regular.
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (optI.isEmpty)
+            shrinks shouldBe empty
+          else {
+            val i = optI.get
+            if (i == 0)
+              shrinks shouldBe List(None)
+            else {
+              if (i > 1)
+                shrinks.head.value should be > 0
+              else if (i < -1)
+                shrinks.head.value should be < 0
 
-        val rnd = Randomizer.default
-        val (intShrinkRoseTree, _) = baseGen.shrink(10000, rnd)
-        val (optShrinkRoseTree, _) = gen.shrink(Some(10000), rnd)
-        val intShrink = intShrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
-        val optShrink = optShrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
-
-        optShrink should contain (None)
-        optShrink.filter(_.isDefined).map(_.get) should contain theSameElementsAs(intShrink)
+              import org.scalatest.Inspectors._
+              val revShrinks = shrinks.reverse
+              val pairs: List[(Option[Int], Option[Int])] = revShrinks.zip(revShrinks.tail)
+              forAll(pairs) {
+                case (Some(x), Some(y)) =>
+                  assert(x == 0 || x == -y || x.abs == y.abs / 2)
+                case (None, Some(_)) => succeed
+                case (Some(_), None) => fail("None was ahead of a Some in shrinks (i.e., before being reversed)")
+                case (None, None) => fail("None showed up twice in shrinks")
+              }
+            }
+          }
+        }
       }
 
       it("should not try to shrink None") {
@@ -2622,7 +3107,7 @@ class GeneratorSpec extends AnyFunSpec {
         val gen = optionGenerator[Int]
         val rnd = Randomizer.default
 
-        val (optShrink, _) = gen.shrink(None, rnd)
+        val (optShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(None), rnd)
 
         assert(optShrink.shrinks(Randomizer.default)._1.isEmpty)
       }
@@ -2681,10 +3166,10 @@ class GeneratorSpec extends AnyFunSpec {
         val gen = orGenerator[Int, Long]
 
         val rnd = Randomizer.default
-        val (gShrink, _) = gGen.shrink(1000, rnd)
-        val (bShrink, _) = bGen.shrink(2000L, rnd)
-        val (orGoodShrink, _) = gen.shrink(Good(1000), rnd)
-        val (orBadShrink, _) = gen.shrink(Bad(2000L), rnd)
+        val (gShrink, _, _) = gGen.next(SizeParam(1, 0, 1), List(1000), rnd)
+        val (bShrink, _, _) = bGen.next(SizeParam(1, 0, 1), List(2000L), rnd)
+        val (orGoodShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Good(1000)), rnd)
+        val (orBadShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Bad(2000L)), rnd)
 
         orGoodShrink.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs(gShrink.shrinks(Randomizer.default)._1.map(_.value).map(Good(_)).toList)
         orBadShrink.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs(bShrink.shrinks(Randomizer.default)._1.map(_.value).map(Bad(_)).toList)
@@ -2733,6 +3218,7 @@ class GeneratorSpec extends AnyFunSpec {
         classification.percentages("Left").value should be (25 +- 2)
       }
 
+      // TODO. Why does this not fail? Make sure it is correct.
       it("should use the base types to shrink") {
         import Generator._
         val rGen = intGenerator
@@ -2740,10 +3226,10 @@ class GeneratorSpec extends AnyFunSpec {
         val gen = eitherGenerator[Long, Int]
 
         val rnd = Randomizer.default
-        val (rShrink, _) = rGen.shrink(1000, rnd)
-        val (lShrink, _) = lGen.shrink(2000L, rnd)
-        val (eitherRightShrink, _) = gen.shrink(Right(1000), rnd)
-        val (eitherLeftShrink, _) = gen.shrink(Left(2000L), rnd)
+        val (rShrink, _, _) = rGen.next(SizeParam(1, 0, 1), List(1000), rnd)
+        val (lShrink, _, _) = lGen.next(SizeParam(1, 0, 1), List(2000L), rnd)
+        val (eitherRightShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Right(1000)), rnd)
+        val (eitherLeftShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Left(2000L)), rnd)
 
         eitherRightShrink.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs(rShrink.shrinks(Randomizer.default)._1.map(_.value).map(Right(_)).toList)
         eitherLeftShrink.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs(lShrink.shrinks(Randomizer.default)._1.map(_.value).map(Left(_)).toList)
@@ -2770,7 +3256,8 @@ class GeneratorSpec extends AnyFunSpec {
       val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
       val intCanonicals = intCanonicalsIt.toList
       forAll { (xs: F[Int]) =>
-        val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
+        // pass in List(xs) as only edge case so the generator will generate rose tree with the specified value.
+        val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)
         val shrinks: List[F[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
         if (xs.isEmpty)
           shrinks shouldBe empty
@@ -2829,30 +3316,29 @@ class GeneratorSpec extends AnyFunSpec {
       it("should not exhibit this bug in List shrinking") {
         val lstGen = implicitly[Generator[List[List[Int]]]]
         val xss = List(List(100, 200, 300, 400, 300))
-        lstGen.shrink(xss, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should not contain xss
-      }
-      it("should shrink Lists using strategery") {
-        shrinkByStrategery[List](List)
+        lstGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should not contain xss
       }
       it("should return an empty Iterator when asked to shrink a List of size 0") {
         val lstGen = implicitly[Generator[List[Int]]]
         val xs = List.empty[Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
       }
-      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a List of size 1") {
-        val lstGen = implicitly[Generator[List[Int]]]
-        val canonicalLists = List(0, 1, -1, 2, -2, 3, -3).map(i => List(i))
-        val expectedLists = List(List.empty[Int]) ++ canonicalLists
-        val nonCanonical = List(99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
-        val canonical = List(3)
-        // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs expectedLists
-      }
-      it("should return an Iterator that does not repeat canonicals when asked to shrink a List of size 2 that includes canonicals") {
-        val lstGen = implicitly[Generator[List[Int]]]
-        val shrinkees = lstGen.shrink(List(3, 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
-        shrinkees.distinct should contain theSameElementsAs shrinkees
+      it("should shrink List with an algo towards empty List") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[List[Int]]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[List[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.isEmpty)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              i should contain allElementsOf s
+              s.length should be < i.length  
+            }  
+          }
+        }
       }
       it("should return an Iterator that does not repeat the passed list-to-shink even if that list has a power of 2 length") {
         // Since the last batch of lists produced by the list shrinker start at length 2 and then double in size each time,
@@ -2860,7 +3346,7 @@ class GeneratorSpec extends AnyFunSpec {
         // for example, that that one doesn't show up in the shrinks output, because it would be the original list-to-shrink.
         val lstGen = implicitly[Generator[List[Int]]]
         val listToShrink = List.fill(16)(99)
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a list generator whose canonical method uses the canonical method of the underlying T") {
@@ -2908,8 +3394,9 @@ class GeneratorSpec extends AnyFunSpec {
         val function0s = Generator.function0Generator[Int]
         import GeneratorDrivenPropertyChecks._
         forAll (ints) { (i: Int) =>
-          val (intShrinksRt, rnd1) = ints.shrink(i, Randomizer.default)
-          val (function0ShrinksRt, _) = function0s.shrink(() => i, rnd1)
+          val rnd = Randomizer(i)
+          val (intShrinksRt, _, rnd1) = ints.next(SizeParam(1, 0, 1), List.empty, rnd)
+          val (function0ShrinksRt, _, _) = function0s.next(SizeParam(1, 0, 1), List.empty, rnd)
           val intShrinks = intShrinksRt.shrinks(Randomizer.default)._1.map(_.value)
           val function0Shrinks = function0ShrinksRt.shrinks(Randomizer.default)._1.map(_.value)
           function0Shrinks.map(f => f()) should contain theSameElementsAs intShrinks
@@ -2932,23 +3419,35 @@ class GeneratorSpec extends AnyFunSpec {
       it("should offer a tuple2 generator") {
         val gen = implicitly[Generator[(Int, Int)]]
         val intGen = implicitly[Generator[Int]]
-        val (rt8, rnd1) = intGen.shrink(8, Randomizer.default)
-        val (rt18, rnd2)= intGen.shrink(18, rnd1)
-        val list8 = rt8.shrinks(Randomizer.default)._1.map(_.value)
-        val list18 = rt18.shrinks(Randomizer.default)._1.map(_.value)
-        val listTup = List((8,18), (4,18), (-4,18), (2,18), (-2,18), (1,18), (-1,18), (0,18))
-// This no longer works this way. For now we'll just use what it is doing.
-//          for {
-//            x <- list8
-//            y <- list18
-//          } yield (x, y)
-        gen.shrink((8, 18), rnd2)._1.shrinks(Randomizer.default)._1.map(_.value) shouldEqual listTup
+        val rnd = Randomizer.default
+        val (intRt1, _, intRnd1) = intGen.next(SizeParam(0, 8, 8), Nil, rnd)
+        val (intRt2, _, intRnd2) = intGen.next(SizeParam(0, 18, 18), Nil, intRnd1)
+
+        val (tupRt1, _, tupRnd1) = gen.next(SizeParam(0, 18, 18), Nil, rnd)
+        
+        tupRt1.value._1 shouldEqual intRt1.value
+        tupRt1.value._2 shouldEqual intRt2.value
+
+        val (shIntRt1, shIntRnd1) = intRt1.shrinks(rnd)
+        val (shIntRt2, shIntRnd2) = intRt2.shrinks(shIntRnd1)
+        val (shTupRt1, shTupRnd1) = tupRt1.shrinks(rnd)
+
+        val shIntHeadValueX2 = shIntRt1.head.value * 2
+        val expected = 
+          shIntRt2.map { v2 =>
+            (shIntHeadValueX2, v2.value)
+          }
+
+        inspectAll(shTupRt1.map(_.value).zip(expected)) { case ((t1, t2), (e1, e2)) =>
+          t1 should equal (e1 +- 1)
+          t2 should equal (e2)
+        } 
       }
       it("should be able to transform a tuple generator to a case class generator") {
         val tupGen: Generator[(String, Int)] = Generator.tuple2Generator[String, Int]
         case class Person(name: String, age: Int)
         val persons = for (tup <- tupGen) yield Person(tup._1, tup._2)
-        val (rt, _) = persons.shrink(Person("Harry Potter", 32), Randomizer.default)
+        val (rt, _, _) = persons.next(SizeParam(1, 0, 1), List.empty, Randomizer.default)
         rt.shrinks(Randomizer.default)._1 should not be empty
       }
     }
@@ -2979,9 +3478,9 @@ class GeneratorSpec extends AnyFunSpec {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1, a2, a3, a4, a5).map(_.value) should contain theSameElementsAs List(b1, b2, b3, b4, b5).map(_.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce Vector[T] edge values first in random order") {
         val gen = Generator.vectorGenerator[Int]
@@ -3073,28 +3572,31 @@ class GeneratorSpec extends AnyFunSpec {
           v.length shouldBe 5
         }
       }
-      it("should shrink Vectors using strategery") {
-        shrinkByStrategery[Vector](Vector)
+      it("should shrink Vector with an algo towards empty Vector") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[Vector[Int]]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[Vector[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.isEmpty)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              i should contain allElementsOf s
+              s.length should be < i.length  
+            }  
+          }
+        }
       }
-
       it("should return an empty Iterator when asked to shrink a Vector of size 0") {
         val lstGen = implicitly[Generator[Vector[Int]]]
         val xs = Vector.empty[Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1 shouldBe empty
-      }
-      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Vector of size 1") {
-        val lstGen = implicitly[Generator[Vector[Int]]]
-        val canonicalLists = Vector(0, 1, -1, 2, -2, 3, -3).map(i => Vector(i))
-        val expectedLists = Vector(Vector.empty[Int]) ++ canonicalLists
-        val nonCanonical = Vector(99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
-        val canonical = Vector(3)
-        // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1 shouldBe empty
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a Vector of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Vector[Int]]]
-        val shrinkees = lstGen.shrink(Vector(3, 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed list-to-shink even if that list has a power of 2 length") {
@@ -3103,7 +3605,7 @@ class GeneratorSpec extends AnyFunSpec {
         // for example, that that one doesn't show up in the shrinks output, because it would be the original list-to-shrink.
         val lstGen = implicitly[Generator[Vector[Int]]]
         val listToShrink = Vector.fill(16)(99)
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Vector generator whose canonical method uses the canonical method of the underlying T") {
@@ -3136,9 +3638,9 @@ class GeneratorSpec extends AnyFunSpec {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1, a2, a3, a4, a5).map(_.value) should contain theSameElementsAs List(b1, b2, b3, b4, b5).map(_.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce Set[T] edge values first in random order") {
         val gen = Generator.setGenerator[Int]
@@ -3190,28 +3692,31 @@ class GeneratorSpec extends AnyFunSpec {
           s.size shouldBe 5
         }
       }
-
-      it("should shrink Sets using strategery") {
-        shrinkByStrategery[Set](Set)
+      it("should shrink Set with an algo towards empty Set") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[Set[Int]]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[Set[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.isEmpty)
+            shrinks shouldBe empty
+          else {
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              i should contain allElementsOf s
+              s.size should be < i.size  
+            }  
+          }
+        }
       }
       it("should return an empty Iterator when asked to shrink a Set of size 0") {
         val lstGen = implicitly[Generator[Set[Int]]]
         val xs = Set.empty[Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
-      }
-      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Set of size 1") {
-        val lstGen = implicitly[Generator[Set[Int]]]
-        val canonicalLists = Vector(0, 1, -1, 2, -2, 3, -3).map(i => Set(i))
-        val expectedLists = Vector(Set.empty[Int]) ++ canonicalLists
-        val nonCanonical = Set(99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
-        val canonical = Set(3)
-        // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a Set of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Set[Int]]]
-        val shrinkees = lstGen.shrink(Set(3, 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Set(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed set-to-shink even if that set has a power of 2 length") {
@@ -3222,7 +3727,7 @@ class GeneratorSpec extends AnyFunSpec {
         val listToShrink: Set[Int] = (Set.empty[Int] /: (1 to 16)) { (set, n) =>
           set + n
         }
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Set generator whose canonical method uses the canonical method of the underlying T") {
@@ -3255,13 +3760,13 @@ class GeneratorSpec extends AnyFunSpec {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1, a2, a3, a4, a5).map(_.value) should contain theSameElementsAs List(b1, b2, b3, b4, b5).map(_.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce SortedSet[T] edge values first in random order") {
         val gen = Generator.sortedSetGenerator[Int]
-        val (a1: Rose[SortedSet[Int]], ae1: List[SortedSet[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedSet.empty[Int], SortedSet(1, 2), SortedSet(3, 4, 5)), rnd = Randomizer.default)
+        val (a1: RoseTree[SortedSet[Int]], ae1: List[SortedSet[Int]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedSet.empty[Int], SortedSet(1, 2), SortedSet(3, 4, 5)), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -3309,66 +3814,31 @@ class GeneratorSpec extends AnyFunSpec {
           s.size shouldBe 5
         }
       }
-
-      it("should shrink SortedSets using strategery") {
-        // Due to what I can only assume is an oversight in the standard library, SortedSet's
-        // companion object is not a GenericCompanion, so we can't use the common function here:
+      it("should shrink Set with an algo towards empty Set") {
         import GeneratorDrivenPropertyChecks._
-        val generator = implicitly[Generator[SortedSet[Int]]]
-        val intGenerator = Generator.intGenerator
-        val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
-        val intCanonicals = intCanonicalsIt.toList
-        forAll { (xs: SortedSet[Int]) =>
-          val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
-          val shrinks: List[SortedSet[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
-          if (xs.isEmpty)
+        forAll { (shrinkRoseTree: RoseTree[SortedSet[Int]]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[SortedSet[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.isEmpty)
             shrinks shouldBe empty
           else {
-            // First one should be the empty list
-            shrinks(0) shouldBe empty
-
-            // Then should come one-element Lists of the canonicals of the type
-            val phase2 = shrinks.drop(1).take(intCanonicals.length)
-            phase2 shouldEqual (intCanonicals.map(i => SortedSet(i)))
-
-            // Phase 3 should be one-element lists of all distinct values in the value passed to shrink
-            // If xs already is a one-element list, then we don't do this, because then xs would appear in the output.
-            val xsList = xs.toList
-            val xsDistincts = if (xsList.length > 1) xsList.distinct else Nil
-            val phase3 = shrinks.drop(1 + intCanonicals.length).take(xsDistincts.length)
-            phase3 shouldEqual (xsDistincts.map(i => SortedSet(i)))
-
-            // Phase 4 should be n-element lists that are prefixes cut in half
-            val theHalves = shrinks.drop(1 + intCanonicals.length + xsDistincts.length)
-            theHalves should not contain xs // This was a bug I noticed
-            if (theHalves.length > 1) {
-              import org.scalatest.Inspectors
-              val zipped = theHalves.zip(theHalves.tail)
-              Inspectors.forAll (zipped) { case (s, t) =>
-                s.size should be < t.size
-              }
-            } else succeed
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              i should contain allElementsOf s
+              s.size should be < i.size  
+            }  
           }
         }
       }
       it("should return an empty Iterator when asked to shrink a SortedSet of size 0") {
         val lstGen = implicitly[Generator[SortedSet[Int]]]
         val xs = SortedSet.empty[Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
-      }
-      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Set of size 1") {
-        val lstGen = implicitly[Generator[SortedSet[Int]]]
-        val canonicalLists = Vector(0, 1, -1, 2, -2, 3, -3).map(i => SortedSet(i))
-        val expectedLists = Vector(SortedSet.empty[Int]) ++ canonicalLists
-        val nonCanonical = SortedSet(99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
-        val canonical = SortedSet(3)
-        // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a SortedSet of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[SortedSet[Int]]]
-        val shrinkees = lstGen.shrink(SortedSet(3, 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(SortedSet(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed set-to-shink even if that set has a power of 2 length") {
@@ -3379,7 +3849,7 @@ class GeneratorSpec extends AnyFunSpec {
         val listToShrink: SortedSet[Int] = (SortedSet.empty[Int] /: (1 to 16)) { (set, n) =>
           set + n
         }
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Set generator whose canonical method uses the canonical method of the underlying T") {
@@ -3412,13 +3882,13 @@ class GeneratorSpec extends AnyFunSpec {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1, a2, a3, a4, a5).map(_.value) should contain theSameElementsAs List(b1, b2, b3, b4, b5).map(_.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce Map[K, V] edge values first in random order") {
         val gen = Generator.mapGenerator[Int, String]
-        val (a1: Rose[Map[Int, String]], ae1: List[Map[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Map.empty[Int, String], Map(1 -> "one", 2 -> "two"), Map(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
+        val (a1: RoseTree[Map[Int, String]], ae1: List[Map[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(Map.empty[Int, String], Map(1 -> "one", 2 -> "two"), Map(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -3466,69 +3936,31 @@ class GeneratorSpec extends AnyFunSpec {
           s.size shouldBe 5
         }
       }
-
-      it("should shrink Maps using strategery") {
+      it("should shrink Map with an algo towards empty Map") {
         import GeneratorDrivenPropertyChecks._
-        val generator = implicitly[Generator[Map[PosInt, Int]]]
-        val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
-        val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
-        val tupleCanonicals = tupleCanonicalsIt.toList
-        forAll { (xs: Map[PosInt, Int]) =>
-          val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
-          val shrinks: List[Map[PosInt, Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
-          if (xs.isEmpty)
+        forAll { (shrinkRoseTree: RoseTree[Map[Int, String]]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[Map[Int, String]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.isEmpty)
             shrinks shouldBe empty
           else {
-            // First one should be the empty list
-            shrinks(0) shouldBe empty
-
-            // Then should come one-element Lists of the canonicals of the type
-            val phase2 = shrinks.drop(1).take(tupleCanonicals.length)
-            phase2 shouldEqual (tupleCanonicals.map(i => Map(i)))
-
-            // Phase 3 should be one-element lists of all distinct values in the value passed to shrink
-            // If xs already is a one-element list, then we don't do this, because then xs would appear in the output.
-            val xsList = xs.toList
-            val xsDistincts = if (xsList.length > 1) xsList.distinct else Nil
-            val phase3 = shrinks.drop(1 + tupleCanonicals.length).take(xsDistincts.length)
-            phase3 shouldEqual (xsDistincts.map(i => Map(i)))
-
-            // Phase 4 should be n-element lists that are prefixes cut in half
-            val theHalves = shrinks.drop(1 + tupleCanonicals.length + xsDistincts.length)
-            theHalves should not contain xs // This was a bug I noticed
-            if (theHalves.length > 1) {
-              import org.scalatest.Inspectors
-              val zipped = theHalves.zip(theHalves.tail)
-              Inspectors.forAll (zipped) { case (s, t) =>
-                s.size should be < t.size
-              }
-            } else succeed
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              i should contain allElementsOf s
+              s.size should be < i.size  
+            }  
           }
         }
       }
       it("should return an empty Iterator when asked to shrink a Map of size 0") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
         val xs = Map.empty[PosInt, Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
-      }
-      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a Map of size 1") {
-        val lstGen = implicitly[Generator[Map[PosInt, Int]]]
-        val canonicalLists =
-          for {
-            k <- Vector(1, 2, 3)
-            v <- Vector(0, 1, -1, 2, -2, 3, -3)
-          }
-            yield Map(PosInt.ensuringValid(k) -> v)
-        val expectedLists = Vector(Map.empty[PosInt, Int]) ++ canonicalLists
-        val nonCanonical = Map(PosInt(99) -> 99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
-        val canonical = Map(PosInt(3) -> 3)
-        // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a Map of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
-        val shrinkees = lstGen.shrink(Map(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Map(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed map-to-shink even if that set has a power of 2 length") {
@@ -3539,7 +3971,7 @@ class GeneratorSpec extends AnyFunSpec {
         val listToShrink: Map[PosInt, Int] = (Map.empty[PosInt, Int] /: (1 to 16)) { (map, n) =>
           map + (PosInt.ensuringValid(n) -> n)
         }
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Map generator whose canonical method uses the canonical method of the underlying types") {
@@ -3572,13 +4004,13 @@ class GeneratorSpec extends AnyFunSpec {
         val (b5, _, br5) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br4)
         val (b6, _, br6) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br5)
         val (b7, _, _) = bGen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = br6)
-        List(a1, a2, a3, a4, a5) should contain theSameElementsAs List(b1, b2, b3, b4, b5)
-        a6 shouldEqual b6
-        a7 shouldEqual b7
+        List(a1, a2, a3, a4, a5).map(_.value) should contain theSameElementsAs List(b1, b2, b3, b4, b5).map(_.value)
+        a6.value shouldEqual b6.value
+        a7.value shouldEqual b7.value
       }
       it("should produce SortedMap[K, V] edge values first in random order") {
         val gen = Generator.sortedMapGenerator[Int, String]
-        val (a1: Rose[SortedMap[Int, String]], ae1: List[SortedMap[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedMap.empty[Int, String], SortedMap(1 -> "one", 2 -> "two"), SortedMap(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
+        val (a1: RoseTree[SortedMap[Int, String]], ae1: List[SortedMap[Int, String]], ar1: Randomizer) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = List(SortedMap.empty[Int, String], SortedMap(1 -> "one", 2 -> "two"), SortedMap(3 -> "three", 4 -> "four", 5 -> "five")), rnd = Randomizer.default)
         val (a2, ae2, ar2) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae1, rnd = ar1)
         val (a3, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = ae2, rnd = ar2)
         val edges = List(a1, a2, a3).map(_.value)
@@ -3626,69 +4058,31 @@ class GeneratorSpec extends AnyFunSpec {
           s.size shouldBe 5
         }
       }
-
-      it("should shrink SortedMaps using strategery") {
+      it("should shrink SortedMap with an algo towards empty SortedMap") {
         import GeneratorDrivenPropertyChecks._
-        val generator = implicitly[Generator[SortedMap[PosInt, Int]]]
-        val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
-        val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
-        val tupleCanonicals = tupleCanonicalsIt.toList
-        forAll { (xs: SortedMap[PosInt, Int]) =>
-          val (shrinkRoseTree, _) = generator.shrink(xs, Randomizer.default)
-          val shrinks: List[SortedMap[PosInt, Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
-          if (xs.isEmpty)
+        forAll { (shrinkRoseTree: RoseTree[SortedMap[Int, String]]) =>
+          val i = shrinkRoseTree.value
+          val shrinks: List[SortedMap[Int, String]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (i.isEmpty)
             shrinks shouldBe empty
           else {
-            // First one should be the empty list
-            shrinks(0) shouldBe empty
-
-            // Then should come one-element Lists of the canonicals of the type
-            val phase2 = shrinks.drop(1).take(tupleCanonicals.length)
-            phase2 shouldEqual (tupleCanonicals.map(i => SortedMap(i)))
-
-            // Phase 3 should be one-element lists of all distinct values in the value passed to shrink
-            // If xs already is a one-element list, then we don't do this, because then xs would appear in the output.
-            val xsList = xs.toList
-            val xsDistincts = if (xsList.length > 1) xsList.distinct else Nil
-            val phase3 = shrinks.drop(1 + tupleCanonicals.length).take(xsDistincts.length)
-            phase3 shouldEqual (xsDistincts.map(i => SortedMap(i)))
-
-            // Phase 4 should be n-element lists that are prefixes cut in half
-            val theHalves = shrinks.drop(1 + tupleCanonicals.length + xsDistincts.length)
-            theHalves should not contain xs // This was a bug I noticed
-            if (theHalves.length > 1) {
-              import org.scalatest.Inspectors
-              val zipped = theHalves.zip(theHalves.tail)
-              Inspectors.forAll (zipped) { case (s, t) =>
-                s.size should be < t.size
-              }
-            } else succeed
+            shrinks should not be empty
+            inspectAll(shrinks) { s =>
+              i should contain allElementsOf s
+              s.size should be < i.size  
+            }  
           }
         }
       }
       it("should return an empty Iterator when asked to shrink a SortedMap of size 0") {
         val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
         val xs = SortedMap.empty[PosInt, Int]
-        lstGen.shrink(xs, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
-      }
-      it("should return an Iterator of the canonicals excluding the given values to shrink when asked to shrink a SortedMap of size 1") {
-        val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
-        val canonicalLists =
-          for {
-            k <- Vector(1, 2, 3)
-            v <- Vector(0, 1, -1, 2, -2, 3, -3)
-          }
-            yield SortedMap(PosInt.ensuringValid(k) -> v)
-        val expectedLists = Vector(SortedMap.empty[PosInt, Int]) ++ canonicalLists
-        val nonCanonical = SortedMap(PosInt(99) -> 99)
-        lstGen.shrink(nonCanonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
-        val canonical = SortedMap(PosInt(3) -> 3)
-        // Ensure 3 (an Int canonical value) does not show up twice in the output
-        lstGen.shrink(canonical, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toVector should contain theSameElementsAs expectedLists
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a SortedMap of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
-        val shrinkees = lstGen.shrink(SortedMap(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(SortedMap(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an Iterator that does not repeat the passed SortedMap-to-shink even if that SortedMap has a power of 2 length") {
@@ -3699,7 +4093,7 @@ class GeneratorSpec extends AnyFunSpec {
         val listToShrink: SortedMap[PosInt, Int] = (SortedMap.empty[PosInt, Int] /: (1 to 16)) { (map, n) =>
           map + (PosInt.ensuringValid(n) -> n)
         }
-        val shrinkees = lstGen.shrink(listToShrink, Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a SortedMap generator whose canonical method uses the canonical method of the underlying types") {
@@ -3728,12 +4122,6 @@ class GeneratorSpec extends AnyFunSpec {
       val genColor = specificValues(Red, Green)
       val genLine = for { color <- genColor } yield Line(color)
       val genCircle = for { color <- genColor } yield Circle(color)
-      
-      /*lazy val genShape = evenly[Shape](genLine, genCircle, genBox)
-      lazy val genBox: Generator[Box] = for {
-        color <- genColor
-        shape <- genShape
-      } yield Box(color, shape)*/
       
       // SKIP-DOTTY-START
       """
