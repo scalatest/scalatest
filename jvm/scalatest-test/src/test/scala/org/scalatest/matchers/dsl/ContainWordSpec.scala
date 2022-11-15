@@ -190,7 +190,8 @@ class ContainWordSpec extends AnyFunSpec {
       
       val file = AMatcher[MyFile]("file") { _.file  }
       val myFile = MyFile("test", true, false)
-      
+      val myFilePrettified = "MyFile(\"test\", true, false)"
+
       val mt = contain a (file)
       
       it("should have pretty toString") {
@@ -198,22 +199,23 @@ class ContainWordSpec extends AnyFunSpec {
       }
       
       val leftList = List(myFile)
+      val leftListPrettified = "List(MyFile(\"test\", true, false))"
       val mr = mt(leftList)
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe s"$leftList did not contain a file"
-        mr.negatedFailureMessage shouldBe s"$leftList contained a file: $myFile was a file"
-        mr.midSentenceFailureMessage shouldBe s"$leftList did not contain a file"
-        mr.midSentenceNegatedFailureMessage shouldBe s"$leftList contained a file: $myFile was a file"
+        mr.failureMessage shouldBe s"$leftListPrettified did not contain a file"
+        mr.negatedFailureMessage shouldBe s"$leftListPrettified contained a file: $myFilePrettified was a file"
+        mr.midSentenceFailureMessage shouldBe s"$leftListPrettified did not contain a file"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$leftListPrettified contained a file: $myFilePrettified was a file"
         mr.rawFailureMessage shouldBe "{0} did not contain a {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} contained a {1}: {2}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain a {1}"
         mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained a {1}: {2}"
         mr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was a file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was a file"))
         mr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was a file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was a file"))
 
       }
       
@@ -221,17 +223,17 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe s"$leftList contained a file: $myFile was a file"
-        nmr.negatedFailureMessage shouldBe s"$leftList did not contain a file"
-        nmr.midSentenceFailureMessage shouldBe s"$leftList contained a file: $myFile was a file"
-        nmr.midSentenceNegatedFailureMessage shouldBe s"$leftList did not contain a file"
+        nmr.failureMessage shouldBe s"$leftListPrettified contained a file: $myFilePrettified was a file"
+        nmr.negatedFailureMessage shouldBe s"$leftListPrettified did not contain a file"
+        nmr.midSentenceFailureMessage shouldBe s"$leftListPrettified contained a file: $myFilePrettified was a file"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$leftListPrettified did not contain a file"
         nmr.rawFailureMessage shouldBe "{0} contained a {1}: {2}"
         nmr.rawNegatedFailureMessage shouldBe "{0} did not contain a {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} contained a {1}: {2}"
         nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain a {1}"
-        nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was a file"))
+        nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was a file"))
         nmr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was a file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was a file"))
         nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
 
       }
@@ -246,7 +248,8 @@ class ContainWordSpec extends AnyFunSpec {
       
       val file = AnMatcher[MyFile]("file") { _.file  }
       val myFile = MyFile("test", true, false)
-      
+      val myFilePrettified = "MyFile(\"test\", true, false)"
+
       val mt = contain an (file)
       
       it("should have pretty toString") {
@@ -254,22 +257,23 @@ class ContainWordSpec extends AnyFunSpec {
       }
       
       val leftList = List(myFile)
+      val leftListPrettified = "List(MyFile(\"test\", true, false))"
       val mr = mt(leftList)
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe true
-        mr.failureMessage shouldBe s"$leftList did not contain an file"
-        mr.negatedFailureMessage shouldBe s"$leftList contained an file: $myFile was an file"
-        mr.midSentenceFailureMessage shouldBe s"$leftList did not contain an file"
-        mr.midSentenceNegatedFailureMessage shouldBe s"$leftList contained an file: $myFile was an file"
+        mr.failureMessage shouldBe s"$leftListPrettified did not contain an file"
+        mr.negatedFailureMessage shouldBe s"$leftListPrettified contained an file: $myFilePrettified was an file"
+        mr.midSentenceFailureMessage shouldBe s"$leftListPrettified did not contain an file"
+        mr.midSentenceNegatedFailureMessage shouldBe s"$leftListPrettified contained an file: $myFilePrettified was an file"
         mr.rawFailureMessage shouldBe "{0} did not contain an {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} contained an {1}: {2}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} did not contain an {1}"
         mr.rawMidSentenceNegatedFailureMessage shouldBe "{0} contained an {1}: {2}"
         mr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was an file"))
+        mr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was an file"))
         mr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was an file"))
+        mr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was an file"))
 
       }
       
@@ -277,17 +281,17 @@ class ContainWordSpec extends AnyFunSpec {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe false
-        nmr.failureMessage shouldBe s"$leftList contained an file: $myFile was an file"
-        nmr.negatedFailureMessage shouldBe s"$leftList did not contain an file"
-        nmr.midSentenceFailureMessage shouldBe s"$leftList contained an file: $myFile was an file"
-        nmr.midSentenceNegatedFailureMessage shouldBe s"$leftList did not contain an file"
+        nmr.failureMessage shouldBe s"$leftListPrettified contained an file: $myFilePrettified was an file"
+        nmr.negatedFailureMessage shouldBe s"$leftListPrettified did not contain an file"
+        nmr.midSentenceFailureMessage shouldBe s"$leftListPrettified contained an file: $myFilePrettified was an file"
+        nmr.midSentenceNegatedFailureMessage shouldBe s"$leftListPrettified did not contain an file"
         nmr.rawFailureMessage shouldBe "{0} contained an {1}: {2}"
         nmr.rawNegatedFailureMessage shouldBe "{0} did not contain an {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} contained an {1}: {2}"
         nmr.rawMidSentenceNegatedFailureMessage shouldBe "{0} did not contain an {1}"
-        nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was an file"))
+        nmr.failureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was an file"))
         nmr.negatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
-        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFile was an file"))
+        nmr.midSentenceFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"), UnquotedString(s"$myFilePrettified was an file"))
         nmr.midSentenceNegatedFailureMessageArgs shouldBe Vector(leftList, UnquotedString("file"))
 
       }

@@ -225,13 +225,14 @@ class ShouldBeShorthandSpec extends AnyFunSpec with EmptyMocks with BookProperty
 
       val book = new Book("A Tale of Two Cities", "Dickens", 1859, 45, true)
       val badBook = new Book("A Tale of Two Cities", "Dickens", 1859, 45, false)
-      
+      val badBookPrettified = "Book(\"A Tale of Two Cities\", \"Dickens\", 1859, 45, false)"
+
       book shouldBe goodRead
       
       val caught1 = intercept[TestFailedException] {
         badBook shouldBe goodRead
       }
-      assert(caught1.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,false) was not goodRead"))
+      assert(caught1.message === Some(s"$badBookPrettified was not goodRead"))
       assert(caught1.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
       assert(caught1.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -240,7 +241,7 @@ class ShouldBeShorthandSpec extends AnyFunSpec with EmptyMocks with BookProperty
       val caught2 = intercept[TestFailedException] {
         badBook shouldBe a (goodRead)
       }
-      assert(caught2.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,false) was not a goodRead"))
+      assert(caught2.message === Some(s"$badBookPrettified was not a goodRead"))
       assert(caught2.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
       assert(caught2.failedCodeLineNumber === Some(thisLineNumber - 4))
       
@@ -248,7 +249,7 @@ class ShouldBeShorthandSpec extends AnyFunSpec with EmptyMocks with BookProperty
       val caught3 = intercept[TestFailedException] {
         badBook shouldBe an (goodRead)
       }
-      assert(caught3.message === Some("Book(A Tale of Two Cities,Dickens,1859,45,false) was not an goodRead"))
+      assert(caught3.message === Some(s"$badBookPrettified was not an goodRead"))
       assert(caught3.failedCodeFileName === Some("ShouldBeShorthandSpec.scala"))
       assert(caught3.failedCodeLineNumber === Some(thisLineNumber - 4))
     }

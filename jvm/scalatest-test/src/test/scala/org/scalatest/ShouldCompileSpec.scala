@@ -41,15 +41,12 @@ class ShouldCompileSpec extends AnyFunSpec {
         assert(e.message.get.indexOf("val a: String = 2") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+        assert(e.message.get.indexOf(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "Required: String" else "required: String") >= 0)
       }
       
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
-        
-        // SKIP-DOTTY-START
         val errMsg = Resources.expectedNoErrorButGotParseError("", "")
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val errMsg = Resources.expectedNoErrorButGotTypeError("", "")
-
+        
         val e = intercept[TestFailedException] {
           "println(\"test)" should compile
         }
@@ -58,6 +55,7 @@ class ShouldCompileSpec extends AnyFunSpec {
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+        assert(e.message.get.indexOf(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "expression expected but erroneous token found" else "unclosed string literal") >= 0)
       }
 
     }
@@ -77,14 +75,11 @@ class ShouldCompileSpec extends AnyFunSpec {
         assert(e.message.get.indexOf("val a: String = 2") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+        assert(e.message.get.indexOf(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "Required: String" else "required: String") >= 0)
       }
 
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
-        
-        // SKIP-DOTTY-START
         val errMsg = Resources.expectedNoErrorButGotParseError("", "")
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val errMsg = Resources.expectedNoErrorButGotTypeError("", "")
         
         val e = intercept[TestFailedException] {
           """println("test)""" should compile
@@ -94,6 +89,7 @@ class ShouldCompileSpec extends AnyFunSpec {
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+        assert(e.message.get.indexOf(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "expression expected but erroneous token found" else "unclosed string literal") >= 0)
       }
       
     }
@@ -117,14 +113,12 @@ class ShouldCompileSpec extends AnyFunSpec {
         assert(e.message.get.indexOf("val a: String = 2") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+        assert(e.message.get.indexOf(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "Required: String" else "required: String") >= 0)
       }
 
       it("should throw TestFailedException with correct message and stack depth when parse failed") {
-        // SKIP-DOTTY-START
         val errMsg = Resources.expectedNoErrorButGotParseError("", "")
-        // SKIP-DOTTY-END
-        //DOTTY-ONLY val errMsg = Resources.expectedNoErrorButGotTypeError("", "")
-
+        
         val e = intercept[TestFailedException] {
           """
             |println("test)
@@ -135,6 +129,7 @@ class ShouldCompileSpec extends AnyFunSpec {
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+        assert(e.message.get.indexOf(if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) "expression expected but erroneous token found" else "unclosed string literal") >= 0)
       }
     }
   }

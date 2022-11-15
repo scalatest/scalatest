@@ -1823,7 +1823,10 @@ import org.scalatest._
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
+// SKIP-DOTTY-START
 class AnyFeatureSpec extends AnyFeatureSpecLike {
+// SKIP-DOTTY-END
+//DOTTY-ONLY open class AnyFeatureSpec extends AnyFeatureSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

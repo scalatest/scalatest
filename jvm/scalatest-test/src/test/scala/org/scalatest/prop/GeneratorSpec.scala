@@ -3205,7 +3205,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         eitherCanon.toList should contain theSameElementsAs((rCanon.map(Right(_)) ++ lCanon.map(Left(_))).toList)
       }
 
-      it("should produce an appropriate mix of Right and Left") {
+      it("should produce an appropriate mix of Right and Left", Flicker) {
         import Generator._
         val gen = eitherGenerator[String, Int]
 

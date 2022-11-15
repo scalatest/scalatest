@@ -1736,8 +1736,10 @@ import org.scalatest.{Suite, Finders}
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
+// SKIP-DOTTY-START
 class AnyFreeSpec extends AnyFreeSpecLike {
-
+// SKIP-DOTTY-END
+//DOTTY-ONLY open class AnyFreeSpec extends AnyFreeSpecLike {
   /**
    * Returns a user friendly string for this suite, composed of the
    * simple name of the class (possibly simplified further by removing dollar signs if added by the Scala interpeter) and, if this suite

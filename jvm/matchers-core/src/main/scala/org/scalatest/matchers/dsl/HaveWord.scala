@@ -40,7 +40,10 @@ final class HaveWord {
    *                  ^
    * </pre>
    */
+  //DOTTY-ONLY infix def length(expectedLength: Long): MatcherFactory1[Any, Length] =
+  // SKIP-DOTTY-START 
   def length(expectedLength: Long): MatcherFactory1[Any, Length] =
+  // SKIP-DOTTY-END
     new MatcherFactory1[Any, Length] {
       def matcher[T <: Any : Length]: Matcher[T] = {
         val length = implicitly[Length[T]]
@@ -76,7 +79,10 @@ final class HaveWord {
    * In a future ScalaTest release, this may be tightened so that all is statically checked at compile time.
    * </p>
    */
+  //DOTTY-ONLY infix def size(expectedSize: Long): MatcherFactory1[Any, Size] =
+  // SKIP-DOTTY-START 
   def size(expectedSize: Long): MatcherFactory1[Any, Size] =
+  // SKIP-DOTTY-END
     new MatcherFactory1[Any, Size] {
       def matcher[T <: Any : Size]: Matcher[T] = {
         val size = implicitly[Size[T]]
@@ -105,7 +111,10 @@ final class HaveWord {
    *                    ^
    * </pre>
    */
+  //DOTTY-ONLY infix def message(expectedMessage: String): MatcherFactory1[Any, Messaging] =
+  // SKIP-DOTTY-START 
   def message(expectedMessage: String): MatcherFactory1[Any, Messaging] =
+  // SKIP-DOTTY-END
     new MatcherFactory1[Any, Messaging] {
       def matcher[T <: Any : Messaging]: Matcher[T] = {
         val messaging = implicitly[Messaging[T]]
@@ -128,13 +137,12 @@ final class HaveWord {
 
   /**
    * Enables parentheses to be placed around <code>length (N)</code> in expressions of the form: <code>should have (length (N))</code>.
-   */
+   */ 
   def apply[T](resultOfLengthWordApplication: ResultOfLengthWordApplication): MatcherFactory1[Any, Length] = length(resultOfLengthWordApplication.expectedLength)
-
 
   /**
    * Enables parentheses to be placed around <code>size (N)</code> in expressions of the form: <code>should have (size (N))</code>.
-   */
+   */ 
   def apply[T](resultOfSizeWordApplication: ResultOfSizeWordApplication): MatcherFactory1[Any, Size] = size(resultOfSizeWordApplication.expectedSize)
 
   /**
