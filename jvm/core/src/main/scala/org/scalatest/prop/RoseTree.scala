@@ -130,7 +130,38 @@ trait RoseTree[T] { thisRoseTreeOfT =>
 
         val (roseTrees, rnd2) = thisRoseTreeOfT.shrinks(rnd)
         val (moreRoseTrees, rnd3) = f(thisRoseTreeOfT.value).shrinks(rnd2)
-        (roseTrees.map(roseTreeOfTToRoseTreeOfUFun) ::: moreRoseTrees, rnd3)
+        val mappedRoseTreesOfU = roseTrees.map(roseTreeOfTToRoseTreeOfUFun)
+        // I need to modify the shrinks of the RoseTrees in moreRoseTrees. For
+        // each one, I need to prepend one RoseTree from the List obtained by
+        // calling shrinks on mappedRoseTreesOfU.
+        val (wrappedRoseTrees, rnd4) = {
+          // @tailrec Shoot, because of shrinks(rnd). Thinking shrinks might not use rnd.
+          def loop(
+            acc: List[RoseTree[U]],
+            redList: List[RoseTree[U]],
+            greenList: List[RoseTree[U]]
+          ): List[RoseTree[U]] = {
+
+            (redList, greenList) match {
+              case (redHead :: redTail, greenHead :: greenTail) =>
+                // I want to put the redHead at the front of the greenHead's shrinks result
+                val wrappedGreenHead =
+                  new RoseTree[U] {
+                    val value: U = greenHead.value
+                    def shrinks(rnd: Randomizer): (List[RoseTree[U]], Randomizer) =
+                      (loop(List(redHead), redTail, greenTail), rnd)
+                  }
+                // Now I need to put the wrapped green head after the accumulated processing of the tails
+                loop(acc ::: List(wrappedGreenHead), redTail, greenTail)
+              case (Nil, Nil) => acc
+              case _ => throw new Exception("They should be the same length")
+            }
+          }
+          val (nextLevel, rnd4) = mappedRoseTreesOfU(0).shrinks(rnd3)
+          (loop(Nil, nextLevel, moreRoseTrees), rnd4) // I'm not sure how to get to shrinks from a List. Will it always have 1 element?
+        }
+
+        (mappedRoseTreesOfU ::: wrappedRoseTrees, rnd4)
       }
     }
   }
@@ -184,7 +215,7 @@ scala> for {
 res5: org.scalatest.prop.RoseTree[(Char, Int)] = RoseTree((B,6),org.scalatest.prop.RoseTree$$Lambda$12440/1544455474@1a80e1d9)
 
 scala> unfold(res5)
- (B,6)
+(B,6)
    (A,6)
      (A,3)
        (A,1)
@@ -194,12 +225,24 @@ scala> unfold(res5)
        (A,0)
      (A,0)
    (B,3)
+     (A,3)
+       (A,1)
+         (A,0)
+       (A,0)
      (B,1)
+       (A,1)
+         (A,0)
        (B,0)
+         (A,0)
      (B,0)
+       (A,0)
    (B,1)
+     (A,1)
+       (A,0)
      (B,0)
+       (A,0)
    (B,0)
+     (A,0)
 */
 
 
