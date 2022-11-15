@@ -105,15 +105,6 @@ trait RoseTree[T] { thisRoseTreeOfT =>
   // for each shrunken Char, we'll get the one (Char, Int).
   def map[U](f: T => U): RoseTree[U] = {
 
-    val u: U = f(value) // (Char, Int) the Int is constant, essentially, captured by the T => U function. The T, the Char, is what varies.
-
-    def roseTreeOfTToRoseTreeOfUFun(roseTreeOfT: RoseTree[T]): RoseTree[U] = roseTreeOfT.map(f) 
-
-    def uToListOfRoseTreeOfUFun(u: U, rnd: Randomizer): (List[RoseTree[U]], Randomizer) = {
-      val (roseTrees, rnd2) = shrinks(rnd)
-      (roseTrees.map(roseTreeOfTToRoseTreeOfUFun), rnd2)
-    }
-
     new RoseTree[U] {
       val value: U = f(thisRoseTreeOfT.value)
       def shrinks(rnd: Randomizer): (List[RoseTree[U]], Randomizer) = {
@@ -124,33 +115,8 @@ trait RoseTree[T] { thisRoseTreeOfT =>
     }
   }
 
-  // So here, we need to go through each of the Ints. U here is Char? No, U is (Char, Int) again? Yes.
-  // Ah, and T is Int.
   def flatMap[U](f: T => RoseTree[U]): RoseTree[U] = {
 
-    val roseTreeOfU: RoseTree[U] = f(value) // One RoseTree[(Char, Int)]
-
-    val u: U = roseTreeOfU.value // One (Char, Int)
-
-    def roseTreeOfTs(rnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
-      val (roseTrees, rnd2) = shrinks(rnd)
-      (Rose(value) :: roseTrees, rnd2)
-    } // List of RoseTree[Int]
-    // Can I add to this a RoseTree(value, emptyListFun)?
-
-    // Ah, I'm not using value, which is T, except to get the roseTreeOfU oh and the List[RoseTree[T]]
-    // That's the one that's missing. I need to add one more at the top, which is value (: T)...
-
-    def roseTreeOfTToRoseTreeOfUFun(roseTreeOfT: RoseTree[T]): RoseTree[U] = f(roseTreeOfT.value)
-
-    def uToListOfRoseTreeOfUFun(u: U, rnd: Randomizer): (List[RoseTree[U]], Randomizer) = {
-      val (roseTrees, rnd2) = roseTreeOfTs(rnd)
-      (roseTrees.map(roseTreeOfTToRoseTreeOfUFun), rnd2)
-    }
-
-    // So yes, I get one u (one (Char, Int)), which is the root of the tree. I now need to make the
-    // tree part. It should use the same Char but go through the Ints.
-    //RoseTree(u, uToListOfRoseTreeOfUFun)
     new RoseTree[U] {
 
       val value: U = {
@@ -159,19 +125,14 @@ trait RoseTree[T] { thisRoseTreeOfT =>
       }
 
       def shrinks(rnd: Randomizer): (List[RoseTree[U]], Randomizer) = {
-        def roseTreeOfTs(rnd: Randomizer): (List[RoseTree[T]], Randomizer) = {
-          val (roseTrees, rnd2) = thisRoseTreeOfT.shrinks(rnd)
-          (Rose(thisRoseTreeOfT.value) :: roseTrees, rnd2)
-        } // List of RoseTree[Int]
 
         def roseTreeOfTToRoseTreeOfUFun(roseTreeOfT: RoseTree[T]): RoseTree[U] = f(roseTreeOfT.value)
 
-        val (roseTrees, rnd2) = roseTreeOfTs(rnd)
-        (roseTrees.map(roseTreeOfTToRoseTreeOfUFun), rnd2)
+        val (roseTrees, rnd2) = thisRoseTreeOfT.shrinks(rnd)
+        val (moreRoseTrees, rnd3) = f(thisRoseTreeOfT.value).shrinks(rnd2)
+        (roseTrees.map(roseTreeOfTToRoseTreeOfUFun) ::: moreRoseTrees, rnd3)
       }
     }
-    // CharIntPair => roseTreeOfInts.map(roseTreeOfInt => f(roseTreeOfInt.value))
-    // So I think right there it should be working. But I am throwing away 
   }
 
   override def toString: String = s"RoseTree($value)"
@@ -186,6 +147,7 @@ case class Rose[T](value: T) extends RoseTree[T] {
 
 /*
 import org.scalatest.prop._
+
 def unfold[a](rt: RoseTree[a], indent: String = ""): Unit = {
   println(s"$indent ${rt.value}")
   val (roseTrees, rnd2) = rt.shrinks(Randomizer.default)
@@ -198,42 +160,46 @@ case class RoseBush[T](o: T, shr: (T, Randomizer) => (List[RoseTree[T]], Randomi
 }
 
 def intShr: (Int, Randomizer) => (List[RoseTree[Int]], Randomizer) = { (n: Int, rnd: Randomizer) =>
-  val roseTrees = if (n > 0) (0 to n - 1).toList.reverse.map(x => RoseBush(x, intShr)) else List.empty
-  (roseTrees, rnd)
-}
-
-def dubShr: (Double, Randomizer) => (List[RoseTree[Double]], Randomizer) = { (n: Double, rnd: Randomizer) =>
-  val roseTrees = if (n > 0) (0 to n.toInt - 1).toList.map(_.toDouble).reverse.map(x => RoseBush(x, dubShr)) else List.empty
+  @tailrec
+  def loop(n: Int, acc: List[Int]): List[Int] = {
+    val half = n / 2
+    if (half == 0)
+      0 :: acc
+    else
+      loop(half, half :: acc)
+  }
+  val roseTrees = if (n > 0) loop(n, Nil).reverse.map(x => RoseBush(x, intShr)) else List.empty
   (roseTrees, rnd)
 }
 
 def charShr: (Char, Randomizer) => (List[RoseTree[Char]], Randomizer) = { (c: Char, rnd: Randomizer) =>
-  val roseTrees = if (c.toLower > 'a') ('a' to (c - 1).toChar).toList.reverse.map(x => RoseBush(x, charShr)) else List.empty
+  val roseTrees = if (c > 'A' && c <= 'Z') ('A' to (c - 1).toChar).toList.reverse.map(x => RoseBush(x, charShr)) else List.empty
   (roseTrees, rnd)
 }
 
-https://www.well-typed.com/blog/2019/05/integrated-shrinking/
-
 scala> for {
-     |   i <- RoseTree(2, intShr)
-     |   c <- RoseTree('c', charShr)
+     |   c <- RoseTree('B', charShr)
+     |   i <- RoseTree(6, intShr)
      | } yield (c, i)
-res5: org.scalatest.prop.RoseTree[(Char, Int)] = RoseTree((c,2),org.scalatest.prop.RoseTree$$Lambda$12440/1544455474@1a80e1d9)
+res5: org.scalatest.prop.RoseTree[(Char, Int)] = RoseTree((B,6),org.scalatest.prop.RoseTree$$Lambda$12440/1544455474@1a80e1d9)
 
 scala> unfold(res5)
- (c,2)
-   (c,2)
-     (b,2)
-       (a,2)
-     (a,2)
-   (c,1)
-     (b,1)
-       (a,1)
-     (a,1)
-   (c,0)
-     (b,0)
-       (a,0)
-     (a,0)
+ (B,6)
+   (A,6)
+     (A,3)
+       (A,1)
+         (A,0)
+       (A,0)
+     (A,1)
+       (A,0)
+     (A,0)
+   (B,3)
+     (B,1)
+       (B,0)
+     (B,0)
+   (B,1)
+     (B,0)
+   (B,0)
 */
 
 
