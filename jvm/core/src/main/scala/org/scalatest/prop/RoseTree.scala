@@ -116,15 +116,22 @@ trait RoseTree[T] { thisRoseTreeOfT =>
   }
 
   def flatMap[U](f: T => RoseTree[U]): RoseTree[U] = {
+
     val roseTreeOfU: RoseTree[U] = f(thisRoseTreeOfT.value)
+
     new RoseTree[U] {
+
       val value: U = roseTreeOfU.value
-      val roseTreeOfUs: List[RoseTree[U]] = // TODO: Maybe make this a def, but once we are using lazy lists maybe val is ok
-        for (rt <- thisRoseTreeOfT.shrinks(Randomizer.default)._1) yield
-          rt.flatMap(f)
 
       def shrinks(rnd: Randomizer): (List[RoseTree[U]], Randomizer) = {
-         (roseTreeOfUs ++ roseTreeOfU.shrinks(Randomizer.default)._1, Randomizer.default)
+
+        val (shrunkenRoseTreeOfUs, rnd2) = thisRoseTreeOfT.shrinks(rnd)
+        val roseTreeOfUs: List[RoseTree[U]] =
+          for (rt <- shrunkenRoseTreeOfUs) yield
+            rt.flatMap(f)
+
+        val (sameAsBefore, rnd3) = roseTreeOfU.shrinks(rnd2)
+        (roseTreeOfUs ++ sameAsBefore, rnd3)
       } 
     } 
   } 
