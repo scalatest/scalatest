@@ -365,46 +365,29 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            val (shrunkRtOfAB, shrunkErrOpt, rnd4) = 
-              roseTreeOfA.combineFirstDepthShrinks[Throwable, B](
-              { case (a, b) => {
-                  val result: Try[T] = Try { fun(a, b, roseTreeOfC.value) }
-                  result match {
-                    case Success(_) => (true, None)
-                    case Failure(shrunkEx) => (false, Some(shrunkEx))
-                  }
-                }
-              }, 
-              rnd3, 
-              roseTreeOfB)
-
-            //val bestRtOfAB = shrunkRtOfAB.headOption
-            val (shrunkRtOfABC, shrunkErrOpt2, rnd5) = 
-              shrunkRtOfAB.headOption.map { headRt =>
-                headRt.combineFirstDepthShrinks[Throwable, C](
-                  { case ((a, b), c) => {
-                      val result: Try[T] = Try { fun(a, b, c) }
-                      result match {
-                        case Success(_) => (true, None)
-                        case Failure(shrunkEx) => (false, Some(shrunkEx))
-                      }
+            val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
+            val (roseTreeOfABC, rnd5) = 
+              RoseTree.map2[(A, B), C, (A, B, C)](
+                roseTreeOfAB, 
+                roseTreeOfC, { case ((a, b), c) => 
+                  (a, b, c)
+                }, 
+                rnd4)
+            val (shrunkRtOfABC, shrunkErrOpt, rnd6) = 
+              roseTreeOfABC.depthFirstShrinks(
+                { case (a, b, c) => {
+                    val result: Try[T] = Try { fun(a, b, c) }
+                    result match {
+                      case Success(_) => (true, None)
+                      case Failure(shrunkEx) => (false, Some(shrunkEx))
                     }
-                  }, 
-                  rnd4, 
-                  roseTreeOfC
-                )
-              }.getOrElse((List.empty, shrunkErrOpt, rnd4))
+                  } 
+                }, 
+                rnd5
+              )
 
-            val bestABC = 
-              shrunkRtOfABC.headOption.map(_.value) match {
-                case Some(((a, b), c)) => (a, b, c)
-                case None => 
-                  shrunkRtOfAB.headOption.map(_.value) match {
-                    case Some((a, b)) => (a, b, roseTreeOfC.value)
-                    case None => (roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value)
-                  }
-              }
-            val errOpt = List(Some(ex), shrunkErrOpt, shrunkErrOpt2).flatten.lastOption
+            val bestABC = shrunkRtOfABC.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value))
+            val errOpt = List(Some(ex), shrunkErrOpt).flatten.lastOption
 
             val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABC) else PropertyArgument(None, bestABC))
             val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
