@@ -139,6 +139,34 @@ trait RoseTree[T] { thisRoseTreeOfT =>
   override def toString: String = s"RoseTree($value)"
 }
 
+object RoseTree {
+  def map2[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U], f: (T, U) => V, rnd: Randomizer): (RoseTree[V], Randomizer) = {
+    val tupValue = f(tree1.value, tree2.value)
+    val (shrinks1, rnd2) = tree1.shrinks(rnd)
+    val (candidates1, rnd3) = {
+      val pairs: List[(RoseTree[V], Randomizer)] =
+        for (candidate <- shrinks1) yield
+          map2(candidate, tree2, f, rnd2)
+      (pairs.map(tup => tup._1), pairs.map(tup => tup._2).lastOption.getOrElse(rnd2))
+    }
+      val (shrinks2, rnd4) = tree2.shrinks(rnd3)
+    val (candidates2, rnd5) = {
+      val pairs: List[(RoseTree[V], Randomizer)] =
+        for (candidate <- shrinks2) yield
+          map2(tree1, candidate, f, rnd4)
+      (pairs.map(tup => tup._1), pairs.map(tup => tup._2).lastOption.getOrElse(rnd4))
+    }
+    val roseTreeOfV =
+      new RoseTree[V] {
+        val value = tupValue
+        def shrinks(rnd: Randomizer): (List[RoseTree[V]], Randomizer) = {
+          (candidates1 ++ candidates2, rnd)
+        }
+      }
+    (roseTreeOfV, rnd5)
+  }
+}
+
 // Terminal node of a RoseTree is a Rose.
 case class Rose[T](value: T) extends RoseTree[T] {
   def shrinks(rnd: Randomizer): (List[RoseTree[T]], Randomizer) = (List.empty, rnd)
