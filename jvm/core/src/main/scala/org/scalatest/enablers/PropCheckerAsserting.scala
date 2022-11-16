@@ -273,18 +273,19 @@ abstract class UnitPropCheckerAsserting {
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
             // Let's shrink the failing value
-            val (shrunkRtOfAB, shrunkErrOpt, rnd4) = 
-              roseTreeOfA.combineFirstDepthShrinks[Throwable, B](
-              { case (a, b) => {
-                  val result: Try[T] = Try { fun(a, b) }
-                  result match {
-                    case Success(_) => (true, None)
-                    case Failure(shrunkEx) => (false, Some(shrunkEx))
-                  }
-                }
-              }, 
-              rnd3, 
-              roseTreeOfB)
+            val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
+            val (shrunkRtOfAB, shrunkErrOpt, rnd5) = 
+              roseTreeOfAB.depthFirstShrinks(
+                { case (a, b) => {
+                    val result: Try[T] = Try { fun(a, b) }
+                    result match {
+                      case Success(_) => (true, None)
+                      case Failure(shrunkEx) => (false, Some(shrunkEx))
+                    }
+                  } 
+                }, 
+                rnd4
+              )
 
             val bestAB = shrunkRtOfAB.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value))
             val errOpt = List(Some(ex), shrunkErrOpt).flatten.lastOption
