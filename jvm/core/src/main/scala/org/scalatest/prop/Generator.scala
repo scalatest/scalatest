@@ -1210,26 +1210,28 @@ object Generator {
 
       case class NextRoseTree(value: FiniteFloat) extends RoseTree[FiniteFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[FiniteFloat]], Randomizer) = {
-          val fv = value.value
-          if (fv == 0.0f) 
-            (List.empty, rndPassedToShrinks)
-          else if (fv < 1.0f && fv > -1.0f) 
-            (List(Rose(FiniteFloat(0.0f))), rndPassedToShrinks)
-          else if (!fv.isWhole) {
-            val n =
-              if (fv.isNaN)
-                Float.MaxValue
-              else fv
-            // Nearest whole numbers closer to zero
-            val nearest = if (n >= 0.0f) n.floor else n.ceil
-            val half: Float = fv / 2.0f
-            (List(half, nearest).distinct.map(i => NextRoseTree(FiniteFloat.ensuringValid(i))), rndPassedToShrinks)
+          @tailrec
+          def shrinkLoop(f: FiniteFloat, acc: List[RoseTree[FiniteFloat]]): List[RoseTree[FiniteFloat]] = {
+            val fv = f.value
+            if (fv == 0.0f) acc
+            else if (fv <= 1.0f && fv >= -1.0f) Rose(FiniteFloat(0.0f)) :: acc
+            else if (!fv.isWhole) {
+              // Nearest whole numbers closer to zero
+              val (nearest, nearestNeg) = if (fv > 0.0f) (fv.floor, (-fv).ceil) else (fv.ceil, (-fv).floor)
+              shrinkLoop(FiniteFloat.ensuringValid(nearest), NextRoseTree(FiniteFloat.ensuringValid(nearestNeg)) :: NextRoseTree(FiniteFloat.ensuringValid(nearest)) :: acc)
+            }
+            else {
+              val sqrt: Float = math.sqrt(fv.abs.toDouble).toFloat
+              if (sqrt < 1.0f) Rose(FiniteFloat(0.0f)) :: acc
+              else {
+                val whole: Float = sqrt.floor
+                val negWhole: Float = math.rint((-whole).toDouble).toFloat
+                val (first, second) = if (f > 0.0f) (negWhole, whole) else (whole, negWhole)
+                shrinkLoop(FiniteFloat.ensuringValid(first), NextRoseTree(FiniteFloat.ensuringValid(first)) :: NextRoseTree(FiniteFloat.ensuringValid(second)) :: acc)
+              }
+            }
           }
-          else {
-            val half: Float = fv / 2.0f
-            val sqrt: Float = if (fv >= 0.0f) math.sqrt(fv.toDouble).toFloat else -(math.sqrt(fv.abs.toDouble).toFloat)
-            (List(half, sqrt).distinct.map(i => NextRoseTree(FiniteFloat.ensuringValid(i))), rndPassedToShrinks)
-          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       }
 

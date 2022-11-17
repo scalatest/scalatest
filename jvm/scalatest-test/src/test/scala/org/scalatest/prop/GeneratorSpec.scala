@@ -2887,11 +2887,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (FiniteFloat.MaxValue)
       }
 
-      it("should have legitimate canonicals") {
+      it("should have legitimate canonicals and shrink") {
         import Generator._
         val gen = finiteFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+        gen.shouldGrowWithForShrink(_.value)
       }
 
       it("should shrink FiniteFloats with an algo towards 0") {
