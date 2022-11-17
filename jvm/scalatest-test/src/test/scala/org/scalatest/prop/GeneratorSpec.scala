@@ -697,6 +697,37 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           }
         }
       }
+      it("should shrink Floats by dropping the fraction part then repeatedly 'square-rooting' and negating") {
+        import GeneratorDrivenPropertyChecks._
+        forAll { (shrinkRoseTree: RoseTree[Float]) =>
+          val f = shrinkRoseTree.value
+          val shrinks: List[Float] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          shrinks.distinct.length shouldEqual shrinks.length
+          if (f == 0.0f) {
+            shrinks shouldBe empty
+          } else {
+            val n =
+              if (f == Float.PositiveInfinity || f == Float.NaN)
+                Float.MaxValue
+              else if (f == Float.NegativeInfinity)
+                Float.MinValue
+              else f
+            if (n > 1.0f)
+              shrinks.head should be > 0.0f
+            else if (n < -1.0f)
+              shrinks.head should be < 0.0f
+            import org.scalatest.Inspectors._
+            if (!n.isWhole) {
+              shrinks.head shouldEqual (if (n > 0.0f) n.floor else n.ceil)
+            }
+            val revShrinks = shrinks.reverse
+            val pairs: List[(Float, Float)] = revShrinks.zip(revShrinks.tail)
+            forAll (pairs) { case (x, y) =>
+              assert(x == 0.0f || x == -y || x.abs < y.abs)
+            }
+          }
+        }
+      }
     }
     describe("for Doubles") {
       it("should produce the same Double values in the same order given the same Randomizer") {
@@ -1621,11 +1652,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
       it("should shrink PosZFiniteDouble by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
-        forAll { (shrinkRoseTree: RoseTree[PosZFiniteDouble]) =>
+        forAll { (shrinkRoseTree: RoseTree[PosFiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosZFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (i.value == 0.0)
+          if (i.value == 0.0f)
             shrinks shouldBe empty
           else {
             shrinks should not be empty
@@ -2036,10 +2067,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (NegZFloat.NegativeInfinity)
       }
 
-      it("should have legitimate canonicals") {
+      it("should have legitimate canonicals and shrink") {
         import Generator._
         val gen = negZFloatGenerator
         val rnd = Randomizer.default
+        gen.shouldGrowWithForShrink(_.value)
         gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
       }
 
@@ -2100,10 +2132,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (NegZFiniteFloat.MinValue)
       }
 
-      it("should have legitimate canonicals") {
+      it("should have legitimate canonicals and shrink") {
         import Generator._
         val gen = negZFiniteFloatGenerator
         val rnd = Randomizer.default
+        gen.shouldGrowWithForShrink(_.value)
         gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
       }
 
@@ -2292,6 +2325,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZDoubleGenerator
         val rnd = Randomizer.default
+        gen.shouldGrowWithForShrink(_.value)
         gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
       }
 
@@ -2356,6 +2390,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZFiniteDoubleGenerator
         val rnd = Randomizer.default
+        gen.shouldGrowWithForShrink(_.value)
         gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
       }
 
