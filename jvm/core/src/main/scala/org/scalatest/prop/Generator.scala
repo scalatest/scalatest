@@ -1885,27 +1885,27 @@ object Generator {
 
       case class NextRoseTree(value: NegDouble) extends RoseTree[NegDouble] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegDouble]], Randomizer) = {
-          val dv = value.value
-          if (dv == 0.0) 
-            (List.empty, rndPassedToShrinks)
-          else if (dv > -1.0) 
-            (List(Rose(NegDouble.ensuringValid(-Double.MinPositiveValue))), rndPassedToShrinks)
-          else if (!dv.isWhole) {
-            val n =
-              if (dv == Double.NegativeInfinity || dv.isNaN)
-                Double.MinValue  
-              else 
-                dv
-            // Nearest whole numbers closer to zero
-            val nearest: Double = n.ceil
-            val half: Double = dv / 2.0
-            (List(half, nearest).filter(_ < 0.0).distinct.map(i => NextRoseTree(NegDouble.ensuringValid(i))), rndPassedToShrinks)
+          @tailrec
+          def shrinkLoop(f: NegDouble, acc: List[RoseTree[NegDouble]]): List[RoseTree[NegDouble]] = {
+            val fv = f.value
+            if (fv == -1.0) acc
+            else if (fv > -1.0) Rose(NegDouble(-1.0)) :: acc
+            else if (!fv.isWhole) {
+              val n =
+                if (fv == Double.NegativeInfinity || fv.isNaN)
+                  Double.MinValue
+                else fv
+              // Nearest whole numbers closer to zero
+              val nearest = NegDouble.ensuringValid(n.ceil)
+              shrinkLoop(nearest, Rose(nearest) :: acc)
+            }
+            else {
+              val sqrt: Double = -(math.sqrt(fv.abs))
+              val whole = NegDouble.ensuringValid(sqrt.ceil)
+              shrinkLoop(whole, NextRoseTree(whole) :: acc)
+            }
           }
-          else {
-            val half: Double = dv / 2.0
-            val sqrt: Double = -(math.sqrt(dv.abs))
-            (List(half, sqrt).distinct.map(i => NextRoseTree(NegDouble.ensuringValid(i))), rndPassedToShrinks)
-          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       }
 
