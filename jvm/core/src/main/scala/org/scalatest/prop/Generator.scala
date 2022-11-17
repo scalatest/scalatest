@@ -1508,27 +1508,30 @@ object Generator {
 
       case class NextRoseTree(value: PosZDouble) extends RoseTree[PosZDouble] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosZDouble]], Randomizer) = {
-          val dv = value.value
-          if (dv == 0.0) 
-            (List.empty, rndPassedToShrinks)
-          else if (dv < 1.0) 
-            (List(Rose(PosZDouble(0.0))), rndPassedToShrinks)
-          else if (!dv.isWhole) {
-            val n =
-              if (dv == Double.PositiveInfinity || dv.isNaN)
-                Double.MaxValue  
-              else 
-                dv
-            // Nearest whole numbers closer to zero
-            val nearest: Double = if (n >= 0.0) n.floor else n.ceil
-            val half: Double = dv / 2.0
-            (List(half, nearest).distinct.map(i => NextRoseTree(PosZDouble.ensuringValid(i))), rndPassedToShrinks)
+          @tailrec
+          def shrinkLoop(f: PosZDouble, acc: List[RoseTree[PosZDouble]]): List[RoseTree[PosZDouble]] = {
+            val fv = f.value
+            if (fv == 0.0) acc
+            else if (fv <= 1.0) Rose(PosZDouble(0.0)) :: acc
+            else if (!fv.isWhole) {
+              val n =
+                if (fv == Double.PositiveInfinity || fv.isNaN)
+                  Double.MaxValue
+                else fv
+              // Nearest whole numbers closer to zero
+              val nearest = PosZDouble.ensuringValid(n.floor)
+              shrinkLoop(nearest, NextRoseTree(nearest) :: acc)
+            }
+            else {
+              val sqrt: Double = math.sqrt(fv)
+              if (sqrt < 1.0) Rose(PosZDouble(0.0)) :: acc
+              else {
+                val whole = PosZDouble.ensuringValid(sqrt.floor)
+                shrinkLoop(whole, NextRoseTree(whole) :: acc)
+              }
+            }
           }
-          else {
-            val half: Double = dv / 2.0
-            val sqrt: Double = if (dv >= 0.0) math.sqrt(dv) else -(math.sqrt(dv.abs))
-            (List(half, sqrt).distinct.map(i => NextRoseTree(PosZDouble.ensuringValid(i))), rndPassedToShrinks)
-          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       }
 
