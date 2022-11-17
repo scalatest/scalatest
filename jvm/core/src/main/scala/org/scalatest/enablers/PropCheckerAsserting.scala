@@ -1116,7 +1116,8 @@ trait FuturePropCheckerAsserting {
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 for {
-                  (shrunkRtOfAB, shrunkErrOpt, rnd4) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
+                  (roseTreeOfAB, rnd4) <- RoseTree.map2ForFuture[A, B, (A, B)](roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), result.rnd)
+                  (shrunkRtOfAB, shrunkErrOpt, rnd5) <- roseTreeOfAB.depthFirstShrinksForFuture(
                                                           { case (a, b) => {
                                                               val result: Future[T] = fun(a, b)
                                                               result.map { _ => 
@@ -1126,9 +1127,9 @@ trait FuturePropCheckerAsserting {
                                                               }
                                                             }
                                                           }, 
-                                                        result.rnd, 
-                                                        roseTreeOfB)
-                } yield {
+                                                          rnd4
+                                                        )
+                } yield {  
                   val bestAB = shrunkRtOfAB.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value))
                   val errOpt: Option[Throwable] = List(f.ex, shrunkErrOpt).flatten.lastOption
 

@@ -165,6 +165,39 @@ object RoseTree {
       }
     (roseTreeOfV, rnd5)
   }
+
+  def map2ForFuture[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U], f: (T, U) => V, rnd: Randomizer)(implicit execContext: ExecutionContext): Future[(RoseTree[V], Randomizer)] = {
+    val tupValue = f(tree1.value, tree2.value)
+    val (shrinks1, rnd2) = tree1.shrinks(rnd)
+    val (candidateFutures1, rnd3Future) = {
+      val pairs: List[Future[(RoseTree[V], Randomizer)]] =
+        for (candidate <- shrinks1) yield
+          map2ForFuture(candidate, tree2, f, rnd2)
+      (pairs.map(fut => fut.map(_._1)), pairs.map(fut => fut.map(_._2)).lastOption.getOrElse(Future.successful(rnd2)))
+    }
+    for {
+      candidates1 <- Future.sequence(candidateFutures1)
+      rnd3 <- rnd3Future
+      (shrinks2, rnd4) = tree2.shrinks(rnd3)
+      (candidatesFutures2, rnd5Future) = {
+        val pairs: List[Future[(RoseTree[V], Randomizer)]] =
+          for (candidate <- shrinks2) yield
+            map2ForFuture(tree1, candidate, f, rnd4)
+        (pairs.map(fut => fut.map(_._1)), pairs.map(fut => fut.map(_._2)).lastOption.getOrElse(Future.successful(rnd4)))
+      }
+      candidates2 <- Future.sequence(candidatesFutures2)
+      rnd5 <- rnd5Future
+    } yield {
+      val roseTreeOfV =
+        new RoseTree[V] {
+          val value = tupValue
+          def shrinks(rnd: Randomizer): (List[RoseTree[V]], Randomizer) = {
+            (candidates1 ++ candidates2, rnd)
+          }
+        }
+      (roseTreeOfV, rnd5)   
+    }
+  }
 }
 
 // Terminal node of a RoseTree is a Rose.
