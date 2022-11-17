@@ -1308,27 +1308,30 @@ object Generator {
 
       case class NextRoseTree(value: PosZFloat) extends RoseTree[PosZFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosZFloat]], Randomizer) = {
-          val fv = value.value
-          if (fv == 0.0f) 
-            (List.empty, rndPassedToShrinks)
-          else if (fv < 1.0f) 
-            (List(Rose(PosZFloat(0.0f))), rndPassedToShrinks)
-          else if (!fv.isWhole) {
-            val n =
-              if (fv == Float.PositiveInfinity || fv.isNaN)
-                Float.MaxValue  
-              else 
-                fv
-            // Nearest whole numbers closer to zero
-            val nearest: Float = if (n >= 0.0f) n.floor else n.ceil
-            val half: Float = fv / 2.0f
-            (List(half, nearest).distinct.map(i => NextRoseTree(PosZFloat.ensuringValid(i))), rndPassedToShrinks)
+          @tailrec
+          def shrinkLoop(f: PosZFloat, acc: List[RoseTree[PosZFloat]]): List[RoseTree[PosZFloat]] = {
+            val fv = f.value
+            if (fv == 0.0f) acc
+            else if (fv <= 1.0f) Rose(PosZFloat(0.0f)) :: acc
+            else if (!fv.isWhole) {
+              val n =
+                if (fv == Float.PositiveInfinity || fv.isNaN)
+                  Float.MaxValue
+                else fv
+              // Nearest whole numbers closer to zero
+              val nearest = PosZFloat.ensuringValid(n.floor)
+              shrinkLoop(nearest, NextRoseTree(nearest) :: acc)
+            }
+            else {
+              val sqrt: Float = math.sqrt(fv.toDouble).toFloat
+              if (sqrt < 1.0f) Rose(PosZFloat(0.0f)) :: acc
+              else {
+                val whole = PosZFloat.ensuringValid(sqrt.floor)
+                shrinkLoop(whole, NextRoseTree(whole) :: acc)
+              }
+            }
           }
-          else {
-            val half: Float = fv / 2.0f
-            val sqrt: Float = if (fv >= 0.0f) math.sqrt(fv.toDouble).toFloat else -(math.sqrt(fv.abs.toDouble).toFloat)
-            (List(half, sqrt).distinct.map(i => NextRoseTree(PosZFloat.ensuringValid(i))), rndPassedToShrinks)
-          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       }
 

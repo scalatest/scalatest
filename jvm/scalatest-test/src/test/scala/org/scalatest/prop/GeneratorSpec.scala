@@ -1205,15 +1205,16 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+        gen.shouldGrowWithForShrink(_.value)
       }
 
-      it("should shrink PosFloat by algo towards positive min value") {
+      it("should shrink PosFloat by algo towards 1.0 and positive min value") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosFloat]) =>
           val i = shrinkRoseTree.value
           val shrinks: List[PosFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (i.value == Float.MinPositiveValue)
+          if (i.value == 1.0f || i.value == Float.MinPositiveValue)
             shrinks shouldBe empty
           else {
             shrinks should not be empty
@@ -1331,6 +1332,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZFloatGenerator
         val rnd = Randomizer.default
         gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
+        gen.shouldGrowWithForShrink(_.value)
       }
 
       it("should shrink PosZFloat by algo towards 0") {
