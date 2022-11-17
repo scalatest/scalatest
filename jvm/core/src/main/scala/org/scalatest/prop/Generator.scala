@@ -581,13 +581,15 @@ object Generator {
 
       case class NextRoseTree(value: Byte) extends RoseTree[Byte] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Byte]], Randomizer) = {
-          if (value == 0)
-            (List.empty, rndPassedToShrinks)
-          else {
-            val half: Byte = (value / 2).toByte
-            val minusOne: Byte = (if (value > 0) value - 1 else value + 1).toByte
-            (List(NextRoseTree(half), NextRoseTree(minusOne)).distinct, rndPassedToShrinks)
+          def shrinkLoop(n: Byte, acc: List[RoseTree[Byte]]): List[RoseTree[Byte]] = {
+            if (n == 0) acc
+            else {
+              val half: Byte = (n / 2).toByte
+              if (half == 0) Rose(0.toByte) :: acc
+              else shrinkLoop(half, NextRoseTree((-half).toByte) :: NextRoseTree(half) :: acc)
+            }
           }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       }
 
