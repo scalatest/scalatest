@@ -2264,27 +2264,30 @@ object Generator {
 
       case class NextRoseTree(value: NegZFloat) extends RoseTree[NegZFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegZFloat]], Randomizer) = {
-          val fv = value.value
-          if (fv == 0.0f) 
-            (List.empty, rndPassedToShrinks)
-          else if (fv > -1.0f) 
-            (List(Rose(NegZFloat(0.0f))), rndPassedToShrinks)
-          else if (!fv.isWhole) {
-            val n =
-              if (fv == Float.NegativeInfinity || fv.isNaN)
-                Float.MinValue  
-              else 
-                fv
-            // Nearest whole numbers closer to zero
-            val nearest: Float = n.ceil
-            val half: Float = fv / 2.0f
-            (List(half, nearest).distinct.map(i => NextRoseTree(NegZFloat.ensuringValid(i))), rndPassedToShrinks)
+          @tailrec
+          def shrinkLoop(f: NegZFloat, acc: List[RoseTree[NegZFloat]]): List[RoseTree[NegZFloat]] = {
+            val fv = f.value
+            if (fv == 0.0f) acc
+            else if (fv >= -1.0f) Rose(NegZFloat(0.0f)) :: acc
+            else if (!fv.isWhole) {
+              val n =
+                if (fv == Float.NegativeInfinity || fv.isNaN)
+                  Float.MinValue
+                else fv
+              // Nearest whole numbers closer to zero
+              val nearest = NegZFloat.ensuringValid(n.ceil)
+              shrinkLoop(nearest, NextRoseTree(nearest) :: acc)
+            }
+            else {
+              val sqrt: Float = -math.sqrt(fv.abs.toDouble).toFloat
+              if (sqrt > -1.0f) Rose(NegZFloat(0.0f)) :: acc
+              else {
+                val whole = NegZFloat.ensuringValid(sqrt.ceil)
+                shrinkLoop(whole, NextRoseTree(whole) :: acc)
+              }
+            }
           }
-          else {
-            val half: Float = fv / 2.0f
-            val sqrt: Float = -(math.sqrt(fv.abs.toDouble).toFloat)
-            (List(half, sqrt).distinct.map(i => NextRoseTree(NegZFloat.ensuringValid(i))), rndPassedToShrinks)
-          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       }
 

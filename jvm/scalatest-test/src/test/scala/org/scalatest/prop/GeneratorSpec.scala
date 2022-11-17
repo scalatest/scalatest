@@ -2067,10 +2067,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (NegZFloat.NegativeInfinity)
       }
 
-      it("should have legitimate canonicals") {
+      it("should have legitimate canonicals and shrink") {
         import Generator._
         val gen = negZFloatGenerator
         val rnd = Randomizer.default
+        gen.shouldGrowWithForShrink(_.value)
         gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
       }
 
