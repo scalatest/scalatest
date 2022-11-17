@@ -658,12 +658,15 @@ object Generator {
 
       case class NextRoseTree(value: Char) extends RoseTree[Char] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Char]], Randomizer) = {
-          def shrinkLoop(c: Char, acc: LazyListOrStream[RoseTree[Char]]): LazyListOrStream[RoseTree[Char]] = {
-            val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-            if (userFriendlyChars.indexOf(c) >= 0) LazyListOrStream.empty
-            else userFriendlyChars.to(LazyList).map(ufc => NextRoseTree(ufc)) // TODO: Inspect this. It is not a loop.
+          val userFriendlyChars = "9876543210ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmljkihgfedcba"
+          if (userFriendlyChars.indexOf(value) >= 0) (LazyListOrStream.empty, rndPassedToShrinks)
+          else {
+            def resLazyList(theIndex: Int): LazyListOrStream[RoseTree[Char]] = {
+              if (theIndex == userFriendlyChars.length) LazyListOrStream.empty
+              else NextRoseTree(userFriendlyChars(theIndex)) #:: resLazyList(theIndex + 1)
+            }
+            (resLazyList(0), rndPassedToShrinks)
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
         }
       }
 

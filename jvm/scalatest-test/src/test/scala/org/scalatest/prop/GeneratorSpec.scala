@@ -613,7 +613,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should shrink Chars by trying selected printable characters") {
         import GeneratorDrivenPropertyChecks._
-        val expectedChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toList
+        val expectedChars = "9876543210ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmljkihgfedcba".toList
         val generator = implicitly[Generator[Char]]
         forAll { (shrinkRoseTree: RoseTree[Char]) =>
           val c = shrinkRoseTree.value
@@ -622,7 +622,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           if (c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z')
             shrinks shouldBe empty
           else
-            shrinks.reverse shouldEqual expectedChars
+            shrinks shouldEqual expectedChars
         }
         import org.scalatest.Inspectors
         Inspectors.forAll (expectedChars) { (c: Char) =>
