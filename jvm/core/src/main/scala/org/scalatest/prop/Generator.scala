@@ -2035,27 +2035,23 @@ object Generator {
 
       case class NextRoseTree(value: NegFiniteFloat) extends RoseTree[NegFiniteFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegFiniteFloat]], Randomizer) = {
-          val fv = value.value
-          if (fv == -Float.MinPositiveValue) 
-            (List.empty, rndPassedToShrinks)
-          else if (fv > 1.0f) 
-            (List(Rose(NegFiniteFloat.ensuringValid(-Float.MinPositiveValue))), rndPassedToShrinks)
-          else if (!fv.isWhole) {
-            val n =
-              if (fv.isNaN)
-                Float.MinValue
-              else 
-                fv
-            // Nearest whole numbers closer to zero
-            val nearest: Float = n.ceil
-            val half: Float = fv / 2.0f
-            (List(half, nearest).filter(_ < 0.0f).distinct.map(i => NextRoseTree(NegFiniteFloat.ensuringValid(i))), rndPassedToShrinks)
+          @tailrec
+          def shrinkLoop(f: NegFiniteFloat, acc: List[RoseTree[NegFiniteFloat]]): List[RoseTree[NegFiniteFloat]] = {
+            val fv = f.value
+            if (fv == -1.0f) acc
+            else if (fv > -1.0f) Rose(NegFiniteFloat(-1.0f)) :: acc
+            else if (!fv.isWhole) {
+              // Nearest whole numbers closer to zero
+              val nearest = NegFiniteFloat.ensuringValid(fv.ceil)
+              shrinkLoop(nearest, NextRoseTree(nearest) :: acc)
+            }
+            else {
+              val sqrt: Float = -(math.sqrt(fv.abs.toDouble)).toFloat
+              val whole = NegFiniteFloat.ensuringValid(sqrt.ceil)
+              shrinkLoop(whole, NextRoseTree(whole) :: acc)
+            }
           }
-          else {
-            val half: Float = fv / 2.0f
-            val sqrt: Float = -(math.sqrt(fv.abs.toDouble).toFloat)
-            (List(half, sqrt).filter(_ < 0.0f).distinct.map(i => NextRoseTree(NegFiniteFloat.ensuringValid(i))), rndPassedToShrinks)
-          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       }
 
