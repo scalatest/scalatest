@@ -2325,6 +2325,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZDoubleGenerator
         val rnd = Randomizer.default
+        gen.shouldGrowWithForShrink(_.value)
         gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
       }
 
