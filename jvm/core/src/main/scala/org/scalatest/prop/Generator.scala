@@ -969,13 +969,17 @@ object Generator {
 
       case class NextRoseTree(value: PosZInt) extends RoseTree[PosZInt] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[PosZInt]], Randomizer) = {
-          if (value.value == 0)
-            (List.empty, rndPassedToShrinks)
-          else {
-            val half: Int = value / 2
-            val minusOne: Int = value - 1
-            (List(half, minusOne).filter(_ >= 0).distinct.map(i => NextRoseTree(PosZInt.ensuringValid(i))), rndPassedToShrinks)
+          @tailrec
+          def shrinkLoop(i: PosZInt, acc: List[RoseTree[PosZInt]]): List[RoseTree[PosZInt]] = {
+            if (i.value == 0)
+              acc
+            else {
+              val half: Int = i / 2
+              val posIntHalf = PosZInt.ensuringValid(half)
+              shrinkLoop(posIntHalf, NextRoseTree(posIntHalf) :: acc)
+            }
           }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       }
 
