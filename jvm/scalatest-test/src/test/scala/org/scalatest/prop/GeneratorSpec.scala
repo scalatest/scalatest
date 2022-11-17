@@ -350,9 +350,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             shrinks shouldBe empty
           else {
             if (b > 1.toByte)
-              shrinks.head should be > 0.toByte
-            else if (b < -1.toByte)
               shrinks.head should be < 0.toByte
+            else if (b < -1.toByte)
+              shrinks.head should be > 0.toByte
             import org.scalatest.Inspectors._
             val revShrinks = shrinks.reverse
             val pairs: LazyListOrStream[(Byte, Byte)] = revShrinks.zip(revShrinks.tail)
