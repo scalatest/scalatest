@@ -418,9 +418,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             shrinks shouldBe empty
           else {
             if (n > 1.toShort)
-              shrinks.head should be > 0.toShort
-            else if (n < -1.toShort)
               shrinks.head should be < 0.toShort
+            else if (n < -1.toShort)
+              shrinks.head should be > 0.toShort
             import org.scalatest.Inspectors._
             val revShrinks = shrinks.reverse
             val pairs: LazyListOrStream[(Short, Short)] = revShrinks.zip(revShrinks.tail)
