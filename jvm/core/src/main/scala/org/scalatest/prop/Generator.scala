@@ -620,16 +620,15 @@ object Generator {
 
       case class NextRoseTree(value: Short) extends RoseTree[Short] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyList[RoseTree[Short]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(n: Short, acc: LazyList[RoseTree[Short]]): LazyList[RoseTree[Short]] = {
-            if (n == 0) acc
+          def resLazyList(theValue: Short): LazyList[RoseTree[Short]] = {
+            if (theValue == 0) LazyList.empty
             else {
-              val half: Short = (n / 2).toShort
-              if (half == 0) Rose(0.toShort) #:: acc
-              else shrinkLoop(half, NextRoseTree((-half).toShort) #:: NextRoseTree(half) #:: acc)
+              val half: Short = (theValue / 2).toShort
+              if (half == 0) Rose(0.toShort) #:: LazyList.empty
+              else NextRoseTree((-half).toShort) #:: NextRoseTree(half) #:: resLazyList(half)
             }
           }
-          (shrinkLoop(value, LazyList.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
