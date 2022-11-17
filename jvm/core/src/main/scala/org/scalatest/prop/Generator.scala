@@ -2332,13 +2332,17 @@ object Generator {
 
       case class NextRoseTree(value: NegZInt) extends RoseTree[NegZInt] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NegZInt]], Randomizer) = {
-          if (value.value == 0)
-            (List.empty, rndPassedToShrinks)
-          else {
-            val half: Int = value / 2
-            val plusOne: Int = value + 1
-            (List(half, plusOne).filter(_ <= 0).distinct.map(i => NextRoseTree(NegZInt.ensuringValid(i))), rndPassedToShrinks)
+          @tailrec
+          def shrinkLoop(i: NegZInt, acc: List[RoseTree[NegZInt]]): List[RoseTree[NegZInt]] = {
+            if (i.value == 0)
+              acc
+            else {
+              val half: Int = i / 2
+              val negIntHalf = NegZInt.ensuringValid(half)
+              shrinkLoop(negIntHalf, NextRoseTree(negIntHalf) :: acc)
+            }
           }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       } // TODO Confirm OK with no Rose.
 
