@@ -943,7 +943,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           val i = shrinkRoseTree.value
           val shrinks: List[PosInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (i.value == 1)
+          if (i.value == 0)
             shrinks shouldBe empty
           else {
             shrinks should not be empty
@@ -1048,11 +1048,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (PosLong.MaxValue)
       }
 
-      it("should have legitimate canonicals") {
+      it("should have legitimate canonicals and shrink") {
         import Generator._
         val gen = posLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
       }
 
       it("should shrink PosLongs by algo towards 1") {
