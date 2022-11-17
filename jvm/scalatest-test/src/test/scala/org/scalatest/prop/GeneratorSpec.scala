@@ -1219,7 +1219,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           else {
             shrinks should not be empty
             inspectAll(shrinks) { s =>
-              s.value should be < i.value  
+              s.value should (be < i.value or equal (1.0))
             }
           }
         }
@@ -1346,7 +1346,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           else {
             shrinks should not be empty
             inspectAll(shrinks) { s =>
-              s.value should be < i.value  
+              s.value should (be < i.value or equal (1.0))
             }
           }
         }
