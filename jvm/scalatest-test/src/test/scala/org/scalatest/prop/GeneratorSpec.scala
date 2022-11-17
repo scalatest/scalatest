@@ -343,7 +343,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Byte]) =>
           val b = shrinkRoseTree.value
-          val shrinks: List[Byte] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Byte] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (b == 0)
             shrinks shouldBe empty
@@ -411,7 +411,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Short]) =>
           val n = shrinkRoseTree.value
-          val shrinks: List[Short] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Short] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (n == 0)
             shrinks shouldBe empty
@@ -479,7 +479,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Int]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[Int] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Int] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i == 0)
             shrinks shouldBe empty
@@ -544,7 +544,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Long]) =>
           val n = shrinkRoseTree.value
-          val shrinks: List[Long] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Long] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (n == 0)
             shrinks shouldBe empty
@@ -616,7 +616,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val generator = implicitly[Generator[Char]]
         forAll { (shrinkRoseTree: RoseTree[Char]) =>
           val c = shrinkRoseTree.value
-          val shrinks: List[Char] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Char] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z')
             shrinks shouldBe empty
@@ -626,7 +626,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import org.scalatest.Inspectors
         Inspectors.forAll (expectedChars) { (c: Char) =>
           val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(c), Randomizer.default)
-          val shrinks: List[Char] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Char] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks shouldBe empty
         }
       }
@@ -682,7 +682,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Float]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[Float] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Float] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i == 0.0f)
             shrinks shouldBe empty
@@ -749,7 +749,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Double]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[Double] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Double] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i == 0.0)
             shrinks shouldBe empty
@@ -941,7 +941,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosInt]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0)
             shrinks shouldBe empty
@@ -1001,7 +1001,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosZInt]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosZInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosZInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0)
             shrinks shouldBe empty
@@ -1058,7 +1058,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosLong]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 1L)
             shrinks shouldBe empty
@@ -1118,7 +1118,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosZLong]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosZLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosZLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0L)
             shrinks shouldBe empty
@@ -1180,7 +1180,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -1240,7 +1240,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosFiniteFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -1306,7 +1306,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosZFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosZFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosZFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0f)
             shrinks shouldBe empty
@@ -1370,7 +1370,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosFiniteFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0f)
             shrinks shouldBe empty
@@ -1432,7 +1432,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Double.MinPositiveValue)
             shrinks shouldBe empty
@@ -1493,7 +1493,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosFiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -1559,7 +1559,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosZDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosZDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosZDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0)
             shrinks shouldBe empty
@@ -1623,7 +1623,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosZFiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosZFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosZFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0)
             shrinks shouldBe empty
@@ -1681,7 +1681,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegInt]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NegInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NegInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == -1)
             shrinks shouldBe empty
@@ -1741,7 +1741,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegZInt]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NegZInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NegZInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0)
             shrinks shouldBe empty
@@ -1799,7 +1799,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegLong]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NegLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NegLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == -1L)
             shrinks shouldBe empty
@@ -1859,7 +1859,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegZLong]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NegZLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NegZLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0L)
             shrinks shouldBe empty
@@ -1921,7 +1921,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NegFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NegFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == -Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -1981,7 +1981,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegFiniteFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NegFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NegFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == -Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -2047,7 +2047,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegZFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NegZFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NegZFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0f)
             shrinks shouldBe empty
@@ -2111,7 +2111,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegFiniteFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NegFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NegFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0f)
             shrinks shouldBe empty
@@ -2173,7 +2173,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NegDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NegDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == -Double.MinPositiveValue)
             shrinks shouldBe empty
@@ -2233,7 +2233,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegFiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NegFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NegFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == -Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -2299,7 +2299,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegZDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NegZDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NegZDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0)
             shrinks shouldBe empty
@@ -2363,7 +2363,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegZFiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NegZFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NegZFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0)
             shrinks shouldBe empty
@@ -2423,7 +2423,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroInt]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NonZeroInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NonZeroInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 1 || i.value == -1)
             shrinks shouldBe empty
@@ -2491,7 +2491,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroLong]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NonZeroLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NonZeroLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 1L || i.value == -1L)
             shrinks shouldBe empty
@@ -2564,7 +2564,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NonZeroFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NonZeroFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Float.MinPositiveValue || i.value == -Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -2633,7 +2633,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroFiniteFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NonZeroFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NonZeroFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Float.MinPositiveValue || i.value == -Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -2706,7 +2706,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NonZeroDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NonZeroDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Double.MinPositiveValue || i.value == -Double.MinPositiveValue)
             shrinks shouldBe empty
@@ -2775,7 +2775,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroFiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NonZeroFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NonZeroFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Double.MinPositiveValue || i.value == -Double.MinPositiveValue)
             shrinks shouldBe empty
@@ -2846,7 +2846,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[FiniteFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[FiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[FiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0f)
             shrinks shouldBe empty
@@ -2916,7 +2916,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[FiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[FiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[FiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0)
             shrinks shouldBe empty
@@ -2974,7 +2974,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NumericChar]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[NumericChar] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[NumericChar] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == '0')
             shrinks shouldBe empty
@@ -3013,7 +3013,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[String]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i == "")
             shrinks shouldBe empty
@@ -3086,7 +3086,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Option[Int]]) =>
           val optI = shrinkRoseTree.value
-          val shrinks: List[Option[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Option[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           // shrinks.last shouldBe None
           // Decided to not bother with having None at the end of the shrink line, because it is an edge and
           // one out of every 100 or so regular.
@@ -3274,7 +3274,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       forAll { (xs: F[Int]) =>
         // pass in List(xs) as only edge case so the generator will generate rose tree with the specified value.
         val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)
-        val shrinks: List[F[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
+        val shrinks: List[F[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse.toList
         if (xs.isEmpty)
           shrinks shouldBe empty
         else {
@@ -3343,7 +3343,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[List[Int]]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[List[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[List[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty)
             shrinks shouldBe empty
@@ -3592,7 +3592,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Vector[Int]]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[Vector[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Vector[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty)
             shrinks shouldBe empty
@@ -3712,7 +3712,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Set[Int]]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[Set[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Set[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty)
             shrinks shouldBe empty
@@ -3834,7 +3834,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[SortedSet[Int]]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[SortedSet[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[SortedSet[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty)
             shrinks shouldBe empty
@@ -3956,7 +3956,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Map[Int, String]]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[Map[Int, String]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[Map[Int, String]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty)
             shrinks shouldBe empty
@@ -4078,7 +4078,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[SortedMap[Int, String]]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[SortedMap[Int, String]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[SortedMap[Int, String]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty)
             shrinks shouldBe empty

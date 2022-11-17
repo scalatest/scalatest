@@ -57,7 +57,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
           val generator = lists[Int]
           // pass in List(xs) as only edge case so the generator will generate rose tree with the specified value.
           val (shrinkRt, _, _) = generator.next(SizeParam(1, 1, 1), List(xs), Randomizer.default) //generator.shrink(xs, Randomizer.default)
-          val shrinks: List[List[Int]] = shrinkRt.shrinks(Randomizer.default)._1.map(_.value).reverse
+          val shrinks: List[List[Int]] = shrinkRt.shrinks(Randomizer.default)._1.map(_.value).reverse.toList
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
@@ -160,7 +160,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
           val generator = lists[Int]
           // pass in List(xs) as only edge case so the generator will generate rose tree with the specified value.
           val (shrinkRt, _, _) = generator.next(SizeParam(1, 1, 1), List(xs), Randomizer.default)
-          val shrinks: List[List[Int]] = shrinkRt.shrinks(Randomizer.default)._1.map(_.value).reverse
+          val shrinks: List[List[Int]] = shrinkRt.shrinks(Randomizer.default)._1.map(_.value).reverse.toList
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
