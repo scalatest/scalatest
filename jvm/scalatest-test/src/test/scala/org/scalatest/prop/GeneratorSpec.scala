@@ -2478,7 +2478,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (NonZeroLong.MinValue)
       }
 
-      it("should have legitimate canonicals") {
+      it("should have legitimate canonicals and shrink") {
         import Generator._
         val gen = nonZeroLongGenerator
         val rnd = Randomizer.default
