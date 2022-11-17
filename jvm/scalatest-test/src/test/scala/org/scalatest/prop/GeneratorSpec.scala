@@ -3154,9 +3154,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
               shrinks shouldBe List(None)
             else {
               if (i > 1)
-                shrinks.head.value should be > 0
-              else if (i < -1)
                 shrinks.head.value should be < 0
+              else if (i < -1)
+                shrinks.head.value should be > 0
 
               import org.scalatest.Inspectors._
               val revShrinks = shrinks.reverse
@@ -3503,7 +3503,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (shIntRt2, shIntRnd2) = intRt2.shrinks(shIntRnd1)
         val (shTupRt1, shTupRnd1) = tupRt1.shrinks(rnd)
 
-        val shIntHeadValueX2 = shIntRt1.head.value * 2
+        val shIntHeadValueX2 = -(shIntRt1.head.value * 2)
         val expected = 
           shIntRt2.map { v2 =>
             (shIntHeadValueX2, v2.value)
