@@ -1670,7 +1670,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (NegInt.MaxValue)
       }
 
-      it("should have legitimate canonicals") {
+      it("should have legitimate canonicals and shrink") {
         import Generator._
         val gen = negIntGenerator
         val rnd = Randomizer.default
