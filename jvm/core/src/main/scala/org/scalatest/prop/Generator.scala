@@ -2336,18 +2336,34 @@ object Generator {
   implicit val numericCharGenerator: Generator[NumericChar] =
     new Generator[NumericChar] {
 
+      case class NextRoseTree(value: NumericChar) extends RoseTree[NumericChar] {
+        def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[NumericChar]], Randomizer) = {
+          @tailrec
+          def shrinkLoop(c: NumericChar, acc: List[RoseTree[NumericChar]]): List[RoseTree[NumericChar]] = {
+            if (c.value == '0')
+              acc
+            else {
+              val minusOne: Char = (c - 1).toChar // Go ahead and try all the values between i and '0'
+              val numericCharMinusOne = NumericChar.ensuringValid(minusOne)
+              shrinkLoop(numericCharMinusOne, NextRoseTree(numericCharMinusOne) :: acc)
+            }
+          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
+        }
+      }
+
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NumericChar], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(numericCharEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      // No need to shrink NumericChars. One is as simple as the next. So using Roses here.
+
       def next(szp: SizeParam, edges: List[NumericChar], rnd: Randomizer): (RoseTree[NumericChar], List[NumericChar], Randomizer) = {
         edges match {
           case head :: tail =>
-            (Rose(head), tail, rnd)
+            (NextRoseTree(head), tail, rnd)
           case Nil =>
             val (posZInt, rnd2) = rnd.choosePosZInt(PosZInt.ensuringValid(0), PosZInt.ensuringValid(9))
-            (Rose(NumericChar.ensuringValid((posZInt.value + 48).toChar)), Nil, rnd2)
+            (NextRoseTree(NumericChar.ensuringValid((posZInt.value + 48).toChar)), Nil, rnd2)
         }
       }
       private val numericCharCanonicals = List('0', '1', '2', '3').map(NumericChar.ensuringValid(_))

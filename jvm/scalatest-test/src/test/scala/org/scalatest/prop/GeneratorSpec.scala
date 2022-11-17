@@ -2954,7 +2954,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
       }
 
-      it("should shrink FiniteDoubles with an algo towards 0") {
+      it("should shrink NumericChars with an algo towards '0'") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NumericChar]) =>
           val i = shrinkRoseTree.value
