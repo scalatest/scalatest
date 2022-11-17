@@ -854,7 +854,7 @@ object Generator {
 
       case class NextRoseTree(value: Double) extends RoseTree[Double] {
         def shrinks(rndPassedToShrinks: Randomizer): (List[RoseTree[Double]], Randomizer) = {
-          /*@tailrec
+          @tailrec
           def shrinkLoop(d: Double, acc: List[RoseTree[Double]]): List[RoseTree[Double]] = {
             if (d == 0.0) acc
             else if (d <= 1.0 && d >= -1.0) Rose(0.0) :: acc
@@ -900,30 +900,7 @@ object Generator {
               }
             }
           }
-          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)*/
-
-          if (value == 0.0) 
-            (List.empty, rndPassedToShrinks)
-          else if (value < 1.0 && value > -1.0) 
-            (List(Rose(0.0f)), rndPassedToShrinks)
-          else if (!value.isWhole) {
-            val n =
-              if (value == Double.PositiveInfinity || value.isNaN)
-                Double.MaxValue
-              else if (value == Double.NegativeInfinity)
-                Double.MinValue  
-              else 
-                value
-            // Nearest whole numbers closer to zero
-            val nearest: Double = if (n >= 0.0) n.floor else n.ceil
-            val half: Double = value / 2.0
-            (List(half, nearest).distinct.map(i => NextRoseTree(i)), rndPassedToShrinks)
-          }
-          else {
-            val half: Double = value / 2.0
-            val sqrt: Double = if (value >= 0.0) math.sqrt(value) else -(math.sqrt(value.abs))
-            (List(half, sqrt).distinct.map(i => NextRoseTree(i)), rndPassedToShrinks)
-          }
+          (shrinkLoop(value, Nil).reverse, rndPassedToShrinks)
         }
       }
 
