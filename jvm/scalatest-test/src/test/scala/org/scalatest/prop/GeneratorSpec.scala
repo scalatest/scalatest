@@ -2738,10 +2738,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         edges should contain (NonZeroDouble.PositiveInfinity)
       }
 
-      it("should have legitimate canonicals") {
+      it("should have legitimate canonicals and shrink") {
         import Generator._
         val gen = nonZeroDoubleGenerator
         val rnd = Randomizer.default
+        gen.shouldGrowWithForShrink(_.value)
         gen.canonicals(rnd).shouldGrowWithForGeneratorIteratorPair(_.value)
       }
 
@@ -2757,9 +2758,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             shrinks should not be empty
             inspectAll(shrinks) { s =>
               if (i.value >= 0.0)
-                s.value should be < i.value
+                s.value should (be < i.value or equal(1.0))
               else
-                s.value should be > i.value
+                s.value should (be > i.value or equal(-1.0))
             }  
           }
         }
