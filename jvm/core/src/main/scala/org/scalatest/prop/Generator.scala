@@ -1589,11 +1589,9 @@ object Generator {
           @tailrec
           def shrinkLoop(raw: NonZeroDouble, acc: LazyListOrStream[RoseTree[NonZeroDouble]]): LazyListOrStream[RoseTree[NonZeroDouble]] = {
             val d = raw.value
-            if (d <= 1.0 && d >= -1.0) {
-               if (acc.isEmpty)
-                 Rose(NonZeroDouble.ensuringValid(-1.0)) #:: Rose(NonZeroDouble.ensuringValid(1.0)) #:: LazyListOrStream.empty
-               else acc
-            } else if (!d.isWhole) {
+            if (d <= 1.0 && d >= -1.0)
+              acc
+            else if (!d.isWhole) {
               val n =
                 if (d == Double.PositiveInfinity || d.isNaN)
                   Double.MaxValue
@@ -1616,9 +1614,17 @@ object Generator {
               }
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          val d: Double = value.value
+          if (d <= 1.0 && d >= -1.0) {
+            // For now, if a non-zero floating point value is between -1.0 and 1.0 exclusive, just try -1.0 and 1.0.
+            // Our attitude is that whole numbers are simpler, so more shrunken, than non-whole numbers. Since the failing value
+            // non-zero, there isn't any number smaller that's whole, so for now we'll hop up to -1.0 and 1.0. 
+            (Rose(NonZeroDouble.ensuringValid(-1.0)) #:: Rose(NonZeroDouble.ensuringValid(1.0)) #:: LazyListOrStream.empty, rndPassedToShrinks)
+          }
+          else
+            (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
         }
-      } // TODO Why are there no Roses, just NextRoseTrees, in this one?
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroDoubleEdges, rnd)
