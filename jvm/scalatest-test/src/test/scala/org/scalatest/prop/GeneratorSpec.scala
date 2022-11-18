@@ -1033,7 +1033,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosZInt]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[PosZInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: List[PosZInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0)
             shrinks shouldBe empty
