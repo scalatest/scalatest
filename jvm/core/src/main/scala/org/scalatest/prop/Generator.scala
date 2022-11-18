@@ -1058,17 +1058,15 @@ object Generator {
       
       case class NextRoseTree(value: PosZLong) extends RoseTree[PosZLong] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[PosZLong]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: PosZLong, acc: LazyListOrStream[RoseTree[PosZLong]]): LazyListOrStream[RoseTree[PosZLong]] = {
-            if (i.value == 0L)
-              acc
+          def resLazyList(theValue: PosZLong): LazyListOrStream[RoseTree[PosZLong]] = {
+            if (theValue.value == 0L) LazyListOrStream.empty
             else {
-              val half: Long = i / 2
-              val posLongHalf = PosZLong.ensuringValid(half)
-              shrinkLoop(posLongHalf, NextRoseTree(posLongHalf) #:: acc)
+              val half: Long = theValue / 2
+              val posZLongHalf = PosZLong.ensuringValid(half)
+              NextRoseTree(posZLongHalf) #:: resLazyList(posZLongHalf)
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
       
