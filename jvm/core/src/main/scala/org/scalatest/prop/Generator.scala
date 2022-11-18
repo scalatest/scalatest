@@ -791,7 +791,7 @@ object Generator {
               // We need to handle infinity and NaN specially because without it, this method
               // will go into an infinite loop. The reason is floor and ciel give back the same value
               // on these values:
-                //
+              //
               // scala> val f = Float.PositiveInfinity
               // f: Float = Infinity
               //
@@ -862,11 +862,13 @@ object Generator {
 
       case class NextRoseTree(value: Double) extends RoseTree[Double] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Double]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(d: Double, acc: LazyListOrStream[RoseTree[Double]]): LazyListOrStream[RoseTree[Double]] = {
-            if (d == 0.0) acc
-            else if (d <= 1.0 && d >= -1.0) Rose(0.0) #:: acc
-            else if (!d.isWhole) {
+          def resLazyList(theValue: Double): LazyListOrStream[RoseTree[Double]] = {
+
+            if (theValue == 0.0)
+              LazyListOrStream.empty
+            else if (theValue <= 1.0 && theValue >= -1.0)
+              Rose(0.0) #:: LazyListOrStream.empty
+            else if (!theValue.isWhole) {
               // We need to handle infinity and NaN specially because without it, this method
               // will go into an infinite loop. The reason is floor and ciel give back the same value
               // on these values:
@@ -885,30 +887,34 @@ object Generator {
               //
               // scala> Double.NaN.ceil
               // res4: Double = NaN
+              //
               val n =
-                if (d == Double.PositiveInfinity || d.isNaN)
+                if (theValue == Double.PositiveInfinity || theValue.isNaN)
                   Double.MaxValue
-                else if (d == Double.NegativeInfinity)
+                else if (theValue == Double.NegativeInfinity)
                   Double.MinValue
-                else d
-              // Nearest whole numbers closer to zero
-              // Nearest whole numbers closer to zero
-              val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-              shrinkLoop(nearest, NextRoseTree(nearestNeg) #:: NextRoseTree(nearest) #:: acc)
-            }
+                else theValue
+              // Nearest whole numbers closer to zero. We'll try both negative and positive of this,
+              // and will put the negative number first, because the positive number is simpler for
+              // humans to look at. So if both the negative and positive number fail the test, the
+              // positive number will be considered the most shrunk.
+              val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else ((-n).floor, n.ceil)
+              NextRoseTree(nearestNeg) #:: NextRoseTree(nearest) #:: resLazyList(nearest)
+            }  
             else {
-              val sqrt: Double = math.sqrt(d.abs)
-              if (sqrt < 1.0) Rose(0.0) #:: acc
+              val sqrt: Double = math.sqrt(theValue.abs)
+              if (sqrt < 1.0 && sqrt >= -1.0) 
+                Rose(0.0) #:: LazyListOrStream.empty
               else {
+                // Try both the negative and postive, negative first because positive is simpler for humans,
+                // so more "shrunk."
                 val whole: Double = sqrt.floor
-                // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
-                val negWhole: Double = -whole  //math.rint(-whole)
-                val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
-                shrinkLoop(first, NextRoseTree(first) #:: NextRoseTree(second) #:: acc)
+                val negWhole: Double = -whole // math.rint((-whole).toDouble).toDouble
+                NextRoseTree(negWhole) #:: NextRoseTree(whole) #:: resLazyList(whole)
               }
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
