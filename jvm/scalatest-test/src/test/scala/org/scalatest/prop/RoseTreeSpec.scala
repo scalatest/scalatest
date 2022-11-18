@@ -21,7 +21,7 @@ import scala.collection.immutable.SortedSet
 import scala.collection.immutable.SortedMap
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalactic.ColCompatHelper.LazyListOrStream
+import org.scalactic.ColCompatHelper._
 
 class RoseTreeSpec extends AnyFunSpec with Matchers {
   describe("A RoseTree") {
@@ -267,7 +267,7 @@ object RoseTreeSpec {
       val value: Int = i
 
       def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[Int]], Randomizer) = {
-        val roseTrees = if (value > 0) (0 to value - 1).to(LazyListOrStream).reverse.map(x => intRoseTree(x)) else LazyListOrStream.empty
+        val roseTrees: LazyListOrStream[RoseTree[Int]] = toLazyListOrStream(if (value > 0) (0 to value - 1).reverse.map(x => intRoseTree(x)) else LazyListOrStream.empty)
         (roseTrees, rnd)
       }
     }
@@ -278,7 +278,7 @@ object RoseTreeSpec {
       def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[Char]], Randomizer) = {
         val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         if (userFriendlyChars.indexOf(c) >= 0) (LazyListOrStream.empty, rnd)
-        else (userFriendlyChars.to(LazyListOrStream).map(c => Rose(c)), rnd)
+        else (toLazyListOrStream(userFriendlyChars).map(c => Rose(c)), rnd)
       }
     }
 

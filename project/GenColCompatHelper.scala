@@ -71,6 +71,8 @@ object GenColCompatHelper {
           |  type LazyListOrStream[+T] = LazyList[T]
           |
           |  val LazyListOrStream: LazyList.type = LazyList
+          |
+          |  def toLazyListOrStream[E](s: Iterable[E]): LazyListOrStream[E] = s.to(LazyList)
           |}
           |
         """.stripMargin
@@ -137,6 +139,8 @@ object GenColCompatHelper {
           |  type LazyListOrStream[+T] = Stream[T]
           |
           |  val LazyListOrStream: Stream.type = Stream
+          |
+          |  def toLazyListOrStream[E](s: Iterable[E]): LazyListOrStream[E] = s.to[Stream]
           |}
           |
         """.stripMargin

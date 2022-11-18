@@ -30,6 +30,7 @@ import org.scalatest.exceptions.DiscardedEvaluationException
 import scala.concurrent.Future
 import scala.compat.Platform.EOL
 import org.scalatest.prop.RoseTree
+import org.scalactic.ColCompatHelper._
 
 trait PropCheckerAsserting[T] {
 
@@ -1285,7 +1286,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd4, 
                                                               roseTreeOfC
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd4)))                                      
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))                                      
                 } yield {
                   val bestABC = 
                     shrunkRtOfABC.headOption.map(_.value) match {
@@ -1350,7 +1351,7 @@ trait FuturePropCheckerAsserting {
                                                           rnd4, 
                                                           roseTreeOfC
                                                         )
-                                                      }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd4)))                                      
+                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))                                      
             } yield {
               val bestABC = 
                 shrunkRtOfABC.headOption.map(_.value) match {
@@ -1478,7 +1479,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd4, 
                                                               roseTreeOfC
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd4)))
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))
                   (shrunkRtOfABCD, shrunkErrOpt3, rnd6) <- shrunkRtOfABC.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, D](
                                                               { case (((a, b), c), d) => {
@@ -1493,7 +1494,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd5, 
                                                               roseTreeOfD
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd5)))                                                                              
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd5)))                                                                              
                 } yield {
                   val bestABCD = 
                     shrunkRtOfABCD.headOption.map(_.value) match {
@@ -1562,7 +1563,7 @@ trait FuturePropCheckerAsserting {
                                                           rnd4, 
                                                           roseTreeOfC
                                                         )
-                                                      }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd4)))
+                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))
               (shrunkRtOfABCD, shrunkErrOpt3, rnd6) <- shrunkRtOfABC.headOption.map { headRt =>
                                                         headRt.combineFirstDepthShrinksForFuture[Throwable, D](
                                                           { case (((a, b), c), d) => {
@@ -1577,7 +1578,7 @@ trait FuturePropCheckerAsserting {
                                                           rnd5, 
                                                           roseTreeOfD
                                                         )
-                                                      }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd5)))                                                                              
+                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd5)))                                                                              
             } yield {
               val bestABCD = 
                 shrunkRtOfABCD.headOption.map(_.value) match {
@@ -1713,7 +1714,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd4, 
                                                               roseTreeOfC
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd4)))
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))
                   (shrunkRtOfABCD, shrunkErrOpt3, rnd6) <- shrunkRtOfABC.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, D](
                                                               { case (((a, b), c), d) => {
@@ -1728,7 +1729,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd5, 
                                                               roseTreeOfD
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd5)))    
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd5)))    
                   (shrunkRtOfABCDE, shrunkErrOpt4, rnd7) <- shrunkRtOfABCD.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, E](
                                                               { case ((((a, b), c), d), e) => {
@@ -1743,7 +1744,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd6, 
                                                               roseTreeOfE
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd6)))                                                                                                                      
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd6)))                                                                                                                      
                 } yield {
                   val bestABCDE = 
                     shrunkRtOfABCDE.headOption.map(_.value) match {
@@ -1816,7 +1817,7 @@ trait FuturePropCheckerAsserting {
                                                           rnd4, 
                                                           roseTreeOfC
                                                         )
-                                                      }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd4)))
+                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))
               (shrunkRtOfABCD, shrunkErrOpt3, rnd6) <- shrunkRtOfABC.headOption.map { headRt =>
                                                         headRt.combineFirstDepthShrinksForFuture[Throwable, D](
                                                           { case (((a, b), c), d) => {
@@ -1831,7 +1832,7 @@ trait FuturePropCheckerAsserting {
                                                           rnd5, 
                                                           roseTreeOfD
                                                         )
-                                                      }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd5)))    
+                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd5)))    
               (shrunkRtOfABCDE, shrunkErrOpt4, rnd7) <- shrunkRtOfABCD.headOption.map { headRt =>
                                                         headRt.combineFirstDepthShrinksForFuture[Throwable, E](
                                                           { case ((((a, b), c), d), e) => {
@@ -1846,7 +1847,7 @@ trait FuturePropCheckerAsserting {
                                                           rnd6, 
                                                           roseTreeOfE
                                                         )
-                                                      }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd6)))                                                                                                                      
+                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd6)))                                                                                                                      
             } yield {
               val bestABCDE = 
                 shrunkRtOfABCDE.headOption.map(_.value) match {
@@ -1991,7 +1992,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd4, 
                                                               roseTreeOfC
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd4)))
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))
                   (shrunkRtOfABCD, shrunkErrOpt3, rnd6) <- shrunkRtOfABC.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, D](
                                                               { case (((a, b), c), d) => {
@@ -2006,7 +2007,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd5, 
                                                               roseTreeOfD
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd5)))    
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd5)))    
                   (shrunkRtOfABCDE, shrunkErrOpt4, rnd7) <- shrunkRtOfABCD.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, E](
                                                               { case ((((a, b), c), d), e) => {
@@ -2021,7 +2022,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd6, 
                                                               roseTreeOfE
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd6)))
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd6)))
                   (shrunkRtOfABCDEF, shrunkErrOpt5, rnd8) <- shrunkRtOfABCDE.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, F](
                                                               { case (((((a, b), c), d), e), f) => {
@@ -2036,7 +2037,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd7, 
                                                               roseTreeOfF
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd7)))                                                                                                                                                              
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd7)))                                                                                                                                                              
                 } yield {
                   val bestABCDEF = 
                     shrunkRtOfABCDEF.headOption.map(_.value) match {
@@ -2115,7 +2116,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd4, 
                                                               roseTreeOfC
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd4)))
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))
                   (shrunkRtOfABCD, shrunkErrOpt3, rnd6) <- shrunkRtOfABC.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, D](
                                                               { case (((a, b), c), d) => {
@@ -2130,7 +2131,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd5, 
                                                               roseTreeOfD
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd5)))    
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd5)))    
                   (shrunkRtOfABCDE, shrunkErrOpt4, rnd7) <- shrunkRtOfABCD.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, E](
                                                               { case ((((a, b), c), d), e) => {
@@ -2145,7 +2146,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd6, 
                                                               roseTreeOfE
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd6)))
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd6)))
                   (shrunkRtOfABCDEF, shrunkErrOpt5, rnd8) <- shrunkRtOfABCDE.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, F](
                                                               { case (((((a, b), c), d), e), f) => {
@@ -2160,7 +2161,7 @@ trait FuturePropCheckerAsserting {
                                                               rnd7, 
                                                               roseTreeOfF
                                                             )
-                                                          }.getOrElse(Future.successful((List.empty, shrunkErrOpt, rnd7)))                                                                                                                                                              
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd7)))                                                                                                                                                              
                 } yield {
                   val bestABCDEF = 
                     shrunkRtOfABCDEF.headOption.map(_.value) match {

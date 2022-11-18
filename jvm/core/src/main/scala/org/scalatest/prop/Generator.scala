@@ -582,11 +582,11 @@ object Generator {
 
       case class NextRoseTree(value: Byte) extends RoseTree[Byte] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Byte]], Randomizer) = {
-          def resLazyList(theValue: Byte): LazyList[RoseTree[Byte]] = {
-            if (theValue == 0) LazyList.empty
+          def resLazyList(theValue: Byte): LazyListOrStream[RoseTree[Byte]] = {
+            if (theValue == 0) LazyListOrStream.empty
             else {
               val half: Byte = (theValue / 2).toByte
-              if (half == 0) Rose(0.toByte) #:: LazyList.empty
+              if (half == 0) Rose(0.toByte) #:: LazyListOrStream.empty
               else NextRoseTree((-half).toByte) #:: NextRoseTree(half) #:: resLazyList(half)
             }
           }
@@ -1594,7 +1594,7 @@ object Generator {
             val d = raw.value
             if (d <= 1.0 && d >= -1.0) {
                if (acc.isEmpty)
-                 Rose(NonZeroDouble.ensuringValid(-1.0)) #:: Rose(NonZeroDouble.ensuringValid(1.0)) #:: LazyList.empty
+                 Rose(NonZeroDouble.ensuringValid(-1.0)) #:: Rose(NonZeroDouble.ensuringValid(1.0)) #:: LazyListOrStream.empty
                else acc
             } else if (!d.isWhole) {
               val n =
@@ -1654,7 +1654,7 @@ object Generator {
             val d = raw.value
             if (d <= 1.0 && d >= -1.0) {
                if (acc.isEmpty)
-                 Rose(NonZeroFiniteDouble.ensuringValid(-1.0)) #:: Rose(NonZeroFiniteDouble.ensuringValid(1.0)) #:: LazyList.empty
+                 Rose(NonZeroFiniteDouble.ensuringValid(-1.0)) #:: Rose(NonZeroFiniteDouble.ensuringValid(1.0)) #:: LazyListOrStream.empty
                else acc
             } else if (!d.isWhole) {
               // Nearest whole numbers closer to zero
@@ -1708,7 +1708,7 @@ object Generator {
             val d = raw.value
             if (d <= 1.0f && d >= -1.0f) {
                if (acc.isEmpty)
-                 Rose(NonZeroFloat.ensuringValid(-1.0f)) #:: Rose(NonZeroFloat.ensuringValid(1.0f)) #:: LazyList.empty
+                 Rose(NonZeroFloat.ensuringValid(-1.0f)) #:: Rose(NonZeroFloat.ensuringValid(1.0f)) #:: LazyListOrStream.empty
                else acc
             } else if (!d.isWhole) {
               val n =
@@ -1769,7 +1769,7 @@ object Generator {
             val d = raw.value
             if (d <= 1.0f && d >= -1.0f) {
                if (acc.isEmpty)
-                 Rose(NonZeroFiniteFloat.ensuringValid(-1.0f)) #:: Rose(NonZeroFiniteFloat.ensuringValid(1.0f)) #:: LazyList.empty
+                 Rose(NonZeroFiniteFloat.ensuringValid(-1.0f)) #:: Rose(NonZeroFiniteFloat.ensuringValid(1.0f)) #:: LazyListOrStream.empty
                else acc
             } else if (!d.isWhole) {
               // Nearest whole numbers closer to zero
