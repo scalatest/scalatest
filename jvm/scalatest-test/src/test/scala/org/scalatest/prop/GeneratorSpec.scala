@@ -700,18 +700,18 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should shrink Floats by dropping the fraction part then repeatedly 'square-rooting' and negating") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Float]) =>
-          val f = shrinkRoseTree.value
+          val fv = shrinkRoseTree.value
           val shrinks: List[Float] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (f == 0.0f) {
+          if (fv == 0.0f) {
             shrinks shouldBe empty
           } else {
             val n =
-              if (f == Float.PositiveInfinity || f == Float.NaN)
+              if (fv == Float.PositiveInfinity || fv.isNaN)
                 Float.MaxValue
-              else if (f == Float.NegativeInfinity)
+              else if (fv == Float.NegativeInfinity)
                 Float.MinValue
-              else f
+              else fv
             if (n > 1.0f)
               shrinks.head should be > 0.0f
             else if (n < -1.0f)
