@@ -21,6 +21,7 @@ import scala.collection.immutable.SortedSet
 import scala.collection.immutable.SortedMap
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalactic.ColCompatHelper.LazyListOrStream
 
 class RoseTreeSpec extends AnyFunSpec with Matchers {
   describe("A RoseTree") {
@@ -28,7 +29,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val irt = new RoseTree[Int] {
         val value: Int = 42;
 
-        def shrinks(rnd: Randomizer) = (List.empty, rnd)
+        def shrinks(rnd: Randomizer) = (LazyListOrStream.empty, rnd)
       }
       irt.toString shouldBe "RoseTree(42)"
     }
@@ -60,18 +61,18 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
 
     class StatefulRoseTree(i: StatefulInt) extends RoseTree[StatefulInt] {
       def processed: Boolean = i.processed
-      lazy val shrinksRoseTrees: List[StatefulRoseTree] = {
+      lazy val shrinksRoseTrees: LazyListOrStream[StatefulRoseTree] = {
         if (value.value == 0)
-          List.empty
+          LazyListOrStream.empty
         else {
           val half: Int = value.value / 2
           val minusOne = if (value.value > 0) value.value - 1 else value.value + 1
-          List(new StatefulRoseTree(new StatefulInt(half)), new StatefulRoseTree(new StatefulInt(minusOne)))
+          LazyListOrStream(new StatefulRoseTree(new StatefulInt(half)), new StatefulRoseTree(new StatefulInt(minusOne)))
         }
       }
       val value: StatefulInt = i
 
-      def shrinks(rnd: Randomizer): (List[RoseTree[StatefulInt]], Randomizer) = (shrinksRoseTrees, rnd)
+      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[StatefulInt]], Randomizer) = (shrinksRoseTrees, rnd)
     }
 
     case class StatefulBoolean(value: Boolean) {
@@ -80,15 +81,15 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
 
     class StatefulBooleanRoseTree(b: StatefulBoolean) extends RoseTree[StatefulBoolean] {
       def processed: Boolean = b.processed
-      lazy val shrinksRoseTrees: List[StatefulBooleanRoseTree] = {
+      lazy val shrinksRoseTrees: LazyListOrStream[StatefulBooleanRoseTree] = {
         if (value.value == false)
-          List.empty
+          LazyListOrStream.empty
         else 
-          List(new StatefulBooleanRoseTree(StatefulBoolean(false)))
+          LazyListOrStream(new StatefulBooleanRoseTree(StatefulBoolean(false)))
       }
       val value: StatefulBoolean = b
 
-      def shrinks(rnd: Randomizer): (List[RoseTree[StatefulBoolean]], Randomizer) = (shrinksRoseTrees, rnd)
+      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[StatefulBoolean]], Randomizer) = (shrinksRoseTrees, rnd)
     }
 
     it("should offer a depthFirstShrinks method that follows the 'depth-first' algo") {
@@ -265,8 +266,8 @@ object RoseTreeSpec {
     new RoseTree[Int] {
       val value: Int = i
 
-      def shrinks(rnd: Randomizer): (List[RoseTree[Int]], Randomizer) = {
-        val roseTrees = if (value > 0) (0 to value - 1).toList.reverse.map(x => intRoseTree(x)) else List.empty
+      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[Int]], Randomizer) = {
+        val roseTrees = if (value > 0) (0 to value - 1).to(LazyListOrStream).reverse.map(x => intRoseTree(x)) else LazyListOrStream.empty
         (roseTrees, rnd)
       }
     }
@@ -274,10 +275,10 @@ object RoseTreeSpec {
   def charRoseTree(c: Char): RoseTree[Char] =
     new RoseTree[Char] {
       val value: Char = c
-      def shrinks(rnd: Randomizer): (List[RoseTree[Char]], Randomizer) = {
+      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[Char]], Randomizer) = {
         val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        if (userFriendlyChars.indexOf(c) >= 0) (List.empty, rnd)
-        else (userFriendlyChars.toList.map(c => Rose(c)), rnd)
+        if (userFriendlyChars.indexOf(c) >= 0) (LazyListOrStream.empty, rnd)
+        else (userFriendlyChars.to(LazyListOrStream).map(c => Rose(c)), rnd)
       }
     }
 
