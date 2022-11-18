@@ -1586,11 +1586,10 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroDouble) extends RoseTree[NonZeroDouble] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NonZeroDouble]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(raw: NonZeroDouble, acc: LazyListOrStream[RoseTree[NonZeroDouble]]): LazyListOrStream[RoseTree[NonZeroDouble]] = {
-            val d = raw.value
+          def resLazyList(theValue: NonZeroDouble): LazyListOrStream[RoseTree[NonZeroDouble]] = {
+            val d = theValue.value
             if (d <= 1.0 && d >= -1.0)
-              acc
+              LazyListOrStream.empty
             else if (!d.isWhole) {
               val n =
                 if (d == Double.PositiveInfinity || d.isNaN)
@@ -1600,20 +1599,21 @@ object Generator {
                 else d
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-              shrinkLoop(NonZeroDouble.ensuringValid(nearest), NextRoseTree(NonZeroDouble.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroDouble.ensuringValid(nearest)) #:: acc)
+              NextRoseTree(NonZeroDouble.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroDouble.ensuringValid(nearest)) #:: resLazyList(NonZeroDouble.ensuringValid(nearest))
             }
             else {
               val sqrt: Double = math.sqrt(d.abs)
-              if (sqrt < 1.0) acc
+              if (sqrt < 1.0) LazyListOrStream.empty
               else {
                 val whole: NonZeroDouble = NonZeroDouble.ensuringValid(sqrt.floor)
                 // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
                 val negWhole: NonZeroDouble = -whole  //math.rint(-whole)
                 val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
-                shrinkLoop(first, NextRoseTree(first) #:: NextRoseTree(second) #:: acc)
+                NextRoseTree(first) #:: NextRoseTree(second) #:: resLazyList(first)
               }
             }
           }
+
           val d: Double = value.value
           if (d <= 1.0 && d >= -1.0) {
             // For now, if a non-zero floating point value is between -1.0 and 1.0 exclusive, just try -1.0 and 1.0.
@@ -1622,7 +1622,7 @@ object Generator {
             (Rose(NonZeroDouble.ensuringValid(-1.0)) #:: Rose(NonZeroDouble.ensuringValid(1.0)) #:: LazyListOrStream.empty, rndPassedToShrinks)
           }
           else
-            (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+            (resLazyList(value), rndPassedToShrinks)
         }
       }
 
