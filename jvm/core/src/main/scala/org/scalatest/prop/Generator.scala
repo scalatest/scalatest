@@ -1740,7 +1740,7 @@ object Generator {
               }
             }
           }
-          val d: Double = value.value
+          val d: Float = value.value
           if (d <= 1.0 && d >= -1.0) {
             // For now, if a non-zero floating point value is between -1.0 and 1.0 exclusive, just try -1.0 and 1.0.
             // Our attitude is that whole numbers are simpler, so more shrunken, than non-whole numbers. Since the failing value
