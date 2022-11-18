@@ -1242,28 +1242,27 @@ object Generator {
 
       case class NextRoseTree(value: FiniteDouble) extends RoseTree[FiniteDouble] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[FiniteDouble]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(f: FiniteDouble, acc: LazyListOrStream[RoseTree[FiniteDouble]]): LazyListOrStream[RoseTree[FiniteDouble]] = {
-            val dv = f.value
-            if (dv == 0.0) acc
-            else if (dv <= 1.0 && dv >= -1.0) Rose(FiniteDouble(0.0)) #:: acc
+          def resLazyList(theValue: FiniteDouble): LazyListOrStream[RoseTree[FiniteDouble]] = {
+            val dv: Double = theValue.value
+            if (dv == 0.0) LazyListOrStream.empty
+            else if (dv <= 1.0 && dv >= -1.0) Rose(FiniteDouble(0.0)) #:: LazyListOrStream.empty
             else if (!dv.isWhole) {
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (dv > 0.0) (dv.floor, (-dv).ceil) else (dv.ceil, (-dv).floor)
-              shrinkLoop(FiniteDouble.ensuringValid(nearest), NextRoseTree(FiniteDouble.ensuringValid(nearestNeg)) #:: acc)
+               NextRoseTree(FiniteDouble.ensuringValid(nearestNeg)) #:: resLazyList(FiniteDouble.ensuringValid(nearest))
             }
             else {
               val sqrt: Double = math.sqrt(dv.abs)
-              if (sqrt < 1.0) Rose(FiniteDouble(0.0)) #:: acc
+              if (sqrt < 1.0) Rose(FiniteDouble(0.0)) #:: LazyListOrStream.empty
               else {
                 val whole: Double = sqrt.floor
                 val negWhole: Double = math.rint((-whole).toDouble)
-                val (first, second) = if (f > 0.0) (negWhole, whole) else (whole, negWhole)
-                shrinkLoop(FiniteDouble.ensuringValid(first), NextRoseTree(FiniteDouble.ensuringValid(first)) #:: acc)
+                val (first, second) = if (dv > 0.0) (negWhole, whole) else (whole, negWhole)
+                NextRoseTree(FiniteDouble.ensuringValid(first)) #:: NextRoseTree(FiniteDouble.ensuringValid(second)) #:: resLazyList(FiniteDouble.ensuringValid(first))
               }
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
