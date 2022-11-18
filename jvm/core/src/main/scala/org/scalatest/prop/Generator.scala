@@ -1655,11 +1655,9 @@ object Generator {
           @tailrec
           def shrinkLoop(raw: NonZeroFiniteDouble, acc: LazyListOrStream[RoseTree[NonZeroFiniteDouble]]): LazyListOrStream[RoseTree[NonZeroFiniteDouble]] = {
             val d = raw.value
-            if (d <= 1.0 && d >= -1.0) {
-               if (acc.isEmpty)
-                 Rose(NonZeroFiniteDouble.ensuringValid(-1.0)) #:: Rose(NonZeroFiniteDouble.ensuringValid(1.0)) #:: LazyListOrStream.empty
-               else acc
-            } else if (!d.isWhole) {
+            if (d <= 1.0 && d >= -1.0)
+              acc
+            else if (!d.isWhole) {
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (d > 0.0) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
               shrinkLoop(NonZeroFiniteDouble.ensuringValid(nearest), NextRoseTree(NonZeroFiniteDouble.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroFiniteDouble.ensuringValid(nearest)) #:: acc)
@@ -1676,7 +1674,15 @@ object Generator {
               }
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          val d: Double = value.value
+          if (d <= 1.0 && d >= -1.0) {
+            // For now, if a non-zero floating point value is between -1.0 and 1.0 exclusive, just try -1.0 and 1.0.
+            // Our attitude is that whole numbers are simpler, so more shrunken, than non-whole numbers. Since the failing value
+            // non-zero, there isn't any number smaller that's whole, so for now we'll hop up to -1.0 and 1.0. 
+            (Rose(NonZeroFiniteDouble.ensuringValid(-1.0)) #:: Rose(NonZeroFiniteDouble.ensuringValid(1.0)) #:: LazyListOrStream.empty, rndPassedToShrinks)
+          }
+          else
+            (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
         }
       } // TODO: Confirm this is ok without any Roses, just NextRoseTrees.
 
