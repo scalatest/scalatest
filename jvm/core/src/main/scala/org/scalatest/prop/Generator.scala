@@ -1715,11 +1715,9 @@ object Generator {
           @tailrec
           def shrinkLoop(raw: NonZeroFloat, acc: LazyListOrStream[RoseTree[NonZeroFloat]]): LazyListOrStream[RoseTree[NonZeroFloat]] = {
             val d = raw.value
-            if (d <= 1.0f && d >= -1.0f) {
-               if (acc.isEmpty)
-                 Rose(NonZeroFloat.ensuringValid(-1.0f)) #:: Rose(NonZeroFloat.ensuringValid(1.0f)) #:: LazyListOrStream.empty
-               else acc
-            } else if (!d.isWhole) {
+            if (d <= 1.0f && d >= -1.0f)
+              acc
+            else if (!d.isWhole) {
               val n =
                 if (d == Float.PositiveInfinity || d.isNaN)
                   Float.MaxValue
@@ -1742,7 +1740,15 @@ object Generator {
               }
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          val d: Double = value.value
+          if (d <= 1.0 && d >= -1.0) {
+            // For now, if a non-zero floating point value is between -1.0 and 1.0 exclusive, just try -1.0 and 1.0.
+            // Our attitude is that whole numbers are simpler, so more shrunken, than non-whole numbers. Since the failing value
+            // non-zero, there isn't any number smaller that's whole, so for now we'll hop up to -1.0 and 1.0. 
+            (Rose(NonZeroFloat.ensuringValid(-1.0f)) #:: Rose(NonZeroFloat.ensuringValid(1.0f)) #:: LazyListOrStream.empty, rndPassedToShrinks)
+          }
+          else
+            (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
         }
       } // TODO confirm no roses needed
 
