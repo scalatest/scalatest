@@ -69,6 +69,8 @@ object GenColCompatHelper {
           |  type StringOps = scala.collection.StringOps
           |  
           |  type LazyListOrStream[+T] = LazyList[T]
+          |
+          |  val LazyListOrStream: LazyList.type = LazyList
           |}
           |
         """.stripMargin
@@ -133,6 +135,8 @@ object GenColCompatHelper {
           |  type StringOps = scala.collection.immutable.StringOps
           |
           |  type LazyListOrStream[+T] = Stream[T]
+          |
+          |  val LazyListOrStream: Stream.type = Stream
           |}
           |
         """.stripMargin
