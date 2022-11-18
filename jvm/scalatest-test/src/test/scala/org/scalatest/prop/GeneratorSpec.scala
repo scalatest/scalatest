@@ -714,12 +714,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
                 Float.MinValue
               else fv
             if (n > 1.0f)
-              shrinks.head should be > 0.0f
+              shrinks.head should be < 0.0f
             else if (n < -1.0f)
               shrinks.head should be < 0.0f
             import org.scalatest.Inspectors._
             if (!n.isWhole) {
-              shrinks.head shouldEqual (if (n > 0.0f) n.floor else n.ceil)
+              shrinks.head shouldEqual (if (n > 0.0f) (-n).ceil else n.ceil)
             }
             val revShrinks = shrinks.reverse
             val pairs: LazyListOrStream[(Float, Float)] = revShrinks.zip(revShrinks.tail)

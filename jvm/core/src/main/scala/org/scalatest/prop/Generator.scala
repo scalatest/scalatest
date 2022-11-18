@@ -782,13 +782,12 @@ object Generator {
 
       case class NextRoseTree(value: Float) extends RoseTree[Float] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Float]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(fv: Float, acc: LazyListOrStream[RoseTree[Float]]): LazyListOrStream[RoseTree[Float]] = {
-            if (fv == 0.0f)
-              acc
-            else if (fv <= 1.0f && fv >= -1.0f)
-              Rose(0.0f) #:: acc
-            else if (!fv.isWhole) {
+          def resLazyList(theValue: Float): LazyListOrStream[RoseTree[Float]] = {
+            if (theValue == 0.0f)
+              LazyListOrStream.empty
+            else if (theValue <= 1.0f && theValue >= -1.0f)
+              Rose(0.0f) #:: LazyListOrStream.empty
+            else if (!theValue.isWhole) {
               // We need to handle infinity and NaN specially because without it, this method
               // will go into an infinite loop. The reason is floor and ciel give back the same value
               // on these values:
@@ -809,28 +808,32 @@ object Generator {
               // res6: Float = NaN
               //
               val n =
-                if (fv == Float.PositiveInfinity || fv.isNaN)
+                if (theValue == Float.PositiveInfinity || theValue.isNaN)
                   Float.MaxValue
-                else if (fv == Float.NegativeInfinity)
+                else if (theValue == Float.NegativeInfinity)
                   Float.MinValue
-                else fv
-              // Nearest whole numbers closer to zero
-              val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-              shrinkLoop(nearest, NextRoseTree(nearestNeg) #:: NextRoseTree(nearest) #:: acc)
+                else theValue
+              // Nearest whole numbers closer to zero. We'll try both negative and positive of this,
+              // and will put the negative number first, because the positive number is simpler for
+              // humans to look at. So if both the negative and positive number fail the test, the
+              // positive number will be considered the most shrunk.
+              val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else ((-n).floor, n.ceil)
+              NextRoseTree(nearestNeg) #:: NextRoseTree(nearest) #:: resLazyList(nearest)
             }  
             else {
-              val sqrt: Float = math.sqrt(fv.abs.toDouble).toFloat
+              val sqrt: Float = math.sqrt(theValue.abs.toDouble).toFloat
               if (sqrt < 1.0f && sqrt >= -1.0) 
-                Rose(0.0f) #:: acc
+                Rose(0.0f) #:: LazyListOrStream.empty
               else {
+                // Try both the negative and postive, negative first because positive is simpler for humans,
+                // so more "shrunk."
                 val whole: Float = sqrt.floor
                 val negWhole: Float = -whole // math.rint((-whole).toDouble).toFloat
-                val (first, second) = if (fv > 0.0f) (negWhole, whole) else (whole, negWhole)
-                shrinkLoop(first, NextRoseTree(first) #:: NextRoseTree(second) #:: acc)
+                NextRoseTree(negWhole) #:: NextRoseTree(whole) #:: resLazyList(whole)
               }
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
