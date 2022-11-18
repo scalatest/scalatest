@@ -142,11 +142,6 @@ trait RoseTree[T] { thisRoseTreeOfT =>
 
 object RoseTree {
 
-/*
-  type LazyListOrStream[+T] = LazyList[T]
-  val LazyListOrStream: LazyList.type = LazyList
-*/
-
   def map2[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U], f: (T, U) => V, rnd: Randomizer): (RoseTree[V], Randomizer) = {
     val tupValue = f(tree1.value, tree2.value)
     val (shrinks1, rnd2) = tree1.shrinks(rnd)
