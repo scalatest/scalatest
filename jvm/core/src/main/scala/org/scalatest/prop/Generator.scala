@@ -2511,16 +2511,18 @@ object Generator {
 
       case class NextRoseTree(value: String) extends RoseTree[String] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[String]], Randomizer) = {
-          if (value.isEmpty)
-            (LazyListOrStream.empty, rndPassedToShrinks)
-          else {
-            val halfSize = value.length / 2
-            val firstHalf = value.take(halfSize)
-            val secondHalf = value.drop(halfSize)
-            val tail = value.tail
-            val init = value.init
-            (LazyListOrStream(firstHalf, secondHalf, tail, init).distinct.filter(_ != value).map(NextRoseTree(_)), rndPassedToShrinks)
+          def resLazyList(theValue: String): LazyListOrStream[RoseTree[String]] = {
+            if (theValue.isEmpty || theValue.length == 1)
+              LazyListOrStream.empty
+            else {
+              val halfSize = theValue.length / 2
+              val firstHalf = theValue.take(halfSize)
+              val secondHalf = theValue.drop(halfSize)
+              // If value has an odd number of chars, the second Half will be one character longer than the firstHalf.
+              NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyList(firstHalf)
+            }
           }
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
