@@ -2509,6 +2509,10 @@ object Generator {
     new Generator[String] {
       private val stringEdges = List("")
 
+      // For strings, we won't bother shrinking the characters. We don't already have rose trees for those.
+      // We could, given the way we shrink strings, but the trees would get much bigger. Just cut the length of
+      // the list in half and try both halves each round, using the same characters.
+      // TODO: Write a test for this shrinks implementation.
       case class NextRoseTree(value: String) extends RoseTree[String] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[String]], Randomizer) = {
           def resLazyList(theValue: String): LazyListOrStream[RoseTree[String]] = {
@@ -2518,7 +2522,7 @@ object Generator {
               val halfSize = theValue.length / 2
               val firstHalf = theValue.take(halfSize)
               val secondHalf = theValue.drop(halfSize)
-              // If value has an odd number of chars, the second Half will be one character longer than the firstHalf.
+              // If value has an odd number of chars, the second half will be one character longer than the first half.
               NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyList(firstHalf)
             }
           }
@@ -2557,19 +2561,24 @@ object Generator {
     new Generator[List[T]] with HavingLength[List[T]] { outerGenOfListOfT =>
       private val listEdges = List(Nil)
 
-      // TODO This only uses Roses. Check that we don't need RoseTrees.
+      // For lists, we won't bother shrinking the elements. We don't already have rose trees for those. Could
+      // go to canonicals, but the trees get big anyway. Just cut the length of the list in half and try both
+      // halves each round, using the same elements.
+      // TODO: Write a test for this shrinks implementation.
       case class NextRoseTree(value: List[T]) extends RoseTree[List[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[List[T]]], Randomizer) = {
-          if (value.isEmpty)
-            (LazyListOrStream.empty, rndPassedToShrinks)
-          else {
-            val halfSize = value.length / 2
-            val firstHalf = value.take(halfSize)
-            val secondHalf = value.drop(halfSize)
-            val tail = value.tail
-            val init = value.init
-            (LazyListOrStream(firstHalf, secondHalf, tail, init).distinct.filter(_ != value).map(NextRoseTree(_)), rndPassedToShrinks)
+          def resLazyList(theValue: List[T]): LazyListOrStream[RoseTree[List[T]]] = {
+            if (theValue.isEmpty || theValue.length == 1)
+              LazyListOrStream.empty
+            else {
+              val halfSize = theValue.length / 2 // Linear time
+              val firstHalf = theValue.take(halfSize)
+              val secondHalf = theValue.drop(halfSize)
+              // If value has an odd number of elements, the second half will be one character longer than the first half.
+              NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyList(firstHalf)
+            }
           }
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
