@@ -2466,17 +2466,16 @@ object Generator {
 
       case class NextRoseTree(value: NumericChar) extends RoseTree[NumericChar] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NumericChar]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(c: NumericChar, acc: LazyListOrStream[RoseTree[NumericChar]]): LazyListOrStream[RoseTree[NumericChar]] = {
-            if (c.value == '0')
-              acc
+          def resLazyList(theValue: NumericChar): LazyListOrStream[RoseTree[NumericChar]] = {
+            if (theValue.value == '0')
+              LazyListOrStream.empty
             else {
-              val minusOne: Char = (c - 1).toChar // Go ahead and try all the values between i and '0'
+              val minusOne: Char = (theValue.value - 1).toChar // Go ahead and try all the values between i and '0'
               val numericCharMinusOne = NumericChar.ensuringValid(minusOne)
-              shrinkLoop(numericCharMinusOne, NextRoseTree(numericCharMinusOne) #:: acc)
+              NextRoseTree(numericCharMinusOne) #:: resLazyList(numericCharMinusOne)
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
