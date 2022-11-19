@@ -3603,10 +3603,6 @@ object Generator {
   implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] =
     new Generator[Option[T]] {
 
-      // Unused currently. But this is what made me realize we may actually want a shrink
-      // method on Generator that can be passed a value, so that we can shrink edges
-      // inside something like Option generator (and either, or, etc.). Maybe call it
-      // shrinkValue so that the name looks different.
       case class NextRoseTree(value: Option[T]) extends RoseTree[Option[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Option[T]]], Randomizer) = {
 
@@ -3619,12 +3615,13 @@ object Generator {
                   val value: Option[T] = optionOfT
                   def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Option[T]]], Randomizer) = {
                     val (topRoseTreeOfT, _, rnd2) = genOfT.next(SizeParam(1, 0, 1), List(t), rndPassedToShrinks) // topRoseTreeOfT is a RoseTree[T]
+                    // Here, what I *really* want is a shrinksFor method where I can pass the value in. Ah, and if I add a shrinksFor method, perhaps
+                    // I can drop the Randomizer from shrinks.
                     val (nestedRoseTrees, rnd3) = topRoseTreeOfT.shrinks(rnd2) // nestedRoseTrees: LazyListOrStream[RoseTree[T]]
                     val nestedList: LazyListOrStream[RoseTree[Option[T]]] = nestedRoseTrees.map(nrt => nrt.map(t => Some(t): Option[T])).filter(_.value != value)
-                    if (nestedList.isEmpty)
-                      (LazyListOrStream.empty, rnd3)
-                    else
-                      (nestedList, rnd3)
+                    // Right now I suppose I need the filter, because I'm gabbing a random value to start with. But if I add a shrinksFor method, then I should
+                    // be able to drop the filter.
+                    (nestedList, rnd3)
                   }
                 }
               rootRoseTree.shrinks(rndPassedToShrinks)
