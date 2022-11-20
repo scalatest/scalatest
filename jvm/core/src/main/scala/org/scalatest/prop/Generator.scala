@@ -236,6 +236,28 @@ trait Generator[T] { thisGeneratorOfT =>
       }
     }
 
+  // This map method can be used if the function from T to U is invertible. For example, if f
+  // is a function from Int => Option[Int] that just wraps each Int in a Some, (n: Int) => (Some(n): Option[Int]),
+  // the g function can be a function that unwraps it back to Int: (n: Option[Int]) => n.get. The point of this
+  // method is to map the Generator while preserving an intersting shrinksForValue method. To do that we need
+  // the U to T function, because shrinksToValue takes a U in the resulting Generator[U].
+  def mapInvertible[U](f: T => U, g: U => T): Generator[U] = {
+    new Generator[U] { thisGeneratorOfU =>
+      private val underlying: Generator[U] = thisGeneratorOfT.map(f)
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[U], Randomizer) = underlying.initEdges(maxLength, rnd)
+      def next(szp: SizeParam, edges: List[U], rnd: Randomizer): (RoseTree[U], List[U], Randomizer) = underlying.next(szp, edges, rnd)
+      override def map[V](f: U => V): Generator[V] = underlying.map(f)
+      override def flatMap[V](f: U => Generator[V]): Generator[V] = underlying.flatMap(f)
+      override def withFilter(f: U => Boolean): Generator[U] = underlying.withFilter(f)
+      override def filter(f: U => Boolean): Generator[U] = underlying.filter(f)
+      override def canonicals(rnd: Randomizer): (Iterator[U], Randomizer) = underlying.canonicals(rnd)
+      override def shrinksForValue(theValue: U): Option[LazyListOrStream[RoseTree[U]]] = {
+        val optRts: Option[LazyListOrStream[RoseTree[T]]] = thisGeneratorOfT.shrinksForValue(g(theValue))
+        optRts.map(rts => rts.map(rt => rt.map(f)))
+      }
+    }
+  }
+
   /**
     * The usual Monad function, to allow Generators to be composed together.
     *
