@@ -3648,10 +3648,8 @@ object Generator {
     * @tparam T the type to generate
     * @return a [[Generator]] that produces `Option[T]`
     */
-  implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] =
-    new Generator[Option[T]] {
-
-      case class NextRoseTree(value: Option[T]) extends RoseTree[Option[T]] { thisRoseTreeOfOptionOfT =>
+  implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] = {
+    case class NextRoseTree(value: Option[T]) extends RoseTree[Option[T]] { thisRoseTreeOfOptionOfT =>
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Option[T]]], Randomizer) = {
 
           value match {
@@ -3661,8 +3659,9 @@ object Generator {
               val nestedRoseTreesOpt: Option[LazyListOrStream[RoseTree[T]]] = genOfT.shrinksForValue(t)
               nestedRoseTreesOpt match {
                 case Some(nestedRoseTrees) => 
+                  val noneRoseTree: RoseTree[Option[T]] = NextRoseTree(None)
                   val nestedList: LazyListOrStream[RoseTree[Option[T]]] =
-                    nestedRoseTrees.map(nrt => nrt.map(t => Some(t): Option[T])) #::: NextRoseTree(None) #:: LazyListOrStream.empty
+                    nestedRoseTrees.map(nrt => nrt.map(t => Some(t): Option[T])) #::: noneRoseTree #:: LazyListOrStream.empty
                   // nestedList.toList.foreach(println)
                   (nestedList, rndPassedToShrinks)
                 case None =>
@@ -3675,6 +3674,8 @@ object Generator {
           }
         }
       }
+
+    new Generator[Option[T]] {
 
       // TODO: Ah, maybe edges should return List[RoseTree[Option[T]], Randomizer] instead. Then it could be shrunken.
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Option[T]], Randomizer) = {
@@ -3707,6 +3708,7 @@ object Generator {
       override def toString = "Generator[Option[T]]"
       override def shrinksForValue(valueToShrink: Option[T]): Option[LazyListOrStream[RoseTree[Option[T]]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
+  }
 
   /**
     * Given [[Generator]]s for two types, [[G]] and [[B]], this provides one for `G Or B`.
