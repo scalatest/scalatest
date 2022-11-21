@@ -3132,7 +3132,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         optCanon.map(rt => rt.value).filter(_.isDefined).map(_.get) should contain theSameElementsAs intCanon.map(rt => rt.value).toList
       }
 
-      it("should use the base type for shrinking, without producing None") {
+      it("should use the base type for shrinking and also produce None") {
         import org.scalatest.OptionValues._
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Option[Int]]) =>
@@ -3164,6 +3164,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
                 case (Some(_), None) => fail("None was ahead of a Some in shrinks (i.e., before being reversed)")
                 case (None, None) => fail("None showed up twice in shrinks")
               }
+              shrinks.last shouldBe None
             }
           }
         }

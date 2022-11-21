@@ -19,7 +19,7 @@ import scala.annotation.tailrec
 import scala.concurrent.{Future, ExecutionContext}
 import org.scalactic.ColCompatHelper.LazyListOrStream
 
-trait RoseTree[T] { thisRoseTreeOfT =>
+trait RoseTree[+T] { thisRoseTreeOfT =>
 
   val value: T
 

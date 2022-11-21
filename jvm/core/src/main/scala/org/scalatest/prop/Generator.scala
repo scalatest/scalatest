@@ -3692,15 +3692,13 @@ object Generator {
               val nestedRoseTreesOpt: Option[LazyListOrStream[RoseTree[T]]] = genOfT.shrinksForValue(t)
               nestedRoseTreesOpt match {
                 case Some(nestedRoseTrees) => 
-                  val noneRoseTree: RoseTree[Option[T]] = NextRoseTree(None)
                   val nestedList: LazyListOrStream[RoseTree[Option[T]]] =
-                    nestedRoseTrees.map(nrt => nrt.map(t => Some(t): Option[T])) #::: noneRoseTree #:: LazyListOrStream.empty
-                  // nestedList.toList.foreach(println)
+                    nestedRoseTrees.map(nrt => nrt.map(t => Some(t))) #::: Rose(None) #:: LazyListOrStream.empty
                   (nestedList, rndPassedToShrinks)
                 case None =>
                   // If the shrinksForValue lazy list is empty, degrade to canonicals.
                   val (canonicalTs, rnd2) = genOfT.canonicals(rndPassedToShrinks)
-                  (canonicalTs.map(rt => rt.map(t => Some(t): Option[T])) #::: NextRoseTree(None) #:: LazyListOrStream.empty, rnd2)
+                  (canonicalTs.map(rt => rt.map(t => Some(t))) #::: NextRoseTree(None) #:: LazyListOrStream.empty, rnd2)
               }
 
             // There's no way to simplify None:
@@ -3736,7 +3734,8 @@ object Generator {
               (Rose(None), Nil, nextRnd) // No need to shrink None.
             else {
               val (nextRoseTreeOfT, _, nextNextRnd) = genOfT.next(szp, Nil, nextRnd)
-              (nextRoseTreeOfT.map(nextT => Some(nextT)), Nil, nextNextRnd)
+              val nextT = nextRoseTreeOfT.value
+              (NextRoseTree(Some(nextT)), Nil, nextNextRnd)
             }
         }
       }
@@ -3763,12 +3762,12 @@ object Generator {
             case Good(g) => {
               val (goodRt, _, nextRnd) = genOfG.next(SizeParam(1, 0, 1), List(g), rndPassedToShrinks)
               val (gShrink, nextNextRnd) = goodRt.shrinks(nextRnd)
-              (gShrink.filter(_.value != value).map(rt => rt.map(Good(_) : G Or B)), nextNextRnd)
+              (gShrink.filter(_.value != value).map(rt => rt.map(Good(_))), nextNextRnd)
             }
             case Bad(b) => {
               val (badRt, _, nextRnd) = genOfB.next(SizeParam(1, 0, 1), List(b), rndPassedToShrinks)
               val (bShrink, nextNextRnd) = badRt.shrinks(nextRnd)
-              (bShrink.filter(_.value != value).map(rt => rt.map(Bad(_) : G Or B)), nextNextRnd)
+              (bShrink.filter(_.value != value).map(rt => rt.map(Bad(_))), nextNextRnd)
             }
           }
         }
@@ -3797,7 +3796,7 @@ object Generator {
         val (goodCanon, nextRnd) = genOfG.canonicals(rnd)
         val (badCanon, nextNextRnd) = genOfB.canonicals(nextRnd)
 
-        (goodCanon.map(rt => rt.map(t => Good(t): G Or B)) ++ badCanon.map(rt => rt.map(t => Bad(t): G Or B)), nextNextRnd) // TODO: Make lazy
+        (goodCanon.map(rt => rt.map(t => Good(t): G Or B)) ++ badCanon.map(rt => rt.map(t => Bad(t))), nextNextRnd) // TODO: Make lazy
       }
 
       def next(szp: SizeParam, edges: List[G Or B], rnd: Randomizer): (RoseTree[G Or B], List[G Or B], Randomizer) = {
@@ -3838,12 +3837,12 @@ object Generator {
             case Right(r) => {
               val (rightRt, _, nextRnd) = genOfR.next(SizeParam(1, 0, 1), List(r), rndPassedToShrinks)
               val (rShrink, nextNextRnd) = rightRt.shrinks(nextRnd)
-              (rShrink.map(rt => rt.map(Right(_): Either[L, R])), nextNextRnd)
+              (rShrink.map(rt => rt.map(Right(_))), nextNextRnd)
             }
             case Left(l) => {
               val (leftRt, _, nextRnd) = genOfL.next(SizeParam(1, 0, 1), List(l), rndPassedToShrinks)
               val (lShrink, nextNextRnd) = leftRt.shrinks(nextRnd)
-              (lShrink.map(rt => rt.map(Left(_): Either[L, R])), nextNextRnd)
+              (lShrink.map(rt => rt.map(Left(_))), nextNextRnd)
             }
           }
         }
@@ -3871,7 +3870,7 @@ object Generator {
       override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Either[L, R]]], Randomizer) = {
         val (rightCanon, nextRnd) = genOfR.canonicals(rnd)
         val (leftCanon, nextNextRnd) = genOfL.canonicals(nextRnd)
-        (rightCanon.map(rt => rt.map(t => Right(t): Either[L, R])) #::: leftCanon.map(rt => rt.map(t => Left(t): Either[L, R])), nextNextRnd)
+        (rightCanon.map(rt => rt.map(t => Right(t))) #::: leftCanon.map(rt => rt.map(t => Left(t))), nextNextRnd)
       }
 
       def next(szp: SizeParam, edges: List[Either[L, R]], rnd: Randomizer): (RoseTree[Either[L, R]], List[Either[L, R]], Randomizer) = {
