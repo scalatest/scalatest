@@ -231,9 +231,9 @@ trait Generator[T] { thisGeneratorOfT =>
             (nextRoseTreeOfT.map(f), Nil, nextRandomizer)
         }
       }
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[U], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[U]], Randomizer) = {
         val (cansOfT, nextRnd) = thisGeneratorOfT.canonicals(rnd)
-        (cansOfT.map(f), nextRnd)
+        (cansOfT.map(rt => rt.map(f)), nextRnd)
       }
     }
 
@@ -251,7 +251,7 @@ trait Generator[T] { thisGeneratorOfT =>
       override def flatMap[V](f: U => Generator[V]): Generator[V] = underlying.flatMap(f)
       override def withFilter(f: U => Boolean): Generator[U] = underlying.withFilter(f)
       override def filter(f: U => Boolean): Generator[U] = underlying.filter(f)
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[U], Randomizer) = underlying.canonicals(rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[U]], Randomizer) = underlying.canonicals(rnd)
       override def shrinksForValue(theValue: U): Option[LazyListOrStream[RoseTree[U]]] = {
         val optRts: Option[LazyListOrStream[RoseTree[T]]] = thisGeneratorOfT.shrinksForValue(g(theValue))
         optRts.map(rts => rts.map(rt => rt.map(f)))
@@ -341,17 +341,17 @@ trait Generator[T] { thisGeneratorOfT =>
         }
       }
 
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[U], Randomizer) = {
-        val (cansOfT, rnd1) = thisGeneratorOfT.canonicals(rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[U]], Randomizer) = {
+        val (canonicalsOfT, rnd1) = thisGeneratorOfT.canonicals(rnd)
         var currentRnd = rnd1 // Local var, one thread; TODO: Do this with a tailrec loop
-        def getCanonicals(o: T): LazyListOrStream[U] = {
-          val genOfU: Generator[U] = f(o)
+        def getCanonicals(rt: RoseTree[T]): LazyListOrStream[RoseTree[U]] = {
+          val genOfU: Generator[U] = f(rt.value)
           val (canonicals, nextRnd) = genOfU.canonicals(currentRnd)
           currentRnd = nextRnd
           canonicals
         }
 
-        (cansOfT.flatMap(getCanonicals), currentRnd)
+        (canonicalsOfT.flatMap(getCanonicals), currentRnd)
       }
     }
   }
@@ -438,7 +438,7 @@ trait Generator[T] { thisGeneratorOfT =>
     * @param rnd a [[Randomizer]] to use if this function requires any random data
     * @return the canonical values for this type (if any), and the next [[Randomizer]]
     */
-  def canonicals(rnd: Randomizer): (LazyListOrStream[T], Randomizer) = (LazyListOrStream.empty, rnd)
+  def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[T]], Randomizer) = (LazyListOrStream.empty, rnd)
 
   /**
     * Fetch a generated value of type [[T]].
@@ -635,7 +635,9 @@ object Generator {
         }
       }
       private val byteCanonicals: LazyListOrStream[Byte] = LazyListOrStream(-3, 3, -2, 2, -1, 1, 0)
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Byte], Randomizer) = (byteCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Byte]], Randomizer) = {
+        (byteCanonicals.map(Rose(_)), rnd)
+      }
       override def toString = "Generator[Byte]"
 
       // For now I will not take a Randomizer. I'm hoping we can just get rid of it in shrinks. Shrinks can just
@@ -677,7 +679,7 @@ object Generator {
         }
       }
       private val shortCanonicals: LazyListOrStream[Short] = LazyListOrStream(-3, 3, -2, 2, -1, 1, 0)
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Short], Randomizer) = (shortCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Short]], Randomizer) = (shortCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[Short]"
       override def shrinksForValue(valueToShrink: Short): Option[LazyListOrStream[RoseTree[Short]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -691,6 +693,7 @@ object Generator {
       case class NextRoseTree(value: Char) extends RoseTree[Char] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Char]], Randomizer) = {
           val userFriendlyChars = "9876543210ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmljkihgfedcba"
+          // In this one we accept any of these characters. Else we try them in the above order.
           if (userFriendlyChars.indexOf(value) >= 0) (LazyListOrStream.empty, rndPassedToShrinks)
           else {
             def resLazyList(theIndex: Int): LazyListOrStream[RoseTree[Char]] = {
@@ -715,17 +718,21 @@ object Generator {
             (NextRoseTree(c), Nil, rnd2)
         }
       }
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Char], Randomizer) = {
-        val lowerAlphaChars = "abcdefghikjlmnopqrstuvwxyz"
-        val upperAlphaChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        val numericChars = "0123456789"
-        val (lowerCharIndex, rnd1) = rnd.chooseInt(0, lowerAlphaChars.length - 1)
-        val (upperCharIndex, rnd2) = rnd1.chooseInt(0, upperAlphaChars.length - 1)
-        val (numericCharIndex, rnd3) = rnd1.chooseInt(0, numericChars.length - 1)
-        val lowerChar = lowerAlphaChars(lowerCharIndex)
-        val upperChar = upperAlphaChars(upperCharIndex)
-        val numericChar = numericChars(numericCharIndex)
-        (LazyListOrStream(lowerChar, upperChar, numericChar), rnd3) // TODO: Make lazy
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Char]], Randomizer) = {
+        case class CanonicalRoseTree(value: Char) extends RoseTree[Char] {
+          def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Char]], Randomizer) = {
+            // Since we don't know what the failing character was in canonicals, we just try the lower
+            // case ones. I'll pass '@' as the initial character that will get z to a in the shrinks.
+            val lowerAlphaChars = "zyxwvutsrqponmljkihgfedcba"
+            def resLazyList(theIndex: Int): LazyListOrStream[RoseTree[Char]] = {
+              if (theIndex == lowerAlphaChars.length) LazyListOrStream.empty
+              else CanonicalRoseTree(lowerAlphaChars(theIndex)) #:: resLazyList(theIndex + 1)
+            }
+            val index = lowerAlphaChars.indexOf(value)
+            (resLazyList(if (index < 0) 0 else index), rndPassedToShrinks)
+          }
+        }
+        CanonicalRoseTree('@').shrinks(rnd)
       }
       override def toString = "Generator[Char]"
       override def shrinksForValue(valueToShrink: Char): Option[LazyListOrStream[RoseTree[Char]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
@@ -766,7 +773,7 @@ object Generator {
       }
       override def toString = "Generator[Int]"
       private val intCanonicals = LazyListOrStream(-3, 3, -2, 2, -1, 1, 0)
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Int], Randomizer) = (intCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Int]], Randomizer) = (intCanonicals.map(Rose(_)), rnd)
       override def shrinksForValue(valueToShrink: Int): Option[LazyListOrStream[RoseTree[Int]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
 
@@ -804,7 +811,7 @@ object Generator {
         }
       }
       private val longCanonicals: LazyListOrStream[Long] = LazyListOrStream(-3, 3, -2, 2, -1, 1, 0)
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Long], Randomizer) = (longCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Long]], Randomizer) = (longCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[Long]"
       override def shrinksForValue(valueToShrink: Long): Option[LazyListOrStream[RoseTree[Long]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -885,7 +892,7 @@ object Generator {
         }
       }
       private val floatCanonicals: LazyListOrStream[Float] = LazyListOrStream(-3.0f, 3.0f, -2.0f, 2.0f, -1.0f, 1.0f, 0.0f)
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Float], Randomizer) = (floatCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Float]], Randomizer) = (floatCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[Float]"
       override def shrinksForValue(valueToShrink: Float): Option[LazyListOrStream[RoseTree[Float]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -967,7 +974,7 @@ object Generator {
         }
       }
       private val doubleCanonicals: LazyListOrStream[Double] = LazyListOrStream(-3.0, 3.0, -2.0, 2.0, -1.0, 1.0, 0.0)
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Double], Randomizer) = (doubleCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Double]], Randomizer) = (doubleCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[Double]"
       override def shrinksForValue(valueToShrink: Double): Option[LazyListOrStream[RoseTree[Double]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1006,7 +1013,7 @@ object Generator {
         }
       }
       private val posIntCanonicals = LazyListOrStream(PosInt(3), PosInt(2), PosInt(1))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[PosInt], Randomizer) = (posIntCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosInt]], Randomizer) = (posIntCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[PosInt]"
       override def shrinksForValue(valueToShrink: PosInt): Option[LazyListOrStream[RoseTree[PosInt]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1045,7 +1052,7 @@ object Generator {
         }
       }
       private val posZIntCanonicals = LazyListOrStream(PosZInt(3), PosZInt(2), PosZInt(1), PosZInt(0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[PosZInt], Randomizer) = (posZIntCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosZInt]], Randomizer) = (posZIntCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[PosZInt]"
       override def shrinksForValue(valueToShrink: PosZInt): Option[LazyListOrStream[RoseTree[PosZInt]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1085,7 +1092,7 @@ object Generator {
         }
       }
       private val posLongCanonicals = LazyListOrStream(PosLong(3), PosLong(2), PosLong(1))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[PosLong], Randomizer) = (posLongCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosLong]], Randomizer) = (posLongCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[PosLong]"
       override def shrinksForValue(valueToShrink: PosLong): Option[LazyListOrStream[RoseTree[PosLong]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1124,7 +1131,7 @@ object Generator {
         }
       }
       private val posZLongCanonicals = LazyListOrStream(PosZLong(3), PosZLong(2), PosZLong(1), PosZLong(0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[PosZLong], Randomizer) = (posZLongCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosZLong]], Randomizer) = (posZLongCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[PosZLong]"
       override def shrinksForValue(valueToShrink: PosZLong): Option[LazyListOrStream[RoseTree[PosZLong]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1176,7 +1183,7 @@ object Generator {
         }
       }
       private val posFloatCanonicals: LazyListOrStream[PosFloat] = LazyListOrStream(PosFloat(3.0f), PosFloat(2.0f), PosFloat(1.0f))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[PosFloat], Randomizer) = (posFloatCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosFloat]], Randomizer) = (posFloatCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[PosFloat]"
       override def shrinksForValue(valueToShrink: PosFloat): Option[LazyListOrStream[RoseTree[PosFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1222,7 +1229,7 @@ object Generator {
         }
       }
       private val posFiniteFloatCanonicals: LazyListOrStream[PosFiniteFloat] = LazyListOrStream(PosFiniteFloat(3.0f), PosFiniteFloat(2.0f), PosFiniteFloat(1.0f))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[PosFiniteFloat], Randomizer) = (posFiniteFloatCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosFiniteFloat]], Randomizer) = (posFiniteFloatCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[PosFiniteFloat]"
       override def shrinksForValue(valueToShrink: PosFiniteFloat): Option[LazyListOrStream[RoseTree[PosFiniteFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1274,7 +1281,7 @@ object Generator {
       }
       private val finiteFloatCanonicals: LazyListOrStream[FiniteFloat] =
         LazyListOrStream(FiniteFloat(-3.0f), FiniteFloat(3.0f), FiniteFloat(-2.0f), FiniteFloat(2.0f), FiniteFloat(-1.0f), FiniteFloat(1.0f), FiniteFloat(0.0f))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[FiniteFloat], Randomizer) = (finiteFloatCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[FiniteFloat]], Randomizer) = (finiteFloatCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[FiniteFloat]"
       override def shrinksForValue(valueToShrink: FiniteFloat): Option[LazyListOrStream[RoseTree[FiniteFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1326,7 +1333,7 @@ object Generator {
       }
       private val finiteDoubleCanonicals: LazyListOrStream[FiniteDouble] =
         LazyListOrStream(FiniteDouble(-3.0), FiniteDouble(3.0), FiniteDouble(-2.0), FiniteDouble(2.0), FiniteDouble(-1.0), FiniteDouble(1.0), FiniteDouble(0.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[FiniteDouble], Randomizer) = (finiteDoubleCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[FiniteDouble]], Randomizer) = (finiteDoubleCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[FiniteDouble]"
       override def shrinksForValue(valueToShrink: FiniteDouble): Option[LazyListOrStream[RoseTree[FiniteDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1379,7 +1386,7 @@ object Generator {
         }
       }
       private val posZFloatCanonicals: LazyListOrStream[PosZFloat] = LazyListOrStream(PosZFloat(3.0f), PosZFloat(2.0f), PosZFloat(1.0f), PosZFloat(0.0f))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[PosZFloat], Randomizer) = (posZFloatCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosZFloat]], Randomizer) = (posZFloatCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[PosZFloat]"
       override def shrinksForValue(valueToShrink: PosZFloat): Option[LazyListOrStream[RoseTree[PosZFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1429,7 +1436,7 @@ object Generator {
       }
       private val posZFiniteFloatCanonicals: LazyListOrStream[PosZFiniteFloat] =
         LazyListOrStream(PosZFiniteFloat(3.0f), PosZFiniteFloat(2.0f), PosZFiniteFloat(1.0f), PosZFiniteFloat(0.0f))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[PosZFiniteFloat], Randomizer) = (posZFiniteFloatCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosZFiniteFloat]], Randomizer) = (posZFiniteFloatCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[PosZFiniteFloat]"
       override def shrinksForValue(valueToShrink: PosZFiniteFloat): Option[LazyListOrStream[RoseTree[PosZFiniteFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1479,7 +1486,7 @@ object Generator {
         }
       }
       private val posDoubleCanonicals: LazyListOrStream[PosDouble] = LazyListOrStream(PosDouble(3.0), PosDouble(2.0), PosDouble(1.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[PosDouble], Randomizer) = (posDoubleCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosDouble]], Randomizer) = (posDoubleCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[PosDouble]"
       override def shrinksForValue(valueToShrink: PosDouble): Option[LazyListOrStream[RoseTree[PosDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1525,7 +1532,7 @@ object Generator {
         }
       }
       private val posFiniteDoubleCanonicals: LazyListOrStream[PosFiniteDouble] = LazyListOrStream(PosFiniteDouble(3.0), PosFiniteDouble(2.0), PosFiniteDouble(1.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[PosFiniteDouble], Randomizer) = (posFiniteDoubleCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosFiniteDouble]], Randomizer) = (posFiniteDoubleCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[PosFiniteDouble]"
       override def shrinksForValue(valueToShrink: PosFiniteDouble): Option[LazyListOrStream[RoseTree[PosFiniteDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1578,7 +1585,7 @@ object Generator {
         }
       }
       private val posZDoubleCanonicals: LazyListOrStream[PosZDouble] = LazyListOrStream(PosZDouble(3.0), PosZDouble(2.0), PosZDouble(1.0), PosZDouble(0.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[PosZDouble], Randomizer) = (posZDoubleCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosZDouble]], Randomizer) = (posZDoubleCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[PosZDouble]"
       override def shrinksForValue(valueToShrink: PosZDouble): Option[LazyListOrStream[RoseTree[PosZDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1627,7 +1634,7 @@ object Generator {
         }
       }
       private val posZFiniteDoubleCanonicals: LazyListOrStream[PosZFiniteDouble] = LazyListOrStream(PosZFiniteDouble(3.0), PosZFiniteDouble(2.0), PosZFiniteDouble(1.0), PosZFiniteDouble(0.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[PosZFiniteDouble], Randomizer) = (posZFiniteDoubleCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosZFiniteDouble]], Randomizer) = (posZFiniteDoubleCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[PosZFiniteDouble]"
       override def shrinksForValue(valueToShrink: PosZFiniteDouble): Option[LazyListOrStream[RoseTree[PosZFiniteDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1694,7 +1701,7 @@ object Generator {
         }
       }
       private val nonZeroDoubleCanonicals: LazyListOrStream[NonZeroDouble] = LazyListOrStream(NonZeroDouble(-3.0), NonZeroDouble(3.0), NonZeroDouble(-2.0), NonZeroDouble(2.0), NonZeroDouble(-1.0), NonZeroDouble(1.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NonZeroDouble], Randomizer) = (nonZeroDoubleCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NonZeroDouble]], Randomizer) = (nonZeroDoubleCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NonZeroDouble]"
       override def shrinksForValue(valueToShrink: NonZeroDouble): Option[LazyListOrStream[RoseTree[NonZeroDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1755,7 +1762,7 @@ object Generator {
         }
       }
       private val nonZeroFiniteDoubleCanonicals: LazyListOrStream[NonZeroFiniteDouble] = LazyListOrStream(NonZeroFiniteDouble(-3.0), NonZeroFiniteDouble(3.0), NonZeroFiniteDouble(-2.0), NonZeroFiniteDouble(2.0), NonZeroFiniteDouble(-1.0), NonZeroFiniteDouble(1.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NonZeroFiniteDouble], Randomizer) = (nonZeroFiniteDoubleCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NonZeroFiniteDouble]], Randomizer) = (nonZeroFiniteDoubleCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NonZeroFiniteDouble]"
       override def shrinksForValue(valueToShrink: NonZeroFiniteDouble): Option[LazyListOrStream[RoseTree[NonZeroFiniteDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1823,7 +1830,7 @@ object Generator {
         }
       }
       private val nonZeroFloatCanonicals: LazyListOrStream[NonZeroFloat] = LazyListOrStream(NonZeroFloat(-3.0f), NonZeroFloat(3.0f), NonZeroFloat(-2.0f), NonZeroFloat(2.0f), NonZeroFloat(-1.0f), NonZeroFloat(1.0f))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NonZeroFloat], Randomizer) = (nonZeroFloatCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NonZeroFloat]], Randomizer) = (nonZeroFloatCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NonZeroFloat]"
       override def shrinksForValue(valueToShrink: NonZeroFloat): Option[LazyListOrStream[RoseTree[NonZeroFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1884,7 +1891,7 @@ object Generator {
         }
       }
       private val nonZeroFiniteFloatCanonicals: LazyListOrStream[NonZeroFiniteFloat] = LazyListOrStream(NonZeroFiniteFloat(-3.0f), NonZeroFiniteFloat(3.0f), NonZeroFiniteFloat(-2.0f), NonZeroFiniteFloat(2.0f), NonZeroFiniteFloat(-1.0f), NonZeroFiniteFloat(1.0f))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NonZeroFiniteFloat], Randomizer) = (nonZeroFiniteFloatCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NonZeroFiniteFloat]], Randomizer) = (nonZeroFiniteFloatCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NonZeroFiniteFloat]"
       override def shrinksForValue(valueToShrink: NonZeroFiniteFloat): Option[LazyListOrStream[RoseTree[NonZeroFiniteFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -1922,7 +1929,7 @@ object Generator {
       }
       override def toString = "Generator[NonZeroInt]"
       private val nonZeroIntCanonicals = LazyListOrStream(NonZeroInt(-3), NonZeroInt(3), NonZeroInt(-2), NonZeroInt(2), NonZeroInt(-1), NonZeroInt(1))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NonZeroInt], Randomizer) = (nonZeroIntCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NonZeroInt]], Randomizer) = (nonZeroIntCanonicals.map(Rose(_)), rnd)
       override def shrinksForValue(valueToShrink: NonZeroInt): Option[LazyListOrStream[RoseTree[NonZeroInt]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
 
@@ -1958,7 +1965,7 @@ object Generator {
         }
       }
       private val nonZeroLongCanonicals = LazyListOrStream(NonZeroLong(-3), NonZeroLong(3), NonZeroLong(-2), NonZeroLong(2), NonZeroLong(-1), NonZeroLong(1))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NonZeroLong], Randomizer) = (nonZeroLongCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NonZeroLong]], Randomizer) = (nonZeroLongCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NonZeroLong]"
       override def shrinksForValue(valueToShrink: NonZeroLong): Option[LazyListOrStream[RoseTree[NonZeroLong]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2009,7 +2016,7 @@ object Generator {
         }
       }
       private val negDoubleCanonicals: LazyListOrStream[NegDouble] = LazyListOrStream(NegDouble(-3.0), NegDouble(-2.0), NegDouble(-1.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NegDouble], Randomizer) = (negDoubleCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegDouble]], Randomizer) = (negDoubleCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NegDouble]"
       override def shrinksForValue(valueToShrink: NegDouble): Option[LazyListOrStream[RoseTree[NegDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2056,7 +2063,7 @@ object Generator {
         }
       }
       private val negDoubleCanonicals: LazyListOrStream[NegFiniteDouble] = LazyListOrStream(NegFiniteDouble(-3.0), NegFiniteDouble(-2.0), NegFiniteDouble(-1.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NegFiniteDouble], Randomizer) = (negDoubleCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegFiniteDouble]], Randomizer) = (negDoubleCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NegFiniteDouble]"
       override def shrinksForValue(valueToShrink: NegFiniteDouble): Option[LazyListOrStream[RoseTree[NegFiniteDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2107,7 +2114,7 @@ object Generator {
         }
       }
       private val negFloatCanonicals: LazyListOrStream[NegFloat] = LazyListOrStream(NegFloat(-3.0f), NegFloat(-2.0f), NegFloat(-1.0f))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NegFloat], Randomizer) = (negFloatCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegFloat]], Randomizer) = (negFloatCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NegFloat]"
       override def shrinksForValue(valueToShrink: NegFloat): Option[LazyListOrStream[RoseTree[NegFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2154,7 +2161,7 @@ object Generator {
         }
       }
       private val negFloatCanonicals: LazyListOrStream[NegFiniteFloat] = LazyListOrStream(NegFiniteFloat(-3.0f), NegFiniteFloat(-2.0f), NegFiniteFloat(-1.0f))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NegFiniteFloat], Randomizer) = (negFloatCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegFiniteFloat]], Randomizer) = (negFloatCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NegFiniteFloat]"
       override def shrinksForValue(valueToShrink: NegFiniteFloat): Option[LazyListOrStream[RoseTree[NegFiniteFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2194,7 +2201,7 @@ object Generator {
         }
       }
       private val negIntCanonicals = LazyListOrStream(NegInt(-3), NegInt(-2), NegInt(-1))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NegInt], Randomizer) = (negIntCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegInt]], Randomizer) = (negIntCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NegInt]"
       override def shrinksForValue(valueToShrink: NegInt): Option[LazyListOrStream[RoseTree[NegInt]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2234,7 +2241,7 @@ object Generator {
         }
       }
       private val negLongCanonicals = LazyListOrStream(NegLong(-3), NegLong(-2), NegLong(-1))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NegLong], Randomizer) = (negLongCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegLong]], Randomizer) = (negLongCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NegLong]"
       override def shrinksForValue(valueToShrink: NegLong): Option[LazyListOrStream[RoseTree[NegLong]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2289,7 +2296,7 @@ object Generator {
         }
       }
       private val doubleCanonicals: LazyListOrStream[NegZDouble] = LazyListOrStream(NegZDouble(-3.0), NegZDouble(-2.0), NegZDouble(-1.0), NegZDouble(0.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NegZDouble], Randomizer) = (doubleCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegZDouble]], Randomizer) = (doubleCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NegZDouble]"
       override def shrinksForValue(valueToShrink: NegZDouble): Option[LazyListOrStream[RoseTree[NegZDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2339,7 +2346,7 @@ object Generator {
         }
       }
       private val negZFiniteDoubleCanonicals: LazyListOrStream[NegZFiniteDouble] = LazyListOrStream(NegZFiniteDouble(-3.0), NegZFiniteDouble(-2.0), NegZFiniteDouble(-1.0), NegZFiniteDouble(0.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NegZFiniteDouble], Randomizer) = (negZFiniteDoubleCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegZFiniteDouble]], Randomizer) = (negZFiniteDoubleCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NegZFiniteDouble]"
       override def shrinksForValue(valueToShrink: NegZFiniteDouble): Option[LazyListOrStream[RoseTree[NegZFiniteDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2393,7 +2400,7 @@ object Generator {
         }
       }
       private val floatCanonicals: LazyListOrStream[NegZFloat] = LazyListOrStream(NegZFloat(-3.0f), NegZFloat(-2.0f), NegZFloat(-1.0f), NegZFloat(0.0f))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NegZFloat], Randomizer) = (floatCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegZFloat]], Randomizer) = (floatCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NegZFloat]"
       override def shrinksForValue(valueToShrink: NegZFloat): Option[LazyListOrStream[RoseTree[NegZFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2443,7 +2450,7 @@ object Generator {
         }
       }
       private val negZFiniteFloatCanonicals: LazyListOrStream[NegZFiniteFloat] = LazyListOrStream(NegZFiniteFloat(-3.0f), NegZFiniteFloat(-2.0f), NegZFiniteFloat(-1.0f), NegZFiniteFloat(-0.0f))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NegZFiniteFloat], Randomizer) = (negZFiniteFloatCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegZFiniteFloat]], Randomizer) = (negZFiniteFloatCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NegZFiniteFloat]"
       override def shrinksForValue(valueToShrink: NegZFiniteFloat): Option[LazyListOrStream[RoseTree[NegZFiniteFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2484,7 +2491,7 @@ object Generator {
         }
       }
       private val negZIntCanonicals = LazyListOrStream(NegZInt(-3), NegZInt(-2), NegZInt(-1), NegZInt(0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NegZInt], Randomizer) = (negZIntCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegZInt]], Randomizer) = (negZIntCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NegZInt]"
       override def shrinksForValue(valueToShrink: NegZInt): Option[LazyListOrStream[RoseTree[NegZInt]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2525,7 +2532,7 @@ object Generator {
         }
       }
       private val negZLongCanonicals = LazyListOrStream(NegZLong(-3), NegZLong(-2), NegZLong(-1), NegZLong(-0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NegZLong], Randomizer) = (negZLongCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegZLong]], Randomizer) = (negZLongCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NegZLong]"
       override def shrinksForValue(valueToShrink: NegZLong): Option[LazyListOrStream[RoseTree[NegZLong]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2566,7 +2573,7 @@ object Generator {
         }
       }
       private val numericCharCanonicals = LazyListOrStream(NumericChar('3'), NumericChar('2'), NumericChar('1'), NumericChar('0'))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[NumericChar], Randomizer) = (numericCharCanonicals, rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NumericChar]], Randomizer) = (numericCharCanonicals.map(Rose(_)), rnd)
       override def toString = "Generator[NumericChar]"
       override def shrinksForValue(valueToShrink: NumericChar): Option[LazyListOrStream[RoseTree[NumericChar]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
@@ -2614,9 +2621,9 @@ object Generator {
             (NextRoseTree(s), Nil, rnd2)
         }
       }
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[String], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[String]], Randomizer) = {
         val (canonicalsOfChar, rnd1) = charGenerator.canonicals(rnd)
-        (LazyListOrStream("") ++ canonicalsOfChar.map(t => s"$t"), rnd1) // TODO: Make lazy
+        (canonicalsOfChar.map(t => Rose(s"${ t.value }")) #::: LazyListOrStream(Rose("")), rnd1) // TODO: Make lazy
       }
       override def toString = "Generator[String]"
       override def shrinksForValue(valueToShrink: String): Option[LazyListOrStream[RoseTree[String]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
@@ -2667,9 +2674,9 @@ object Generator {
             (NextRoseTree(listOfT), Nil, rnd2)
         }
       }
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[List[T]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[List[T]]], Randomizer) = {
         val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
-        (canonicalsOfT.map(t => List(t)), rnd1)
+        (canonicalsOfT.map(rt => rt.map(t => List(t))), rnd1)
       }
 
       override def toString = "Generator[List[T]]"
@@ -2682,7 +2689,7 @@ object Generator {
           override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd) // TODO: filter lists's edges by valid size
           def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (RoseTree[List[T]], List[List[T]], Randomizer) =
             outerGenOfListOfT.next(SizeParam(PosZInt(0), szp.maxSize, size), edges, rnd) // TODO: SizeParam(size, size, size)?
-          override def canonicals(rnd: Randomizer): (LazyListOrStream[List[T]], Randomizer) = (LazyListOrStream.empty, rnd)
+          override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[List[T]]], Randomizer) = (LazyListOrStream.empty, rnd)
           override def toString = s"Generator[List[T] /* having length $size */]"
         }
       }
@@ -2706,7 +2713,7 @@ object Generator {
             outerGenOfListOfT.next(SizeParam(PosZInt(0), to, nextSize), edges, rnd) // This assumes from < to, and i'm not guaranteeing that yet
           }
           // If from is either 0 or 1, return the canonicals of the outer Generator.
-          override def canonicals(rnd: Randomizer): (LazyListOrStream[List[T]], Randomizer) =
+          override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[List[T]]], Randomizer) =
             if (from <= 1) outerGenOfListOfT.canonicals(rnd) else (LazyListOrStream.empty, rnd)
           // TODO: Shrink can go from from up to xs length
           override def toString = s"Generator[List[T] /* having lengths between $from and $to (inclusive) */]"
@@ -2717,7 +2724,7 @@ object Generator {
           override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
           def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (RoseTree[List[T]], List[List[T]], Randomizer) =
             outerGenOfListOfT.next(f(szp), edges, rnd)
-          override def canonicals(rnd: Randomizer): (LazyListOrStream[List[T]], Randomizer) = (LazyListOrStream.empty, rnd)
+          override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[List[T]]], Randomizer) = (LazyListOrStream.empty, rnd)
           override def toString = s"Generator[List[T] /* having lengths determined by a function */]"
         }
       override def shrinksForValue(valueToShrink: List[T]): Option[LazyListOrStream[RoseTree[List[T]]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
@@ -2749,9 +2756,9 @@ object Generator {
             (nextRoseTreeOfT.map(t => PrettyFunction0(t)), Nil, nextRnd)
         }
       }
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[() => T], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[() => T]], Randomizer) = {
         val (canonicalsOfT, nextRnd) = genOfT.canonicals(rnd)
-        val canonicals = canonicalsOfT.map(t => PrettyFunction0(t))
+        val canonicals = canonicalsOfT.map(rt => rt.map(t => PrettyFunction0(t): () => T)) // TODO: Make RoseTree covariant
         (canonicals, nextRnd)
       }
     }
@@ -3692,7 +3699,8 @@ object Generator {
                   (nestedList, rndPassedToShrinks)
                 case None =>
                   // If the shrinksForValue lazy list is empty, degrade to canonicals.
-                  (NextRoseTree(None) #:: LazyListOrStream.empty, rndPassedToShrinks)
+                  val (canonicalTs, rnd2) = genOfT.canonicals(rndPassedToShrinks)
+                  (canonicalTs.map(rt => rt.map(t => Some(t): Option[T])) #::: NextRoseTree(None) #:: LazyListOrStream.empty, rnd2)
               }
 
             // There's no way to simplify None:
@@ -3712,10 +3720,10 @@ object Generator {
         (edges, nextRnd)
       }
 
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Option[T]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Option[T]]], Randomizer) = {
         // The canonicals of Option[T] are the canonicals of T, plus None
         val (tCanonicals, nextRnd) = genOfT.canonicals(rnd)
-        (LazyListOrStream(None) ++ tCanonicals.map(Some(_)), nextRnd) // TODO: Make lazy
+        (LazyListOrStream(Rose(None: Option[T])) #::: tCanonicals.map(rt => rt.map(t => Some(t): Option[T])), nextRnd) // TODO: Make lazy
       }
 
       def next(szp: SizeParam, edges: List[Option[T]], rnd: Randomizer): (RoseTree[Option[T]], List[Option[T]], Randomizer) = {
@@ -3785,11 +3793,11 @@ object Generator {
         (loop(maxLength, edgesOfG, edgesOfB, Nil), nextNextRnd)
       }
 
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Or[G, B]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[G Or B]], Randomizer) = {
         val (goodCanon, nextRnd) = genOfG.canonicals(rnd)
         val (badCanon, nextNextRnd) = genOfB.canonicals(nextRnd)
 
-        (goodCanon.map(Good(_)) ++ badCanon.map(Bad(_)), nextNextRnd) // TODO: Make lazy
+        (goodCanon.map(rt => rt.map(t => Good(t): G Or B)) ++ badCanon.map(rt => rt.map(t => Bad(t): G Or B)), nextNextRnd) // TODO: Make lazy
       }
 
       def next(szp: SizeParam, edges: List[G Or B], rnd: Randomizer): (RoseTree[G Or B], List[G Or B], Randomizer) = {
@@ -3860,11 +3868,10 @@ object Generator {
         (loop(maxLength, edgesOfR, edgesOfL, Nil), nextNextRnd)
       }
 
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Either[L, R]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Either[L, R]]], Randomizer) = {
         val (rightCanon, nextRnd) = genOfR.canonicals(rnd)
         val (leftCanon, nextNextRnd) = genOfL.canonicals(nextRnd)
-
-        (rightCanon.map(Right(_)) ++ leftCanon.map(Left(_)), nextNextRnd) // TODO: Make lazy
+        (rightCanon.map(rt => rt.map(t => Right(t): Either[L, R])) #::: leftCanon.map(rt => rt.map(t => Left(t): Either[L, R])), nextNextRnd)
       }
 
       def next(szp: SizeParam, edges: List[Either[L, R]], rnd: Randomizer): (RoseTree[Either[L, R]], List[Either[L, R]], Randomizer) = {
@@ -4086,9 +4093,9 @@ object Generator {
         }
       }
 
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Vector[T]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Vector[T]]], Randomizer) = {
         val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
-        (canonicalsOfT.map(t => Vector(t)), rnd1)
+        (canonicalsOfT.map(rt => rt.map(t => Vector(t))), rnd1)
       }
 
       // Members declared in org.scalatest.prop.HavingSize
@@ -4173,9 +4180,9 @@ object Generator {
         }
       }
 
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Set[T]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Set[T]]], Randomizer) = {
         val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
-        (canonicalsOfT.map(t => Set(t)), rnd1)
+        (canonicalsOfT.map(rt => rt.map(t => Set(t))), rnd1)
       }
 
       // Members declared in org.scalatest.prop.HavingSize
@@ -4260,9 +4267,9 @@ object Generator {
         }
       }
 
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[SortedSet[T]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[SortedSet[T]]], Randomizer) = {
         val (canonicalsOfT, rnd1) = genOfT.canonicals(rnd)
-        (canonicalsOfT.map(t => SortedSet(t)), rnd1)
+        (canonicalsOfT.map(rt => rt.map(t => SortedSet(t))), rnd1)
       }
 
       // Members declared in org.scalatest.prop.HavingSize
@@ -4351,9 +4358,9 @@ object Generator {
         }
       }
 
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[Map[K, V]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Map[K, V]]], Randomizer) = {
         val (canonicalsOfKV, rnd1) = genOfTuple2KV.canonicals(rnd)
-        (canonicalsOfKV.map(t => Map(t)), rnd1)
+        (canonicalsOfKV.map(rt => rt.map(t => Map(t))), rnd1)
       }
 
       // Members declared in org.scalatest.prop.HavingSize
@@ -4441,9 +4448,9 @@ object Generator {
         }
       }
 
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[SortedMap[K, V]], Randomizer) = {
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[SortedMap[K, V]]], Randomizer) = {
         val (canonicalsOfKV, rnd1) = genOfTuple2KV.canonicals(rnd)
-        (canonicalsOfKV.map(t => SortedMap(t)), rnd1)
+        (canonicalsOfKV.map(rt => rt.map(t => SortedMap(t))), rnd1)
       }
 
       // Members declared in org.scalatest.prop.HavingSize

@@ -3600,7 +3600,7 @@ $okayAssertions$
       |  override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[$lastType$], Randomizer) = underlying.initEdges(maxLength, rnd)
       |  override def map[Z](f: ($lastType$) => Z): Generator[Z] = underlying.map(f)
       |  override def flatMap[Z](f: ($lastType$) => Generator[Z]): Generator[Z] = underlying.flatMap(f)
-      |  override def canonicals(rnd: Randomizer): (LazyListOrStream[$lastType$], Randomizer) = underlying.canonicals(rnd)
+      |  override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[$lastType$]], Randomizer) = underlying.canonicals(rnd)
       |}
     """.stripMargin
 

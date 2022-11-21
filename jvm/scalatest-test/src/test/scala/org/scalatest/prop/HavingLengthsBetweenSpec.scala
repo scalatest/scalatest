@@ -96,10 +96,10 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
-        val intCanonicals = intCanonicalsIt.toList
+        val intCanonicals = intCanonicalsIt.map(_.value).toList
         val listOfIntGenerator = lists[Int].havingLengthsBetween(0, 50)
         val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
-        val listOfIntCanonicals = listOfIntCanonicalsIt.toList
+        val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => List(i))
       }
     }
@@ -108,10 +108,10 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
-        val intCanonicals = intCanonicalsIt.toList
+        val intCanonicals = intCanonicalsIt.map(_.value).toList
         val listOfIntGenerator = lists[Int].havingLengthsBetween(1, 50)
         val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
-        val listOfIntCanonicals = listOfIntCanonicalsIt.toList
+        val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => List(i))
       }
     }

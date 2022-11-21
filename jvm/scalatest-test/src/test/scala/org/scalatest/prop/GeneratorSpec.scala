@@ -68,11 +68,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val (intCanonicalsIt, nextRnd) = intGenerator.canonicals(rnd)
       val (charRt, _, _) = charGenerator.next(SizeParam(1, 0, 1), List.empty, nextRnd)
       val charValue = charRt.value
-      val expectedTupCanonicals = intCanonicalsIt.map(i => (charValue, i)).toList
+      val expectedTupCanonicals = intCanonicalsIt.map(i => (charValue, i.value)).toList
 
       val tupGen = for (i <- intGenerator) yield (charValue, i)
       val (tupCanonicalsIt, _) = tupGen.canonicals(rnd)
-      val tupCanonicals = tupCanonicalsIt.toList
+      val tupCanonicals = tupCanonicalsIt.map(_.value).toList
 
       tupCanonicals shouldBe expectedTupCanonicals
     }
@@ -86,10 +86,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       val (doubleCanonicalsIt, _) = doubleGenerator.canonicals(rnd)
       val doubleCanonicals = doubleCanonicalsIt.toList
       val expectedTupCanonicals: List[(Int, Double)] =
-        for {
-          i <- intCanonicals
-          d <- doubleCanonicals
-        } yield (i, d)
+          for {
+            i <- intCanonicals
+            d <- doubleCanonicals
+          } yield (i.value, d.value)
 
       val tupGen =
         for {
@@ -97,7 +97,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           d <- doubleGenerator
         }  yield (i, d)
       val (tupCanonicalsIt, _) = tupGen.canonicals(rnd)
-      val tupCanonicals = tupCanonicalsIt.toList
+      val tupCanonicals = tupCanonicalsIt.map(rt => rt.value).toList
 
       tupCanonicals shouldBe expectedTupCanonicals
     }
@@ -339,7 +339,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = byteGenerator
         val (canonicals, _) = gen.canonicals(Randomizer.default)
-        canonicals.toList shouldBe List(-3, 3, -2, 2, -1, 1, 0).map(_.toByte)
+        canonicals.map(_.value).toList shouldBe List(-3, 3, -2, 2, -1, 1, 0).map(_.toByte)
       }
       it("should shrink Bytes by repeatedly halving and negating") {
         import GeneratorDrivenPropertyChecks._
@@ -407,7 +407,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = shortGenerator
         val (canonicals, _) = gen.canonicals(Randomizer.default)
-        canonicals.toList shouldBe List(-3, 3, -2, 2, -1, 1, 0).map(_.toShort)
+        canonicals.map(_.value).toList shouldBe List(-3, 3, -2, 2, -1, 1, 0).map(_.toShort)
       }
       it("should shrink Shorts by repeatedly halving and negating") {
         import GeneratorDrivenPropertyChecks._
@@ -475,7 +475,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = intGenerator
         val (canonicals, _) = gen.canonicals(Randomizer.default)
-        canonicals.toList shouldBe List(-3, 3, -2, 2, -1, 1, 0)
+        canonicals.map(_.value).toList shouldBe List(-3, 3, -2, 2, -1, 1, 0)
       }
       it("should shrink Ints by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
@@ -540,7 +540,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = longGenerator
         val (canonicals, _) = gen.canonicals(Randomizer.default)
-        canonicals.toList shouldBe List(-3L, 3L, -2L, 2L, -1L, 1L, 0L)
+        canonicals.map(_.value).toList shouldBe List(-3L, 3L, -2L, 2L, -1L, 1L, 0L)
       }
       it("should shrink Longs by repeatedly halving and negating") {
         import GeneratorDrivenPropertyChecks._
@@ -607,10 +607,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = charGenerator
         val (canonicalsIt, _) = gen.canonicals(Randomizer.default)
-        val canonicals = canonicalsIt.toList
-        canonicals(0) should (be >= 'a' and be <= 'z')
-        canonicals(1) should (be >= 'A' and be <= 'Z')
-        canonicals(2) should (be >= '0' and be <= '9')
+        val canonicals = canonicalsIt.map(_.value).toList
+        import org.scalatest.Inspectors
+        Inspectors.forAll (canonicals) { c => c should (be >= 'a' and be <= 'z') }
       }
       it("should shrink Chars by trying selected printable characters") {
         import GeneratorDrivenPropertyChecks._
@@ -678,7 +677,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = floatGenerator
         val (canonicals, _) = gen.canonicals(Randomizer.default)
-        canonicals.toList shouldBe List(-3.0f, 3.0f, -2.0f, 2.0f, -1.0f, 1.0f, 0.0f)
+        canonicals.map(_.value).toList shouldBe List(-3.0f, 3.0f, -2.0f, 2.0f, -1.0f, 1.0f, 0.0f)
       }
       it("should shrink Floats with an algo towards 0") {
         import GeneratorDrivenPropertyChecks._
@@ -776,7 +775,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = doubleGenerator
         val (canonicals, _) = gen.canonicals(Randomizer.default)
-        canonicals.toList shouldBe List(-3.0, 3.0, -2.0, 2.0, -1.0, 1.0, 0.0)
+        canonicals.map(_.value).toList shouldBe List(-3.0, 3.0, -2.0, 2.0, -1.0, 1.0, 0.0)
       }
       it("should shrink Doubles with an algo towards 0") {
         import GeneratorDrivenPropertyChecks._
@@ -967,7 +966,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posIntGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
       
       it("should shrink PosInts by algo towards 1") {
@@ -1027,7 +1026,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZIntGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosZInts by algo towards 0") {
@@ -1144,7 +1143,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosZLongs by algo towards 0") {
@@ -1206,7 +1205,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
         gen.shouldGrowWithForShrink(_.value)
       }
 
@@ -1267,7 +1266,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posFiniteFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosFiniteFloat by algo towards 1.0 and positive min value") {
@@ -1333,7 +1332,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
         gen.shouldGrowWithForShrink(_.value)
       }
 
@@ -1399,7 +1398,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosZFiniteFloat by algo towards 0") {
@@ -1462,7 +1461,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosDouble by algo towards 0") {
@@ -1524,7 +1523,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosFiniteDouble by algo towards positive min value") {
@@ -1591,7 +1590,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosZDouble by algo towards 0") {
@@ -1656,7 +1655,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosZFiniteDouble by algo towards 0") {
@@ -1714,7 +1713,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negIntGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegInts by algo towards -1") {
@@ -1774,7 +1773,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZIntGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegZInts by algo towards 0") {
@@ -1832,7 +1831,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegLongs by algo towards -1") {
@@ -1892,7 +1891,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegZLongs by algo towards 0") {
@@ -1955,7 +1954,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegFloat by algo towards 0") {
@@ -2016,7 +2015,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegFiniteFloat by algo towards 0") {
@@ -2085,7 +2084,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegZFloat by algo towards 0") {
@@ -2150,7 +2149,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegZFiniteFloat by algo towards 0") {
@@ -2213,7 +2212,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegDouble by algo towards 0") {
@@ -2274,7 +2273,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegFiniteDouble by algo towards 0") {
@@ -2341,7 +2340,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegZDouble by algo towards 0") {
@@ -2406,7 +2405,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegZFiniteDouble by algo towards 0") {
@@ -2467,7 +2466,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroIntGenerator
         val (canonicals, _) = gen.canonicals(Randomizer.default)
-        canonicals.toList shouldBe List(NonZeroInt(-3), NonZeroInt(3), NonZeroInt(-2), NonZeroInt(2), NonZeroInt(-1), NonZeroInt(1))
+        canonicals.map(_.value).toList shouldBe List(NonZeroInt(-3), NonZeroInt(3), NonZeroInt(-2), NonZeroInt(2), NonZeroInt(-1), NonZeroInt(1))
       }
       it("should shrink NonZeroInts by repeatedly halving and negating") {
         import GeneratorDrivenPropertyChecks._
@@ -2534,7 +2533,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NonZeroLongs by algo towards min positive and negative values") {
@@ -2608,7 +2607,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NonZeroFloats with an algo towards min positive or negative value") {
@@ -2678,7 +2677,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NonZeroFiniteFloats with an algo towards min positive or negative value") {
@@ -2752,7 +2751,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NonZeroDoubles with an algo towards min positive or negative value") {
@@ -2822,7 +2821,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NonZeroFiniteDoubles with an algo towards min positive or negative value") {
@@ -2893,7 +2892,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = finiteFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
         gen.shouldGrowWithForShrink(_.value)
       }
 
@@ -2965,7 +2964,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = finiteDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink FiniteDoubles with an algo towards 0") {
@@ -3023,7 +3022,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = numericCharGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value)
+        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NumericChars with an algo towards '0'") {
@@ -3068,16 +3067,16 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should shrink String with an algo towards empty string") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[String]) =>
-          val i = shrinkRoseTree.value
+          val theString = shrinkRoseTree.value
           val shrinks: LazyListOrStream[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (i == "") // This is flickering with single char Strings.
+          if (theString == "" || theString.length == 1)
             shrinks shouldBe empty
           else {
             shrinks should not be empty
             inspectAll(shrinks) { s =>
-              s.length should be < i.length  
-              i should contain allElementsOf s
+              s.length should be < theString.length  
+              theString should contain allElementsOf s
             }  
           }
         }
@@ -3086,14 +3085,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = stringGenerator
         val (canonicalsIt, _) = gen.canonicals(Randomizer.default)
-        val canonicals = canonicalsIt.toList
-        canonicals(0) shouldBe empty
-        canonicals(1) should have length 1
-        canonicals(1).head should (be >= 'a' and be <= 'z')
-        canonicals(2) should have length 1
-        canonicals(2).head should (be >= 'A' and be <= 'Z')
-        canonicals(3) should have length 1
-        canonicals(3).head should (be >= '0' and be <= '9')
+        val canonicals: List[String] = canonicalsIt.map(_.value).toList
+        canonicals.last shouldBe empty
+        import org.scalatest.Inspectors
+        Inspectors.forAll (canonicals.init) { (s: String) => s should (be >= "a" and be <= "z") }
       }
     }
 
@@ -3133,8 +3128,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (optCanonIter, _) = gen.canonicals(rnd)
         val optCanon = optCanonIter.toList
 
-        optCanon should contain (None)
-        optCanon.filter(_.isDefined).map(_.get) should contain theSameElementsAs intCanon.toList
+        optCanon.map(_.value) should contain (None)
+        optCanon.map(rt => rt.value).filter(_.isDefined).map(_.get) should contain theSameElementsAs intCanon.map(rt => rt.value).toList
       }
 
       it("should use the base type for shrinking, without producing None") {
@@ -3213,7 +3208,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (bCanon, _) = bGen.canonicals(rnd)
         val (orCanon, _) = gen.canonicals(rnd)
 
-        orCanon.toList should contain theSameElementsAs((gCanon.map(Good(_)) ++ bCanon.map(Bad(_))).toList)
+        orCanon.map(_.value).toList should contain theSameElementsAs((gCanon.map(_.value).map(Good(_)) ++ bCanon.map(_.value).map(Bad(_))).toList)
       }
 
       it("should produce an appropriate mix of Good and Bad", Flicker) {
@@ -3274,7 +3269,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (lCanon, _) = lGen.canonicals(rnd)
         val (eitherCanon, _) = gen.canonicals(rnd)
 
-        eitherCanon.toList should contain theSameElementsAs((rCanon.map(Right(_)) ++ lCanon.map(Left(_))).toList)
+        eitherCanon.map(_.value).toList should contain theSameElementsAs((rCanon.map(_.value).map(Right(_)) ++ lCanon.map(_.value).map(Left(_))).toList)
       }
 
       it("should produce an appropriate mix of Right and Left", Flicker) {
@@ -3339,7 +3334,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
           // Then should come one-element Lists of the canonicals of the type
           val phase2 = shrinks.drop(1).take(intCanonicals.length)
-          phase2 shouldEqual (intCanonicals.map(i => ColCompatHelper.newBuilder(factory).+=(i).result))
+          phase2 shouldEqual (intCanonicals.map(i => ColCompatHelper.newBuilder(factory).+=(i.value).result))
 
           // Phase 3 should be one-element lists of all distinct values in the value passed to shrink
           // If xs already is a one-element list, then we don't do this, because then xs would appear in the output.
@@ -3425,10 +3420,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
-        val intCanonicals = intCanonicalsIt.toList
+        val intCanonicals = intCanonicalsIt.map(_.value).toList
         val listOfIntGenerator = Generator.listGenerator[Int]
         val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
-        val listOfIntCanonicals = listOfIntCanonicalsIt.toList
+        val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => List(i))
       }
     }
@@ -3457,8 +3452,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val function0s = Generator.function0Generator[Int]
         val (intCanonicalsIt, rnd1) = ints.canonicals(Randomizer.default)
         val (function0CanonicalsIt, _) = function0s.canonicals(rnd1)
-        val intCanonicals = intCanonicalsIt.toList
-        val function0Canonicals = function0CanonicalsIt.toList
+        val intCanonicals = intCanonicalsIt.map(_.value).toList
+        val function0Canonicals = function0CanonicalsIt.map(_.value).toList
         function0Canonicals.map(f => f()) should contain theSameElementsAs intCanonicals
       }
       it("should offer an implicit provider for constant function0's that returns the shrinks of the result type") {
@@ -3684,10 +3679,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
-        val intCanonicals = intCanonicalsIt.toVector
+        val intCanonicals = intCanonicalsIt.map(_.value).toVector
         val listOfIntGenerator = Generator.vectorGenerator[Int]
         val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
-        val listOfIntCanonicals = listOfIntCanonicalsIt.toList
+        val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => List(i))
       }
     }
@@ -3806,10 +3801,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
-        val intCanonicals = intCanonicalsIt.toList
+        val intCanonicals = intCanonicalsIt.map(_.value).toList
         val listOfIntGenerator = Generator.setGenerator[Int]
         val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
-        val listOfIntCanonicals = listOfIntCanonicalsIt.toList
+        val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => Set(i))
       }
     }
@@ -3928,10 +3923,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
-        val intCanonicals = intCanonicalsIt.toList
+        val intCanonicals = intCanonicalsIt.map(_.value).toList
         val listOfIntGenerator = Generator.sortedSetGenerator[Int]
         val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
-        val listOfIntCanonicals = listOfIntCanonicalsIt.toList
+        val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => SortedSet(i))
       }
     }
@@ -4050,10 +4045,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
         val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
-        val tupleCanonicals = tupleCanonicalsIt.toList
+        val tupleCanonicals = tupleCanonicalsIt.map(_.value).toList
         val mapGenerator = Generator.mapGenerator[PosInt, Int]
         val (mapCanonicalsIt, _) = mapGenerator.canonicals(Randomizer.default)
-        val mapCanonicals = mapCanonicalsIt.toList
+        val mapCanonicals = mapCanonicalsIt.map(_.value).toList
         mapCanonicals shouldEqual tupleCanonicals.map(i => Map(i))
       }
     }
@@ -4172,10 +4167,10 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
         val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
-        val tupleCanonicals = tupleCanonicalsIt.toList
+        val tupleCanonicals = tupleCanonicalsIt.map(_.value).toList
         val mapGenerator = Generator.sortedMapGenerator[PosInt, Int]
         val (mapCanonicalsIt, _) = mapGenerator.canonicals(Randomizer.default)
-        val mapCanonicals = mapCanonicalsIt.toList
+        val mapCanonicals = mapCanonicalsIt.map(_.value).toList
         mapCanonicals shouldEqual tupleCanonicals.map(i => Map(i))
       }
     }
