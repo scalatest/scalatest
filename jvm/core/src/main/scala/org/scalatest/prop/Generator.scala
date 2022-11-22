@@ -1762,7 +1762,7 @@ object Generator {
           else
             (resLazyList(value), rndPassedToShrinks)
         }
-      } // TODO: Confirm this is ok without any Roses, just NextRoseTrees.
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteDoubleEdges, rnd)
@@ -1827,7 +1827,7 @@ object Generator {
           else
             (resLazyList(value), rndPassedToShrinks)
         }
-      } // TODO confirm no roses needed
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFloatEdges, rnd)
@@ -1887,7 +1887,7 @@ object Generator {
           else
             (resLazyList(value), rndPassedToShrinks)
         }
-      } // TODO Confirm OK without Roses.
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteFloatEdges, rnd)
@@ -1924,7 +1924,7 @@ object Generator {
           }
           (resLazyList(value), rndPassedToShrinks)
         }
-      } // TODO Confirm OK without Roses.
+      } // TODO Confirm OK without Roses. I.e., will the last one have an empty shrinks method?
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroIntEdges, rnd)
@@ -1961,7 +1961,7 @@ object Generator {
           }
           (resLazyList(value), rndPassedToShrinks)
         }
-      } // TODO Confirm OK with no Roses.
+      } // TODO Confirm OK without Roses. I.e., will the last one have an empty shrinks method?
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroLongEdges, rnd)
