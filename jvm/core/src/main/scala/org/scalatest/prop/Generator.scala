@@ -719,21 +719,26 @@ object Generator {
         }
       }
       override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Char]], Randomizer) = {
-        case class CanonicalRoseTree(value: Char) extends RoseTree[Char] {
+        val lowerAlphaChars = "zyxwvutsrqponmljkihgfedcba"
+        val theLength = lowerAlphaChars.length
+        case class CanonicalRoseTree(valueIndex: Int) extends RoseTree[Char] {
+          val value = lowerAlphaChars(valueIndex)
           def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Char]], Randomizer) = {
-            // Since we don't know what the failing character was in canonicals, we just try the lower
-            // case ones. I'll pass '@' as the initial character that will get z to a in the shrinks.
-            val lowerAlphaChars = "zyxwvutsrqponmljkihgfedcba"
-            def resLazyList(theIndex: Int): LazyListOrStream[RoseTree[Char]] = {
-              if (theIndex == lowerAlphaChars.length) LazyListOrStream.empty
-              else CanonicalRoseTree(lowerAlphaChars(theIndex)) #:: resLazyList(theIndex + 1)
+            def resLazyList(nxtIndex: Int): LazyListOrStream[RoseTree[Char]] = {
+              if (nxtIndex >= theLength) LazyListOrStream.empty // Return no shrinks if already at a
+              else CanonicalRoseTree(nxtIndex) #:: resLazyList(nxtIndex + 1)
             }
-            val index = lowerAlphaChars.indexOf(value)
-            (resLazyList(if (index < 0) 0 else index), rndPassedToShrinks)
+            (resLazyList(valueIndex + 1), rndPassedToShrinks)
           }
+       }
+
+        def canonicalsResLazyList(theIndex: Int): LazyListOrStream[RoseTree[Char]] = {
+          if (theIndex >= theLength) LazyListOrStream.empty // Return no shrinks if already at a
+          else CanonicalRoseTree(theIndex) #:: canonicalsResLazyList(theIndex + 1)
         }
-        CanonicalRoseTree('@').shrinks(rnd)
+        (canonicalsResLazyList(0), rnd)
       }
+
       override def toString = "Generator[Char]"
       override def shrinksForValue(valueToShrink: Char): Option[LazyListOrStream[RoseTree[Char]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
