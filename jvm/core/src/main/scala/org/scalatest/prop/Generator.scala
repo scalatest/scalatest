@@ -634,9 +634,21 @@ object Generator {
             (NextRoseTree(b), Nil, rnd2)
         }
       }
-      private val byteCanonicals: LazyListOrStream[Byte] = LazyListOrStream(-3, 3, -2, 2, -1, 1, 0)
       override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Byte]], Randomizer) = {
-        (byteCanonicals.map(Rose(_)), rnd)
+        case class CanonicalRoseTree(value: Byte) extends RoseTree[Byte] {
+          def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Byte]], Randomizer) = {
+            def resLazyList(theValue: Byte): LazyListOrStream[RoseTree[Byte]] = {
+              if (theValue == 0) LazyListOrStream.empty
+              else {
+                val minusOne: Byte = (theValue - 1).toByte
+                if (minusOne == 0) Rose(0.toByte) #:: LazyListOrStream.empty
+                else CanonicalRoseTree((-minusOne).toByte) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+              }
+            }
+            (resLazyList(value), rndPassedToShrinks)
+          }
+        }
+        CanonicalRoseTree(4).shrinks(rnd)
       }
       override def toString = "Generator[Byte]"
 
