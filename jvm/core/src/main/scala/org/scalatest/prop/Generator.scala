@@ -1731,25 +1731,24 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroFiniteDouble) extends RoseTree[NonZeroFiniteDouble] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NonZeroFiniteDouble]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(raw: NonZeroFiniteDouble, acc: LazyListOrStream[RoseTree[NonZeroFiniteDouble]]): LazyListOrStream[RoseTree[NonZeroFiniteDouble]] = {
-            val d = raw.value
+          def resLazyList(theValue: NonZeroFiniteDouble): LazyListOrStream[RoseTree[NonZeroFiniteDouble]] = {
+            val d = theValue.value
             if (d <= 1.0 && d >= -1.0)
-              acc
+              LazyListOrStream.empty[RoseTree[NonZeroFiniteDouble]]
             else if (!d.isWhole) {
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (d > 0.0) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
-              shrinkLoop(NonZeroFiniteDouble.ensuringValid(nearest), NextRoseTree(NonZeroFiniteDouble.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroFiniteDouble.ensuringValid(nearest)) #:: acc)
+              NextRoseTree(NonZeroFiniteDouble.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroFiniteDouble.ensuringValid(nearest)) #:: resLazyList(NonZeroFiniteDouble.ensuringValid(nearest))
             }
             else {
               val sqrt: Double = math.sqrt(d.abs)
-              if (sqrt < 1.0) acc
+              if (sqrt < 1.0) LazyListOrStream.empty[RoseTree[NonZeroFiniteDouble]]
               else {
                 val whole: NonZeroFiniteDouble = NonZeroFiniteDouble.ensuringValid(sqrt.floor)
                 // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
                 val negWhole: NonZeroFiniteDouble = -whole  //math.rint(-whole)
                 val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
-                shrinkLoop(first, NextRoseTree(first) #:: NextRoseTree(second) #:: acc)
+                NextRoseTree(first) #:: NextRoseTree(second) #:: resLazyList(first)
               }
             }
           }
@@ -1761,9 +1760,9 @@ object Generator {
             (Rose(NonZeroFiniteDouble.ensuringValid(-1.0)) #:: Rose(NonZeroFiniteDouble.ensuringValid(1.0)) #:: LazyListOrStream.empty, rndPassedToShrinks)
           }
           else
-            (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+            (resLazyList(value), rndPassedToShrinks)
         }
-      } // TODO: Confirm this is ok without any Roses, just NextRoseTrees.
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteDouble], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteDoubleEdges, rnd)
@@ -1792,11 +1791,10 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroFloat) extends RoseTree[NonZeroFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NonZeroFloat]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(raw: NonZeroFloat, acc: LazyListOrStream[RoseTree[NonZeroFloat]]): LazyListOrStream[RoseTree[NonZeroFloat]] = {
-            val d = raw.value
+          def resLazyList(theValue: NonZeroFloat): LazyListOrStream[RoseTree[NonZeroFloat]] = {
+            val d = theValue.value
             if (d <= 1.0f && d >= -1.0f)
-              acc
+              LazyListOrStream.empty[RoseTree[NonZeroFloat]]
             else if (!d.isWhole) {
               val n =
                 if (d == Float.PositiveInfinity || d.isNaN)
@@ -1806,17 +1804,16 @@ object Generator {
                 else d
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-              shrinkLoop(NonZeroFloat.ensuringValid(nearest), NextRoseTree(NonZeroFloat.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroFloat.ensuringValid(nearest)) #:: acc)
+              NextRoseTree(NonZeroFloat.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroFloat.ensuringValid(nearest)) #:: resLazyList(NonZeroFloat.ensuringValid(nearest))
             }
             else {
               val sqrt: Float = math.sqrt(d.abs.toDouble).toFloat
-              if (sqrt < 1.0f) acc
+              if (sqrt < 1.0f) LazyListOrStream.empty[RoseTree[NonZeroFloat]]
               else {
                 val whole: NonZeroFloat = NonZeroFloat.ensuringValid(sqrt.floor)
                 // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
                 val negWhole: NonZeroFloat = -whole  //math.rint(-whole)
-                val (first, second) = if (d > 0.0f) (negWhole, whole) else (whole, negWhole)
-                shrinkLoop(first, NextRoseTree(first) #:: NextRoseTree(second) #:: acc)
+                NextRoseTree(negWhole) #:: NextRoseTree(whole) #:: resLazyList(whole)
               }
             }
           }
@@ -1828,9 +1825,9 @@ object Generator {
             (Rose(NonZeroFloat.ensuringValid(-1.0f)) #:: Rose(NonZeroFloat.ensuringValid(1.0f)) #:: LazyListOrStream.empty, rndPassedToShrinks)
           }
           else
-            (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+            (resLazyList(value), rndPassedToShrinks)
         }
-      } // TODO confirm no roses needed
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFloatEdges, rnd)
@@ -1860,25 +1857,23 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroFiniteFloat) extends RoseTree[NonZeroFiniteFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NonZeroFiniteFloat]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(raw: NonZeroFiniteFloat, acc: LazyListOrStream[RoseTree[NonZeroFiniteFloat]]): LazyListOrStream[RoseTree[NonZeroFiniteFloat]] = {
-            val d = raw.value
+          def resLazyList(theValue: NonZeroFiniteFloat): LazyListOrStream[RoseTree[NonZeroFiniteFloat]] = {
+            val d = theValue.value
             if (d <= 1.0f && d >= -1.0f)
-              acc
+              LazyListOrStream.empty[RoseTree[NonZeroFiniteFloat]]
             else if (!d.isWhole) {
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (d > 0.0f) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
-              shrinkLoop(NonZeroFiniteFloat.ensuringValid(nearest), NextRoseTree(NonZeroFiniteFloat.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroFiniteFloat.ensuringValid(nearest)) #:: acc)
+              NextRoseTree(NonZeroFiniteFloat.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroFiniteFloat.ensuringValid(nearest)) #:: resLazyList(NonZeroFiniteFloat.ensuringValid(nearest))
             }
             else {
               val sqrt: Float = math.sqrt(d.abs.toDouble).toFloat
-              if (sqrt < 1.0f) acc
+              if (sqrt < 1.0f) LazyListOrStream.empty[RoseTree[NonZeroFiniteFloat]]
               else {
                 val whole: NonZeroFiniteFloat = NonZeroFiniteFloat.ensuringValid(sqrt.floor)
                 // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
                 val negWhole: NonZeroFiniteFloat = -whole  //math.rint(-whole)
-                val (first, second) = if (d > 0.0f) (negWhole, whole) else (whole, negWhole)
-                shrinkLoop(first, NextRoseTree(first) #:: NextRoseTree(second) #:: acc)
+                NextRoseTree(negWhole) #:: NextRoseTree(whole) #:: resLazyList(whole)
               }
             }
           }
@@ -1890,9 +1885,9 @@ object Generator {
             (Rose(NonZeroFiniteFloat.ensuringValid(-1.0f)) #:: Rose(NonZeroFiniteFloat.ensuringValid(1.0f)) #:: LazyListOrStream.empty, rndPassedToShrinks)
           }
           else
-            (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+            (resLazyList(value), rndPassedToShrinks)
         }
-      } // TODO Confirm OK without Roses.
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroFiniteFloat], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteFloatEdges, rnd)
@@ -1921,15 +1916,15 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroInt) extends RoseTree[NonZeroInt] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NonZeroInt]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: NonZeroInt, acc: LazyListOrStream[RoseTree[NonZeroInt]]): LazyListOrStream[RoseTree[NonZeroInt]] = {
+          def resLazyList(theValue: NonZeroInt): LazyListOrStream[RoseTree[NonZeroInt]] = {
+            val i = theValue.value
             val half: Int = i / 2 // i cannot be zero, because initially it is the underlying Int value of a NonZeroInt (in types
-            if (half == 0) acc    // we trust), then if half results in zero, we return acc here. I.e., we don't loop.
-            else shrinkLoop(NonZeroInt.ensuringValid(half), NextRoseTree(NonZeroInt.ensuringValid(-half)) #:: NextRoseTree(NonZeroInt.ensuringValid(half)) #:: acc)
+            if (half == 0) LazyListOrStream.empty[RoseTree[NonZeroInt]]    // we trust), then if half results in zero, we return empty list. I.e., no more shrinks available.
+            else NextRoseTree(NonZeroInt.ensuringValid(-half)) #:: NextRoseTree(NonZeroInt.ensuringValid(half)) #:: resLazyList(NonZeroInt.ensuringValid(half))
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
-      } // TODO Confirm OK without Roses.
+      } // TODO Confirm OK without Roses. I.e., will the last one have an empty shrinks method?
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroIntEdges, rnd)
@@ -1958,15 +1953,15 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroLong) extends RoseTree[NonZeroLong] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NonZeroLong]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: NonZeroLong, acc: LazyListOrStream[RoseTree[NonZeroLong]]): LazyListOrStream[RoseTree[NonZeroLong]] = {
+          def resLazyList(theValue: NonZeroLong): LazyListOrStream[RoseTree[NonZeroLong]] = {
+            val i = theValue.value
             val half: Long = i / 2 // i cannot be zero, because initially it is the underlying Int value of a NonZeroLong (in types
-            if (half == 0) acc     // we trust), then if half results in zero, we return acc here. I.e., we don't loop.
-            else shrinkLoop(NonZeroLong.ensuringValid(half), NextRoseTree(NonZeroLong.ensuringValid(-half)) #:: NextRoseTree(NonZeroLong.ensuringValid(half)) #:: acc)
+            if (half == 0) LazyListOrStream.empty[RoseTree[NonZeroLong]]     // we trust), then if half results in zero, we return acc here. I.e., we don't loop.
+            else NextRoseTree(NonZeroLong.ensuringValid(-half)) #:: NextRoseTree(NonZeroLong.ensuringValid(half)) #:: resLazyList(NonZeroLong.ensuringValid(half))
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
-      } // TODO Confirm OK with no Roses.
+      } // TODO Confirm OK without Roses. I.e., will the last one have an empty shrinks method?
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NonZeroLong], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroLongEdges, rnd)
@@ -2775,7 +2770,7 @@ object Generator {
       }
       override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[() => T]], Randomizer) = {
         val (canonicalsOfT, nextRnd) = genOfT.canonicals(rnd)
-        val canonicals = canonicalsOfT.map(rt => rt.map(t => PrettyFunction0(t): () => T)) // TODO: Make RoseTree covariant
+        val canonicals = canonicalsOfT.map(rt => rt.map(t => PrettyFunction0(t): Function0[T]))
         (canonicals, nextRnd)
       }
     }
@@ -3710,12 +3705,12 @@ object Generator {
               nestedRoseTreesOpt match {
                 case Some(nestedRoseTrees) => 
                   val nestedList: LazyListOrStream[RoseTree[Option[T]]] =
-                    nestedRoseTrees.map(nrt => nrt.map(t => Some(t))) #::: Rose(None) #:: LazyListOrStream.empty
+                    nestedRoseTrees.map(nrt => nrt.map(t => Some(t))) #::: Rose(None) #:: LazyListOrStream.empty[RoseTree[Option[T]]]
                   (nestedList, rndPassedToShrinks)
                 case None =>
                   // If the shrinksForValue lazy list is empty, degrade to canonicals.
                   val (canonicalTs, rnd2) = genOfT.canonicals(rndPassedToShrinks)
-                  (canonicalTs.map(rt => rt.map(t => Some(t))) #::: NextRoseTree(None) #:: LazyListOrStream.empty, rnd2)
+                  (canonicalTs.map(rt => rt.map(t => Some(t))) #::: NextRoseTree(None) #:: LazyListOrStream.empty[RoseTree[Option[T]]], rnd2)
               }
 
             // There's no way to simplify None:
@@ -3887,7 +3882,7 @@ object Generator {
       override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Either[L, R]]], Randomizer) = {
         val (rightCanon, nextRnd) = genOfR.canonicals(rnd)
         val (leftCanon, nextNextRnd) = genOfL.canonicals(nextRnd)
-        (rightCanon.map(rt => rt.map(t => Right(t))) #::: leftCanon.map(rt => rt.map(t => Left(t))), nextNextRnd)
+        (rightCanon.map(rt => rt.map(t => Right(t))) #::: leftCanon.map(rt => rt.map(t => Left(t))) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]], nextNextRnd)
       }
 
       def next(szp: SizeParam, edges: List[Either[L, R]], rnd: Randomizer): (RoseTree[Either[L, R]], List[Either[L, R]], Randomizer) = {
