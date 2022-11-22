@@ -1953,13 +1953,13 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroLong) extends RoseTree[NonZeroLong] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NonZeroLong]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: NonZeroLong, acc: LazyListOrStream[RoseTree[NonZeroLong]]): LazyListOrStream[RoseTree[NonZeroLong]] = {
+          def resLazyList(theValue: NonZeroLong): LazyListOrStream[RoseTree[NonZeroLong]] = {
+            val i = theValue.value
             val half: Long = i / 2 // i cannot be zero, because initially it is the underlying Int value of a NonZeroLong (in types
-            if (half == 0) acc     // we trust), then if half results in zero, we return acc here. I.e., we don't loop.
-            else shrinkLoop(NonZeroLong.ensuringValid(half), NextRoseTree(NonZeroLong.ensuringValid(-half)) #:: NextRoseTree(NonZeroLong.ensuringValid(half)) #:: acc)
+            if (half == 0) LazyListOrStream.empty[RoseTree[NonZeroLong]]     // we trust), then if half results in zero, we return acc here. I.e., we don't loop.
+            else NextRoseTree(NonZeroLong.ensuringValid(-half)) #:: NextRoseTree(NonZeroLong.ensuringValid(half)) #:: resLazyList(NonZeroLong.ensuringValid(half))
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       } // TODO Confirm OK with no Roses.
 
