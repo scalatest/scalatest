@@ -1791,11 +1791,10 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroFloat) extends RoseTree[NonZeroFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NonZeroFloat]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(raw: NonZeroFloat, acc: LazyListOrStream[RoseTree[NonZeroFloat]]): LazyListOrStream[RoseTree[NonZeroFloat]] = {
-            val d = raw.value
+          def resLazyList(theValue: NonZeroFloat): LazyListOrStream[RoseTree[NonZeroFloat]] = {
+            val d = theValue.value
             if (d <= 1.0f && d >= -1.0f)
-              acc
+              LazyListOrStream.empty[RoseTree[NonZeroFloat]]
             else if (!d.isWhole) {
               val n =
                 if (d == Float.PositiveInfinity || d.isNaN)
@@ -1805,17 +1804,16 @@ object Generator {
                 else d
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-              shrinkLoop(NonZeroFloat.ensuringValid(nearest), NextRoseTree(NonZeroFloat.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroFloat.ensuringValid(nearest)) #:: acc)
+              NextRoseTree(NonZeroFloat.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroFloat.ensuringValid(nearest)) #:: resLazyList(NonZeroFloat.ensuringValid(nearest))
             }
             else {
               val sqrt: Float = math.sqrt(d.abs.toDouble).toFloat
-              if (sqrt < 1.0f) acc
+              if (sqrt < 1.0f) LazyListOrStream.empty[RoseTree[NonZeroFloat]]
               else {
                 val whole: NonZeroFloat = NonZeroFloat.ensuringValid(sqrt.floor)
                 // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
                 val negWhole: NonZeroFloat = -whole  //math.rint(-whole)
-                val (first, second) = if (d > 0.0f) (negWhole, whole) else (whole, negWhole)
-                shrinkLoop(first, NextRoseTree(first) #:: NextRoseTree(second) #:: acc)
+                NextRoseTree(negWhole) #:: NextRoseTree(whole) #:: resLazyList(whole)
               }
             }
           }
@@ -1827,7 +1825,7 @@ object Generator {
             (Rose(NonZeroFloat.ensuringValid(-1.0f)) #:: Rose(NonZeroFloat.ensuringValid(1.0f)) #:: LazyListOrStream.empty, rndPassedToShrinks)
           }
           else
-            (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+            (resLazyList(value), rndPassedToShrinks)
         }
       } // TODO confirm no roses needed
 
