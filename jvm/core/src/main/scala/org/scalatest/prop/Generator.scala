@@ -3710,12 +3710,12 @@ object Generator {
               nestedRoseTreesOpt match {
                 case Some(nestedRoseTrees) => 
                   val nestedList: LazyListOrStream[RoseTree[Option[T]]] =
-                    nestedRoseTrees.map(nrt => nrt.map(t => Some(t))) #::: Rose(None) #:: LazyListOrStream.empty
+                    nestedRoseTrees.map(nrt => nrt.map(t => Some(t))) #::: Rose(None) #:: LazyListOrStream.empty[RoseTree[Option[T]]]
                   (nestedList, rndPassedToShrinks)
                 case None =>
                   // If the shrinksForValue lazy list is empty, degrade to canonicals.
                   val (canonicalTs, rnd2) = genOfT.canonicals(rndPassedToShrinks)
-                  (canonicalTs.map(rt => rt.map(t => Some(t))) #::: NextRoseTree(None) #:: LazyListOrStream.empty, rnd2)
+                  (canonicalTs.map(rt => rt.map(t => Some(t))) #::: NextRoseTree(None) #:: LazyListOrStream.empty[RoseTree[Option[T]]], rnd2)
               }
 
             // There's no way to simplify None:
@@ -3887,7 +3887,7 @@ object Generator {
       override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Either[L, R]]], Randomizer) = {
         val (rightCanon, nextRnd) = genOfR.canonicals(rnd)
         val (leftCanon, nextNextRnd) = genOfL.canonicals(nextRnd)
-        (rightCanon.map(rt => rt.map(t => Right(t))) #::: leftCanon.map(rt => rt.map(t => Left(t))), nextNextRnd)
+        (rightCanon.map(rt => rt.map(t => Right(t))) #::: leftCanon.map(rt => rt.map(t => Left(t))) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]], nextNextRnd)
       }
 
       def next(szp: SizeParam, edges: List[Either[L, R]], rnd: Randomizer): (RoseTree[Either[L, R]], List[Either[L, R]], Randomizer) = {
