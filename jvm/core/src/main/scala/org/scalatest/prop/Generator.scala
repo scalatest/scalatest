@@ -2775,7 +2775,7 @@ object Generator {
       }
       override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[() => T]], Randomizer) = {
         val (canonicalsOfT, nextRnd) = genOfT.canonicals(rnd)
-        val canonicals = canonicalsOfT.map(rt => rt.map(t => PrettyFunction0(t): () => T)) // TODO: Make RoseTree covariant
+        val canonicals = canonicalsOfT.map(rt => rt.map(t => PrettyFunction0(t): Function0[T]))
         (canonicals, nextRnd)
       }
     }
