@@ -2222,16 +2222,16 @@ object Generator {
 
       case class NextRoseTree(value: NegLong) extends RoseTree[NegLong] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NegLong]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: NegLong, acc: LazyListOrStream[RoseTree[NegLong]]): LazyListOrStream[RoseTree[NegLong]] = {
+          def resLazyList(theValue: NegLong): LazyListOrStream[RoseTree[NegLong]] = {
+            val i = theValue.value
             val half: Long = i / 2
-            if (half == 0) acc
+            if (half == 0) LazyListOrStream.empty[RoseTree[NegLong]]
             else {
               val negLongHalf = NegLong.ensuringValid(half)
-              shrinkLoop(negLongHalf, NextRoseTree(negLongHalf) #:: acc)
+              NextRoseTree(negLongHalf) #:: resLazyList(negLongHalf)
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       } // TODO: Confirm OK with no Roses.
 
