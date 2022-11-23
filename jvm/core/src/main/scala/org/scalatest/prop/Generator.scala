@@ -1990,11 +1990,10 @@ object Generator {
 
       case class NextRoseTree(value: NegDouble) extends RoseTree[NegDouble] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NegDouble]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(f: NegDouble, acc: LazyListOrStream[RoseTree[NegDouble]]): LazyListOrStream[RoseTree[NegDouble]] = {
-            val fv = f.value
-            if (fv == -1.0) acc
-            else if (fv > -1.0) Rose(NegDouble(-1.0)) #:: acc
+          def resLazyList(theValue: NegDouble): LazyListOrStream[RoseTree[NegDouble]] = {
+            val fv = theValue.value
+            if (fv == -1.0) LazyListOrStream.empty[RoseTree[NegDouble]]
+            else if (fv > -1.0) Rose(NegDouble(-1.0)) #:: LazyListOrStream.empty[RoseTree[NegDouble]]
             else if (!fv.isWhole) {
               val n =
                 if (fv == Double.NegativeInfinity || fv.isNaN)
@@ -2002,15 +2001,15 @@ object Generator {
                 else fv
               // Nearest whole numbers closer to zero
               val nearest = NegDouble.ensuringValid(n.ceil)
-              shrinkLoop(nearest, Rose(nearest) #:: acc)
+              NextRoseTree(nearest) #:: resLazyList(nearest)
             }
             else {
               val sqrt: Double = -(math.sqrt(fv.abs))
               val whole = NegDouble.ensuringValid(sqrt.ceil)
-              shrinkLoop(whole, NextRoseTree(whole) #:: acc)
+              NextRoseTree(whole) #:: resLazyList(whole)
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
@@ -2041,23 +2040,22 @@ object Generator {
 
       case class NextRoseTree(value: NegFiniteDouble) extends RoseTree[NegFiniteDouble] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NegFiniteDouble]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(f: NegFiniteDouble, acc: LazyListOrStream[RoseTree[NegFiniteDouble]]): LazyListOrStream[RoseTree[NegFiniteDouble]] = {
-            val fv = f.value
-            if (fv == -1.0) acc
-            else if (fv > -1.0) Rose(NegFiniteDouble(-1.0)) #:: acc
+          def resLazyList(theValue: NegFiniteDouble): LazyListOrStream[RoseTree[NegFiniteDouble]] = {
+            val fv = theValue.value
+            if (fv == -1.0) LazyListOrStream.empty[RoseTree[NegFiniteDouble]]
+            else if (fv > -1.0) Rose(NegFiniteDouble(-1.0)) #:: LazyListOrStream.empty[RoseTree[NegFiniteDouble]]
             else if (!fv.isWhole) {
               // Nearest whole numbers closer to zero
               val nearest = NegFiniteDouble.ensuringValid(fv.ceil)
-              shrinkLoop(nearest, NextRoseTree(nearest) #:: acc)
+              NextRoseTree(nearest) #:: resLazyList(nearest)
             }
             else {
               val sqrt: Double = -(math.sqrt(fv.abs))
               val whole = NegFiniteDouble.ensuringValid(sqrt.ceil)
-              shrinkLoop(whole, NextRoseTree(whole) #:: acc)
+              NextRoseTree(whole) #:: resLazyList(whole)
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
@@ -2088,11 +2086,10 @@ object Generator {
 
       case class NextRoseTree(value: NegFloat) extends RoseTree[NegFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NegFloat]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(f: NegFloat, acc: LazyListOrStream[RoseTree[NegFloat]]): LazyListOrStream[RoseTree[NegFloat]] = {
-            val fv = f.value
-            if (fv == -1.0f) acc
-            else if (fv > -1.0f) Rose(NegFloat(-1.0f)) #:: acc
+          def resLazyList(theValue: NegFloat): LazyListOrStream[RoseTree[NegFloat]] = {
+            val fv = theValue.value
+            if (fv == -1.0f) LazyListOrStream.empty[RoseTree[NegFloat]]
+            else if (fv > -1.0f) Rose(NegFloat(-1.0f)) #:: LazyListOrStream.empty[RoseTree[NegFloat]]
             else if (!fv.isWhole) {
               val n =
                 if (fv == Float.NegativeInfinity || fv.isNaN)
@@ -2100,15 +2097,15 @@ object Generator {
                 else fv
               // Nearest whole numbers closer to zero
               val nearest = NegFloat.ensuringValid(n.ceil)
-              shrinkLoop(nearest, NextRoseTree(nearest) #:: acc)
+              NextRoseTree(nearest) #:: resLazyList(nearest)
             }
             else {
               val sqrt: Float = -(math.sqrt(fv.abs.toDouble)).toFloat
               val whole = NegFloat.ensuringValid(sqrt.ceil)
-              shrinkLoop(whole, NextRoseTree(whole) #:: acc)
+              NextRoseTree(whole) #:: resLazyList(whole)
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
@@ -2139,23 +2136,22 @@ object Generator {
 
       case class NextRoseTree(value: NegFiniteFloat) extends RoseTree[NegFiniteFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NegFiniteFloat]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(f: NegFiniteFloat, acc: LazyListOrStream[RoseTree[NegFiniteFloat]]): LazyListOrStream[RoseTree[NegFiniteFloat]] = {
-            val fv = f.value
-            if (fv == -1.0f) acc
-            else if (fv > -1.0f) Rose(NegFiniteFloat(-1.0f)) #:: acc
+          def resLazyList(theValue: NegFiniteFloat): LazyListOrStream[RoseTree[NegFiniteFloat]] = {
+            val fv = theValue.value
+            if (fv == -1.0f) LazyListOrStream.empty[RoseTree[NegFiniteFloat]]
+            else if (fv > -1.0f) Rose(NegFiniteFloat(-1.0f)) #:: LazyListOrStream.empty[RoseTree[NegFiniteFloat]]
             else if (!fv.isWhole) {
               // Nearest whole numbers closer to zero
               val nearest = NegFiniteFloat.ensuringValid(fv.ceil)
-              shrinkLoop(nearest, NextRoseTree(nearest) #:: acc)
+              NextRoseTree(nearest) #:: resLazyList(nearest)
             }
             else {
               val sqrt: Float = -(math.sqrt(fv.abs.toDouble)).toFloat
               val whole = NegFiniteFloat.ensuringValid(sqrt.ceil)
-              shrinkLoop(whole, NextRoseTree(whole) #:: acc)
+              NextRoseTree(whole) #:: resLazyList(whole)
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
@@ -2186,18 +2182,18 @@ object Generator {
 
       case class NextRoseTree(value: NegInt) extends RoseTree[NegInt] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NegInt]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: NegInt, acc: LazyListOrStream[RoseTree[NegInt]]): LazyListOrStream[RoseTree[NegInt]] = {
+          def resLazyList(theValue: NegInt): LazyListOrStream[RoseTree[NegInt]] = {
+            val i = theValue.value
             val half: Int = i / 2
-            if (half == 0) acc
+            if (half == 0) LazyListOrStream.empty[RoseTree[NegInt]]
             else {
               val negIntHalf = NegInt.ensuringValid(half)
-              shrinkLoop(negIntHalf, NextRoseTree(negIntHalf) #:: acc)
+              NextRoseTree(negIntHalf) #:: resLazyList(negIntHalf)
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
-      } // TODO Confirm OK with no Roses.
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negIntEdges, rnd)
@@ -2226,16 +2222,16 @@ object Generator {
 
       case class NextRoseTree(value: NegLong) extends RoseTree[NegLong] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NegLong]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(i: NegLong, acc: LazyListOrStream[RoseTree[NegLong]]): LazyListOrStream[RoseTree[NegLong]] = {
+          def resLazyList(theValue: NegLong): LazyListOrStream[RoseTree[NegLong]] = {
+            val i = theValue.value
             val half: Long = i / 2
-            if (half == 0) acc
+            if (half == 0) LazyListOrStream.empty[RoseTree[NegLong]]
             else {
               val negLongHalf = NegLong.ensuringValid(half)
-              shrinkLoop(negLongHalf, NextRoseTree(negLongHalf) #:: acc)
+              NextRoseTree(negLongHalf) #:: resLazyList(negLongHalf)
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       } // TODO: Confirm OK with no Roses.
 
@@ -2266,11 +2262,10 @@ object Generator {
 
       case class NextRoseTree(value: NegZDouble) extends RoseTree[NegZDouble] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NegZDouble]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(f: NegZDouble, acc: LazyListOrStream[RoseTree[NegZDouble]]): LazyListOrStream[RoseTree[NegZDouble]] = {
-            val fv = f.value
-            if (fv == 0.0) acc
-            else if (fv >= -1.0) Rose(NegZDouble(0.0)) #:: acc
+          def resLazyList(theValue: NegZDouble): LazyListOrStream[RoseTree[NegZDouble]] = {
+            val fv = theValue.value
+            if (fv == 0.0) LazyListOrStream.empty[RoseTree[NegZDouble]]
+            else if (fv >= -1.0) Rose(NegZDouble(0.0)) #:: LazyListOrStream.empty[RoseTree[NegZDouble]]
             else if (!fv.isWhole) {
               val n =
                 if (fv == Double.NegativeInfinity || fv.isNaN)
@@ -2278,18 +2273,18 @@ object Generator {
                 else fv
               // Nearest whole numbers closer to zero
               val nearest = NegZDouble.ensuringValid(n.ceil)
-              shrinkLoop(nearest, NextRoseTree(nearest) #:: acc)
+              NextRoseTree(nearest) #:: resLazyList(nearest)
             }
             else {
               val sqrt: Double = -math.sqrt(fv.abs)
-              if (sqrt > -1.0) Rose(NegZDouble(0.0)) #:: acc
+              if (sqrt > -1.0) Rose(NegZDouble(0.0)) #:: LazyListOrStream.empty[RoseTree[NegZDouble]]
               else {
                 val whole = NegZDouble.ensuringValid(sqrt.ceil)
-                shrinkLoop(whole, NextRoseTree(whole) #:: acc)
+                NextRoseTree(whole) #:: resLazyList(whole)
               }
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
@@ -2321,26 +2316,25 @@ object Generator {
 
       case class NextRoseTree(value: NegZFiniteDouble) extends RoseTree[NegZFiniteDouble] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NegZFiniteDouble]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(f: NegZFiniteDouble, acc: LazyListOrStream[RoseTree[NegZFiniteDouble]]): LazyListOrStream[RoseTree[NegZFiniteDouble]] = {
-            val fv = f.value
-            if (fv == 0.0) acc
-            else if (fv >= -1.0) Rose(NegZFiniteDouble(0.0)) #:: acc
+          def resLazyList(theValue: NegZFiniteDouble): LazyListOrStream[RoseTree[NegZFiniteDouble]] = {
+            val fv = theValue.value
+            if (fv == 0.0) LazyListOrStream.empty[RoseTree[NegZFiniteDouble]]
+            else if (fv >= -1.0) Rose(NegZFiniteDouble(0.0)) #:: LazyListOrStream.empty[RoseTree[NegZFiniteDouble]]
             else if (!fv.isWhole) {
               // Nearest whole numbers closer to zero
               val nearest = NegZFiniteDouble.ensuringValid(fv.ceil)
-              shrinkLoop(nearest, NextRoseTree(nearest) #:: acc)
+              NextRoseTree(nearest) #:: resLazyList(nearest)
             }
             else {
               val sqrt: Double = -math.sqrt(fv.abs)
-              if (sqrt > -1.0) Rose(NegZFiniteDouble(0.0)) #:: acc
+              if (sqrt > -1.0) Rose(NegZFiniteDouble(0.0)) #:: LazyListOrStream.empty[RoseTree[NegZFiniteDouble]]
               else {
                 val whole = NegZFiniteDouble.ensuringValid(sqrt.ceil)
-                shrinkLoop(whole, NextRoseTree(whole) #:: acc)
+                NextRoseTree(whole) #:: resLazyList(whole)
               }
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
@@ -2371,11 +2365,10 @@ object Generator {
 
       case class NextRoseTree(value: NegZFloat) extends RoseTree[NegZFloat] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NegZFloat]], Randomizer) = {
-          @tailrec
-          def shrinkLoop(f: NegZFloat, acc: LazyListOrStream[RoseTree[NegZFloat]]): LazyListOrStream[RoseTree[NegZFloat]] = {
-            val fv = f.value
-            if (fv == 0.0f) acc
-            else if (fv >= -1.0f) Rose(NegZFloat(0.0f)) #:: acc
+          def resLazyList(theValue: NegZFloat): LazyListOrStream[RoseTree[NegZFloat]] = {
+            val fv = theValue.value
+            if (fv == 0.0f) LazyListOrStream.empty[RoseTree[NegZFloat]]
+            else if (fv >= -1.0f) Rose(NegZFloat(0.0f)) #:: LazyListOrStream.empty[RoseTree[NegZFloat]]
             else if (!fv.isWhole) {
               val n =
                 if (fv == Float.NegativeInfinity || fv.isNaN)
@@ -2383,18 +2376,18 @@ object Generator {
                 else fv
               // Nearest whole numbers closer to zero
               val nearest = NegZFloat.ensuringValid(n.ceil)
-              shrinkLoop(nearest, NextRoseTree(nearest) #:: acc)
+              NextRoseTree(nearest) #:: resLazyList(nearest)
             }
             else {
               val sqrt: Float = -math.sqrt(fv.abs.toDouble).toFloat
-              if (sqrt > -1.0f) Rose(NegZFloat(0.0f)) #:: acc
+              if (sqrt > -1.0f) Rose(NegZFloat(0.0f)) #:: LazyListOrStream.empty[RoseTree[NegZFloat]]
               else {
                 val whole = NegZFloat.ensuringValid(sqrt.ceil)
-                shrinkLoop(whole, NextRoseTree(whole) #:: acc)
+                NextRoseTree(whole) #:: resLazyList(whole)
               }
             }
           }
-          (shrinkLoop(value, LazyListOrStream.empty).reverse, rndPassedToShrinks)
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
