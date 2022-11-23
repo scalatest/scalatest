@@ -2193,7 +2193,7 @@ object Generator {
           }
           (resLazyList(value), rndPassedToShrinks)
         }
-      } // TODO Confirm OK with no Roses.
+      }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NegInt], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(negIntEdges, rnd)
