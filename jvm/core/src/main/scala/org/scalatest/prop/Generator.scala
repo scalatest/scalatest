@@ -855,8 +855,6 @@ object Generator {
             (NextRoseTree(n), Nil, rnd2)
         }
       }
-      //private val longCanonicals: LazyListOrStream[Long] = LazyListOrStream(-3, 3, -2, 2, -1, 1, 0)
-      //override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Long]], Randomizer) = (longCanonicals.map(Rose(_)), rnd)
       override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Long]], Randomizer) = {
         case class CanonicalRoseTree(value: Long) extends RoseTree[Long] {
           def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Long]], Randomizer) = {
@@ -952,8 +950,22 @@ object Generator {
             (NextRoseTree(f), Nil, rnd2)
         }
       }
-      private val floatCanonicals: LazyListOrStream[Float] = LazyListOrStream(-3.0f, 3.0f, -2.0f, 2.0f, -1.0f, 1.0f, 0.0f)
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Float]], Randomizer) = (floatCanonicals.map(Rose(_)), rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[Float]], Randomizer) = {
+        case class CanonicalRoseTree(value: Float) extends RoseTree[Float] {
+          def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Float]], Randomizer) = {
+            def resLazyList(theValue: Float): LazyListOrStream[RoseTree[Float]] = {
+              if (theValue == 0) LazyListOrStream.empty
+              else {
+                val minusOne: Float = (theValue - 1.0f).toFloat
+                if (minusOne == 0) Rose(0.toFloat) #:: LazyListOrStream.empty
+                else CanonicalRoseTree((-minusOne).toFloat) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+              }
+            }
+            (resLazyList(value), rndPassedToShrinks)
+          }
+        }
+        CanonicalRoseTree(4.0f).shrinks(rnd)
+      }
       override def toString = "Generator[Float]"
       override def shrinksForValue(valueToShrink: Float): Option[LazyListOrStream[RoseTree[Float]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
