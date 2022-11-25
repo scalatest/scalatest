@@ -1103,7 +1103,7 @@ object Generator {
         case class CanonicalRoseTree(value: PosInt) extends RoseTree[PosInt] {
           def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[PosInt]], Randomizer) = {
             def resLazyList(theValue: PosInt): LazyListOrStream[RoseTree[PosInt]] = {
-              if (theValue == 1) LazyListOrStream.empty
+              if (theValue.value == 1) LazyListOrStream.empty
               else {
                 val minusOne: PosInt = PosInt.ensuringValid(theValue.value - 1)
                 if (minusOne.value == 1) Rose(minusOne) #:: LazyListOrStream.empty
@@ -1156,7 +1156,7 @@ object Generator {
         case class CanonicalRoseTree(value: PosZInt) extends RoseTree[PosZInt] {
           def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[PosZInt]], Randomizer) = {
             def resLazyList(theValue: PosZInt): LazyListOrStream[RoseTree[PosZInt]] = {
-              if (theValue == 0) LazyListOrStream.empty
+              if (theValue.value == 0) LazyListOrStream.empty
               else {
                 val minusOne: PosZInt = PosZInt.ensuringValid(theValue.value - 1)
                 if (minusOne.value == 0) Rose(minusOne) #:: LazyListOrStream.empty
@@ -1210,7 +1210,7 @@ object Generator {
         case class CanonicalRoseTree(value: PosLong) extends RoseTree[PosLong] {
           def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[PosLong]], Randomizer) = {
             def resLazyList(theValue: PosLong): LazyListOrStream[RoseTree[PosLong]] = {
-              if (theValue == 1) LazyListOrStream.empty
+              if (theValue.value == 1) LazyListOrStream.empty
               else {
                 val minusOne: PosLong = PosLong.ensuringValid(theValue.value - 1)
                 if (minusOne.value == 1) Rose(minusOne) #:: LazyListOrStream.empty
@@ -1263,7 +1263,7 @@ object Generator {
         case class CanonicalRoseTree(value: PosZLong) extends RoseTree[PosZLong] {
           def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[PosZLong]], Randomizer) = {
             def resLazyList(theValue: PosZLong): LazyListOrStream[RoseTree[PosZLong]] = {
-              if (theValue == 0) LazyListOrStream.empty
+              if (theValue.value == 0) LazyListOrStream.empty
               else {
                 val minusOne: PosZLong = PosZLong.ensuringValid(theValue.value - 1)
                 if (minusOne.value == 0) Rose(minusOne) #:: LazyListOrStream.empty
