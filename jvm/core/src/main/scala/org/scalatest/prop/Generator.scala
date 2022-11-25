@@ -1339,7 +1339,7 @@ object Generator {
             (resLazyList(value), rndPassedToShrinks)
           }
         }
-        CanonicalRoseTree(4L).shrinks(rnd)
+        CanonicalRoseTree(4.0f).shrinks(rnd)
       }
       override def toString = "Generator[PosFloat]"
       override def shrinksForValue(valueToShrink: PosFloat): Option[LazyListOrStream[RoseTree[PosFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
@@ -1385,8 +1385,22 @@ object Generator {
             (NextRoseTree(posFiniteFloat), Nil, rnd2)
         }
       }
-      private val posFiniteFloatCanonicals: LazyListOrStream[PosFiniteFloat] = LazyListOrStream(PosFiniteFloat(3.0f), PosFiniteFloat(2.0f), PosFiniteFloat(1.0f))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosFiniteFloat]], Randomizer) = (posFiniteFloatCanonicals.map(Rose(_)), rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosFiniteFloat]], Randomizer) = {
+        case class CanonicalRoseTree(value: PosFiniteFloat) extends RoseTree[PosFiniteFloat] {
+          def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[PosFiniteFloat]], Randomizer) = {
+            def resLazyList(theValue: PosFiniteFloat): LazyListOrStream[RoseTree[PosFiniteFloat]] = {
+              if (theValue.value == 1.0f) LazyListOrStream.empty
+              else {
+                val minusOne: PosFiniteFloat = PosFiniteFloat.ensuringValid(theValue.value - 1.0f)
+                if (minusOne.value == 1.0f) Rose(minusOne) #:: LazyListOrStream.empty
+                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+              }
+            }
+            (resLazyList(value), rndPassedToShrinks)
+          }
+        }
+        CanonicalRoseTree(4.0f).shrinks(rnd)
+      }
       override def toString = "Generator[PosFiniteFloat]"
       override def shrinksForValue(valueToShrink: PosFiniteFloat): Option[LazyListOrStream[RoseTree[PosFiniteFloat]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
