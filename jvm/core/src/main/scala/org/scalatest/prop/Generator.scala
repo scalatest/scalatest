@@ -1455,8 +1455,6 @@ object Generator {
           def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[FiniteFloat]], Randomizer) = {
             def resLazyList(theValue: FiniteFloat): LazyListOrStream[RoseTree[FiniteFloat]] = {
               if (theValue.value == 0.0f) LazyListOrStream.empty
-              else if (theValue.value < 1.0f && theValue.value > -1.0f)
-                Rose(FiniteFloat.ensuringValid(0.0f)) #:: LazyListOrStream.empty
               else {
                 val minusOne: FiniteFloat = FiniteFloat.ensuringValid(theValue.value - 1.0f)
                 if (minusOne.value == 0.0f) Rose(minusOne) #:: LazyListOrStream.empty
@@ -1522,8 +1520,6 @@ object Generator {
           def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[FiniteDouble]], Randomizer) = {
             def resLazyList(theValue: FiniteDouble): LazyListOrStream[RoseTree[FiniteDouble]] = {
               if (theValue.value == 0.0) LazyListOrStream.empty
-              else if (theValue.value < 1.0 && theValue.value > -1.0)
-                Rose(FiniteDouble.ensuringValid(0.0)) #:: LazyListOrStream.empty
               else {
                 val minusOne: FiniteDouble = FiniteDouble.ensuringValid(theValue.value - 1.0)
                 if (minusOne.value == 0.0) Rose(minusOne) #:: LazyListOrStream.empty
@@ -1594,7 +1590,6 @@ object Generator {
               else {
                 val minusOne: PosZFloat = PosZFloat.ensuringValid(theValue.value - 1.0f)
                 if (minusOne.value == 0.0f) Rose(minusOne) #:: LazyListOrStream.empty
-                else if (minusOne.value < 1.0f) Rose(PosZFloat.ensuringValid(0.0f)) #:: LazyListOrStream.empty
                 else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
               }
             }
@@ -1655,8 +1650,6 @@ object Generator {
           def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[PosZFiniteFloat]], Randomizer) = {
             def resLazyList(theValue: PosZFiniteFloat): LazyListOrStream[RoseTree[PosZFiniteFloat]] = {
               if (theValue.value == 0.0f) LazyListOrStream.empty
-              else if (theValue.value < 1.0f)
-                Rose(PosZFiniteFloat.ensuringValid(0.0f)) #:: LazyListOrStream.empty
               else {
                 val minusOne: PosZFiniteFloat = PosZFiniteFloat.ensuringValid(theValue.value - 1.0f)
                 if (minusOne.value == 0.0f) Rose(minusOne) #:: LazyListOrStream.empty
