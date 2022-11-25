@@ -1843,8 +1843,22 @@ object Generator {
             (NextRoseTree(posZDouble), Nil, rnd2)
         }
       }
-      private val posZDoubleCanonicals: LazyListOrStream[PosZDouble] = LazyListOrStream(PosZDouble(3.0), PosZDouble(2.0), PosZDouble(1.0), PosZDouble(0.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosZDouble]], Randomizer) = (posZDoubleCanonicals.map(Rose(_)), rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[PosZDouble]], Randomizer) = {
+        case class CanonicalRoseTree(value: PosZDouble) extends RoseTree[PosZDouble] {
+          def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[PosZDouble]], Randomizer) = {
+            def resLazyList(theValue: PosZDouble): LazyListOrStream[RoseTree[PosZDouble]] = {
+              if (theValue.value == 0.0) LazyListOrStream.empty
+              else {
+                val minusOne: PosZDouble = PosZDouble.ensuringValid(theValue.value - 1.0)
+                if (minusOne.value == 0.0) Rose(minusOne) #:: LazyListOrStream.empty
+                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+              }
+            }
+            (resLazyList(value), rndPassedToShrinks)
+          }
+        }
+        CanonicalRoseTree(4.0).shrinks(rnd)
+      }
       override def toString = "Generator[PosZDouble]"
       override def shrinksForValue(valueToShrink: PosZDouble): Option[LazyListOrStream[RoseTree[PosZDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
