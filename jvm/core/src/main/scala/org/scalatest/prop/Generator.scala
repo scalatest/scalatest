@@ -2888,8 +2888,10 @@ object Generator {
       case class NextRoseTree(value: String) extends RoseTree[String] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[String]], Randomizer) = {
           def resLazyList(theValue: String): LazyListOrStream[RoseTree[String]] = {
-            if (theValue.isEmpty || theValue.length == 1)
+            if (theValue.isEmpty)
               LazyListOrStream.empty
+            else if (theValue.length == 1)
+              Rose("") #:: LazyListOrStream.empty
             else {
               val halfSize = theValue.length / 2
               val firstHalf = theValue.take(halfSize)
@@ -2941,8 +2943,10 @@ object Generator {
       case class NextRoseTree(value: List[T]) extends RoseTree[List[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[List[T]]], Randomizer) = {
           def resLazyList(theValue: List[T]): LazyListOrStream[RoseTree[List[T]]] = {
-            if (theValue.isEmpty || theValue.length == 1)
+            if (theValue.isEmpty)
               LazyListOrStream.empty
+            else if (theValue.length == 1)
+              Rose(List.empty) #:: LazyListOrStream.empty
             else {
               val halfSize = theValue.length / 2 // Linear time
               val firstHalf = theValue.take(halfSize)
@@ -4052,16 +4056,33 @@ object Generator {
       case class NextRoseTree(value: G Or B) extends RoseTree[G Or B] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[G Or B]], Randomizer) = {
           value match {
-            case Good(g) => {
-              val (goodRt, _, nextRnd) = genOfG.next(SizeParam(1, 0, 1), List(g), rndPassedToShrinks)
-              val (gShrink, nextNextRnd) = goodRt.shrinks(nextRnd)
-              (gShrink.filter(_.value != value).map(rt => rt.map(Good(_))), nextNextRnd)
-            }
-            case Bad(b) => {
-              val (badRt, _, nextRnd) = genOfB.next(SizeParam(1, 0, 1), List(b), rndPassedToShrinks)
-              val (bShrink, nextNextRnd) = badRt.shrinks(nextRnd)
-              (bShrink.filter(_.value != value).map(rt => rt.map(Bad(_))), nextNextRnd)
-            }
+            case Good(g) =>
+
+              val nestedRoseTreesOpt: Option[LazyListOrStream[RoseTree[G]]] = genOfG.shrinksForValue(g)
+              nestedRoseTreesOpt match {
+                case Some(nestedRoseTrees) =>
+                  val nestedList: LazyListOrStream[RoseTree[G Or B]] =
+                    nestedRoseTrees.map(nrt => nrt.map(t => Good(t))) #::: LazyListOrStream.empty[RoseTree[G Or B]]
+                  (nestedList, rndPassedToShrinks)
+                case None =>
+                  // If the shrinksForValue lazy list is empty, degrade to canonicals.
+                  val (canonicalGs, rnd2) = genOfG.canonicals(rndPassedToShrinks)
+                  (canonicalGs.map(rt => rt.map(t => Good(t))) #::: LazyListOrStream.empty[RoseTree[G Or B]], rnd2)
+              }
+
+            case Bad(b) =>
+
+              val nestedRoseTreesOpt: Option[LazyListOrStream[RoseTree[B]]] = genOfB.shrinksForValue(b)
+              nestedRoseTreesOpt match {
+                case Some(nestedRoseTrees) =>
+                  val nestedList: LazyListOrStream[RoseTree[G Or B]] =
+                    nestedRoseTrees.map(nrt => nrt.map(t => Bad(t))) #::: LazyListOrStream.empty[RoseTree[G Or B]]
+                  (nestedList, rndPassedToShrinks)
+                case None =>
+                  // If the shrinksForValue lazy list is empty, degrade to canonicals.
+                  val (canonicalBs, rnd2) = genOfB.canonicals(rndPassedToShrinks)
+                  (canonicalBs.map(rt => rt.map(t => Bad(t))) #::: LazyListOrStream.empty[RoseTree[G Or B]], rnd2)
+              }
           }
         }
       }
@@ -4108,6 +4129,9 @@ object Generator {
             }
         }
       }
+
+      override def shrinksForValue(valueToShrink: G Or B): Option[LazyListOrStream[RoseTree[G Or B]]] =
+        Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
 
   // Note that this is identical to orGenerator *except* that the sides are reversed:
@@ -4127,16 +4151,41 @@ object Generator {
       case class NextRoseTree(value: Either[L, R]) extends RoseTree[Either[L, R]] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Either[L, R]]], Randomizer) = {
           value match {
-            case Right(r) => {
-              val (rightRt, _, nextRnd) = genOfR.next(SizeParam(1, 0, 1), List(r), rndPassedToShrinks)
-              val (rShrink, nextNextRnd) = rightRt.shrinks(nextRnd)
-              (rShrink.map(rt => rt.map(Right(_))), nextNextRnd)
-            }
-            case Left(l) => {
+            case Left(l) =>
+/*
               val (leftRt, _, nextRnd) = genOfL.next(SizeParam(1, 0, 1), List(l), rndPassedToShrinks)
               val (lShrink, nextNextRnd) = leftRt.shrinks(nextRnd)
               (lShrink.map(rt => rt.map(Left(_))), nextNextRnd)
-            }
+*/
+              val nestedRoseTreesOpt: Option[LazyListOrStream[RoseTree[L]]] = genOfL.shrinksForValue(l)
+              nestedRoseTreesOpt match {
+                case Some(nestedRoseTrees) =>
+                  val nestedList: LazyListOrStream[RoseTree[Either[L, R]]] =
+                    nestedRoseTrees.map(nrt => nrt.map(t => Left(t))) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]]
+                  (nestedList, rndPassedToShrinks)
+                case None =>
+                  // If the shrinksForValue lazy list is empty, degrade to canonicals.
+                  val (canonicalGs, rnd2) = genOfL.canonicals(rndPassedToShrinks)
+                  (canonicalGs.map(rt => rt.map(t => Left(t))) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]], rnd2)
+              }
+
+            case Right(r) =>
+/*
+              val (rightRt, _, nextRnd) = genOfR.next(SizeParam(1, 0, 1), List(r), rndPassedToShrinks)
+              val (rShrink, nextNextRnd) = rightRt.shrinks(nextRnd)
+              (rShrink.map(rt => rt.map(Right(_))), nextNextRnd)
+*/
+              val nestedRoseTreesOpt: Option[LazyListOrStream[RoseTree[R]]] = genOfR.shrinksForValue(r)
+              nestedRoseTreesOpt match {
+                case Some(nestedRoseTrees) =>
+                  val nestedList: LazyListOrStream[RoseTree[Either[L, R]]] =
+                    nestedRoseTrees.map(nrt => nrt.map(t => Right(t))) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]]
+                  (nestedList, rndPassedToShrinks)
+                case None =>
+                  // If the shrinksForValue lazy list is empty, degrade to canonicals.
+                  val (canonicalBs, rnd2) = genOfR.canonicals(rndPassedToShrinks)
+                  (canonicalBs.map(rt => rt.map(t => Right(t))) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]], rnd2)
+              }
           }
         }
       }
@@ -4185,6 +4234,9 @@ object Generator {
             }
         }
       }
+
+      override def shrinksForValue(valueToShrink: Either[L, R]): Option[LazyListOrStream[RoseTree[Either[L, R]]]] =
+        Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
 
   /**
@@ -4344,16 +4396,20 @@ object Generator {
 
       case class NextRoseTree(value: Vector[T]) extends RoseTree[Vector[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Vector[T]]], Randomizer) = {
-          if (value.isEmpty)
-            (LazyListOrStream.empty, rndPassedToShrinks)
-          else {
-            val halfSize = value.length / 2
-            val firstHalf = value.take(halfSize)
-            val secondHalf = value.drop(halfSize)
-            val tail = value.tail
-            val init = value.init
-            (LazyListOrStream(firstHalf, secondHalf, tail, init).distinct.filter(_ != value).map(NextRoseTree(_)), rndPassedToShrinks)
+          def resLazyList(theValue: Vector[T]): LazyListOrStream[RoseTree[Vector[T]]] = {
+            if (theValue.isEmpty)
+              LazyListOrStream.empty
+            else if (theValue.length == 1)
+              Rose(Vector.empty) #:: LazyListOrStream.empty
+            else {
+              val halfSize = theValue.length / 2
+              val firstHalf = theValue.take(halfSize)
+              val secondHalf = theValue.drop(halfSize)
+              // If value has an odd number of elements, the second half will be one character longer than the first half.
+              NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyList(firstHalf)
+            }
           }
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
@@ -4410,6 +4466,8 @@ object Generator {
             }
           }
         }
+
+      override def shrinksForValue(valueToShrink: Vector[T]): Option[LazyListOrStream[RoseTree[Vector[T]]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
 
   /**
@@ -4431,16 +4489,20 @@ object Generator {
 
       case class NextRoseTree(value: Set[T]) extends RoseTree[Set[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Set[T]]], Randomizer) = {
-          if (value.isEmpty)
-            (LazyListOrStream.empty, rndPassedToShrinks)
-          else {
-            val halfSize = value.size / 2
-            val firstHalf = value.take(halfSize)
-            val secondHalf = value.drop(halfSize)
-            val tail = value.tail
-            val init = value.init
-            (LazyListOrStream(firstHalf, secondHalf, tail, init).distinct.filter(_ != value).map(NextRoseTree(_)), rndPassedToShrinks)
+          def resLazyList(theValue: Set[T]): LazyListOrStream[RoseTree[Set[T]]] = {
+            if (theValue.isEmpty)
+              LazyListOrStream.empty
+            else if (theValue.size == 1)
+              Rose(Set.empty[T]) #:: LazyListOrStream.empty
+            else {
+              val halfSize = theValue.size / 2
+              val firstHalf = theValue.take(halfSize)
+              val secondHalf = theValue.drop(halfSize)
+              // If value has an odd number of elements, the second half will be one character longer than the first half.
+              NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyList(firstHalf)
+            }
           }
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
@@ -4497,6 +4559,8 @@ object Generator {
             }
           }
         }
+
+      override def shrinksForValue(valueToShrink: Set[T]): Option[LazyListOrStream[RoseTree[Set[T]]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
 
   /**
@@ -4518,16 +4582,20 @@ object Generator {
 
       case class NextRoseTree(value: SortedSet[T]) extends RoseTree[SortedSet[T]] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[SortedSet[T]]], Randomizer) = {
-          if (value.isEmpty)
-            (LazyListOrStream.empty, rndPassedToShrinks)
-          else {
-            val halfSize = value.size / 2
-            val firstHalf = value.take(halfSize)
-            val secondHalf = value.drop(halfSize)
-            val tail = value.tail
-            val init = value.init
-            (LazyListOrStream(firstHalf, secondHalf, tail, init).distinct.filter(_ != value).map(NextRoseTree(_)), rndPassedToShrinks)
+          def resLazyList(theValue: SortedSet[T]): LazyListOrStream[RoseTree[SortedSet[T]]] = {
+            if (theValue.isEmpty)
+              LazyListOrStream.empty
+            else if (theValue.size == 1)
+              Rose(SortedSet.empty[T]) #:: LazyListOrStream.empty
+            else {
+              val halfSize = theValue.size / 2
+              val firstHalf = theValue.take(halfSize)
+              val secondHalf = theValue.drop(halfSize)
+              // If value has an odd number of elements, the second half will be one character longer than the first half.
+              NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyList(firstHalf)
+            }
           }
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
@@ -4584,6 +4652,8 @@ object Generator {
             }
           }
         }
+
+      override def shrinksForValue(valueToShrink: SortedSet[T]): Option[LazyListOrStream[RoseTree[SortedSet[T]]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
 
   /**
@@ -4605,21 +4675,25 @@ object Generator {
   implicit def mapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)]): Generator[Map[K, V]] with HavingSize[Map[K, V]] =
     new Generator[Map[K, V]] with HavingSize[Map[K, V]] {
 
-      // TODO This only uses Roses. Check that we don't need RoseTrees.
       case class NextRoseTree(value: Map[K, V]) extends RoseTree[Map[K, V]] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[Map[K, V]]], Randomizer) = {
-          if (value.isEmpty)
-            (LazyListOrStream.empty, rndPassedToShrinks)
-          else {
-            val halfSize = value.size / 2
-            val firstHalf = value.take(halfSize)
-            val secondHalf = value.drop(halfSize)
-            val tail = value.tail
-            val init = value.init
-            (LazyListOrStream(firstHalf, secondHalf, tail, init).distinct.filter(_ != value).map(NextRoseTree(_)), rndPassedToShrinks)
+          def resLazyList(theValue: Map[K, V]): LazyListOrStream[RoseTree[Map[K, V]]] = {
+            if (theValue.isEmpty)
+              LazyListOrStream.empty
+            else if (theValue.size == 1)
+              Rose(Map.empty[K, V]) #:: LazyListOrStream.empty
+            else {
+              val halfSize = theValue.size / 2
+              val firstHalf = theValue.take(halfSize)
+              val secondHalf = theValue.drop(halfSize)
+              // If value has an odd number of elements, the second half will be one character longer than the first half.
+              NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyList(firstHalf)
+            }
           }
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
+
 
       def generatorWithSize(szp: SizeParam): Generator[Map[K, V]] =
         new Generator[Map[K, V]] {
@@ -4675,6 +4749,8 @@ object Generator {
             }
           }
         }
+
+      override def shrinksForValue(valueToShrink: Map[K, V]): Option[LazyListOrStream[RoseTree[Map[K, V]]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
 
   /**
@@ -4698,16 +4774,20 @@ object Generator {
 
       case class NextRoseTree(value: SortedMap[K, V]) extends RoseTree[SortedMap[K, V]] {
         def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[SortedMap[K, V]]], Randomizer) = {
-          if (value.isEmpty)
-            (LazyListOrStream.empty, rndPassedToShrinks)
-          else {
-            val halfSize = value.size / 2
-            val firstHalf = value.take(halfSize)
-            val secondHalf = value.drop(halfSize)
-            val tail = value.tail
-            val init = value.init
-            (LazyListOrStream(firstHalf, secondHalf, tail, init).distinct.filter(_ != value).map(NextRoseTree(_)), rndPassedToShrinks)
+          def resLazyList(theValue: SortedMap[K, V]): LazyListOrStream[RoseTree[SortedMap[K, V]]] = {
+            if (theValue.isEmpty)
+              LazyListOrStream.empty
+            else if (theValue.size == 1)
+              Rose(SortedMap.empty[K, V]) #:: LazyListOrStream.empty
+            else {
+              val halfSize = theValue.size / 2
+              val firstHalf = theValue.take(halfSize)
+              val secondHalf = theValue.drop(halfSize)
+              // If value has an odd number of elements, the second half will be one character longer than the first half.
+              NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyList(firstHalf)
+            }
           }
+          (resLazyList(value), rndPassedToShrinks)
         }
       }
 
@@ -4765,6 +4845,8 @@ object Generator {
             }
           }
         }
+
+      override def shrinksForValue(valueToShrink: SortedMap[K, V]): Option[LazyListOrStream[RoseTree[SortedMap[K, V]]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
 }
 
