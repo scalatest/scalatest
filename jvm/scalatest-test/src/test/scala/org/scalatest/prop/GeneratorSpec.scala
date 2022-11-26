@@ -3646,7 +3646,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           val i = shrinkRoseTree.value
           val shrinks: LazyListOrStream[Vector[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (i.isEmpty)
+          if (i.isEmpty || i.length == 1)
             shrinks shouldBe empty
           else {
             shrinks should not be empty
