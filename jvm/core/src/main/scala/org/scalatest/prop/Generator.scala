@@ -1529,7 +1529,7 @@ object Generator {
             (resLazyList(value), rndPassedToShrinks)
           }
         }
-        CanonicalRoseTree(4.0f).shrinks(rnd)
+        CanonicalRoseTree(4.0).shrinks(rnd)
       }
       override def toString = "Generator[FiniteDouble]"
       override def shrinksForValue(valueToShrink: FiniteDouble): Option[LazyListOrStream[RoseTree[FiniteDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
@@ -2054,8 +2054,22 @@ object Generator {
             (NextRoseTree(nonZeroFiniteDouble), Nil, rnd2)
         }
       }
-      private val nonZeroFiniteDoubleCanonicals: LazyListOrStream[NonZeroFiniteDouble] = LazyListOrStream(NonZeroFiniteDouble(-3.0), NonZeroFiniteDouble(3.0), NonZeroFiniteDouble(-2.0), NonZeroFiniteDouble(2.0), NonZeroFiniteDouble(-1.0), NonZeroFiniteDouble(1.0))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NonZeroFiniteDouble]], Randomizer) = (nonZeroFiniteDoubleCanonicals.map(Rose(_)), rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NonZeroFiniteDouble]], Randomizer) = {
+        case class CanonicalRoseTree(value: NonZeroFiniteDouble) extends RoseTree[NonZeroFiniteDouble] {
+          def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NonZeroFiniteDouble]], Randomizer) = {
+            def resLazyList(theValue: NonZeroFiniteDouble): LazyListOrStream[RoseTree[NonZeroFiniteDouble]] = {
+              if (theValue.value == 1.0) LazyListOrStream.empty
+              else {
+                val minusOne: NonZeroFiniteDouble = NonZeroFiniteDouble.ensuringValid(theValue.value - 1.0)
+                if (minusOne.value == 1.0) Rose(minusOne) #:: LazyListOrStream.empty
+                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+              }
+            }
+            (resLazyList(value), rndPassedToShrinks)
+          }
+        }
+        CanonicalRoseTree(4.0).shrinks(rnd)
+      }
       override def toString = "Generator[NonZeroFiniteDouble]"
       override def shrinksForValue(valueToShrink: NonZeroFiniteDouble): Option[LazyListOrStream[RoseTree[NonZeroFiniteDouble]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
