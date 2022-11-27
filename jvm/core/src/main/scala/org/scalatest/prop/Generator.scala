@@ -2611,8 +2611,22 @@ object Generator {
             (NextRoseTree(negInt), Nil, rnd2)
         }
       }
-      private val negIntCanonicals = LazyListOrStream(NegInt(-3), NegInt(-2), NegInt(-1))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegInt]], Randomizer) = (negIntCanonicals.map(Rose(_)), rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NegInt]], Randomizer) = {
+        case class CanonicalRoseTree(value: NegInt) extends RoseTree[NegInt] {
+          def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NegInt]], Randomizer) = {
+            def resLazyList(theValue: NegInt): LazyListOrStream[RoseTree[NegInt]] = {
+              if (theValue.value == -1) LazyListOrStream.empty
+              else {
+                val plusOne: NegInt = NegInt.ensuringValid(theValue.value + 1)
+                if (plusOne.value == -1) Rose(plusOne) #:: LazyListOrStream.empty
+                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+              }
+            }
+            (resLazyList(value), rndPassedToShrinks)
+          }
+        }
+        CanonicalRoseTree(-4).shrinks(rnd)
+      }
       override def toString = "Generator[NegInt]"
       override def shrinksForValue(valueToShrink: NegInt): Option[LazyListOrStream[RoseTree[NegInt]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
