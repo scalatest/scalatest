@@ -4348,7 +4348,7 @@ object Generator {
         val (goodCanon, nextRnd) = genOfG.canonicals(rnd)
         val (badCanon, nextNextRnd) = genOfB.canonicals(nextRnd)
 
-        (goodCanon.map(rt => rt.map(t => Good(t): G Or B)) ++ badCanon.map(rt => rt.map(t => Bad(t))), nextNextRnd) // TODO: Make lazy
+        (goodCanon.map(rt => rt.map(t => Good(t): G Or B)) #::: badCanon.map(rt => rt.map(t => Bad(t): G Or B)), nextNextRnd) // TODO: Make lazy
       }
 
       def next(szp: SizeParam, edges: List[G Or B], rnd: Randomizer): (RoseTree[G Or B], List[G Or B], Randomizer) = {
