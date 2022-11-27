@@ -2141,7 +2141,7 @@ object Generator {
               if (theValue.value == 1.0f) LazyListOrStream.empty
               else {
                 val minusOne: NonZeroFloat = NonZeroFloat.ensuringValid(theValue - 1.0f)
-                if (minusOne == 1.0f) Rose(NonZeroFloat.ensuringValid(0.0f)) #:: LazyListOrStream.empty
+                if (minusOne.value == 1.0f || minusOne.value == -1.0f) Rose(-minusOne) #:: Rose(minusOne) #:: LazyListOrStream.empty
                 else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
               }
             }
