@@ -3089,8 +3089,22 @@ object Generator {
             (NextRoseTree(NumericChar.ensuringValid((posZInt.value + 48).toChar)), Nil, rnd2)
         }
       }
-      private val numericCharCanonicals = LazyListOrStream(NumericChar('3'), NumericChar('2'), NumericChar('1'), NumericChar('0'))
-      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NumericChar]], Randomizer) = (numericCharCanonicals.map(Rose(_)), rnd)
+      override def canonicals(rnd: Randomizer): (LazyListOrStream[RoseTree[NumericChar]], Randomizer) = {
+        case class CanonicalRoseTree(value: NumericChar) extends RoseTree[NumericChar] {
+          def shrinks(rndPassedToShrinks: Randomizer): (LazyListOrStream[RoseTree[NumericChar]], Randomizer) = {
+            def resLazyList(theValue: NumericChar): LazyListOrStream[RoseTree[NumericChar]] = {
+              if (theValue.value == '0') LazyListOrStream.empty
+              else {
+                val minusOne: NumericChar = NumericChar.ensuringValid((theValue.value - 1).toChar)
+                if (minusOne.value == '0') Rose(minusOne) #:: LazyListOrStream.empty
+                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+              }
+            }
+            (resLazyList(value), rndPassedToShrinks)
+          }
+        }
+        CanonicalRoseTree('4').shrinks(rnd)
+      }
       override def toString = "Generator[NumericChar]"
       override def shrinksForValue(valueToShrink: NumericChar): Option[LazyListOrStream[RoseTree[NumericChar]]] = Some(NextRoseTree(valueToShrink).shrinks(Randomizer.default)._1)
     }
