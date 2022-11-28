@@ -67,6 +67,12 @@ object GenColCompatHelper {
           |  def newBuilder[A, C](f: Factory[A, C]): scala.collection.mutable.Builder[A, C] = f.newBuilder
           |
           |  type StringOps = scala.collection.StringOps
+          |  
+          |  type LazyListOrStream[+T] = LazyList[T]
+          |
+          |  val LazyListOrStream: LazyList.type = LazyList
+          |
+          |  def toLazyListOrStream[E](s: Iterable[E]): LazyListOrStream[E] = s.to(LazyList)
           |}
           |
         """.stripMargin
@@ -129,6 +135,12 @@ object GenColCompatHelper {
           |  def newBuilder[A, C](f: Factory[A, C]): scala.collection.mutable.Builder[A, C] = f.apply()
           |
           |  type StringOps = scala.collection.immutable.StringOps
+          |
+          |  type LazyListOrStream[+T] = Stream[T]
+          |
+          |  val LazyListOrStream: Stream.type = Stream
+          |
+          |  def toLazyListOrStream[E](s: Iterable[E]): LazyListOrStream[E] = s.to[Stream]
           |}
           |
         """.stripMargin

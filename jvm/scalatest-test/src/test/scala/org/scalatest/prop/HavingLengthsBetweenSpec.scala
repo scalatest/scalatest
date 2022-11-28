@@ -20,6 +20,7 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.Inspectors.{forAll => inspectAll}
+import org.scalactic.ColCompatHelper.LazyListOrStream
 
 class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
   describe("A HavingLengthsBetween Generator for Lists") {
@@ -57,7 +58,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
           val generator = lists[Int]
           // pass in List(xs) as only edge case so the generator will generate rose tree with the specified value.
           val (shrinkRt, _, _) = generator.next(SizeParam(1, 1, 1), List(xs), Randomizer.default) //generator.shrink(xs, Randomizer.default)
-          val shrinks: List[List[Int]] = shrinkRt.shrinks(Randomizer.default)._1.map(_.value).reverse
+          val shrinks: LazyListOrStream[List[Int]] = shrinkRt.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
@@ -95,10 +96,10 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
-        val intCanonicals = intCanonicalsIt.toList
+        val intCanonicals = intCanonicalsIt.map(_.value).toList
         val listOfIntGenerator = lists[Int].havingLengthsBetween(0, 50)
         val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
-        val listOfIntCanonicals = listOfIntCanonicalsIt.toList
+        val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => List(i))
       }
     }
@@ -107,10 +108,10 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
         val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
-        val intCanonicals = intCanonicalsIt.toList
+        val intCanonicals = intCanonicalsIt.map(_.value).toList
         val listOfIntGenerator = lists[Int].havingLengthsBetween(1, 50)
         val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
-        val listOfIntCanonicals = listOfIntCanonicalsIt.toList
+        val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => List(i))
       }
     }
@@ -160,7 +161,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
           val generator = lists[Int]
           // pass in List(xs) as only edge case so the generator will generate rose tree with the specified value.
           val (shrinkRt, _, _) = generator.next(SizeParam(1, 1, 1), List(xs), Randomizer.default)
-          val shrinks: List[List[Int]] = shrinkRt.shrinks(Randomizer.default)._1.map(_.value).reverse
+          val shrinks: LazyListOrStream[List[Int]] = shrinkRt.shrinks(Randomizer.default)._1.map(_.value).reverse
           if (xs.isEmpty)
             shrinks shouldBe empty
           else {
