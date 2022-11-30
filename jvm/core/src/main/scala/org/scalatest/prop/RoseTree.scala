@@ -144,29 +144,24 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
 }
 
 object RoseTree {
-
-  // TODO: Remove Randomizer from result. For now will ignore it.
-  def map2[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U], f: (T, U) => V, rnd: Randomizer): (RoseTree[V], Randomizer) = {
-    def map2Loop[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U], f: (T, U) => V): RoseTree[V] = {
-      val tupValue = f(tree1.value, tree2.value)
-      val shrinks1 = tree1.shrinks
-      val candidates1: LazyListOrStream[RoseTree[V]] =
-        for (candidate <- shrinks1) yield
-          map2Loop(candidate, tree2, f)
-      val shrinks2 = tree2.shrinks
-      val candidates2: LazyListOrStream[RoseTree[V]] =
-        for (candidate <- shrinks2) yield
-          map2Loop(tree1, candidate, f)
-      val roseTreeOfV =
-        new RoseTree[V] {
-          val value = tupValue
-          def shrinks: LazyListOrStream[RoseTree[V]] = {
-            candidates1 ++ candidates2
-          }
+  def map2[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U], f: (T, U) => V): RoseTree[V] = {
+    val tupValue = f(tree1.value, tree2.value)
+    val shrinks1 = tree1.shrinks
+    val candidates1: LazyListOrStream[RoseTree[V]] =
+      for (candidate <- shrinks1) yield
+        map2(candidate, tree2, f)
+    val shrinks2 = tree2.shrinks
+    val candidates2: LazyListOrStream[RoseTree[V]] =
+      for (candidate <- shrinks2) yield
+        map2(tree1, candidate, f)
+    val roseTreeOfV =
+      new RoseTree[V] {
+        val value = tupValue
+        def shrinks: LazyListOrStream[RoseTree[V]] = {
+          candidates1 ++ candidates2
         }
-      roseTreeOfV
-    }
-    (map2Loop(tree1, tree2, f), rnd)
+      }
+    roseTreeOfV
   }
 }
 
