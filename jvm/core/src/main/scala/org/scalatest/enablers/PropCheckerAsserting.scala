@@ -274,7 +274,7 @@ abstract class UnitPropCheckerAsserting {
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
             // Let's shrink the failing value
-            val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
             val (shrunkRtOfAB, shrunkErrOpt, _) =
               roseTreeOfAB.depthFirstShrinks(
                 { case (a, b) => {
@@ -285,7 +285,7 @@ abstract class UnitPropCheckerAsserting {
                     }
                   } 
                 }, 
-                rnd4
+                rnd3
               )
 
             val bestAB = shrunkRtOfAB.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value))
@@ -366,14 +366,14 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
-            val (roseTreeOfABC, rnd5) = 
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
+            val roseTreeOfABC =
               RoseTree.map2[(A, B), C, (A, B, C)](
                 roseTreeOfAB, 
                 roseTreeOfC, { case ((a, b), c) => 
                   (a, b, c)
-                }, 
-                rnd4)
+                }
+              )
             val (shrunkRtOfABC, shrunkErrOpt, _) =
               roseTreeOfABC.depthFirstShrinks(
                 { case (a, b, c) => {
@@ -382,9 +382,9 @@ abstract class UnitPropCheckerAsserting {
                       case Success(_) => (true, None)
                       case Failure(shrunkEx) => (false, Some(shrunkEx))
                     }
-                  } 
+                  }
                 }, 
-                rnd5
+                rnd3
               )
 
             val bestABC = shrunkRtOfABC.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value))
@@ -470,21 +470,21 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) => 
-            val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
-            val (roseTreeOfABC, rnd5) = 
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
+            val roseTreeOfABC =
               RoseTree.map2[(A, B), C, (A, B, C)](
                 roseTreeOfAB, 
                 roseTreeOfC, { case ((a, b), c) => 
                   (a, b, c)
-                }, 
-                rnd4)
-            val (roseTreeOfABCD, rnd6) = 
+                }
+              )
+            val roseTreeOfABCD =
               RoseTree.map2[(A, B, C), D, (A, B, C, D)](
                 roseTreeOfABC, 
                 roseTreeOfD, { case ((a, b, c), d) => 
                   (a, b, c, d)
-                }, 
-                rnd5)    
+                }
+              )
             val (shrunkRtOfABCD, shrunkErrOpt, _) =
               roseTreeOfABCD.depthFirstShrinks(
                 { case (a, b, c, d) => {
@@ -495,7 +495,7 @@ abstract class UnitPropCheckerAsserting {
                     }
                   } 
                 }, 
-                rnd6
+                rnd3
               )
 
             val bestABCD = shrunkRtOfABCD.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value, roseTreeOfD.value))
@@ -586,28 +586,28 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
-            val (roseTreeOfABC, rnd5) = 
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
+            val roseTreeOfABC =
               RoseTree.map2[(A, B), C, (A, B, C)](
                 roseTreeOfAB, 
                 roseTreeOfC, { case ((a, b), c) => 
                   (a, b, c)
-                }, 
-                rnd4)
-            val (roseTreeOfABCD, rnd6) = 
+                }
+              )
+            val roseTreeOfABCD =
               RoseTree.map2[(A, B, C), D, (A, B, C, D)](
                 roseTreeOfABC, 
                 roseTreeOfD, { case ((a, b, c), d) => 
                   (a, b, c, d)
-                }, 
-                rnd5)    
-            val (roseTreeOfABCDE, rnd7) = 
+                }
+              )
+            val roseTreeOfABCDE =
               RoseTree.map2[(A, B, C, D), E, (A, B, C, D, E)](
                 roseTreeOfABCD, 
                 roseTreeOfE, { case ((a, b, c, d), e) => 
                   (a, b, c, d, e)
-                }, 
-                rnd6)
+                }
+              )
             val (shrunkRtOfABCDE, shrunkErrOpt, _) =
               roseTreeOfABCDE.depthFirstShrinks(
                 { case (a, b, c, d, e) => {
@@ -616,9 +616,9 @@ abstract class UnitPropCheckerAsserting {
                       case Success(_) => (true, None)
                       case Failure(shrunkEx) => (false, Some(shrunkEx))
                     }
-                  } 
+                  }
                 }, 
-                rnd7
+                rnd3
               )  
 
             val bestABCDE = shrunkRtOfABCDE.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value, roseTreeOfD.value, roseTreeOfE.value))
@@ -715,35 +715,35 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
-            val (roseTreeOfABC, rnd5) = 
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
+            val roseTreeOfABC =
               RoseTree.map2[(A, B), C, (A, B, C)](
                 roseTreeOfAB, 
                 roseTreeOfC, { case ((a, b), c) => 
                   (a, b, c)
-                }, 
-                rnd4)
-            val (roseTreeOfABCD, rnd6) = 
+                }
+              )
+            val roseTreeOfABCD =
               RoseTree.map2[(A, B, C), D, (A, B, C, D)](
                 roseTreeOfABC, 
                 roseTreeOfD, { case ((a, b, c), d) => 
                   (a, b, c, d)
-                }, 
-                rnd5)    
-            val (roseTreeOfABCDE, rnd7) = 
+                }
+              )
+            val roseTreeOfABCDE =
               RoseTree.map2[(A, B, C, D), E, (A, B, C, D, E)](
                 roseTreeOfABCD, 
                 roseTreeOfE, { case ((a, b, c, d), e) => 
                   (a, b, c, d, e)
-                }, 
-                rnd6)
-            val (roseTreeOfABCDEF, rnd8) = 
+                }
+              )
+            val roseTreeOfABCDEF =
               RoseTree.map2[(A, B, C, D, E), F, (A, B, C, D, E, F)](
                 roseTreeOfABCDE, 
                 roseTreeOfF, { case ((a, b, c, d, e), f) => 
                   (a, b, c, d, e, f)
-                }, 
-                rnd7)    
+                }
+              )
             val (shrunkRtOfABCDEF, shrunkErrOpt, _) =
               roseTreeOfABCDEF.depthFirstShrinks(
                 { case (a, b, c, d, e, f) => {
@@ -752,9 +752,9 @@ abstract class UnitPropCheckerAsserting {
                       case Success(_) => (true, None)
                       case Failure(shrunkEx) => (false, Some(shrunkEx))
                     }
-                  } 
+                  }
                 }, 
-                rnd8
+                rnd3
               )  
 
             val bestABCDEF = shrunkRtOfABCDEF.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value, roseTreeOfD.value, roseTreeOfE.value, roseTreeOfF.value))
