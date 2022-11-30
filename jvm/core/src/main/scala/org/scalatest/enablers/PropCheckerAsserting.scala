@@ -965,7 +965,7 @@ trait FuturePropCheckerAsserting {
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 for {
-                  (shrunkRtOfA, errOpt1, rnd3) <- roseTreeOfA.depthFirstShrinksForFuture(
+                  (shrunkRtOfA, errOpt1) <- roseTreeOfA.depthFirstShrinksForFuture(
                                                  value => {
                                                    val result: Future[T] = fun(value)
                                                    result.map { r =>
@@ -974,8 +974,7 @@ trait FuturePropCheckerAsserting {
                                                      case shrunkEx: Throwable =>
                                                      Future.successful((false, Some(shrunkEx)))
                                                    }
-                                                 }, 
-                                                 nextNextRnd
+                                                 }
                                                )
                 } yield {
                   val bestRtA = shrunkRtOfA.headOption.getOrElse(roseTreeOfA)
@@ -986,7 +985,7 @@ trait FuturePropCheckerAsserting {
                   println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
                   println(s"############ THE RES: $theRes")
-                  AccumulatedResult(succeededCount, discardedCount, edges, rnd3, initialSizes, Some(theRes), Some(bestRtA))
+                  AccumulatedResult(succeededCount, discardedCount, edges, nextNextRnd, initialSizes, Some(theRes), Some(bestRtA))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1010,7 +1009,7 @@ trait FuturePropCheckerAsserting {
 
           case ex: Throwable =>
             for {
-              (shrunkRtOfA, errOpt1, rnd3) <- roseTreeOfA.depthFirstShrinksForFuture(
+              (shrunkRtOfA, errOpt1) <- roseTreeOfA.depthFirstShrinksForFuture(
                                              value => {
                                                val result: Future[T] = fun(value)
                                                result.map { r =>
@@ -1019,8 +1018,7 @@ trait FuturePropCheckerAsserting {
                                                  case shrunkEx: Throwable =>
                                                  Future.successful((false, Some(shrunkEx)))
                                                }
-                                             }, 
-                                             nextNextRnd
+                                             }
                                            ) 
             } yield {
               val bestRtA = shrunkRtOfA.headOption.getOrElse(roseTreeOfA)
@@ -1031,7 +1029,7 @@ trait FuturePropCheckerAsserting {
               println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
               println(s"############ THE RES: $theRes")
-              AccumulatedResult(succeededCount, discardedCount, edges, rnd3, initialSizes, Some(theRes), Some(bestRtA))
+              AccumulatedResult(succeededCount, discardedCount, edges, nextNextRnd, initialSizes, Some(theRes), Some(bestRtA))
             }
         }
       }

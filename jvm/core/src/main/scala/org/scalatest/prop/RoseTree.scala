@@ -54,7 +54,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
     shrinkLoop(this, None, firstLevelShrinks, Set(value))
   }
 
-  def depthFirstShrinksForFuture[E](fun: T => Future[(Boolean, Option[E])], rnd: Randomizer)(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[T]], Option[E], Randomizer)] = {
+  def depthFirstShrinksForFuture[E](fun: T => Future[(Boolean, Option[E])])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
     def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], processed: Set[T]): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
       pending match {
         case head #:: tail => 
@@ -79,7 +79,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
 
     val firstLevelShrinks = shrinks
     val loopRes = shrinkLoop(this, None, firstLevelShrinks, Set(value))
-    loopRes.map(res => (res._1, res._2, rnd))
+    loopRes.map(res => (res._1, res._2))
   }
 
   def combineFirstDepthShrinks[E, U](fun: (T, U) => (Boolean, Option[E]), rnd: Randomizer, roseTreeOfU: RoseTree[U]): (LazyListOrStream[RoseTree[(T, U)]], Option[E], Randomizer) = {
@@ -95,14 +95,14 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
 
   def combineFirstDepthShrinksForFuture[E, U](fun: (T, U) => Future[(Boolean, Option[E])], rnd: Randomizer, roseTreeOfU: RoseTree[U])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[(T, U)]], Option[E], Randomizer)] = 
     for {
-      (shrunkRtOfT, errOpt1, rnd2) <- depthFirstShrinksForFuture(value => fun(value, roseTreeOfU.value), rnd)
+      (shrunkRtOfT, errOpt1) <- depthFirstShrinksForFuture(value => fun(value, roseTreeOfU.value))
       bestT = shrunkRtOfT.headOption.getOrElse(this)
       bestTValue = bestT.value
-      (shrunkRtOfU, errOpt2, rnd3) <- roseTreeOfU.depthFirstShrinksForFuture(value => fun(bestTValue, value), rnd2)
+      (shrunkRtOfU, errOpt2) <- roseTreeOfU.depthFirstShrinksForFuture(value => fun(bestTValue, value))
       bestU = shrunkRtOfU.headOption.getOrElse(roseTreeOfU)
       bestUValue = bestU.value
       errOpt = LazyListOrStream(errOpt1, errOpt2).flatten.lastOption
-    } yield (LazyListOrStream(bestT.map(t => (t, bestUValue))), errOpt, rnd3)
+    } yield (LazyListOrStream(bestT.map(t => (t, bestUValue))), errOpt, rnd)
 
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
   // for each shrunken Char, we'll get the one (Char, Int).
