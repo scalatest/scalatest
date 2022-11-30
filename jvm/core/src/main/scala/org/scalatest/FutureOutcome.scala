@@ -99,7 +99,10 @@ And this confusion of Success(Failed) is what the Or is intended to alleviate.
  * with <code>FutureOutcome</code>.
  * </p>
  */
+// SKIP-DOTTY-START 
 class FutureOutcome(private[scalatest] val underlying: Future[Outcome]) {
+// SKIP-DOTTY-END
+//DOTTY-ONLY open class FutureOutcome(private[scalatest] val underlying: Future[Outcome]) {
   // TODO: add tests for pretty toString
 
   /**
