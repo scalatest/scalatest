@@ -79,17 +79,6 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
     shrinkLoop(this, None, shrinks, Set(value))
   }
 
-  def combineFirstDepthShrinks[E, U](fun: (T, U) => (Boolean, Option[E]), rnd: Randomizer, roseTreeOfU: RoseTree[U]): (LazyListOrStream[RoseTree[(T, U)]], Option[E], Randomizer) = {
-    val (shrunkRtOfT, errOpt1) = depthFirstShrinks(value => fun(value, roseTreeOfU.value))
-    val bestT = shrunkRtOfT.headOption.getOrElse(this)
-    val bestTValue = bestT.value
-    val (shrunkRtOfU, errOpt2) = roseTreeOfU.depthFirstShrinks(value => fun(bestTValue, value))
-    val bestU = shrunkRtOfU.headOption.getOrElse(roseTreeOfU)
-    val bestUValue = bestU.value
-    val errOpt = LazyListOrStream(errOpt1, errOpt2).flatten.lastOption
-    (LazyListOrStream(bestT.map(t => (t, bestUValue))), errOpt, rnd)
-  }
-
   def combineFirstDepthShrinksForFuture[E, U](fun: (T, U) => Future[(Boolean, Option[E])], roseTreeOfU: RoseTree[U])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[(T, U)]], Option[E])] = 
     for {
       (shrunkRtOfT, errOpt1) <- depthFirstShrinksForFuture(value => fun(value, roseTreeOfU.value))

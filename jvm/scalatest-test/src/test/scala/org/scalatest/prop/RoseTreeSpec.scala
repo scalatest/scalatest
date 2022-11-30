@@ -223,36 +223,6 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val (lvl10Node11Res, _) = processFun(lvl10Node11.value)
       lvl10Node11Res shouldBe true
     }
-
-    it("should offer a combineFirstDepthShrinks function") {
-      val boolRt = new StatefulBooleanRoseTree(StatefulBoolean(true))
-      boolRt.value.value shouldBe true
-      
-      val intRt = new StatefulRoseTree(StatefulInt(2))
-      intRt.value.value shouldBe 2
-
-      def processFun(b: StatefulBoolean, i: StatefulInt): (Boolean, Option[String]) = {
-        b.processed = true
-        i.processed = true
-        (i.value > 3, None)
-      }
-
-      val (shrinks1, _, _) = boolRt.combineFirstDepthShrinks[String, StatefulInt](processFun, Randomizer.default, intRt)
-      shrinks1 should have length 1
-      shrinks1(0).value._1.value shouldBe false
-      shrinks1(0).value._2.value shouldBe 0
-
-      def processFun2(b: StatefulBoolean, i: StatefulInt): (Boolean, Option[String]) = {
-        b.processed = true
-        i.processed = true
-        (b.value == false || i.value > 3, None)
-      }
-
-      val (shrinks2, _, _) = boolRt.combineFirstDepthShrinks[String, StatefulInt](processFun2, Randomizer.default, intRt)
-      shrinks2 should have length 1
-      shrinks2(0).value._1.value shouldBe true
-      shrinks2(0).value._2.value shouldBe 0
-    }
   }
   describe("A Rose") {
     it("should have a toString that gives the value") {
