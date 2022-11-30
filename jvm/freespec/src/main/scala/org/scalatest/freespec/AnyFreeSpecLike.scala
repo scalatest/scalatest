@@ -213,6 +213,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
      * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def in(testFun: => Any /* Assertion */): Unit = {
       registerTestToRun(specText, tags, "in", () => testFun, pos)
     }
@@ -233,6 +234,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
      * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def is(testFun: => PendingStatement): Unit = {
       registerTestToRun(specText, tags, "is", () => { testFun; succeed }, pos)
     }
@@ -253,6 +255,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
      * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def ignore(testFun: => Any /* Assertion */): Unit = {
       registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)
     }
@@ -309,6 +312,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
      * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def in(f: => Any /* Assertion */): Unit = {
       registerTestToRun(string, List(), "in", () => f, pos)
     }
@@ -329,6 +333,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
      * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def ignore(f: => Any /* Assertion */): Unit = {
       registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
@@ -349,6 +354,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
      * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def is(f: => PendingStatement): Unit = {
       registerTestToRun(string, List(), "is", () => { f; succeed }, pos)
     }
@@ -369,6 +375,7 @@ trait AnyFreeSpecLike extends TestSuite with TestRegistration with Informing wit
      * For more information and examples of this method's use, see the <a href="AnyFreeSpec.html">main documentation</a> for trait <code>AnyFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = {
       val tagList = firstTestTag :: otherTestTags.toList
       new ResultOfTaggedAsInvocationOnString(string, tagList, pos)

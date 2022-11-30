@@ -216,6 +216,7 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
       registerAsyncTestToRun(specText, tags, "in", testFun, pos)
     }
@@ -238,6 +239,7 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def in(testFun: () => Future[compatible.Assertion]): Unit = {
       registerAsyncTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun), pos)
     }
@@ -260,6 +262,7 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def is(testFun: => PendingStatement): Unit = {
       registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun, pos)
     }
@@ -282,6 +285,7 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
       registerAsyncTestToIgnore(specText, tags, "ignore", testFun, pos)
     }
@@ -304,6 +308,7 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
       registerAsyncTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun), pos)
     }
@@ -366,6 +371,7 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
       registerAsyncTestToRun(string, List(), "in", testFun, pos)
     }
@@ -388,6 +394,7 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def in(testFun: () => Future[compatible.Assertion]): Unit = {
       registerAsyncTestToRun(string, List(), "in", new NoArgTestWrapper(testFun), pos)
     }
@@ -410,6 +417,7 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def is(testFun: => PendingStatement): Unit = {
       registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun, pos)
     }
@@ -432,6 +440,7 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
       registerAsyncTestToIgnore(string, List(), "ignore", testFun, pos)
     }
@@ -454,6 +463,7 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      *
      * @param testFun the test function
      */
+    //DOTTY-ONLY     infix  
     def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
       registerAsyncTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun), pos)
     }
@@ -477,6 +487,7 @@ trait FixtureAsyncFreeSpecLike extends org.scalatest.FixtureAsyncTestSuite with 
      * @param firstTestTag the first mandatory test tag
      * @param otherTestTags the others additional test tags
      */
+    //DOTTY-ONLY     infix  
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = {
       val tagList = firstTestTag :: otherTestTags.toList
       new ResultOfTaggedAsInvocationOnString(string, tagList, pos)

@@ -189,6 +189,7 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def in(testFun: => Unit /* Assertion */): Unit = {
       registerTestToRun(specText, tags, "in", () => testFun, pos)
     }
@@ -216,6 +217,7 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
      * trait <code>org.scalatest.freespec.PathAnyFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def is(testFun: => PendingStatement): Unit = {
       registerTestToRun(specText, tags, "is", () => testFun, pos)
     }
@@ -240,6 +242,7 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
      * be executed. Instead, a <code>TestIgnored</code> event will be fired.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def ignore(testFun: => Unit /* Assertion */): Unit = {
       registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)
     }
@@ -303,6 +306,7 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
      * trait <code>org.scalatest.freespec.PathAnyFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def in(f: => Unit /* Assertion */): Unit = {
       registerTestToRun(string, List(), "in", () => f, pos)
     }
@@ -327,6 +331,7 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
      * be executed. Instead, a <code>TestIgnored</code> event will be fired.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def ignore(f: => Unit /* Assertion */): Unit = {
       registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
@@ -354,6 +359,7 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
      * trait <code>org.scalatest.freespec.PathAnyFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def is(f: => PendingStatement): Unit = {
       registerTestToRun(string, List(), "is", () => f, pos)
     }
@@ -376,6 +382,7 @@ trait PathAnyFreeSpecLike extends org.scalatest.Suite with OneInstancePerTest wi
      * trait <code>org.scalatest.freespec.AnyFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = {
       val tagList = firstTestTag :: otherTestTags.toList
       new ResultOfTaggedAsInvocationOnString(string, tagList, pos)

@@ -219,6 +219,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * For more information and examples of this method's use, see the <a href="AsyncFreeSpec.html">main documentation</a> for trait <code>AsyncFreeSpec</code>.
      * </p>
      */
+     //DOTTY-ONLY     infix 
     def in(testFun: => Future[compatible.Assertion]): Unit = {
       registerTestToRun(specText, tags, () => testFun, pos)
     }
@@ -239,6 +240,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * For more information and examples of this method's use, see the <a href="AsyncFreeSpec.html">main documentation</a> for trait <code>AsyncFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def is(testFun: => PendingStatement): Unit = {
       registerPendingTestToRun(specText, tags, () => testFun, pos)
     }
@@ -259,6 +261,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * For more information and examples of this method's use, see the <a href="AsyncFreeSpec.html">main documentation</a> for trait <code>AsyncFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def ignore(testFun: => Future[compatible.Assertion]): Unit = {
       registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)
     }
@@ -310,6 +313,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * For more information and examples of this method's use, see the <a href="AsyncFreeSpec.html">main documentation</a> for trait <code>AsyncFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def in(f: => Future[compatible.Assertion]): Unit = {
       registerTestToRun(string, List(), () => f, pos)
     }
@@ -330,6 +334,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * For more information and examples of this method's use, see the <a href="AsyncFreeSpec.html">main documentation</a> for trait <code>AsyncFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def ignore(f: => Future[compatible.Assertion]): Unit = {
       registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
@@ -350,6 +355,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * For more information and examples of this method's use, see the <a href="AsyncFreeSpec.html">main documentation</a> for trait <code>AsyncFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def is(f: => PendingStatement): Unit = {
       registerPendingTestToRun(string, List(), () => f, pos)
     }
@@ -370,6 +376,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * For more information and examples of this method's use, see the <a href="AsyncFreeSpec.html">main documentation</a> for trait <code>AsyncFreeSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = {
       val tagList = firstTestTag :: otherTestTags.toList
       new ResultOfTaggedAsInvocationOnString(string, tagList, pos)
