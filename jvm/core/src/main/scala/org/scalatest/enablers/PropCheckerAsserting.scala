@@ -275,7 +275,7 @@ abstract class UnitPropCheckerAsserting {
           case Failure(ex) =>
             // Let's shrink the failing value
             val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
-            val (shrunkRtOfAB, shrunkErrOpt, rnd5) = 
+            val (shrunkRtOfAB, shrunkErrOpt, _) =
               roseTreeOfAB.depthFirstShrinks(
                 { case (a, b) => {
                     val result: Try[T] = Try { fun(a, b) }
@@ -374,7 +374,7 @@ abstract class UnitPropCheckerAsserting {
                   (a, b, c)
                 }, 
                 rnd4)
-            val (shrunkRtOfABC, shrunkErrOpt, rnd6) = 
+            val (shrunkRtOfABC, shrunkErrOpt, _) =
               roseTreeOfABC.depthFirstShrinks(
                 { case (a, b, c) => {
                     val result: Try[T] = Try { fun(a, b, c) }
@@ -485,7 +485,7 @@ abstract class UnitPropCheckerAsserting {
                   (a, b, c, d)
                 }, 
                 rnd5)    
-            val (shrunkRtOfABCD, shrunkErrOpt, rnd7) = 
+            val (shrunkRtOfABCD, shrunkErrOpt, _) =
               roseTreeOfABCD.depthFirstShrinks(
                 { case (a, b, c, d) => {
                     val result: Try[T] = Try { fun(a, b, c, d) }
@@ -608,7 +608,7 @@ abstract class UnitPropCheckerAsserting {
                   (a, b, c, d, e)
                 }, 
                 rnd6)
-            val (shrunkRtOfABCDE, shrunkErrOpt, rnd8) = 
+            val (shrunkRtOfABCDE, shrunkErrOpt, _) =
               roseTreeOfABCDE.depthFirstShrinks(
                 { case (a, b, c, d, e) => {
                     val result: Try[T] = Try { fun(a, b, c, d, e) }
@@ -744,7 +744,7 @@ abstract class UnitPropCheckerAsserting {
                   (a, b, c, d, e, f)
                 }, 
                 rnd7)    
-            val (shrunkRtOfABCDEF, shrunkErrOpt, rnd9) = 
+            val (shrunkRtOfABCDEF, shrunkErrOpt, _) =
               roseTreeOfABCDEF.depthFirstShrinks(
                 { case (a, b, c, d, e, f) => {
                     val result: Try[T] = Try { fun(a, b, c, d, e, f) }
