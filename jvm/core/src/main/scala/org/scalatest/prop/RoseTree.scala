@@ -50,8 +50,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
           (LazyListOrStream(lastFailure), lastFailureData)
       }
     }
-    val firstLevelShrinks = shrinks // TODO: Just use shrinks below.
-    shrinkLoop(this, None, firstLevelShrinks, Set(value))
+    shrinkLoop(this, None, shrinks, Set(value))
   }
 
   def depthFirstShrinksForFuture[E](fun: T => Future[(Boolean, Option[E])])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
