@@ -29,7 +29,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val irt = new RoseTree[Int] {
         val value: Int = 42;
 
-        def shrinks(rnd: Randomizer) = (LazyListOrStream.empty, rnd)
+        def shrinks = LazyListOrStream.empty
       }
       irt.toString shouldBe "RoseTree(42)"
     }
@@ -72,7 +72,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       }
       val value: StatefulInt = i
 
-      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[StatefulInt]], Randomizer) = (shrinksRoseTrees, rnd)
+      def shrinks: LazyListOrStream[RoseTree[StatefulInt]] = shrinksRoseTrees
     }
 
     case class StatefulBoolean(value: Boolean) {
@@ -89,7 +89,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       }
       val value: StatefulBoolean = b
 
-      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[StatefulBoolean]], Randomizer) = (shrinksRoseTrees, rnd)
+      def shrinks: LazyListOrStream[RoseTree[StatefulBoolean]] = shrinksRoseTrees
     }
 
     it("should offer a depthFirstShrinks method that follows the 'depth-first' algo") {
@@ -266,25 +266,25 @@ object RoseTreeSpec {
     new RoseTree[Int] {
       val value: Int = i
 
-      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[Int]], Randomizer) = {
+      def shrinks: LazyListOrStream[RoseTree[Int]] = {
         val roseTrees: LazyListOrStream[RoseTree[Int]] = toLazyListOrStream(if (value > 0) (0 to value - 1).reverse.map(x => intRoseTree(x)) else LazyListOrStream.empty)
-        (roseTrees, rnd)
+        roseTrees
       }
     }
 
   def charRoseTree(c: Char): RoseTree[Char] =
     new RoseTree[Char] {
       val value: Char = c
-      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[Char]], Randomizer) = {
+      def shrinks: LazyListOrStream[RoseTree[Char]] = {
         val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        if (userFriendlyChars.indexOf(c) >= 0) (LazyListOrStream.empty, rnd)
-        else (toLazyListOrStream(userFriendlyChars).map(c => Rose(c)), rnd)
+        if (userFriendlyChars.indexOf(c) >= 0) LazyListOrStream.empty
+        else toLazyListOrStream(userFriendlyChars).map(c => Rose(c))
       }
     }
 
   def unfold[a](rt: RoseTree[a], indent: String = ""): Unit = {
     println(s"$indent ${rt.value}")
-    val (roseTrees, rnd2) = rt.shrinks(Randomizer.default)
+    val roseTrees = rt.shrinks
     roseTrees.foreach(t => unfold(t, s"$indent  "))
   }
 }
