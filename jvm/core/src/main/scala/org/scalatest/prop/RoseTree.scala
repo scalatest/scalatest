@@ -93,7 +93,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
     (LazyListOrStream(bestT.map(t => (t, bestUValue))), errOpt, rnd)
   }
 
-  def combineFirstDepthShrinksForFuture[E, U](fun: (T, U) => Future[(Boolean, Option[E])], rnd: Randomizer, roseTreeOfU: RoseTree[U])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[(T, U)]], Option[E], Randomizer)] = 
+  def combineFirstDepthShrinksForFuture[E, U](fun: (T, U) => Future[(Boolean, Option[E])], roseTreeOfU: RoseTree[U])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[(T, U)]], Option[E])] = 
     for {
       (shrunkRtOfT, errOpt1) <- depthFirstShrinksForFuture(value => fun(value, roseTreeOfU.value))
       bestT = shrunkRtOfT.headOption.getOrElse(this)
@@ -102,7 +102,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
       bestU = shrunkRtOfU.headOption.getOrElse(roseTreeOfU)
       bestUValue = bestU.value
       errOpt = LazyListOrStream(errOpt1, errOpt2).flatten.lastOption
-    } yield (LazyListOrStream(bestT.map(t => (t, bestUValue))), errOpt, rnd)
+    } yield (LazyListOrStream(bestT.map(t => (t, bestUValue))), errOpt)
 
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
   // for each shrunken Char, we'll get the one (Char, Int).
