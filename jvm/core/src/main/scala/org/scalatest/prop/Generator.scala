@@ -2258,10 +2258,10 @@ object Generator {
         case class CanonicalRoseTree(value: NonZeroInt) extends RoseTree[NonZeroInt] {
           def shrinks: LazyListOrStream[RoseTree[NonZeroInt]] = {
             def resLazyList(theValue: NonZeroInt): LazyListOrStream[RoseTree[NonZeroInt]] = {
-              if (theValue.value == 1 || theValue.value == -1) LazyListOrStream.empty
+              if (theValue.value == 1) LazyListOrStream.empty
               else {
                 val minusOne = NonZeroInt.ensuringValid(theValue.value - 1)
-                if (minusOne.value == 1 || minusOne.value == -1) Rose(-minusOne) #:: Rose(minusOne) #:: LazyListOrStream.empty
+                if (minusOne.value == 1) Rose(-minusOne) #:: Rose(minusOne) #:: LazyListOrStream.empty
                 else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
               }
             }
@@ -2309,10 +2309,10 @@ object Generator {
         case class CanonicalRoseTree(value: NonZeroLong) extends RoseTree[NonZeroLong] {
           def shrinks: LazyListOrStream[RoseTree[NonZeroLong]] = {
             def resLazyList(theValue: NonZeroLong): LazyListOrStream[RoseTree[NonZeroLong]] = {
-              if (theValue.value == 1L || theValue.value == -1L) LazyListOrStream.empty
+              if (theValue.value == 1L) LazyListOrStream.empty
               else {
                 val minusOne = NonZeroLong.ensuringValid(theValue.value - 1L)
-                if (minusOne.value == 1 || minusOne.value == -1L) Rose(-minusOne) #:: Rose(minusOne) #:: LazyListOrStream.empty
+                if (minusOne.value == 1) Rose(-minusOne) #:: Rose(minusOne) #:: LazyListOrStream.empty
                 else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
               }
             }
