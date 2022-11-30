@@ -225,7 +225,7 @@ private[scalactic] class DefaultPrettifier extends Prettifier {
 
 }
 
-private[scalactic] class TruncatingPrettifier(sizeLimit: SizeLimit) extends DefaultPrettifier {
+private[scalactic] class TruncatingPrettifier(private[scalactic] val sizeLimit: SizeLimit) extends DefaultPrettifier {
 
   private def dotDotDotIfTruncated(value: Boolean): String =
     if (value) ", ..." else ""
