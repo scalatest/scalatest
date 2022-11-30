@@ -5490,8 +5490,8 @@ If it doesn't show up for a while, please delete this comment.
       lazyEdges shouldEqual eagerEdges
 
       // (Iterator[T], Randomizer)
-      val (lazyCanonicalsIt, _) = lazyGen.canonicals(stableRnd)
-      val (eagerCanonicalsIt, _) = eagerGen.canonicals(stableRnd)
+      val lazyCanonicalsIt = lazyGen.canonicals
+      val eagerCanonicalsIt = eagerGen.canonicals
       lazyCanonicalsIt.toList shouldEqual eagerCanonicalsIt.toList
     }
   }

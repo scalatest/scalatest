@@ -65,13 +65,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       import Generator._
 
       val rnd = Randomizer.default
-      val (intCanonicalsIt, nextRnd) = intGenerator.canonicals(rnd)
-      val (charRt, _, _) = charGenerator.next(SizeParam(1, 0, 1), List.empty, nextRnd)
+      val intCanonicalsIt = intGenerator.canonicals
+      val (charRt, _, _) = charGenerator.next(SizeParam(1, 0, 1), List.empty, rnd)
       val charValue = charRt.value
       val expectedTupCanonicals = intCanonicalsIt.map(i => (charValue, i.value)).toList
 
       val tupGen = for (i <- intGenerator) yield (charValue, i)
-      val (tupCanonicalsIt, _) = tupGen.canonicals(rnd)
+      val tupCanonicalsIt = tupGen.canonicals
       val tupCanonicals = tupCanonicalsIt.map(_.value).toList
 
       tupCanonicals shouldBe expectedTupCanonicals
@@ -81,9 +81,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       import Generator._
 
       val rnd = Randomizer.default
-      val (intCanonicalsIt, _) = intGenerator.canonicals(rnd)
+      val intCanonicalsIt = intGenerator.canonicals
       val intCanonicals = intCanonicalsIt.toList
-      val (doubleCanonicalsIt, _) = doubleGenerator.canonicals(rnd)
+      val doubleCanonicalsIt = doubleGenerator.canonicals
       val doubleCanonicals = doubleCanonicalsIt.toList
       val expectedTupCanonicals: List[(Int, Double)] =
           for {
@@ -96,7 +96,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           i <- intGenerator
           d <- doubleGenerator
         }  yield (i, d)
-      val (tupCanonicalsIt, _) = tupGen.canonicals(rnd)
+      val tupCanonicalsIt = tupGen.canonicals
       val tupCanonicals = tupCanonicalsIt.map(rt => rt.value).toList
 
       tupCanonicals shouldBe expectedTupCanonicals
@@ -338,14 +338,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should produce Byte canonical values") {
         import Generator._
         val gen = byteGenerator
-        val (canonicals, _) = gen.canonicals(Randomizer.default)
+        val canonicals = gen.canonicals
         canonicals.map(_.value).toList shouldBe List(-3, 3, -2, 2, -1, 1, 0).map(_.toByte)
       }
       it("should shrink Bytes by repeatedly halving and negating") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Byte]) =>
           val b = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[Byte] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Byte] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (b == 0)
             shrinks shouldBe empty
@@ -406,14 +406,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should produce Short canonical values") {
         import Generator._
         val gen = shortGenerator
-        val (canonicals, _) = gen.canonicals(Randomizer.default)
+        val canonicals = gen.canonicals
         canonicals.map(_.value).toList shouldBe List(-3, 3, -2, 2, -1, 1, 0).map(_.toShort)
       }
       it("should shrink Shorts by repeatedly halving and negating") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Short]) =>
           val n = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[Short] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Short] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (n == 0)
             shrinks shouldBe empty
@@ -474,14 +474,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should produce Int canonical values") {
         import Generator._
         val gen = intGenerator
-        val (canonicals, _) = gen.canonicals(Randomizer.default)
+        val canonicals = gen.canonicals
         canonicals.map(_.value).toList shouldBe List(-3, 3, -2, 2, -1, 1, 0)
       }
       it("should shrink Ints by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Int]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[Int] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Int] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i == 0)
             shrinks shouldBe empty
@@ -539,14 +539,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should produce Long canonical values") {
         import Generator._
         val gen = longGenerator
-        val (canonicals, _) = gen.canonicals(Randomizer.default)
+        val canonicals = gen.canonicals
         canonicals.map(_.value).toList shouldBe List(-3L, 3L, -2L, 2L, -1L, 1L, 0L)
       }
       it("should shrink Longs by repeatedly halving and negating") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Long]) =>
           val n = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[Long] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Long] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (n == 0)
             shrinks shouldBe empty
@@ -606,7 +606,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should produce Char canonical values") {
         import Generator._
         val gen = charGenerator
-        val (canonicalsIt, _) = gen.canonicals(Randomizer.default)
+        val canonicalsIt = gen.canonicals
         val canonicals = canonicalsIt.map(_.value).toList
         import org.scalatest.Inspectors
         Inspectors.forAll (canonicals) { c => c should (be >= 'a' and be <= 'z') }
@@ -617,7 +617,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val generator = implicitly[Generator[Char]]
         forAll { (shrinkRoseTree: RoseTree[Char]) =>
           val c = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[Char] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Char] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z')
             shrinks shouldBe empty
@@ -627,7 +627,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import org.scalatest.Inspectors
         Inspectors.forAll (expectedChars) { (c: Char) =>
           val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(c), Randomizer.default)
-          val shrinks: LazyListOrStream[Char] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Char] = shrinkRoseTree.shrinks.map(_.value)
           shrinks shouldBe empty
         }
       }
@@ -676,14 +676,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should produce Float canonical values") {
         import Generator._
         val gen = floatGenerator
-        val (canonicals, _) = gen.canonicals(Randomizer.default)
+        val canonicals = gen.canonicals
         canonicals.map(_.value).toList shouldBe List(-3.0f, 3.0f, -2.0f, 2.0f, -1.0f, 1.0f, 0.0f)
       }
       it("should shrink Floats with an algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Float]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[Float] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Float] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i == 0.0f)
             shrinks shouldBe empty
@@ -702,7 +702,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Float]) =>
           val fv = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[Float] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Float] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (fv == 0.0f) {
             shrinks shouldBe empty
@@ -774,14 +774,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should produce Double canonical values") {
         import Generator._
         val gen = doubleGenerator
-        val (canonicals, _) = gen.canonicals(Randomizer.default)
+        val canonicals = gen.canonicals
         canonicals.map(_.value).toList shouldBe List(-3.0, 3.0, -2.0, 2.0, -1.0, 1.0, 0.0)
       }
       it("should shrink Doubles with an algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Double]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[Double] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Double] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i == 0.0)
             shrinks shouldBe empty
@@ -806,7 +806,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       * @param pair the returned values from the Generator method
       * @tparam T the type of the Generator
       */  
-    implicit class GeneratorLazyListOrStreamPairOps[T](pair: (LazyListOrStream[T], Randomizer)) {
+    implicit class GeneratorLazyListOrStreamPairOps[T](iter: LazyListOrStream[T]) {
     // SKIP-DOTTY-END  
       /**
         * Helper method for testing canonicals and shrinks, which should always be
@@ -829,8 +829,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       // SKIP-DOTTY-START  
       def shouldGrowWithForGeneratorLazyListOrStreamPair[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {
       // SKIP-DOTTY-END  
-      //DOTTY-ONLY extension [T](pair: (LazyListOrStream[T], Randomizer)) def shouldGrowWithForGeneratorLazyListOrStreamPair[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {  
-        val iter: LazyListOrStream[T] = pair._1
+      //DOTTY-ONLY extension [T](iter: LazyListOrStream[T]) def shouldGrowWithForGeneratorLazyListOrStreamPair[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {  
         iter.reduce { (last, cur) =>
           // Duplicates not allowed:
           last should not equal cur
@@ -870,7 +869,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       // SKIP-DOTTY-END  
       //DOTTY-ONLY extension [T](pair: (RoseTree[T], Randomizer)) def shouldGrowWithForGeneratorRoseTreePair[N: Ordering](conv: T => N)(implicit nOps: Numeric[N]): Unit = {  
         val roseTree: RoseTree[T] = pair._1
-        roseTree.shrinks(Randomizer.default)._1.map(_.value).reduce { (last, cur) =>
+        roseTree.shrinks.map(_.value).reduce { (last, cur) =>
           // Duplicates not allowed:
           last should not equal cur
           val nLast = nOps.abs(conv(last))
@@ -912,7 +911,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val maxSize = PosZInt(100)
         val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 100, inclusive
         val (roseTree, _, _) = gen.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
-        val shrunken = roseTree.shrinks(Randomizer.default)._1.map(_.value)
+        val shrunken = roseTree.shrinks.map(_.value)
         if (shrunken.length > 0) {
           shrunken.reduce { (last, cur) =>
             // Duplicates not allowed:
@@ -966,14 +965,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posIntGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
       
       it("should shrink PosInts by algo towards 1") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosInt]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[PosInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[PosInt] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0)
             shrinks shouldBe empty
@@ -1026,14 +1025,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZIntGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosZInts by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosZInt]) =>
           val i = shrinkRoseTree.value
-          val shrinks: List[PosZInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).toList
+          val shrinks: List[PosZInt] = shrinkRoseTree.shrinks.map(_.value).toList
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0)
             shrinks shouldBe empty
@@ -1090,7 +1089,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosLong]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[PosLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[PosLong] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 1L)
             shrinks shouldBe empty
@@ -1143,14 +1142,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosZLongs by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosZLong]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[PosZLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[PosZLong] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0L)
             shrinks shouldBe empty
@@ -1205,7 +1204,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
         gen.shouldGrowWithForShrink(_.value)
       }
 
@@ -1213,7 +1212,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[PosFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[PosFloat] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 1.0f || i.value == Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -1266,14 +1265,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posFiniteFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosFiniteFloat by algo towards 1.0 and positive min value") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosFiniteFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[PosFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[PosFiniteFloat] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 1.0f || i.value == Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -1332,7 +1331,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = posZFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
         gen.shouldGrowWithForShrink(_.value)
       }
 
@@ -1340,7 +1339,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[PosFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[PosFloat] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0f)
             shrinks shouldBe empty
@@ -1398,14 +1397,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosZFiniteFloat by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosFiniteFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[PosFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[PosFiniteFloat] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0f)
             shrinks shouldBe empty
@@ -1461,14 +1460,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosDouble by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[PosDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[PosDouble] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Double.MinPositiveValue)
             shrinks shouldBe empty
@@ -1523,14 +1522,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosFiniteDouble by algo towards positive min value") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosFiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[PosFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[PosFiniteDouble] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -1590,14 +1589,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosZDouble by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosZDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[PosZDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[PosZDouble] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0)
             shrinks shouldBe empty
@@ -1655,14 +1654,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = posZFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink PosZFiniteDouble by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosFiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[PosFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[PosFiniteDouble] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0f)
             shrinks shouldBe empty
@@ -1713,14 +1712,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negIntGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegInts by algo towards -1") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegInt]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NegInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NegInt] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == -1)
             shrinks shouldBe empty
@@ -1773,14 +1772,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZIntGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegZInts by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegZInt]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NegZInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NegZInt] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0)
             shrinks shouldBe empty
@@ -1831,14 +1830,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegLongs by algo towards -1") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegLong]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NegLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NegLong] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == -1L)
             shrinks shouldBe empty
@@ -1891,14 +1890,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = negZLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegZLongs by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegZLong]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NegZLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NegZLong] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0L)
             shrinks shouldBe empty
@@ -1954,14 +1953,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegFloat by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NegFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NegFloat] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == -Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -2015,14 +2014,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegFiniteFloat by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegFiniteFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NegFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NegFiniteFloat] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == -Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -2084,14 +2083,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegZFloat by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegZFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NegZFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NegZFloat] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0f)
             shrinks shouldBe empty
@@ -2149,14 +2148,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegZFiniteFloat by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegFiniteFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NegFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NegFiniteFloat] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0f)
             shrinks shouldBe empty
@@ -2212,14 +2211,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegDouble by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NegDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NegDouble] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == -Double.MinPositiveValue)
             shrinks shouldBe empty
@@ -2273,14 +2272,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegFiniteDouble by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegFiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NegFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NegFiniteDouble] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == -Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -2340,14 +2339,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegZDouble by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegZDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NegZDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NegZDouble] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0)
             shrinks shouldBe empty
@@ -2405,14 +2404,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = negZFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NegZFiniteDouble by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegZFiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NegZFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NegZFiniteDouble] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0)
             shrinks shouldBe empty
@@ -2465,14 +2464,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should produce NonZeroInt canonical values") {
         import Generator._
         val gen = nonZeroIntGenerator
-        val (canonicals, _) = gen.canonicals(Randomizer.default)
+        val canonicals = gen.canonicals
         canonicals.map(_.value).toList shouldBe List(NonZeroInt(-3), NonZeroInt(3), NonZeroInt(-2), NonZeroInt(2), NonZeroInt(-1), NonZeroInt(1))
       }
       it("should shrink NonZeroInts by repeatedly halving and negating") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroInt]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NonZeroInt] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NonZeroInt] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 1 || i.value == -1)
             shrinks shouldBe empty
@@ -2533,14 +2532,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = nonZeroLongGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NonZeroLongs by algo towards min positive and negative values") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroLong]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NonZeroLong] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NonZeroLong] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 1L || i.value == -1L)
             shrinks shouldBe empty
@@ -2607,14 +2606,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NonZeroFloats with an algo towards min positive or negative value") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NonZeroFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NonZeroFloat] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Float.MinPositiveValue || i.value == -Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -2677,14 +2676,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroFiniteFloatGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NonZeroFiniteFloats with an algo towards min positive or negative value") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroFiniteFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NonZeroFiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NonZeroFiniteFloat] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Float.MinPositiveValue || i.value == -Float.MinPositiveValue)
             shrinks shouldBe empty
@@ -2751,14 +2750,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NonZeroDoubles with an algo towards min positive or negative value") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NonZeroDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NonZeroDouble] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Double.MinPositiveValue || i.value == -Double.MinPositiveValue)
             shrinks shouldBe empty
@@ -2821,14 +2820,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = nonZeroFiniteDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NonZeroFiniteDoubles with an algo towards min positive or negative value") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroFiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NonZeroFiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NonZeroFiniteDouble] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == Double.MinPositiveValue || i.value == -Double.MinPositiveValue)
             shrinks shouldBe empty
@@ -2892,7 +2891,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = finiteFloatGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
         gen.shouldGrowWithForShrink(_.value)
       }
 
@@ -2900,7 +2899,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[FiniteFloat]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[FiniteFloat] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[FiniteFloat] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0f)
             shrinks shouldBe empty
@@ -2964,14 +2963,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = finiteDoubleGenerator
         val rnd = Randomizer.default
         gen.shouldGrowWithForShrink(_.value)
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink FiniteDoubles with an algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[FiniteDouble]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[FiniteDouble] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[FiniteDouble] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == 0.0)
             shrinks shouldBe empty
@@ -3022,14 +3021,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = numericCharGenerator
         val rnd = Randomizer.default
-        gen.canonicals(rnd).shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NumericChars with an algo towards '0'") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NumericChar]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[NumericChar] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[NumericChar] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.value == '0')
             shrinks shouldBe empty
@@ -3068,7 +3067,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[String]) =>
           val theString = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[String] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[String] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (theString == "")
             shrinks shouldBe empty
@@ -3084,7 +3083,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should offer a String generator that offers cononicals based on Char canonicals") {
         import Generator._
         val gen = stringGenerator
-        val (canonicalsIt, _) = gen.canonicals(Randomizer.default)
+        val canonicalsIt = gen.canonicals
         val canonicals: List[String] = canonicalsIt.map(_.value).toList
         canonicals.last shouldBe empty
         import org.scalatest.Inspectors
@@ -3124,8 +3123,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = optionGenerator[Int]
 
         val rnd = Randomizer.default
-        val (intCanon, _) = baseGen.canonicals(rnd)
-        val (optCanonIter, _) = gen.canonicals(rnd)
+        val intCanon = baseGen.canonicals
+        val optCanonIter = gen.canonicals
         val optCanon = optCanonIter.toList
 
         optCanon.map(_.value) should contain (None)
@@ -3137,7 +3136,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Option[Int]]) =>
           val optI = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[Option[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Option[Int]] = shrinkRoseTree.shrinks.map(_.value)
           // shrinks.last shouldBe None
           // Decided to not bother with having None at the end of the shrink line, because it is an edge and
           // one out of every 100 or so regular.
@@ -3177,7 +3176,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
         val (optShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(None), rnd)
 
-        assert(optShrink.shrinks(Randomizer.default)._1.isEmpty)
+        assert(optShrink.shrinks.isEmpty)
       }
     }
 
@@ -3205,9 +3204,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = orGenerator[Int, String]
 
         val rnd = Randomizer.default
-        val (gCanon, _) = gGen.canonicals(rnd)
-        val (bCanon, _) = bGen.canonicals(rnd)
-        val (orCanon, _) = gen.canonicals(rnd)
+        val gCanon = gGen.canonicals
+        val bCanon = bGen.canonicals
+        val orCanon = gen.canonicals
 
         orCanon.map(_.value).toList should contain theSameElementsAs((gCanon.map(_.value).map(Good(_)) ++ bCanon.map(_.value).map(Bad(_))).toList)
       }
@@ -3239,8 +3238,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (orGoodShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Good(1000)), rnd)
         val (orBadShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Bad(2000L)), rnd)
 
-        orGoodShrink.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs(gShrink.shrinks(Randomizer.default)._1.map(_.value).map(Good(_)).toList)
-        orBadShrink.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs(bShrink.shrinks(Randomizer.default)._1.map(_.value).map(Bad(_)).toList)
+        orGoodShrink.shrinks.map(_.value) should contain theSameElementsAs(gShrink.shrinks.map(_.value).map(Good(_)).toList)
+        orBadShrink.shrinks.map(_.value) should contain theSameElementsAs(bShrink.shrinks.map(_.value).map(Bad(_)).toList)
       }
     }
 
@@ -3266,9 +3265,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val gen = eitherGenerator[String, Int]
 
         val rnd = Randomizer.default
-        val (rCanon, _) = rGen.canonicals(rnd)
-        val (lCanon, _) = lGen.canonicals(rnd)
-        val (eitherCanon, _) = gen.canonicals(rnd)
+        val rCanon = rGen.canonicals
+        val lCanon = lGen.canonicals
+        val eitherCanon = gen.canonicals
 
         eitherCanon.map(_.value).toList should contain theSameElementsAs((rCanon.map(_.value).map(Right(_)) ++ lCanon.map(_.value).map(Left(_))).toList)
       }
@@ -3299,8 +3298,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (eitherRightShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Right(1000)), rnd)
         val (eitherLeftShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Left(2000L)), rnd)
 
-        eitherRightShrink.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs(rShrink.shrinks(Randomizer.default)._1.map(_.value).map(Right(_)).toList)
-        eitherLeftShrink.shrinks(Randomizer.default)._1.map(_.value) should contain theSameElementsAs(lShrink.shrinks(Randomizer.default)._1.map(_.value).map(Left(_)).toList)
+        eitherRightShrink.shrinks.map(_.value) should contain theSameElementsAs(rShrink.shrinks.map(_.value).map(Right(_)).toList)
+        eitherLeftShrink.shrinks.map(_.value) should contain theSameElementsAs(lShrink.shrinks.map(_.value).map(Left(_)).toList)
       }
     }
 
@@ -3321,12 +3320,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
     def shrinkByStrategery[F[Int] <: GenTraversable[Int]](factory: ColCompatHelper.Factory[Int, F[Int]])(implicit generator: Generator[F[Int]]): Unit = {  
       import GeneratorDrivenPropertyChecks._
       val intGenerator = Generator.intGenerator
-      val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
+      val intCanonicalsIt = intGenerator.canonicals
       val intCanonicals = intCanonicalsIt.toList
       forAll { (xs: F[Int]) =>
         // pass in List(xs) as only edge case so the generator will generate rose tree with the specified value.
         val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)
-        val shrinks: LazyListOrStream[F[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value).reverse
+        val shrinks: LazyListOrStream[F[Int]] = shrinkRoseTree.shrinks.map(_.value).reverse
         if (xs.isEmpty)
           shrinks shouldBe empty
         else {
@@ -3384,18 +3383,18 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should not exhibit this bug in List shrinking") {
         val lstGen = implicitly[Generator[List[List[Int]]]]
         val xss = List(List(100, 200, 300, 400, 300))
-        lstGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) should not contain xss
+        lstGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
       }
       it("should return an empty LazyListOrStream when asked to shrink a List of size 0") {
         val lstGen = implicitly[Generator[List[Int]]]
         val xs = List.empty[Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value) shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks.map(_.value) shouldBe empty
       }
       it("should shrink List with an algo towards empty List") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[List[Int]]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[List[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[List[Int]] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty || i.length == 1)
             shrinks shouldBe empty
@@ -3414,16 +3413,16 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         // for example, that that one doesn't show up in the shrinks output, because it would be the original list-to-shrink.
         val lstGen = implicitly[Generator[List[Int]]]
         val listToShrink = List.fill(16)(99)
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a list generator whose canonical method uses the canonical method of the underlying T") {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
-        val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
+        val intCanonicalsIt = intGenerator.canonicals
         val intCanonicals = intCanonicalsIt.map(_.value).toList
         val listOfIntGenerator = Generator.listGenerator[Int]
-        val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
+        val listOfIntCanonicalsIt = listOfIntGenerator.canonicals
         val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => List(i))
       }
@@ -3451,8 +3450,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should offer an implicit provider for constant function0's that returns the canonicals of the result type") {
         val ints = Generator.intGenerator
         val function0s = Generator.function0Generator[Int]
-        val (intCanonicalsIt, rnd1) = ints.canonicals(Randomizer.default)
-        val (function0CanonicalsIt, _) = function0s.canonicals(rnd1)
+        val intCanonicalsIt = ints.canonicals
+        val function0CanonicalsIt = function0s.canonicals
         val intCanonicals = intCanonicalsIt.map(_.value).toList
         val function0Canonicals = function0CanonicalsIt.map(_.value).toList
         function0Canonicals.map(f => f()) should contain theSameElementsAs intCanonicals
@@ -3465,8 +3464,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           val rnd = Randomizer(i)
           val (intShrinksRt, _, rnd1) = ints.next(SizeParam(1, 0, 1), List.empty, rnd)
           val (function0ShrinksRt, _, _) = function0s.next(SizeParam(1, 0, 1), List.empty, rnd)
-          val intShrinks = intShrinksRt.shrinks(Randomizer.default)._1.map(_.value)
-          val function0Shrinks = function0ShrinksRt.shrinks(Randomizer.default)._1.map(_.value)
+          val intShrinks = intShrinksRt.shrinks.map(_.value)
+          val function0Shrinks = function0ShrinksRt.shrinks.map(_.value)
           function0Shrinks.map(f => f()) should contain theSameElementsAs intShrinks
         }
       }
@@ -3496,9 +3495,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         tupRt1.value._1 shouldEqual intRt1.value
         tupRt1.value._2 shouldEqual intRt2.value
 
-        val (shIntRt1, shIntRnd1) = intRt1.shrinks(rnd)
-        val (shIntRt2, shIntRnd2) = intRt2.shrinks(shIntRnd1)
-        val (shTupRt1, shTupRnd1) = tupRt1.shrinks(rnd)
+        val shIntRt1 = intRt1.shrinks
+        val shIntRt2 = intRt2.shrinks
+        val shTupRt1 = tupRt1.shrinks
 
         val shIntHeadValueX2 = -(shIntRt1.head.value * 2)
         val expected = 
@@ -3516,7 +3515,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         case class Person(name: String, age: Int)
         val persons = for (tup <- tupGen) yield Person(tup._1, tup._2)
         val (rt, _, _) = persons.next(SizeParam(1, 0, 1), List.empty, Randomizer.default)
-        rt.shrinks(Randomizer.default)._1 should not be empty
+        rt.shrinks should not be empty
       }
     }
     describe("for Int => Ints") {
@@ -3644,7 +3643,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Vector[Int]]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[Vector[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Vector[Int]] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty)
             shrinks shouldBe empty
@@ -3660,11 +3659,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty LazyListOrStream when asked to shrink a Vector of size 0") {
         val lstGen = implicitly[Generator[Vector[Int]]]
         val xs = Vector.empty[Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1 shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks shouldBe empty
       }
       it("should return an LazyListOrStream that does not repeat canonicals when asked to shrink a Vector of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Vector[Int]]]
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an LazyListOrStream that does not repeat the passed list-to-shink even if that list has a power of 2 length") {
@@ -3673,16 +3672,16 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         // for example, that that one doesn't show up in the shrinks output, because it would be the original list-to-shrink.
         val lstGen = implicitly[Generator[Vector[Int]]]
         val listToShrink = Vector.fill(16)(99)
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Vector generator whose canonical method uses the canonical method of the underlying T") {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
-        val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
+        val intCanonicalsIt = intGenerator.canonicals
         val intCanonicals = intCanonicalsIt.map(_.value).toVector
         val listOfIntGenerator = Generator.vectorGenerator[Int]
-        val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
+        val listOfIntCanonicalsIt = listOfIntGenerator.canonicals
         val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => List(i))
       }
@@ -3764,7 +3763,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Set[Int]]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[Set[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Set[Int]] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty)
             shrinks shouldBe empty
@@ -3780,11 +3779,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty LazyListOrStream when asked to shrink a Set of size 0") {
         val lstGen = implicitly[Generator[Set[Int]]]
         val xs = Set.empty[Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks.map(_.value).toSet shouldBe empty
       }
       it("should return an LazyListOrStream that does not repeat canonicals when asked to shrink a Set of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Set[Int]]]
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Set(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Set(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an LazyListOrStream that does not repeat the passed set-to-shink even if that set has a power of 2 length") {
@@ -3795,16 +3794,16 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listToShrink: Set[Int] = (Set.empty[Int] /: (1 to 16)) { (set, n) =>
           set + n
         }
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Set generator whose canonical method uses the canonical method of the underlying T") {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
-        val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
+        val intCanonicalsIt = intGenerator.canonicals
         val intCanonicals = intCanonicalsIt.map(_.value).toList
         val listOfIntGenerator = Generator.setGenerator[Int]
-        val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
+        val listOfIntCanonicalsIt = listOfIntGenerator.canonicals
         val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => Set(i))
       }
@@ -3886,7 +3885,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[SortedSet[Int]]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[SortedSet[Int]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[SortedSet[Int]] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty)
             shrinks shouldBe empty
@@ -3902,11 +3901,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty LazyListOrStream when asked to shrink a SortedSet of size 0") {
         val lstGen = implicitly[Generator[SortedSet[Int]]]
         val xs = SortedSet.empty[Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks.map(_.value).toSet shouldBe empty
       }
       it("should return an LazyListOrStream that does not repeat canonicals when asked to shrink a SortedSet of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[SortedSet[Int]]]
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(SortedSet(3, 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(SortedSet(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an LazyListOrStream that does not repeat the passed set-to-shink even if that set has a power of 2 length") {
@@ -3917,16 +3916,16 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listToShrink: SortedSet[Int] = (SortedSet.empty[Int] /: (1 to 16)) { (set, n) =>
           set + n
         }
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Set generator whose canonical method uses the canonical method of the underlying T") {
         import GeneratorDrivenPropertyChecks._
         val intGenerator = Generator.intGenerator
-        val (intCanonicalsIt, _) = intGenerator.canonicals(Randomizer.default)
+        val intCanonicalsIt = intGenerator.canonicals
         val intCanonicals = intCanonicalsIt.map(_.value).toList
         val listOfIntGenerator = Generator.sortedSetGenerator[Int]
-        val (listOfIntCanonicalsIt, _) = listOfIntGenerator.canonicals(Randomizer.default)
+        val listOfIntCanonicalsIt = listOfIntGenerator.canonicals
         val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => SortedSet(i))
       }
@@ -4008,7 +4007,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Map[Int, String]]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[Map[Int, String]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[Map[Int, String]] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty)
             shrinks shouldBe empty
@@ -4024,11 +4023,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty LazyListOrStream when asked to shrink a Map of size 0") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
         val xs = Map.empty[PosInt, Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks.map(_.value).toSet shouldBe empty
       }
       it("should return an LazyListOrStream that does not repeat canonicals when asked to shrink a Map of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[Map[PosInt, Int]]]
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Map(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(Map(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an LazyListOrStream that does not repeat the passed map-to-shink even if that set has a power of 2 length") {
@@ -4039,16 +4038,16 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listToShrink: Map[PosInt, Int] = (Map.empty[PosInt, Int] /: (1 to 16)) { (map, n) =>
           map + (PosInt.ensuringValid(n) -> n)
         }
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a Map generator whose canonical method uses the canonical method of the underlying types") {
         import GeneratorDrivenPropertyChecks._
         val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
-        val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
+        val tupleCanonicalsIt = tupleGenerator.canonicals
         val tupleCanonicals = tupleCanonicalsIt.map(_.value).toList
         val mapGenerator = Generator.mapGenerator[PosInt, Int]
-        val (mapCanonicalsIt, _) = mapGenerator.canonicals(Randomizer.default)
+        val mapCanonicalsIt = mapGenerator.canonicals
         val mapCanonicals = mapCanonicalsIt.map(_.value).toList
         mapCanonicals shouldEqual tupleCanonicals.map(i => Map(i))
       }
@@ -4130,7 +4129,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[SortedMap[Int, String]]) =>
           val i = shrinkRoseTree.value
-          val shrinks: LazyListOrStream[SortedMap[Int, String]] = shrinkRoseTree.shrinks(Randomizer.default)._1.map(_.value)
+          val shrinks: LazyListOrStream[SortedMap[Int, String]] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty)
             shrinks shouldBe empty
@@ -4146,11 +4145,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       it("should return an empty LazyListOrStream when asked to shrink a SortedMap of size 0") {
         val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
         val xs = SortedMap.empty[PosInt, Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value).toSet shouldBe empty
+        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks.map(_.value).toSet shouldBe empty
       }
       it("should return an LazyListOrStream that does not repeat canonicals when asked to shrink a SortedMap of size 2 that includes canonicals") {
         val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(SortedMap(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99)), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(SortedMap(PosInt(3) -> 3, PosInt(2) -> 2, PosInt(99) -> 99)), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should contain theSameElementsAs shrinkees
       }
       it("should return an LazyListOrStream that does not repeat the passed SortedMap-to-shink even if that SortedMap has a power of 2 length") {
@@ -4161,16 +4160,16 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listToShrink: SortedMap[PosInt, Int] = (SortedMap.empty[PosInt, Int] /: (1 to 16)) { (map, n) =>
           map + (PosInt.ensuringValid(n) -> n)
         }
-        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks(Randomizer.default)._1.map(_.value)
+        val shrinkees = lstGen.next(SizeParam(1, 0, 1), List(listToShrink), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees.distinct should not contain listToShrink
       }
       it("should offer a SortedMap generator whose canonical method uses the canonical method of the underlying types") {
         import GeneratorDrivenPropertyChecks._
         val tupleGenerator = Generator.tuple2Generator[PosInt, Int]
-        val (tupleCanonicalsIt, _) = tupleGenerator.canonicals(Randomizer.default)
+        val tupleCanonicalsIt = tupleGenerator.canonicals
         val tupleCanonicals = tupleCanonicalsIt.map(_.value).toList
         val mapGenerator = Generator.sortedMapGenerator[PosInt, Int]
-        val (mapCanonicalsIt, _) = mapGenerator.canonicals(Randomizer.default)
+        val mapCanonicalsIt = mapGenerator.canonicals
         val mapCanonicals = mapCanonicalsIt.map(_.value).toList
         mapCanonicals shouldEqual tupleCanonicals.map(i => Map(i))
       }
