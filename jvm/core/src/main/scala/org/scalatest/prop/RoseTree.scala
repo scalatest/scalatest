@@ -77,9 +77,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
       }
     }
 
-    val firstLevelShrinks = shrinks
-    val loopRes = shrinkLoop(this, None, firstLevelShrinks, Set(value))
-    loopRes.map(res => (res._1, res._2))
+    shrinkLoop(this, None, shrinks, Set(value))
   }
 
   def combineFirstDepthShrinks[E, U](fun: (T, U) => (Boolean, Option[E]), rnd: Randomizer, roseTreeOfU: RoseTree[U]): (LazyListOrStream[RoseTree[(T, U)]], Option[E], Randomizer) = {
