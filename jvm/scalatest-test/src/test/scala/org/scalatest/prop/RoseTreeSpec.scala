@@ -50,7 +50,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val rt = intRoseTree(72)
       rt.value shouldBe 72
 
-      val (shrinks, _, _) = rt.depthFirstShrinks(i => (i < 12, None), Randomizer.default)
+      val (shrinks, _) = rt.depthFirstShrinks(i => (i < 12, None))
       shrinks should have length 1
       shrinks(0).value shouldBe 12
     }
@@ -105,7 +105,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val (rtRes, _) = processFun(rt.value)
       rtRes shouldBe false
       
-      val (shrinks, _, _) = rt.depthFirstShrinks(processFun, Randomizer.default)
+      val (shrinks, _) = rt.depthFirstShrinks(processFun)
       shrinks should have length 1
       shrinks(0).value.value shouldBe 12
 

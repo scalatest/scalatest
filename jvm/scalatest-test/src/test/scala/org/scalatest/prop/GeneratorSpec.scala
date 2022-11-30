@@ -3397,7 +3397,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           val shrinks: LazyListOrStream[List[Int]] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty || i.length == 1)
-            shrinks shouldBe empty
+            shrinks shouldBe empty // TODO: This is flickering  Message: LazyList(List()) was not empty, when passed RoseTree(List(1883656235)), Init Seed: 1669775246376
           else {
             shrinks should not be empty // This flickers
             inspectAll(shrinks) { s =>
