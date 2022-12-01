@@ -77,17 +77,6 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
     shrinkLoop(this, None, shrinks, Set(value))
   }
 
-  def combineFirstDepthShrinksForFuture[E, U](fun: (T, U) => Future[(Boolean, Option[E])], roseTreeOfU: RoseTree[U])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[(T, U)]], Option[E])] = 
-    for {
-      (shrunkRtOfT, errOpt1) <- depthFirstShrinksForFuture(value => fun(value, roseTreeOfU.value))
-      bestT = shrunkRtOfT.headOption.getOrElse(this)
-      bestTValue = bestT.value
-      (shrunkRtOfU, errOpt2) <- roseTreeOfU.depthFirstShrinksForFuture(value => fun(bestTValue, value))
-      bestU = shrunkRtOfU.headOption.getOrElse(roseTreeOfU)
-      bestUValue = bestU.value
-      errOpt = LazyListOrStream(errOpt1, errOpt2).flatten.lastOption
-    } yield (LazyListOrStream(bestT.map(t => (t, bestUValue))), errOpt)
-
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
   // for each shrunken Char, we'll get the one (Char, Int).
   def map[U](f: T => U): RoseTree[U] = {
