@@ -146,29 +146,6 @@ object RoseTree {
       }
     roseTreeOfV
   }
-
-  def map2ForFuture[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U], f: (T, U) => V)(implicit execContext: ExecutionContext): Future[RoseTree[V]] = {
-    val tupValue = f(tree1.value, tree2.value)
-    val shrinks1 = tree1.shrinks
-    val candidateFutures1: LazyListOrStream[Future[RoseTree[V]]] = 
-      for (candidate <- shrinks1) yield map2ForFuture(candidate, tree2, f)
-    val shrinks2 = tree2.shrinks
-    val candidatesFutures2: LazyListOrStream[Future[RoseTree[V]]] = 
-      for (candidate <- shrinks2) yield map2ForFuture(tree1, candidate, f)      
-    for {
-      candidates1: LazyListOrStream[RoseTree[V]] <- Future.sequence(candidateFutures1)
-      candidates2 <- Future.sequence(candidatesFutures2)
-    } yield {
-      val roseTreeOfV =
-        new RoseTree[V] {
-          val value = tupValue
-          def shrinks: LazyListOrStream[RoseTree[V]] = {
-            candidates1 #::: candidates2
-          }
-        }
-      roseTreeOfV
-    }
-  }
 }
 
 // Terminal node of a RoseTree is a Rose.

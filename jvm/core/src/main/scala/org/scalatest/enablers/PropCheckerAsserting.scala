@@ -1108,8 +1108,8 @@ trait FuturePropCheckerAsserting {
 
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
+                val roseTreeOfAB = RoseTree.map2[A, B, (A, B)](roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b)) 
                 for {
-                  roseTreeOfAB <- RoseTree.map2ForFuture[A, B, (A, B)](roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
                   (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfAB.depthFirstShrinksForFuture { case (a, b) => {
                                                               val result: Future[T] = fun(a, b)
                                                               result.map { _ => 
