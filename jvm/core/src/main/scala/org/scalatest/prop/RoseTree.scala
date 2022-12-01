@@ -26,81 +26,67 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
   // Compute the shrinks list on demand using this RoseTree's value.
   // This will be called only when a property fails, and just once, and it
   // won't take long, so no need to make this a lazy val.
-  def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[T]], Randomizer)
+  def shrinks: LazyListOrStream[RoseTree[T]]
 
-  def depthFirstShrinks[E](fun: T => (Boolean, Option[E]), rnd: Randomizer): (LazyListOrStream[RoseTree[T]], Option[E], Randomizer) = {
+  def depthFirstShrinks[E](fun: T => (Boolean, Option[E])): (LazyListOrStream[RoseTree[T]], Option[E]) = {
     @tailrec
-    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], processed: Set[T] , currentRnd: Randomizer): (LazyListOrStream[RoseTree[T]], Option[E], Randomizer) = {
+    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]]): (LazyListOrStream[RoseTree[T]], Option[E]) = {
       pending match {
         case head #:: tail => 
           val (result, errDataOpt) = fun(head.value)
           if (!result) {
             // If the function fail, we got a new failure value, and we'll go one level deeper.
-            val (headChildrenRTs, nextRnd) = head.shrinks(currentRnd)
-            val newProceesed = processed + head.value
-            shrinkLoop(head, errDataOpt, headChildrenRTs.filter(rt => !newProceesed.contains(rt.value)), newProceesed,  nextRnd)
+            val headChildrenRTs = head.shrinks
+            shrinkLoop(head, errDataOpt, headChildrenRTs)
           }
           else {
             // The function call succeeded, let's continue to try the sibling.
-            shrinkLoop(lastFailure, lastFailureData, tail, processed + head.value, currentRnd)
+            shrinkLoop(lastFailure, lastFailureData, tail)
           }
 
         case _ => // No more further sibling to try, return the last failure
-          (LazyListOrStream(lastFailure), lastFailureData, currentRnd)
+          (LazyListOrStream(lastFailure), lastFailureData)
       }
     }
-    val (firstLevelShrinks, nextRnd) = shrinks(rnd)
-    shrinkLoop(this, None, firstLevelShrinks, Set(value), nextRnd)
+    shrinkLoop(this, None, shrinks)
   }
 
-  def depthFirstShrinksForFuture[E](fun: T => Future[(Boolean, Option[E])], rnd: Randomizer)(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[T]], Option[E], Randomizer)] = {
-    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], processed: Set[T] , currentRnd: Randomizer): Future[(LazyListOrStream[RoseTree[T]], Option[E], Randomizer)] = {
+  def depthFirstShrinksForFuture[E](fun: T => Future[(Boolean, Option[E])])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
+    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], processed: Set[T]): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
       pending match {
         case head #:: tail => 
           val future = fun(head.value)
           future.flatMap { case (result, errDataOpt) =>
             if (!result) {
               // If the function fail, we got a new failure value, and we'll go one level deeper.
-              val (headChildrenRTs, nextRnd) = head.shrinks(currentRnd)
+              val headChildrenRTs = head.shrinks
               val newProceesed = processed + head.value
-              shrinkLoop(head, errDataOpt, headChildrenRTs.filter(rt => !newProceesed.contains(rt.value)), newProceesed,  nextRnd)
+              shrinkLoop(head, errDataOpt, headChildrenRTs.filter(rt => !newProceesed.contains(rt.value)), newProceesed)
             }
             else {
               // The function call succeeded, let's continue to try the sibling.
-              shrinkLoop(lastFailure, lastFailureData, tail, processed + head.value, currentRnd)
+              shrinkLoop(lastFailure, lastFailureData, tail, processed + head.value)
             }
           }
 
         case _ =>
-          Future.successful((LazyListOrStream(lastFailure), lastFailureData, currentRnd))
+          Future.successful((LazyListOrStream(lastFailure), lastFailureData))
       }
     }
 
-    val (firstLevelShrinks, nextRnd) = shrinks(rnd)
-    shrinkLoop(this, None, firstLevelShrinks, Set(value), nextRnd)
+    shrinkLoop(this, None, shrinks, Set(value))
   }
 
-  def combineFirstDepthShrinks[E, U](fun: (T, U) => (Boolean, Option[E]), rnd: Randomizer, roseTreeOfU: RoseTree[U]): (LazyListOrStream[RoseTree[(T, U)]], Option[E], Randomizer) = {
-    val (shrunkRtOfT, errOpt1, rnd2) = depthFirstShrinks(value => fun(value, roseTreeOfU.value), rnd)
-    val bestT = shrunkRtOfT.headOption.getOrElse(this)
-    val bestTValue = bestT.value
-    val (shrunkRtOfU, errOpt2, rnd3) = roseTreeOfU.depthFirstShrinks(value => fun(bestTValue, value), rnd2)
-    val bestU = shrunkRtOfU.headOption.getOrElse(roseTreeOfU)
-    val bestUValue = bestU.value
-    val errOpt = LazyListOrStream(errOpt1, errOpt2).flatten.lastOption
-    (LazyListOrStream(bestT.map(t => (t, bestUValue))), errOpt, rnd3)
-  }
-
-  def combineFirstDepthShrinksForFuture[E, U](fun: (T, U) => Future[(Boolean, Option[E])], rnd: Randomizer, roseTreeOfU: RoseTree[U])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[(T, U)]], Option[E], Randomizer)] = 
+  def combineFirstDepthShrinksForFuture[E, U](fun: (T, U) => Future[(Boolean, Option[E])], roseTreeOfU: RoseTree[U])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[(T, U)]], Option[E])] = 
     for {
-      (shrunkRtOfT, errOpt1, rnd2) <- depthFirstShrinksForFuture(value => fun(value, roseTreeOfU.value), rnd)
+      (shrunkRtOfT, errOpt1) <- depthFirstShrinksForFuture(value => fun(value, roseTreeOfU.value))
       bestT = shrunkRtOfT.headOption.getOrElse(this)
       bestTValue = bestT.value
-      (shrunkRtOfU, errOpt2, rnd3) <- roseTreeOfU.depthFirstShrinksForFuture(value => fun(bestTValue, value), rnd2)
+      (shrunkRtOfU, errOpt2) <- roseTreeOfU.depthFirstShrinksForFuture(value => fun(bestTValue, value))
       bestU = shrunkRtOfU.headOption.getOrElse(roseTreeOfU)
       bestUValue = bestU.value
       errOpt = LazyListOrStream(errOpt1, errOpt2).flatten.lastOption
-    } yield (LazyListOrStream(bestT.map(t => (t, bestUValue))), errOpt, rnd3)
+    } yield (LazyListOrStream(bestT.map(t => (t, bestUValue))), errOpt)
 
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
   // for each shrunken Char, we'll get the one (Char, Int).
@@ -108,10 +94,10 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
 
     new RoseTree[U] {
       val value: U = f(thisRoseTreeOfT.value)
-      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[U]], Randomizer) = {
+      def shrinks: LazyListOrStream[RoseTree[U]] = {
         def roseTreeOfTToRoseTreeOfUFun(roseTreeOfT: RoseTree[T]): RoseTree[U] = roseTreeOfT.map(f)
-        val (roseTrees, rnd2) = thisRoseTreeOfT.shrinks(rnd)
-        (roseTrees.map(roseTreeOfTToRoseTreeOfUFun), rnd2)
+        val roseTrees = thisRoseTreeOfT.shrinks
+        roseTrees.map(roseTreeOfTToRoseTreeOfUFun)
       }
     }
   }
@@ -124,15 +110,15 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
 
       val value: U = roseTreeOfU.value
 
-      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[U]], Randomizer) = {
+      def shrinks: LazyListOrStream[RoseTree[U]] = {
 
-        val (shrunkenRoseTreeOfUs, rnd2) = thisRoseTreeOfT.shrinks(rnd)
+        val shrunkenRoseTreeOfUs = thisRoseTreeOfT.shrinks
         val roseTreeOfUs: LazyListOrStream[RoseTree[U]] =
           for (rt <- shrunkenRoseTreeOfUs) yield
             rt.flatMap(f)
 
-        val (sameAsBefore, rnd3) = roseTreeOfU.shrinks(rnd2)
-        (roseTreeOfUs ++ sameAsBefore, rnd3)
+        val sameAsBefore = roseTreeOfU.shrinks
+        roseTreeOfUs ++ sameAsBefore
       } 
     } 
   } 
@@ -141,70 +127,53 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
 }
 
 object RoseTree {
-
-  def map2[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U], f: (T, U) => V, rnd: Randomizer): (RoseTree[V], Randomizer) = {
+  def map2[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U], f: (T, U) => V): RoseTree[V] = {
     val tupValue = f(tree1.value, tree2.value)
-    val (shrinks1, rnd2) = tree1.shrinks(rnd)
-    val (candidates1, rnd3) = {
-      val pairs: LazyListOrStream[(RoseTree[V], Randomizer)] =
-        for (candidate <- shrinks1) yield
-          map2(candidate, tree2, f, rnd2)
-      (pairs.map(tup => tup._1), pairs.map(tup => tup._2).lastOption.getOrElse(rnd2))
-    }
-      val (shrinks2, rnd4) = tree2.shrinks(rnd3)
-    val (candidates2, rnd5) = {
-      val pairs: LazyListOrStream[(RoseTree[V], Randomizer)] =
-        for (candidate <- shrinks2) yield
-          map2(tree1, candidate, f, rnd4)
-      (pairs.map(tup => tup._1), pairs.map(tup => tup._2).lastOption.getOrElse(rnd4))
-    }
+    val shrinks1 = tree1.shrinks
+    val candidates1: LazyListOrStream[RoseTree[V]] =
+      for (candidate <- shrinks1) yield
+        map2(candidate, tree2, f)
+    val shrinks2 = tree2.shrinks
+    val candidates2: LazyListOrStream[RoseTree[V]] =
+      for (candidate <- shrinks2) yield
+        map2(tree1, candidate, f)
     val roseTreeOfV =
       new RoseTree[V] {
         val value = tupValue
-        def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[V]], Randomizer) = {
-          (candidates1 ++ candidates2, rnd)
+        def shrinks: LazyListOrStream[RoseTree[V]] = {
+          candidates1 ++ candidates2
         }
       }
-    (roseTreeOfV, rnd5)
+    roseTreeOfV
   }
 
-  def map2ForFuture[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U], f: (T, U) => V, rnd: Randomizer)(implicit execContext: ExecutionContext): Future[(RoseTree[V], Randomizer)] = {
+  def map2ForFuture[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U], f: (T, U) => V)(implicit execContext: ExecutionContext): Future[RoseTree[V]] = {
     val tupValue = f(tree1.value, tree2.value)
-    val (shrinks1, rnd2) = tree1.shrinks(rnd)
-    val (candidateFutures1, rnd3Future) = {
-      val pairs: LazyListOrStream[Future[(RoseTree[V], Randomizer)]] =
-        for (candidate <- shrinks1) yield
-          map2ForFuture(candidate, tree2, f, rnd2)
-      (pairs.map(fut => fut.map(_._1)), pairs.map(fut => fut.map(_._2)).lastOption.getOrElse(Future.successful(rnd2)))
-    }
+    val shrinks1 = tree1.shrinks
+    val candidateFutures1: LazyListOrStream[Future[RoseTree[V]]] = 
+      for (candidate <- shrinks1) yield map2ForFuture(candidate, tree2, f)
+    val shrinks2 = tree2.shrinks
+    val candidatesFutures2: LazyListOrStream[Future[RoseTree[V]]] = 
+      for (candidate <- shrinks2) yield map2ForFuture(tree1, candidate, f)      
     for {
       candidates1: LazyListOrStream[RoseTree[V]] <- Future.sequence(candidateFutures1)
-      rnd3 <- rnd3Future
-      (shrinks2, rnd4) = tree2.shrinks(rnd3)
-      (candidatesFutures2, rnd5Future) = {
-        val pairs: LazyListOrStream[Future[(RoseTree[V], Randomizer)]] =
-          for (candidate <- shrinks2) yield
-            map2ForFuture(tree1, candidate, f, rnd4)
-        (pairs.map(fut => fut.map(_._1)), pairs.map(fut => fut.map(_._2)).lastOption.getOrElse(Future.successful(rnd4)))
-      }
       candidates2 <- Future.sequence(candidatesFutures2)
-      rnd5 <- rnd5Future
     } yield {
       val roseTreeOfV =
         new RoseTree[V] {
           val value = tupValue
-          def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[V]], Randomizer) = {
-            (candidates1 #::: candidates2, rnd)
+          def shrinks: LazyListOrStream[RoseTree[V]] = {
+            candidates1 #::: candidates2
           }
         }
-      (roseTreeOfV, rnd5)   
+      roseTreeOfV
     }
   }
 }
 
 // Terminal node of a RoseTree is a Rose.
 case class Rose[T](value: T) extends RoseTree[T] {
-  def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[T]], Randomizer) = (LazyListOrStream.empty, rnd)
+  def shrinks: LazyListOrStream[RoseTree[T]] = LazyListOrStream.empty
   override def toString: String = s"Rose($value)"
 }
 

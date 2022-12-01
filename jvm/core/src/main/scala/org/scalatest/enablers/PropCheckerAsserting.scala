@@ -185,7 +185,7 @@ abstract class UnitPropCheckerAsserting {
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
             // Let's shrink the failing value
-            val (shrunkRtOfA, errOpt1, _) = 
+            val (shrunkRtOfA, errOpt1) =
               roseTreeOfA.depthFirstShrinks(
                 value => {
                   val result: Try[T] = Try { fun(value) }
@@ -193,8 +193,7 @@ abstract class UnitPropCheckerAsserting {
                     case Success(_) => (true, None)
                     case Failure(shrunkEx) => (false, Some(shrunkEx))
                   }
-                }, 
-                nextNextRnd
+                }
               )
 
             // We'll use the head of the shrunk value if available, if not we'll just use back roseTreeOfA
@@ -274,8 +273,8 @@ abstract class UnitPropCheckerAsserting {
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
             // Let's shrink the failing value
-            val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
-            val (shrunkRtOfAB, shrunkErrOpt, rnd5) = 
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
+            val (shrunkRtOfAB, shrunkErrOpt) =
               roseTreeOfAB.depthFirstShrinks(
                 { case (a, b) => {
                     val result: Try[T] = Try { fun(a, b) }
@@ -284,8 +283,7 @@ abstract class UnitPropCheckerAsserting {
                       case Failure(shrunkEx) => (false, Some(shrunkEx))
                     }
                   } 
-                }, 
-                rnd4
+                }
               )
 
             val bestAB = shrunkRtOfAB.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value))
@@ -366,15 +364,15 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
-            val (roseTreeOfABC, rnd5) = 
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
+            val roseTreeOfABC =
               RoseTree.map2[(A, B), C, (A, B, C)](
                 roseTreeOfAB, 
                 roseTreeOfC, { case ((a, b), c) => 
                   (a, b, c)
-                }, 
-                rnd4)
-            val (shrunkRtOfABC, shrunkErrOpt, rnd6) = 
+                }
+              )
+            val (shrunkRtOfABC, shrunkErrOpt) =
               roseTreeOfABC.depthFirstShrinks(
                 { case (a, b, c) => {
                     val result: Try[T] = Try { fun(a, b, c) }
@@ -382,9 +380,8 @@ abstract class UnitPropCheckerAsserting {
                       case Success(_) => (true, None)
                       case Failure(shrunkEx) => (false, Some(shrunkEx))
                     }
-                  } 
-                }, 
-                rnd5
+                  }
+                }
               )
 
             val bestABC = shrunkRtOfABC.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value))
@@ -470,22 +467,22 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) => 
-            val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
-            val (roseTreeOfABC, rnd5) = 
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
+            val roseTreeOfABC =
               RoseTree.map2[(A, B), C, (A, B, C)](
                 roseTreeOfAB, 
                 roseTreeOfC, { case ((a, b), c) => 
                   (a, b, c)
-                }, 
-                rnd4)
-            val (roseTreeOfABCD, rnd6) = 
+                }
+              )
+            val roseTreeOfABCD =
               RoseTree.map2[(A, B, C), D, (A, B, C, D)](
                 roseTreeOfABC, 
                 roseTreeOfD, { case ((a, b, c), d) => 
                   (a, b, c, d)
-                }, 
-                rnd5)    
-            val (shrunkRtOfABCD, shrunkErrOpt, rnd7) = 
+                }
+              )
+            val (shrunkRtOfABCD, shrunkErrOpt) =
               roseTreeOfABCD.depthFirstShrinks(
                 { case (a, b, c, d) => {
                     val result: Try[T] = Try { fun(a, b, c, d) }
@@ -494,8 +491,7 @@ abstract class UnitPropCheckerAsserting {
                       case Failure(shrunkEx) => (false, Some(shrunkEx))
                     }
                   } 
-                }, 
-                rnd6
+                }
               )
 
             val bestABCD = shrunkRtOfABCD.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value, roseTreeOfD.value))
@@ -586,29 +582,29 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
-            val (roseTreeOfABC, rnd5) = 
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
+            val roseTreeOfABC =
               RoseTree.map2[(A, B), C, (A, B, C)](
                 roseTreeOfAB, 
                 roseTreeOfC, { case ((a, b), c) => 
                   (a, b, c)
-                }, 
-                rnd4)
-            val (roseTreeOfABCD, rnd6) = 
+                }
+              )
+            val roseTreeOfABCD =
               RoseTree.map2[(A, B, C), D, (A, B, C, D)](
                 roseTreeOfABC, 
                 roseTreeOfD, { case ((a, b, c), d) => 
                   (a, b, c, d)
-                }, 
-                rnd5)    
-            val (roseTreeOfABCDE, rnd7) = 
+                }
+              )
+            val roseTreeOfABCDE =
               RoseTree.map2[(A, B, C, D), E, (A, B, C, D, E)](
                 roseTreeOfABCD, 
                 roseTreeOfE, { case ((a, b, c, d), e) => 
                   (a, b, c, d, e)
-                }, 
-                rnd6)
-            val (shrunkRtOfABCDE, shrunkErrOpt, rnd8) = 
+                }
+              )
+            val (shrunkRtOfABCDE, shrunkErrOpt) =
               roseTreeOfABCDE.depthFirstShrinks(
                 { case (a, b, c, d, e) => {
                     val result: Try[T] = Try { fun(a, b, c, d, e) }
@@ -616,9 +612,8 @@ abstract class UnitPropCheckerAsserting {
                       case Success(_) => (true, None)
                       case Failure(shrunkEx) => (false, Some(shrunkEx))
                     }
-                  } 
-                }, 
-                rnd7
+                  }
+                }
               )  
 
             val bestABCDE = shrunkRtOfABCDE.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value, roseTreeOfD.value, roseTreeOfE.value))
@@ -715,36 +710,36 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
-            val (roseTreeOfAB, rnd4) = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), rnd3)
-            val (roseTreeOfABC, rnd5) = 
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
+            val roseTreeOfABC =
               RoseTree.map2[(A, B), C, (A, B, C)](
                 roseTreeOfAB, 
                 roseTreeOfC, { case ((a, b), c) => 
                   (a, b, c)
-                }, 
-                rnd4)
-            val (roseTreeOfABCD, rnd6) = 
+                }
+              )
+            val roseTreeOfABCD =
               RoseTree.map2[(A, B, C), D, (A, B, C, D)](
                 roseTreeOfABC, 
                 roseTreeOfD, { case ((a, b, c), d) => 
                   (a, b, c, d)
-                }, 
-                rnd5)    
-            val (roseTreeOfABCDE, rnd7) = 
+                }
+              )
+            val roseTreeOfABCDE =
               RoseTree.map2[(A, B, C, D), E, (A, B, C, D, E)](
                 roseTreeOfABCD, 
                 roseTreeOfE, { case ((a, b, c, d), e) => 
                   (a, b, c, d, e)
-                }, 
-                rnd6)
-            val (roseTreeOfABCDEF, rnd8) = 
+                }
+              )
+            val roseTreeOfABCDEF =
               RoseTree.map2[(A, B, C, D, E), F, (A, B, C, D, E, F)](
                 roseTreeOfABCDE, 
                 roseTreeOfF, { case ((a, b, c, d, e), f) => 
                   (a, b, c, d, e, f)
-                }, 
-                rnd7)    
-            val (shrunkRtOfABCDEF, shrunkErrOpt, rnd9) = 
+                }
+              )
+            val (shrunkRtOfABCDEF, shrunkErrOpt) =
               roseTreeOfABCDEF.depthFirstShrinks(
                 { case (a, b, c, d, e, f) => {
                     val result: Try[T] = Try { fun(a, b, c, d, e, f) }
@@ -752,9 +747,8 @@ abstract class UnitPropCheckerAsserting {
                       case Success(_) => (true, None)
                       case Failure(shrunkEx) => (false, Some(shrunkEx))
                     }
-                  } 
-                }, 
-                rnd8
+                  }
+                }
               )  
 
             val bestABCDEF = shrunkRtOfABCDEF.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value, roseTreeOfD.value, roseTreeOfE.value, roseTreeOfF.value))
@@ -971,7 +965,7 @@ trait FuturePropCheckerAsserting {
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 for {
-                  (shrunkRtOfA, errOpt1, rnd3) <- roseTreeOfA.depthFirstShrinksForFuture(
+                  (shrunkRtOfA, errOpt1) <- roseTreeOfA.depthFirstShrinksForFuture(
                                                  value => {
                                                    val result: Future[T] = fun(value)
                                                    result.map { r =>
@@ -980,8 +974,7 @@ trait FuturePropCheckerAsserting {
                                                      case shrunkEx: Throwable =>
                                                      Future.successful((false, Some(shrunkEx)))
                                                    }
-                                                 }, 
-                                                 nextNextRnd
+                                                 }
                                                )
                 } yield {
                   val bestRtA = shrunkRtOfA.headOption.getOrElse(roseTreeOfA)
@@ -992,7 +985,7 @@ trait FuturePropCheckerAsserting {
                   println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
                   println(s"############ THE RES: $theRes")
-                  AccumulatedResult(succeededCount, discardedCount, edges, rnd3, initialSizes, Some(theRes), Some(bestRtA))
+                  AccumulatedResult(succeededCount, discardedCount, edges, nextNextRnd, initialSizes, Some(theRes), Some(bestRtA))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1016,7 +1009,7 @@ trait FuturePropCheckerAsserting {
 
           case ex: Throwable =>
             for {
-              (shrunkRtOfA, errOpt1, rnd3) <- roseTreeOfA.depthFirstShrinksForFuture(
+              (shrunkRtOfA, errOpt1) <- roseTreeOfA.depthFirstShrinksForFuture(
                                              value => {
                                                val result: Future[T] = fun(value)
                                                result.map { r =>
@@ -1025,8 +1018,7 @@ trait FuturePropCheckerAsserting {
                                                  case shrunkEx: Throwable =>
                                                  Future.successful((false, Some(shrunkEx)))
                                                }
-                                             }, 
-                                             nextNextRnd
+                                             }
                                            ) 
             } yield {
               val bestRtA = shrunkRtOfA.headOption.getOrElse(roseTreeOfA)
@@ -1037,7 +1029,7 @@ trait FuturePropCheckerAsserting {
               println(s"############ SHRUNK ARGS PASSED: $shrunkArgsPassed")
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
               println(s"############ THE RES: $theRes")
-              AccumulatedResult(succeededCount, discardedCount, edges, rnd3, initialSizes, Some(theRes), Some(bestRtA))
+              AccumulatedResult(succeededCount, discardedCount, edges, nextNextRnd, initialSizes, Some(theRes), Some(bestRtA))
             }
         }
       }
@@ -1117,9 +1109,8 @@ trait FuturePropCheckerAsserting {
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 for {
-                  (roseTreeOfAB, rnd4) <- RoseTree.map2ForFuture[A, B, (A, B)](roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b), result.rnd)
-                  (shrunkRtOfAB, shrunkErrOpt, rnd5) <- roseTreeOfAB.depthFirstShrinksForFuture(
-                                                          { case (a, b) => {
+                  roseTreeOfAB <- RoseTree.map2ForFuture[A, B, (A, B)](roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
+                  (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfAB.depthFirstShrinksForFuture { case (a, b) => {
                                                               val result: Future[T] = fun(a, b)
                                                               result.map { _ => 
                                                                 (true, None)
@@ -1127,16 +1118,14 @@ trait FuturePropCheckerAsserting {
                                                                 case shrunkEx: Throwable => (false, Some(shrunkEx))
                                                               }
                                                             }
-                                                          }, 
-                                                          rnd4
-                                                        )
-                } yield {  
+                                                          }
+                } yield {
                   val bestAB = shrunkRtOfAB.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value))
                   val errOpt: Option[Throwable] = List(f.ex, shrunkErrOpt).flatten.lastOption
 
                   val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestAB) else PropertyArgument(None, bestAB))
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd4, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, result.rnd, initialSizes, Some(theRes))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1160,7 +1149,7 @@ trait FuturePropCheckerAsserting {
 
           case ex: Throwable =>
             for {
-              (shrunkRtOfAB, shrunkErrOpt, rnd4) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
+              (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
                                                       { case (a, b) => {
                                                           val result: Future[T] = fun(a, b)
                                                           result.map { _ => 
@@ -1170,7 +1159,6 @@ trait FuturePropCheckerAsserting {
                                                           }
                                                         }
                                                       }, 
-                                                    rnd, 
                                                     roseTreeOfB)
             } yield {
               val bestAB = shrunkRtOfAB.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value))
@@ -1178,7 +1166,7 @@ trait FuturePropCheckerAsserting {
 
               val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestAB) else PropertyArgument(None, bestAB))
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd4, initialSizes, Some(theRes))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(theRes))
             }
         }
       }
@@ -1261,7 +1249,7 @@ trait FuturePropCheckerAsserting {
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 for {
-                  (shrunkRtOfAB, shrunkErrOpt, rnd4) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
+                  (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
                                                           { case (a, b) => {
                                                               val result: Future[T] = fun(a, b, roseTreeOfC.value)
                                                               result.map { _ => 
@@ -1271,9 +1259,8 @@ trait FuturePropCheckerAsserting {
                                                               }
                                                             }
                                                           }, 
-                                                        result.rnd, 
                                                         roseTreeOfB)
-                  (shrunkRtOfABC, shrunkErrOpt2, rnd5) <- shrunkRtOfAB.headOption.map { headRt =>
+                  (shrunkRtOfABC, shrunkErrOpt2) <- shrunkRtOfAB.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, C](
                                                               { case ((a, b), c) => {
                                                                   val result: Future[T] = fun(a, b, c)
@@ -1284,10 +1271,9 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd4, 
                                                               roseTreeOfC
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))                                      
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))                                      
                 } yield {
                   val bestABC = 
                     shrunkRtOfABC.headOption.map(_.value) match {
@@ -1302,7 +1288,7 @@ trait FuturePropCheckerAsserting {
 
                   val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABC) else PropertyArgument(None, bestABC))
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd5, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, result.rnd, initialSizes, Some(theRes))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1326,7 +1312,7 @@ trait FuturePropCheckerAsserting {
 
           case ex: Throwable =>
             for {
-              (shrunkRtOfAB, shrunkErrOpt, rnd4) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
+              (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
                                                       { case (a, b) => {
                                                           val result: Future[T] = fun(a, b, roseTreeOfC.value)
                                                           result.map { _ => 
@@ -1336,9 +1322,8 @@ trait FuturePropCheckerAsserting {
                                                           }
                                                         }
                                                       }, 
-                                                    rnd, 
                                                     roseTreeOfB)
-              (shrunkRtOfABC, shrunkErrOpt2, rnd5) <- shrunkRtOfAB.headOption.map { headRt =>
+              (shrunkRtOfABC, shrunkErrOpt2) <- shrunkRtOfAB.headOption.map { headRt =>
                                                         headRt.combineFirstDepthShrinksForFuture[Throwable, C](
                                                           { case ((a, b), c) => {
                                                               val result: Future[T] = fun(a, b, c)
@@ -1349,10 +1334,9 @@ trait FuturePropCheckerAsserting {
                                                               }
                                                             }
                                                           }, 
-                                                          rnd4, 
                                                           roseTreeOfC
                                                         )
-                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))                                      
+                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))                                      
             } yield {
               val bestABC = 
                 shrunkRtOfABC.headOption.map(_.value) match {
@@ -1367,7 +1351,7 @@ trait FuturePropCheckerAsserting {
 
               val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABC) else PropertyArgument(None, bestABC))
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd5, initialSizes, Some(theRes))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(theRes))
             }
         }
       }
@@ -1454,7 +1438,7 @@ trait FuturePropCheckerAsserting {
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 for {
-                  (shrunkRtOfAB, shrunkErrOpt, rnd4) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
+                  (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
                                                           { case (a, b) => {
                                                               val result: Future[T] = fun(a, b, roseTreeOfC.value, roseTreeOfD.value)
                                                               result.map { _ => 
@@ -1464,9 +1448,8 @@ trait FuturePropCheckerAsserting {
                                                               }
                                                             }
                                                           }, 
-                                                        result.rnd, 
                                                         roseTreeOfB)
-                  (shrunkRtOfABC, shrunkErrOpt2, rnd5) <- shrunkRtOfAB.headOption.map { headRt =>
+                  (shrunkRtOfABC, shrunkErrOpt2) <- shrunkRtOfAB.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, C](
                                                               { case ((a, b), c) => {
                                                                   val result: Future[T] = fun(a, b, c, roseTreeOfD.value)
@@ -1477,11 +1460,10 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd4, 
                                                               roseTreeOfC
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))
-                  (shrunkRtOfABCD, shrunkErrOpt3, rnd6) <- shrunkRtOfABC.headOption.map { headRt =>
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))
+                  (shrunkRtOfABCD, shrunkErrOpt3) <- shrunkRtOfABC.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, D](
                                                               { case (((a, b), c), d) => {
                                                                   val result: Future[T] = fun(a, b, c, d)
@@ -1492,10 +1474,9 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd5, 
                                                               roseTreeOfD
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd5)))                                                                              
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))                                                                              
                 } yield {
                   val bestABCD = 
                     shrunkRtOfABCD.headOption.map(_.value) match {
@@ -1514,7 +1495,7 @@ trait FuturePropCheckerAsserting {
 
                   val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd6, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, result.rnd, initialSizes, Some(theRes))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1538,7 +1519,7 @@ trait FuturePropCheckerAsserting {
 
           case ex: Throwable =>
             for {
-              (shrunkRtOfAB, shrunkErrOpt, rnd4) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
+              (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
                                                       { case (a, b) => {
                                                           val result: Future[T] = fun(a, b, roseTreeOfC.value, roseTreeOfD.value)
                                                           result.map { _ => 
@@ -1548,9 +1529,8 @@ trait FuturePropCheckerAsserting {
                                                           }
                                                         }
                                                       }, 
-                                                    rnd, 
                                                     roseTreeOfB)
-              (shrunkRtOfABC, shrunkErrOpt2, rnd5) <- shrunkRtOfAB.headOption.map { headRt =>
+              (shrunkRtOfABC, shrunkErrOpt2) <- shrunkRtOfAB.headOption.map { headRt =>
                                                         headRt.combineFirstDepthShrinksForFuture[Throwable, C](
                                                           { case ((a, b), c) => {
                                                               val result: Future[T] = fun(a, b, c, roseTreeOfD.value)
@@ -1561,11 +1541,10 @@ trait FuturePropCheckerAsserting {
                                                               }
                                                             }
                                                           }, 
-                                                          rnd4, 
                                                           roseTreeOfC
                                                         )
-                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))
-              (shrunkRtOfABCD, shrunkErrOpt3, rnd6) <- shrunkRtOfABC.headOption.map { headRt =>
+                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))
+              (shrunkRtOfABCD, shrunkErrOpt3) <- shrunkRtOfABC.headOption.map { headRt =>
                                                         headRt.combineFirstDepthShrinksForFuture[Throwable, D](
                                                           { case (((a, b), c), d) => {
                                                               val result: Future[T] = fun(a, b, c, d)
@@ -1576,10 +1555,9 @@ trait FuturePropCheckerAsserting {
                                                               }
                                                             }
                                                           }, 
-                                                          rnd5, 
                                                           roseTreeOfD
                                                         )
-                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd5)))                                                                              
+                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))                                                                              
             } yield {
               val bestABCD = 
                 shrunkRtOfABCD.headOption.map(_.value) match {
@@ -1598,7 +1576,7 @@ trait FuturePropCheckerAsserting {
 
               val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd6, initialSizes, Some(theRes))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(theRes))
             }
         }
       }
@@ -1689,7 +1667,7 @@ trait FuturePropCheckerAsserting {
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 for {
-                  (shrunkRtOfAB, shrunkErrOpt, rnd4) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
+                  (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
                                                           { case (a, b) => {
                                                               val result: Future[T] = fun(a, b, roseTreeOfC.value, roseTreeOfD.value, roseTreeOfE.value)
                                                               result.map { _ => 
@@ -1699,9 +1677,8 @@ trait FuturePropCheckerAsserting {
                                                               }
                                                             }
                                                           }, 
-                                                        result.rnd, 
                                                         roseTreeOfB)
-                  (shrunkRtOfABC, shrunkErrOpt2, rnd5) <- shrunkRtOfAB.headOption.map { headRt =>
+                  (shrunkRtOfABC, shrunkErrOpt2) <- shrunkRtOfAB.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, C](
                                                               { case ((a, b), c) => {
                                                                   val result: Future[T] = fun(a, b, c, roseTreeOfD.value, roseTreeOfE.value)
@@ -1712,11 +1689,10 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd4, 
                                                               roseTreeOfC
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))
-                  (shrunkRtOfABCD, shrunkErrOpt3, rnd6) <- shrunkRtOfABC.headOption.map { headRt =>
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))
+                  (shrunkRtOfABCD, shrunkErrOpt3) <- shrunkRtOfABC.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, D](
                                                               { case (((a, b), c), d) => {
                                                                   val result: Future[T] = fun(a, b, c, d, roseTreeOfE.value)
@@ -1727,11 +1703,10 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd5, 
                                                               roseTreeOfD
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd5)))    
-                  (shrunkRtOfABCDE, shrunkErrOpt4, rnd7) <- shrunkRtOfABCD.headOption.map { headRt =>
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))    
+                  (shrunkRtOfABCDE, shrunkErrOpt4) <- shrunkRtOfABCD.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, E](
                                                               { case ((((a, b), c), d), e) => {
                                                                   val result: Future[T] = fun(a, b, c, d, e)
@@ -1742,10 +1717,9 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd6, 
                                                               roseTreeOfE
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd6)))                                                                                                                      
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))                                                                                                                      
                 } yield {
                   val bestABCDE = 
                     shrunkRtOfABCDE.headOption.map(_.value) match {
@@ -1768,7 +1742,7 @@ trait FuturePropCheckerAsserting {
 
                   val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDE) else PropertyArgument(None, bestABCDE))
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges,rnd7, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, result.rnd, initialSizes, Some(theRes))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1792,7 +1766,7 @@ trait FuturePropCheckerAsserting {
 
           case ex: Throwable =>
             for {
-              (shrunkRtOfAB, shrunkErrOpt, rnd4) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
+              (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
                                                       { case (a, b) => {
                                                           val result: Future[T] = fun(a, b, roseTreeOfC.value, roseTreeOfD.value, roseTreeOfE.value)
                                                           result.map { _ => 
@@ -1802,9 +1776,8 @@ trait FuturePropCheckerAsserting {
                                                           }
                                                         }
                                                       }, 
-                                                    rnd, 
                                                     roseTreeOfB)
-              (shrunkRtOfABC, shrunkErrOpt2, rnd5) <- shrunkRtOfAB.headOption.map { headRt =>
+              (shrunkRtOfABC, shrunkErrOpt2) <- shrunkRtOfAB.headOption.map { headRt =>
                                                         headRt.combineFirstDepthShrinksForFuture[Throwable, C](
                                                           { case ((a, b), c) => {
                                                               val result: Future[T] = fun(a, b, c, roseTreeOfD.value, roseTreeOfE.value)
@@ -1815,11 +1788,10 @@ trait FuturePropCheckerAsserting {
                                                               }
                                                             }
                                                           }, 
-                                                          rnd4, 
                                                           roseTreeOfC
                                                         )
-                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))
-              (shrunkRtOfABCD, shrunkErrOpt3, rnd6) <- shrunkRtOfABC.headOption.map { headRt =>
+                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))
+              (shrunkRtOfABCD, shrunkErrOpt3) <- shrunkRtOfABC.headOption.map { headRt =>
                                                         headRt.combineFirstDepthShrinksForFuture[Throwable, D](
                                                           { case (((a, b), c), d) => {
                                                               val result: Future[T] = fun(a, b, c, d, roseTreeOfE.value)
@@ -1830,11 +1802,10 @@ trait FuturePropCheckerAsserting {
                                                               }
                                                             }
                                                           }, 
-                                                          rnd5, 
                                                           roseTreeOfD
                                                         )
-                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd5)))    
-              (shrunkRtOfABCDE, shrunkErrOpt4, rnd7) <- shrunkRtOfABCD.headOption.map { headRt =>
+                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))    
+              (shrunkRtOfABCDE, shrunkErrOpt4) <- shrunkRtOfABCD.headOption.map { headRt =>
                                                         headRt.combineFirstDepthShrinksForFuture[Throwable, E](
                                                           { case ((((a, b), c), d), e) => {
                                                               val result: Future[T] = fun(a, b, c, d, e)
@@ -1845,10 +1816,9 @@ trait FuturePropCheckerAsserting {
                                                               }
                                                             }
                                                           }, 
-                                                          rnd6, 
                                                           roseTreeOfE
                                                         )
-                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd6)))                                                                                                                      
+                                                      }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))                                                                                                                      
             } yield {
               val bestABCDE = 
                 shrunkRtOfABCDE.headOption.map(_.value) match {
@@ -1871,7 +1841,7 @@ trait FuturePropCheckerAsserting {
 
               val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDE) else PropertyArgument(None, bestABCDE))
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges,rnd7, initialSizes, Some(theRes))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(theRes))
             }
         }
       }
@@ -1967,7 +1937,7 @@ trait FuturePropCheckerAsserting {
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 for {
-                  (shrunkRtOfAB, shrunkErrOpt, rnd4) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
+                  (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
                                                           { case (a, b) => {
                                                               val result: Future[T] = fun(a, b, roseTreeOfC.value, roseTreeOfD.value, roseTreeOfE.value, roseTreeOfF.value)
                                                               result.map { _ => 
@@ -1977,9 +1947,8 @@ trait FuturePropCheckerAsserting {
                                                               }
                                                             }
                                                           }, 
-                                                        result.rnd, 
                                                         roseTreeOfB)
-                  (shrunkRtOfABC, shrunkErrOpt2, rnd5) <- shrunkRtOfAB.headOption.map { headRt =>
+                  (shrunkRtOfABC, shrunkErrOpt2) <- shrunkRtOfAB.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, C](
                                                               { case ((a, b), c) => {
                                                                   val result: Future[T] = fun(a, b, c, roseTreeOfD.value, roseTreeOfE.value, roseTreeOfF.value)
@@ -1990,11 +1959,10 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd4, 
                                                               roseTreeOfC
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))
-                  (shrunkRtOfABCD, shrunkErrOpt3, rnd6) <- shrunkRtOfABC.headOption.map { headRt =>
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))
+                  (shrunkRtOfABCD, shrunkErrOpt3) <- shrunkRtOfABC.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, D](
                                                               { case (((a, b), c), d) => {
                                                                   val result: Future[T] = fun(a, b, c, d, roseTreeOfE.value, roseTreeOfF.value)
@@ -2005,11 +1973,10 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd5, 
                                                               roseTreeOfD
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd5)))    
-                  (shrunkRtOfABCDE, shrunkErrOpt4, rnd7) <- shrunkRtOfABCD.headOption.map { headRt =>
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))    
+                  (shrunkRtOfABCDE, shrunkErrOpt4) <- shrunkRtOfABCD.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, E](
                                                               { case ((((a, b), c), d), e) => {
                                                                   val result: Future[T] = fun(a, b, c, d, e, roseTreeOfF.value)
@@ -2020,11 +1987,10 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd6, 
                                                               roseTreeOfE
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd6)))
-                  (shrunkRtOfABCDEF, shrunkErrOpt5, rnd8) <- shrunkRtOfABCDE.headOption.map { headRt =>
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))
+                  (shrunkRtOfABCDEF, shrunkErrOpt5) <- shrunkRtOfABCDE.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, F](
                                                               { case (((((a, b), c), d), e), f) => {
                                                                   val result: Future[T] = fun(a, b, c, d, e, f)
@@ -2035,10 +2001,9 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd7, 
                                                               roseTreeOfF
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd7)))                                                                                                                                                              
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))                                                                                                                                                              
                 } yield {
                   val bestABCDEF = 
                     shrunkRtOfABCDEF.headOption.map(_.value) match {
@@ -2067,7 +2032,7 @@ trait FuturePropCheckerAsserting {
 
                   val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDEF) else PropertyArgument(None, bestABCDEF))
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges,fEdges, rnd8, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges,fEdges, result.rnd, initialSizes, Some(theRes))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -2091,7 +2056,7 @@ trait FuturePropCheckerAsserting {
 
           case ex: Throwable =>
             for {
-                  (shrunkRtOfAB, shrunkErrOpt, rnd4) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
+                  (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
                                                           { case (a, b) => {
                                                               val result: Future[T] = fun(a, b, roseTreeOfC.value, roseTreeOfD.value, roseTreeOfE.value, roseTreeOfF.value)
                                                               result.map { _ => 
@@ -2101,9 +2066,8 @@ trait FuturePropCheckerAsserting {
                                                               }
                                                             }
                                                           }, 
-                                                        rnd, 
                                                         roseTreeOfB)
-                  (shrunkRtOfABC, shrunkErrOpt2, rnd5) <- shrunkRtOfAB.headOption.map { headRt =>
+                  (shrunkRtOfABC, shrunkErrOpt2) <- shrunkRtOfAB.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, C](
                                                               { case ((a, b), c) => {
                                                                   val result: Future[T] = fun(a, b, c, roseTreeOfD.value, roseTreeOfE.value, roseTreeOfF.value)
@@ -2114,11 +2078,10 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd4, 
                                                               roseTreeOfC
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd4)))
-                  (shrunkRtOfABCD, shrunkErrOpt3, rnd6) <- shrunkRtOfABC.headOption.map { headRt =>
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))
+                  (shrunkRtOfABCD, shrunkErrOpt3) <- shrunkRtOfABC.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, D](
                                                               { case (((a, b), c), d) => {
                                                                   val result: Future[T] = fun(a, b, c, d, roseTreeOfE.value, roseTreeOfF.value)
@@ -2129,11 +2092,10 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd5, 
                                                               roseTreeOfD
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd5)))    
-                  (shrunkRtOfABCDE, shrunkErrOpt4, rnd7) <- shrunkRtOfABCD.headOption.map { headRt =>
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))    
+                  (shrunkRtOfABCDE, shrunkErrOpt4) <- shrunkRtOfABCD.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, E](
                                                               { case ((((a, b), c), d), e) => {
                                                                   val result: Future[T] = fun(a, b, c, d, e, roseTreeOfF.value)
@@ -2144,11 +2106,10 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd6, 
                                                               roseTreeOfE
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd6)))
-                  (shrunkRtOfABCDEF, shrunkErrOpt5, rnd8) <- shrunkRtOfABCDE.headOption.map { headRt =>
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))
+                  (shrunkRtOfABCDEF, shrunkErrOpt5) <- shrunkRtOfABCDE.headOption.map { headRt =>
                                                             headRt.combineFirstDepthShrinksForFuture[Throwable, F](
                                                               { case (((((a, b), c), d), e), f) => {
                                                                   val result: Future[T] = fun(a, b, c, d, e, f)
@@ -2159,10 +2120,9 @@ trait FuturePropCheckerAsserting {
                                                                   }
                                                                 }
                                                               }, 
-                                                              rnd7, 
                                                               roseTreeOfF
                                                             )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt, rnd7)))                                                                                                                                                              
+                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))                                                                                                                                                              
                 } yield {
                   val bestABCDEF = 
                     shrunkRtOfABCDEF.headOption.map(_.value) match {
@@ -2191,7 +2151,7 @@ trait FuturePropCheckerAsserting {
 
                   val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDEF) else PropertyArgument(None, bestABCDEF))
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges,fEdges, rnd8, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges,fEdges, rnd, initialSizes, Some(theRes))
                 }
         }
       }

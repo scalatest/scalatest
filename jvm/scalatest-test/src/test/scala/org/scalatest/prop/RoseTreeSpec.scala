@@ -29,7 +29,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val irt = new RoseTree[Int] {
         val value: Int = 42;
 
-        def shrinks(rnd: Randomizer) = (LazyListOrStream.empty, rnd)
+        def shrinks = LazyListOrStream.empty
       }
       irt.toString shouldBe "RoseTree(42)"
     }
@@ -50,7 +50,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val rt = intRoseTree(72)
       rt.value shouldBe 72
 
-      val (shrinks, _, _) = rt.depthFirstShrinks(i => (i < 12, None), Randomizer.default)
+      val (shrinks, _) = rt.depthFirstShrinks(i => (i < 12, None))
       shrinks should have length 1
       shrinks(0).value shouldBe 12
     }
@@ -72,7 +72,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       }
       val value: StatefulInt = i
 
-      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[StatefulInt]], Randomizer) = (shrinksRoseTrees, rnd)
+      def shrinks: LazyListOrStream[RoseTree[StatefulInt]] = shrinksRoseTrees
     }
 
     case class StatefulBoolean(value: Boolean) {
@@ -89,7 +89,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       }
       val value: StatefulBoolean = b
 
-      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[StatefulBoolean]], Randomizer) = (shrinksRoseTrees, rnd)
+      def shrinks: LazyListOrStream[RoseTree[StatefulBoolean]] = shrinksRoseTrees
     }
 
     it("should offer a depthFirstShrinks method that follows the 'depth-first' algo") {
@@ -105,7 +105,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val (rtRes, _) = processFun(rt.value)
       rtRes shouldBe false
       
-      val (shrinks, _, _) = rt.depthFirstShrinks(processFun, Randomizer.default)
+      val (shrinks, _) = rt.depthFirstShrinks(processFun)
       shrinks should have length 1
       shrinks(0).value.value shouldBe 12
 
@@ -176,7 +176,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val lvl6Node8 = lvl5Node16.shrinksRoseTrees(0)
       val lvl6Node15 = lvl5Node16.shrinksRoseTrees(1)
 
-      lvl6Node8.processed shouldBe false  // This won't be processed because 8 has been processed before.
+      lvl6Node8.processed shouldBe true  // This should be processed even though 8 has been processed before.
       lvl6Node8.value.value shouldBe 8
       lvl6Node15.processed shouldBe true
       lvl6Node15.value.value shouldBe 15
@@ -196,7 +196,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val lvl8Node7 = lvl7Node14.shrinksRoseTrees(0)
       val lvl8Node13 = lvl7Node14.shrinksRoseTrees(1)
 
-      lvl8Node7.processed shouldBe false  // This won't be processed because 8 has been processed before.
+      lvl8Node7.processed shouldBe true  // This should be processed even though 8 has been processed before.
       lvl8Node7.value.value shouldBe 7
       lvl8Node13.processed shouldBe true
       lvl8Node13.value.value shouldBe 13
@@ -216,42 +216,12 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val lvl10Node6 = lvl9Node12.shrinksRoseTrees(0)
       val lvl10Node11 = lvl9Node12.shrinksRoseTrees(1)
 
-      lvl10Node6.processed shouldBe false  // This won't be processed because 8 has been processed before.
+      lvl10Node6.processed shouldBe true  // This should be processed even though 8 has been processed before.
       lvl10Node6.value.value shouldBe 6
       lvl10Node11.processed shouldBe true
       lvl10Node11.value.value shouldBe 11
       val (lvl10Node11Res, _) = processFun(lvl10Node11.value)
       lvl10Node11Res shouldBe true
-    }
-
-    it("should offer a combineFirstDepthShrinks function") {
-      val boolRt = new StatefulBooleanRoseTree(StatefulBoolean(true))
-      boolRt.value.value shouldBe true
-      
-      val intRt = new StatefulRoseTree(StatefulInt(2))
-      intRt.value.value shouldBe 2
-
-      def processFun(b: StatefulBoolean, i: StatefulInt): (Boolean, Option[String]) = {
-        b.processed = true
-        i.processed = true
-        (i.value > 3, None)
-      }
-
-      val (shrinks1, _, _) = boolRt.combineFirstDepthShrinks[String, StatefulInt](processFun, Randomizer.default, intRt)
-      shrinks1 should have length 1
-      shrinks1(0).value._1.value shouldBe false
-      shrinks1(0).value._2.value shouldBe 0
-
-      def processFun2(b: StatefulBoolean, i: StatefulInt): (Boolean, Option[String]) = {
-        b.processed = true
-        i.processed = true
-        (b.value == false || i.value > 3, None)
-      }
-
-      val (shrinks2, _, _) = boolRt.combineFirstDepthShrinks[String, StatefulInt](processFun2, Randomizer.default, intRt)
-      shrinks2 should have length 1
-      shrinks2(0).value._1.value shouldBe true
-      shrinks2(0).value._2.value shouldBe 0
     }
   }
   describe("A Rose") {
@@ -266,25 +236,25 @@ object RoseTreeSpec {
     new RoseTree[Int] {
       val value: Int = i
 
-      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[Int]], Randomizer) = {
+      def shrinks: LazyListOrStream[RoseTree[Int]] = {
         val roseTrees: LazyListOrStream[RoseTree[Int]] = toLazyListOrStream(if (value > 0) (0 to value - 1).reverse.map(x => intRoseTree(x)) else LazyListOrStream.empty)
-        (roseTrees, rnd)
+        roseTrees
       }
     }
 
   def charRoseTree(c: Char): RoseTree[Char] =
     new RoseTree[Char] {
       val value: Char = c
-      def shrinks(rnd: Randomizer): (LazyListOrStream[RoseTree[Char]], Randomizer) = {
+      def shrinks: LazyListOrStream[RoseTree[Char]] = {
         val userFriendlyChars = "abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        if (userFriendlyChars.indexOf(c) >= 0) (LazyListOrStream.empty, rnd)
-        else (toLazyListOrStream(userFriendlyChars).map(c => Rose(c)), rnd)
+        if (userFriendlyChars.indexOf(c) >= 0) LazyListOrStream.empty
+        else toLazyListOrStream(userFriendlyChars).map(c => Rose(c))
       }
     }
 
   def unfold[a](rt: RoseTree[a], indent: String = ""): Unit = {
     println(s"$indent ${rt.value}")
-    val (roseTrees, rnd2) = rt.shrinks(Randomizer.default)
+    val roseTrees = rt.shrinks
     roseTrees.foreach(t => unfold(t, s"$indent  "))
   }
 }
