@@ -1248,43 +1248,28 @@ trait FuturePropCheckerAsserting {
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
+                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB, (a: A, b: B) => (a, b))
+                val roseTreeOfABC =
+                  RoseTree.map2[(A, B), C, (A, B, C)](
+                    roseTreeOfAB, 
+                    roseTreeOfC, { case ((a, b), c) => 
+                      (a, b, c)
+                    }
+                  )
+
                 for {
-                  (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfA.combineFirstDepthShrinksForFuture[Throwable, B](
-                                                          { case (a, b) => {
-                                                              val result: Future[T] = fun(a, b, roseTreeOfC.value)
+                  (shrunkRtOfABC, shrunkErrOpt) <- roseTreeOfABC.depthFirstShrinksForFuture { case (a, b, c) => {
+                                                              val result: Future[T] = fun(a, b, c)
                                                               result.map { _ => 
                                                                 (true, None)
                                                               } recover {
                                                                 case shrunkEx: Throwable => (false, Some(shrunkEx))
                                                               }
                                                             }
-                                                          }, 
-                                                        roseTreeOfB)
-                  (shrunkRtOfABC, shrunkErrOpt2) <- shrunkRtOfAB.headOption.map { headRt =>
-                                                            headRt.combineFirstDepthShrinksForFuture[Throwable, C](
-                                                              { case ((a, b), c) => {
-                                                                  val result: Future[T] = fun(a, b, c)
-                                                                  result.map { _ => 
-                                                                    (true, None)
-                                                                  } recover {
-                                                                    case shrunkEx: Throwable => (false, Some(shrunkEx))
-                                                                  }
-                                                                }
-                                                              }, 
-                                                              roseTreeOfC
-                                                            )
-                                                          }.getOrElse(Future.successful((LazyListOrStream.empty, shrunkErrOpt)))                                      
+                                                          }
                 } yield {
-                  val bestABC = 
-                    shrunkRtOfABC.headOption.map(_.value) match {
-                      case Some(((a, b), c)) => (a, b, c)
-                      case None => 
-                        shrunkRtOfAB.headOption.map(_.value) match {
-                          case Some((a, b)) => (a, b, roseTreeOfC.value)
-                          case None => (roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value)
-                        }
-                    }
-                  val errOpt = List(f.ex, shrunkErrOpt, shrunkErrOpt2).flatten.lastOption
+                  val bestABC = shrunkRtOfABC.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value))
+                  val errOpt: Option[Throwable] = List(f.ex, shrunkErrOpt).flatten.lastOption
 
                   val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABC) else PropertyArgument(None, bestABC))
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
