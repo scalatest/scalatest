@@ -28,29 +28,27 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
   // won't take long, so no need to make this a lazy val.
   def shrinks: LazyListOrStream[RoseTree[T]]
 
-  // TODO: Remove Randomizer from param and result.
   def depthFirstShrinks[E](fun: T => (Boolean, Option[E])): (LazyListOrStream[RoseTree[T]], Option[E]) = {
     @tailrec
-    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], processed: Set[T]): (LazyListOrStream[RoseTree[T]], Option[E]) = {
+    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]]): (LazyListOrStream[RoseTree[T]], Option[E]) = {
       pending match {
         case head #:: tail => 
           val (result, errDataOpt) = fun(head.value)
           if (!result) {
             // If the function fail, we got a new failure value, and we'll go one level deeper.
             val headChildrenRTs = head.shrinks
-            val newProceesed = processed + head.value
-            shrinkLoop(head, errDataOpt, headChildrenRTs.filter(rt => !newProceesed.contains(rt.value)), newProceesed)
+            shrinkLoop(head, errDataOpt, headChildrenRTs)
           }
           else {
             // The function call succeeded, let's continue to try the sibling.
-            shrinkLoop(lastFailure, lastFailureData, tail, processed + head.value)
+            shrinkLoop(lastFailure, lastFailureData, tail)
           }
 
         case _ => // No more further sibling to try, return the last failure
           (LazyListOrStream(lastFailure), lastFailureData)
       }
     }
-    shrinkLoop(this, None, shrinks, Set(value))
+    shrinkLoop(this, None, shrinks)
   }
 
   def depthFirstShrinksForFuture[E](fun: T => Future[(Boolean, Option[E])])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {

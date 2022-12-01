@@ -176,7 +176,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val lvl6Node8 = lvl5Node16.shrinksRoseTrees(0)
       val lvl6Node15 = lvl5Node16.shrinksRoseTrees(1)
 
-      lvl6Node8.processed shouldBe false  // This won't be processed because 8 has been processed before.
+      lvl6Node8.processed shouldBe true  // This should be processed even though 8 has been processed before.
       lvl6Node8.value.value shouldBe 8
       lvl6Node15.processed shouldBe true
       lvl6Node15.value.value shouldBe 15
@@ -196,7 +196,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val lvl8Node7 = lvl7Node14.shrinksRoseTrees(0)
       val lvl8Node13 = lvl7Node14.shrinksRoseTrees(1)
 
-      lvl8Node7.processed shouldBe false  // This won't be processed because 8 has been processed before.
+      lvl8Node7.processed shouldBe true  // This should be processed even though 8 has been processed before.
       lvl8Node7.value.value shouldBe 7
       lvl8Node13.processed shouldBe true
       lvl8Node13.value.value shouldBe 13
@@ -216,7 +216,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val lvl10Node6 = lvl9Node12.shrinksRoseTrees(0)
       val lvl10Node11 = lvl9Node12.shrinksRoseTrees(1)
 
-      lvl10Node6.processed shouldBe false  // This won't be processed because 8 has been processed before.
+      lvl10Node6.processed shouldBe true  // This should be processed even though 8 has been processed before.
       lvl10Node6.value.value shouldBe 6
       lvl10Node11.processed shouldBe true
       lvl10Node11.value.value shouldBe 11
