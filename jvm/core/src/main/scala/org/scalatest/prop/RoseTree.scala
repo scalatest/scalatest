@@ -122,15 +122,11 @@ object RoseTree {
     val candidates1: LazyListOrStream[RoseTree[V]] =
       for (candidate <- shrinks1) yield
         map2(candidate, tree2, f)
-    val shrinks2 = tree2.shrinks
-    val candidates2: LazyListOrStream[RoseTree[V]] =
-      for (candidate <- shrinks2) yield
-        map2(tree1, candidate, f)
     val roseTreeOfV =
       new RoseTree[V] {
         val value = tupValue
         def shrinks: LazyListOrStream[RoseTree[V]] = {
-          candidates1 #::: candidates2
+          candidates1 #::: tree2.shrinks.map(candidate => map2(tree1, candidate, f))
         }
       }
     roseTreeOfV
