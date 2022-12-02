@@ -229,6 +229,20 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       Rose(42).toString shouldBe "Rose(42)"
     }
   }
+  describe("RoseTree companion object") {
+    it("should offer a map2 function that combines 2 RoseTree") {
+      import RoseTreeSpec._
+
+      val rtOfInt = intRoseTree(2)
+      val rtOfBoolean = booleanRoseTree(true)
+      val rtOfIntBoolean = RoseTree.map2(rtOfInt, rtOfBoolean, (i: Int, b: Boolean) => (i, b))
+      val shrinks = rtOfIntBoolean.shrinks
+      shrinks.length shouldBe 3
+      shrinks(0).value shouldBe (1, true)
+      shrinks(1).value shouldBe (0, true)
+      shrinks(2).value shouldBe (2, false)
+    }
+  }
 }
 
 object RoseTreeSpec {
@@ -251,6 +265,14 @@ object RoseTreeSpec {
         else toLazyListOrStream(userFriendlyChars).map(c => Rose(c))
       }
     }
+
+  def booleanRoseTree(i: Boolean): RoseTree[Boolean] =
+    new RoseTree[Boolean] {
+      val value: Boolean = i
+
+      def shrinks: LazyListOrStream[RoseTree[Boolean]] = 
+        if (i) LazyListOrStream(booleanRoseTree(false)) else LazyListOrStream.empty
+    }  
 
   def unfold[a](rt: RoseTree[a], indent: String = ""): Unit = {
     println(s"$indent ${rt.value}")
