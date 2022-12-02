@@ -130,7 +130,7 @@ object RoseTree {
       new RoseTree[V] {
         val value = tupValue
         def shrinks: LazyListOrStream[RoseTree[V]] = {
-          candidates1 ++ candidates2
+          candidates1 #::: candidates2
         }
       }
     roseTreeOfV
