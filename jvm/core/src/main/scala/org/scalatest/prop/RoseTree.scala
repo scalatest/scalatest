@@ -57,7 +57,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
   }
 
   def depthFirstShrinksForFuture[E](fun: T => Future[(Boolean, Option[E])])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
-    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], processed: Set[T], count: Int): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
+    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], count: Int): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
       if (count < maximumIterationCount) 
         pending match {
           case head #:: tail => 
@@ -66,12 +66,11 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
               if (!result) {
                 // If the function fail, we got a new failure value, and we'll go one level deeper.
                 val headChildrenRTs = head.shrinks
-                val newProceesed = processed + head.value
-                shrinkLoop(head, errDataOpt, headChildrenRTs.filter(rt => !newProceesed.contains(rt.value)), newProceesed, count + 1)
+                shrinkLoop(head, errDataOpt, headChildrenRTs, count + 1)
               }
               else {
                 // The function call succeeded, let's continue to try the sibling.
-                shrinkLoop(lastFailure, lastFailureData, tail, processed + head.value, count + 1)
+                shrinkLoop(lastFailure, lastFailureData, tail, count + 1)
               }
             }
 
@@ -83,7 +82,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
       
     }
 
-    shrinkLoop(this, None, shrinks, Set(value), 0)
+    shrinkLoop(this, None, shrinks, 0)
   }
 
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
