@@ -28,53 +28,62 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
   // won't take long, so no need to make this a lazy val.
   def shrinks: LazyListOrStream[RoseTree[T]]
 
+  private lazy val maximumIterationCount = 1000000
+
   def depthFirstShrinks[E](fun: T => (Boolean, Option[E])): (LazyListOrStream[RoseTree[T]], Option[E]) = {
     @tailrec
-    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]]): (LazyListOrStream[RoseTree[T]], Option[E]) = {
-      pending match {
-        case head #:: tail => 
-          val (result, errDataOpt) = fun(head.value)
-          if (!result) {
-            // If the function fail, we got a new failure value, and we'll go one level deeper.
-            val headChildrenRTs = head.shrinks
-            shrinkLoop(head, errDataOpt, headChildrenRTs)
-          }
-          else {
-            // The function call succeeded, let's continue to try the sibling.
-            shrinkLoop(lastFailure, lastFailureData, tail)
-          }
-
-        case _ => // No more further sibling to try, return the last failure
-          (LazyListOrStream(lastFailure), lastFailureData)
-      }
-    }
-    shrinkLoop(this, None, shrinks)
-  }
-
-  def depthFirstShrinksForFuture[E](fun: T => Future[(Boolean, Option[E])])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
-    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], processed: Set[T]): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
-      pending match {
-        case head #:: tail => 
-          val future = fun(head.value)
-          future.flatMap { case (result, errDataOpt) =>
+    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], count: Int): (LazyListOrStream[RoseTree[T]], Option[E]) = {
+      if (count < maximumIterationCount)
+        pending match {
+          case head #:: tail => 
+            val (result, errDataOpt) = fun(head.value)
             if (!result) {
               // If the function fail, we got a new failure value, and we'll go one level deeper.
               val headChildrenRTs = head.shrinks
-              val newProceesed = processed + head.value
-              shrinkLoop(head, errDataOpt, headChildrenRTs.filter(rt => !newProceesed.contains(rt.value)), newProceesed)
+              shrinkLoop(head, errDataOpt, headChildrenRTs, count + 1)
             }
             else {
               // The function call succeeded, let's continue to try the sibling.
-              shrinkLoop(lastFailure, lastFailureData, tail, processed + head.value)
+              shrinkLoop(lastFailure, lastFailureData, tail, count + 1)
             }
-          }
 
-        case _ =>
-          Future.successful((LazyListOrStream(lastFailure), lastFailureData))
-      }
+          case _ => // No more further sibling to try, return the last failure
+            (LazyListOrStream(lastFailure), lastFailureData)
+        }
+      else 
+        (LazyListOrStream(lastFailure), lastFailureData)
+    }
+    shrinkLoop(this, None, shrinks, 0)
+  }
+
+  def depthFirstShrinksForFuture[E](fun: T => Future[(Boolean, Option[E])])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
+    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], processed: Set[T], count: Int): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
+      if (count < maximumIterationCount) 
+        pending match {
+          case head #:: tail => 
+            val future = fun(head.value)
+            future.flatMap { case (result, errDataOpt) =>
+              if (!result) {
+                // If the function fail, we got a new failure value, and we'll go one level deeper.
+                val headChildrenRTs = head.shrinks
+                val newProceesed = processed + head.value
+                shrinkLoop(head, errDataOpt, headChildrenRTs.filter(rt => !newProceesed.contains(rt.value)), newProceesed, count + 1)
+              }
+              else {
+                // The function call succeeded, let's continue to try the sibling.
+                shrinkLoop(lastFailure, lastFailureData, tail, processed + head.value, count + 1)
+              }
+            }
+
+          case _ =>
+            Future.successful((LazyListOrStream(lastFailure), lastFailureData))
+        }
+      else 
+        Future.successful((LazyListOrStream(lastFailure), lastFailureData))
+      
     }
 
-    shrinkLoop(this, None, shrinks, Set(value))
+    shrinkLoop(this, None, shrinks, Set(value), 0)
   }
 
   // This makes sense to me say Char is on the inside, then T is Char, and U is (Char, Int). So
