@@ -235,7 +235,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
 
       val rtOfInt = intRoseTree(2)
       val rtOfBoolean = booleanRoseTree(true)
-      val rtOfIntBoolean = RoseTree.map2(rtOfInt, rtOfBoolean, (i: Int, b: Boolean) => (i, b))
+      val rtOfIntBoolean = RoseTree.map2(rtOfInt, rtOfBoolean) { case (i, b) => (i, b) }
       val shrinks = rtOfIntBoolean.shrinks
       shrinks.length shouldBe 3
       shrinks(0).value shouldBe (1, true)

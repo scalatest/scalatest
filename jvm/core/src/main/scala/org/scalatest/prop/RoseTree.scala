@@ -124,17 +124,17 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
 }
 
 object RoseTree {
-  def map2[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U], f: (T, U) => V): RoseTree[V] = {
+  def map2[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U])(f: (T, U) => V): RoseTree[V] = {
     val tupValue = f(tree1.value, tree2.value)
     val shrinks1 = tree1.shrinks
     val candidates1: LazyListOrStream[RoseTree[V]] =
       for (candidate <- shrinks1) yield
-        map2(candidate, tree2, f)
+        map2(candidate, tree2)(f)
     val roseTreeOfV =
       new RoseTree[V] {
         val value = tupValue
         def shrinks: LazyListOrStream[RoseTree[V]] = {
-          candidates1 #::: tree2.shrinks.map(candidate => map2(tree1, candidate, f))
+          candidates1 #::: tree2.shrinks.map(candidate => map2(tree1, candidate)(f))
         }
       }
     roseTreeOfV
