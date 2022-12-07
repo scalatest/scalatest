@@ -30,22 +30,28 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
 
   private lazy val maximumIterationCount = 1000000
 
-  def depthFirstShrinks[E](fun: T => (Boolean, Option[E])): (LazyListOrStream[RoseTree[T]], Option[E]) = {
+  def depthFirstShrinks[E](fun: T => (Boolean, Option[E])): (LazyListOrStream[RoseTree[T]], Option[E]) = depthFirstShrinks(_ => true)(fun)
+
+  def depthFirstShrinks[E](filterFun: T => Boolean)(fun: T => (Boolean, Option[E])): (LazyListOrStream[RoseTree[T]], Option[E]) = {
     @tailrec
     def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], count: Int): (LazyListOrStream[RoseTree[T]], Option[E]) = {
       if (count < maximumIterationCount)
         pending match {
           case head #:: tail => 
-            val (result, errDataOpt) = fun(head.value)
-            if (!result) {
-              // If the function fail, we got a new failure value, and we'll go one level deeper.
-              val headChildrenRTs = head.shrinks
-              shrinkLoop(head, errDataOpt, headChildrenRTs, count + 1)
+            if (filterFun(head.value)) {
+              val (result, errDataOpt) = fun(head.value)
+              if (!result) {
+                // If the function fail, we got a new failure value, and we'll go one level deeper.
+                val headChildrenRTs = head.shrinks
+                shrinkLoop(head, errDataOpt, headChildrenRTs, count + 1)
+              }
+              else {
+                // The function call succeeded, let's continue to try the sibling.
+                shrinkLoop(lastFailure, lastFailureData, tail, count + 1)
+              }
             }
-            else {
-              // The function call succeeded, let's continue to try the sibling.
+            else // Not a valid value accoridng to filterFun, let's skip and continue.
               shrinkLoop(lastFailure, lastFailureData, tail, count + 1)
-            }
 
           case _ => // No more further sibling to try, return the last failure
             (LazyListOrStream(lastFailure), lastFailureData)

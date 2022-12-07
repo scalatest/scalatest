@@ -186,7 +186,7 @@ abstract class UnitPropCheckerAsserting {
           case Failure(ex) =>
             // Let's shrink the failing value
             val (shrunkRtOfA, errOpt1) =
-              roseTreeOfA.depthFirstShrinks(
+              roseTreeOfA.depthFirstShrinks((genA.isDefinedAt))(
                 value => {
                   val result: Try[T] = Try { fun(value) }
                   result match {
@@ -273,9 +273,14 @@ abstract class UnitPropCheckerAsserting {
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
             // Let's shrink the failing value
+            val genAB = 
+              for {
+                a <- genA
+                b <- genB
+              } yield (a, b)
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
             val (shrunkRtOfAB, shrunkErrOpt) =
-              roseTreeOfAB.depthFirstShrinks {
+              roseTreeOfAB.depthFirstShrinks(genAB.isDefinedAt) {
                 case (a, b) => 
                   Try { fun(a, b) } match {
                     case Success(_) => (true, None)
@@ -361,10 +366,16 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
+            val genABC = 
+              for {
+                a <- genA
+                b <- genB
+                c <- genC
+              } yield (a, b, c)
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val (shrunkRtOfABC, shrunkErrOpt) =
-              roseTreeOfABC.depthFirstShrinks {
+              roseTreeOfABC.depthFirstShrinks(genABC.isDefinedAt) {
                 case (a, b, c) => 
                   Try { fun(a, b, c) } match {
                     case Success(_) => (true, None)
@@ -455,11 +466,18 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) => 
+            val genABCD = 
+              for {
+                a <- genA
+                b <- genB
+                c <- genC
+                d <- genD
+              } yield (a, b, c, d)
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val (shrunkRtOfABCD, shrunkErrOpt) =
-              roseTreeOfABCD.depthFirstShrinks { 
+              roseTreeOfABCD.depthFirstShrinks(genABCD.isDefinedAt) { 
                 case (a, b, c, d) => 
                   val result: Try[T] = Try { fun(a, b, c, d) }
                   result match {
@@ -556,12 +574,20 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
+            val genABCDE = 
+              for {
+                a <- genA
+                b <- genB
+                c <- genC
+                d <- genD
+                e <- genE
+              } yield (a, b, c, d, e)
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
             val (shrunkRtOfABCDE, shrunkErrOpt) =
-              roseTreeOfABCDE.depthFirstShrinks { case (a, b, c, d, e) => 
+              roseTreeOfABCDE.depthFirstShrinks(genABCDE.isDefinedAt) { case (a, b, c, d, e) => 
                 Try { fun(a, b, c, d, e) } match {
                   case Success(_) => (true, None)
                   case Failure(shrunkEx) => (false, Some(shrunkEx))
@@ -662,13 +688,22 @@ abstract class UnitPropCheckerAsserting {
             else
               new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)
           case Failure(ex) =>
+            val genABCDEF = 
+              for {
+                a <- genA
+                b <- genB
+                c <- genC
+                d <- genD
+                e <- genE
+                f <- genF
+              } yield (a, b, c, d, e, f)
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
             val roseTreeOfABCDEF = RoseTree.map2(roseTreeOfABCDE, roseTreeOfF) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
             val (shrunkRtOfABCDEF, shrunkErrOpt) =
-              roseTreeOfABCDEF.depthFirstShrinks { case (a, b, c, d, e, f) => 
+              roseTreeOfABCDEF.depthFirstShrinks(genABCDEF.isDefinedAt) { case (a, b, c, d, e, f) => 
                 Try { fun(a, b, c, d, e, f) } match {
                   case Success(_) => (true, None)
                   case Failure(shrunkEx) => (false, Some(shrunkEx))
