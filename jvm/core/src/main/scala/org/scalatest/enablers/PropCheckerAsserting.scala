@@ -372,8 +372,8 @@ abstract class UnitPropCheckerAsserting {
                 b <- genB
                 c <- genC
               } yield (a, b, c)
-            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
-            val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a: A, b: B) => (a, b) }
+            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(((ab: (A, B)) => genA.isValid(ab._1) && genB.isValid(ab._2)), genC.isValid) { case ((a, b), c) => (a, b, c) }
             val (shrunkRtOfABC, shrunkErrOpt) =
               roseTreeOfABC.depthFirstShrinks {
                 case (a, b, c) => 
