@@ -30,28 +30,22 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
 
   private lazy val maximumIterationCount = 1000000
 
-  def depthFirstShrinks[E](fun: T => (Boolean, Option[E])): (LazyListOrStream[RoseTree[T]], Option[E]) = depthFirstShrinks(_ => true)(fun)
-
-  def depthFirstShrinks[E](filterFun: T => Boolean)(fun: T => (Boolean, Option[E])): (LazyListOrStream[RoseTree[T]], Option[E]) = {
+  def depthFirstShrinks[E](fun: T => (Boolean, Option[E])): (LazyListOrStream[RoseTree[T]], Option[E]) = {
     @tailrec
     def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], count: Int): (LazyListOrStream[RoseTree[T]], Option[E]) = {
       if (count < maximumIterationCount)
         pending match {
           case head #:: tail => 
-            if (filterFun(head.value)) {
-              val (result, errDataOpt) = fun(head.value)
-              if (!result) {
-                // If the function fail, we got a new failure value, and we'll go one level deeper.
-                val headChildrenRTs = head.shrinks
-                shrinkLoop(head, errDataOpt, headChildrenRTs, count + 1)
-              }
-              else {
-                // The function call succeeded, let's continue to try the sibling.
-                shrinkLoop(lastFailure, lastFailureData, tail, count + 1)
-              }
+            val (result, errDataOpt) = fun(head.value)
+            if (!result) {
+              // If the function fail, we got a new failure value, and we'll go one level deeper.
+              val headChildrenRTs = head.shrinks
+              shrinkLoop(head, errDataOpt, headChildrenRTs, count + 1)
             }
-            else // Not a valid value accoridng to filterFun, let's skip and continue.
+            else {
+              // The function call succeeded, let's continue to try the sibling.
               shrinkLoop(lastFailure, lastFailureData, tail, count + 1)
+            }
 
           case _ => // No more further sibling to try, return the last failure
             (LazyListOrStream(lastFailure), lastFailureData)
@@ -141,6 +135,24 @@ object RoseTree {
         val value = tupValue
         def shrinks: LazyListOrStream[RoseTree[V]] = {
           candidates1 #::: tree2.shrinks.map(candidate => map2(tree1, candidate)(f))
+        }
+      }
+    roseTreeOfV
+  }
+
+  def map2WithFilter[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U])(filterT: T => Boolean, filterU: U => Boolean)(f: (T, U) => V): RoseTree[V] = {
+    val tupValue = f(tree1.value, tree2.value)
+    val shrinks1 = tree1.shrinks
+    val candidatesOfTU1: LazyListOrStream[RoseTree[(T, U)]] = 
+      shrinks1.map(rtOfT => rtOfT.map(t => (t, tree2.value))).filter(rt => filterT(rt.value._1) && filterU(rt.value._2))
+    val candidates1: LazyListOrStream[RoseTree[V]] = candidatesOfTU1.map(rt => rt.map(t => f(t._1, t._2)))
+    val roseTreeOfV =
+      new RoseTree[V] {
+        val value = tupValue
+        def shrinks: LazyListOrStream[RoseTree[V]] = {
+          candidates1 #::: tree2.shrinks.map(rtOfU => rtOfU.map(u => (tree1.value, u)))
+                                        .filter(rt => filterT(rt.value._1) && filterU(rt.value._2))
+                                        .map(rt => rt.map(t => f(t._1, t._2)))
         }
       }
     roseTreeOfV

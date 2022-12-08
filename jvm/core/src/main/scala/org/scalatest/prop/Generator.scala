@@ -407,10 +407,9 @@ trait Generator[T] { thisGeneratorOfT =>
         }
         loop(0, edges, rnd)
       }
-      override def isDefinedAt(value: T): Boolean = f(value)
     }
 
-  def isDefinedAt(value: T): Boolean = true
+  def isValid(value: T): Boolean = true
 
 // XXX
   /**
