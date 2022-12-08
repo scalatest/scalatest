@@ -306,9 +306,6 @@ abstract class UnitPropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, afterBEdgesRnd, initialSizes, initSeed)
     }
 
-    private def genABIsValid[A, B](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B])(tup: (A, B)): Boolean = 
-      genA.isValid(tup._1) && genB.isValid(tup._2)
-
     private def checkForAll[A, B, C](names: List[String], config: Parameter,
                              genA: org.scalatest.prop.Generator[A],
                              genB: org.scalatest.prop.Generator[B],
@@ -404,10 +401,6 @@ abstract class UnitPropCheckerAsserting {
       val (initCEdges, afterCEdgesRnd) = genC.initEdges(maxEdges, afterBEdgesRnd)
       loop(0, 0, initAEdges, initBEdges, initCEdges, afterCEdgesRnd, initialSizes, initSeed)
     }
-
-    private def genABCIsValid[A, B, C](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
-                                       genC: org.scalatest.prop.Generator[C])(tup: (A, B, C)): Boolean = 
-      genA.isValid(tup._1) && genB.isValid(tup._2) && genC.isValid(tup._3)
 
     private def checkForAll[A, B, C, D](names: List[String], config: Parameter,
                                 genA: org.scalatest.prop.Generator[A],
@@ -512,10 +505,6 @@ abstract class UnitPropCheckerAsserting {
       val (initDEdges, afterDEdgesRnd) = genD.initEdges(maxEdges, afterCEdgesRnd)
       loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes, initSeed)
     }
-
-    private def genABCDIsValid[A, B, C, D](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
-                                       genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D])(tup: (A, B, C, D)): Boolean = 
-      genA.isValid(tup._1) && genB.isValid(tup._2) && genC.isValid(tup._3) && genD.isValid(tup._4)
 
     private def checkForAll[A, B, C, D, E](names: List[String], config: Parameter,
                                    genA: org.scalatest.prop.Generator[A],
@@ -625,11 +614,6 @@ abstract class UnitPropCheckerAsserting {
       val (initEEdges, afterEEdgesRnd) = genE.initEdges(maxEdges, afterDEdgesRnd)
       loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, afterEEdgesRnd, initialSizes, initSeed)
     }
-
-    private def genABCDEIsValid[A, B, C, D, E](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
-                                       genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], 
-                                       genE: org.scalatest.prop.Generator[E])(tup: (A, B, C, D, E)): Boolean = 
-      genA.isValid(tup._1) && genB.isValid(tup._2) && genC.isValid(tup._3) && genD.isValid(tup._4) && genE.isValid(tup._5)
 
     private def checkForAll[A, B, C, D, E, F](names: List[String], config: Parameter,
                                       genA: org.scalatest.prop.Generator[A],
@@ -2069,4 +2053,20 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting with FutureP
     }
     sizesLoop(Nil, 0, initRndm)
   }
+
+  private[enablers] def genABIsValid[A, B](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B])(tup: (A, B)): Boolean = 
+      genA.isValid(tup._1) && genB.isValid(tup._2)
+
+  private[enablers] def genABCIsValid[A, B, C](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
+                                       genC: org.scalatest.prop.Generator[C])(tup: (A, B, C)): Boolean = 
+      genA.isValid(tup._1) && genB.isValid(tup._2) && genC.isValid(tup._3)
+
+  private[enablers] def genABCDIsValid[A, B, C, D](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
+                                       genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D])(tup: (A, B, C, D)): Boolean = 
+      genA.isValid(tup._1) && genB.isValid(tup._2) && genC.isValid(tup._3) && genD.isValid(tup._4)
+
+  private[enablers] def genABCDEIsValid[A, B, C, D, E](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
+                                       genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], 
+                                       genE: org.scalatest.prop.Generator[E])(tup: (A, B, C, D, E)): Boolean = 
+      genA.isValid(tup._1) && genB.isValid(tup._2) && genC.isValid(tup._3) && genD.isValid(tup._4) && genE.isValid(tup._5)
 }
