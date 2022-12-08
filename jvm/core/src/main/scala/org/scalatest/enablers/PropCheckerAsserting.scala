@@ -626,6 +626,11 @@ abstract class UnitPropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, initEEdges, afterEEdgesRnd, initialSizes, initSeed)
     }
 
+    private def genABCDEIsValid[A, B, C, D, E](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
+                                       genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], 
+                                       genE: org.scalatest.prop.Generator[E])(tup: (A, B, C, D, E)): Boolean = 
+      genA.isValid(tup._1) && genB.isValid(tup._2) && genC.isValid(tup._3) && genD.isValid(tup._4) && genE.isValid(tup._5)
+
     private def checkForAll[A, B, C, D, E, F](names: List[String], config: Parameter,
                                       genA: org.scalatest.prop.Generator[A],
                                       genB: org.scalatest.prop.Generator[B],
@@ -708,11 +713,11 @@ abstract class UnitPropCheckerAsserting {
                 e <- genE
                 f <- genF
               } yield (a, b, c, d, e, f)
-            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
-            val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
-            val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
-            val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
-            val roseTreeOfABCDEF = RoseTree.map2(roseTreeOfABCDE, roseTreeOfF) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
+            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
+            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(genA, genB, genC), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
+            val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(genA, genB, genC, genD), genE.isValid) { case ((a, b, c, d), e) => (a, b, c, d, e)}
+            val roseTreeOfABCDEF = RoseTree.map2WithFilter(roseTreeOfABCDE, roseTreeOfF)(genABCDEIsValid(genA, genB, genC, genD, genE), genF.isValid) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
             val (shrunkRtOfABCDEF, shrunkErrOpt) =
               roseTreeOfABCDEF.depthFirstShrinks { case (a, b, c, d, e, f) => 
                 Try { fun(a, b, c, d, e, f) } match {
