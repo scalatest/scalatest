@@ -473,9 +473,9 @@ abstract class UnitPropCheckerAsserting {
                 c <- genC
                 d <- genD
               } yield (a, b, c, d)
-            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
-            val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
-            val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a: A, b: B) => (a, b) }
+            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(((ab: (A, B)) => genA.isValid(ab._1) && genB.isValid(ab._2)), genC.isValid) { case ((a, b), c) => (a, b, c) }
+            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(((abc: (A, B, C)) => genA.isValid(abc._1) && genB.isValid(abc._2) && genC.isValid(abc._3)), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
             val (shrunkRtOfABCD, shrunkErrOpt) =
               roseTreeOfABCD.depthFirstShrinks { 
                 case (a, b, c, d) => 
