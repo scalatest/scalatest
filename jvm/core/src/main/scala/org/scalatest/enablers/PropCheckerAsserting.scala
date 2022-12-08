@@ -513,6 +513,10 @@ abstract class UnitPropCheckerAsserting {
       loop(0, 0, initAEdges, initBEdges, initCEdges, initDEdges, afterDEdgesRnd, initialSizes, initSeed)
     }
 
+    private def genABCDIsValid[A, B, C, D](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
+                                       genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D])(tup: (A, B, C, D)): Boolean = 
+      genA.isValid(tup._1) && genB.isValid(tup._2) && genC.isValid(tup._3) && genD.isValid(tup._4)
+
     private def checkForAll[A, B, C, D, E](names: List[String], config: Parameter,
                                    genA: org.scalatest.prop.Generator[A],
                                    genB: org.scalatest.prop.Generator[B],
@@ -589,10 +593,10 @@ abstract class UnitPropCheckerAsserting {
                 d <- genD
                 e <- genE
               } yield (a, b, c, d, e)
-            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
-            val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
-            val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
-            val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
+            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
+            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(genA, genB, genC), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
+            val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(genA, genB, genC, genD), genE.isValid) { case ((a, b, c, d), e) => (a, b, c, d, e)}
             val (shrunkRtOfABCDE, shrunkErrOpt) =
               roseTreeOfABCDE.depthFirstShrinks { case (a, b, c, d, e) => 
                 Try { fun(a, b, c, d, e) } match {
