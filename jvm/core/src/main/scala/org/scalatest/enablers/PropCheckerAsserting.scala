@@ -278,7 +278,7 @@ abstract class UnitPropCheckerAsserting {
                 a <- genA
                 b <- genB
               } yield (a, b)
-            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a: A, b: B) => (a, b) }
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
             val (shrunkRtOfAB, shrunkErrOpt) =
               roseTreeOfAB.depthFirstShrinks {
                 case (a, b) => 
@@ -375,7 +375,7 @@ abstract class UnitPropCheckerAsserting {
                 b <- genB
                 c <- genC
               } yield (a, b, c)
-            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a: A, b: B) => (a, b) }
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
             val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
             val (shrunkRtOfABC, shrunkErrOpt) =
               roseTreeOfABC.depthFirstShrinks {
@@ -480,7 +480,7 @@ abstract class UnitPropCheckerAsserting {
                 c <- genC
                 d <- genD
               } yield (a, b, c, d)
-            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a: A, b: B) => (a, b) }
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
             val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(genA, genB, genC), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
             val (shrunkRtOfABCD, shrunkErrOpt) =
@@ -589,7 +589,7 @@ abstract class UnitPropCheckerAsserting {
                 d <- genD
                 e <- genE
               } yield (a, b, c, d, e)
-            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
@@ -704,7 +704,7 @@ abstract class UnitPropCheckerAsserting {
                 e <- genE
                 f <- genF
               } yield (a, b, c, d, e, f)
-            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
@@ -1074,7 +1074,7 @@ trait FuturePropCheckerAsserting {
 
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
-                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
+                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
                 for {
                   (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfAB.depthFirstShrinksForFuture { case (a, b) => {
                                                               val result: Future[T] = fun(a, b)
@@ -1114,7 +1114,7 @@ trait FuturePropCheckerAsserting {
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex: Throwable =>
-            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
             for {
               (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfAB.depthFirstShrinksForFuture { case (a, b) => {
                                                           val result: Future[T] = fun(a, b)
@@ -1213,7 +1213,7 @@ trait FuturePropCheckerAsserting {
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
-                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
+                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
                 val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
                 for {
                   (shrunkRtOfABC, shrunkErrOpt) <- roseTreeOfABC.depthFirstShrinksForFuture { case (a, b, c) => {
@@ -1254,7 +1254,7 @@ trait FuturePropCheckerAsserting {
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex: Throwable =>
-            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             for {
               (shrunkRtOfABC, shrunkErrOpt) <- roseTreeOfABC.depthFirstShrinksForFuture { case (a, b, c) => {
@@ -1358,7 +1358,7 @@ trait FuturePropCheckerAsserting {
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
-                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
+                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
                 val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
                 val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
                 for {
@@ -1401,7 +1401,7 @@ trait FuturePropCheckerAsserting {
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex: Throwable =>
-            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             for {
@@ -1511,7 +1511,7 @@ trait FuturePropCheckerAsserting {
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
-                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
+                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
                 val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
                 val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
                 val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
@@ -1555,7 +1555,7 @@ trait FuturePropCheckerAsserting {
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex: Throwable =>
-            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
@@ -1671,7 +1671,7 @@ trait FuturePropCheckerAsserting {
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
-                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
+                val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
                 val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
                 val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
                 val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
@@ -1716,7 +1716,7 @@ trait FuturePropCheckerAsserting {
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.fEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex: Throwable =>
-            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
+            val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a, b) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
