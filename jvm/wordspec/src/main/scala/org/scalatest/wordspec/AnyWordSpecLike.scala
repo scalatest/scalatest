@@ -305,7 +305,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerTestToRun(specText, tags, "in", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(specText, tags, "in", () => testFun, pos)}) } 
     //DOTTY-ONLY }
 
@@ -330,7 +330,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerTestToRun(specText, tags, "is", () => { testFun; succeed }, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(specText, tags, "is", () => { testFun; succeed }, pos)}) } 
     //DOTTY-ONLY }
 
@@ -355,7 +355,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(specText, tags, "ignore", () => testFun, pos)}) } 
     //DOTTY-ONLY }
   }       
@@ -398,7 +398,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerTestToRun(string, List(), "in", () => f, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(f: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(f: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "in", () => f, pos)}) } 
     //DOTTY-ONLY }
 
@@ -423,7 +423,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerTestToIgnore(string, List(), "ignore", () => f, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(f: => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(f: => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(string, List(), "ignore", () => f, pos)}) } 
     //DOTTY-ONLY }
 
@@ -448,7 +448,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerTestToRun(string, List(), "is", () => { f; succeed }, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(f: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(f: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(string, List(), "is", () => { f; succeed }, pos)}) } 
     //DOTTY-ONLY }
 
@@ -468,6 +468,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
      * For more information and examples of this method's use, see the <a href="AnyWordSpec.html">main documentation</a> for trait <code>AnyWordSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix  
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
       new ResultOfTaggedAsInvocationOnString(string, tagList)
@@ -498,7 +499,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerBranch(string, Some("when"), "when", "when", stackDepth, -2, pos, () => f)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def when(f: => Unit): Unit = {
+    //DOTTY-ONLY inline infix def when(f: => Unit): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string, Some("when"), "when", "when", 4, -2, pos, () => f)}) } 
     //DOTTY-ONLY }
 
@@ -525,7 +526,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, pos, resultOfAfterWordApplication.f)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def when(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
+    //DOTTY-ONLY inline infix def when(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, pos, resultOfAfterWordApplication.f)}) } 
     //DOTTY-ONLY }
 
@@ -554,7 +555,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, pos, () => f)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def that(f: => Unit): Unit = {
+    //DOTTY-ONLY inline infix def that(f: => Unit): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " that", None, "that", "that", 4, -2, pos, () => f)}) } 
     //DOTTY-ONLY }
 
@@ -583,7 +584,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, pos, () => f)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def which(f: => Unit): Unit = {
+    //DOTTY-ONLY inline infix def which(f: => Unit): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " which", None, "which", "which", 4, -2, pos, () => f)}) } 
     //DOTTY-ONLY }
 
@@ -610,7 +611,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, pos, resultOfAfterWordApplication.f)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def that(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
+    //DOTTY-ONLY inline infix def that(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, pos, resultOfAfterWordApplication.f)}) } 
     //DOTTY-ONLY }
     
@@ -637,7 +638,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, pos, resultOfAfterWordApplication.f)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def which(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
+    //DOTTY-ONLY inline infix def which(resultOfAfterWordApplication: ResultOfAfterWordApplication): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, pos, resultOfAfterWordApplication.f)}) } 
     //DOTTY-ONLY }
   }
@@ -810,7 +811,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       shouldImpl(right, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def should(right: => Unit): Unit = {
+    //DOTTY-ONLY inline infix def should(right: => Unit): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => shouldImpl(right, pos) }) } 
     //DOTTY-ONLY }
     
@@ -842,7 +843,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       mustImpl(right, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def must(right: => Unit): Unit = {
+    //DOTTY-ONLY inline infix def must(right: => Unit): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => mustImpl(right, pos) }) } 
     //DOTTY-ONLY }
 
@@ -874,7 +875,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       canImpl(right, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def can(right: => Unit): Unit = {
+    //DOTTY-ONLY inline infix def can(right: => Unit): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => canImpl(right, pos) }) } 
     //DOTTY-ONLY }
     
@@ -906,7 +907,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       whenImpl(right, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def when(right: => Unit): Unit = {
+    //DOTTY-ONLY inline infix def when(right: => Unit): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => whenImpl(right, pos) }) } 
     //DOTTY-ONLY }
   }
@@ -981,7 +982,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       shouldImpl(right, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def should(right: => Unit): Unit = {
+    //DOTTY-ONLY inline infix def should(right: => Unit): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => shouldImpl(right, pos) }) } 
     //DOTTY-ONLY }
     
@@ -1013,7 +1014,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       mustImpl(right, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def must(right: => Unit): Unit = {
+    //DOTTY-ONLY inline infix def must(right: => Unit): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, () => right)}) } 
     //DOTTY-ONLY }
     
@@ -1045,7 +1046,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       canImpl(right, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def can(right: => Unit): Unit = {
+    //DOTTY-ONLY inline infix def can(right: => Unit): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, () => right)}) } 
     //DOTTY-ONLY }
     
@@ -1077,7 +1078,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
       whenImpl(right, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def when(right: => Unit): Unit = {
+    //DOTTY-ONLY inline infix def when(right: => Unit): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => whenImpl(right, pos) }) } 
     //DOTTY-ONLY }
   }

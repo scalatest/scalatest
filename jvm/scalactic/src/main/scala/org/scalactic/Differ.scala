@@ -18,6 +18,7 @@ package org.scalactic
 // SKIP-SCALATESTNATIVE-START
 import org.scalactic.source.ObjectMeta
 // SKIP-SCALATESTNATIVE-END
+import scala.annotation.tailrec
 
 private[scalactic] trait Differ {
 
@@ -46,6 +47,12 @@ private[scalactic] object Differ {
     else
       shortName
   }
+
+  def prettifierLimit(prettifier: Prettifier): Option[Int] = 
+    prettifier match {
+      case tp: TruncatingPrettifier => Some(tp.sizeLimit.value)
+      case _ => None
+    }
 }
 
 private[scalactic] trait StringDiffer extends Differ {
@@ -115,31 +122,32 @@ private[scalactic] object StringDiffer extends StringDiffer
 
 private[scalactic] class GenSeqDiffer extends Differ {
 
+  @tailrec
+  private def recurDiff(prettifier: Prettifier, aSeq: scala.collection.GenSeq[_], bSeq: scala.collection.GenSeq[_], limit: Int, idx: Int = 0, result: Vector[String] = Vector.empty): Vector[String] = 
+    if (result.length <= limit)
+      (aSeq.headOption, bSeq.headOption) match {
+        case (Some(leftEl), Some(rightEl)) => 
+          recurDiff(prettifier, aSeq.tail, bSeq.tail, limit, idx + 1, 
+                    result ++ (if (leftEl != rightEl) Vector(idx + ": " + prettifier(leftEl) + " -> " + prettifier(rightEl)) else Vector.empty))
+        case (Some(leftEl), None) =>
+          recurDiff(prettifier, aSeq.tail, bSeq, limit, idx + 1, result :+ (idx + ": " + prettifier(leftEl) + " -> "))
+        case (None, Some(rightEl)) =>
+          recurDiff(prettifier, aSeq, bSeq.tail, limit, idx + 1, result :+ (idx + ": -> " + prettifier(rightEl)))
+        case (None, None) =>  
+          result                    
+      }
+    else result.dropRight(1) :+ "..."
+
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
     (a, b) match {
       case (aSeq: scala.collection.GenSeq[_], bSeq: scala.collection.GenSeq[_]) =>
-        val diffSet =
-          ((0 until aSeq.length) flatMap { i =>
-            val leftEl = aSeq(i)
-            if (bSeq.isDefinedAt(i)) {
-              val rightEl = bSeq(i)
-              if (leftEl != rightEl)
-                Some(i + ": " + leftEl + " -> " + rightEl)
-              else
-                None
-            }
-            else
-              Some(i + ": " + leftEl + " -> ")
-          }).toSet ++
-            ((aSeq.length until bSeq.length) flatMap { i =>
-              Some(i + ": -> " + bSeq(i))
-            }).toSet
-
+        val limit = Differ.prettifierLimit(prettifier).getOrElse(math.max(aSeq.length, bSeq.length))
+        val diffs = recurDiff(prettifier, aSeq, bSeq, limit)
         val shortName = Differ.simpleClassName(aSeq)
-        if (diffSet.isEmpty)
+        if (diffs.isEmpty)
           PrettyPair(prettifier(a), prettifier(b), None)
         else
-          PrettyPair(prettifier(a), prettifier(b), Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")"))
+          PrettyPair(prettifier(a), prettifier(b), Some(shortName + "(" + diffs.mkString(", ") + ")"))
 
       case _ => PrettyPair(prettifier(a), prettifier(b), None)
     }
@@ -154,8 +162,13 @@ private[scalactic] class GenSetDiffer extends Differ {
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
     (a, b) match {
       case (aSet: scala.collection.GenSet[_], bSet: scala.collection.GenSet[_]) =>
-        val missingInRight = aSet.toList.diff(bSet.toList)
-        val missingInLeft = bSet.toList.diff(aSet.toList)
+        val missingInRight = aSet.toList.diff(bSet.toList).map(prettifier.apply)
+        val missingInLeft = bSet.toList.diff(aSet.toList).map(prettifier.apply)
+
+        val limit = Differ.prettifierLimit(prettifier).getOrElse(math.max(aSet.size, bSet.size))  
+
+        val limitedMissingInRight: List[String] = if (missingInRight.length > limit) missingInRight.take(limit) :+ "..." else missingInRight
+        val limitedMissingInLeft: List[String] = if (missingInLeft.length > limit) missingInLeft.take(limit) :+ "..." else missingInLeft
 
         val shortName = Differ.simpleClassName(aSet)
         if (missingInLeft.isEmpty && missingInRight.isEmpty)
@@ -163,8 +176,8 @@ private[scalactic] class GenSetDiffer extends Differ {
         else {
           val diffList =
             List(
-              if (missingInLeft.isEmpty) "" else "missingInLeft: [" + missingInLeft.mkString(", ") + "]",
-              if (missingInRight.isEmpty) "" else "missingInRight: [" + missingInRight.mkString(", ") + "]"
+              if (limitedMissingInLeft.isEmpty) "" else "missingInLeft: [" + limitedMissingInLeft.mkString(", ") + "]",
+              if (limitedMissingInRight.isEmpty) "" else "missingInRight: [" + limitedMissingInRight.mkString(", ") + "]"
             ).filter(_.nonEmpty)
           PrettyPair(prettifier(a), prettifier(b), Some(shortName + "(" + diffList.mkString(", ") + ")"))
         }
@@ -179,43 +192,42 @@ private[scalactic] object GenSetDiffer extends GenSetDiffer
 
 private[scalactic] class GenMapDiffer[K, V] extends Differ {
 
+  @tailrec
+  private def recurDiff[AK, AV, BK, BV](prettifier: Prettifier, aMap: scala.collection.GenMap[AK, AV], bMap: scala.collection.GenMap[BK, BV], limit: Int, result: Vector[String] = Vector.empty): Vector[String] = 
+    if (result.length <= limit)
+      aMap.headOption match {
+        case Some((aKey, aValue)) => 
+          // This gives a compiler error due to k being a wildcard type:
+          // val rightValue = bMap(k)
+          // Not sure why aMap(k) doesn't give the same error, but regardless, fixing it
+          // by pulling the value out for the key using a == comparison, which for now
+          // works because of universal equality, then assuming the value exists, just
+          // as bMap(k) previously was assuming.
+          bMap.collect { case (nextK, nextV) if nextK == aKey => nextV }.headOption match {
+            case Some(bValue) =>
+              recurDiff(prettifier, aMap.tail, bMap.filter(_._1 != aKey), limit, 
+                    result ++ (if (aValue != bValue) Vector(prettifier(aKey) + ": " + prettifier(aValue) + " -> " + prettifier(bValue)) else Vector.empty))
+            case None => 
+              recurDiff(prettifier, aMap.tail, bMap, limit, result :+ (prettifier(aKey) + ": " + prettifier(aValue) + " -> "))
+          }
+        case None => 
+          result ++ bMap.map { case (bKey, bValue) =>
+            prettifier(bKey) + ": -> " + prettifier(bValue)
+          }
+      }
+    else result.dropRight(1) :+ "..."
+
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair =
     (a, b) match {
       case (aMap: scala.collection.GenMap[_, _], bMap: scala.collection.GenMap[_, _]) =>
-        val leftKeySet = aMap.keySet
-        val rightKeySet = bMap.keySet
-        val missingKeyInRight = leftKeySet.toList.diff(rightKeySet.toList)
-        val missingKeyInLeft = rightKeySet.toList.diff(leftKeySet.toList)
-        val intersectKeys = leftKeySet.toList.intersect(rightKeySet.toList)
-        val diffSet =
-          intersectKeys.flatMap { k =>
-            val leftValue = aMap(k)
-            // This gives a compiler error due to k being a wildcard type:
-            // val rightValue = bMap(k)
-            // Not sure why aMap(k) doesn't give the same error, but regardless, fixing it
-            // by pulling the value out for the key using a == comparison, which for now
-            // works because of universal equality, then assuming the value exists, just
-            // as bMap(k) previously was assuming.
-            val rightValue = bMap.collect { case (nextK, nextV) if nextK == k => nextV }.head
-            if (leftValue != rightValue)
-              Some(k.toString + ": " + leftValue + " -> " + rightValue)
-            else
-              None
-          }.toSet ++
-            missingKeyInLeft.flatMap { k =>
-              val rightValue = bMap(k)
-              Option(k.toString + ": -> " + rightValue)
-            }.toSet ++
-            missingKeyInRight.flatMap { k =>
-              val leftValue = aMap(k)
-              Option(k.toString + ": " + leftValue + " -> ")
-            }.toSet
+        val limit = Differ.prettifierLimit(prettifier).getOrElse(math.max(aMap.size, bMap.size))      
+        val diffs = recurDiff(prettifier, aMap, bMap, limit) 
 
         val shortName = Differ.simpleClassName(aMap)
-        if (diffSet.isEmpty)
+        if (diffs.isEmpty)
           PrettyPair(prettifier(a), prettifier(b), None)
         else
-          PrettyPair(prettifier(a), prettifier(b), Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")"))
+          PrettyPair(prettifier(a), prettifier(b), Some(shortName + "(" + diffs.mkString(", ") + ")"))
 
       case _ =>
         PrettyPair(prettifier(a), prettifier(b), None)

@@ -38,14 +38,27 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
   private[this] def getPosition(expr: Tree) = expr.pos.asInstanceOf[scala.reflect.internal.util.Position]
 
   // this is taken from expecty and modified, the purpose is to get the anchor for the given expression
-  private[this] def getAnchor(expr: Tree): Int = expr match {
-    case Apply(x, ys) => getAnchor(x) + 0
-    case TypeApply(x, ys) => getAnchor(x) + 0
-    case _ => {
-      getPosition(expr) match {
-        case NoPosition => -1
-        case pos => pos.point - pos.source.lineToOffset(pos.line - 1)
-      }
+  private[this] def getAnchor(expr: Tree): Int = {
+    expr match {
+      case apply @ Apply(x, ys) if isXmlSugar(apply) => 
+        val anchor = getAnchor(x)
+        val adjustment = 
+          getPosition(expr) match {
+            case NoPosition => 0
+            case pos =>
+              val line = pos.source.lineToString(pos.line - 1)
+              val c = line.charAt(anchor)
+              if (c == '<') 0 else 1
+          }
+        anchor - adjustment
+      case Apply(x, ys) => getAnchor(x) + 0
+      case TypeApply(x, ys) => ;getAnchor(x) + 0
+      case _ => 
+        getPosition(expr) match {
+          case NoPosition => -1
+          case pos =>
+            pos.point - pos.source.lineToOffset(pos.line - 1)
+        }
     }
   }
 

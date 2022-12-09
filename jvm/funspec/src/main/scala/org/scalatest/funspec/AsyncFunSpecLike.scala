@@ -198,6 +198,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with Informing with Notifying with
      * in the main documentation for trait <code>AsyncFunSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -217,6 +218,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with Informing with Notifying with
      * in the main documentation for trait <code>AsyncFunSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
@@ -319,6 +321,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with Informing with Notifying with
      * in the main documentation for trait <code>AsyncFunSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -338,6 +341,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with Informing with Notifying with
      * in the main documentation for trait <code>AsyncFunSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def must(behaveWord: BehaveWord) = behaveWord
   }
 

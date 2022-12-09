@@ -61,7 +61,10 @@ import org.scalactic.exceptions.NullArgumentException
  *
  * @author Bill Venners
  */
+// SKIP-DOTTY-START 
 class Stepwise(suitesToNest: Suite*) extends Suite with StepwiseNestedSuiteExecution { thisSuite => 
+// SKIP-DOTTY-END
+//DOTTY-ONLY open class Stepwise(suitesToNest: Suite*) extends Suite with StepwiseNestedSuiteExecution { thisSuite =>
 
   requireNonNull(suitesToNest)
 

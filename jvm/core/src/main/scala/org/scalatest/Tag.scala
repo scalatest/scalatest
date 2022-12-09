@@ -146,7 +146,10 @@ package org.scalatest
  * @author Bill Venners
  * @author George Berger
  */
+// SKIP-DOTTY-START 
 class Tag(val name: String)
+// SKIP-DOTTY-END
+//DOTTY-ONLY open class Tag(val name: String)
 
 /**
  * Companion object for <code>Tag</code>, which offers a factory method.

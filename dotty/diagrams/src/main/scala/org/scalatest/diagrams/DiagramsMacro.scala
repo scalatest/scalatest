@@ -42,6 +42,17 @@ object DiagramsMacro {
           case '{ $x: t } => '{ DiagrammedExpr.simpleExpr[t]($x, ${ getAnchor(term) } ) }.asTerm
         }
 
+        def xmlSugarExpr(term: Term): Term = term.asExpr match {
+          case '{ $x: t } => '{ 
+            DiagrammedExpr.simpleExpr[t]($x, ${ 
+              // https://docs.scala-lang.org/scala3/reference/metaprogramming/reflection.html#positions
+              val anchor = expr.pos.startColumn - Position.ofMacroExpansion.startColumn
+              val c = expr.pos.sourceCode.getOrElse("<none>").head
+              Expr(anchor - (if (c == '<') 0 else 1)) 
+            } ) 
+          }.asTerm
+        }
+
         def getAnchorForSelect(sel: Select): Expr[Int] = {
           if (sel.name == "unary_!")
             Expr(sel.pos.startColumn - Position.ofMacroExpansion.startColumn)
@@ -71,9 +82,9 @@ object DiagramsMacro {
           }
 
         expr match {
-          case Apply(Select(New(_), _), _) => default(expr)
+          case apply: Apply if isXmlSugar(apply) => xmlSugarExpr(expr)
 
-          case apply: Apply if isXmlSugar(apply) => default(expr)
+          case Apply(Select(New(_), _), _) => default(expr)
 
           case apply: Apply if isJavaStatic(apply) => default(expr)
 
