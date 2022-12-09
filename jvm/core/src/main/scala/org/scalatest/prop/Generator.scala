@@ -4655,6 +4655,8 @@ object Generator {
             val (size, nextRnd) = rnd.choosePosZInt(szp.minSize, szp.maxSize)
             loop(size.value, Vector.empty, nextRnd)
           }
+
+          override def isValid(value: Vector[T]): Boolean = value.length == value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
         }
 
       def next(szp: org.scalatest.prop.SizeParam, edges: List[Vector[T]],rnd: org.scalatest.prop.Randomizer): (RoseTree[Vector[T]], List[Vector[T]], org.scalatest.prop.Randomizer) = {
@@ -4748,6 +4750,8 @@ object Generator {
             val (size, nextRnd) = rnd.choosePosZInt(szp.minSize, szp.maxSize)
             loop(size.value, Set.empty, nextRnd)
           }
+
+          override def isValid(value: Set[T]): Boolean = value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
         }
 
       def next(szp: org.scalatest.prop.SizeParam, edges: List[Set[T]],rnd: org.scalatest.prop.Randomizer): (RoseTree[Set[T]], List[Set[T]], org.scalatest.prop.Randomizer) = {
@@ -4841,6 +4845,8 @@ object Generator {
             val (size, nextRnd) = rnd.choosePosZInt(szp.minSize, szp.maxSize)
             loop(size.value, SortedSet.empty, nextRnd)
           }
+
+          override def isValid(value: SortedSet[T]): Boolean = value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
         }
 
       def next(szp: org.scalatest.prop.SizeParam, edges: List[SortedSet[T]],rnd: org.scalatest.prop.Randomizer): (RoseTree[SortedSet[T]], List[SortedSet[T]], org.scalatest.prop.Randomizer) = {
@@ -4937,6 +4943,8 @@ object Generator {
             val (size, nextRnd) = rnd.choosePosZInt(szp.minSize, szp.maxSize)
             loop(size.value, Map.empty, nextRnd)
           }
+
+          override def isValid(value: Map[K, V]): Boolean = value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
         }
 
       def next(szp: org.scalatest.prop.SizeParam, edges: List[Map[K, V]], rnd: org.scalatest.prop.Randomizer): Tuple3[RoseTree[Map[K, V]], List[Map[K, V]], org.scalatest.prop.Randomizer] = {
@@ -5033,6 +5041,8 @@ object Generator {
             val (size, nextRnd) = rnd.choosePosZInt(szp.minSize, szp.maxSize)
             loop(size.value, SortedMap.empty[K, V], nextRnd)
           }
+
+          override def isValid(value: SortedMap[K, V]): Boolean = value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
         }
 
       def next(szp: org.scalatest.prop.SizeParam, edges: List[SortedMap[K, V]], rnd: org.scalatest.prop.Randomizer): Tuple3[RoseTree[SortedMap[K, V]], List[SortedMap[K, V]], org.scalatest.prop.Randomizer] = {
