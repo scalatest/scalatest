@@ -3224,6 +3224,7 @@ object Generator {
             outerGenOfListOfT.next(SizeParam(PosZInt(0), szp.maxSize, size), edges, rnd) // TODO: SizeParam(size, size, size)?
           override def canonicals: LazyListOrStream[RoseTree[List[T]]] = LazyListOrStream.empty
           override def toString = s"Generator[List[T] /* having length $size */]"
+          override def isValid(value: List[T]): Boolean = value.length == size.value
         }
       }
 
@@ -3250,6 +3251,7 @@ object Generator {
             if (from <= 1) outerGenOfListOfT.canonicals else LazyListOrStream.empty
           // TODO: Shrink can go from from up to xs length
           override def toString = s"Generator[List[T] /* having lengths between $from and $to (inclusive) */]"
+          override def isValid(value: List[T]): Boolean = value.length >= from.value && value.length <= to.value
         }
       }
       def havingSizesDeterminedBy(f: SizeParam => SizeParam): Generator[List[T]] = // TODO: add with HavingLength again
