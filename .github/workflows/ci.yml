@@ -35,7 +35,7 @@ jobs:
         distribution: temurin
         java-version: 8
         cache: 'sbt'
-    - name: Build and Test Scalactic and ScalaTest using Scala 2.10
+    - name: Build and Test Scalactic and ScalaTest using Scala 2.11
       run: sbt ++2.11.12 test        
   test-scala-3:
     runs-on: macos-latest
