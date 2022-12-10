@@ -181,6 +181,7 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
      * in the main documentation for trait <code>org.scalatest.funspec.PathAnyFunSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -200,6 +201,7 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
      * in the main documentation for trait <code>org.scalatest.funspec.PathAnyFunSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
@@ -302,6 +304,7 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
      * in the main documentation for trait <code>org.scalatest.funspec.PathAnyFunSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -321,6 +324,7 @@ trait PathAnyFunSpecLike extends org.scalatest.Suite with OneInstancePerTest wit
      * in the main documentation for trait <code>org.scalatest.funspec.PathAnyFunSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def must(behaveWord: BehaveWord) = behaveWord
   }
 

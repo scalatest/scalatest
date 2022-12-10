@@ -218,6 +218,7 @@ trait AnyFunSpecLike extends TestSuite with Informing with Notifying with Alerti
      * in the main documentation for trait <code>AnyFunSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -237,6 +238,7 @@ trait AnyFunSpecLike extends TestSuite with Informing with Notifying with Alerti
      * in the main documentation for trait <code>AnyFunSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
@@ -339,6 +341,7 @@ trait AnyFunSpecLike extends TestSuite with Informing with Notifying with Alerti
      * in the main documentation for trait <code>AnyFunSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -358,6 +361,7 @@ trait AnyFunSpecLike extends TestSuite with Informing with Notifying with Alerti
      * in the main documentation for trait <code>AnyFunSpec</code>.
      * </p>
      */
+    //DOTTY-ONLY     infix 
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
