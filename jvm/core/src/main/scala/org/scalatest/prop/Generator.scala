@@ -409,7 +409,7 @@ trait Generator[T] { thisGeneratorOfT =>
       }
     }
 
-  def isValid(value: T): Boolean = true
+  def isValid(value: T, size: SizeParam): Boolean = true
 
 // XXX
   /**
@@ -3224,7 +3224,7 @@ object Generator {
             outerGenOfListOfT.next(SizeParam(PosZInt(0), szp.maxSize, size), edges, rnd) // TODO: SizeParam(size, size, size)?
           override def canonicals: LazyListOrStream[RoseTree[List[T]]] = LazyListOrStream.empty
           override def toString = s"Generator[List[T] /* having length $size */]"
-          override def isValid(value: List[T]): Boolean = value.length == size.value
+          override def isValid(value: List[T], sizeParam: SizeParam): Boolean = value.length == size.value
         }
       }
 
@@ -3251,7 +3251,7 @@ object Generator {
             if (from <= 1) outerGenOfListOfT.canonicals else LazyListOrStream.empty
           // TODO: Shrink can go from from up to xs length
           override def toString = s"Generator[List[T] /* having lengths between $from and $to (inclusive) */]"
-          override def isValid(value: List[T]): Boolean = value.length >= from.value && value.length <= to.value
+          override def isValid(value: List[T], sizeParam: SizeParam): Boolean = value.length >= from.value && value.length <= to.value
         }
       }
       def havingSizesDeterminedBy(f: SizeParam => SizeParam): Generator[List[T]] = // TODO: add with HavingLength again
@@ -3261,6 +3261,10 @@ object Generator {
             outerGenOfListOfT.next(f(szp), edges, rnd)
           override def canonicals: LazyListOrStream[RoseTree[List[T]]] = LazyListOrStream.empty
           override def toString = s"Generator[List[T] /* having lengths determined by a function */]"
+          override def isValid(value: List[T], sizeParam: SizeParam): Boolean = {
+            val fSizeParam = f(sizeParam)
+            value.length >= fSizeParam.minSize.value && value.length <= (fSizeParam.minSize.value + fSizeParam.sizeRange.value)
+          }
         }
       override def shrinksForValue(valueToShrink: List[T]): Option[LazyListOrStream[RoseTree[List[T]]]] = Some(NextRoseTree(valueToShrink).shrinks)
     }
@@ -4656,7 +4660,7 @@ object Generator {
             loop(size.value, Vector.empty, nextRnd)
           }
 
-          override def isValid(value: Vector[T]): Boolean = value.length == value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
+          override def isValid(value: Vector[T], size: SizeParam): Boolean = value.length >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
         }
 
       def next(szp: org.scalatest.prop.SizeParam, edges: List[Vector[T]],rnd: org.scalatest.prop.Randomizer): (RoseTree[Vector[T]], List[Vector[T]], org.scalatest.prop.Randomizer) = {
@@ -4692,6 +4696,10 @@ object Generator {
                 val gen = generatorWithSize(s)
                 gen.next(s, List.empty, rnd)
             }
+          }
+          override def isValid(value: Vector[T], sizeParam: SizeParam): Boolean = {
+            val fSizeParam = f(sizeParam)
+            value.length >= fSizeParam.minSize.value && value.length <= (fSizeParam.minSize.value + fSizeParam.sizeRange.value)
           }
         }
 
@@ -4751,7 +4759,7 @@ object Generator {
             loop(size.value, Set.empty, nextRnd)
           }
 
-          override def isValid(value: Set[T]): Boolean = value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
+          override def isValid(value: Set[T], size: SizeParam): Boolean = value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
         }
 
       def next(szp: org.scalatest.prop.SizeParam, edges: List[Set[T]],rnd: org.scalatest.prop.Randomizer): (RoseTree[Set[T]], List[Set[T]], org.scalatest.prop.Randomizer) = {
@@ -4787,6 +4795,10 @@ object Generator {
                 val gen = generatorWithSize(s)
                 gen.next(s, List.empty, rnd)
             }
+          }
+          override def isValid(value: Set[T], sizeParam: SizeParam): Boolean = {
+            val fSizeParam = f(sizeParam)
+            value.size >= fSizeParam.minSize.value && value.size <= (fSizeParam.minSize.value + fSizeParam.sizeRange.value)
           }
         }
 
@@ -4846,7 +4858,7 @@ object Generator {
             loop(size.value, SortedSet.empty, nextRnd)
           }
 
-          override def isValid(value: SortedSet[T]): Boolean = value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
+          override def isValid(value: SortedSet[T], size: SizeParam): Boolean = value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
         }
 
       def next(szp: org.scalatest.prop.SizeParam, edges: List[SortedSet[T]],rnd: org.scalatest.prop.Randomizer): (RoseTree[SortedSet[T]], List[SortedSet[T]], org.scalatest.prop.Randomizer) = {
@@ -4882,6 +4894,10 @@ object Generator {
                 val gen = generatorWithSize(s)
                 gen.next(s, List.empty, rnd)
             }
+          }
+          override def isValid(value: SortedSet[T], sizeParam: SizeParam): Boolean = {
+            val fSizeParam = f(sizeParam)
+            value.size >= fSizeParam.minSize.value && value.size <= (fSizeParam.minSize.value + fSizeParam.sizeRange.value)
           }
         }
 
@@ -4944,7 +4960,7 @@ object Generator {
             loop(size.value, Map.empty, nextRnd)
           }
 
-          override def isValid(value: Map[K, V]): Boolean = value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
+          override def isValid(value: Map[K, V], size: SizeParam): Boolean = value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
         }
 
       def next(szp: org.scalatest.prop.SizeParam, edges: List[Map[K, V]], rnd: org.scalatest.prop.Randomizer): Tuple3[RoseTree[Map[K, V]], List[Map[K, V]], org.scalatest.prop.Randomizer] = {
@@ -4981,6 +4997,10 @@ object Generator {
                 val gen = generatorWithSize(s)
                 gen.next(s, List.empty, rnd)
             }
+          }
+          override def isValid(value: Map[K, V], sizeParam: SizeParam): Boolean = {
+            val fSizeParam = f(sizeParam)
+            value.size >= fSizeParam.minSize.value && value.size <= (fSizeParam.minSize.value + fSizeParam.sizeRange.value)
           }
         }
 
@@ -5042,7 +5062,7 @@ object Generator {
             loop(size.value, SortedMap.empty[K, V], nextRnd)
           }
 
-          override def isValid(value: SortedMap[K, V]): Boolean = value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
+          override def isValid(value: SortedMap[K, V], size: SizeParam): Boolean = value.size >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
         }
 
       def next(szp: org.scalatest.prop.SizeParam, edges: List[SortedMap[K, V]], rnd: org.scalatest.prop.Randomizer): Tuple3[RoseTree[SortedMap[K, V]], List[SortedMap[K, V]], org.scalatest.prop.Randomizer] = {
@@ -5079,6 +5099,10 @@ object Generator {
                 val gen = generatorWithSize(s)
                 gen.next(s, List.empty, rnd)
             }
+          }
+          override def isValid(value: SortedMap[K, V], sizeParam: SizeParam): Boolean = {
+            val fSizeParam = f(sizeParam)
+            value.size >= fSizeParam.minSize.value && value.size <= (fSizeParam.minSize.value + fSizeParam.sizeRange.value)
           }
         }
 

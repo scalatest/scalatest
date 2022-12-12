@@ -233,6 +233,7 @@ abstract class UnitPropCheckerAsserting {
               val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
               (sz, Nil, nextRnd)
           }
+        val sizeParam =  SizeParam(config.minSize, config.sizeRange, PosZInt.ensuringValid(size))  
         val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1) // TODO: See if PosZInt can be moved farther out
         val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
         val a = roseTreeOfA.value
@@ -278,7 +279,7 @@ abstract class UnitPropCheckerAsserting {
                 a <- genA
                 b <- genB
               } yield (a, b)
-            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
             val (shrunkRtOfAB, shrunkErrOpt) =
               roseTreeOfAB.depthFirstShrinks {
                 case (a, b) => 
@@ -324,6 +325,7 @@ abstract class UnitPropCheckerAsserting {
               val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
               (sz, Nil, nextRnd)
           }
+        val sizeParam =  SizeParam(config.minSize, config.sizeRange, PosZInt.ensuringValid(size))  
         val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1)
         val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
         val (roseTreeOfC, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
@@ -372,8 +374,8 @@ abstract class UnitPropCheckerAsserting {
                 b <- genB
                 c <- genC
               } yield (a, b, c)
-            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
-            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
+            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(sizeParam, genA, genB), genIsValid(sizeParam, genC)) { case ((a, b), c) => (a, b, c) }
             val (shrunkRtOfABC, shrunkErrOpt) =
               roseTreeOfABC.depthFirstShrinks {
                 case (a, b, c) => 
@@ -421,6 +423,7 @@ abstract class UnitPropCheckerAsserting {
               val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
               (sz, Nil, nextRnd)
           }
+        val sizeParam =  SizeParam(config.minSize, config.sizeRange, PosZInt.ensuringValid(size))  
         val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1)
         val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
         val (roseTreeOfC, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
@@ -473,9 +476,9 @@ abstract class UnitPropCheckerAsserting {
                 c <- genC
                 d <- genD
               } yield (a, b, c, d)
-            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
-            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
-            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(genA, genB, genC), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
+            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(sizeParam, genA, genB), genIsValid(sizeParam, genC)) { case ((a, b), c) => (a, b, c) }
+            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(sizeParam, genA, genB, genC), genIsValid(sizeParam, genD)) { case ((a, b, c), d) => (a, b, c, d) }
             val (shrunkRtOfABCD, shrunkErrOpt) =
               roseTreeOfABCD.depthFirstShrinks { 
                 case (a, b, c, d) => 
@@ -526,6 +529,7 @@ abstract class UnitPropCheckerAsserting {
               val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
               (sz, Nil, nextRnd)
           }
+        val sizeParam =  SizeParam(config.minSize, config.sizeRange, PosZInt.ensuringValid(size))  
         val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1)
         val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
         val (roseTreeOfC, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
@@ -582,10 +586,10 @@ abstract class UnitPropCheckerAsserting {
                 d <- genD
                 e <- genE
               } yield (a, b, c, d, e)
-            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
-            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
-            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(genA, genB, genC), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
-            val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(genA, genB, genC, genD), genE.isValid) { case ((a, b, c, d), e) => (a, b, c, d, e)}
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
+            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(sizeParam, genA, genB), genIsValid(sizeParam, genC)) { case ((a, b), c) => (a, b, c) }
+            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(sizeParam, genA, genB, genC), genIsValid(sizeParam, genD)) { case ((a, b, c), d) => (a, b, c, d) }
+            val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(sizeParam, genA, genB, genC, genD), genIsValid(sizeParam, genE)) { case ((a, b, c, d), e) => (a, b, c, d, e)}
             val (shrunkRtOfABCDE, shrunkErrOpt) =
               roseTreeOfABCDE.depthFirstShrinks { case (a, b, c, d, e) => 
                 Try { fun(a, b, c, d, e) } match {
@@ -636,6 +640,7 @@ abstract class UnitPropCheckerAsserting {
               val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
               (sz, Nil, nextRnd)
           }
+        val sizeParam =  SizeParam(config.minSize, config.sizeRange, PosZInt.ensuringValid(size))  
         val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, rnd1)
         val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
         val (roseTreeOfC, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
@@ -697,11 +702,11 @@ abstract class UnitPropCheckerAsserting {
                 e <- genE
                 f <- genF
               } yield (a, b, c, d, e, f)
-            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
-            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
-            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(genA, genB, genC), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
-            val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(genA, genB, genC, genD), genE.isValid) { case ((a, b, c, d), e) => (a, b, c, d, e)}
-            val roseTreeOfABCDEF = RoseTree.map2WithFilter(roseTreeOfABCDE, roseTreeOfF)(genABCDEIsValid(genA, genB, genC, genD, genE), genF.isValid) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
+            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(sizeParam, genA, genB), genIsValid(sizeParam, genC)) { case ((a, b), c) => (a, b, c) }
+            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(sizeParam, genA, genB, genC), genIsValid(sizeParam, genD)) { case ((a, b, c), d) => (a, b, c, d) }
+            val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(sizeParam, genA, genB, genC, genD), genIsValid(sizeParam, genE)) { case ((a, b, c, d), e) => (a, b, c, d, e)}
+            val roseTreeOfABCDEF = RoseTree.map2WithFilter(roseTreeOfABCDE, roseTreeOfF)(genABCDEIsValid(sizeParam, genA, genB, genC, genD, genE), genIsValid(sizeParam, genF)) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
             val (shrunkRtOfABCDEF, shrunkErrOpt) =
               roseTreeOfABCDEF.depthFirstShrinks { case (a, b, c, d, e, f) => 
                 Try { fun(a, b, c, d, e, f) } match {
@@ -881,6 +886,7 @@ trait FuturePropCheckerAsserting {
               val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
               (sz, Nil, nextRnd)
           }
+        val sizeParam =  SizeParam(config.minSize, config.sizeRange, PosZInt.ensuringValid(size))  
         val (roseTreeOfA, nextEdges, nextNextRnd) = genA.next(SizeParam(PosZInt(0), maxSize, size), edges, nextRnd) // TODO: Move PosZInt farther out
         val a = roseTreeOfA.value
 
@@ -1018,6 +1024,7 @@ trait FuturePropCheckerAsserting {
               val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
               (sz, Nil, nextRnd)
           }
+        val sizeParam =  SizeParam(config.minSize, config.sizeRange, PosZInt.ensuringValid(size))  
         val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, nextRnd)
         val (roseTreeOfB, nextBEdges, nextNextRnd) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
         val a = roseTreeOfA.value
@@ -1156,6 +1163,7 @@ trait FuturePropCheckerAsserting {
               val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
               (sz, Nil, nextRnd)
           }
+        val sizeParam =  SizeParam(config.minSize, config.sizeRange, PosZInt.ensuringValid(size))  
         val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, nextRnd)
         val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
         val (roseTreeOfC, nextCEdges, nextNextRnd) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
@@ -1206,8 +1214,8 @@ trait FuturePropCheckerAsserting {
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
-                val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
-                val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
+                val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
+                val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(sizeParam, genA, genB), genIsValid(sizeParam, genC)) { case ((a, b), c) => (a, b, c) }
                 for {
                   (shrunkRtOfABC, shrunkErrOpt) <- roseTreeOfABC.depthFirstShrinksForFuture { case (a, b, c) => {
                                                               val result: Future[T] = fun(a, b, c)
@@ -1247,8 +1255,8 @@ trait FuturePropCheckerAsserting {
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex: Throwable =>
-            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
-            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
+            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(sizeParam, genA, genB), genIsValid(sizeParam, genC)) { case ((a, b), c) => (a, b, c) }
             for {
               (shrunkRtOfABC, shrunkErrOpt) <- roseTreeOfABC.depthFirstShrinksForFuture { case (a, b, c) => {
                                                           val result: Future[T] = fun(a, b, c)
@@ -1298,6 +1306,7 @@ trait FuturePropCheckerAsserting {
               val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
               (sz, Nil, nextRnd)
           }
+        val sizeParam =  SizeParam(config.minSize, config.sizeRange, PosZInt.ensuringValid(size))  
         val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, nextRnd)
         val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
         val (roseTreeOfC, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
@@ -1351,9 +1360,9 @@ trait FuturePropCheckerAsserting {
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
-                val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
-                val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
-                val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(genA, genB, genC), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
+                val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
+                val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(sizeParam, genA, genB), genIsValid(sizeParam, genC)) { case ((a, b), c) => (a, b, c) }
+                val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(sizeParam, genA, genB, genC), genIsValid(sizeParam, genD)) { case ((a, b, c), d) => (a, b, c, d) }
                 for {
                   (shrunkRtOfABCD, shrunkErrOpt) <- roseTreeOfABCD.depthFirstShrinksForFuture { case (a, b, c, d) => {
                                                               val result: Future[T] = fun(a, b, c, d)
@@ -1394,9 +1403,9 @@ trait FuturePropCheckerAsserting {
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex: Throwable =>
-            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
-            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
-            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(genA, genB, genC), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
+            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(sizeParam, genA, genB), genIsValid(sizeParam, genC)) { case ((a, b), c) => (a, b, c) }
+            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(sizeParam, genA, genB, genC), genIsValid(sizeParam, genD)) { case ((a, b, c), d) => (a, b, c, d) }
             for {
               (shrunkRtOfABCD, shrunkErrOpt) <- roseTreeOfABCD.depthFirstShrinksForFuture { case (a, b, c, d) => {
                                                           val result: Future[T] = fun(a, b, c, d)
@@ -1448,6 +1457,7 @@ trait FuturePropCheckerAsserting {
               val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
               (sz, Nil, nextRnd)
           }
+        val sizeParam =  SizeParam(config.minSize, config.sizeRange, PosZInt.ensuringValid(size))  
         val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, nextRnd)
         val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
         val (roseTreeOfC, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
@@ -1504,10 +1514,10 @@ trait FuturePropCheckerAsserting {
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
-                val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
-                val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
-                val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(genA, genB, genC), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
-                val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(genA, genB, genC, genD), genE.isValid) { case ((a, b, c, d), e) => (a, b, c, d, e)}
+                val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
+                val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(sizeParam, genA, genB), genIsValid(sizeParam, genC)) { case ((a, b), c) => (a, b, c) }
+                val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(sizeParam, genA, genB, genC), genIsValid(sizeParam, genD)) { case ((a, b, c), d) => (a, b, c, d) }
+                val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(sizeParam, genA, genB, genC, genD), genIsValid(sizeParam, genE)) { case ((a, b, c, d), e) => (a, b, c, d, e)}
                 for {
                   (shrunkRtOfABCDE, shrunkErrOpt) <- roseTreeOfABCDE.depthFirstShrinksForFuture { case (a, b, c, d, e) => {
                                                               val result: Future[T] = fun(a, b, c, d, e)
@@ -1548,10 +1558,10 @@ trait FuturePropCheckerAsserting {
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex: Throwable =>
-            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
-            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
-            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(genA, genB, genC), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
-            val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(genA, genB, genC, genD), genE.isValid) { case ((a, b, c, d), e) => (a, b, c, d, e)}
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
+            val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(sizeParam, genA, genB), genIsValid(sizeParam, genC)) { case ((a, b), c) => (a, b, c) }
+            val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(sizeParam, genA, genB, genC), genIsValid(sizeParam, genD)) { case ((a, b, c), d) => (a, b, c, d) }
+            val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(sizeParam, genA, genB, genC, genD), genIsValid(sizeParam, genE)) { case ((a, b, c, d), e) => (a, b, c, d, e)}
             for {
               (shrunkRtOfABCDE, shrunkErrOpt) <- roseTreeOfABCDE.depthFirstShrinksForFuture { case (a, b, c, d, e) => {
                                                           val result: Future[T] = fun(a, b, c, d, e)
@@ -1605,6 +1615,7 @@ trait FuturePropCheckerAsserting {
               val (sz, nextRnd) = rnd.choosePosZInt(minSize, maxSize)
               (sz, Nil, nextRnd)
           }
+        val sizeParam =  SizeParam(config.minSize, config.sizeRange, PosZInt.ensuringValid(size))  
         val (roseTreeOfA, nextAEdges, rnd2) = genA.next(SizeParam(PosZInt(0), maxSize, size), aEdges, nextRnd)
         val (roseTreeOfB, nextBEdges, rnd3) = genB.next(SizeParam(PosZInt(0), maxSize, size), bEdges, rnd2)
         val (roseTreeOfC, nextCEdges, rnd4) = genC.next(SizeParam(PosZInt(0), maxSize, size), cEdges, rnd3)
@@ -1664,11 +1675,11 @@ trait FuturePropCheckerAsserting {
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
-                val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
-                val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
-                val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(genA, genB, genC), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
-                val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(genA, genB, genC, genD), genE.isValid) { case ((a, b, c, d), e) => (a, b, c, d, e)}
-                val roseTreeOfABCDEF = RoseTree.map2WithFilter(roseTreeOfABCDE, roseTreeOfF)(genABCDEIsValid(genA, genB, genC, genD, genE), genF.isValid) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
+                val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
+                val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(sizeParam, genA, genB), genIsValid(sizeParam, genC)) { case ((a, b), c) => (a, b, c) }
+                val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(sizeParam, genA, genB, genC), genIsValid(sizeParam, genD)) { case ((a, b, c), d) => (a, b, c, d) }
+                val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(sizeParam, genA, genB, genC, genD), genIsValid(sizeParam, genE)) { case ((a, b, c, d), e) => (a, b, c, d, e)}
+                val roseTreeOfABCDEF = RoseTree.map2WithFilter(roseTreeOfABCDE, roseTreeOfF)(genABCDEIsValid(sizeParam, genA, genB, genC, genD, genE), genIsValid(sizeParam, genF)) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
                 for {
                   (shrunkRtOfABCDEF, shrunkErrOpt) <- roseTreeOfABCDEF.depthFirstShrinksForFuture { case (a, b, c, d, e, f) => {
                                                               val result: Future[T] = fun(a, b, c, d, e, f)
@@ -1709,11 +1720,11 @@ trait FuturePropCheckerAsserting {
               loop(result.succeededCount, result.discardedCount, result.aEdges, result.bEdges, result.cEdges, result.dEdges, result.eEdges, result.fEdges, result.rnd, result.initialSizes, initSeed)
 
           case ex: Throwable =>
-            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genA.isValid, genB.isValid) { case (a, b) => (a, b) }
-                val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(genA, genB), genC.isValid) { case ((a, b), c) => (a, b, c) }
-                val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(genA, genB, genC), genD.isValid) { case ((a, b, c), d) => (a, b, c, d) }
-                val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(genA, genB, genC, genD), genE.isValid) { case ((a, b, c, d), e) => (a, b, c, d, e)}
-                val roseTreeOfABCDEF = RoseTree.map2WithFilter(roseTreeOfABCDE, roseTreeOfF)(genABCDEIsValid(genA, genB, genC, genD, genE), genF.isValid) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
+            val roseTreeOfAB = RoseTree.map2WithFilter(roseTreeOfA, roseTreeOfB)(genIsValid(sizeParam, genA), genIsValid(sizeParam, genB)) { case (a, b) => (a, b) }
+                val roseTreeOfABC = RoseTree.map2WithFilter(roseTreeOfAB, roseTreeOfC)(genABIsValid(sizeParam, genA, genB), genIsValid(sizeParam, genC)) { case ((a, b), c) => (a, b, c) }
+                val roseTreeOfABCD = RoseTree.map2WithFilter(roseTreeOfABC, roseTreeOfD)(genABCIsValid(sizeParam, genA, genB, genC), genIsValid(sizeParam, genD)) { case ((a, b, c), d) => (a, b, c, d) }
+                val roseTreeOfABCDE = RoseTree.map2WithFilter(roseTreeOfABCD, roseTreeOfE)(genABCDIsValid(sizeParam, genA, genB, genC, genD), genIsValid(sizeParam, genE)) { case ((a, b, c, d), e) => (a, b, c, d, e)}
+                val roseTreeOfABCDEF = RoseTree.map2WithFilter(roseTreeOfABCDE, roseTreeOfF)(genABCDEIsValid(sizeParam, genA, genB, genC, genD, genE), genIsValid(sizeParam, genF)) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
             for {
               (shrunkRtOfABCDEF, shrunkErrOpt) <- roseTreeOfABCDEF.depthFirstShrinksForFuture { case (a, b, c, d, e, f) => {
                                                           val result: Future[T] = fun(a, b, c, d, e, f)
@@ -2054,19 +2065,22 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting with FutureP
     sizesLoop(Nil, 0, initRndm)
   }
 
-  private[enablers] def genABIsValid[A, B](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B])(tup: (A, B)): Boolean = 
-      genA.isValid(tup._1) && genB.isValid(tup._2)
+  private[enablers] def genIsValid[A](sizeParam: SizeParam, genA: org.scalatest.prop.Generator[A])(a: A): Boolean = 
+      genA.isValid(a, sizeParam)
 
-  private[enablers] def genABCIsValid[A, B, C](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
+  private[enablers] def genABIsValid[A, B](sizeParam: SizeParam, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B])(tup: (A, B)): Boolean = 
+      genA.isValid(tup._1, sizeParam) && genB.isValid(tup._2, sizeParam)
+
+  private[enablers] def genABCIsValid[A, B, C](sizeParam: SizeParam, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
                                        genC: org.scalatest.prop.Generator[C])(tup: (A, B, C)): Boolean = 
-      genA.isValid(tup._1) && genB.isValid(tup._2) && genC.isValid(tup._3)
+      genA.isValid(tup._1, sizeParam) && genB.isValid(tup._2, sizeParam) && genC.isValid(tup._3, sizeParam)
 
-  private[enablers] def genABCDIsValid[A, B, C, D](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
+  private[enablers] def genABCDIsValid[A, B, C, D](sizeParam: SizeParam, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
                                        genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D])(tup: (A, B, C, D)): Boolean = 
-      genA.isValid(tup._1) && genB.isValid(tup._2) && genC.isValid(tup._3) && genD.isValid(tup._4)
+      genA.isValid(tup._1, sizeParam) && genB.isValid(tup._2, sizeParam) && genC.isValid(tup._3, sizeParam) && genD.isValid(tup._4, sizeParam)
 
-  private[enablers] def genABCDEIsValid[A, B, C, D, E](genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
+  private[enablers] def genABCDEIsValid[A, B, C, D, E](sizeParam: SizeParam, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B], 
                                        genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], 
                                        genE: org.scalatest.prop.Generator[E])(tup: (A, B, C, D, E)): Boolean = 
-      genA.isValid(tup._1) && genB.isValid(tup._2) && genC.isValid(tup._3) && genD.isValid(tup._4) && genE.isValid(tup._5)
+      genA.isValid(tup._1, sizeParam) && genB.isValid(tup._2, sizeParam) && genC.isValid(tup._3, sizeParam) && genD.isValid(tup._4, sizeParam) && genE.isValid(tup._5, sizeParam)
 }
