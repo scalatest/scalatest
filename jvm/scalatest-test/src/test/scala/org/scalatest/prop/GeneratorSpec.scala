@@ -3973,6 +3973,31 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           }
         }
       }
+      it("should produce shrinkees following size determined by havingSize method") {
+        val aGen= Generator.sortedSetGenerator[Int].havingSize(5)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(SortedSet(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
+        all(shrinkees) should have size 5
+      }
+      it("should produce shrinkees following sizes determined by havingSizesBetween method") {
+        val aGen= Generator.sortedSetGenerator[Int].havingSizesBetween(2, 5)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(SortedSet(3, 99)), Randomizer.default)
+        val shrinkees = v.shrinks.map(_.value)
+        if (v.value.size >= 4)
+          shrinkees should not be empty
+        shrinkees.foreach { shrinkee =>
+          assert(shrinkee.size >= 2 && shrinkee.size <= 5) 
+        }
+      }
+      it("should produce shrinkees following sizes determined by havingSizesDeterminedBy method") {
+        val aGen= Generator.sortedSetGenerator[Int].havingSizesDeterminedBy(s => SizeParam(2, 3, 5))
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(SortedSet(3, 99)), Randomizer.default)
+        val shrinkees = v.shrinks.map(_.value)
+        if (v.value.size >= 4)
+          shrinkees should not be empty
+        shrinkees.foreach { shrinkee =>
+          assert(shrinkee.size >= 2 && shrinkee.size <= 5) 
+        }
+      }
       it("should return an empty LazyListOrStream when asked to shrink a SortedSet of size 0") {
         val lstGen = implicitly[Generator[SortedSet[Int]]]
         val xs = SortedSet.empty[Int]
