@@ -5046,19 +5046,24 @@ object Generator {
   implicit def sortedMapGenerator[K, V](implicit genOfTuple2KV: Generator[(K, V)], ordering: Ordering[K]): Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] =
     new Generator[SortedMap[K, V]] with HavingSize[SortedMap[K, V]] {
 
-      case class NextRoseTree(value: SortedMap[K, V]) extends RoseTree[SortedMap[K, V]] {
+      case class NextRoseTree(value: SortedMap[K, V], sizeParam: SizeParam, isValidFun: (SortedMap[K, V], SizeParam) => Boolean) extends RoseTree[SortedMap[K, V]] {
         def shrinks: LazyListOrStream[RoseTree[SortedMap[K, V]]] = {
           def resLazyList(theValue: SortedMap[K, V]): LazyListOrStream[RoseTree[SortedMap[K, V]]] = {
             if (theValue.isEmpty)
               LazyListOrStream.empty
-            else if (theValue.size == 1)
-              Rose(SortedMap.empty[K, V]) #:: LazyListOrStream.empty
+            else if (theValue.size == 1) {
+              if (isValidFun(SortedMap.empty, sizeParam))
+                Rose(SortedMap.empty[K, V]) #:: LazyListOrStream.empty
+              else
+                LazyListOrStream.empty
+            }
             else {
               val halfSize = theValue.size / 2
               val firstHalf = theValue.take(halfSize)
               val secondHalf = theValue.drop(halfSize)
               // If value has an odd number of elements, the second half will be one character longer than the first half.
-              NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyList(firstHalf)
+              LazyListOrStream(secondHalf, firstHalf).filter(v => isValidFun(v, sizeParam))
+                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(firstHalf)
             }
           }
           resLazyList(value)
@@ -5072,7 +5077,7 @@ object Generator {
             @scala.annotation.tailrec
             def loop(targetSize: Int, result: SortedMap[K, V], rnd: org.scalatest.prop.Randomizer): (RoseTree[SortedMap[K, V]], List[SortedMap[K, V]], org.scalatest.prop.Randomizer) =
               if (result.size == targetSize)
-                (NextRoseTree(result), edges, rnd)
+                (NextRoseTree(result, ignoredSzp, isValid), edges, rnd)
               else {
                 val (nextRoseTreeOfT, nextEdges, nextRnd) = genOfTuple2KV.next (szp, List.empty, rnd)
                 loop(targetSize, result + nextRoseTreeOfT.value, nextRnd)
@@ -5088,7 +5093,7 @@ object Generator {
       def next(szp: org.scalatest.prop.SizeParam, edges: List[SortedMap[K, V]], rnd: org.scalatest.prop.Randomizer): Tuple3[RoseTree[SortedMap[K, V]], List[SortedMap[K, V]], org.scalatest.prop.Randomizer] = {
         edges match {
           case head :: tail =>
-            (NextRoseTree(head), tail, rnd)
+            (NextRoseTree(head, szp, isValid), tail, rnd)
 
           case Nil =>
             val gen = generatorWithSize(szp)
@@ -5113,7 +5118,7 @@ object Generator {
           def next(szp: org.scalatest.prop.SizeParam, edges: List[SortedMap[K, V]],rnd: org.scalatest.prop.Randomizer): (RoseTree[SortedMap[K, V]], List[SortedMap[K, V]], org.scalatest.prop.Randomizer) = {
             edges match {
               case head :: tail =>
-                (NextRoseTree(head), tail, rnd)
+                (NextRoseTree(head, szp, isValid), tail, rnd)
               case _ =>
                 val s = f(szp)
                 val gen = generatorWithSize(s)
@@ -5126,7 +5131,7 @@ object Generator {
           }
         }
 
-      override def shrinksForValue(valueToShrink: SortedMap[K, V]): Option[LazyListOrStream[RoseTree[SortedMap[K, V]]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: SortedMap[K, V]): Option[LazyListOrStream[RoseTree[SortedMap[K, V]]]] = Some(NextRoseTree(valueToShrink, SizeParam(0, 0, 0), isValid).shrinks)
     }
 }
 

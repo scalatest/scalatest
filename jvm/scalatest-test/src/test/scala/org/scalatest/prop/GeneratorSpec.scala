@@ -4267,6 +4267,31 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           }
         }
       }
+      it("should produce shrinkees following size determined by havingSize method") {
+        val aGen= Generator.sortedMapGenerator[Int, String].havingSize(5)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(Map(3 -> "three", 99 -> "ninety nine")), Randomizer.default)._1.shrinks.map(_.value)
+        all(shrinkees) should have size 5
+      }
+      it("should produce shrinkees following sizes determined by havingSizesBetween method") {
+        val aGen= Generator.sortedMapGenerator[Int, String].havingSizesBetween(2, 5)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Map(3 -> "three", 99 -> "ninety nine")), Randomizer.default)
+        val shrinkees = v.shrinks.map(_.value)
+        if (v.value.size >= 4)
+          shrinkees should not be empty
+        shrinkees.foreach { shrinkee =>
+          assert(shrinkee.size >= 2 && shrinkee.size <= 5) 
+        }
+      }
+      it("should produce shrinkees following sizes determined by havingSizesDeterminedBy method") {
+        val aGen= Generator.mapGenerator[Int, String].havingSizesDeterminedBy(s => SizeParam(2, 3, 5))
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Map(3 -> "three", 99 -> "ninety nine")), Randomizer.default)
+        val shrinkees = v.shrinks.map(_.value)
+        if (v.value.size >= 4)
+          shrinkees should not be empty
+        shrinkees.foreach { shrinkee =>
+          assert(shrinkee.size >= 2 && shrinkee.size <= 5) 
+        }
+      }
       it("should return an empty LazyListOrStream when asked to shrink a SortedMap of size 0") {
         val lstGen = implicitly[Generator[SortedMap[PosInt, Int]]]
         val xs = SortedMap.empty[PosInt, Int]
