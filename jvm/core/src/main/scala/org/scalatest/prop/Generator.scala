@@ -3176,19 +3176,24 @@ object Generator {
       // So we will just cut the length of the list in half and try both
       // halves each round, using the same elements.
       // TODO: Write a test for this shrinks implementation.
-      case class NextRoseTree(value: List[T]) extends RoseTree[List[T]] {
+      case class NextRoseTree(value: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean) extends RoseTree[List[T]] {
         def shrinks: LazyListOrStream[RoseTree[List[T]]] = {
           def resLazyList(theValue: List[T]): LazyListOrStream[RoseTree[List[T]]] = {
             if (theValue.isEmpty)
               LazyListOrStream.empty
-            else if (theValue.length == 1)
-              Rose(List.empty) #:: LazyListOrStream.empty
+            else if (theValue.length == 1) {
+              if (isValidFun(List.empty, sizeParam))
+                Rose(List.empty) #:: LazyListOrStream.empty
+              else
+                LazyListOrStream.empty
+            }
             else {
               val halfSize = theValue.length / 2 // Linear time
               val firstHalf = theValue.take(halfSize)
               val secondHalf = theValue.drop(halfSize)
               // If value has an odd number of elements, the second half will be one character longer than the first half.
-              NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyList(firstHalf)
+              LazyListOrStream(secondHalf, firstHalf).filter(v => isValidFun(v, sizeParam))
+                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(firstHalf)
             }
           }
           resLazyList(value)
@@ -3198,75 +3203,82 @@ object Generator {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = {
         (listEdges.take(maxLength), rnd)
       }
-      def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (RoseTree[List[T]], List[List[T]], Randomizer) = {
+
+      def generatorWithSize(szp: SizeParam): Generator[List[T]] =
+        new Generator[List[T]] {
+          def next(nextSzp: org.scalatest.prop.SizeParam, edges: List[List[T]], rnd: org.scalatest.prop.Randomizer): (RoseTree[List[T]], List[List[T]], org.scalatest.prop.Randomizer) = {
+            @scala.annotation.tailrec
+            def loop(targetSize: Int, result: List[T], rnd: org.scalatest.prop.Randomizer): (RoseTree[List[T]], List[List[T]], org.scalatest.prop.Randomizer) =
+              if (result.length == targetSize)
+                (NextRoseTree(result, szp, isValid), edges, rnd)
+              else {
+                val (nextRoseTreeOfT, nextEdges, nextRnd) = genOfT.next(szp, List.empty, rnd)
+                loop(targetSize, result :+ nextRoseTreeOfT.value, nextRnd)
+              }
+
+            val nextSize = {
+              val candidate: Int = (szp.minSize + (nextSzp.size.toFloat * (szp.maxSize - szp.minSize).toFloat / (nextSzp.maxSize + 1).toFloat)).round
+              if (candidate > szp.maxSize) szp.maxSize
+              else if (candidate < szp.minSize) szp.minSize
+              else PosZInt.ensuringValid(candidate)
+            }
+
+            edges match {
+              case head :: tail =>
+                (NextRoseTree(head, szp, isValid), tail, rnd)
+              case Nil =>
+                loop(nextSize.value, List.empty, rnd)
+            }
+          }
+
+          // If from is either 0 or 1, return the canonicals of the outer Generator.
+          override def canonicals: LazyListOrStream[RoseTree[List[T]]] =
+            if (szp.minSize <= 1) outerGenOfListOfT.canonicals else LazyListOrStream.empty
+
+          override def isValid(value: List[T], size: SizeParam): Boolean = value.length >= szp.minSize.value && value.size <= (szp.minSize.value + szp.sizeRange.value)
+        }
+
+      def next(szp: org.scalatest.prop.SizeParam, edges: List[List[T]],rnd: org.scalatest.prop.Randomizer): (RoseTree[List[T]], List[List[T]], org.scalatest.prop.Randomizer) = {
         edges match {
           case head :: tail =>
-            (NextRoseTree(head), tail, rnd)
+            (NextRoseTree(head, szp, isValid), tail, rnd)
           case Nil =>
-            val (listOfT, rnd2) = rnd.nextList[T](szp.size)
-            (NextRoseTree(listOfT), Nil, rnd2)
+            val gen = generatorWithSize(szp)
+            gen.next(szp, List.empty, rnd)
         }
       }
+
       override def canonicals: LazyListOrStream[RoseTree[List[T]]] = {
         val canonicalsOfT = genOfT.canonicals
         canonicalsOfT.map(rt => rt.map(t => List(t)))
       }
 
       override def toString = "Generator[List[T]]"
-      def havingSize(size: PosZInt): Generator[List[T]] = { // TODO: add with HavingLength again
-        // No edges and no shrinking. Since they said they want a list of a particular length,
-        // that is what they'll get.
-        // Hmm, TODO: Seems like shrinking could work by simplifying the Ts, but not reducing
-        // the length of the List.
-        new Generator[List[T]] {
-          override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd) // TODO: filter lists's edges by valid size
-          def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (RoseTree[List[T]], List[List[T]], Randomizer) =
-            outerGenOfListOfT.next(SizeParam(PosZInt(0), szp.maxSize, size), edges, rnd) // TODO: SizeParam(size, size, size)?
-          override def canonicals: LazyListOrStream[RoseTree[List[T]]] = LazyListOrStream.empty
-          override def toString = s"Generator[List[T] /* having length $size */]"
-          override def isValid(value: List[T], sizeParam: SizeParam): Boolean = value.length == size.value
-        }
-      }
-
-      def havingSizesBetween(from: PosZInt, to: PosZInt): Generator[List[T]] = { // TODO: add with HavingLength again
+      // Members declared in org.scalatest.prop.HavingSize
+      def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[List[T]] = generatorWithSize(SizeParam(len, 0, len))
+      def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[List[T]] = {
         require(from != to, Resources.fromEqualToToHavingSizesBetween(from))
         require(from < to, Resources.fromGreaterThanToHavingSizesBetween(from, to))
-        new Generator[List[T]] {
-          // I don't think edges should have one list each of length from and to, because they would
-          // need to have random contents, and that doesn't seem like an edge.
-          override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd) // TODO: filter lists's edges by valid size
-          // Specify how size is used.
-          def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (RoseTree[List[T]], List[List[T]], Randomizer) = {
-            val nextSize = {
-              val candidate: Int = (from + (szp.size.toFloat * (to - from).toFloat / (szp.maxSize + 1).toFloat)).round
-              if (candidate > to) to
-              else if (candidate < from) from
-              else PosZInt.ensuringValid(candidate)
-            }
-            // TODO: should minSize not be from from now on.
-            outerGenOfListOfT.next(SizeParam(PosZInt(0), to, nextSize), edges, rnd) // This assumes from < to, and i'm not guaranteeing that yet
-          }
-          // If from is either 0 or 1, return the canonicals of the outer Generator.
-          override def canonicals: LazyListOrStream[RoseTree[List[T]]] =
-            if (from <= 1) outerGenOfListOfT.canonicals else LazyListOrStream.empty
-          // TODO: Shrink can go from from up to xs length
-          override def toString = s"Generator[List[T] /* having lengths between $from and $to (inclusive) */]"
-          override def isValid(value: List[T], sizeParam: SizeParam): Boolean = value.length >= from.value && value.length <= to.value
-        }
+        generatorWithSize(SizeParam(from, PosZInt.ensuringValid(to - from), from))
       }
-      def havingSizesDeterminedBy(f: SizeParam => SizeParam): Generator[List[T]] = // TODO: add with HavingLength again
+      def havingSizesDeterminedBy(f: org.scalatest.prop.SizeParam => org.scalatest.prop.SizeParam): org.scalatest.prop.Generator[List[T]] =
         new Generator[List[T]] {
-          override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[List[T]], Randomizer) = (Nil, rnd)
-          def next(szp: SizeParam, edges: List[List[T]], rnd: Randomizer): (RoseTree[List[T]], List[List[T]], Randomizer) =
-            outerGenOfListOfT.next(f(szp), edges, rnd)
-          override def canonicals: LazyListOrStream[RoseTree[List[T]]] = LazyListOrStream.empty
-          override def toString = s"Generator[List[T] /* having lengths determined by a function */]"
+          def next(szp: org.scalatest.prop.SizeParam, edges: List[List[T]],rnd: org.scalatest.prop.Randomizer): (RoseTree[List[T]], List[List[T]], org.scalatest.prop.Randomizer) = {
+            edges match {
+              case head :: tail =>
+                (NextRoseTree(head, szp, isValid), tail, rnd)
+              case _ =>
+                val s = f(szp)
+                val gen = generatorWithSize(s)
+                gen.next(s, List.empty, rnd)
+            }
+          }
           override def isValid(value: List[T], sizeParam: SizeParam): Boolean = {
             val fSizeParam = f(sizeParam)
             value.length >= fSizeParam.minSize.value && value.length <= (fSizeParam.minSize.value + fSizeParam.sizeRange.value)
           }
         }
-      override def shrinksForValue(valueToShrink: List[T]): Option[LazyListOrStream[RoseTree[List[T]]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: List[T]): Option[LazyListOrStream[RoseTree[List[T]]]] = Some(NextRoseTree(valueToShrink, SizeParam(0, 0, 0), isValid).shrinks)
     }
 
   /**

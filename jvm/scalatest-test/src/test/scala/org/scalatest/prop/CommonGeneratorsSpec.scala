@@ -3473,7 +3473,7 @@ If it doesn't show up for a while, please delete this comment.
         forAll (upperLimits) { upperLimit => 
           def limitedSize(szp: SizeParam): SizeParam = {
             val sz = if (szp.maxSize < upperLimit) szp.maxSize else upperLimit
-            szp.copy(size = sz)
+            SizeParam(0, sz, sz)
           }
           val lengthlimitedLists = lists[Int].havingLengthsDeterminedBy(limitedSize)
           forAll (lengthlimitedLists) { xs => xs.length should be <= upperLimit.value }
@@ -3515,7 +3515,7 @@ If it doesn't show up for a while, please delete this comment.
         forAll (upperLimits) { upperLimit => 
           def limitedSize(szp: SizeParam): SizeParam = {
             val sz = if (szp.maxSize < upperLimit) szp.maxSize else upperLimit
-            szp.copy(size = sz)
+            SizeParam(0, sz, sz)
           }
           val sizelimitedLists = lists[Int].havingSizesDeterminedBy(limitedSize)
           forAll (sizelimitedLists) { xs => xs.size should be <= upperLimit.value }

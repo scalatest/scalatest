@@ -3365,19 +3365,19 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import Generator._
         val gen = listGenerator[Int]
 
-        val (l1, _, r1) = gen.next(szp = SizeParam(PosZInt(0), 100, 0), edges = Nil, rnd = Randomizer(100))
+        val (l1, _, r1) = gen.next(szp = SizeParam(PosZInt(0), 0, 0), edges = Nil, rnd = Randomizer(100))
         l1.value.length shouldBe 0
 
-        val (l2, _, r2) = gen.next(szp = SizeParam(PosZInt(0), 100, 3), edges = Nil, rnd = r1)
+        val (l2, _, r2) = gen.next(szp = SizeParam(PosZInt(3), 0, 3), edges = Nil, rnd = r1)
         l2.value.length shouldBe 3
 
-        val (l3, _, r3) = gen.next(szp = SizeParam(PosZInt(0), 100, 38), edges = Nil, rnd = r2)
+        val (l3, _, r3) = gen.next(szp = SizeParam(PosZInt(38), 0, 38), edges = Nil, rnd = r2)
         l3.value.length shouldBe 38
 
-        val (l4, _, r4) = gen.next(szp = SizeParam(PosZInt(0), 100, 88), edges = Nil, rnd = r3)
+        val (l4, _, r4) = gen.next(szp = SizeParam(PosZInt(88), 0, 88), edges = Nil, rnd = r3)
         l4.value.length shouldBe 88
 
-        val (l5, _, _) = gen.next(szp = SizeParam(PosZInt(0), 100, 100), edges = Nil, rnd = r4)
+        val (l5, _, _) = gen.next(szp = SizeParam(PosZInt(100), 0, 100), edges = Nil, rnd = r4)
         l5.value.length shouldBe 100
       }
       it("should not exhibit this bug in List shrinking") {
@@ -3394,10 +3394,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[List[Int]]) =>
           val i = shrinkRoseTree.value
+          println("######debug: " + shrinkRoseTree)
           val shrinks: LazyListOrStream[List[Int]] = shrinkRoseTree.shrinks.map(_.value)
+          println("######debug2: " + shrinks.isEmpty)
           shrinks.distinct.length shouldEqual shrinks.length
-          if (i.isEmpty || i.length == 1)
-            shrinks shouldBe empty // TODO: This is flickering  Message: LazyList(List()) was not empty, when passed RoseTree(List(1883656235)), Init Seed: 1669775246376
+          if (i.isEmpty)
+            shrinks shouldBe empty
           else {
             shrinks should not be empty // This flickers
             inspectAll(shrinks) { s =>
@@ -3407,6 +3409,56 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           }
         }
       }
+      it("should produce shrinkees following size determined by havingSize method") {
+        val aGen= Generator.listGenerator[Int].havingSize(5)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(List(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
+        all(shrinkees) should have size 5
+      }
+      /*it("should produce shrinkees following length determined by havingLength method") {
+        val aGen= Generator.vectorGenerator[Int].havingLength(5)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
+        all(shrinkees) should have length 5
+      }
+      it("should produce shrinkees following sizes determined by havingSizesBetween method") {
+        val aGen= Generator.vectorGenerator[Int].havingSizesBetween(2, 5)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)
+        val shrinkees = v.shrinks.map(_.value)
+        if (v.value.size >= 4)
+          shrinkees should not be empty
+        shrinkees.foreach { shrinkee =>
+          assert(shrinkee.size >= 2 && shrinkee.size <= 5) 
+        }
+      }
+      it("should produce shrinkees following sizes determined by havingLengthsBetween method") {
+        val aGen= Generator.vectorGenerator[Int].havingLengthsBetween(2, 5)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)
+        val shrinkees = v.shrinks.map(_.value)
+        if (v.value.length >= 4)
+          shrinkees should not be empty
+        shrinkees.foreach { shrinkee =>
+          assert(shrinkee.length >= 2 && shrinkee.length <= 5) 
+        }
+      }
+      it("should produce shrinkees following sizes determined by havingSizesDeterminedBy method") {
+        val aGen= Generator.vectorGenerator[Int].havingSizesDeterminedBy(s => SizeParam(2, 3, 5))
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)
+        val shrinkees = v.shrinks.map(_.value)
+        if (v.value.size >= 4)
+          shrinkees should not be empty
+        shrinkees.foreach { shrinkee =>
+          assert(shrinkee.size >= 2 && shrinkee.size <= 5) 
+        }
+      }
+      it("should produce shrinkees following sizes determined by havingLengthsDeterminedBy method") {
+        val aGen= Generator.vectorGenerator[Int].havingLengthsDeterminedBy(s => SizeParam(2, 3, 5))
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)
+        val shrinkees = v.shrinks.map(_.value)
+        if (v.value.length >= 4)
+          shrinkees should not be empty
+        shrinkees.foreach { shrinkee =>
+          assert(shrinkee.length >= 2 && shrinkee.length <= 5) 
+        }
+      }*/
       it("should return an LazyListOrStream that does not repeat the passed list-to-shink even if that list has a power of 2 length") {
         // Since the last batch of lists produced by the list shrinker start at length 2 and then double in size each time,
         // they lengths will be powers of two: 2, 4, 8, 16, etc... So make sure that if the original length has length 16,
