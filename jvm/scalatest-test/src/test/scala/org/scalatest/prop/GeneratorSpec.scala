@@ -30,9 +30,9 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
   implicit def roseTreeGenerator[A](implicit genOfA: Generator[A]): Generator[RoseTree[A]]  = {
     new Generator[RoseTree[A]] {
-      def next(szp: SizeParam, edges: List[RoseTree[A]], rnd: Randomizer): (RoseTree[RoseTree[A]], List[RoseTree[A]], Randomizer) = {
+      def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[RoseTree[A]], Randomizer) = {
         val (rtOfRTOfA, edgesOfRTOfA, nxtRnd) = genOfA.next(szp, List.empty, rnd)
-        (Rose(rtOfRTOfA), List.empty, nxtRnd)
+        (Rose(rtOfRTOfA), nxtRnd)
       }
     }
   }
@@ -362,6 +362,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
             }
           }
         }
+      }
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.byteGenerator.filter(_ > 5)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(30.toByte), Randomizer.default)._1.shrinks.map(_.value)
+        shrinkees should not be empty
+        shrinkees.toList shouldBe List(-15.toByte, 15.toByte, -7.toByte, 7.toByte)
       }
     }
     describe("for Shorts") {
@@ -3394,9 +3400,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[List[Int]]) =>
           val i = shrinkRoseTree.value
-          println("######debug: " + shrinkRoseTree)
           val shrinks: LazyListOrStream[List[Int]] = shrinkRoseTree.shrinks.map(_.value)
-          println("######debug2: " + shrinks.isEmpty)
           shrinks.distinct.length shouldEqual shrinks.length
           if (i.isEmpty)
             shrinks shouldBe empty
