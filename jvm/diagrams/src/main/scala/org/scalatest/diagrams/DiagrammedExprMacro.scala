@@ -286,7 +286,13 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
                     Select(Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value")), newTermName("apply"))
                   case byName if arg.tpe.typeSymbol.fullName == "scala.Nothing" => 
                     Select(Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value")), newTermName("apply"))*/
-                  case func: Function => func // for functions, just use back the original
+                  //case func: Function => func // for functions, just use back the original
+                  case func: Function =>  
+                    Apply(
+                      Select(Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value")), newTermName("apply")),
+                      List.empty 
+                    )
+                    
                   case byName if isByName(fun, 0, j) => //byName
                     Apply(
                       Select(Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value")), newTermName("apply")),
