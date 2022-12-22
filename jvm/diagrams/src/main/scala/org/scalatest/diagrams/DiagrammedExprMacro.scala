@@ -85,6 +85,31 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
       elements
     )
 
+  def byNameExpr(tree: Tree): Apply = {
+    Apply(
+      Select(
+        Select(
+          Select(
+            Select(
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
+              newTermName("scalatest")
+            ),
+            newTermName("diagrams")
+          ), 
+          newTermName("DiagrammedExpr")
+        ),
+        newTermName("byNameExpr")
+      ),
+      List(
+        tree,
+        Literal(Constant(getAnchor(tree)))
+      )
+    )
+  }  
+
   /**
    * For a given expression (passed in as tree), generate AST for the following code:
    *
@@ -128,7 +153,7 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
   // Rebuild the value expression by going backward the list of GenericApply (tail of applyList traverseApply),
   // our aim is to extract the qualifier and assign it to a val, and rebuild the invocation using by referring
   // to the val.
-  private def recursiveValueApply(applyList: List[GenericApply], currentApply: GenericApply): GenericApply =
+  private def recursiveValueApply(applyList: List[GenericApply], currentApply: GenericApply): GenericApply = {
     applyList match {
       case TypeApply(fun, args) :: tail =>
         recursiveValueApply(tail, TypeApply(currentApply, args))
@@ -136,6 +161,7 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
         recursiveValueApply(tail, Apply(currentApply, args))
       case Nil => currentApply
     }
+  }
 
   /**
    * Given a Select, e.g. a.isEmpty generate AST for the following code:
@@ -227,10 +253,10 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
           case Apply(fun, args) =>
             args.zipWithIndex.map { case (arg, j) =>
               arg match {
-                case func: Function => valDef("$org_scalatest_macro_arg_" + (base + j), simpleExpr(Literal(Constant("")))) // ignore function, create a dummy val.
+                case func: Function => valDef("$org_scalatest_macro_arg_" + (base + j), byNameExpr(arg)) // ignore function, create a dummy val.
                 case other =>
                   if (isByName(fun, 0, j))
-                    valDef("$org_scalatest_macro_arg_" + (base + j), simpleExpr(Literal(Constant(""))))
+                    valDef("$org_scalatest_macro_arg_" + (base + j), byNameExpr(arg))
                   else
                     valDef("$org_scalatest_macro_arg_" + (base + j), transformAst(arg))
               }
@@ -240,20 +266,40 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
       }
 
     // Build up the List($org_scalatest_macro_arg_0) in the above example
-    val substitutedArgsList: List[List[Tree]] =
+    val substitutedArgsList: List[(GenericApply, List[Tree])] =
       applyInfo.applyList.zipWithIndex.map { case (currentApply, i) =>
         val base = i * 100  // should be ok as maximum function arguments is 22
-        currentApply match {
-          case Apply(fun, args) =>
-            args.zipWithIndex.map { case (arg, j) =>
-              arg match {
-                case func: Function => func  // for functions, just use back the original
-                case byName if arg.tpe.typeSymbol.fullName == "scala.Nothing" => byName // for by-names, just use back the original
-                case other => Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value"))
+        (
+          currentApply, 
+          currentApply match {
+            case Apply(fun, args) =>
+              args.zipWithIndex.map { case (arg, j) =>
+                /*arg match {
+                  case func: Function => func  // for functions, just use back the original
+                  case byName if arg.tpe.typeSymbol.fullName == "scala.Nothing" => byName // for by-names, just use back the original
+                  case _ => Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value"))
+                }*/
+                println("********fun: " + fun + " ---- " + fun.getClass.getName + " ----isByName: " + isByName(fun, 0, j))
+                println("********arg: " + arg + " ---- " + arg.getClass.getName + " ---- " + arg.tpe.typeSymbol.fullName + " ----tpe: " + arg.tpe)
+                arg match {
+                  /*case func: Function => 
+                    Select(Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value")), newTermName("apply"))
+                  case byName if arg.tpe.typeSymbol.fullName == "scala.Nothing" => 
+                    Select(Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value")), newTermName("apply"))*/
+                  case func: Function => func // for functions, just use back the original
+                  case byName if isByName(fun, 0, j) => //byName
+                    Apply(
+                      Select(Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value")), newTermName("apply")),
+                      List.empty 
+                    ) 
+                  case _ => Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value"))
+                }
+                //Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value"))
               }
-            }
-          case _ => currentApply.args
-        }
+            case _ => currentApply.args
+          }
+        )
+        
 
       }
 
@@ -267,7 +313,8 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
               Select(Ident(newTermName("$org_scalatest_macro_qualifier")), newTermName("value")),
               applyInfo.select.name
             ),
-            applyInfo.applyList.head.args
+            //applyInfo.applyList.head.args
+            substitutedArgsList.head._2
           )
         case _ =>
           Apply(
@@ -275,11 +322,20 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
               Select(Ident(newTermName("$org_scalatest_macro_qualifier")), newTermName("value")),
               applyInfo.select.name
             ),
-            applyInfo.applyList.head.args
+            //applyInfo.applyList.head.args
+            substitutedArgsList.head._2
           )
-      }
+      }  
 
-    val valueExpr = recursiveValueApply(applyInfo.applyList.tail, currentValueApply)
+    //val valueExpr = recursiveValueApply(applyInfo.applyList.tail, currentValueApply)
+    val valueExpr = 
+      substitutedArgsList.tail.foldLeft(currentValueApply) { case (res, ele) =>
+        println("####ele: " + ele)
+        ele match {
+          case (Apply(_, _), args) => println("#####args: " + args); Apply(res, args)
+          case (TypeApply(_, _), args) => println("#####args: " + args); TypeApply(res, args)
+        }
+      }
 
     val argIdents: List[Tree] =
       argsValDefList.map { valDef =>
@@ -394,16 +450,18 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def transformAst(tree: Tree): Tree = {
     tree match {
-      case Apply(Select(New(_), _), _) => simpleExpr(tree)  // delegate to simpleExpr if it is a New expression
-      case apply: Apply if isXmlSugar(apply) => simpleExpr(tree)
-      case apply: Apply if isJavaStatic(apply) => simpleExpr(apply)
-      case apply: GenericApply => applyExpr(apply) // delegate to applyExpr if it is Apply
-      case Select(This(_), _) => simpleExpr(tree) // delegate to simpleExpr if it is a Select for this, e.g. referring a to instance member.
-      case x: Select if x.symbol.isModule => simpleExpr(tree) // don't traverse packages
-      case x: Select if isJavaStatic(x) => simpleExpr(tree)
-      case select: Select => selectExpr(select) // delegate to selectExpr if it is a Select
-      case Block(stats, expr) => Block(stats, transformAst(expr)) // call transformAst recursively using the expr argument if it is a block
-      case other => simpleExpr(other) // for others, just delegate to simpleExpr
+      case Apply(Select(New(_), _), _) => println("#####1: " + tree); simpleExpr(tree)  // delegate to simpleExpr if it is a New expression
+      case apply: Apply if isXmlSugar(apply) => println("#####2: " + tree); simpleExpr(tree)
+      case apply: Apply if isJavaStatic(apply) => println("#####3: " + tree); simpleExpr(apply)
+      case apply: GenericApply => 
+        println("####$4 debug: " + apply.getClass.getName)
+        println("#####4: " + tree); applyExpr(apply) // delegate to applyExpr if it is Apply
+      case Select(This(_), _) => println("#####5: " + tree); simpleExpr(tree) // delegate to simpleExpr if it is a Select for this, e.g. referring a to instance member.
+      case x: Select if x.symbol.isModule => println("#####6: " + tree); simpleExpr(tree) // don't traverse packages
+      case x: Select if isJavaStatic(x) => println("#####: 7" + tree); simpleExpr(tree)
+      case select: Select => println("#####8: " + tree); selectExpr(select) // delegate to selectExpr if it is a Select
+      case Block(stats, expr) => println("#####9: " + tree); Block(stats, transformAst(expr)) // call transformAst recursively using the expr argument if it is a block
+      case other => println("#####10: " + tree); simpleExpr(other) // for others, just delegate to simpleExpr
     }
   }
 
@@ -435,6 +493,7 @@ private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {
           callHelper(helper, methodName, clueExpr.tree, sourceText, pos.tree)
         )
       )
+    println("#####debug: " + expandedCode)  
     ownerRepair.repairOwners(expandedCode)
   }
 }

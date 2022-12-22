@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.diagrams
+/*package org.scalatest.diagrams
 
 import org.scalatest.SharedHelpers.thisLineNumber
 import java.util.Date
@@ -9962,5 +9962,5 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
 
   }
 
-}
+}*/
 
