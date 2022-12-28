@@ -2591,11 +2591,14 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
           """.stripMargin)
       }
 
+      // scala js and native does not support Await.result
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should invoke future one time only") {
         var count = 0
         assert(Await.result(Future { count = count + 1; 42 }, Duration(1, SECONDS)) == 42)
         count shouldBe 1
       }
+      // SKIP-SCALATESTJS,NATIVE-END
 
     }
 
@@ -5062,11 +5065,14 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
           """.stripMargin)
       }
 
+      // scala js and native does not support Await.result
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should invoke future one time only") {
         var count = 0
         assert(Await.result(Future { count = count + 1; 42 }, Duration(1, SECONDS)) == 42, "this is a clue")
         count shouldBe 1
       }
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("The assume(boolean) method") {
@@ -7532,11 +7538,14 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
           """.stripMargin)
       }
 
+      // scala js and native does not support Await.result
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should invoke future one time only") {
         var count = 0
         assume(Await.result(Future { count = count + 1; 42 }, Duration(1, SECONDS)) == 42)
         count shouldBe 1
       }
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("The assume(boolean, clue) method") {
@@ -10002,11 +10011,14 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
           """.stripMargin)
       }
 
+      // scala js and native does not support Await.result
+      // SKIP-SCALATESTJS,NATIVE-START
       it("should invoke future one time only") {
         var count = 0
         assume(Await.result(Future { count = count + 1; 42 }, Duration(1, SECONDS)) == 42, "this is a clue")
         count shouldBe 1
       }
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 }
