@@ -59,6 +59,14 @@ object DiagrammedExpr {
    */
   def simpleExpr[T](expression: T, anchor: Int): DiagrammedExpr[T] = new DiagrammedSimpleExpr(expression, anchor)
 
+  /**
+   * Create by-name <code>DiagrammedExpr</code> that wraps <code>by-name</code> or <code>Function</code> expression.
+   * The created <code>DiagrammedExpr</code> will not be displayed in the diagram as value.
+   *
+   * @param expression the by-name expression value
+   * @param anchor the anchor of the expression
+   * @return a by-name <code>DiagrammedExpr</code>
+   */
   def byNameExpr[T](expression: => T, anchor: Int): DiagrammedExpr[T] = new DiagrammedByNameExpr(expression, anchor)
 
   /**
