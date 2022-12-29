@@ -23,9 +23,11 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
+// SKIP-SCALATESTJS,NATIVE-START
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, SECONDS}
 import scala.concurrent.{Await, Future}
+// SKIP-SCALATESTJS,NATIVE-END
 
 class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
 
