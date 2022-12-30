@@ -367,7 +367,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val aGen= Generator.byteGenerator.filter(_ > 5)
         val shrinkees = aGen.next(SizeParam(1, 0, 1), List(30.toByte), Randomizer.default)._1.shrinks.map(_.value)
         shrinkees should not be empty
-        shrinkees.toList shouldBe List(-15.toByte, 15.toByte, -7.toByte, 7.toByte)
+        shrinkees.toList shouldBe List(15.toByte, 7.toByte)
       }
     }
     describe("for Shorts") {
@@ -4325,12 +4325,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following size determined by havingSize method") {
         val aGen= Generator.sortedMapGenerator[Int, String].havingSize(5)
-        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(Map(3 -> "three", 99 -> "ninety nine")), Randomizer.default)._1.shrinks.map(_.value)
+        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(SortedMap(3 -> "three", 99 -> "ninety nine")), Randomizer.default)._1.shrinks.map(_.value)
         all(shrinkees) should have size 5
       }
       it("should produce shrinkees following sizes determined by havingSizesBetween method") {
         val aGen= Generator.sortedMapGenerator[Int, String].havingSizesBetween(2, 5)
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Map(3 -> "three", 99 -> "ninety nine")), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(SortedMap(3 -> "three", 99 -> "ninety nine")), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty
@@ -4340,7 +4340,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following sizes determined by havingSizesDeterminedBy method") {
         val aGen= Generator.mapGenerator[Int, String].havingSizesDeterminedBy(s => SizeParam(2, 3, 5))
-        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(Map(3 -> "three", 99 -> "ninety nine")), Randomizer.default)
+        val (v, _, _) = aGen.next(SizeParam(1, 0, 1), List(SortedMap(3 -> "three", 99 -> "ninety nine")), Randomizer.default)
         val shrinkees = v.shrinks.map(_.value)
         if (v.value.size >= 4)
           shrinkees should not be empty

@@ -162,7 +162,7 @@ trait Generator[T] { thisGeneratorOfT =>
 
   private final val MaxLoopCount: Int = 100000
 
-  def roseTreeOfEdge(edge: T, sizeParam: SizeParam): RoseTree[T] = Rose(edge)
+  def roseTreeOfEdge(edge: T, sizeParam: SizeParam, isValidFun: (T, SizeParam) => Boolean): RoseTree[T] = Rose(edge)
 
   /**
     * Produce the next value for this Generator.
@@ -198,7 +198,7 @@ trait Generator[T] { thisGeneratorOfT =>
   def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (RoseTree[T], List[T], Randomizer) = 
     edges.filter(e => isValid(e, szp)) match {
       case head :: tail =>
-        (roseTreeOfEdge(head, szp), tail, rnd)
+        (roseTreeOfEdge(head, szp, isValid), tail, rnd)
       case _ =>
         @tailrec
         def loop(count: Int, nextRnd: Randomizer): (RoseTree[T], Randomizer) = {
@@ -403,6 +403,7 @@ trait Generator[T] { thisGeneratorOfT =>
     */
   def filter(f: T => Boolean): Generator[T] =
     new Generator[T] { thisFilteredGeneratorOfT =>
+      override def roseTreeOfEdge(edge: T, sizeParam: SizeParam, isValidFun: (T, SizeParam) => Boolean): RoseTree[T] = thisGeneratorOfT.roseTreeOfEdge(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[T], Randomizer) = thisGeneratorOfT.nextImpl(szp, rnd)
       override def isValid(value: T, size: SizeParam): Boolean = f(value)
     }
@@ -597,58 +598,69 @@ object Generator {
       override def toString = "Generator[Boolean]"
     }
 
-  /**
-    * A [[Generator]] that produces [[Byte]] values.
-    */
-  implicit val byteGenerator: Generator[Byte] =
-    new Generator[Byte] {
+  class ByteGenerator extends Generator[Byte] {
+    case class NextRoseTree(value: Byte, sizeParam: SizeParam, isValidFun: (Byte, SizeParam) => Boolean) extends RoseTree[Byte] {
+      def shrinks: LazyListOrStream[RoseTree[Byte]] = {
+        def resLazyList(theValue: Byte): LazyListOrStream[RoseTree[Byte]] = {
+          if (theValue == 0) LazyListOrStream.empty
+          else {
+            val half: Byte = (theValue / 2).toByte
+            if (half == 0) { 
+              if (isValidFun(0.toByte, sizeParam))
+                Rose(0.toByte) #:: LazyListOrStream.empty
+              else
+                LazyListOrStream.empty  
+            }
+            else { 
+              //NextRoseTree((-half).toByte) #:: NextRoseTree(half) #:: resLazyList(half)
+              LazyListOrStream((-half).toByte, half.toByte).filter(v => isValidFun(v, sizeParam))
+                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(half)
+            }
+          }
+        }
+        resLazyList(value)
+      }
+    }
 
-      case class NextRoseTree(value: Byte) extends RoseTree[Byte] {
+    override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Byte], Randomizer) = {
+      val (allEdges, nextRnd) = Randomizer.shuffle(byteEdges, rnd)
+      (allEdges.take(maxLength), nextRnd)
+    }
+    
+    override def roseTreeOfEdge(edge: Byte, sizeParam: SizeParam, isValidFun: (Byte, SizeParam) => Boolean): RoseTree[Byte] = {
+      NextRoseTree(edge, sizeParam, isValidFun)
+    }
+    def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Byte], Randomizer) = {
+      val (b, rnd2) = rnd.nextByte
+      (NextRoseTree(b, szp, isValid), rnd2)
+    }
+    override def canonicals: LazyListOrStream[RoseTree[Byte]] = {
+      case class CanonicalRoseTree(value: Byte) extends RoseTree[Byte] {
         def shrinks: LazyListOrStream[RoseTree[Byte]] = {
-          println("###byte shrinking!!!")
           def resLazyList(theValue: Byte): LazyListOrStream[RoseTree[Byte]] = {
             if (theValue == 0) LazyListOrStream.empty
             else {
-              val half: Byte = (theValue / 2).toByte
-              if (half == 0) Rose(0.toByte) #:: LazyListOrStream.empty
-              else NextRoseTree((-half).toByte) #:: NextRoseTree(half) #:: resLazyList(half)
+              val minusOne: Byte = (theValue - 1).toByte
+              if (minusOne == 0) Rose(0.toByte) #:: LazyListOrStream.empty
+              else CanonicalRoseTree((-minusOne).toByte) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
             }
           }
           resLazyList(value)
         }
       }
-
-      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Byte], Randomizer) = {
-        val (allEdges, nextRnd) = Randomizer.shuffle(byteEdges, rnd)
-        (allEdges.take(maxLength), nextRnd)
-      }
-      override def roseTreeOfEdge(edge: Byte, sizeParam: SizeParam): RoseTree[Byte] = NextRoseTree(edge)
-      def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Byte], Randomizer) = {
-        val (b, rnd2) = rnd.nextByte
-        (NextRoseTree(b), rnd2)
-      }
-      override def canonicals: LazyListOrStream[RoseTree[Byte]] = {
-        case class CanonicalRoseTree(value: Byte) extends RoseTree[Byte] {
-          def shrinks: LazyListOrStream[RoseTree[Byte]] = {
-            def resLazyList(theValue: Byte): LazyListOrStream[RoseTree[Byte]] = {
-              if (theValue == 0) LazyListOrStream.empty
-              else {
-                val minusOne: Byte = (theValue - 1).toByte
-                if (minusOne == 0) Rose(0.toByte) #:: LazyListOrStream.empty
-                else CanonicalRoseTree((-minusOne).toByte) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
-              }
-            }
-            resLazyList(value)
-          }
-        }
-        CanonicalRoseTree(4).shrinks
-      }
-      override def toString = "Generator[Byte]"
-
-      // For now I will not take a Randomizer. I'm hoping we can just get rid of it in shrinks. Shrinks can just
-      // be based on the values being shrunk.
-      override def shrinksForValue(valueToShrink: Byte): Option[LazyListOrStream[RoseTree[Byte]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      CanonicalRoseTree(4).shrinks
     }
+    override def toString = "Generator[Byte]"
+
+    // For now I will not take a Randomizer. I'm hoping we can just get rid of it in shrinks. Shrinks can just
+    // be based on the values being shrunk.
+    override def shrinksForValue(valueToShrink: Byte): Option[LazyListOrStream[RoseTree[Byte]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), this.isValid).shrinks)
+  }  
+
+  /**
+    * A [[Generator]] that produces [[Byte]] values.
+    */
+  implicit val byteGenerator: Generator[Byte] = new ByteGenerator
 
   /**
     * A [[Generator]] that produces [[Short]] values.
@@ -674,7 +686,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(shortEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: Short, sizeParam: SizeParam): RoseTree[Short] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: Short, sizeParam: SizeParam, isValidFun: (Short, SizeParam) => Boolean): RoseTree[Short] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Short], Randomizer) = {
         val (s, rnd2) = rnd.nextShort
         (NextRoseTree(s), rnd2)
@@ -724,7 +736,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(charEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: Char, sizeParam: SizeParam): RoseTree[Char] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: Char, sizeParam: SizeParam, isValidFun: (Char, SizeParam) => Boolean): RoseTree[Char] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Char], Randomizer) = {
         val (c, rnd2) = rnd.nextChar
         (NextRoseTree(c), rnd2)
@@ -778,7 +790,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(intEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: Int, sizeParam: SizeParam): RoseTree[Int] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: Int, sizeParam: SizeParam, isValidFun: (Int, SizeParam) => Boolean): RoseTree[Int] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Int], Randomizer) = {
         val (i, rnd2) = rnd.nextInt
         (NextRoseTree(i), rnd2)
@@ -827,7 +839,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(longEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: Long, sizeParam: SizeParam): RoseTree[Long] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: Long, sizeParam: SizeParam, isValidFun: (Long, SizeParam) => Boolean): RoseTree[Long] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Long], Randomizer) = {
         val (n, rnd2) = rnd.nextLong
         (NextRoseTree(n), rnd2)
@@ -918,7 +930,7 @@ object Generator {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Float], Randomizer) = {
         (floatEdges.take(maxLength), rnd)
       }
-      override def roseTreeOfEdge(edge: Float, sizeParam: SizeParam): RoseTree[Float] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: Float, sizeParam: SizeParam, isValidFun: (Float, SizeParam) => Boolean): RoseTree[Float] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Float], Randomizer) = {
         val (f, rnd2) = rnd.nextFloat
         (NextRoseTree(f), rnd2)
@@ -1010,7 +1022,7 @@ object Generator {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Double], Randomizer) = {
         (doubleEdges.take(maxLength), rnd)
       }
-      override def roseTreeOfEdge(edge: Double, sizeParam: SizeParam): RoseTree[Double] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: Double, sizeParam: SizeParam, isValidFun: (Double, SizeParam) => Boolean): RoseTree[Double] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Double], Randomizer) = {
         val (d, rnd2) = rnd.nextDouble
         (NextRoseTree(d), rnd2)
@@ -1059,7 +1071,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosInt, sizeParam: SizeParam): RoseTree[PosInt] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosInt, sizeParam: SizeParam, isValidFun: (PosInt, SizeParam) => Boolean): RoseTree[PosInt] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosInt], Randomizer) = {
         val (posInt, rnd2) = rnd.nextPosInt
         (NextRoseTree(posInt), rnd2)
@@ -1108,7 +1120,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosZInt, sizeParam: SizeParam): RoseTree[PosZInt] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosZInt, sizeParam: SizeParam, isValidFun: (PosZInt, SizeParam) => Boolean): RoseTree[PosZInt] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosZInt], Randomizer) = {
         val (posZInt, rnd2) = rnd.nextPosZInt
         (NextRoseTree(posZInt), rnd2)
@@ -1158,7 +1170,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosLong, sizeParam: SizeParam): RoseTree[PosLong] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosLong, sizeParam: SizeParam, isValidFun: (PosLong, SizeParam) => Boolean): RoseTree[PosLong] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosLong], Randomizer) = {
         val (posLong, rnd2) = rnd.nextPosLong
         (NextRoseTree(posLong), rnd2)
@@ -1207,7 +1219,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosZLong, sizeParam: SizeParam): RoseTree[PosZLong] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosZLong, sizeParam: SizeParam, isValidFun: (PosZLong, SizeParam) => Boolean): RoseTree[PosZLong] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosZLong], Randomizer) = {
         val (posZLong, rnd2) = rnd.nextPosZLong
         (NextRoseTree(posZLong), rnd2)
@@ -1269,7 +1281,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosFloat, sizeParam: SizeParam): RoseTree[PosFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosFloat, sizeParam: SizeParam, isValidFun: (PosFloat, SizeParam) => Boolean): RoseTree[PosFloat] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosFloat], Randomizer) = {
         val (posFloat, rnd2) = rnd.nextPosFloat
         (NextRoseTree(posFloat), rnd2)
@@ -1325,7 +1337,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posFiniteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosFiniteFloat, sizeParam: SizeParam): RoseTree[PosFiniteFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosFiniteFloat, sizeParam: SizeParam, isValidFun: (PosFiniteFloat, SizeParam) => Boolean): RoseTree[PosFiniteFloat] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosFiniteFloat], Randomizer) = {
         val (posFiniteFloat, rnd2) = rnd.nextPosFiniteFloat
         (NextRoseTree(posFiniteFloat), rnd2)
@@ -1386,7 +1398,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(finiteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: FiniteFloat, sizeParam: SizeParam): RoseTree[FiniteFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: FiniteFloat, sizeParam: SizeParam, isValidFun: (FiniteFloat, SizeParam) => Boolean): RoseTree[FiniteFloat] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[FiniteFloat], Randomizer) = {
         val (finiteFloat, rnd2) = rnd.nextFiniteFloat
         (NextRoseTree(finiteFloat), rnd2)
@@ -1447,7 +1459,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(finiteDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: FiniteDouble, sizeParam: SizeParam): RoseTree[FiniteDouble] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: FiniteDouble, sizeParam: SizeParam, isValidFun: (FiniteDouble, SizeParam) => Boolean): RoseTree[FiniteDouble] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[FiniteDouble], Randomizer) = {
         val (finiteDouble, rnd2) = rnd.nextFiniteDouble
         (NextRoseTree(finiteDouble), rnd2)
@@ -1510,7 +1522,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosZFloat, sizeParam: SizeParam): RoseTree[PosZFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosZFloat, sizeParam: SizeParam, isValidFun: (PosZFloat, SizeParam) => Boolean): RoseTree[PosZFloat] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosZFloat], Randomizer) = {
         val (posZFloat, rnd2) = rnd.nextPosZFloat
         (NextRoseTree(posZFloat), rnd2)
@@ -1569,7 +1581,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZFiniteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosZFiniteFloat, sizeParam: SizeParam): RoseTree[PosZFiniteFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosZFiniteFloat, sizeParam: SizeParam, isValidFun: (PosZFiniteFloat, SizeParam) => Boolean): RoseTree[PosZFiniteFloat] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosZFiniteFloat], Randomizer) = {
         val (posZFiniteFloat, rnd2) = rnd.nextPosZFiniteFloat
         (NextRoseTree(posZFiniteFloat), rnd2)
@@ -1629,7 +1641,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosDouble, sizeParam: SizeParam): RoseTree[PosDouble] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosDouble, sizeParam: SizeParam, isValidFun: (PosDouble, SizeParam) => Boolean): RoseTree[PosDouble] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosDouble], Randomizer) = {
         val (posDouble, rnd2) = rnd.nextPosDouble
         (NextRoseTree(posDouble), rnd2)
@@ -1685,7 +1697,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posFiniteDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosFiniteDouble, sizeParam: SizeParam): RoseTree[PosFiniteDouble] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosFiniteDouble, sizeParam: SizeParam, isValidFun: (PosFiniteDouble, SizeParam) => Boolean): RoseTree[PosFiniteDouble] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosFiniteDouble], Randomizer) = {
         val (posFiniteDouble, rnd2) = rnd.nextPosFiniteDouble
         (NextRoseTree(posFiniteDouble), rnd2)
@@ -1748,7 +1760,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosZDouble, sizeParam: SizeParam): RoseTree[PosZDouble] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosZDouble, sizeParam: SizeParam, isValidFun: (PosZDouble, SizeParam) => Boolean): RoseTree[PosZDouble] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosZDouble], Randomizer) = {
         val (posZDouble, rnd2) = rnd.nextPosZDouble
         (NextRoseTree(posZDouble), rnd2)
@@ -1807,7 +1819,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZFiniteDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosZFiniteDouble, sizeParam: SizeParam): RoseTree[PosZFiniteDouble] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosZFiniteDouble, sizeParam: SizeParam, isValidFun: (PosZFiniteDouble, SizeParam) => Boolean): RoseTree[PosZFiniteDouble] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosZFiniteDouble], Randomizer) = {
         val (posZFiniteDouble, rnd2) = rnd.nextPosZFiniteDouble
         (NextRoseTree(posZFiniteDouble), rnd2)
@@ -1884,7 +1896,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NonZeroDouble, sizeParam: SizeParam): RoseTree[NonZeroDouble] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NonZeroDouble, sizeParam: SizeParam, isValidFun: (NonZeroDouble, SizeParam) => Boolean): RoseTree[NonZeroDouble] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NonZeroDouble], Randomizer) = {
         val (nonZeroDouble, rnd2) = rnd.nextNonZeroDouble
         (NextRoseTree(nonZeroDouble), rnd2)
@@ -1954,7 +1966,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NonZeroFiniteDouble, sizeParam: SizeParam): RoseTree[NonZeroFiniteDouble] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NonZeroFiniteDouble, sizeParam: SizeParam, isValidFun: (NonZeroFiniteDouble, SizeParam) => Boolean): RoseTree[NonZeroFiniteDouble] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NonZeroFiniteDouble], Randomizer) = {
         val (nonZeroFiniteDouble, rnd2) = rnd.nextNonZeroFiniteDouble
         (NextRoseTree(nonZeroFiniteDouble), rnd2)
@@ -2029,7 +2041,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NonZeroFloat, sizeParam: SizeParam): RoseTree[NonZeroFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NonZeroFloat, sizeParam: SizeParam, isValidFun: (NonZeroFloat, SizeParam) => Boolean): RoseTree[NonZeroFloat] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NonZeroFloat], Randomizer) = {
         val (nonZeroFloat, rnd2) = rnd.nextNonZeroFloat
         (NextRoseTree(nonZeroFloat), rnd2)
@@ -2098,7 +2110,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NonZeroFiniteFloat, sizeParam: SizeParam): RoseTree[NonZeroFiniteFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NonZeroFiniteFloat, sizeParam: SizeParam, isValidFun: (NonZeroFiniteFloat, SizeParam) => Boolean): RoseTree[NonZeroFiniteFloat] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NonZeroFiniteFloat], Randomizer) = {
         val (nonZeroFiniteFloat, rnd2) = rnd.nextNonZeroFiniteFloat
         (NextRoseTree(nonZeroFiniteFloat), rnd2)
@@ -2145,7 +2157,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NonZeroInt, sizeParam: SizeParam): RoseTree[NonZeroInt] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NonZeroInt, sizeParam: SizeParam, isValidFun: (NonZeroInt, SizeParam) => Boolean): RoseTree[NonZeroInt] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NonZeroInt], Randomizer) = {
         val (nonZeroInt, rnd2) = rnd.nextNonZeroInt
         (NextRoseTree(nonZeroInt), rnd2)
@@ -2192,7 +2204,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NonZeroLong, sizeParam: SizeParam): RoseTree[NonZeroLong] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NonZeroLong, sizeParam: SizeParam, isValidFun: (NonZeroLong, SizeParam) => Boolean): RoseTree[NonZeroLong] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NonZeroLong], Randomizer) = {
         val (nonZeroLong, rnd2) = rnd.nextNonZeroLong
         (NextRoseTree(nonZeroLong), rnd2)
@@ -2252,7 +2264,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegDouble, sizeParam: SizeParam): RoseTree[NegDouble] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegDouble, sizeParam: SizeParam, isValidFun: (NegDouble, SizeParam) => Boolean): RoseTree[NegDouble] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegDouble], Randomizer) = {
         val (negDouble, rnd2) = rnd.nextNegDouble
         (NextRoseTree(negDouble), rnd2)
@@ -2308,7 +2320,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negFiniteDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegFiniteDouble, sizeParam: SizeParam): RoseTree[NegFiniteDouble] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegFiniteDouble, sizeParam: SizeParam, isValidFun: (NegFiniteDouble, SizeParam) => Boolean): RoseTree[NegFiniteDouble] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegFiniteDouble], Randomizer) = {
         val (negFiniteDouble, rnd2) = rnd.nextNegFiniteDouble
         (NextRoseTree(negFiniteDouble), rnd2)
@@ -2368,7 +2380,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegFloat, sizeParam: SizeParam): RoseTree[NegFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegFloat, sizeParam: SizeParam, isValidFun: (NegFloat, SizeParam) => Boolean): RoseTree[NegFloat] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegFloat], Randomizer) = {
         val (negFloat, rnd2) = rnd.nextNegFloat
         (NextRoseTree(negFloat), rnd2)
@@ -2424,7 +2436,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negFiniteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegFiniteFloat, sizeParam: SizeParam): RoseTree[NegFiniteFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegFiniteFloat, sizeParam: SizeParam, isValidFun: (NegFiniteFloat, SizeParam) => Boolean): RoseTree[NegFiniteFloat] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegFiniteFloat], Randomizer) = {
         val (negFiniteFloat, rnd2) = rnd.nextNegFiniteFloat
         (NextRoseTree(negFiniteFloat), rnd2)
@@ -2474,7 +2486,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegInt, sizeParam: SizeParam): RoseTree[NegInt] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegInt, sizeParam: SizeParam, isValidFun: (NegInt, SizeParam) => Boolean): RoseTree[NegInt] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegInt], Randomizer) = {
         val (negInt, rnd2) = rnd.nextNegInt
         (NextRoseTree(negInt), rnd2)
@@ -2524,7 +2536,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegLong, sizeParam: SizeParam): RoseTree[NegLong] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegLong, sizeParam: SizeParam, isValidFun: (NegLong, SizeParam) => Boolean): RoseTree[NegLong] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegLong], Randomizer) = {
         val (negLong, rnd2) = rnd.nextNegLong
         (NextRoseTree(negLong), rnd2)
@@ -2587,7 +2599,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegZDouble, sizeParam: SizeParam): RoseTree[NegZDouble] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegZDouble, sizeParam: SizeParam, isValidFun: (NegZDouble, SizeParam) => Boolean): RoseTree[NegZDouble] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegZDouble], Randomizer) = {
         val (negZDouble, rnd2) = rnd.nextNegZDouble
         (NextRoseTree(negZDouble), rnd2)
@@ -2646,7 +2658,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZFiniteDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegZFiniteDouble, sizeParam: SizeParam): RoseTree[NegZFiniteDouble] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegZFiniteDouble, sizeParam: SizeParam, isValidFun: (NegZFiniteDouble, SizeParam) => Boolean): RoseTree[NegZFiniteDouble] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegZFiniteDouble], Randomizer) = {
         val (negZFiniteDouble, rnd2) = rnd.nextNegZFiniteDouble
         (NextRoseTree(negZFiniteDouble), rnd2)
@@ -2709,7 +2721,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegZFloat, sizeParam: SizeParam): RoseTree[NegZFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegZFloat, sizeParam: SizeParam, isValidFun: (NegZFloat, SizeParam) => Boolean): RoseTree[NegZFloat] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegZFloat], Randomizer) = {
         val (negZFloat, rnd2) = rnd.nextNegZFloat
         (NextRoseTree(negZFloat), rnd2)
@@ -2768,7 +2780,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZFiniteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegZFiniteFloat, sizeParam: SizeParam): RoseTree[NegZFiniteFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegZFiniteFloat, sizeParam: SizeParam, isValidFun: (NegZFiniteFloat, SizeParam) => Boolean): RoseTree[NegZFiniteFloat] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegZFiniteFloat], Randomizer) = {
         val (negZFiniteFloat, rnd2) = rnd.nextNegZFiniteFloat
         (NextRoseTree(negZFiniteFloat), rnd2)
@@ -2818,7 +2830,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegZInt, sizeParam: SizeParam): RoseTree[NegZInt] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegZInt, sizeParam: SizeParam, isValidFun: (NegZInt, SizeParam) => Boolean): RoseTree[NegZInt] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegZInt], Randomizer) = {
         val (negZInt, rnd2) = rnd.nextNegZInt
         (NextRoseTree(negZInt), rnd2)
@@ -2868,7 +2880,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negZLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegZLong, sizeParam: SizeParam): RoseTree[NegZLong] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegZLong, sizeParam: SizeParam, isValidFun: (NegZLong, SizeParam) => Boolean): RoseTree[NegZLong] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegZLong], Randomizer) = {
         val (negZLong, rnd2) = rnd.nextNegZLong
         (NextRoseTree(negZLong), rnd2)
@@ -2918,7 +2930,7 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(numericCharEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NumericChar, sizeParam: SizeParam): RoseTree[NumericChar] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NumericChar, sizeParam: SizeParam, isValidFun: (NumericChar, SizeParam) => Boolean): RoseTree[NumericChar] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NumericChar], Randomizer) = {
         val (posZInt, rnd2) = rnd.choosePosZInt(PosZInt.ensuringValid(0), PosZInt.ensuringValid(9))
         (NextRoseTree(NumericChar.ensuringValid((posZInt.value + 48).toChar)), rnd2)
@@ -2979,7 +2991,7 @@ object Generator {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[String], Randomizer) = {
         (stringEdges.take(maxLength), rnd)
       }
-      override def roseTreeOfEdge(edge: String, sizeParam: SizeParam): RoseTree[String] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: String, sizeParam: SizeParam, isValidFun: (String, SizeParam) => Boolean): RoseTree[String] = NextRoseTree(edge)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[String], Randomizer) = {
         val (s, rnd2) = rnd.nextString(szp.size)
         (NextRoseTree(s), rnd2)
@@ -3036,11 +3048,11 @@ object Generator {
         (listEdges.take(maxLength), rnd)
       }
 
-      override def roseTreeOfEdge(edge: List[T], sizeParam: SizeParam): RoseTree[List[T]] = NextRoseTree(edge, sizeParam, isValid)
+      override def roseTreeOfEdge(edge: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean): RoseTree[List[T]] = NextRoseTree(edge, sizeParam, isValid)
 
       def generatorWithSize(szp: SizeParam): Generator[List[T]] =
         new Generator[List[T]] {
-          override def roseTreeOfEdge(edge: List[T], sizeParam: SizeParam): RoseTree[List[T]] = NextRoseTree(edge, szp, isValid)
+          override def roseTreeOfEdge(edge: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean): RoseTree[List[T]] = NextRoseTree(edge, szp, isValid)
           def nextImpl(nextSzp: org.scalatest.prop.SizeParam, rnd: org.scalatest.prop.Randomizer): (RoseTree[List[T]], org.scalatest.prop.Randomizer) = {
             @scala.annotation.tailrec
             def loop(targetSize: Int, result: List[T], rnd: org.scalatest.prop.Randomizer): (RoseTree[List[T]], org.scalatest.prop.Randomizer) =
@@ -4170,7 +4182,7 @@ object Generator {
         goodCanon.map(rt => rt.map(t => Good(t): G Or B)) #::: badCanon.map(rt => rt.map(t => Bad(t): G Or B))
       }
 
-      override def roseTreeOfEdge(edge: G Or B, sizeParam: SizeParam): RoseTree[G Or B] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: G Or B, sizeParam: SizeParam, isValidFun: (G Or B, SizeParam) => Boolean): RoseTree[G Or B] = NextRoseTree(edge)
 
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[G Or B], Randomizer) = {
         val (nextInt, nextRnd) = rnd.nextInt
@@ -4259,7 +4271,7 @@ object Generator {
         rightCanon.map(rt => rt.map(t => Right(t))) #::: leftCanon.map(rt => rt.map(t => Left(t))) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]]
       }
 
-      override def roseTreeOfEdge(edge: Either[L, R], sizeParam: SizeParam): RoseTree[Either[L, R]] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: Either[L, R], sizeParam: SizeParam, isValidFun: (Either[L, R], SizeParam) => Boolean): RoseTree[Either[L, R]] = NextRoseTree(edge)
 
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Either[L, R]], Randomizer) = {
         val (nextInt, nextRnd) = rnd.nextInt
