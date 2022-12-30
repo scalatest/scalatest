@@ -365,7 +365,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.byteGenerator.filter(_ > 5)
-        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(30.toByte), Randomizer.default)._1.shrinks.map(_.value)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(30.toByte), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(15.toByte, 7.toByte)
       }
@@ -439,7 +440,8 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.shortGenerator.filter(_ > 5)
-        val shrinkees = aGen.next(SizeParam(1, 0, 1), List(30.toShort), Randomizer.default)._1.shrinks.map(_.value)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(30.toShort), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(15.toShort, 7.toShort)
       }
