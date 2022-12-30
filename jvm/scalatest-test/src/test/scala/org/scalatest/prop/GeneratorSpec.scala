@@ -590,6 +590,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           }
         }
       }
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.longGenerator.filter(_ > 5)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(30L), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
+        shrinkees should not be empty
+        shrinkees.toList shouldBe List(15L, 7L)
+      }
     }
     describe("for Chars") {
       it("should produce the same Char values in the same order given the same Randomizer") {
