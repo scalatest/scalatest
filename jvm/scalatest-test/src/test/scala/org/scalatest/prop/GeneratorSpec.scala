@@ -831,6 +831,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           }
         }
       }
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.doubleGenerator.filter(_ > 5.0)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(40.0), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
+        shrinkees should not be empty
+        shrinkees.toList shouldBe List(6.0)
+      }
     }
 
     // SKIP-DOTTY-START
