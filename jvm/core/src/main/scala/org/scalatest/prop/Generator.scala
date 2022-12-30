@@ -888,13 +888,13 @@ object Generator {
   implicit val floatGenerator: Generator[Float] =
     new Generator[Float] {
 
-      case class NextRoseTree(value: Float) extends RoseTree[Float] {
+      case class NextRoseTree(value: Float, sizeParam: SizeParam, isValidFun: (Float, SizeParam) => Boolean) extends RoseTree[Float] {
         def shrinks: LazyListOrStream[RoseTree[Float]] = {
           def resLazyList(theValue: Float): LazyListOrStream[RoseTree[Float]] = {
             if (theValue == 0.0f)
               LazyListOrStream.empty
             else if (theValue <= 1.0f && theValue >= -1.0f)
-              Rose(0.0f) #:: LazyListOrStream.empty
+              if (isValidFun(0.0f, sizeParam)) Rose(0.0f) #:: LazyListOrStream.empty else LazyListOrStream.empty
             else if (!theValue.isWhole) {
               // We need to handle infinity and NaN specially because without it, this method
               // will go into an infinite loop. The reason is floor and ciel give back the same value
@@ -926,18 +926,20 @@ object Generator {
               // humans to look at. So if both the negative and positive number fail the test, the
               // positive number will be considered the most shrunk.
               val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else ((-n).floor, n.ceil)
-              NextRoseTree(nearestNeg) #:: NextRoseTree(nearest) #:: resLazyList(nearest)
+              LazyListOrStream(nearestNeg, nearest).filter(v => isValidFun(v, sizeParam))
+                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(nearest)
             }  
             else {
               val sqrt: Float = math.sqrt(theValue.abs.toDouble).toFloat
               if (sqrt < 1.0f && sqrt >= -1.0) 
-                Rose(0.0f) #:: LazyListOrStream.empty
+                if (isValidFun(0.0f, sizeParam)) Rose(0.0f) #:: LazyListOrStream.empty else LazyListOrStream.empty
               else {
                 // Try both the negative and postive, negative first because positive is simpler for humans,
                 // so more "shrunk."
                 val whole: Float = sqrt.floor
                 val negWhole: Float = -whole // math.rint((-whole).toDouble).toFloat
-                NextRoseTree(negWhole) #:: NextRoseTree(whole) #:: resLazyList(whole)
+                LazyListOrStream(negWhole, whole).filter(v => isValidFun(v, sizeParam))
+                                                 .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(whole)
               }
             }
           }
@@ -948,10 +950,10 @@ object Generator {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Float], Randomizer) = {
         (floatEdges.take(maxLength), rnd)
       }
-      override def roseTreeOfEdge(edge: Float, sizeParam: SizeParam, isValidFun: (Float, SizeParam) => Boolean): RoseTree[Float] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: Float, sizeParam: SizeParam, isValidFun: (Float, SizeParam) => Boolean): RoseTree[Float] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Float], Randomizer) = {
         val (f, rnd2) = rnd.nextFloat
-        (NextRoseTree(f), rnd2)
+        (NextRoseTree(f, szp, isValid), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[Float]] = {
         case class CanonicalRoseTree(value: Float) extends RoseTree[Float] {
@@ -970,7 +972,7 @@ object Generator {
         CanonicalRoseTree(4.0f).shrinks
       }
       override def toString = "Generator[Float]"
-      override def shrinksForValue(valueToShrink: Float): Option[LazyListOrStream[RoseTree[Float]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: Float): Option[LazyListOrStream[RoseTree[Float]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
 
   /**
