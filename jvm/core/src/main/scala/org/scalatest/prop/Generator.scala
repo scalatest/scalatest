@@ -596,71 +596,70 @@ object Generator {
       }
 
       override def toString = "Generator[Boolean]"
-    }
+    }  
 
-  class ByteGenerator extends Generator[Byte] {
-    case class NextRoseTree(value: Byte, sizeParam: SizeParam, isValidFun: (Byte, SizeParam) => Boolean) extends RoseTree[Byte] {
-      def shrinks: LazyListOrStream[RoseTree[Byte]] = {
-        def resLazyList(theValue: Byte): LazyListOrStream[RoseTree[Byte]] = {
-          if (theValue == 0) LazyListOrStream.empty
-          else {
-            val half: Byte = (theValue / 2).toByte
-            if (half == 0) { 
-              if (isValidFun(0.toByte, sizeParam))
-                Rose(0.toByte) #:: LazyListOrStream.empty
-              else
-                LazyListOrStream.empty  
-            }
-            else { 
-              //NextRoseTree((-half).toByte) #:: NextRoseTree(half) #:: resLazyList(half)
-              LazyListOrStream((-half).toByte, half.toByte).filter(v => isValidFun(v, sizeParam))
-                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(half)
-            }
-          }
-        }
-        resLazyList(value)
-      }
-    }
-
-    override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Byte], Randomizer) = {
-      val (allEdges, nextRnd) = Randomizer.shuffle(byteEdges, rnd)
-      (allEdges.take(maxLength), nextRnd)
-    }
-    
-    override def roseTreeOfEdge(edge: Byte, sizeParam: SizeParam, isValidFun: (Byte, SizeParam) => Boolean): RoseTree[Byte] = {
-      NextRoseTree(edge, sizeParam, isValidFun)
-    }
-    def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Byte], Randomizer) = {
-      val (b, rnd2) = rnd.nextByte
-      (NextRoseTree(b, szp, isValid), rnd2)
-    }
-    override def canonicals: LazyListOrStream[RoseTree[Byte]] = {
-      case class CanonicalRoseTree(value: Byte) extends RoseTree[Byte] {
+  /**
+    * A [[Generator]] that produces [[Byte]] values.
+    */
+  implicit val byteGenerator: Generator[Byte] = 
+    new Generator[Byte] {
+      case class NextRoseTree(value: Byte, sizeParam: SizeParam, isValidFun: (Byte, SizeParam) => Boolean) extends RoseTree[Byte] {
         def shrinks: LazyListOrStream[RoseTree[Byte]] = {
           def resLazyList(theValue: Byte): LazyListOrStream[RoseTree[Byte]] = {
             if (theValue == 0) LazyListOrStream.empty
             else {
-              val minusOne: Byte = (theValue - 1).toByte
-              if (minusOne == 0) Rose(0.toByte) #:: LazyListOrStream.empty
-              else CanonicalRoseTree((-minusOne).toByte) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+              val half: Byte = (theValue / 2).toByte
+              if (half == 0) { 
+                if (isValidFun(0.toByte, sizeParam))
+                  Rose(0.toByte) #:: LazyListOrStream.empty
+                else
+                  LazyListOrStream.empty  
+              }
+              else { 
+                //NextRoseTree((-half).toByte) #:: NextRoseTree(half) #:: resLazyList(half)
+                LazyListOrStream((-half).toByte, half.toByte).filter(v => isValidFun(v, sizeParam))
+                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(half)
+              }
             }
           }
           resLazyList(value)
         }
       }
-      CanonicalRoseTree(4).shrinks
+
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[Byte], Randomizer) = {
+        val (allEdges, nextRnd) = Randomizer.shuffle(byteEdges, rnd)
+        (allEdges.take(maxLength), nextRnd)
+      }
+      
+      override def roseTreeOfEdge(edge: Byte, sizeParam: SizeParam, isValidFun: (Byte, SizeParam) => Boolean): RoseTree[Byte] = {
+        NextRoseTree(edge, sizeParam, isValidFun)
+      }
+      def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Byte], Randomizer) = {
+        val (b, rnd2) = rnd.nextByte
+        (NextRoseTree(b, szp, isValid), rnd2)
+      }
+      override def canonicals: LazyListOrStream[RoseTree[Byte]] = {
+        case class CanonicalRoseTree(value: Byte) extends RoseTree[Byte] {
+          def shrinks: LazyListOrStream[RoseTree[Byte]] = {
+            def resLazyList(theValue: Byte): LazyListOrStream[RoseTree[Byte]] = {
+              if (theValue == 0) LazyListOrStream.empty
+              else {
+                val minusOne: Byte = (theValue - 1).toByte
+                if (minusOne == 0) Rose(0.toByte) #:: LazyListOrStream.empty
+                else CanonicalRoseTree((-minusOne).toByte) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+              }
+            }
+            resLazyList(value)
+          }
+        }
+        CanonicalRoseTree(4).shrinks
+      }
+      override def toString = "Generator[Byte]"
+
+      // For now I will not take a Randomizer. I'm hoping we can just get rid of it in shrinks. Shrinks can just
+      // be based on the values being shrunk.
+      override def shrinksForValue(valueToShrink: Byte): Option[LazyListOrStream[RoseTree[Byte]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), this.isValid).shrinks)
     }
-    override def toString = "Generator[Byte]"
-
-    // For now I will not take a Randomizer. I'm hoping we can just get rid of it in shrinks. Shrinks can just
-    // be based on the values being shrunk.
-    override def shrinksForValue(valueToShrink: Byte): Option[LazyListOrStream[RoseTree[Byte]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), this.isValid).shrinks)
-  }  
-
-  /**
-    * A [[Generator]] that produces [[Byte]] values.
-    */
-  implicit val byteGenerator: Generator[Byte] = new ByteGenerator
 
   /**
     * A [[Generator]] that produces [[Short]] values.
