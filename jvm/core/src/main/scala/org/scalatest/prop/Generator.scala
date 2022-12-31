@@ -1127,14 +1127,17 @@ object Generator {
   implicit val posZIntGenerator: Generator[PosZInt] =
     new Generator[PosZInt] {
 
-      case class NextRoseTree(value: PosZInt) extends RoseTree[PosZInt] {
+      case class NextRoseTree(value: PosZInt, sizeParam: SizeParam, isValidFun: (PosZInt, SizeParam) => Boolean) extends RoseTree[PosZInt] {
         def shrinks: LazyListOrStream[RoseTree[PosZInt]] = {
           def resLazyList(theValue: PosZInt): LazyListOrStream[RoseTree[PosZInt]] = {
             if (theValue.value == 0) LazyListOrStream.empty
             else {
               val half: Int = theValue / 2
               val posZIntHalf = PosZInt.ensuringValid(half)
-              NextRoseTree(posZIntHalf) #:: resLazyList(posZIntHalf)
+              if (isValidFun(posZIntHalf, sizeParam))
+                NextRoseTree(posZIntHalf, sizeParam, isValidFun) #:: resLazyList(posZIntHalf)
+              else
+                resLazyList(posZIntHalf)  
             }
           }
           resLazyList(value)
@@ -1145,10 +1148,10 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(posZIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: PosZInt, sizeParam: SizeParam, isValidFun: (PosZInt, SizeParam) => Boolean): RoseTree[PosZInt] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: PosZInt, sizeParam: SizeParam, isValidFun: (PosZInt, SizeParam) => Boolean): RoseTree[PosZInt] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[PosZInt], Randomizer) = {
         val (posZInt, rnd2) = rnd.nextPosZInt
-        (NextRoseTree(posZInt), rnd2)
+        (NextRoseTree(posZInt, szp, isValid), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[PosZInt]] = {
         case class CanonicalRoseTree(value: PosZInt) extends RoseTree[PosZInt] {
@@ -1167,7 +1170,7 @@ object Generator {
         CanonicalRoseTree(4).shrinks
       }
       override def toString = "Generator[PosZInt]"
-      override def shrinksForValue(valueToShrink: PosZInt): Option[LazyListOrStream[RoseTree[PosZInt]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: PosZInt): Option[LazyListOrStream[RoseTree[PosZInt]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
 
   /**
