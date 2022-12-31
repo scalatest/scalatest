@@ -1026,6 +1026,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           }
         }
       }
+
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.posIntGenerator.filter(_.value > 5)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(PosInt(30)), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
+        shrinkees should not be empty
+        shrinkees.toList shouldBe List(PosInt(15), PosInt(7))
+      }
     }
     describe("for PosZInts") {
       it("should produce the same PosZInt values in the same order given the same Randomizer") {
