@@ -2071,6 +2071,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           }
         }
       }
+
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.negZLongGenerator.filter(_ < -5)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegZLong(-30L)), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
+        shrinkees should not be empty
+        shrinkees.toList shouldBe List(NegZLong(-15L), NegZLong(-7L))
+      }
     }
     describe("for NegFloat") {
       it("should produce the same NegFloat values in the same order given the same Randomizer") {
