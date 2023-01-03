@@ -2656,7 +2656,7 @@ object Generator {
   implicit val negLongGenerator: Generator[NegLong] =
     new Generator[NegLong] {
 
-      case class NextRoseTree(value: NegLong) extends RoseTree[NegLong] {
+      case class NextRoseTree(value: NegLong, sizeParam: SizeParam, isValidFun: (NegLong, SizeParam) => Boolean) extends RoseTree[NegLong] {
         def shrinks: LazyListOrStream[RoseTree[NegLong]] = {
           def resLazyList(theValue: NegLong): LazyListOrStream[RoseTree[NegLong]] = {
             val i = theValue.value
@@ -2664,7 +2664,10 @@ object Generator {
             if (half == 0) LazyListOrStream.empty[RoseTree[NegLong]]
             else {
               val negLongHalf = NegLong.ensuringValid(half)
-              NextRoseTree(negLongHalf) #:: resLazyList(negLongHalf)
+              if (isValidFun(negLongHalf, sizeParam))
+                NextRoseTree(negLongHalf, sizeParam, isValidFun) #:: resLazyList(negLongHalf)
+              else
+                resLazyList(negLongHalf)
             }
           }
           resLazyList(value)
@@ -2675,10 +2678,10 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(negLongEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NegLong, sizeParam: SizeParam, isValidFun: (NegLong, SizeParam) => Boolean): RoseTree[NegLong] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NegLong, sizeParam: SizeParam, isValidFun: (NegLong, SizeParam) => Boolean): RoseTree[NegLong] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NegLong], Randomizer) = {
         val (negLong, rnd2) = rnd.nextNegLong
-        (NextRoseTree(negLong), rnd2)
+        (NextRoseTree(negLong, szp, isValid), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[NegLong]] = {
         case class CanonicalRoseTree(value: NegLong) extends RoseTree[NegLong] {
@@ -2697,7 +2700,7 @@ object Generator {
         CanonicalRoseTree(-4L).shrinks
       }
       override def toString = "Generator[NegLong]"
-      override def shrinksForValue(valueToShrink: NegLong): Option[LazyListOrStream[RoseTree[NegLong]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: NegLong): Option[LazyListOrStream[RoseTree[NegLong]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
 
   /**
