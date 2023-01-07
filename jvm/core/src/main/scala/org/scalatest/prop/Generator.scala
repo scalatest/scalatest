@@ -2214,7 +2214,7 @@ object Generator {
   implicit val nonZeroFiniteFloatGenerator: Generator[NonZeroFiniteFloat] =
     new Generator[NonZeroFiniteFloat] {
 
-      case class NextRoseTree(value: NonZeroFiniteFloat) extends RoseTree[NonZeroFiniteFloat] {
+      case class NextRoseTree(value: NonZeroFiniteFloat, sizeParam: SizeParam, isValidFun: (NonZeroFiniteFloat, SizeParam) => Boolean) extends RoseTree[NonZeroFiniteFloat] {
         def shrinks: LazyListOrStream[RoseTree[NonZeroFiniteFloat]] = {
           def resLazyList(theValue: NonZeroFiniteFloat): LazyListOrStream[RoseTree[NonZeroFiniteFloat]] = {
             val d = theValue.value
@@ -2223,7 +2223,9 @@ object Generator {
             else if (!d.isWhole) {
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (d > 0.0f) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
-              NextRoseTree(NonZeroFiniteFloat.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroFiniteFloat.ensuringValid(nearest)) #:: resLazyList(NonZeroFiniteFloat.ensuringValid(nearest))
+              LazyList(NonZeroFiniteFloat.ensuringValid(nearestNeg), NonZeroFiniteFloat.ensuringValid(nearest))
+                .filter(isValidFun(_, sizeParam))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(NonZeroFiniteFloat.ensuringValid(nearest))
             }
             else {
               val sqrt: Float = math.sqrt(d.abs.toDouble).toFloat
@@ -2232,7 +2234,9 @@ object Generator {
                 val whole: NonZeroFiniteFloat = NonZeroFiniteFloat.ensuringValid(sqrt.floor)
                 // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
                 val negWhole: NonZeroFiniteFloat = -whole  //math.rint(-whole)
-                NextRoseTree(negWhole) #:: NextRoseTree(whole) #:: resLazyList(whole)
+                LazyList(negWhole, whole)
+                  .filter(isValidFun(_, sizeParam))
+                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(whole)
               }
             }
           }
@@ -2240,8 +2244,10 @@ object Generator {
           if (d <= 1.0 && d >= -1.0) {
             // For now, if a non-zero floating point value is between -1.0 and 1.0 exclusive, just try -1.0 and 1.0.
             // Our attitude is that whole numbers are simpler, so more shrunken, than non-whole numbers. Since the failing value
-            // non-zero, there isn't any number smaller that's whole, so for now we'll hop up to -1.0 and 1.0. 
-            Rose(NonZeroFiniteFloat.ensuringValid(-1.0f)) #:: Rose(NonZeroFiniteFloat.ensuringValid(1.0f)) #:: LazyListOrStream.empty
+            // non-zero, there isn't any number smaller that's whole, so for now we'll hop up to -1.0 and 1.0.
+            LazyList(NonZeroFiniteFloat.ensuringValid(-1.0f), NonZeroFiniteFloat.ensuringValid(1.0f))
+              .filter(isValidFun(_, sizeParam))
+              .map(Rose(_)) #::: LazyListOrStream.empty
           }
           else
             resLazyList(value)
@@ -2252,10 +2258,10 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroFiniteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NonZeroFiniteFloat, sizeParam: SizeParam, isValidFun: (NonZeroFiniteFloat, SizeParam) => Boolean): RoseTree[NonZeroFiniteFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NonZeroFiniteFloat, sizeParam: SizeParam, isValidFun: (NonZeroFiniteFloat, SizeParam) => Boolean): RoseTree[NonZeroFiniteFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NonZeroFiniteFloat], Randomizer) = {
         val (nonZeroFiniteFloat, rnd2) = rnd.nextNonZeroFiniteFloat
-        (NextRoseTree(nonZeroFiniteFloat), rnd2)
+        (NextRoseTree(nonZeroFiniteFloat, szp, isValid), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[NonZeroFiniteFloat]] = {
         case class CanonicalRoseTree(value: NonZeroFiniteFloat) extends RoseTree[NonZeroFiniteFloat] {
@@ -2274,7 +2280,7 @@ object Generator {
         CanonicalRoseTree(4.0f).shrinks
       }
       override def toString = "Generator[NonZeroFiniteFloat]"
-      override def shrinksForValue(valueToShrink: NonZeroFiniteFloat): Option[LazyListOrStream[RoseTree[NonZeroFiniteFloat]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: NonZeroFiniteFloat): Option[LazyListOrStream[RoseTree[NonZeroFiniteFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
 
   /**
