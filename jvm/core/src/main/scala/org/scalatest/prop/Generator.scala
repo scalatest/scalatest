@@ -2277,13 +2277,17 @@ object Generator {
   implicit val nonZeroIntGenerator: Generator[NonZeroInt] =
     new Generator[NonZeroInt] {
 
-      case class NextRoseTree(value: NonZeroInt) extends RoseTree[NonZeroInt] {
+      case class NextRoseTree(value: NonZeroInt, sizeParam: SizeParam, isValidFun: (NonZeroInt, SizeParam) => Boolean) extends RoseTree[NonZeroInt] {
         def shrinks: LazyListOrStream[RoseTree[NonZeroInt]] = {
           def resLazyList(theValue: NonZeroInt): LazyListOrStream[RoseTree[NonZeroInt]] = {
             val i = theValue.value
             val half: Int = i / 2 // i cannot be zero, because initially it is the underlying Int value of a NonZeroInt (in types
             if (half == 0) LazyListOrStream.empty[RoseTree[NonZeroInt]]    // we trust), then if half results in zero, we return empty list. I.e., no more shrinks available.
-            else NextRoseTree(NonZeroInt.ensuringValid(-half)) #:: NextRoseTree(NonZeroInt.ensuringValid(half)) #:: resLazyList(NonZeroInt.ensuringValid(half))
+            else {
+              LazyList(NonZeroInt.ensuringValid(-half), NonZeroInt.ensuringValid(half))
+                .filter(isValidFun(_, sizeParam))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(NonZeroInt.ensuringValid(half))
+            }
           }
           resLazyList(value)
         }
@@ -2293,10 +2297,10 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroIntEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NonZeroInt, sizeParam: SizeParam, isValidFun: (NonZeroInt, SizeParam) => Boolean): RoseTree[NonZeroInt] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NonZeroInt, sizeParam: SizeParam, isValidFun: (NonZeroInt, SizeParam) => Boolean): RoseTree[NonZeroInt] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NonZeroInt], Randomizer) = {
         val (nonZeroInt, rnd2) = rnd.nextNonZeroInt
-        (NextRoseTree(nonZeroInt), rnd2)
+        (NextRoseTree(nonZeroInt, szp, isValid), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[NonZeroInt]] = {
         case class CanonicalRoseTree(value: NonZeroInt) extends RoseTree[NonZeroInt] {
@@ -2315,7 +2319,7 @@ object Generator {
         CanonicalRoseTree(4).shrinks
       }
       override def toString = "Generator[NonZeroInt]"
-      override def shrinksForValue(valueToShrink: NonZeroInt): Option[LazyListOrStream[RoseTree[NonZeroInt]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: NonZeroInt): Option[LazyListOrStream[RoseTree[NonZeroInt]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
 
   /**
