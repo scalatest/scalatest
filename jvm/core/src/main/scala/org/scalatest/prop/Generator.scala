@@ -1986,7 +1986,7 @@ object Generator {
   implicit val nonZeroDoubleGenerator: Generator[NonZeroDouble] =
     new Generator[NonZeroDouble] {
 
-      case class NextRoseTree(value: NonZeroDouble) extends RoseTree[NonZeroDouble] {
+      case class NextRoseTree(value: NonZeroDouble, sizeParam: SizeParam, isValidFun: (NonZeroDouble, SizeParam) => Boolean) extends RoseTree[NonZeroDouble] {
         def shrinks: LazyListOrStream[RoseTree[NonZeroDouble]] = {
           def resLazyList(theValue: NonZeroDouble): LazyListOrStream[RoseTree[NonZeroDouble]] = {
             val d = theValue.value
@@ -2001,7 +2001,9 @@ object Generator {
                 else d
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-              NextRoseTree(NonZeroDouble.ensuringValid(nearestNeg)) #:: NextRoseTree(NonZeroDouble.ensuringValid(nearest)) #:: resLazyList(NonZeroDouble.ensuringValid(nearest))
+              LazyList(NonZeroDouble.ensuringValid(nearestNeg), NonZeroDouble.ensuringValid(nearest))
+                .filter(isValidFun(_, sizeParam))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(NonZeroDouble.ensuringValid(nearest))
             }
             else {
               val sqrt: Double = math.sqrt(d.abs)
@@ -2011,7 +2013,9 @@ object Generator {
                 // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
                 val negWhole: NonZeroDouble = -whole  //math.rint(-whole)
                 val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
-                NextRoseTree(first) #:: NextRoseTree(second) #:: resLazyList(first)
+                LazyList(first, second)
+                  .filter(isValidFun(_, sizeParam))
+                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(first)
               }
             }
           }
@@ -2020,8 +2024,10 @@ object Generator {
           if (d <= 1.0 && d >= -1.0) {
             // For now, if a non-zero floating point value is between -1.0 and 1.0 exclusive, just try -1.0 and 1.0.
             // Our attitude is that whole numbers are simpler, so more shrunken, than non-whole numbers. Since the failing value
-            // non-zero, there isn't any number smaller that's whole, so for now we'll hop up to -1.0 and 1.0. 
-            Rose(NonZeroDouble.ensuringValid(-1.0)) #:: Rose(NonZeroDouble.ensuringValid(1.0)) #:: LazyListOrStream.empty
+            // non-zero, there isn't any number smaller that's whole, so for now we'll hop up to -1.0 and 1.0.
+            LazyList(NonZeroDouble.ensuringValid(-1.0), NonZeroDouble.ensuringValid(1.0))
+              .filter(isValidFun(_, sizeParam))
+              .map(Rose(_))  #::: LazyListOrStream.empty
           }
           else
             resLazyList(value)
@@ -2032,10 +2038,10 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(nonZeroDoubleEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NonZeroDouble, sizeParam: SizeParam, isValidFun: (NonZeroDouble, SizeParam) => Boolean): RoseTree[NonZeroDouble] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NonZeroDouble, sizeParam: SizeParam, isValidFun: (NonZeroDouble, SizeParam) => Boolean): RoseTree[NonZeroDouble] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NonZeroDouble], Randomizer) = {
         val (nonZeroDouble, rnd2) = rnd.nextNonZeroDouble
-        (NextRoseTree(nonZeroDouble), rnd2)
+        (NextRoseTree(nonZeroDouble, szp, isValid), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[NonZeroDouble]] = {
         case class CanonicalRoseTree(value: NonZeroDouble) extends RoseTree[NonZeroDouble] {
@@ -2054,7 +2060,7 @@ object Generator {
         CanonicalRoseTree(4.0).shrinks
       }
       override def toString = "Generator[NonZeroDouble]"
-      override def shrinksForValue(valueToShrink: NonZeroDouble): Option[LazyListOrStream[RoseTree[NonZeroDouble]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: NonZeroDouble): Option[LazyListOrStream[RoseTree[NonZeroDouble]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
 
   /**

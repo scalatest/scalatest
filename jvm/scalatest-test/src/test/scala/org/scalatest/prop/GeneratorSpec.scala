@@ -3038,6 +3038,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           }
         }
       }
+
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.nonZeroDoubleGenerator.filter(_ > 5.0)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NonZeroDouble(40.0)), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
+        shrinkees should not be empty
+        shrinkees.toList shouldBe List(NonZeroDouble(6.0))
+      }
     }
     describe("for NonZeroFiniteDouble") {
       it("should produce the same NonZeroFiniteDouble values in the same order given the same Randomizer") {
