@@ -2501,6 +2501,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           }
         }
       }
+
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.negFiniteDoubleGenerator.filter(_ < -5.0)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NegFiniteDouble(-40.0)), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
+        shrinkees should not be empty
+        shrinkees.toList shouldBe List(NegFiniteDouble(-6.0))
+      }
     }
     describe("for NegZDouble") {
       it("should produce the same NegZDouble values in the same order given the same Randomizer") {
