@@ -3395,6 +3395,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import org.scalatest.Inspectors
         Inspectors.forAll (canonicals.init) { (s: String) => s should (be >= "a" and be <= "z") }
       }
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.stringGenerator.filter(_.length > 5)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List("one two three four five"), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
+        shrinkees should not be empty
+        shrinkees.toList shouldBe List("ee four five", "one two thr", "wo thr")
+      }
     }
 
     describe("for Options") {

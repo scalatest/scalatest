@@ -3295,19 +3295,25 @@ object Generator {
       // For strings, we won't shrink the characters.  We could, but the trees could get really big. Just cut the length of
       // the list in half and try both halves each round, using the same characters.
       // TODO: Write a test for this shrinks implementation.
-      case class NextRoseTree(value: String) extends RoseTree[String] {
+      case class NextRoseTree(value: String, sizeParam: SizeParam, isValidFun: (String, SizeParam) => Boolean) extends RoseTree[String] {
         def shrinks: LazyListOrStream[RoseTree[String]] = {
           def resLazyListOrStream(theValue: String): LazyListOrStream[RoseTree[String]] = {
             if (theValue.isEmpty)
               LazyListOrStream.empty
-            else if (theValue.length == 1)
-              Rose("") #:: LazyListOrStream.empty
+            else if (theValue.length == 1) {
+              if (isValidFun("", sizeParam))
+                Rose("") #:: LazyListOrStream.empty
+              else
+                LazyListOrStream.empty  
+            }
             else {
               val halfSize = theValue.length / 2
               val firstHalf = theValue.take(halfSize)
               val secondHalf = theValue.drop(halfSize)
               // If value has an odd number of chars, the second half will be one character longer than the first half.
-              NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyListOrStream(firstHalf)
+              LazyListOrStream(secondHalf, firstHalf)
+                .filter(isValidFun(_, sizeParam))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(firstHalf)
             }
           }
           resLazyListOrStream(value)
@@ -3317,17 +3323,17 @@ object Generator {
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[String], Randomizer) = {
         (stringEdges.take(maxLength), rnd)
       }
-      override def roseTreeOfEdge(edge: String, sizeParam: SizeParam, isValidFun: (String, SizeParam) => Boolean): RoseTree[String] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: String, sizeParam: SizeParam, isValidFun: (String, SizeParam) => Boolean): RoseTree[String] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[String], Randomizer) = {
         val (s, rnd2) = rnd.nextString(szp.size)
-        (NextRoseTree(s), rnd2)
+        (NextRoseTree(s, szp, isValid), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[String]] = {
         val canonicalsOfChar = charGenerator.canonicals
         canonicalsOfChar.map(t => Rose(s"${ t.value }")) #::: LazyListOrStream(Rose(""))
       }
       override def toString = "Generator[String]"
-      override def shrinksForValue(valueToShrink: String): Option[LazyListOrStream[RoseTree[String]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: String): Option[LazyListOrStream[RoseTree[String]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
