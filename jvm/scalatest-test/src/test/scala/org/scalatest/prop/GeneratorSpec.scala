@@ -3710,7 +3710,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val shrinkees = aGen.next(SizeParam(1, 0, 1), List(List(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
         all(shrinkees) should have size 5
       }
-      /*it("should produce shrinkees following length determined by havingLength method") {
+      it("should produce shrinkees following length determined by havingLength method") {
         val aGen= Generator.vectorGenerator[Int].havingLength(5)
         val shrinkees = aGen.next(SizeParam(1, 0, 1), List(Vector(3, 99)), Randomizer.default)._1.shrinks.map(_.value)
         all(shrinkees) should have length 5
@@ -3754,7 +3754,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         shrinkees.foreach { shrinkee =>
           assert(shrinkee.length >= 2 && shrinkee.length <= 5) 
         }
-      }*/
+      }
       it("should return an LazyListOrStream that does not repeat the passed list-to-shink even if that list has a power of 2 length") {
         // Since the last batch of lists produced by the list shrinker start at length 2 and then double in size each time,
         // they lengths will be powers of two: 2, 4, 8, 16, etc... So make sure that if the original length has length 16,
