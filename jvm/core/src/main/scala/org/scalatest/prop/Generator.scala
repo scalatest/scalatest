@@ -605,7 +605,7 @@ object Generator {
     new Generator[Byte] {
       case class NextRoseTree(value: Byte, sizeParam: SizeParam, isValidFun: (Byte, SizeParam) => Boolean) extends RoseTree[Byte] {
         def shrinks: LazyListOrStream[RoseTree[Byte]] = {
-          def resLazyList(theValue: Byte): LazyListOrStream[RoseTree[Byte]] = {
+          def resLazyListOrStream(theValue: Byte): LazyListOrStream[RoseTree[Byte]] = {
             if (theValue == 0) LazyListOrStream.empty
             else {
               val half: Byte = (theValue / 2).toByte
@@ -617,10 +617,10 @@ object Generator {
               }
               else
                 LazyListOrStream((-half).toByte, half.toByte).filter(v => isValidFun(v, sizeParam))
-                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(half)
+                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(half)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -639,15 +639,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[Byte]] = {
         case class CanonicalRoseTree(value: Byte) extends RoseTree[Byte] {
           def shrinks: LazyListOrStream[RoseTree[Byte]] = {
-            def resLazyList(theValue: Byte): LazyListOrStream[RoseTree[Byte]] = {
+            def resLazyListOrStream(theValue: Byte): LazyListOrStream[RoseTree[Byte]] = {
               if (theValue == 0) LazyListOrStream.empty
               else {
                 val minusOne: Byte = (theValue - 1).toByte
                 if (minusOne == 0) Rose(0.toByte) #:: LazyListOrStream.empty
-                else CanonicalRoseTree((-minusOne).toByte) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree((-minusOne).toByte) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4).shrinks
@@ -667,7 +667,7 @@ object Generator {
 
       case class NextRoseTree(value: Short, sizeParam: SizeParam, isValidFun: (Short, SizeParam) => Boolean) extends RoseTree[Short] {
         def shrinks: LazyListOrStream[RoseTree[Short]] = {
-          def resLazyList(theValue: Short): LazyListOrStream[RoseTree[Short]] = {
+          def resLazyListOrStream(theValue: Short): LazyListOrStream[RoseTree[Short]] = {
             if (theValue == 0) LazyListOrStream.empty
             else {
               val half: Short = (theValue / 2).toShort
@@ -679,10 +679,10 @@ object Generator {
               }
               else 
                 LazyListOrStream((-half).toShort, half.toShort).filter(v => isValidFun(v, sizeParam))
-                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(half)
+                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(half)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -698,15 +698,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[Short]] = {
         case class CanonicalRoseTree(value: Short) extends RoseTree[Short] {
           def shrinks: LazyListOrStream[RoseTree[Short]] = {
-            def resLazyList(theValue: Short): LazyListOrStream[RoseTree[Short]] = {
+            def resLazyListOrStream(theValue: Short): LazyListOrStream[RoseTree[Short]] = {
               if (theValue == 0) LazyListOrStream.empty
               else {
                 val minusOne: Short = (theValue - 1).toShort
                 if (minusOne == 0) Rose(0.toShort) #:: LazyListOrStream.empty
-                else CanonicalRoseTree((-minusOne).toShort) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree((-minusOne).toShort) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4).shrinks
@@ -727,11 +727,11 @@ object Generator {
           // In this one we accept any of these characters. Else we try them in the above order.
           if (userFriendlyChars.indexOf(value) >= 0) LazyListOrStream.empty
           else {
-            def resLazyList(theIndex: Int): LazyListOrStream[RoseTree[Char]] = {
+            def resLazyListOrStream(theIndex: Int): LazyListOrStream[RoseTree[Char]] = {
               if (theIndex == userFriendlyChars.length) LazyListOrStream.empty
-              else NextRoseTree(userFriendlyChars(theIndex)) #:: resLazyList(theIndex + 1)
+              else NextRoseTree(userFriendlyChars(theIndex)) #:: resLazyListOrStream(theIndex + 1)
             }
-            resLazyList(0)
+            resLazyListOrStream(0)
           }
         }
       }
@@ -751,19 +751,19 @@ object Generator {
         case class CanonicalRoseTree(valueIndex: Int) extends RoseTree[Char] {
           val value = lowerAlphaChars(valueIndex)
           def shrinks: LazyListOrStream[RoseTree[Char]] = {
-            def resLazyList(nxtIndex: Int): LazyListOrStream[RoseTree[Char]] = {
+            def resLazyListOrStream(nxtIndex: Int): LazyListOrStream[RoseTree[Char]] = {
               if (nxtIndex >= theLength) LazyListOrStream.empty // Return no shrinks if already at a
-              else CanonicalRoseTree(nxtIndex) #:: resLazyList(nxtIndex + 1)
+              else CanonicalRoseTree(nxtIndex) #:: resLazyListOrStream(nxtIndex + 1)
             }
-            resLazyList(valueIndex + 1)
+            resLazyListOrStream(valueIndex + 1)
           }
        }
 
-        def canonicalsResLazyList(theIndex: Int): LazyListOrStream[RoseTree[Char]] = {
+        def canonicalsResLazyListOrStream(theIndex: Int): LazyListOrStream[RoseTree[Char]] = {
           if (theIndex >= theLength) LazyListOrStream.empty // Return no shrinks if already at a
-          else CanonicalRoseTree(theIndex) #:: canonicalsResLazyList(theIndex + 1)
+          else CanonicalRoseTree(theIndex) #:: canonicalsResLazyListOrStream(theIndex + 1)
         }
-        canonicalsResLazyList(0)
+        canonicalsResLazyListOrStream(0)
       }
 
       override def toString = "Generator[Char]"
@@ -778,7 +778,7 @@ object Generator {
 
       case class NextRoseTree(value: Int, sizeParam: SizeParam, isValidFun: (Int, SizeParam) => Boolean) extends RoseTree[Int] {
         def shrinks: LazyListOrStream[RoseTree[Int]] = {
-          def resLazyList(theValue: Int): LazyListOrStream[RoseTree[Int]] = {
+          def resLazyListOrStream(theValue: Int): LazyListOrStream[RoseTree[Int]] = {
             if (theValue == 0) LazyListOrStream.empty
             else {
               val half: Int = theValue / 2
@@ -790,10 +790,10 @@ object Generator {
               }
               else 
                 LazyListOrStream(-half, half).filter(v => isValidFun(v, sizeParam))
-                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(half)
+                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(half)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -810,15 +810,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[Int]] = {
         case class CanonicalRoseTree(value: Int) extends RoseTree[Int] {
           def shrinks: LazyListOrStream[RoseTree[Int]] = {
-            def resLazyList(theValue: Int): LazyListOrStream[RoseTree[Int]] = {
+            def resLazyListOrStream(theValue: Int): LazyListOrStream[RoseTree[Int]] = {
               if (theValue == 0) LazyListOrStream.empty
               else {
                 val minusOne: Int = (theValue - 1).toInt
                 if (minusOne == 0) Rose(0.toInt) #:: LazyListOrStream.empty
-                else CanonicalRoseTree((-minusOne).toInt) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree((-minusOne).toInt) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4).shrinks
@@ -834,7 +834,7 @@ object Generator {
 
       case class NextRoseTree(value: Long, sizeParam: SizeParam, isValidFun: (Long, SizeParam) => Boolean) extends RoseTree[Long] {
         def shrinks: LazyListOrStream[RoseTree[Long]] = {
-          def resLazyList(theValue: Long): LazyListOrStream[RoseTree[Long]] = {
+          def resLazyListOrStream(theValue: Long): LazyListOrStream[RoseTree[Long]] = {
             if (theValue == 0) LazyListOrStream.empty
             else {
               val half: Long = (theValue / 2)
@@ -846,10 +846,10 @@ object Generator {
               }
               else 
                 LazyListOrStream(-half, half).filter(v => isValidFun(v, sizeParam))
-                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(half)
+                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(half)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -865,15 +865,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[Long]] = {
         case class CanonicalRoseTree(value: Long) extends RoseTree[Long] {
           def shrinks: LazyListOrStream[RoseTree[Long]] = {
-            def resLazyList(theValue: Long): LazyListOrStream[RoseTree[Long]] = {
+            def resLazyListOrStream(theValue: Long): LazyListOrStream[RoseTree[Long]] = {
               if (theValue == 0) LazyListOrStream.empty
               else {
                 val minusOne: Long = (theValue - 1).toLong
                 if (minusOne == 0) Rose(0.toLong) #:: LazyListOrStream.empty
-                else CanonicalRoseTree((-minusOne).toLong) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree((-minusOne).toLong) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4).shrinks
@@ -890,7 +890,7 @@ object Generator {
 
       case class NextRoseTree(value: Float, sizeParam: SizeParam, isValidFun: (Float, SizeParam) => Boolean) extends RoseTree[Float] {
         def shrinks: LazyListOrStream[RoseTree[Float]] = {
-          def resLazyList(theValue: Float): LazyListOrStream[RoseTree[Float]] = {
+          def resLazyListOrStream(theValue: Float): LazyListOrStream[RoseTree[Float]] = {
             if (theValue == 0.0f)
               LazyListOrStream.empty
             else if (theValue <= 1.0f && theValue >= -1.0f)
@@ -927,7 +927,7 @@ object Generator {
               // positive number will be considered the most shrunk.
               val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else ((-n).floor, n.ceil)
               LazyListOrStream(nearestNeg, nearest).filter(v => isValidFun(v, sizeParam))
-                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(nearest)
+                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(nearest)
             }  
             else {
               val sqrt: Float = math.sqrt(theValue.abs.toDouble).toFloat
@@ -939,11 +939,11 @@ object Generator {
                 val whole: Float = sqrt.floor
                 val negWhole: Float = -whole // math.rint((-whole).toDouble).toFloat
                 LazyListOrStream(negWhole, whole).filter(v => isValidFun(v, sizeParam))
-                                                 .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(whole)
+                                                 .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(whole)
               }
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -958,15 +958,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[Float]] = {
         case class CanonicalRoseTree(value: Float) extends RoseTree[Float] {
           def shrinks: LazyListOrStream[RoseTree[Float]] = {
-            def resLazyList(theValue: Float): LazyListOrStream[RoseTree[Float]] = {
+            def resLazyListOrStream(theValue: Float): LazyListOrStream[RoseTree[Float]] = {
               if (theValue == 0) LazyListOrStream.empty
               else {
                 val minusOne: Float = (theValue - 1.0f).toFloat
                 if (minusOne == 0) Rose(0.toFloat) #:: LazyListOrStream.empty
-                else CanonicalRoseTree((-minusOne).toFloat) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree((-minusOne).toFloat) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0f).shrinks
@@ -983,7 +983,7 @@ object Generator {
 
       case class NextRoseTree(value: Double, sizeParam: SizeParam, isValidFun: (Double, SizeParam) => Boolean) extends RoseTree[Double] {
         def shrinks: LazyListOrStream[RoseTree[Double]] = {
-          def resLazyList(theValue: Double): LazyListOrStream[RoseTree[Double]] = {
+          def resLazyListOrStream(theValue: Double): LazyListOrStream[RoseTree[Double]] = {
 
             if (theValue == 0.0)
               LazyListOrStream.empty
@@ -1021,7 +1021,7 @@ object Generator {
               // positive number will be considered the most shrunk.
               val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else ((-n).floor, n.ceil)
               LazyListOrStream(nearestNeg, nearest).filter(v => isValidFun(v, sizeParam))
-                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(nearest)
+                                                      .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(nearest)
             }  
             else {
               val sqrt: Double = math.sqrt(theValue.abs)
@@ -1033,11 +1033,11 @@ object Generator {
                 val whole: Double = sqrt.floor
                 val negWhole: Double = -whole // math.rint((-whole).toDouble).toDouble
                 LazyListOrStream(negWhole, whole).filter(v => isValidFun(v, sizeParam))
-                                                 .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(whole)
+                                                 .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(whole)
               }
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1052,15 +1052,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[Double]] = {
         case class CanonicalRoseTree(value: Double) extends RoseTree[Double] {
           def shrinks: LazyListOrStream[RoseTree[Double]] = {
-            def resLazyList(theValue: Double): LazyListOrStream[RoseTree[Double]] = {
+            def resLazyListOrStream(theValue: Double): LazyListOrStream[RoseTree[Double]] = {
               if (theValue == 0) LazyListOrStream.empty
               else {
                 val minusOne: Double = (theValue - 1.0).toDouble
                 if (minusOne == 0) Rose(0.toDouble) #:: LazyListOrStream.empty
-                else CanonicalRoseTree((-minusOne).toDouble) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree((-minusOne).toDouble) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0).shrinks
@@ -1077,18 +1077,18 @@ object Generator {
 
       case class NextRoseTree(value: PosInt, sizeParam: SizeParam, isValidFun: (PosInt, SizeParam) => Boolean) extends RoseTree[PosInt] {
         def shrinks: LazyListOrStream[RoseTree[PosInt]] = {
-          def resLazyList(theValue: PosInt): LazyListOrStream[RoseTree[PosInt]] = {
+          def resLazyListOrStream(theValue: PosInt): LazyListOrStream[RoseTree[PosInt]] = {
             val half = theValue / 2
             if (half == 0) LazyListOrStream.empty
             else {
               val posIntHalf = PosInt.ensuringValid(half)
               if (isValidFun(posIntHalf, sizeParam))
-                NextRoseTree(posIntHalf, sizeParam, isValidFun) #:: resLazyList(posIntHalf)
+                NextRoseTree(posIntHalf, sizeParam, isValidFun) #:: resLazyListOrStream(posIntHalf)
               else
-                resLazyList(posIntHalf)
+                resLazyListOrStream(posIntHalf)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1104,15 +1104,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[PosInt]] = {
         case class CanonicalRoseTree(value: PosInt) extends RoseTree[PosInt] {
           def shrinks: LazyListOrStream[RoseTree[PosInt]] = {
-            def resLazyList(theValue: PosInt): LazyListOrStream[RoseTree[PosInt]] = {
+            def resLazyListOrStream(theValue: PosInt): LazyListOrStream[RoseTree[PosInt]] = {
               if (theValue.value == 1) LazyListOrStream.empty
               else {
                 val minusOne: PosInt = PosInt.ensuringValid(theValue.value - 1)
                 if (minusOne.value == 1) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4).shrinks
@@ -1129,18 +1129,18 @@ object Generator {
 
       case class NextRoseTree(value: PosZInt, sizeParam: SizeParam, isValidFun: (PosZInt, SizeParam) => Boolean) extends RoseTree[PosZInt] {
         def shrinks: LazyListOrStream[RoseTree[PosZInt]] = {
-          def resLazyList(theValue: PosZInt): LazyListOrStream[RoseTree[PosZInt]] = {
+          def resLazyListOrStream(theValue: PosZInt): LazyListOrStream[RoseTree[PosZInt]] = {
             if (theValue.value == 0) LazyListOrStream.empty
             else {
               val half: Int = theValue / 2
               val posZIntHalf = PosZInt.ensuringValid(half)
               if (isValidFun(posZIntHalf, sizeParam))
-                NextRoseTree(posZIntHalf, sizeParam, isValidFun) #:: resLazyList(posZIntHalf)
+                NextRoseTree(posZIntHalf, sizeParam, isValidFun) #:: resLazyListOrStream(posZIntHalf)
               else
-                resLazyList(posZIntHalf)  
+                resLazyListOrStream(posZIntHalf)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1156,15 +1156,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[PosZInt]] = {
         case class CanonicalRoseTree(value: PosZInt) extends RoseTree[PosZInt] {
           def shrinks: LazyListOrStream[RoseTree[PosZInt]] = {
-            def resLazyList(theValue: PosZInt): LazyListOrStream[RoseTree[PosZInt]] = {
+            def resLazyListOrStream(theValue: PosZInt): LazyListOrStream[RoseTree[PosZInt]] = {
               if (theValue.value == 0) LazyListOrStream.empty
               else {
                 val minusOne: PosZInt = PosZInt.ensuringValid(theValue.value - 1)
                 if (minusOne.value == 0) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4).shrinks
@@ -1182,18 +1182,18 @@ object Generator {
       case class NextRoseTree(value: PosLong, sizeParam: SizeParam, isValidFun: (PosLong, SizeParam) => Boolean) extends RoseTree[PosLong] {
         def shrinks: LazyListOrStream[RoseTree[PosLong]] = {
 
-          def resLazyList(theValue: PosLong): LazyListOrStream[RoseTree[PosLong]] = {
+          def resLazyListOrStream(theValue: PosLong): LazyListOrStream[RoseTree[PosLong]] = {
             val half = theValue / 2
             if (half == 0) LazyListOrStream.empty
             else {
               val posLongHalf = PosLong.ensuringValid(half)
               if (isValidFun(posLongHalf, sizeParam))
-                NextRoseTree(posLongHalf, sizeParam, isValidFun) #:: resLazyList(posLongHalf)
+                NextRoseTree(posLongHalf, sizeParam, isValidFun) #:: resLazyListOrStream(posLongHalf)
               else
-                resLazyList(posLongHalf)  
+                resLazyListOrStream(posLongHalf)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1209,15 +1209,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[PosLong]] = {
         case class CanonicalRoseTree(value: PosLong) extends RoseTree[PosLong] {
           def shrinks: LazyListOrStream[RoseTree[PosLong]] = {
-            def resLazyList(theValue: PosLong): LazyListOrStream[RoseTree[PosLong]] = {
+            def resLazyListOrStream(theValue: PosLong): LazyListOrStream[RoseTree[PosLong]] = {
               if (theValue.value == 1) LazyListOrStream.empty
               else {
                 val minusOne: PosLong = PosLong.ensuringValid(theValue.value - 1)
                 if (minusOne.value == 1) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4L).shrinks
@@ -1234,18 +1234,18 @@ object Generator {
       
       case class NextRoseTree(value: PosZLong, sizeParam: SizeParam, isValidFun: (PosZLong, SizeParam) => Boolean) extends RoseTree[PosZLong] {
         def shrinks: LazyListOrStream[RoseTree[PosZLong]] = {
-          def resLazyList(theValue: PosZLong): LazyListOrStream[RoseTree[PosZLong]] = {
+          def resLazyListOrStream(theValue: PosZLong): LazyListOrStream[RoseTree[PosZLong]] = {
             if (theValue.value == 0L) LazyListOrStream.empty
             else {
               val half: Long = theValue / 2
               val posZLongHalf = PosZLong.ensuringValid(half)
               if (isValidFun(posZLongHalf, sizeParam))
-                NextRoseTree(posZLongHalf, sizeParam, isValidFun) #:: resLazyList(posZLongHalf)
+                NextRoseTree(posZLongHalf, sizeParam, isValidFun) #:: resLazyListOrStream(posZLongHalf)
               else
-                resLazyList(posZLongHalf)  
+                resLazyListOrStream(posZLongHalf)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
       
@@ -1261,15 +1261,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[PosZLong]] = {
         case class CanonicalRoseTree(value: PosZLong) extends RoseTree[PosZLong] {
           def shrinks: LazyListOrStream[RoseTree[PosZLong]] = {
-            def resLazyList(theValue: PosZLong): LazyListOrStream[RoseTree[PosZLong]] = {
+            def resLazyListOrStream(theValue: PosZLong): LazyListOrStream[RoseTree[PosZLong]] = {
               if (theValue.value == 0) LazyListOrStream.empty
               else {
                 val minusOne: PosZLong = PosZLong.ensuringValid(theValue.value - 1)
                 if (minusOne.value == 0) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4L).shrinks
@@ -1286,7 +1286,7 @@ object Generator {
 
       case class NextRoseTree(value: PosFloat, sizeParam: SizeParam, isValidFun: (PosFloat, SizeParam) => Boolean) extends RoseTree[PosFloat] {
         def shrinks: LazyListOrStream[RoseTree[PosFloat]] = {
-          def resLazyList(theValue: PosFloat): LazyListOrStream[RoseTree[PosFloat]] = {
+          def resLazyListOrStream(theValue: PosFloat): LazyListOrStream[RoseTree[PosFloat]] = {
             val fv = theValue.value
             if (fv == 1.0f)
               LazyListOrStream.empty
@@ -1304,20 +1304,20 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = PosFloat.ensuringValid(n.floor)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Float = math.sqrt(fv.toDouble).toFloat
               val whole = PosFloat.ensuringValid(sqrt.floor)
               if (isValidFun(whole, sizeParam))
-                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
               else
-                resLazyList(whole)  
+                resLazyListOrStream(whole)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1333,15 +1333,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[PosFloat]] = {
         case class CanonicalRoseTree(value: PosFloat) extends RoseTree[PosFloat] {
           def shrinks: LazyListOrStream[RoseTree[PosFloat]] = {
-            def resLazyList(theValue: PosFloat): LazyListOrStream[RoseTree[PosFloat]] = {
+            def resLazyListOrStream(theValue: PosFloat): LazyListOrStream[RoseTree[PosFloat]] = {
               if (theValue.value == 1.0f) LazyListOrStream.empty
               else {
                 val minusOne: PosFloat = PosFloat.ensuringValid(theValue.value - 1.0f)
                 if (minusOne.value == 1.0f) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0f).shrinks
@@ -1358,7 +1358,7 @@ object Generator {
 
       case class NextRoseTree(value: PosFiniteFloat, sizeParam: SizeParam, isValidFun: (PosFiniteFloat, SizeParam) => Boolean) extends RoseTree[PosFiniteFloat] {
         def shrinks: LazyListOrStream[RoseTree[PosFiniteFloat]] = {
-          def resLazyList(theValue: PosFiniteFloat): LazyListOrStream[RoseTree[PosFiniteFloat]] = {
+          def resLazyListOrStream(theValue: PosFiniteFloat): LazyListOrStream[RoseTree[PosFiniteFloat]] = {
             val fv = theValue.value
             if (fv == 1.0f) LazyListOrStream.empty
             else if (fv < 1.0f) { 
@@ -1371,20 +1371,20 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = PosFiniteFloat.ensuringValid(fv.floor)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Float = math.sqrt(fv.toDouble).toFloat
               val whole = PosFiniteFloat.ensuringValid(sqrt.floor)
               if (isValidFun(whole, sizeParam))
-                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
               else
-                resLazyList(whole)  
+                resLazyListOrStream(whole)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1400,15 +1400,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[PosFiniteFloat]] = {
         case class CanonicalRoseTree(value: PosFiniteFloat) extends RoseTree[PosFiniteFloat] {
           def shrinks: LazyListOrStream[RoseTree[PosFiniteFloat]] = {
-            def resLazyList(theValue: PosFiniteFloat): LazyListOrStream[RoseTree[PosFiniteFloat]] = {
+            def resLazyListOrStream(theValue: PosFiniteFloat): LazyListOrStream[RoseTree[PosFiniteFloat]] = {
               if (theValue.value == 1.0f) LazyListOrStream.empty
               else {
                 val minusOne: PosFiniteFloat = PosFiniteFloat.ensuringValid(theValue.value - 1.0f)
                 if (minusOne.value == 1.0f) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0f).shrinks
@@ -1425,7 +1425,7 @@ object Generator {
 
       case class NextRoseTree(value: FiniteFloat, sizeParam: SizeParam, isValidFun: (FiniteFloat, SizeParam) => Boolean) extends RoseTree[FiniteFloat] {
         def shrinks: LazyListOrStream[RoseTree[FiniteFloat]] = {
-          def resLazyList(theValue: FiniteFloat): LazyListOrStream[RoseTree[FiniteFloat]] = {
+          def resLazyListOrStream(theValue: FiniteFloat): LazyListOrStream[RoseTree[FiniteFloat]] = {
             val fv = theValue.value
             if (fv == 0.0f) LazyListOrStream.empty
             else if (fv <= 1.0f && fv >= -1.0f) {
@@ -1437,9 +1437,9 @@ object Generator {
             else if (!fv.isWhole) {
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (fv > 0.0f) (fv.floor, (-fv).ceil) else (fv.ceil, (-fv).floor)
-              LazyList(FiniteFloat.ensuringValid(nearestNeg), FiniteFloat.ensuringValid(nearest))
+              LazyListOrStream(FiniteFloat.ensuringValid(nearestNeg), FiniteFloat.ensuringValid(nearest))
                 .filter(isValidFun(_, sizeParam))
-                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(FiniteFloat.ensuringValid(nearest))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(FiniteFloat.ensuringValid(nearest))
             }
             else {
               val sqrt: Float = math.sqrt(fv.abs.toDouble).toFloat
@@ -1453,13 +1453,13 @@ object Generator {
                 val whole: Float = sqrt.floor
                 val negWhole: Float = math.rint((-whole).toDouble).toFloat
                 val (first, second) = if (fv > 0.0f) (negWhole, whole) else (whole, negWhole)
-                LazyList(FiniteFloat.ensuringValid(first), FiniteFloat.ensuringValid(second))
+                LazyListOrStream(FiniteFloat.ensuringValid(first), FiniteFloat.ensuringValid(second))
                   .filter(isValidFun(_, sizeParam))
-                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(FiniteFloat.ensuringValid(first))
+                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(FiniteFloat.ensuringValid(first))
               }
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1475,15 +1475,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[FiniteFloat]] = {
         case class CanonicalRoseTree(value: FiniteFloat) extends RoseTree[FiniteFloat] {
           def shrinks: LazyListOrStream[RoseTree[FiniteFloat]] = {
-            def resLazyList(theValue: FiniteFloat): LazyListOrStream[RoseTree[FiniteFloat]] = {
+            def resLazyListOrStream(theValue: FiniteFloat): LazyListOrStream[RoseTree[FiniteFloat]] = {
               if (theValue.value == 0.0f) LazyListOrStream.empty
               else {
                 val minusOne: FiniteFloat = FiniteFloat.ensuringValid(theValue.value - 1.0f)
                 if (minusOne.value == 0.0f) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0f).shrinks
@@ -1500,7 +1500,7 @@ object Generator {
 
       case class NextRoseTree(value: FiniteDouble, sizeParam: SizeParam, isValidFun: (FiniteDouble, SizeParam) => Boolean) extends RoseTree[FiniteDouble] {
         def shrinks: LazyListOrStream[RoseTree[FiniteDouble]] = {
-          def resLazyList(theValue: FiniteDouble): LazyListOrStream[RoseTree[FiniteDouble]] = {
+          def resLazyListOrStream(theValue: FiniteDouble): LazyListOrStream[RoseTree[FiniteDouble]] = {
             val dv: Double = theValue.value
             if (dv == 0.0) LazyListOrStream.empty
             else if (dv <= 1.0 && dv >= -1.0) {
@@ -1512,9 +1512,9 @@ object Generator {
             else if (!dv.isWhole) {
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (dv > 0.0) (dv.floor, (-dv).ceil) else (dv.ceil, (-dv).floor)
-              LazyList(FiniteDouble.ensuringValid(nearestNeg), FiniteDouble.ensuringValid(nearest))
+              LazyListOrStream(FiniteDouble.ensuringValid(nearestNeg), FiniteDouble.ensuringValid(nearest))
                 .filter(isValidFun(_, sizeParam))
-                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(FiniteDouble.ensuringValid(nearest))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(FiniteDouble.ensuringValid(nearest))
             }
             else {
               val sqrt: Double = math.sqrt(dv.abs)
@@ -1528,13 +1528,13 @@ object Generator {
                 val whole: Double = sqrt.floor
                 val negWhole: Double = math.rint((-whole).toDouble)
                 val (first, second) = if (dv > 0.0) (negWhole, whole) else (whole, negWhole)
-                LazyList(FiniteDouble.ensuringValid(first), FiniteDouble.ensuringValid(second))
+                LazyListOrStream(FiniteDouble.ensuringValid(first), FiniteDouble.ensuringValid(second))
                   .filter(isValidFun(_, sizeParam))
-                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(FiniteDouble.ensuringValid(first))
+                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(FiniteDouble.ensuringValid(first))
               }
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1550,15 +1550,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[FiniteDouble]] = {
         case class CanonicalRoseTree(value: FiniteDouble) extends RoseTree[FiniteDouble] {
           def shrinks: LazyListOrStream[RoseTree[FiniteDouble]] = {
-            def resLazyList(theValue: FiniteDouble): LazyListOrStream[RoseTree[FiniteDouble]] = {
+            def resLazyListOrStream(theValue: FiniteDouble): LazyListOrStream[RoseTree[FiniteDouble]] = {
               if (theValue.value == 0.0) LazyListOrStream.empty
               else {
                 val minusOne: FiniteDouble = FiniteDouble.ensuringValid(theValue.value - 1.0)
                 if (minusOne.value == 0.0) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0).shrinks
@@ -1575,7 +1575,7 @@ object Generator {
 
       case class NextRoseTree(value: PosZFloat, sizeParam: SizeParam, isValidFun: (PosZFloat, SizeParam) => Boolean) extends RoseTree[PosZFloat] {
         def shrinks: LazyListOrStream[RoseTree[PosZFloat]] = {
-          def resLazyList(theValue: PosZFloat): LazyListOrStream[RoseTree[PosZFloat]] = {
+          def resLazyListOrStream(theValue: PosZFloat): LazyListOrStream[RoseTree[PosZFloat]] = {
             val fv: Float = theValue.value
             if (fv == 0.0f) LazyListOrStream.empty
             else if (fv <= 1.0f) { 
@@ -1592,9 +1592,9 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = PosZFloat.ensuringValid(n.floor)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Float = math.sqrt(fv.toDouble).toFloat
@@ -1607,13 +1607,13 @@ object Generator {
               else {
                 val whole = PosZFloat.ensuringValid(sqrt.floor)
                 if (isValidFun(whole, sizeParam))
-                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
                 else
-                  resLazyList(whole)  
+                  resLazyListOrStream(whole)  
               }
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1629,15 +1629,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[PosZFloat]] = {
         case class CanonicalRoseTree(value: PosZFloat) extends RoseTree[PosZFloat] {
           def shrinks: LazyListOrStream[RoseTree[PosZFloat]] = {
-            def resLazyList(theValue: PosZFloat): LazyListOrStream[RoseTree[PosZFloat]] = {
+            def resLazyListOrStream(theValue: PosZFloat): LazyListOrStream[RoseTree[PosZFloat]] = {
               if (theValue.value == 0.0f) LazyListOrStream.empty
               else {
                 val minusOne: PosZFloat = PosZFloat.ensuringValid(theValue.value - 1.0f)
                 if (minusOne.value == 0.0f) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0f).shrinks
@@ -1654,7 +1654,7 @@ object Generator {
 
       case class NextRoseTree(value: PosZFiniteFloat, sizeParam: SizeParam, isValidFun: (PosZFiniteFloat, SizeParam) => Boolean) extends RoseTree[PosZFiniteFloat] {
         def shrinks: LazyListOrStream[RoseTree[PosZFiniteFloat]] = {
-          def resLazyList(theValue: PosZFiniteFloat): LazyListOrStream[RoseTree[PosZFiniteFloat]] = {
+          def resLazyListOrStream(theValue: PosZFiniteFloat): LazyListOrStream[RoseTree[PosZFiniteFloat]] = {
             val fv = theValue.value
             if (fv == 0.0f) LazyListOrStream.empty
             else if (fv <= 1.0f) {
@@ -1667,9 +1667,9 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = PosZFiniteFloat.ensuringValid(fv.floor)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Float = math.sqrt(fv.toDouble).toFloat
@@ -1677,13 +1677,13 @@ object Generator {
               else {
                 val whole = PosZFiniteFloat.ensuringValid(sqrt.floor)
                 if (isValidFun(whole, sizeParam))
-                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
                 else
-                  resLazyList(whole)  
+                  resLazyListOrStream(whole)  
               }
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1699,15 +1699,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[PosZFiniteFloat]] = {
         case class CanonicalRoseTree(value: PosZFiniteFloat) extends RoseTree[PosZFiniteFloat] {
           def shrinks: LazyListOrStream[RoseTree[PosZFiniteFloat]] = {
-            def resLazyList(theValue: PosZFiniteFloat): LazyListOrStream[RoseTree[PosZFiniteFloat]] = {
+            def resLazyListOrStream(theValue: PosZFiniteFloat): LazyListOrStream[RoseTree[PosZFiniteFloat]] = {
               if (theValue.value == 0.0f) LazyListOrStream.empty
               else {
                 val minusOne: PosZFiniteFloat = PosZFiniteFloat.ensuringValid(theValue.value - 1.0f)
                 if (minusOne.value == 0.0f) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0f).shrinks
@@ -1724,7 +1724,7 @@ object Generator {
 
       case class NextRoseTree(value: PosDouble, sizeParam: SizeParam, isValidFun: (PosDouble, SizeParam) => Boolean) extends RoseTree[PosDouble] {
         def shrinks: LazyListOrStream[RoseTree[PosDouble]] = {
-          def resLazyList(theValue: PosDouble): LazyListOrStream[RoseTree[PosDouble]] = {
+          def resLazyListOrStream(theValue: PosDouble): LazyListOrStream[RoseTree[PosDouble]] = {
             val fv = theValue.value
             if (fv == 1.0) LazyListOrStream.empty
             else if (fv < 1.0) { 
@@ -1741,20 +1741,20 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = PosDouble.ensuringValid(n.floor)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Double = math.sqrt(fv)
               val whole = PosDouble.ensuringValid(sqrt.floor)
               if (isValidFun(whole, sizeParam))
-                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
               else
-                resLazyList(whole)  
+                resLazyListOrStream(whole)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1770,15 +1770,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[PosDouble]] = {
         case class CanonicalRoseTree(value: PosDouble) extends RoseTree[PosDouble] {
           def shrinks: LazyListOrStream[RoseTree[PosDouble]] = {
-            def resLazyList(theValue: PosDouble): LazyListOrStream[RoseTree[PosDouble]] = {
+            def resLazyListOrStream(theValue: PosDouble): LazyListOrStream[RoseTree[PosDouble]] = {
               if (theValue.value == 1.0) LazyListOrStream.empty
               else {
                 val minusOne: PosDouble = PosDouble.ensuringValid(theValue.value - 1.0)
                 if (minusOne.value == 1.0) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0).shrinks
@@ -1795,7 +1795,7 @@ object Generator {
 
       case class NextRoseTree(value: PosFiniteDouble, sizeParam: SizeParam, isValidFun: (PosFiniteDouble, SizeParam) => Boolean) extends RoseTree[PosFiniteDouble] {
         def shrinks: LazyListOrStream[RoseTree[PosFiniteDouble]] = {
-          def resLazyList(theValue: PosFiniteDouble): LazyListOrStream[RoseTree[PosFiniteDouble]] = {
+          def resLazyListOrStream(theValue: PosFiniteDouble): LazyListOrStream[RoseTree[PosFiniteDouble]] = {
             val fv = theValue.value
             if (fv == 1.0) LazyListOrStream.empty
             else if (fv < 1.0) { 
@@ -1808,20 +1808,20 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = PosFiniteDouble.ensuringValid(fv.floor)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Double = math.sqrt(fv)
               val whole = PosFiniteDouble.ensuringValid(sqrt.floor)
               if (isValidFun(whole, sizeParam))
-                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
               else
-                resLazyList(whole)  
+                resLazyListOrStream(whole)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1837,15 +1837,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[PosFiniteDouble]] = {
         case class CanonicalRoseTree(value: PosFiniteDouble) extends RoseTree[PosFiniteDouble] {
           def shrinks: LazyListOrStream[RoseTree[PosFiniteDouble]] = {
-            def resLazyList(theValue: PosFiniteDouble): LazyListOrStream[RoseTree[PosFiniteDouble]] = {
+            def resLazyListOrStream(theValue: PosFiniteDouble): LazyListOrStream[RoseTree[PosFiniteDouble]] = {
               if (theValue.value == 1.0) LazyListOrStream.empty
               else {
                 val minusOne: PosFiniteDouble = PosFiniteDouble.ensuringValid(theValue.value - 1.0)
                 if (minusOne.value == 1.0) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0).shrinks
@@ -1862,7 +1862,7 @@ object Generator {
 
       case class NextRoseTree(value: PosZDouble, sizeParam: SizeParam, isValidFun: (PosZDouble, SizeParam) => Boolean) extends RoseTree[PosZDouble] {
         def shrinks: LazyListOrStream[RoseTree[PosZDouble]] = {
-          def resLazyList(theValue: PosZDouble): LazyListOrStream[RoseTree[PosZDouble]] = {
+          def resLazyListOrStream(theValue: PosZDouble): LazyListOrStream[RoseTree[PosZDouble]] = {
             val fv = theValue.value
             if (fv == 0.0) LazyListOrStream.empty
             else if (fv <= 1.0) {
@@ -1879,9 +1879,9 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = PosZDouble.ensuringValid(n.floor)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Double = math.sqrt(fv)
@@ -1894,13 +1894,13 @@ object Generator {
               else {
                 val whole = PosZDouble.ensuringValid(sqrt.floor)
                 if (isValidFun(whole, sizeParam))
-                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
                 else
-                  resLazyList(whole)  
+                  resLazyListOrStream(whole)  
               }
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1916,15 +1916,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[PosZDouble]] = {
         case class CanonicalRoseTree(value: PosZDouble) extends RoseTree[PosZDouble] {
           def shrinks: LazyListOrStream[RoseTree[PosZDouble]] = {
-            def resLazyList(theValue: PosZDouble): LazyListOrStream[RoseTree[PosZDouble]] = {
+            def resLazyListOrStream(theValue: PosZDouble): LazyListOrStream[RoseTree[PosZDouble]] = {
               if (theValue.value == 0.0) LazyListOrStream.empty
               else {
                 val minusOne: PosZDouble = PosZDouble.ensuringValid(theValue.value - 1.0)
                 if (minusOne.value == 0.0) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0).shrinks
@@ -1941,7 +1941,7 @@ object Generator {
 
       case class NextRoseTree(value: PosZFiniteDouble, sizeParam: SizeParam, isValidFun: (PosZFiniteDouble, SizeParam) => Boolean) extends RoseTree[PosZFiniteDouble] {
         def shrinks: LazyListOrStream[RoseTree[PosZFiniteDouble]] = {
-          def resLazyList(theValue: PosZFiniteDouble): LazyListOrStream[RoseTree[PosZFiniteDouble]] = {
+          def resLazyListOrStream(theValue: PosZFiniteDouble): LazyListOrStream[RoseTree[PosZFiniteDouble]] = {
             val fv = theValue.value
             if (fv == 0.0) LazyListOrStream.empty
             else if (fv <= 1.0) {
@@ -1954,9 +1954,9 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = PosZFiniteDouble.ensuringValid(fv.floor)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Double = math.sqrt(fv)
@@ -1969,13 +1969,13 @@ object Generator {
               else {
                 val whole = PosZFiniteDouble.ensuringValid(sqrt.floor)
                 if (isValidFun(whole, sizeParam))
-                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
                 else
-                  resLazyList(whole)
+                  resLazyListOrStream(whole)
               }
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -1991,15 +1991,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[PosZFiniteDouble]] = {
         case class CanonicalRoseTree(value: PosZFiniteDouble) extends RoseTree[PosZFiniteDouble] {
           def shrinks: LazyListOrStream[RoseTree[PosZFiniteDouble]] = {
-            def resLazyList(theValue: PosZFiniteDouble): LazyListOrStream[RoseTree[PosZFiniteDouble]] = {
+            def resLazyListOrStream(theValue: PosZFiniteDouble): LazyListOrStream[RoseTree[PosZFiniteDouble]] = {
               if (theValue.value == 0.0) LazyListOrStream.empty
               else {
                 val minusOne: PosZFiniteDouble = PosZFiniteDouble.ensuringValid(theValue.value - 1.0)
                 if (minusOne.value == 0.0) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0).shrinks
@@ -2016,7 +2016,7 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroDouble, sizeParam: SizeParam, isValidFun: (NonZeroDouble, SizeParam) => Boolean) extends RoseTree[NonZeroDouble] {
         def shrinks: LazyListOrStream[RoseTree[NonZeroDouble]] = {
-          def resLazyList(theValue: NonZeroDouble): LazyListOrStream[RoseTree[NonZeroDouble]] = {
+          def resLazyListOrStream(theValue: NonZeroDouble): LazyListOrStream[RoseTree[NonZeroDouble]] = {
             val d = theValue.value
             if (d <= 1.0 && d >= -1.0)
               LazyListOrStream.empty
@@ -2029,9 +2029,9 @@ object Generator {
                 else d
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (n > 0.0) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-              LazyList(NonZeroDouble.ensuringValid(nearestNeg), NonZeroDouble.ensuringValid(nearest))
+              LazyListOrStream(NonZeroDouble.ensuringValid(nearestNeg), NonZeroDouble.ensuringValid(nearest))
                 .filter(isValidFun(_, sizeParam))
-                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(NonZeroDouble.ensuringValid(nearest))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(NonZeroDouble.ensuringValid(nearest))
             }
             else {
               val sqrt: Double = math.sqrt(d.abs)
@@ -2041,9 +2041,9 @@ object Generator {
                 // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
                 val negWhole: NonZeroDouble = -whole  //math.rint(-whole)
                 val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
-                LazyList(first, second)
+                LazyListOrStream(first, second)
                   .filter(isValidFun(_, sizeParam))
-                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(first)
+                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(first)
               }
             }
           }
@@ -2053,12 +2053,12 @@ object Generator {
             // For now, if a non-zero floating point value is between -1.0 and 1.0 exclusive, just try -1.0 and 1.0.
             // Our attitude is that whole numbers are simpler, so more shrunken, than non-whole numbers. Since the failing value
             // non-zero, there isn't any number smaller that's whole, so for now we'll hop up to -1.0 and 1.0.
-            LazyList(NonZeroDouble.ensuringValid(-1.0), NonZeroDouble.ensuringValid(1.0))
+            LazyListOrStream(NonZeroDouble.ensuringValid(-1.0), NonZeroDouble.ensuringValid(1.0))
               .filter(isValidFun(_, sizeParam))
               .map(Rose(_))  #::: LazyListOrStream.empty
           }
           else
-            resLazyList(value)
+            resLazyListOrStream(value)
         }
       }
 
@@ -2074,15 +2074,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NonZeroDouble]] = {
         case class CanonicalRoseTree(value: NonZeroDouble) extends RoseTree[NonZeroDouble] {
           def shrinks: LazyListOrStream[RoseTree[NonZeroDouble]] = {
-            def resLazyList(theValue: NonZeroDouble): LazyListOrStream[RoseTree[NonZeroDouble]] = {
+            def resLazyListOrStream(theValue: NonZeroDouble): LazyListOrStream[RoseTree[NonZeroDouble]] = {
               if (theValue.value == 1.0) LazyListOrStream.empty
               else {
                 val minusOne: NonZeroDouble = NonZeroDouble.ensuringValid(theValue.value - 1.0)
                 if (minusOne.value == 1.0) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0).shrinks
@@ -2099,16 +2099,16 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroFiniteDouble, sizeParam: SizeParam, isValidFun: (NonZeroFiniteDouble, SizeParam) => Boolean) extends RoseTree[NonZeroFiniteDouble] {
         def shrinks: LazyListOrStream[RoseTree[NonZeroFiniteDouble]] = {
-          def resLazyList(theValue: NonZeroFiniteDouble): LazyListOrStream[RoseTree[NonZeroFiniteDouble]] = {
+          def resLazyListOrStream(theValue: NonZeroFiniteDouble): LazyListOrStream[RoseTree[NonZeroFiniteDouble]] = {
             val d = theValue.value
             if (d <= 1.0 && d >= -1.0)
               LazyListOrStream.empty[RoseTree[NonZeroFiniteDouble]]
             else if (!d.isWhole) {
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (d > 0.0) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
-              LazyList(NonZeroFiniteDouble.ensuringValid(nearestNeg), NonZeroFiniteDouble.ensuringValid(nearest))
+              LazyListOrStream(NonZeroFiniteDouble.ensuringValid(nearestNeg), NonZeroFiniteDouble.ensuringValid(nearest))
                 .filter(isValidFun(_, sizeParam))
-                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(NonZeroFiniteDouble.ensuringValid(nearest))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(NonZeroFiniteDouble.ensuringValid(nearest))
             }
             else {
               val sqrt: Double = math.sqrt(d.abs)
@@ -2118,9 +2118,9 @@ object Generator {
                 // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
                 val negWhole: NonZeroFiniteDouble = -whole  //math.rint(-whole)
                 val (first, second) = if (d > 0.0) (negWhole, whole) else (whole, negWhole)
-                LazyList(first, second)
+                LazyListOrStream(first, second)
                   .filter(isValidFun(_, sizeParam))
-                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(first)
+                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(first)
               }
             }
           }
@@ -2129,12 +2129,12 @@ object Generator {
             // For now, if a non-zero floating point value is between -1.0 and 1.0 exclusive, just try -1.0 and 1.0.
             // Our attitude is that whole numbers are simpler, so more shrunken, than non-whole numbers. Since the failing value
             // non-zero, there isn't any number smaller that's whole, so for now we'll hop up to -1.0 and 1.0. 
-            LazyList(NonZeroFiniteDouble.ensuringValid(-1.0), NonZeroFiniteDouble.ensuringValid(1.0))
+            LazyListOrStream(NonZeroFiniteDouble.ensuringValid(-1.0), NonZeroFiniteDouble.ensuringValid(1.0))
               .filter(isValidFun(_, sizeParam))
               .map(NextRoseTree(_, sizeParam, isValidFun)) #::: LazyListOrStream.empty
           }
           else
-            resLazyList(value)
+            resLazyListOrStream(value)
         }
       }
 
@@ -2150,15 +2150,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NonZeroFiniteDouble]] = {
         case class CanonicalRoseTree(value: NonZeroFiniteDouble) extends RoseTree[NonZeroFiniteDouble] {
           def shrinks: LazyListOrStream[RoseTree[NonZeroFiniteDouble]] = {
-            def resLazyList(theValue: NonZeroFiniteDouble): LazyListOrStream[RoseTree[NonZeroFiniteDouble]] = {
+            def resLazyListOrStream(theValue: NonZeroFiniteDouble): LazyListOrStream[RoseTree[NonZeroFiniteDouble]] = {
               if (theValue.value == 1.0) LazyListOrStream.empty
               else {
                 val minusOne: NonZeroFiniteDouble = NonZeroFiniteDouble.ensuringValid(theValue.value - 1.0)
                 if (minusOne.value == 1.0) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0).shrinks
@@ -2175,7 +2175,7 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroFloat, sizeParam: SizeParam, isValidFun: (NonZeroFloat, SizeParam) => Boolean) extends RoseTree[NonZeroFloat] {
         def shrinks: LazyListOrStream[RoseTree[NonZeroFloat]] = {
-          def resLazyList(theValue: NonZeroFloat): LazyListOrStream[RoseTree[NonZeroFloat]] = {
+          def resLazyListOrStream(theValue: NonZeroFloat): LazyListOrStream[RoseTree[NonZeroFloat]] = {
             val d = theValue.value
             if (d <= 1.0f && d >= -1.0f)
               LazyListOrStream.empty[RoseTree[NonZeroFloat]]
@@ -2188,9 +2188,9 @@ object Generator {
                 else d
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (n > 0.0f) (n.floor, (-n).ceil) else (n.ceil, (-n).floor)
-              LazyList(NonZeroFloat.ensuringValid(nearestNeg), NonZeroFloat.ensuringValid(nearest))
+              LazyListOrStream(NonZeroFloat.ensuringValid(nearestNeg), NonZeroFloat.ensuringValid(nearest))
                 .filter(isValidFun(_, sizeParam))
-                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(NonZeroFloat.ensuringValid(nearest))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(NonZeroFloat.ensuringValid(nearest))
             }
             else {
               val sqrt: Float = math.sqrt(d.abs.toDouble).toFloat
@@ -2199,9 +2199,9 @@ object Generator {
                 val whole: NonZeroFloat = NonZeroFloat.ensuringValid(sqrt.floor)
                 // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
                 val negWhole: NonZeroFloat = -whole  //math.rint(-whole)
-                LazyList(negWhole, whole)
+                LazyListOrStream(negWhole, whole)
                   .filter(isValidFun(_, sizeParam))
-                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(whole)
+                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(whole)
               }
             }
           }
@@ -2210,12 +2210,12 @@ object Generator {
             // For now, if a non-zero floating point value is between -1.0 and 1.0 exclusive, just try -1.0 and 1.0.
             // Our attitude is that whole numbers are simpler, so more shrunken, than non-whole numbers. Since the failing value
             // non-zero, there isn't any number smaller that's whole, so for now we'll hop up to -1.0 and 1.0. 
-            LazyList(NonZeroFloat.ensuringValid(-1.0f), NonZeroFloat.ensuringValid(1.0f))
+            LazyListOrStream(NonZeroFloat.ensuringValid(-1.0f), NonZeroFloat.ensuringValid(1.0f))
               .filter(isValidFun(_, sizeParam))
               .map(Rose(_)) #::: LazyListOrStream.empty
           }
           else
-            resLazyList(value)
+            resLazyListOrStream(value)
         }
       }
 
@@ -2231,15 +2231,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NonZeroFloat]] = {
         case class CanonicalRoseTree(value: NonZeroFloat) extends RoseTree[NonZeroFloat] {
           def shrinks: LazyListOrStream[RoseTree[NonZeroFloat]] = {
-            def resLazyList(theValue: NonZeroFloat): LazyListOrStream[RoseTree[NonZeroFloat]] = {
+            def resLazyListOrStream(theValue: NonZeroFloat): LazyListOrStream[RoseTree[NonZeroFloat]] = {
               if (theValue.value == 1.0f) LazyListOrStream.empty
               else {
                 val minusOne: NonZeroFloat = NonZeroFloat.ensuringValid(theValue - 1.0f)
                 if (minusOne.value == 1.0f || minusOne.value == -1.0f) Rose(-minusOne) #:: Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0f).shrinks
@@ -2256,16 +2256,16 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroFiniteFloat, sizeParam: SizeParam, isValidFun: (NonZeroFiniteFloat, SizeParam) => Boolean) extends RoseTree[NonZeroFiniteFloat] {
         def shrinks: LazyListOrStream[RoseTree[NonZeroFiniteFloat]] = {
-          def resLazyList(theValue: NonZeroFiniteFloat): LazyListOrStream[RoseTree[NonZeroFiniteFloat]] = {
+          def resLazyListOrStream(theValue: NonZeroFiniteFloat): LazyListOrStream[RoseTree[NonZeroFiniteFloat]] = {
             val d = theValue.value
             if (d <= 1.0f && d >= -1.0f)
               LazyListOrStream.empty[RoseTree[NonZeroFiniteFloat]]
             else if (!d.isWhole) {
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (d > 0.0f) (d.floor, (-d).ceil) else (d.ceil, (-d).floor)
-              LazyList(NonZeroFiniteFloat.ensuringValid(nearestNeg), NonZeroFiniteFloat.ensuringValid(nearest))
+              LazyListOrStream(NonZeroFiniteFloat.ensuringValid(nearestNeg), NonZeroFiniteFloat.ensuringValid(nearest))
                 .filter(isValidFun(_, sizeParam))
-                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(NonZeroFiniteFloat.ensuringValid(nearest))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(NonZeroFiniteFloat.ensuringValid(nearest))
             }
             else {
               val sqrt: Float = math.sqrt(d.abs.toDouble).toFloat
@@ -2274,9 +2274,9 @@ object Generator {
                 val whole: NonZeroFiniteFloat = NonZeroFiniteFloat.ensuringValid(sqrt.floor)
                 // Bill: math.rint behave similarly on js, is it ok we just do -whole instead?  Seems to pass our tests.
                 val negWhole: NonZeroFiniteFloat = -whole  //math.rint(-whole)
-                LazyList(negWhole, whole)
+                LazyListOrStream(negWhole, whole)
                   .filter(isValidFun(_, sizeParam))
-                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(whole)
+                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(whole)
               }
             }
           }
@@ -2285,12 +2285,12 @@ object Generator {
             // For now, if a non-zero floating point value is between -1.0 and 1.0 exclusive, just try -1.0 and 1.0.
             // Our attitude is that whole numbers are simpler, so more shrunken, than non-whole numbers. Since the failing value
             // non-zero, there isn't any number smaller that's whole, so for now we'll hop up to -1.0 and 1.0.
-            LazyList(NonZeroFiniteFloat.ensuringValid(-1.0f), NonZeroFiniteFloat.ensuringValid(1.0f))
+            LazyListOrStream(NonZeroFiniteFloat.ensuringValid(-1.0f), NonZeroFiniteFloat.ensuringValid(1.0f))
               .filter(isValidFun(_, sizeParam))
               .map(Rose(_)) #::: LazyListOrStream.empty
           }
           else
-            resLazyList(value)
+            resLazyListOrStream(value)
         }
       }
 
@@ -2306,15 +2306,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NonZeroFiniteFloat]] = {
         case class CanonicalRoseTree(value: NonZeroFiniteFloat) extends RoseTree[NonZeroFiniteFloat] {
           def shrinks: LazyListOrStream[RoseTree[NonZeroFiniteFloat]] = {
-            def resLazyList(theValue: NonZeroFiniteFloat): LazyListOrStream[RoseTree[NonZeroFiniteFloat]] = {
+            def resLazyListOrStream(theValue: NonZeroFiniteFloat): LazyListOrStream[RoseTree[NonZeroFiniteFloat]] = {
               if (theValue.value == 1.0f) LazyListOrStream.empty
               else {
                 val minusOne: NonZeroFiniteFloat = NonZeroFiniteFloat.ensuringValid(theValue.value - 1.0f)
                 if (minusOne.value == 1.0f) Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4.0f).shrinks
@@ -2331,17 +2331,17 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroInt, sizeParam: SizeParam, isValidFun: (NonZeroInt, SizeParam) => Boolean) extends RoseTree[NonZeroInt] {
         def shrinks: LazyListOrStream[RoseTree[NonZeroInt]] = {
-          def resLazyList(theValue: NonZeroInt): LazyListOrStream[RoseTree[NonZeroInt]] = {
+          def resLazyListOrStream(theValue: NonZeroInt): LazyListOrStream[RoseTree[NonZeroInt]] = {
             val i = theValue.value
             val half: Int = i / 2 // i cannot be zero, because initially it is the underlying Int value of a NonZeroInt (in types
             if (half == 0) LazyListOrStream.empty[RoseTree[NonZeroInt]]    // we trust), then if half results in zero, we return empty list. I.e., no more shrinks available.
             else {
-              LazyList(NonZeroInt.ensuringValid(-half), NonZeroInt.ensuringValid(half))
+              LazyListOrStream(NonZeroInt.ensuringValid(-half), NonZeroInt.ensuringValid(half))
                 .filter(isValidFun(_, sizeParam))
-                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(NonZeroInt.ensuringValid(half))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(NonZeroInt.ensuringValid(half))
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       } // TODO Confirm OK without Roses. I.e., will the last one have an empty shrinks method?
 
@@ -2357,15 +2357,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NonZeroInt]] = {
         case class CanonicalRoseTree(value: NonZeroInt) extends RoseTree[NonZeroInt] {
           def shrinks: LazyListOrStream[RoseTree[NonZeroInt]] = {
-            def resLazyList(theValue: NonZeroInt): LazyListOrStream[RoseTree[NonZeroInt]] = {
+            def resLazyListOrStream(theValue: NonZeroInt): LazyListOrStream[RoseTree[NonZeroInt]] = {
               if (theValue.value == 1) LazyListOrStream.empty
               else {
                 val minusOne = NonZeroInt.ensuringValid(theValue.value - 1)
                 if (minusOne.value == 1) Rose(-minusOne) #:: Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4).shrinks
@@ -2382,17 +2382,17 @@ object Generator {
 
       case class NextRoseTree(value: NonZeroLong, sizeParam: SizeParam, isValidFun: (NonZeroLong, SizeParam) => Boolean) extends RoseTree[NonZeroLong] {
         def shrinks: LazyListOrStream[RoseTree[NonZeroLong]] = {
-          def resLazyList(theValue: NonZeroLong): LazyListOrStream[RoseTree[NonZeroLong]] = {
+          def resLazyListOrStream(theValue: NonZeroLong): LazyListOrStream[RoseTree[NonZeroLong]] = {
             val i = theValue.value
             val half: Long = i / 2 // i cannot be zero, because initially it is the underlying Int value of a NonZeroLong (in types
             if (half == 0) LazyListOrStream.empty[RoseTree[NonZeroLong]]     // we trust), then if half results in zero, we return acc here. I.e., we don't loop.
             else {
-              LazyList(NonZeroLong.ensuringValid(-half), NonZeroLong.ensuringValid(half))
+              LazyListOrStream(NonZeroLong.ensuringValid(-half), NonZeroLong.ensuringValid(half))
                 .filter(isValidFun(_, sizeParam))
-                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(NonZeroLong.ensuringValid(half))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyListOrStream(NonZeroLong.ensuringValid(half))
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       } // TODO Confirm OK without Roses. I.e., will the last one have an empty shrinks method?
 
@@ -2408,15 +2408,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NonZeroLong]] = {
         case class CanonicalRoseTree(value: NonZeroLong) extends RoseTree[NonZeroLong] {
           def shrinks: LazyListOrStream[RoseTree[NonZeroLong]] = {
-            def resLazyList(theValue: NonZeroLong): LazyListOrStream[RoseTree[NonZeroLong]] = {
+            def resLazyListOrStream(theValue: NonZeroLong): LazyListOrStream[RoseTree[NonZeroLong]] = {
               if (theValue.value == 1L) LazyListOrStream.empty
               else {
                 val minusOne = NonZeroLong.ensuringValid(theValue.value - 1L)
                 if (minusOne.value == 1) Rose(-minusOne) #:: Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(-minusOne) #:: CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(4L).shrinks
@@ -2433,7 +2433,7 @@ object Generator {
 
       case class NextRoseTree(value: NegDouble, sizeParam: SizeParam, isValidFun: (NegDouble, SizeParam) => Boolean) extends RoseTree[NegDouble] {
         def shrinks: LazyListOrStream[RoseTree[NegDouble]] = {
-          def resLazyList(theValue: NegDouble): LazyListOrStream[RoseTree[NegDouble]] = {
+          def resLazyListOrStream(theValue: NegDouble): LazyListOrStream[RoseTree[NegDouble]] = {
             val fv = theValue.value
             if (fv == -1.0) LazyListOrStream.empty[RoseTree[NegDouble]]
             else if (fv > -1.0) {
@@ -2450,20 +2450,20 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = NegDouble.ensuringValid(n.ceil)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Double = -(math.sqrt(fv.abs))
               val whole = NegDouble.ensuringValid(sqrt.ceil)
               if (isValidFun(whole, sizeParam))
-                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
               else
-                resLazyList(whole)  
+                resLazyListOrStream(whole)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -2479,15 +2479,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NegDouble]] = {
         case class CanonicalRoseTree(value: NegDouble) extends RoseTree[NegDouble] {
           def shrinks: LazyListOrStream[RoseTree[NegDouble]] = {
-            def resLazyList(theValue: NegDouble): LazyListOrStream[RoseTree[NegDouble]] = {
+            def resLazyListOrStream(theValue: NegDouble): LazyListOrStream[RoseTree[NegDouble]] = {
               if (theValue.value == -1.0) LazyListOrStream.empty
               else {
                 val plusOne: NegDouble = NegDouble.ensuringValid(theValue.value + 1.0)
                 if (plusOne.value == -1.0) Rose(plusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+                else CanonicalRoseTree(plusOne) #:: resLazyListOrStream(plusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(-4.0).shrinks
@@ -2504,7 +2504,7 @@ object Generator {
 
       case class NextRoseTree(value: NegFiniteDouble, sizeParam: SizeParam, isValidFun: (NegFiniteDouble, SizeParam) => Boolean) extends RoseTree[NegFiniteDouble] {
         def shrinks: LazyListOrStream[RoseTree[NegFiniteDouble]] = {
-          def resLazyList(theValue: NegFiniteDouble): LazyListOrStream[RoseTree[NegFiniteDouble]] = {
+          def resLazyListOrStream(theValue: NegFiniteDouble): LazyListOrStream[RoseTree[NegFiniteDouble]] = {
             val fv = theValue.value
             if (fv == -1.0) LazyListOrStream.empty[RoseTree[NegFiniteDouble]]
             else if (fv > -1.0) {
@@ -2517,20 +2517,20 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = NegFiniteDouble.ensuringValid(fv.ceil)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Double = -(math.sqrt(fv.abs))
               val whole = NegFiniteDouble.ensuringValid(sqrt.ceil)
               if (isValidFun(whole, sizeParam))
-                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
               else
-                resLazyList(whole)  
+                resLazyListOrStream(whole)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -2546,15 +2546,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NegFiniteDouble]] = {
         case class CanonicalRoseTree(value: NegFiniteDouble) extends RoseTree[NegFiniteDouble] {
           def shrinks: LazyListOrStream[RoseTree[NegFiniteDouble]] = {
-            def resLazyList(theValue: NegFiniteDouble): LazyListOrStream[RoseTree[NegFiniteDouble]] = {
+            def resLazyListOrStream(theValue: NegFiniteDouble): LazyListOrStream[RoseTree[NegFiniteDouble]] = {
               if (theValue.value == -1.0) LazyListOrStream.empty
               else {
                 val plusOne: NegFiniteDouble = NegFiniteDouble.ensuringValid(theValue.value + 1.0)
                 if (plusOne.value == -1.0) Rose(plusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+                else CanonicalRoseTree(plusOne) #:: resLazyListOrStream(plusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(-4.0).shrinks
@@ -2571,7 +2571,7 @@ object Generator {
 
       case class NextRoseTree(value: NegFloat, sizeParam: SizeParam, isValidFun: (NegFloat, SizeParam) => Boolean) extends RoseTree[NegFloat] {
         def shrinks: LazyListOrStream[RoseTree[NegFloat]] = {
-          def resLazyList(theValue: NegFloat): LazyListOrStream[RoseTree[NegFloat]] = {
+          def resLazyListOrStream(theValue: NegFloat): LazyListOrStream[RoseTree[NegFloat]] = {
             val fv = theValue.value
             if (fv == -1.0f) LazyListOrStream.empty[RoseTree[NegFloat]]
             else if (fv > -1.0f) {
@@ -2588,20 +2588,20 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = NegFloat.ensuringValid(n.ceil)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Float = -(math.sqrt(fv.abs.toDouble)).toFloat
               val whole = NegFloat.ensuringValid(sqrt.ceil)
               if (isValidFun(whole, sizeParam))
-                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
               else
-                resLazyList(whole)  
+                resLazyListOrStream(whole)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -2617,15 +2617,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NegFloat]] = {
         case class CanonicalRoseTree(value: NegFloat) extends RoseTree[NegFloat] {
           def shrinks: LazyListOrStream[RoseTree[NegFloat]] = {
-            def resLazyList(theValue: NegFloat): LazyListOrStream[RoseTree[NegFloat]] = {
+            def resLazyListOrStream(theValue: NegFloat): LazyListOrStream[RoseTree[NegFloat]] = {
               if (theValue.value == -1.0f) LazyListOrStream.empty
               else {
                 val plusOne: NegFloat = NegFloat.ensuringValid(theValue.value + 1.0f)
                 if (plusOne.value == -1.0f) Rose(plusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+                else CanonicalRoseTree(plusOne) #:: resLazyListOrStream(plusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(-4.0f).shrinks
@@ -2642,7 +2642,7 @@ object Generator {
 
       case class NextRoseTree(value: NegFiniteFloat, sizeParam: SizeParam, isValidFun: (NegFiniteFloat, SizeParam) => Boolean) extends RoseTree[NegFiniteFloat] {
         def shrinks: LazyListOrStream[RoseTree[NegFiniteFloat]] = {
-          def resLazyList(theValue: NegFiniteFloat): LazyListOrStream[RoseTree[NegFiniteFloat]] = {
+          def resLazyListOrStream(theValue: NegFiniteFloat): LazyListOrStream[RoseTree[NegFiniteFloat]] = {
             val fv = theValue.value
             if (fv == -1.0f) LazyListOrStream.empty[RoseTree[NegFiniteFloat]]
             else if (fv > -1.0f) {
@@ -2655,20 +2655,20 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = NegFiniteFloat.ensuringValid(fv.ceil)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Float = -(math.sqrt(fv.abs.toDouble)).toFloat
               val whole = NegFiniteFloat.ensuringValid(sqrt.ceil)
               if (isValidFun(whole, sizeParam))
-                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
               else
-                resLazyList(whole)  
+                resLazyListOrStream(whole)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -2684,15 +2684,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NegFiniteFloat]] = {
         case class CanonicalRoseTree(value: NegFiniteFloat) extends RoseTree[NegFiniteFloat] {
           def shrinks: LazyListOrStream[RoseTree[NegFiniteFloat]] = {
-            def resLazyList(theValue: NegFiniteFloat): LazyListOrStream[RoseTree[NegFiniteFloat]] = {
+            def resLazyListOrStream(theValue: NegFiniteFloat): LazyListOrStream[RoseTree[NegFiniteFloat]] = {
               if (theValue.value == -1.0f) LazyListOrStream.empty
               else {
                 val plusOne: NegFiniteFloat = NegFiniteFloat.ensuringValid(theValue.value + 1.0f)
                 if (plusOne.value == -1.0f) Rose(plusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+                else CanonicalRoseTree(plusOne) #:: resLazyListOrStream(plusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(-4.0f).shrinks
@@ -2709,19 +2709,19 @@ object Generator {
 
       case class NextRoseTree(value: NegInt, sizeParam: SizeParam, isValidFun: (NegInt, SizeParam) => Boolean) extends RoseTree[NegInt] {
         def shrinks: LazyListOrStream[RoseTree[NegInt]] = {
-          def resLazyList(theValue: NegInt): LazyListOrStream[RoseTree[NegInt]] = {
+          def resLazyListOrStream(theValue: NegInt): LazyListOrStream[RoseTree[NegInt]] = {
             val i = theValue.value
             val half: Int = i / 2
             if (half == 0) LazyListOrStream.empty[RoseTree[NegInt]]
             else {
               val negIntHalf = NegInt.ensuringValid(half)
               if (isValidFun(negIntHalf, sizeParam))
-                NextRoseTree(negIntHalf, sizeParam, isValidFun) #:: resLazyList(negIntHalf)
+                NextRoseTree(negIntHalf, sizeParam, isValidFun) #:: resLazyListOrStream(negIntHalf)
               else
-                resLazyList(negIntHalf)  
+                resLazyListOrStream(negIntHalf)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -2737,15 +2737,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NegInt]] = {
         case class CanonicalRoseTree(value: NegInt) extends RoseTree[NegInt] {
           def shrinks: LazyListOrStream[RoseTree[NegInt]] = {
-            def resLazyList(theValue: NegInt): LazyListOrStream[RoseTree[NegInt]] = {
+            def resLazyListOrStream(theValue: NegInt): LazyListOrStream[RoseTree[NegInt]] = {
               if (theValue.value == -1) LazyListOrStream.empty
               else {
                 val plusOne: NegInt = NegInt.ensuringValid(theValue.value + 1)
                 if (plusOne.value == -1) Rose(plusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+                else CanonicalRoseTree(plusOne) #:: resLazyListOrStream(plusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(-4).shrinks
@@ -2762,19 +2762,19 @@ object Generator {
 
       case class NextRoseTree(value: NegLong, sizeParam: SizeParam, isValidFun: (NegLong, SizeParam) => Boolean) extends RoseTree[NegLong] {
         def shrinks: LazyListOrStream[RoseTree[NegLong]] = {
-          def resLazyList(theValue: NegLong): LazyListOrStream[RoseTree[NegLong]] = {
+          def resLazyListOrStream(theValue: NegLong): LazyListOrStream[RoseTree[NegLong]] = {
             val i = theValue.value
             val half: Long = i / 2
             if (half == 0) LazyListOrStream.empty[RoseTree[NegLong]]
             else {
               val negLongHalf = NegLong.ensuringValid(half)
               if (isValidFun(negLongHalf, sizeParam))
-                NextRoseTree(negLongHalf, sizeParam, isValidFun) #:: resLazyList(negLongHalf)
+                NextRoseTree(negLongHalf, sizeParam, isValidFun) #:: resLazyListOrStream(negLongHalf)
               else
-                resLazyList(negLongHalf)
+                resLazyListOrStream(negLongHalf)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       } // TODO: Confirm OK with no Roses.
 
@@ -2790,15 +2790,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NegLong]] = {
         case class CanonicalRoseTree(value: NegLong) extends RoseTree[NegLong] {
           def shrinks: LazyListOrStream[RoseTree[NegLong]] = {
-            def resLazyList(theValue: NegLong): LazyListOrStream[RoseTree[NegLong]] = {
+            def resLazyListOrStream(theValue: NegLong): LazyListOrStream[RoseTree[NegLong]] = {
               if (theValue.value == -1) LazyListOrStream.empty
               else {
                 val plusOne: NegLong = NegLong.ensuringValid(theValue.value + 1)
                 if (plusOne.value == -1) Rose(plusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+                else CanonicalRoseTree(plusOne) #:: resLazyListOrStream(plusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(-4L).shrinks
@@ -2815,7 +2815,7 @@ object Generator {
 
       case class NextRoseTree(value: NegZDouble, sizeParam: SizeParam, isValidFun: (NegZDouble, SizeParam) => Boolean) extends RoseTree[NegZDouble] {
         def shrinks: LazyListOrStream[RoseTree[NegZDouble]] = {
-          def resLazyList(theValue: NegZDouble): LazyListOrStream[RoseTree[NegZDouble]] = {
+          def resLazyListOrStream(theValue: NegZDouble): LazyListOrStream[RoseTree[NegZDouble]] = {
             val fv = theValue.value
             if (fv == 0.0) LazyListOrStream.empty[RoseTree[NegZDouble]]
             else if (fv >= -1.0) { 
@@ -2832,9 +2832,9 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = NegZDouble.ensuringValid(n.ceil)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Double = -math.sqrt(fv.abs)
@@ -2847,13 +2847,13 @@ object Generator {
               else {
                 val whole = NegZDouble.ensuringValid(sqrt.ceil)
                 if (isValidFun(whole, sizeParam))
-                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
                 else
-                  resLazyList(whole)  
+                  resLazyListOrStream(whole)  
               }
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -2869,15 +2869,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NegZDouble]] = {
         case class CanonicalRoseTree(value: NegZDouble) extends RoseTree[NegZDouble] {
           def shrinks: LazyListOrStream[RoseTree[NegZDouble]] = {
-            def resLazyList(theValue: NegZDouble): LazyListOrStream[RoseTree[NegZDouble]] = {
+            def resLazyListOrStream(theValue: NegZDouble): LazyListOrStream[RoseTree[NegZDouble]] = {
               if (theValue.value == 0.0) LazyListOrStream.empty
               else {
                 val plusOne: NegZDouble = NegZDouble.ensuringValid(theValue.value + 1.0)
                 if (plusOne.value == 0.0) Rose(plusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+                else CanonicalRoseTree(plusOne) #:: resLazyListOrStream(plusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(-4.0).shrinks
@@ -2894,7 +2894,7 @@ object Generator {
 
       case class NextRoseTree(value: NegZFiniteDouble, sizeParam: SizeParam, isValidFun: (NegZFiniteDouble, SizeParam) => Boolean) extends RoseTree[NegZFiniteDouble] {
         def shrinks: LazyListOrStream[RoseTree[NegZFiniteDouble]] = {
-          def resLazyList(theValue: NegZFiniteDouble): LazyListOrStream[RoseTree[NegZFiniteDouble]] = {
+          def resLazyListOrStream(theValue: NegZFiniteDouble): LazyListOrStream[RoseTree[NegZFiniteDouble]] = {
             val fv = theValue.value
             if (fv == 0.0) LazyListOrStream.empty[RoseTree[NegZFiniteDouble]]
             else if (fv >= -1.0) { 
@@ -2907,9 +2907,9 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = NegZFiniteDouble.ensuringValid(fv.ceil)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Double = -math.sqrt(fv.abs)
@@ -2922,13 +2922,13 @@ object Generator {
               else {
                 val whole = NegZFiniteDouble.ensuringValid(sqrt.ceil)
                 if (isValidFun(whole, sizeParam))
-                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
                 else
-                  resLazyList(whole)  
+                  resLazyListOrStream(whole)  
               }
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -2944,15 +2944,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NegZFiniteDouble]] = {
         case class CanonicalRoseTree(value: NegZFiniteDouble) extends RoseTree[NegZFiniteDouble] {
           def shrinks: LazyListOrStream[RoseTree[NegZFiniteDouble]] = {
-            def resLazyList(theValue: NegZFiniteDouble): LazyListOrStream[RoseTree[NegZFiniteDouble]] = {
+            def resLazyListOrStream(theValue: NegZFiniteDouble): LazyListOrStream[RoseTree[NegZFiniteDouble]] = {
               if (theValue.value == 0.0) LazyListOrStream.empty
               else {
                 val plusOne: NegZFiniteDouble = NegZFiniteDouble.ensuringValid(theValue.value + 1.0)
                 if (plusOne.value == 0.0) Rose(plusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+                else CanonicalRoseTree(plusOne) #:: resLazyListOrStream(plusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(-4.0).shrinks
@@ -2969,7 +2969,7 @@ object Generator {
 
       case class NextRoseTree(value: NegZFloat, sizeParam: SizeParam, isValidFun: (NegZFloat, SizeParam) => Boolean) extends RoseTree[NegZFloat] {
         def shrinks: LazyListOrStream[RoseTree[NegZFloat]] = {
-          def resLazyList(theValue: NegZFloat): LazyListOrStream[RoseTree[NegZFloat]] = {
+          def resLazyListOrStream(theValue: NegZFloat): LazyListOrStream[RoseTree[NegZFloat]] = {
             val fv = theValue.value
             if (fv == 0.0f) LazyListOrStream.empty[RoseTree[NegZFloat]]
             else if (fv >= -1.0f) {
@@ -2986,9 +2986,9 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = NegZFloat.ensuringValid(n.ceil)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Float = -math.sqrt(fv.abs.toDouble).toFloat
@@ -3001,13 +3001,13 @@ object Generator {
               else {
                 val whole = NegZFloat.ensuringValid(sqrt.ceil)
                 if (isValidFun(whole, sizeParam))
-                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
                 else
-                  resLazyList(whole)  
+                  resLazyListOrStream(whole)  
               }
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -3023,15 +3023,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NegZFloat]] = {
         case class CanonicalRoseTree(value: NegZFloat) extends RoseTree[NegZFloat] {
           def shrinks: LazyListOrStream[RoseTree[NegZFloat]] = {
-            def resLazyList(theValue: NegZFloat): LazyListOrStream[RoseTree[NegZFloat]] = {
+            def resLazyListOrStream(theValue: NegZFloat): LazyListOrStream[RoseTree[NegZFloat]] = {
               if (theValue.value == 0.0f) LazyListOrStream.empty
               else {
                 val plusOne: NegZFloat = NegZFloat.ensuringValid(theValue.value + 1.0f)
                 if (plusOne.value == 0.0f) Rose(plusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+                else CanonicalRoseTree(plusOne) #:: resLazyListOrStream(plusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(-4.0f).shrinks
@@ -3048,7 +3048,7 @@ object Generator {
 
       case class NextRoseTree(value: NegZFiniteFloat, sizeParam: SizeParam, isValidFun: (NegZFiniteFloat, SizeParam) => Boolean) extends RoseTree[NegZFiniteFloat] {
         def shrinks: LazyListOrStream[RoseTree[NegZFiniteFloat]] = {
-          def resLazyList(theValue: NegZFiniteFloat): LazyListOrStream[RoseTree[NegZFiniteFloat]] = {
+          def resLazyListOrStream(theValue: NegZFiniteFloat): LazyListOrStream[RoseTree[NegZFiniteFloat]] = {
             val fv = theValue.value
             if (fv == 0.0f) LazyListOrStream.empty[RoseTree[NegZFiniteFloat]]
             else if (fv >= -1.0f) {
@@ -3061,9 +3061,9 @@ object Generator {
               // Nearest whole numbers closer to zero
               val nearest = NegZFiniteFloat.ensuringValid(fv.ceil)
               if (isValidFun(nearest, sizeParam))
-                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyList(nearest)
+                NextRoseTree(nearest, sizeParam, isValidFun) #:: resLazyListOrStream(nearest)
               else
-                resLazyList(nearest)  
+                resLazyListOrStream(nearest)  
             }
             else {
               val sqrt: Float = -math.sqrt(fv.abs.toDouble).toFloat
@@ -3076,13 +3076,13 @@ object Generator {
               else {
                 val whole = NegZFiniteFloat.ensuringValid(sqrt.ceil)
                 if (isValidFun(whole, sizeParam))
-                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyList(whole)
+                  NextRoseTree(whole, sizeParam, isValidFun) #:: resLazyListOrStream(whole)
                 else
-                  resLazyList(whole)  
+                  resLazyListOrStream(whole)  
               }
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -3098,15 +3098,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NegZFiniteFloat]] = {
         case class CanonicalRoseTree(value: NegZFiniteFloat) extends RoseTree[NegZFiniteFloat] {
           def shrinks: LazyListOrStream[RoseTree[NegZFiniteFloat]] = {
-            def resLazyList(theValue: NegZFiniteFloat): LazyListOrStream[RoseTree[NegZFiniteFloat]] = {
+            def resLazyListOrStream(theValue: NegZFiniteFloat): LazyListOrStream[RoseTree[NegZFiniteFloat]] = {
               if (theValue.value == 0.0f) LazyListOrStream.empty
               else {
                 val plusOne: NegZFiniteFloat = NegZFiniteFloat.ensuringValid(theValue.value + 1.0f)
                 if (plusOne.value == 0.0f) Rose(plusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+                else CanonicalRoseTree(plusOne) #:: resLazyListOrStream(plusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(-4.0f).shrinks
@@ -3123,19 +3123,19 @@ object Generator {
 
       case class NextRoseTree(value: NegZInt, sizeParam: SizeParam, isValidFun: (NegZInt, SizeParam) => Boolean) extends RoseTree[NegZInt] {
         def shrinks: LazyListOrStream[RoseTree[NegZInt]] = {
-          def resLazyList(theValue: NegZInt): LazyListOrStream[RoseTree[NegZInt]] = {
+          def resLazyListOrStream(theValue: NegZInt): LazyListOrStream[RoseTree[NegZInt]] = {
             if (theValue.value == 0)
               LazyListOrStream.empty[RoseTree[NegZInt]]
             else {
               val half: Int = theValue.value / 2
               val negZIntHalf = NegZInt.ensuringValid(half)
               if (isValidFun(negZIntHalf, sizeParam))
-                NextRoseTree(negZIntHalf, sizeParam, isValidFun) #:: resLazyList(negZIntHalf)
+                NextRoseTree(negZIntHalf, sizeParam, isValidFun) #:: resLazyListOrStream(negZIntHalf)
               else
-                resLazyList(negZIntHalf)  
+                resLazyListOrStream(negZIntHalf)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       } // TODO Confirm OK with no Rose.
 
@@ -3151,15 +3151,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NegZInt]] = {
         case class CanonicalRoseTree(value: NegZInt) extends RoseTree[NegZInt] {
           def shrinks: LazyListOrStream[RoseTree[NegZInt]] = {
-            def resLazyList(theValue: NegZInt): LazyListOrStream[RoseTree[NegZInt]] = {
+            def resLazyListOrStream(theValue: NegZInt): LazyListOrStream[RoseTree[NegZInt]] = {
               if (theValue.value == 0) LazyListOrStream.empty
               else {
                 val plusOne: NegZInt = NegZInt.ensuringValid(theValue.value + 1)
                 if (plusOne.value == 0) Rose(plusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+                else CanonicalRoseTree(plusOne) #:: resLazyListOrStream(plusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(-4).shrinks
@@ -3176,19 +3176,19 @@ object Generator {
 
       case class NextRoseTree(value: NegZLong, sizeParam: SizeParam, isValidFun: (NegZLong, SizeParam) => Boolean) extends RoseTree[NegZLong] {
         def shrinks: LazyListOrStream[RoseTree[NegZLong]] = {
-          def resLazyList(theValue: NegZLong): LazyListOrStream[RoseTree[NegZLong]] = {
+          def resLazyListOrStream(theValue: NegZLong): LazyListOrStream[RoseTree[NegZLong]] = {
             if (theValue.value == 0)
               LazyListOrStream.empty[RoseTree[NegZLong]]
             else {
               val half: Long = theValue.value / 2
               val negLongHalf = NegZLong.ensuringValid(half)
               if (isValidFun(negLongHalf, sizeParam))
-                NextRoseTree(negLongHalf, sizeParam, isValidFun) #:: resLazyList(negLongHalf)
+                NextRoseTree(negLongHalf, sizeParam, isValidFun) #:: resLazyListOrStream(negLongHalf)
               else
-                resLazyList(negLongHalf)  
+                resLazyListOrStream(negLongHalf)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       } // TODO Confirm OK no Rose.
 
@@ -3204,15 +3204,15 @@ object Generator {
       override def canonicals: LazyListOrStream[RoseTree[NegZLong]] = {
         case class CanonicalRoseTree(value: NegZLong) extends RoseTree[NegZLong] {
           def shrinks: LazyListOrStream[RoseTree[NegZLong]] = {
-            def resLazyList(theValue: NegZLong): LazyListOrStream[RoseTree[NegZLong]] = {
+            def resLazyListOrStream(theValue: NegZLong): LazyListOrStream[RoseTree[NegZLong]] = {
               if (theValue.value == 0L) LazyListOrStream.empty
               else {
                 val plusOne: NegZLong = NegZLong.ensuringValid(theValue.value + 1)
                 if (plusOne.value == 0L) Rose(plusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(plusOne) #:: resLazyList(plusOne)
+                else CanonicalRoseTree(plusOne) #:: resLazyListOrStream(plusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree(-4L).shrinks
@@ -3227,48 +3227,58 @@ object Generator {
   implicit val numericCharGenerator: Generator[NumericChar] =
     new Generator[NumericChar] {
 
-      case class NextRoseTree(value: NumericChar) extends RoseTree[NumericChar] {
+      case class NextRoseTree(value: NumericChar, sizeParam: SizeParam, isValidFun: (NumericChar, SizeParam) => Boolean) extends RoseTree[NumericChar] {
         def shrinks: LazyListOrStream[RoseTree[NumericChar]] = {
-          def resLazyList(theValue: NumericChar): LazyListOrStream[RoseTree[NumericChar]] = {
+          def resLazyListOrStream(theValue: NumericChar): LazyListOrStream[RoseTree[NumericChar]] = {
             if (theValue.value == '0')
               LazyListOrStream.empty
             else {
               val minusOne: Char = (theValue.value - 1).toChar // Go ahead and try all the values between i and '0'
               val numericCharMinusOne = NumericChar.ensuringValid(minusOne)
-              NextRoseTree(numericCharMinusOne) #:: resLazyList(numericCharMinusOne)
+              if (isValidFun(numericCharMinusOne, sizeParam))
+                NextRoseTree(numericCharMinusOne, sizeParam, isValidFun) #:: resLazyListOrStream(numericCharMinusOne)
+              else
+                resLazyListOrStream(numericCharMinusOne)  
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
+
+        override def equals(other: Any): Boolean = 
+          other match {
+            case NextRoseTree(v, _, _) => value == v
+            case _ => false
+          }
+        override def hashCode(): Int = value.hashCode()
       }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NumericChar], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(numericCharEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NumericChar, sizeParam: SizeParam, isValidFun: (NumericChar, SizeParam) => Boolean): RoseTree[NumericChar] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: NumericChar, sizeParam: SizeParam, isValidFun: (NumericChar, SizeParam) => Boolean): RoseTree[NumericChar] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NumericChar], Randomizer) = {
         val (posZInt, rnd2) = rnd.choosePosZInt(PosZInt.ensuringValid(0), PosZInt.ensuringValid(9))
-        (NextRoseTree(NumericChar.ensuringValid((posZInt.value + 48).toChar)), rnd2)
+        (NextRoseTree(NumericChar.ensuringValid((posZInt.value + 48).toChar), szp, isValid), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[NumericChar]] = {
         case class CanonicalRoseTree(value: NumericChar) extends RoseTree[NumericChar] {
           def shrinks: LazyListOrStream[RoseTree[NumericChar]] = {
-            def resLazyList(theValue: NumericChar): LazyListOrStream[RoseTree[NumericChar]] = {
+            def resLazyListOrStream(theValue: NumericChar): LazyListOrStream[RoseTree[NumericChar]] = {
               if (theValue.value == '0') LazyListOrStream.empty
               else {
                 val minusOne: NumericChar = NumericChar.ensuringValid((theValue.value - 1).toChar)
                 if (minusOne.value == '0') Rose(minusOne) #:: LazyListOrStream.empty
-                else CanonicalRoseTree(minusOne) #:: resLazyList(minusOne)
+                else CanonicalRoseTree(minusOne) #:: resLazyListOrStream(minusOne)
               }
             }
-            resLazyList(value)
+            resLazyListOrStream(value)
           }
         }
         CanonicalRoseTree('4').shrinks
       }
       override def toString = "Generator[NumericChar]"
-      override def shrinksForValue(valueToShrink: NumericChar): Option[LazyListOrStream[RoseTree[NumericChar]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: NumericChar): Option[LazyListOrStream[RoseTree[NumericChar]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
@@ -3287,7 +3297,7 @@ object Generator {
       // TODO: Write a test for this shrinks implementation.
       case class NextRoseTree(value: String) extends RoseTree[String] {
         def shrinks: LazyListOrStream[RoseTree[String]] = {
-          def resLazyList(theValue: String): LazyListOrStream[RoseTree[String]] = {
+          def resLazyListOrStream(theValue: String): LazyListOrStream[RoseTree[String]] = {
             if (theValue.isEmpty)
               LazyListOrStream.empty
             else if (theValue.length == 1)
@@ -3297,10 +3307,10 @@ object Generator {
               val firstHalf = theValue.take(halfSize)
               val secondHalf = theValue.drop(halfSize)
               // If value has an odd number of chars, the second half will be one character longer than the first half.
-              NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyList(firstHalf)
+              NextRoseTree(secondHalf) #:: NextRoseTree(firstHalf) #:: resLazyListOrStream(firstHalf)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -3338,7 +3348,7 @@ object Generator {
       // TODO: Write a test for this shrinks implementation.
       case class NextRoseTree(value: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean) extends RoseTree[List[T]] {
         def shrinks: LazyListOrStream[RoseTree[List[T]]] = {
-          def resLazyList(theValue: List[T]): LazyListOrStream[RoseTree[List[T]]] = {
+          def resLazyListOrStream(theValue: List[T]): LazyListOrStream[RoseTree[List[T]]] = {
             if (theValue.isEmpty) 
               LazyListOrStream.empty
             else if (theValue.length == 1) {
@@ -3353,10 +3363,10 @@ object Generator {
               val secondHalf = theValue.drop(halfSize)
               // If value has an odd number of elements, the second half will be one character longer than the first half.
               LazyListOrStream(secondHalf, firstHalf).filter(v => isValidFun(v, sizeParam))
-                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(firstHalf)
+                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(firstHalf)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -4765,7 +4775,7 @@ object Generator {
 
       case class NextRoseTree(value: Vector[T], sizeParam: SizeParam, isValidFun: (Vector[T], SizeParam) => Boolean) extends RoseTree[Vector[T]] {
         def shrinks: LazyListOrStream[RoseTree[Vector[T]]] = {
-          def resLazyList(theValue: Vector[T]): LazyListOrStream[RoseTree[Vector[T]]] = {
+          def resLazyListOrStream(theValue: Vector[T]): LazyListOrStream[RoseTree[Vector[T]]] = {
             if (theValue.isEmpty)
               LazyListOrStream.empty
             else if (theValue.length == 1) {
@@ -4780,10 +4790,10 @@ object Generator {
               val secondHalf = theValue.drop(halfSize)
               // If value has an odd number of elements, the second half will be one character longer than the first half.
               LazyListOrStream(secondHalf, firstHalf).filter(v => isValidFun(v, sizeParam))
-                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(firstHalf)
+                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(firstHalf)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -4859,7 +4869,7 @@ object Generator {
 
       case class NextRoseTree(value: Set[T], sizeParam: SizeParam, isValidFun: (Set[T], SizeParam) => Boolean) extends RoseTree[Set[T]] {
         def shrinks: LazyListOrStream[RoseTree[Set[T]]] = {
-          def resLazyList(theValue: Set[T]): LazyListOrStream[RoseTree[Set[T]]] = {
+          def resLazyListOrStream(theValue: Set[T]): LazyListOrStream[RoseTree[Set[T]]] = {
             if (theValue.isEmpty)
               LazyListOrStream.empty
             else if (theValue.size == 1) {
@@ -4874,10 +4884,10 @@ object Generator {
               val secondHalf = theValue.drop(halfSize)
               // If value has an odd number of elements, the second half will be one character longer than the first half.
               LazyListOrStream(secondHalf, firstHalf).filter(v => isValidFun(v, sizeParam))
-                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(firstHalf)
+                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(firstHalf)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -4953,7 +4963,7 @@ object Generator {
 
       case class NextRoseTree(value: SortedSet[T], sizeParam: SizeParam, isValidFun: (SortedSet[T], SizeParam) => Boolean) extends RoseTree[SortedSet[T]] {
         def shrinks: LazyListOrStream[RoseTree[SortedSet[T]]] = {
-          def resLazyList(theValue: SortedSet[T]): LazyListOrStream[RoseTree[SortedSet[T]]] = {
+          def resLazyListOrStream(theValue: SortedSet[T]): LazyListOrStream[RoseTree[SortedSet[T]]] = {
             if (theValue.isEmpty)
               LazyListOrStream.empty
             else if (theValue.size == 1) {
@@ -4968,10 +4978,10 @@ object Generator {
               val secondHalf = theValue.drop(halfSize)
               // If value has an odd number of elements, the second half will be one character longer than the first half.
               LazyListOrStream(secondHalf, firstHalf).filter(v => isValidFun(v, sizeParam))
-                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(firstHalf)
+                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(firstHalf)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -5049,7 +5059,7 @@ object Generator {
 
       case class NextRoseTree(value: Map[K, V], sizeParam: SizeParam, isValidFun: (Map[K, V], SizeParam) => Boolean) extends RoseTree[Map[K, V]] {
         def shrinks: LazyListOrStream[RoseTree[Map[K, V]]] = {
-          def resLazyList(theValue: Map[K, V]): LazyListOrStream[RoseTree[Map[K, V]]] = {
+          def resLazyListOrStream(theValue: Map[K, V]): LazyListOrStream[RoseTree[Map[K, V]]] = {
             if (theValue.isEmpty)
               LazyListOrStream.empty
             else if (theValue.size == 1) {
@@ -5064,10 +5074,10 @@ object Generator {
               val secondHalf = theValue.drop(halfSize)
               // If value has an odd number of elements, the second half will be one character longer than the first half.
               LazyListOrStream(secondHalf, firstHalf).filter(v => isValidFun(v, sizeParam))
-                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(firstHalf)
+                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(firstHalf)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 
@@ -5146,7 +5156,7 @@ object Generator {
 
       case class NextRoseTree(value: SortedMap[K, V], sizeParam: SizeParam, isValidFun: (SortedMap[K, V], SizeParam) => Boolean) extends RoseTree[SortedMap[K, V]] {
         def shrinks: LazyListOrStream[RoseTree[SortedMap[K, V]]] = {
-          def resLazyList(theValue: SortedMap[K, V]): LazyListOrStream[RoseTree[SortedMap[K, V]]] = {
+          def resLazyListOrStream(theValue: SortedMap[K, V]): LazyListOrStream[RoseTree[SortedMap[K, V]]] = {
             if (theValue.isEmpty)
               LazyListOrStream.empty
             else if (theValue.size == 1) {
@@ -5161,10 +5171,10 @@ object Generator {
               val secondHalf = theValue.drop(halfSize)
               // If value has an odd number of elements, the second half will be one character longer than the first half.
               LazyListOrStream(secondHalf, firstHalf).filter(v => isValidFun(v, sizeParam))
-                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyList(firstHalf)
+                                                     .map(v => NextRoseTree(v, sizeParam, isValidFun)) #::: resLazyListOrStream(firstHalf)
             }
           }
-          resLazyList(value)
+          resLazyListOrStream(value)
         }
       }
 

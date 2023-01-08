@@ -3338,6 +3338,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           }
         }
       }
+
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.numericCharGenerator.filter(_.value.toString.toInt > 5)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(NumericChar('9')), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
+        shrinkees should not be empty
+        shrinkees.toList shouldBe List(NumericChar('8'), NumericChar('7'), NumericChar('6'))
+      }
     }
 
     describe("for Strings") {
