@@ -1423,25 +1423,39 @@ object Generator {
   implicit val finiteFloatGenerator: Generator[FiniteFloat] =
     new Generator[FiniteFloat] {
 
-      case class NextRoseTree(value: FiniteFloat) extends RoseTree[FiniteFloat] {
+      case class NextRoseTree(value: FiniteFloat, sizeParam: SizeParam, isValidFun: (FiniteFloat, SizeParam) => Boolean) extends RoseTree[FiniteFloat] {
         def shrinks: LazyListOrStream[RoseTree[FiniteFloat]] = {
           def resLazyList(theValue: FiniteFloat): LazyListOrStream[RoseTree[FiniteFloat]] = {
             val fv = theValue.value
             if (fv == 0.0f) LazyListOrStream.empty
-            else if (fv <= 1.0f && fv >= -1.0f) Rose(FiniteFloat(0.0f)) #:: LazyListOrStream.empty
+            else if (fv <= 1.0f && fv >= -1.0f) {
+              if (isValidFun(FiniteFloat(0.0f), sizeParam))
+                Rose(FiniteFloat(0.0f)) #:: LazyListOrStream.empty
+              else
+                LazyListOrStream.empty  
+            }
             else if (!fv.isWhole) {
               // Nearest whole numbers closer to zero
               val (nearest, nearestNeg) = if (fv > 0.0f) (fv.floor, (-fv).ceil) else (fv.ceil, (-fv).floor)
-              NextRoseTree(FiniteFloat.ensuringValid(nearestNeg)) #:: NextRoseTree(FiniteFloat.ensuringValid(nearest)) #:: resLazyList(FiniteFloat.ensuringValid(nearest))
+              LazyList(FiniteFloat.ensuringValid(nearestNeg), FiniteFloat.ensuringValid(nearest))
+                .filter(isValidFun(_, sizeParam))
+                .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(FiniteFloat.ensuringValid(nearest))
             }
             else {
               val sqrt: Float = math.sqrt(fv.abs.toDouble).toFloat
-              if (sqrt < 1.0f) Rose(FiniteFloat(0.0f)) #:: LazyListOrStream.empty
+              if (sqrt < 1.0f) {
+                if (isValidFun(FiniteFloat(0.0f), sizeParam))
+                  Rose(FiniteFloat(0.0f)) #:: LazyListOrStream.empty
+                else
+                  LazyListOrStream.empty  
+              }
               else {
                 val whole: Float = sqrt.floor
                 val negWhole: Float = math.rint((-whole).toDouble).toFloat
                 val (first, second) = if (fv > 0.0f) (negWhole, whole) else (whole, negWhole)
-                NextRoseTree(FiniteFloat.ensuringValid(first)) #:: NextRoseTree(FiniteFloat.ensuringValid(second)) #:: resLazyList(FiniteFloat.ensuringValid(first))
+                LazyList(FiniteFloat.ensuringValid(first), FiniteFloat.ensuringValid(second))
+                  .filter(isValidFun(_, sizeParam))
+                  .map(NextRoseTree(_, sizeParam, isValidFun)) #::: resLazyList(FiniteFloat.ensuringValid(first))
               }
             }
           }
@@ -1453,10 +1467,10 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(finiteFloatEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: FiniteFloat, sizeParam: SizeParam, isValidFun: (FiniteFloat, SizeParam) => Boolean): RoseTree[FiniteFloat] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: FiniteFloat, sizeParam: SizeParam, isValidFun: (FiniteFloat, SizeParam) => Boolean): RoseTree[FiniteFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[FiniteFloat], Randomizer) = {
         val (finiteFloat, rnd2) = rnd.nextFiniteFloat
-        (NextRoseTree(finiteFloat), rnd2)
+        (NextRoseTree(finiteFloat, szp, isValid), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[FiniteFloat]] = {
         case class CanonicalRoseTree(value: FiniteFloat) extends RoseTree[FiniteFloat] {
@@ -1475,7 +1489,7 @@ object Generator {
         CanonicalRoseTree(4.0f).shrinks
       }
       override def toString = "Generator[FiniteFloat]"
-      override def shrinksForValue(valueToShrink: FiniteFloat): Option[LazyListOrStream[RoseTree[FiniteFloat]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: FiniteFloat): Option[LazyListOrStream[RoseTree[FiniteFloat]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
 
   /**
