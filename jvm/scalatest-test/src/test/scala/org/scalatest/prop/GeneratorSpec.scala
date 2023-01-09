@@ -3491,6 +3491,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
         assert(optShrink.shrinks.isEmpty)
       }
+
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.optionGenerator[String].filter(_.nonEmpty)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(Some("test")), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
+        shrinkees should not contain (None)
+      }
     }
 
     describe("for Ors") {

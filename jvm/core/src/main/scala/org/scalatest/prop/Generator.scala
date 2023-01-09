@@ -4386,23 +4386,27 @@ object Generator {
     * @return a [[Generator]] that produces `Option[T]`
     */
   implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] = {
-    case class NextRoseTree(value: Option[T]) extends RoseTree[Option[T]] { thisRoseTreeOfOptionOfT =>
+    case class NextRoseTree(value: Option[T], sizeParam: SizeParam, isValidFun: (Option[T], SizeParam) => Boolean) extends RoseTree[Option[T]] { thisRoseTreeOfOptionOfT =>
         def shrinks: LazyListOrStream[RoseTree[Option[T]]] = {
 
           value match {
             // If there is a real value, t, shrink that value, and return that and None.
             case Some(t) =>
-
               val nestedRoseTreesOpt: Option[LazyListOrStream[RoseTree[T]]] = genOfT.shrinksForValue(t)
               nestedRoseTreesOpt match {
-                case Some(nestedRoseTrees) => 
+                case Some(nestedRoseTrees) =>
                   val nestedList: LazyListOrStream[RoseTree[Option[T]]] =
-                    nestedRoseTrees.map(nrt => nrt.map(t => Some(t))) #::: Rose(None) #:: LazyListOrStream.empty[RoseTree[Option[T]]]
-                  nestedList
+                    nestedRoseTrees.map(nrt => nrt.map(t => Some(t))) 
+                      .filter(rt => isValidFun(rt.value, sizeParam))
+                      .map(rt => NextRoseTree(rt.value, sizeParam, isValidFun)) 
+                  nestedList #::: (if (isValidFun(None, sizeParam)) LazyListOrStream[RoseTree[Option[T]]](Rose(None)) else LazyListOrStream.empty[RoseTree[Option[T]]])
                 case None =>
                   // If the shrinksForValue lazy list is empty, degrade to canonicals.
                   val canonicalTs = genOfT.canonicals
-                  canonicalTs.map(rt => rt.map(t => Some(t))) #::: NextRoseTree(None) #:: LazyListOrStream.empty[RoseTree[Option[T]]]
+                  canonicalTs.map(rt => rt.map(t => Some(t)))
+                    .filter(rt => isValidFun(rt.value, sizeParam))
+                    .map(rt => NextRoseTree(rt.value, sizeParam, isValidFun)) #:::
+                  (if (isValidFun(None, sizeParam)) LazyListOrStream[RoseTree[Option[T]]](Rose(None)) else LazyListOrStream.empty[RoseTree[Option[T]]])
               }
 
             // There's no way to simplify None:
@@ -4428,6 +4432,8 @@ object Generator {
         LazyListOrStream(Rose(None: Option[T])) #::: tCanonicals.map(rt => rt.map(t => Some(t): Option[T]))
       }
 
+      override def roseTreeOfEdge(edge: Option[T], sizeParam: SizeParam, isValidFun: (Option[T], SizeParam) => Boolean): RoseTree[Option[T]] = NextRoseTree(edge, sizeParam, isValidFun)
+
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Option[T]], Randomizer) = {
         val (nextInt, nextRnd) = rnd.nextInt
         if (nextInt % 100 == 0) // let every hundredth value or so be a None
@@ -4435,11 +4441,11 @@ object Generator {
         else {
           val (nextRoseTreeOfT, _, nextNextRnd) = genOfT.next(szp, Nil, nextRnd)
           val nextT = nextRoseTreeOfT.value
-          (NextRoseTree(Some(nextT)), nextNextRnd)
+          (NextRoseTree(Some(nextT), szp, isValid), nextNextRnd)
         }
       }
       override def toString = "Generator[Option[T]]"
-      override def shrinksForValue(valueToShrink: Option[T]): Option[LazyListOrStream[RoseTree[Option[T]]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: Option[T]): Option[LazyListOrStream[RoseTree[Option[T]]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
   }
 
