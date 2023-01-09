@@ -3561,6 +3561,28 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         orGoodShrink.shrinks.map(_.value) should contain theSameElementsAs(gShrink.shrinks.map(_.value).map(Good(_)).toList)
         orBadShrink.shrinks.map(_.value) should contain theSameElementsAs(bShrink.shrinks.map(_.value).map(Bad(_)).toList)
       }
+
+      it("should produce shrinkees following constraint determined by filter method") {
+        import Generator._
+        import org.scalactic._
+        
+        val gen = orGenerator[Int, Long].filter { 
+          case Good(g) => g > 200
+          case Bad(b) => b > 200
+        }
+
+        val rnd = Randomizer.default
+        
+        val (orGoodShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Good(1000)), rnd)
+        val orGoodShrinkees = orGoodShrink.shrinks.map(_.value)
+        orGoodShrinkees should not be empty
+        orGoodShrinkees.toList shouldBe List(Good(500), Good(250))
+
+        val (orBadShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Bad(2000L)), rnd)
+        val orBadShrinkees = orBadShrink.shrinks.map(_.value)
+        orBadShrinkees should not be empty
+        orBadShrinkees.toList shouldBe List(Bad(1000L), Bad(500L), Bad(250L))
+      }
     }
 
     describe("for Eithers") {
