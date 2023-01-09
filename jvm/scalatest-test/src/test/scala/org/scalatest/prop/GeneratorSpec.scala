@@ -3643,6 +3643,28 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         eitherRightShrink.shrinks.map(_.value) should contain theSameElementsAs(rShrink.shrinks.map(_.value).map(Right(_)).toList)
         eitherLeftShrink.shrinks.map(_.value) should contain theSameElementsAs(lShrink.shrinks.map(_.value).map(Left(_)).toList)
       }
+
+      it("should produce shrinkees following constraint determined by filter method") {
+        import Generator._
+        import org.scalactic._
+        
+        val gen = eitherGenerator[Int, Long].filter { 
+          case Left(l) => l > 200
+          case Right(r) => r > 200
+        }
+
+        val rnd = Randomizer.default
+        
+        val (orLeftShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Left(1000)), rnd)
+        val orLeftShrinkees = orLeftShrink.shrinks.map(_.value)
+        orLeftShrinkees should not be empty
+        orLeftShrinkees.toList shouldBe List(Left(500), Left(250))
+
+        val (orRightShrink, _, _) = gen.next(SizeParam(1, 0, 1), List(Right(2000L)), rnd)
+        val orRightShrinkees = orRightShrink.shrinks.map(_.value)
+        orRightShrinkees should not be empty
+        orRightShrinkees.toList shouldBe List(Right(1000L), Right(500L), Right(250L))
+      }
     }
 
     import scala.collection.GenTraversable

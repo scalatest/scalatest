@@ -4556,7 +4556,7 @@ object Generator {
   implicit def eitherGenerator[L, R](implicit genOfL: Generator[L], genOfR: Generator[R]): Generator[Either[L, R]] =
     new Generator[Either[L, R]] {
 
-      case class NextRoseTree(value: Either[L, R]) extends RoseTree[Either[L, R]] {
+      case class NextRoseTree(value: Either[L, R], sizeParam: SizeParam, isValidFun: (Either[L, R], SizeParam) => Boolean) extends RoseTree[Either[L, R]] {
         def shrinks: LazyListOrStream[RoseTree[Either[L, R]]] = {
           value match {
             case Left(l) =>
@@ -4564,12 +4564,14 @@ object Generator {
               nestedRoseTreesOpt match {
                 case Some(nestedRoseTrees) =>
                   val nestedList: LazyListOrStream[RoseTree[Either[L, R]]] =
-                    nestedRoseTrees.map(nrt => nrt.map(t => Left(t))) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]]
-                  nestedList
+                    nestedRoseTrees.map(nrt => nrt.map(t => Left(t)))
+                      .filter(rt => isValidFun(rt.value, sizeParam))
+                  nestedList #::: LazyListOrStream.empty[RoseTree[Either[L, R]]]
                 case None =>
                   // If the shrinksForValue lazy list is empty, degrade to canonicals.
                   val canonicalGs = genOfL.canonicals
-                  canonicalGs.map(rt => rt.map(t => Left(t))) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]]
+                  canonicalGs.map(rt => rt.map(t => Left(t)))
+                    .filter(rt => isValidFun(rt.value, sizeParam)) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]]
               }
 
             case Right(r) =>
@@ -4577,12 +4579,14 @@ object Generator {
               nestedRoseTreesOpt match {
                 case Some(nestedRoseTrees) =>
                   val nestedList: LazyListOrStream[RoseTree[Either[L, R]]] =
-                    nestedRoseTrees.map(nrt => nrt.map(t => Right(t))) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]]
-                  nestedList
+                    nestedRoseTrees.map(nrt => nrt.map(t => Right(t)))
+                      .filter(rt => isValidFun(rt.value, sizeParam))
+                  nestedList #::: LazyListOrStream.empty[RoseTree[Either[L, R]]]
                 case None =>
                   // If the shrinksForValue lazy list is empty, degrade to canonicals.
                   val canonicalBs = genOfR.canonicals
-                  canonicalBs.map(rt => rt.map(t => Right(t))) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]]
+                  canonicalBs.map(rt => rt.map(t => Right(t))) 
+                    .filter(rt => isValidFun(rt.value, sizeParam)) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]]
               }
           }
         }
@@ -4613,7 +4617,7 @@ object Generator {
         rightCanon.map(rt => rt.map(t => Right(t))) #::: leftCanon.map(rt => rt.map(t => Left(t))) #::: LazyListOrStream.empty[RoseTree[Either[L, R]]]
       }
 
-      override def roseTreeOfEdge(edge: Either[L, R], sizeParam: SizeParam, isValidFun: (Either[L, R], SizeParam) => Boolean): RoseTree[Either[L, R]] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: Either[L, R], sizeParam: SizeParam, isValidFun: (Either[L, R], SizeParam) => Boolean): RoseTree[Either[L, R]] = NextRoseTree(edge, sizeParam, isValidFun)
 
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Either[L, R]], Randomizer) = {
         val (nextInt, nextRnd) = rnd.nextInt
@@ -4631,7 +4635,7 @@ object Generator {
       }
 
       override def shrinksForValue(valueToShrink: Either[L, R]): Option[LazyListOrStream[RoseTree[Either[L, R]]]] =
-        Some(NextRoseTree(valueToShrink).shrinks)
+        Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
     }
 
   /**
