@@ -242,18 +242,6 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       shrinks(1).value shouldBe (0, true)
       shrinks(2).value shouldBe (2, false)
     }
-
-    it("should offer a map2WithFilter function that combines 2 RoseTree") {
-      import RoseTreeSpec._
-
-      val rtOfInt = intRoseTree(2)
-      val rtOfBoolean = booleanRoseTree(true)
-      val rtOfIntBoolean = RoseTree.map2WithFilter(rtOfInt, rtOfBoolean)(_ > 0, _ => true) { case (i, b) => (i, b) }
-      val shrinks = rtOfIntBoolean.shrinks
-      shrinks.length shouldBe 2
-      shrinks(0).value shouldBe (1, true)
-      shrinks(1).value shouldBe (2, false)
-    }
   }
 }
 

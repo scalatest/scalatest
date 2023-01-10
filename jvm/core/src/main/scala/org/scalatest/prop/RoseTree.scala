@@ -139,24 +139,6 @@ object RoseTree {
       }
     roseTreeOfV
   }
-
-  def map2WithFilter[T, U, V](tree1: RoseTree[T], tree2: RoseTree[U])(filterT: T => Boolean, filterU: U => Boolean)(f: (T, U) => V): RoseTree[V] = {
-    val tupValue = f(tree1.value, tree2.value)
-    val shrinks1 = tree1.shrinks
-    val candidatesOfTU1: LazyListOrStream[RoseTree[(T, U)]] = 
-      shrinks1.map(rtOfT => rtOfT.map(t => (t, tree2.value))).filter(rt => filterT(rt.value._1) && filterU(rt.value._2))
-    val candidates1: LazyListOrStream[RoseTree[V]] = candidatesOfTU1.map(rt => rt.map(t => f(t._1, t._2)))
-    val roseTreeOfV =
-      new RoseTree[V] {
-        val value = tupValue
-        def shrinks: LazyListOrStream[RoseTree[V]] = {
-          candidates1 #::: tree2.shrinks.map(rtOfU => rtOfU.map(u => (tree1.value, u)))
-                                        .filter(rt => filterT(rt.value._1) && filterU(rt.value._2))
-                                        .map(rt => rt.map(t => f(t._1, t._2)))
-        }
-      }
-    roseTreeOfV
-  }
 }
 
 // Terminal node of a RoseTree is a Rose.
