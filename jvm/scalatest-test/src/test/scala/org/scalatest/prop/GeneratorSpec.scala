@@ -4053,6 +4053,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           v.length shouldBe 5
         }
       }
+      it("should not exhibit this bug in Vector shrinking") {
+        val vectorGen = implicitly[Generator[Vector[Vector[Int]]]]
+        val xss = Vector(Vector(100, 200, 300, 400, 300))
+        vectorGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
+      }
       it("should shrink Vector with an algo towards empty Vector") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Vector[Int]]) =>
