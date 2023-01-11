@@ -4380,6 +4380,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           s.size shouldBe 5
         }
       }
+      it("should not exhibit this bug in SortedSet shrinking") {
+        implicit val ordering = Ordering.by[SortedSet[Int], Int](_.size)
+        val setGen = implicitly[Generator[SortedSet[SortedSet[Int]]]]
+        val xss = SortedSet(SortedSet(100, 200, 300, 400, 300))
+        setGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
+      }
       it("should shrink Set with an algo towards empty Set") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[SortedSet[Int]]) =>
