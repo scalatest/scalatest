@@ -4685,6 +4685,12 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           s.size shouldBe 5
         }
       }
+      it("should not exhibit this bug in SortedMap shrinking") {
+        implicit val ordering = Ordering.by[SortedMap[Int, String], Int](_.size)
+        val mapGen = implicitly[Generator[SortedMap[SortedMap[Int, String], String]]]
+        val xss = SortedMap(SortedMap(100 -> "100", 200 -> "200", 300 -> "300", 400 -> "400", 500 -> "500") -> "test")
+        mapGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
+      }
       it("should shrink SortedMap with an algo towards empty SortedMap") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[SortedMap[Int, String]]) =>
