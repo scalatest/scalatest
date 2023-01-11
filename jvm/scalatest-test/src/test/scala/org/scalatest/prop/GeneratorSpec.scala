@@ -4533,6 +4533,11 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           s.size shouldBe 5
         }
       }
+      it("should not exhibit this bug in Map shrinking") {
+        val mapGen = implicitly[Generator[Map[Map[Int, String], String]]]
+        val xss = Map(Map(100 -> "100", 200 -> "200", 300 -> "300", 400 -> "400", 500 -> "500") -> "test")
+        mapGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
+      }
       it("should shrink Map with an algo towards empty Map") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Map[Int, String]]) =>
