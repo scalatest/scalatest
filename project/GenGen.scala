@@ -832,7 +832,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
   val sevenEleven: Generator[String] =
     new Generator[String] {
-      def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[String], List[String], Randomizer) = {
+      def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[String], Randomizer) = {
         if (szp.size.value >= 7 && szp.size.value <= 11)
           (Rose("OKAY"), rnd)
         else
@@ -843,7 +843,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
   val fiveFive: Generator[String] =
     new Generator[String] {
-      def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[String], List[String], Randomizer) = {
+      def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[String], Randomizer) = {
         if (szp.size.value == 5)
           (Rose("OKAY"), rnd)
         else

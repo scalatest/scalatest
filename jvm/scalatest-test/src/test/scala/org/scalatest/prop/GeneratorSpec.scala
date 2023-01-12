@@ -4381,7 +4381,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should not exhibit this bug in SortedSet shrinking") {
-        implicit val ordering = Ordering.by[SortedSet[Int], Int](_.size)
+        implicit val ordering: Ordering[SortedSet[Int]] = Ordering.by[SortedSet[Int], Int](_.size)
         val setGen = implicitly[Generator[SortedSet[SortedSet[Int]]]]
         val xss = SortedSet(SortedSet(100, 200, 300, 400, 300))
         setGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
@@ -4686,7 +4686,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should not exhibit this bug in SortedMap shrinking") {
-        implicit val ordering = Ordering.by[SortedMap[Int, String], Int](_.size)
+        implicit val ordering: Ordering[SortedMap[Int, String]] = Ordering.by[SortedMap[Int, String], Int](_.size)
         val mapGen = implicitly[Generator[SortedMap[SortedMap[Int, String], String]]]
         val xss = SortedMap(SortedMap(100 -> "100", 200 -> "200", 300 -> "300", 400 -> "400", 500 -> "500") -> "test")
         mapGen.next(SizeParam(1, 0, 1), List(xss), Randomizer.default)._1.shrinks.map(_.value) should not contain xss
