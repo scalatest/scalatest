@@ -4850,8 +4850,8 @@ object Generator {
       // Members declared in org.scalatest.prop.HavingSize
       def havingSize(len: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Vector[T]] = generatorWithSize(SizeParam(len, 0, len))
       def havingSizesBetween(from: org.scalactic.anyvals.PosZInt,to: org.scalactic.anyvals.PosZInt): org.scalatest.prop.Generator[Vector[T]] = {
-        require(from != to, Resources.fromEqualToToHavingLengthsBetween(from))
-        require(from < to, Resources.fromGreaterThanToHavingLengthsBetween(from, to))
+        require(from != to, Resources.fromEqualToToHavingSizesBetween(from))
+        require(from < to, Resources.fromGreaterThanToHavingSizesBetween(from, to))
         generatorWithSize(SizeParam(from, PosZInt.ensuringValid(to - from), from))
       }
       def havingSizesDeterminedBy(f: org.scalatest.prop.SizeParam => org.scalatest.prop.SizeParam): org.scalatest.prop.Generator[Vector[T]] =

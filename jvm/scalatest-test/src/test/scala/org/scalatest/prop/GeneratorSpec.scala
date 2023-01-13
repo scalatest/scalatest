@@ -3744,6 +3744,86 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (l5, _, _) = gen.next(szp = SizeParam(PosZInt(100), 0, 100), edges = Nil, rnd = r4)
         l5.value.length shouldBe 100
       }
+      it("should produce List[T] following size determined by havingSize method") {
+        val aGen= Generator.listGenerator[Int]
+        implicit val sGen: Generator[List[Int]] = aGen.havingSize(PosZInt(3))
+
+        import GeneratorDrivenPropertyChecks._
+
+        forAll { (l: List[Int]) =>
+          l.size shouldBe 3
+        }
+      }
+      it("should produce List[T] following length determined by havingLength method") {
+        val aGen= Generator.listGenerator[Int]
+        implicit val sGen: Generator[List[Int]] = aGen.havingLength(PosZInt(3))
+
+        import GeneratorDrivenPropertyChecks._
+
+        forAll { (l: List[Int]) =>
+          l.length shouldBe 3
+        }
+      }
+      it("should produce List[T] following sizes determined by havingSizeBetween method") {
+        val aGen= Generator.listGenerator[Int]
+        implicit val sGen: Generator[List[Int]] = aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
+
+        import GeneratorDrivenPropertyChecks._
+
+        forAll { (l: List[Int]) =>
+          l.size should (be >= 3 and be <= 5)
+        }
+      }
+      it("should produce IllegalArgumentException when havingSizesBetween is called with invalid from and to pair") {
+        val aGen= Generator.listGenerator[Int]
+        aGen.havingSizesBetween(PosZInt(3), PosZInt(5))
+        assertThrows[IllegalArgumentException] {
+          aGen.havingSizesBetween(PosZInt(3), PosZInt(3))
+        }
+        assertThrows[IllegalArgumentException] {
+          aGen.havingSizesBetween(PosZInt(3), PosZInt(2))
+        }
+      }
+      it("should produce List[T] following lengths determined by havingLengthBetween method") {
+        val aGen= Generator.listGenerator[Int]
+        implicit val sGen: Generator[List[Int]] = aGen.havingLengthsBetween(PosZInt(3), PosZInt(5))
+
+        import GeneratorDrivenPropertyChecks._
+
+        forAll { (l: List[Int]) =>
+          l.length should (be >= 3 and be <= 5)
+        }
+      }
+      it("should produce IllegalArgumentException when havingLengthBetween is called with invalid from and to pair") {
+        val aGen= Generator.listGenerator[Int]
+        aGen.havingLengthsBetween(PosZInt(3), PosZInt(5))
+        assertThrows[IllegalArgumentException] {
+          aGen.havingLengthsBetween(PosZInt(3), PosZInt(3))
+        }
+        assertThrows[IllegalArgumentException] {
+          aGen.havingLengthsBetween(PosZInt(3), PosZInt(2))
+        }
+      }
+      it("should produce List[T] following sizes determined by havingSizesDeterminedBy method") {
+        val aGen= Generator.listGenerator[Int]
+        implicit val sGen: Generator[List[Int]] = aGen.havingSizesDeterminedBy(s => SizeParam(5, 0, 5))
+
+        import GeneratorDrivenPropertyChecks._
+
+        forAll { (l: List[Int]) =>
+          l.size shouldBe 5
+        }
+      }
+      it("should produce List[T] following sizes determined by havingLengthsDeterminedBy method") {
+        val aGen= Generator.listGenerator[Int]
+        implicit val sGen: Generator[List[Int]] = aGen.havingLengthsDeterminedBy(s => SizeParam(5, 0, 5))
+
+        import GeneratorDrivenPropertyChecks._
+
+        forAll { (l: List[Int]) =>
+          l.length shouldBe 5
+        }
+      }
       it("should not exhibit this bug in List shrinking") {
         val lstGen = implicitly[Generator[List[List[Int]]]]
         val xss = List(List(100, 200, 300, 400, 300))
