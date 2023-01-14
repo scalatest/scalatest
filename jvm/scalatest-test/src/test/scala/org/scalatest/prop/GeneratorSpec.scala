@@ -648,16 +648,27 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           val shrinks: LazyListOrStream[Char] = shrinkRoseTree.shrinks.map(_.value)
           shrinks.distinct.length shouldEqual shrinks.length
           if (c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z')
-            shrinks shouldBe empty
+            shrinks shouldEqual expectedChars.drop(expectedChars.indexOf(c) + 1)
           else
-            shrinks shouldEqual expectedChars
+            shrinks shouldBe empty
+            
         }
         import org.scalatest.Inspectors
         Inspectors.forAll (expectedChars) { (c: Char) =>
           val (shrinkRoseTree, _, _) = generator.next(SizeParam(1, 0, 1), List(c), Randomizer.default)
           val shrinks: LazyListOrStream[Char] = shrinkRoseTree.shrinks.map(_.value)
-          shrinks shouldBe empty
+          shrinks shouldEqual expectedChars.drop(expectedChars.indexOf(c) + 1)
         }
+      }
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.charGenerator.filter(c => c.toLower == c)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List('9'), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
+        shrinkees should not be empty
+        shrinkees.toList shouldBe List('8', '7', '6', '5', '4', '3', '2', '1', '0', 
+                                       'z', 'y', 'x', 'w', 'v', 'u', 't', 's', 'r', 
+                                       'q', 'p', 'o', 'n', 'm', 'l', 'j', 'k', 'i', 
+                                       'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a')
       }
     }
     describe("for Floats") {

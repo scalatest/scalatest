@@ -721,17 +721,24 @@ object Generator {
   implicit val charGenerator: Generator[Char] =
     new Generator[Char] {
 
-      case class NextRoseTree(value: Char) extends RoseTree[Char] {
+      case class NextRoseTree(value: Char)(sizeParam: SizeParam, isValidFun: (Char, SizeParam) => Boolean) extends RoseTree[Char] {
         def shrinks: LazyListOrStream[RoseTree[Char]] = {
           val userFriendlyChars = "9876543210ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmljkihgfedcba"
           // In this one we accept any of these characters. Else we try them in the above order.
-          if (userFriendlyChars.indexOf(value) >= 0) LazyListOrStream.empty
+          val valueIdx = userFriendlyChars.indexOf(value)
+          if (valueIdx < 0) LazyListOrStream.empty
           else {
             def resLazyListOrStream(theIndex: Int): LazyListOrStream[RoseTree[Char]] = {
               if (theIndex == userFriendlyChars.length) LazyListOrStream.empty
-              else NextRoseTree(userFriendlyChars(theIndex)) #:: resLazyListOrStream(theIndex + 1)
+              else {
+                val s = userFriendlyChars(theIndex)
+                if (isValidFun(s, sizeParam))
+                  NextRoseTree(s)(sizeParam, isValidFun) #:: resLazyListOrStream(theIndex + 1)
+                else
+                  resLazyListOrStream(theIndex + 1)  
+              }
             }
-            resLazyListOrStream(0)
+            resLazyListOrStream(valueIdx + 1)
           }
         }
       }
@@ -740,10 +747,10 @@ object Generator {
         val (allEdges, nextRnd) = Randomizer.shuffle(charEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: Char, sizeParam: SizeParam, isValidFun: (Char, SizeParam) => Boolean): RoseTree[Char] = NextRoseTree(edge)
+      override def roseTreeOfEdge(edge: Char, sizeParam: SizeParam, isValidFun: (Char, SizeParam) => Boolean): RoseTree[Char] = NextRoseTree(edge)(sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[Char], Randomizer) = {
         val (c, rnd2) = rnd.nextChar
-        (NextRoseTree(c), rnd2)
+        (NextRoseTree(c)(szp, isValid), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[Char]] = {
         val lowerAlphaChars = "zyxwvutsrqponmljkihgfedcba"
@@ -767,7 +774,7 @@ object Generator {
       }
 
       override def toString = "Generator[Char]"
-      override def shrinksForValue(valueToShrink: Char): Option[LazyListOrStream[RoseTree[Char]]] = Some(NextRoseTree(valueToShrink).shrinks)
+      override def shrinksForValue(valueToShrink: Char): Option[LazyListOrStream[RoseTree[Char]]] = Some(NextRoseTree(valueToShrink)(SizeParam(1, 0, 1), isValid).shrinks)
     }
 
   /**
