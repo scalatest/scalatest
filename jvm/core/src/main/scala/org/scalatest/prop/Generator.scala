@@ -3227,7 +3227,7 @@ object Generator {
   implicit val numericCharGenerator: Generator[NumericChar] =
     new Generator[NumericChar] {
 
-      case class NextRoseTree(value: NumericChar, sizeParam: SizeParam, isValidFun: (NumericChar, SizeParam) => Boolean) extends RoseTree[NumericChar] {
+      case class NextRoseTree(value: NumericChar)(sizeParam: SizeParam, isValidFun: (NumericChar, SizeParam) => Boolean) extends RoseTree[NumericChar] {
         def shrinks: LazyListOrStream[RoseTree[NumericChar]] = {
           def resLazyListOrStream(theValue: NumericChar): LazyListOrStream[RoseTree[NumericChar]] = {
             if (theValue.value == '0')
@@ -3236,30 +3236,23 @@ object Generator {
               val minusOne: Char = (theValue.value - 1).toChar // Go ahead and try all the values between i and '0'
               val numericCharMinusOne = NumericChar.ensuringValid(minusOne)
               if (isValidFun(numericCharMinusOne, sizeParam))
-                NextRoseTree(numericCharMinusOne, sizeParam, isValidFun) #:: resLazyListOrStream(numericCharMinusOne)
+                NextRoseTree(numericCharMinusOne)(sizeParam, isValidFun) #:: resLazyListOrStream(numericCharMinusOne)
               else
                 resLazyListOrStream(numericCharMinusOne)  
             }
           }
           resLazyListOrStream(value)
         }
-
-        override def equals(other: Any): Boolean = 
-          other match {
-            case NextRoseTree(v, _, _) => value == v
-            case _ => false
-          }
-        override def hashCode(): Int = value.hashCode()
       }
 
       override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[NumericChar], Randomizer) = {
         val (allEdges, nextRnd) = Randomizer.shuffle(numericCharEdges, rnd)
         (allEdges.take(maxLength), nextRnd)
       }
-      override def roseTreeOfEdge(edge: NumericChar, sizeParam: SizeParam, isValidFun: (NumericChar, SizeParam) => Boolean): RoseTree[NumericChar] = NextRoseTree(edge, sizeParam, isValidFun)
+      override def roseTreeOfEdge(edge: NumericChar, sizeParam: SizeParam, isValidFun: (NumericChar, SizeParam) => Boolean): RoseTree[NumericChar] = NextRoseTree(edge)(sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[NumericChar], Randomizer) = {
         val (posZInt, rnd2) = rnd.choosePosZInt(PosZInt.ensuringValid(0), PosZInt.ensuringValid(9))
-        (NextRoseTree(NumericChar.ensuringValid((posZInt.value + 48).toChar), szp, isValid), rnd2)
+        (NextRoseTree(NumericChar.ensuringValid((posZInt.value + 48).toChar))(szp, isValid), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[NumericChar]] = {
         case class CanonicalRoseTree(value: NumericChar) extends RoseTree[NumericChar] {
@@ -3278,7 +3271,7 @@ object Generator {
         CanonicalRoseTree('4').shrinks
       }
       override def toString = "Generator[NumericChar]"
-      override def shrinksForValue(valueToShrink: NumericChar): Option[LazyListOrStream[RoseTree[NumericChar]]] = Some(NextRoseTree(valueToShrink, SizeParam(1, 0, 1), isValid).shrinks)
+      override def shrinksForValue(valueToShrink: NumericChar): Option[LazyListOrStream[RoseTree[NumericChar]]] = Some(NextRoseTree(valueToShrink)(SizeParam(1, 0, 1), isValid).shrinks)
     }
 
   // Should throw IAE on negative size in all generators, even the ones that ignore size.
