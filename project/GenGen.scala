@@ -832,7 +832,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
   val sevenEleven: Generator[String] =
     new Generator[String] {
-      def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[String], Randomizer) = {
+      def nextImpl(szp: SizeParam, isValidFun: (String, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[String], Randomizer) = {
         if (szp.size.value >= 7 && szp.size.value <= 11)
           (Rose("OKAY"), rnd)
         else
@@ -843,7 +843,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
   val fiveFive: Generator[String] =
     new Generator[String] {
-      def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[String], Randomizer) = {
+      def nextImpl(szp: SizeParam, isValidFun: (String, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[String], Randomizer) = {
         if (szp.size.value == 5)
           (Rose("OKAY"), rnd)
         else
@@ -3596,7 +3596,7 @@ $okayAssertions$
       |    } yield $initToLastName$($initLower$)
       |  }
       |
-      |  def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[$lastType$], Randomizer) = underlying.nextImpl(szp, rnd)
+      |  def nextImpl(szp: SizeParam, isValidFun: ($lastType$, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[$lastType$], Randomizer) = underlying.nextImpl(szp, isValidFun, rnd)
       |  override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[$lastType$], Randomizer) = underlying.initEdges(maxLength, rnd)
       |  override def map[Z](f: ($lastType$) => Z): Generator[Z] = underlying.map(f)
       |  override def flatMap[Z](f: ($lastType$) => Generator[Z]): Generator[Z] = underlying.flatMap(f)

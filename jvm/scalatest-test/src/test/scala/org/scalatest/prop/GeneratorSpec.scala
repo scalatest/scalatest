@@ -30,7 +30,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
 
   implicit def roseTreeGenerator[A](implicit genOfA: Generator[A]): Generator[RoseTree[A]]  = {
     new Generator[RoseTree[A]] {
-      def nextImpl(szp: SizeParam, rnd: Randomizer): (RoseTree[RoseTree[A]], Randomizer) = {
+      def nextImpl(szp: SizeParam, isValidFun: (RoseTree[A], SizeParam) => Boolean, rnd: Randomizer): (RoseTree[RoseTree[A]], Randomizer) = {
         val (rtOfRTOfA, edgesOfRTOfA, nxtRnd) = genOfA.next(szp, List.empty, rnd)
         (Rose(rtOfRTOfA), nxtRnd)
       }
@@ -491,6 +491,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val canonicals = gen.canonicals
         canonicals.map(_.value).toList shouldBe List(-3, 3, -2, 2, -1, 1, 0)
       }
+      it("should produce values following constraint determined by filter method") {
+        val aGen= Generator.intGenerator.filter(_ > 5)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value should be > 5
+          newRd
+        }
+      }
       it("should shrink Ints by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Int]) =>
@@ -516,6 +524,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(15, 7)
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.toList) should be > 5
+          newRd
+        }
       }
     }
     describe("for Longs") {
