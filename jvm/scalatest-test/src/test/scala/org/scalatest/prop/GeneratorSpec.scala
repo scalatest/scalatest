@@ -608,6 +608,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val canonicals = gen.canonicals
         canonicals.map(_.value).toList shouldBe List(-3L, 3L, -2L, 2L, -1L, 1L, 0L)
       }
+      it("should produce values following constraint determined by filter method") {
+        val aGen= Generator.longGenerator.filter(_ > 5L)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value should be > 5L
+          newRd
+        }
+      }
       it("should shrink Longs by repeatedly halving and negating") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Long]) =>
@@ -636,11 +644,18 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         }
       }
       it("should produce shrinkees following constraint determined by filter method") {
-        val aGen= Generator.longGenerator.filter(_ > 5)
+        val aGen= Generator.longGenerator.filter(_ > 5L)
         val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(30L), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(15L, 7L)
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.toList) should be > 5L
+          newRd
+        }
       }
     }
     describe("for Chars") {
