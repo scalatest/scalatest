@@ -915,6 +915,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val canonicals = gen.canonicals
         canonicals.map(_.value).toList shouldBe List(-3.0, 3.0, -2.0, 2.0, -1.0, 1.0, 0.0)
       }
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.doubleGenerator.filter(_ > 5.0)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value should be > 5.0
+          newRd
+        }
+      }
       it("should shrink Doubles with an algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[Double]) =>
@@ -940,6 +948,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(6.0)
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.toList) should be > 5.0
+          newRd
+        }
       }
     }
 
