@@ -1127,6 +1127,15 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val rnd = Randomizer.default
         gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
+
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.posIntGenerator.filter(_ > 5)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value should be > PosInt(5)
+          newRd
+        }
+      }
       
       it("should shrink PosInts by algo towards 1") {
         import GeneratorDrivenPropertyChecks._
@@ -1151,6 +1160,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosInt(15), PosInt(7))
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.toList) should be > PosInt(5)
+          newRd
+        }
       }
     }
     describe("for PosZInts") {
