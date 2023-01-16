@@ -1293,6 +1293,15 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val rnd = Randomizer.default
       }
 
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.posLongGenerator.filter(_ > 5L)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value should be > PosLong(5L)
+          newRd
+        }
+      }
+
       it("should shrink PosLongs by algo towards 1") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosLong]) =>
@@ -1316,6 +1325,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosLong(15L), PosLong(7L))
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.toList) should be > PosLong(5L)
+          newRd
+        }
       }
     }
     describe("for PosZLongs") {
