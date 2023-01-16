@@ -699,6 +699,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import org.scalatest.Inspectors
         Inspectors.forAll (canonicals) { c => c should (be >= 'a' and be <= 'z') }
       }
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.charGenerator.filter(_ > '5')
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value should be > '5'
+          newRd
+        }
+      }
       it("should shrink Chars by trying selected printable characters") {
         import GeneratorDrivenPropertyChecks._
         val expectedChars = "9876543210ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmljkihgfedcba".toList
@@ -729,6 +737,15 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
                                        'z', 'y', 'x', 'w', 'v', 'u', 't', 's', 'r', 
                                        'q', 'p', 'o', 'n', 'm', 'l', 'j', 'k', 'i', 
                                        'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a')
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          shrinkees.toList.foreach { s =>
+            s should equal (s.toLower)
+          } 
+          newRd
+        }                               
       }
     }
     describe("for Floats") {

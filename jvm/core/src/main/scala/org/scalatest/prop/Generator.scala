@@ -750,7 +750,7 @@ object Generator {
       override def roseTreeOfEdge(edge: Char, sizeParam: SizeParam, isValidFun: (Char, SizeParam) => Boolean): RoseTree[Char] = NextRoseTree(edge)(sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (Char, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Char], Randomizer) = {
         val (c, rnd2) = rnd.nextChar
-        (NextRoseTree(c)(szp, isValid), rnd2)
+        (NextRoseTree(c)(szp, isValidFun), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[Char]] = {
         val lowerAlphaChars = "zyxwvutsrqponmljkihgfedcba"
