@@ -634,7 +634,7 @@ object Generator {
       }
       def nextImpl(szp: SizeParam, isValidFun: (Byte, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Byte], Randomizer) = {
         val (b, rnd2) = rnd.nextByte
-        (NextRoseTree(b)(szp, isValid), rnd2)
+        (NextRoseTree(b)(szp, isValidFun), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[Byte]] = {
         case class CanonicalRoseTree(value: Byte) extends RoseTree[Byte] {
