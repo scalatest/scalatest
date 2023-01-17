@@ -65,6 +65,7 @@ private[tools] object ArgsParser {
           /* s.startsWith("-x") || */
           s.startsWith("-l") ||
           s.startsWith("-s") ||
+          s.startsWith("-S") ||
           s.startsWith("-i") ||
           s.startsWith("-j") ||
           s.startsWith("-m") ||
