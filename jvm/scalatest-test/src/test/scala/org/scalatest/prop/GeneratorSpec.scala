@@ -2678,6 +2678,15 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.negZFloatGenerator.filter(_ < -5.0f)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value should be < NegZFloat(-5.0f)
+          newRd
+        }
+      }
+
       it("should shrink NegZFloat by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NegZFloat]) =>
@@ -2701,6 +2710,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NegZFloat(-6.0f))
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.toList) should be < NegZFloat(-5.0f)
+          newRd
+        }
       }
     }
     describe("for NegZFiniteFloat") {
