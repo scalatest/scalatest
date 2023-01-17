@@ -2686,7 +2686,7 @@ object Generator {
       override def roseTreeOfEdge(edge: NegFiniteFloat, sizeParam: SizeParam, isValidFun: (NegFiniteFloat, SizeParam) => Boolean): RoseTree[NegFiniteFloat] = NextRoseTree(edge, sizeParam, isValidFun)
       def nextImpl(szp: SizeParam, isValidFun: (NegFiniteFloat, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[NegFiniteFloat], Randomizer) = {
         val (negFiniteFloat, rnd2) = rnd.nextNegFiniteFloat
-        (NextRoseTree(negFiniteFloat, szp, isValid), rnd2)
+        (NextRoseTree(negFiniteFloat, szp, isValidFun), rnd2)
       }
       override def canonicals: LazyListOrStream[RoseTree[NegFiniteFloat]] = {
         case class CanonicalRoseTree(value: NegFiniteFloat) extends RoseTree[NegFiniteFloat] {
