@@ -1992,6 +1992,15 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.posZDoubleGenerator.filter(_ > 5.0)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value should be > PosZDouble(5.0)
+          newRd
+        }
+      }
+
       it("should shrink PosZDouble by algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[PosZDouble]) =>
@@ -2015,6 +2024,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(PosZDouble(6.0))
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.toList) should be > PosZDouble(5.0)
+          newRd
+        }
       }
     }
     describe("for PosZFiniteDouble") {
