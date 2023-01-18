@@ -3775,7 +3775,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
 
       it("should produce values following constraint determined by filter method") {
-        val aGen = Generator.finiteFloatGenerator.filter(_ > 5.0)
+        val aGen = Generator.finiteFloatGenerator.filter(_ > 5.0f)
         (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
           val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
           rs.value should be > FiniteFloat(5.0f)
@@ -3869,6 +3869,15 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.finiteDoubleGenerator.filter(_ > 5.0)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value should be > FiniteDouble(5.0)
+          newRd
+        }
+      }
+
       it("should shrink FiniteDoubles with an algo towards 0") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[FiniteDouble]) =>
@@ -3894,6 +3903,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(FiniteDouble(6.0))
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.toList) should be > FiniteDouble(5.0)
+          newRd
+        }
       }
     }
     describe("for NumericChar") {
