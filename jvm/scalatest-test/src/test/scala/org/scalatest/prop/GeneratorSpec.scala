@@ -3944,6 +3944,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         List(a1, a2).map(_.value) should contain theSameElementsAs List(NumericChar('0'), NumericChar('9'))
       }
 
+      it("should have legitimate canonicals") {
+        import Generator._
+        val gen = numericCharGenerator
+        val rnd = Randomizer.default
+        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
+      }
+
       it("should produce values following constraint determined by filter method") {
         val aGen = Generator.numericCharGenerator.filter(_.value.toString.toInt > 5)
         (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
@@ -3951,13 +3958,6 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
           rs.value.value.toString.toInt should be > 5
           newRd
         }
-      }
-
-      it("should have legitimate canonicals") {
-        import Generator._
-        val gen = numericCharGenerator
-        val rnd = Randomizer.default
-        gen.canonicals.shouldGrowWithForGeneratorLazyListOrStreamPair(_.value.value)
       }
 
       it("should shrink NumericChars with an algo towards '0'") {
@@ -4040,12 +4040,27 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         import org.scalatest.Inspectors
         Inspectors.forAll (canonicals.init) { (s: String) => s should (be >= "a" and be <= "z") }
       }
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.stringGenerator.filter(_.length > 5)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 99, 100), List.empty, rd)
+          rs.value.length should be > 5
+          newRd
+        }
+      }
       it("should produce shrinkees following constraint determined by filter method") {
         val aGen= Generator.stringGenerator.filter(_.length > 5)
-        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List("one two three four five"), Randomizer.default)
+        val (rs, _, _) = aGen.next(SizeParam(1, 99, 100), List("one two three four five"), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List("ee four five", "one two thr", "wo thr")
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 99, 100), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.map(_.length).toList) should be > 5
+          newRd
+        }
       }
     }
 
