@@ -4442,7 +4442,7 @@ object Generator {
         else {
           val (nextRoseTreeOfT, _, nextNextRnd) = genOfT.next(szp, Nil, nextRnd)
           val nextT = nextRoseTreeOfT.value
-          (NextRoseTree(Some(nextT), szp, isValid), nextNextRnd)
+          (NextRoseTree(Some(nextT), szp, isValidFun), nextNextRnd)
         }
       }
       override def toString = "Generator[Option[T]]"

@@ -4104,6 +4104,15 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         optCanon.map(rt => rt.value).filter(_.isDefined).map(_.get) should contain theSameElementsAs intCanon.map(rt => rt.value).toList
       }
 
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.optionGenerator[Int].filter(_.nonEmpty)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value should not be empty
+          newRd
+        }
+      }
+
       it("should use the base type for shrinking and also produce None") {
         import org.scalatest.OptionValues._
         import GeneratorDrivenPropertyChecks._
@@ -4157,6 +4166,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(Some("test")), Randomizer.default)
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not contain (None)
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.toList) should not be empty
+          newRd
+        }
       }
     }
 
