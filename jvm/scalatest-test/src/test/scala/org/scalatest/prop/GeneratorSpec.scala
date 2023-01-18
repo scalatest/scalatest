@@ -3203,6 +3203,14 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val canonicals = gen.canonicals
         canonicals.map(_.value).toList shouldBe List(NonZeroInt(-3), NonZeroInt(3), NonZeroInt(-2), NonZeroInt(2), NonZeroInt(-1), NonZeroInt(1))
       }
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.nonZeroIntGenerator.filter(_ > 5)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value should be > NonZeroInt(5)
+          newRd
+        }
+      }
       it("should shrink NonZeroInts by repeatedly halving and negating") {
         import GeneratorDrivenPropertyChecks._
         forAll { (shrinkRoseTree: RoseTree[NonZeroInt]) =>
@@ -3232,6 +3240,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NonZeroInt(15), NonZeroInt(7))
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.toList) should be > NonZeroInt(5)
+          newRd
+        }
       }
     }
     describe("for NonZeroLongs") {
