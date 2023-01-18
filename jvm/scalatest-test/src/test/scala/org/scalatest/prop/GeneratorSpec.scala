@@ -3944,6 +3944,15 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         List(a1, a2).map(_.value) should contain theSameElementsAs List(NumericChar('0'), NumericChar('9'))
       }
 
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.numericCharGenerator.filter(_.value.toString.toInt > 5)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          rs.value.value.toString.toInt should be > 5
+          newRd
+        }
+      }
+
       it("should have legitimate canonicals") {
         import Generator._
         val gen = numericCharGenerator
@@ -3974,6 +3983,13 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val shrinkees = rs.shrinks.map(_.value)
         shrinkees should not be empty
         shrinkees.toList shouldBe List(NumericChar('8'), NumericChar('7'), NumericChar('6'))
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.map(_.value.toString.toInt).toList) should be > 5
+          newRd
+        }
       }
     }
 
