@@ -4321,6 +4321,24 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         eitherCanon.map(_.value).toList should contain theSameElementsAs((rCanon.map(_.value).map(Right(_)) ++ lCanon.map(_.value).map(Left(_))).toList)
       }
 
+      it("should produce values following constraint determined by filter method") {
+        val aGen = 
+          Generator.eitherGenerator[Int, Long].filter { 
+            case Left(l) => l > 200
+            case Right(r) => r > 200
+          }
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val value = 
+            rs.value match {
+              case Left(l) => l > 200
+              case Right(r) => r > 200
+            }
+          value shouldBe true
+          newRd
+        }
+      }
+
       it("should produce an appropriate mix of Right and Left", Flicker) {
         import Generator._
         val gen = eitherGenerator[String, Int]
@@ -4371,6 +4389,18 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val orRightShrinkees = orRightShrink.shrinks.map(_.value)
         orRightShrinkees should not be empty
         orRightShrinkees.toList shouldBe List(Right(1000L), Right(500L), Right(250L))
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map { sh =>
+            sh.value match {
+              case Left(l) => l > 200
+              case Right(r) => r > 200
+            }
+          }
+          all(shrinkees.toList) shouldBe true
+          newRd
+        }
       }
     }
 

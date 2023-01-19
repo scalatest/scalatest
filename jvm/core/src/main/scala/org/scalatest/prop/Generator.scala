@@ -4626,11 +4626,11 @@ object Generator {
           // TODO: Here I was not sure if I should just map the RoseTree or takes
           // its value and wrap that in a shrink call. Might be the same thing ultimately.
           // Will check that later. Actually I'll try mapping first.
-          val (nextRoseTreeOfL, _, nextRnd) = genOfL.next(szp, Nil, rnd)
+          val (nextRoseTreeOfL, _, nextRnd) = genOfL.filter(l => isValidFun(Left(l), szp)).next(szp, Nil, rnd)
           (nextRoseTreeOfL.map(l => Left(l)), nextRnd)
         }
         else {
-          val (nextRoseTreeOfR, _, nextRnd) = genOfR.next(szp, Nil, rnd)
+          val (nextRoseTreeOfR, _, nextRnd) = genOfR.filter(r => isValidFun(Right(r), szp)).next(szp, Nil, rnd)
           (nextRoseTreeOfR.map(r => Right(r)), nextRnd)
         }
       }
