@@ -4994,6 +4994,27 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val listOfIntCanonicals = listOfIntCanonicalsIt.map(_.value).toList
         listOfIntCanonicals shouldEqual intCanonicals.map(i => List(i))
       }
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.vectorGenerator[Int].filter(_.length > 5)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 99, 100), List.empty, rd)
+          rs.value.length should be > 5
+          newRd
+        }
+      }
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.vectorGenerator[String].filter(_.nonEmpty)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(Vector("1", "2", "3", "4")), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
+        shrinkees should not contain (Vector.empty[String])
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.toList) should not be empty
+          newRd
+        }
+      }
     }
 
     describe("for Set[T]s") {

@@ -4825,7 +4825,7 @@ object Generator {
             @scala.annotation.tailrec
             def loop(targetSize: Int, result: Vector[T], rnd: org.scalatest.prop.Randomizer): (RoseTree[Vector[T]], org.scalatest.prop.Randomizer) =
               if (result.length == targetSize)
-                (NextRoseTree(result, ignoredSzp, isValid), rnd)
+                (NextRoseTree(result, ignoredSzp, isValidFun), rnd)
               else {
                 val (nextRoseTreeOfT, nextEdges, nextRnd) = genOfT.next(szp, List.empty, rnd)
                 loop(targetSize, result :+ nextRoseTreeOfT.value, nextRnd)
@@ -4860,7 +4860,7 @@ object Generator {
           def nextImpl(szp: org.scalatest.prop.SizeParam, isValidFun: (Vector[T], SizeParam) => Boolean, rnd: org.scalatest.prop.Randomizer): (RoseTree[Vector[T]], org.scalatest.prop.Randomizer) = {
             val s = f(szp)
             val gen = generatorWithSize(s)
-            gen.nextImpl(s, isValid, rnd)
+            gen.nextImpl(s, isValidFun, rnd)
           }
           override def isValid(value: Vector[T], sizeParam: SizeParam): Boolean = {
             val fSizeParam = f(sizeParam)
