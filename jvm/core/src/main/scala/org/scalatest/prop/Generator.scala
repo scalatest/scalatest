@@ -5206,7 +5206,7 @@ object Generator {
             @scala.annotation.tailrec
             def loop(targetSize: Int, result: SortedMap[K, V], rnd: org.scalatest.prop.Randomizer): (RoseTree[SortedMap[K, V]], org.scalatest.prop.Randomizer) =
               if (result.size == targetSize)
-                (NextRoseTree(result, ignoredSzp, isValid), rnd)
+                (NextRoseTree(result, ignoredSzp, isValidFun), rnd)
               else {
                 val (nextRoseTreeOfT, nextEdges, nextRnd) = genOfTuple2KV.next (szp, List.empty, rnd)
                 loop(targetSize, result + nextRoseTreeOfT.value, nextRnd)

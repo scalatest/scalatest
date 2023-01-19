@@ -5688,6 +5688,27 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val mapCanonicals = mapCanonicalsIt.map(_.value).toList
         mapCanonicals shouldEqual tupleCanonicals.map(i => Map(i))
       }
+      it("should produce values following constraint determined by filter method") {
+        val aGen = Generator.sortedMapGenerator[Int, String].filter(_.size > 5)
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 99, 100), List.empty, rd)
+          rs.value.size should be > 5
+          newRd
+        }
+      }
+      it("should produce shrinkees following constraint determined by filter method") {
+        val aGen= Generator.sortedMapGenerator[Int, String].filter(_.nonEmpty)
+        val (rs, _, _) = aGen.next(SizeParam(1, 0, 1), List(SortedMap(1 -> "1", 2 -> "2", 3 -> "3", 4 -> "4")), Randomizer.default)
+        val shrinkees = rs.shrinks.map(_.value)
+        shrinkees should not contain (Set.empty[String])
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map(_.value)
+          all(shrinkees.toList) should not be empty
+          newRd
+        }
+      }
     }
     it("should be creatable for recursive types") {
       // Based on an example from ScalaCheck: The Definitive Guide
