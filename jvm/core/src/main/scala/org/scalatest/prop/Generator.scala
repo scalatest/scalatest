@@ -3381,16 +3381,16 @@ object Generator {
         (listEdges.take(maxLength), rnd)
       }
 
-      override def roseTreeOfEdge(edge: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean): RoseTree[List[T]] = NextRoseTree(edge, sizeParam, isValid)
+      override def roseTreeOfEdge(edge: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean): RoseTree[List[T]] = NextRoseTree(edge, sizeParam, isValidFun)
 
       def generatorWithSize(szp: SizeParam): Generator[List[T]] =
         new Generator[List[T]] {
-          override def roseTreeOfEdge(edge: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean): RoseTree[List[T]] = NextRoseTree(edge, szp, isValid)
+          override def roseTreeOfEdge(edge: List[T], sizeParam: SizeParam, isValidFun: (List[T], SizeParam) => Boolean): RoseTree[List[T]] = NextRoseTree(edge, szp, isValidFun)
           def nextImpl(nextSzp: org.scalatest.prop.SizeParam, isValidFun: (List[T], SizeParam) => Boolean, rnd: org.scalatest.prop.Randomizer): (RoseTree[List[T]], org.scalatest.prop.Randomizer) = {
             @scala.annotation.tailrec
             def loop(targetSize: Int, result: List[T], rnd: org.scalatest.prop.Randomizer): (RoseTree[List[T]], org.scalatest.prop.Randomizer) =
               if (result.length == targetSize)
-                (NextRoseTree(result, szp, isValid), rnd)
+                (NextRoseTree(result, szp, isValidFun), rnd)
               else {
                 val (nextRoseTreeOfT, nextEdges, nextRnd) = genOfT.next(szp, List.empty, rnd)
                 loop(targetSize, result :+ nextRoseTreeOfT.value, nextRnd)
