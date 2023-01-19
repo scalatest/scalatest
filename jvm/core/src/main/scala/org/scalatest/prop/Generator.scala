@@ -4530,11 +4530,11 @@ object Generator {
       def nextImpl(szp: SizeParam, isValidFun: (G Or B, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[G Or B], Randomizer) = {
         val (nextInt, nextRnd) = rnd.nextInt
         if (nextInt % 4 == 0) {
-          val (nextRoseTreeOfB, _, nextRnd) = genOfB.next(szp, Nil, rnd)
+          val (nextRoseTreeOfB, _, nextRnd) = genOfB.filter(b => isValidFun(Bad(b), szp)).next(szp, Nil, rnd)
           (nextRoseTreeOfB.map(b => Bad(b)), nextRnd)
         }
         else {
-          val (nextRoseTreeOfG, _, nextRnd) = genOfG.next(szp, Nil, rnd)
+          val (nextRoseTreeOfG, _, nextRnd) = genOfG.filter(g => isValidFun(Good(g), szp)).next(szp, Nil, rnd)
           (nextRoseTreeOfG.map(g => Good(g)), nextRnd)
         }
       }

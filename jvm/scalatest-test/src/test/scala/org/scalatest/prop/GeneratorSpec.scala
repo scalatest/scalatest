@@ -4207,6 +4207,25 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         orCanon.map(_.value).toList should contain theSameElementsAs((gCanon.map(_.value).map(Good(_)) ++ bCanon.map(_.value).map(Bad(_))).toList)
       }
 
+      it("should produce values following constraint determined by filter method") {
+        import org.scalactic._
+        val aGen = 
+          Generator.orGenerator[Int, Long].filter { 
+            case Good(g) => g > 200
+            case Bad(b) => b > 200
+          }
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = aGen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val value = 
+            rs.value match {
+              case Good(g) => g > 200
+              case Bad(b) => b > 200
+            }
+          value shouldBe true
+          newRd
+        }
+      }
+
       it("should produce an appropriate mix of Good and Bad", Flicker) {
         import Generator._
         import org.scalactic._
@@ -4258,6 +4277,18 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
         val orBadShrinkees = orBadShrink.shrinks.map(_.value)
         orBadShrinkees should not be empty
         orBadShrinkees.toList shouldBe List(Bad(1000L), Bad(500L), Bad(250L))
+
+        (0 to 100).foldLeft(Randomizer.default) { case (rd, _) =>
+          val (rs, _, newRd) = gen.next(SizeParam(1, 0, 1), List.empty, rd)
+          val shrinkees = rs.shrinks.map { sh =>
+            sh.value match {
+              case Good(g) => g > 200
+              case Bad(b) => b > 200
+            }
+          }
+          all(shrinkees.toList) shouldBe true
+          newRd
+        }
       }
     }
 
