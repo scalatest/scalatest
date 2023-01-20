@@ -122,8 +122,6 @@ import scala.util.Success
  */
 trait Prettifier extends Serializable { // I removed the extends (Any => String), now that we are making this implicit.
 
-  protected val differ: Differ = AnyDiffer
-
   /**
    * Prettifies the passed object.
    */
@@ -137,7 +135,7 @@ trait Prettifier extends Serializable { // I removed the extends (Any => String)
    * @return a <code>PrettyPair</code> that contains the prettified <code>left</code> and <code>right</code>, with optional analysis.
    */
   def apply(left: Any, right: Any): PrettyPair = {
-    differ.difference(left, right, this)
+    AnyDiffer.difference(left, right, this)
   }
 }
 
@@ -331,8 +329,10 @@ object Prettifier {
    */
   def apply(prettifier: Prettifier, customDiffer: Differ): Prettifier = 
     new Prettifier {
-      override val differ: Differ = customDiffer
       def apply(o: Any): String = prettifier.apply(o)
+      override def apply(left: Any, right: Any): PrettyPair = {
+        customDiffer.difference(left, right, this)
+      }
     }  
 
   /**
