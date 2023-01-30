@@ -177,7 +177,7 @@ class HavingLengthsBetweenSpec extends AnyFunSpec with Matchers {
         import CommonGenerators.lists
         val lstGen = lists[Int].havingLengthsBetween(5, 99)
         val xs = List.empty[Int]
-        lstGen.next(SizeParam(1, 0, 1), List(xs), Randomizer.default)._1.shrinks.map(_.value) shouldBe empty
+        lstGen.next(SizeParam(0, 0, 0), List(xs), Randomizer.default)._1.shrinks.map(_.value) shouldBe empty
       }
       it("should return an Iterator that does not repeat canonicals when asked to shrink a List of size 2 that includes canonicals") {
         import CommonGenerators.lists
