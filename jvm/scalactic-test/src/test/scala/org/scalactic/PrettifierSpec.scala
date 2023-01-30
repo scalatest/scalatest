@@ -186,6 +186,17 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
     it("should pretty print nested Many(String)") {
       Prettifier.basic(Many(Many("1", "2", "3"), Many("7", "8", "9"))) should be ("Many(Many(1, 2, 3), Many(7, 8, 9))")
     }
+    it("should support custom Differ") {
+      val d = 
+        new Differ {
+          def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
+            PrettyPair(a.toString, b.toString, None)
+          }
+        }
+      val p = Prettifier(Prettifier.basic, d)  
+      val pair = p("test 1", "test 2")
+      pair shouldBe PrettyPair("test 1", "test 2", None)
+    }
     // SKIP-SCALATESTJS,NATIVE-START
     it("should pretty print Java List") {
       Prettifier.basic(javaList(1, 2, 3)) should be ("[1, 2, 3]")
@@ -326,6 +337,17 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
     it("should pretty print nested Many(String)") {
       Prettifier.default(Many(Many("1", "2", "3"), Many("7", "8", "9"))) should be ("Many(Many(\"1\", \"2\", \"3\"), Many(\"7\", \"8\", \"9\"))")
     }
+    it("should support custom Differ") {
+      val d = 
+        new Differ {
+          def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
+            PrettyPair(a.toString, b.toString, None)
+          }
+        }
+      val p = Prettifier(Prettifier.default, d)
+      val pair = p("test 1", "test 2")
+      pair shouldBe PrettyPair("test 1", "test 2", None)
+    }
     // SKIP-SCALATESTJS,NATIVE-START
     it("should pretty print Java List") {
       Prettifier.default(javaList(1, 2, 3)) should be ("[1, 2, 3]")
@@ -432,6 +454,18 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
     it("should pretty print Tuple") {
       val prettifier = Prettifier.truncateAt(SizeLimit(2))
       prettifier(("John Lee", 35)) should be ("(\"John Lee\", 35)")
+    }
+
+    it("should support custom Differ") {
+      val d = 
+        new Differ {
+          def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
+            PrettyPair(a.toString, b.toString, None)
+          }
+        }
+      val p = Prettifier(Prettifier.truncateAt(SizeLimit(2)), d)  
+      val pair = p("test 1", "test 2")
+      pair shouldBe PrettyPair("test 1", "test 2", None)
     }
   }
 }
