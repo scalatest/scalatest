@@ -135,8 +135,8 @@ package org.scalatest.fixture
  * <p>
  * Note: As of Scala 2.11, <code>DelayedInit</code> (which is used by <code>NoArg</code>) has been deprecated, to indicate it is buggy and should be avoided
  * if possible. Those in charge of the Scala compiler and standard library have promised that <code>DelayedInit</code> will not be removed from Scala
- * unless an alternate way to achieve the same goal is provided. Thus it <em>should</em> be safe to use <code>NoArg</code>, but if you'd rather
- * not you can achieve the same effect with a bit more boilerplate by extending (<code>() =&gt; Unit</code>) instead of <code>NoArg</code> and placing
+ * unless an alternate way to achieve the same goal is provided. Unfortunately, <code>DelayedInit</code> was officially dropped in Scala 3 (https://docs.scala-lang.org/scala3/reference/dropped-features/delayed-init.html). 
+ * ScalaTest removed <code>NoArg</code> trait from its Scala 3 build starting 3.2.16. You can achieve the same effect with a bit more boilerplate by extending (<code>() =&gt; Unit</code>) instead of <code>NoArg</code> and placing
  * your code in an explicit <code>body</code> method. Here's an example:
  * </p>
  *
@@ -210,6 +210,7 @@ package org.scalatest.fixture
  * </pre>
  *
  */
+@deprecated("NoArg has been deprecated because DelayedInit is officially dropped in Scala 3 (https://docs.scala-lang.org/scala3/reference/dropped-features/delayed-init.html) NoArg will no longer be available in Scala 3 build for ScalaTest starting 3.2.16 and shall be removed totally in a future version of ScalaTest. Please use (() => Unit) as suggested in NoArg scaladoc instead.", "3.2.16") 
 trait NoArg extends DelayedInit with (() => Unit) {
 
   private var theBody: () => Unit = _
