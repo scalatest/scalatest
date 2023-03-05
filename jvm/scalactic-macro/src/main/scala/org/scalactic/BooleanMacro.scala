@@ -375,6 +375,36 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       )
     )
 
+  def lengthSizeApplyMacroBool(select: Select, prettifier: Tree): Apply =
+    Apply(
+      Select(
+        Select(
+          Select(
+            Select(
+              Ident(newTermName("_root_")),
+              newTermName("org")
+            ),
+            newTermName("scalactic")
+          ),
+          newTermName("Bool")
+        ),
+        newTermName("lengthSizeMacroBool")
+      ),
+      List(
+        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        context.literal(select.name.decoded).tree,
+        Apply(
+          Select(
+            Ident("$org_scalatest_assert_macro_left"),
+            select.name
+          ), 
+          List.empty
+        ),
+        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        prettifier.duplicate
+      )
+    )  
+
   /**
    * generate the AST for the following code:
    *
@@ -495,7 +525,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                         Block(
                           valDef("$org_scalatest_assert_macro_left", leftApplySelect.qualifier.duplicate),
                           valDef("$org_scalatest_assert_macro_right", rightTree),
-                          lengthSizeMacroBool(leftApplySelect.duplicate, prettifierTree)
+                          lengthSizeApplyMacroBool(leftApplySelect.duplicate, prettifierTree)
                         )
                       case _ =>
                         /**
