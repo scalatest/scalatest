@@ -268,9 +268,7 @@ object GenScalaTestDotty {
         "InspectorAsserting.scala"     // Re-implemented without path-dependent type
       ), 
       "org/scalatest/events" -> List.empty, 
-      "org/scalatest/fixture" -> List(
-        "NoArg.scala"  // skipped because scala 3 dropped DelayedInit.
-      ), 
+      "org/scalatest/fixture" -> List.empty, 
       "org/scalatest/featurespec" -> List.empty, 
       "org/scalatest/funspec" -> List.empty, 
       "org/scalatest/funsuite" -> List.empty, 
@@ -334,9 +332,7 @@ object GenScalaTestDotty {
         "InspectorAsserting.scala"     // Re-implemented without path-dependent type
       ), 
       "org/scalatest/events" -> List.empty, 
-      "org/scalatest/fixture" -> List(
-        "NoArg.scala"  // skipped because scala 3 dropped DelayedInit.
-      ), 
+      "org/scalatest/fixture" -> List.empty, 
       "org/scalatest/featurespec" -> List.empty, 
       "org/scalatest/funspec" -> List.empty, 
       "org/scalatest/funsuite" -> List.empty, 
@@ -400,9 +396,7 @@ object GenScalaTestDotty {
         "InspectorAsserting.scala"     // Re-implemented without path-dependent type
       ), 
       "org/scalatest/events" -> List.empty, 
-      "org/scalatest/fixture" -> List(
-        "NoArg.scala"  // skipped because scala 3 dropped DelayedInit.
-      ), 
+      "org/scalatest/fixture" -> List.empty, 
       "org/scalatest/featurespec" -> List.empty, 
       "org/scalatest/funspec" -> List.empty, 
       "org/scalatest/funsuite" -> List.empty, 
