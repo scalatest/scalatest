@@ -10,7 +10,7 @@ import ScalaNativePlugin.autoImport.{nativeLinkStubs, nativeDump}
 trait BuildCommons {
 
   lazy val scalaVersionsSettings: Seq[Setting[_]] = Seq(
-    crossScalaVersions := Seq("2.13.8", "2.12.15", "2.11.12"),
+    crossScalaVersions := Seq("2.13.10", "2.12.17", "2.11.12"), 
     scalaVersion := crossScalaVersions.value.head,
   )
 
@@ -21,7 +21,7 @@ trait BuildCommons {
       ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).cross(CrossVersion.for3Use2_13)
     )
 
-  val releaseVersion = "3.3.0-SNAP3"
+  val releaseVersion = "3.3.0-SNAP4"
   val previousReleaseVersion = "3.2.14"
 
   val plusJUnitVersion = "3.2.14.0"

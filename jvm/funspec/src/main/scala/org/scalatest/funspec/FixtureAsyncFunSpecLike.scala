@@ -216,6 +216,7 @@ trait FixtureAsyncFunSpecLike extends org.scalatest.FixtureAsyncTestSuite with I
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -237,6 +238,7 @@ trait FixtureAsyncFunSpecLike extends org.scalatest.FixtureAsyncTestSuite with I
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
@@ -358,6 +360,7 @@ trait FixtureAsyncFunSpecLike extends org.scalatest.FixtureAsyncTestSuite with I
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -379,6 +382,7 @@ trait FixtureAsyncFunSpecLike extends org.scalatest.FixtureAsyncTestSuite with I
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def must(behaveWord: BehaveWord) = behaveWord
   }
 
