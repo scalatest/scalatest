@@ -21,7 +21,7 @@ trait BuildCommons {
       ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).cross(CrossVersion.for3Use2_13)
     )
 
-  val releaseVersion = "3.3.0-SNAP3"
+  val releaseVersion = "3.3.0-SNAP4"
   val previousReleaseVersion = "3.2.14"
 
   val plusJUnitVersion = "3.2.14.0"
