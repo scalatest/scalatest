@@ -229,7 +229,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       ofImpl(description, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def of(description: String): Unit = {
+    //DOTTY-ONLY inline infix def of(description: String): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ofImpl(description, pos) }) } 
     //DOTTY-ONLY }
   }
@@ -325,7 +325,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -353,7 +353,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -382,7 +382,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -415,7 +415,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -445,7 +445,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun, pos) }) } 
     //DOTTY-ONLY }
   }
@@ -527,7 +527,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -555,7 +555,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -583,7 +583,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -615,7 +615,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -643,7 +643,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -667,6 +667,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      * @param firstTestTag the first mandatory test tag
      * @param otherTestTags the others additional test tags
      */
+    //DOTTY-ONLY     infix 
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
       new ItVerbStringTaggedAs(verb, name, tagList)
@@ -720,6 +721,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param string the string description
      */
+    //DOTTY-ONLY     infix 
     def should(string: String) = new ItVerbString("should", string)
 
     /**
@@ -741,6 +743,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param string the string description
      */
+    //DOTTY-ONLY     infix 
     def must(string: String) = new ItVerbString("must", string)
 
     /**
@@ -762,6 +765,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param string the string description
      */
+    //DOTTY-ONLY     infix 
     def can(string: String) = new ItVerbString("can", string)
 
     /**
@@ -783,6 +787,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -804,6 +809,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def must(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -825,6 +831,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def can(behaveWord: BehaveWord) = behaveWord
   }
 
@@ -926,7 +933,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -954,7 +961,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, tags, "in", testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -983,7 +990,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1016,7 +1023,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1046,7 +1053,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun, pos) }) } 
     //DOTTY-ONLY }
   }
@@ -1128,7 +1135,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1156,7 +1163,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + name.trim, List(), "in", testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1184,7 +1191,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1216,7 +1223,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1244,7 +1251,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1268,6 +1275,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      * @param firstTestTag the first mandatory test tag
      * @param otherTestTags the others additional test tags
      */
+    //DOTTY-ONLY     infix 
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
       new ItVerbStringTaggedAs(verb, name, tagList)
@@ -1321,6 +1329,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param string the string description
      */
+    //DOTTY-ONLY     infix 
     def should(string: String) = new ItVerbString("should", string)
 
     /**
@@ -1342,6 +1351,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param string the string description
      */
+    //DOTTY-ONLY     infix 
     def must(string: String) = new ItVerbString("must", string)
 
     /**
@@ -1363,6 +1373,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param string the string description
      */
+    //DOTTY-ONLY     infix 
     def can(string: String) = new ItVerbString("can", string)
 
     /**
@@ -1384,6 +1395,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def should(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -1405,6 +1417,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def must(behaveWord: BehaveWord) = behaveWord
 
     /**
@@ -1426,6 +1439,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param behaveWord the <code>BehaveWord</code>
      */
+    //DOTTY-ONLY     infix 
     def can(behaveWord: BehaveWord) = behaveWord
   }
 
@@ -1527,7 +1541,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1557,7 +1571,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1594,7 +1608,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun, pos) }) } 
     //DOTTY-ONLY }
   }
@@ -1674,7 +1688,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1703,7 +1717,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1739,7 +1753,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
       registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def is(testFun: => PendingStatement): Unit = {
+    //DOTTY-ONLY inline infix def is(testFun: => PendingStatement): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1765,6 +1779,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      * @param firstTestTag the first mandatory test tag
      * @param otherTestTags the others additional test tags
      */
+    //DOTTY-ONLY     infix 
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
       new IgnoreVerbStringTaggedAs(verb, name, tagList)
@@ -1809,6 +1824,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param string the string description
      */
+    //DOTTY-ONLY     infix 
     def should(string: String) = new IgnoreVerbString("should", string)
 
     /**
@@ -1830,6 +1846,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param string the string description
      */
+    //DOTTY-ONLY     infix 
     def must(string: String) = new IgnoreVerbString("must", string)
 
     /**
@@ -1851,6 +1868,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
      *
      * @param string the string description
      */
+    //DOTTY-ONLY     infix 
     def can(string: String) = new IgnoreVerbString("can", string)
   }
 
@@ -1915,7 +1933,7 @@ trait FixtureAnyFlatSpecLike extends org.scalatest.FixtureTestSuite with ShouldV
   protected final class InAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb) {
 
     import resultOfStringPassedToVerb.rest
-import resultOfStringPassedToVerb.verb
+    import resultOfStringPassedToVerb.verb
 
     private final def inImpl(testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
       registerTestToRun(verb.trim + " " + rest.trim, List(), "in", new NoArgTestWrapper(testFun), pos)
@@ -1945,7 +1963,7 @@ import resultOfStringPassedToVerb.verb
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -1977,7 +1995,7 @@ import resultOfStringPassedToVerb.verb
       ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -2005,7 +2023,7 @@ import resultOfStringPassedToVerb.verb
       registerTestToRun(verb.trim + " " + rest.trim, List(), "in", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + rest.trim, List(), "in", testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -2033,7 +2051,7 @@ import resultOfStringPassedToVerb.verb
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun, pos) }) } 
     //DOTTY-ONLY }
   }
@@ -2126,7 +2144,7 @@ import resultOfStringPassedToVerb.verb
       inImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => inImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -2160,7 +2178,7 @@ import resultOfStringPassedToVerb.verb
       ignoreImpl(testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: () => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: () => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => ignoreImpl(testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -2188,7 +2206,7 @@ import resultOfStringPassedToVerb.verb
       registerTestToRun(verb.trim + " " + rest.trim, tagsList, "in", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToRun(verb.trim + " " + rest.trim, tagsList, "in", testFun, pos) }) } 
     //DOTTY-ONLY }
 
@@ -2218,7 +2236,7 @@ import resultOfStringPassedToVerb.verb
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun, pos)
     }
     // SKIP-DOTTY-END
-    //DOTTY-ONLY inline def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    //DOTTY-ONLY inline infix def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
     //DOTTY-ONLY   ${ source.Position.withPosition[Unit]('{(pos: source.Position) => registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun, pos) }) } 
     //DOTTY-ONLY }
   }
@@ -2264,9 +2282,11 @@ import resultOfStringPassedToVerb.verb
         //SCALATESTJS,NATIVE-ONLY val stackDepth = 8
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0, Some(pos))
         new ResultOfStringPassedToVerb(verb, rest) {
+          //DOTTY-ONLY         infix
           def is(testFun: => PendingStatement): Unit = {
             registerPendingTestToRun(this.verb.trim + " " + this.rest.trim, List(), "is", unusedFixtureParam => testFun, pos)
           }
+          //DOTTY-ONLY         infix
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
             val tagList = firstTestTag :: otherTestTags.toList
             new ResultOfTaggedAsInvocation(this.verb, this.rest, tagList) {
