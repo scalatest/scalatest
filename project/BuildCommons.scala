@@ -21,9 +21,9 @@ trait BuildCommons {
       "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
     )
 
-  val releaseVersion = "3.2.15"
+  val releaseVersion = "3.2.16"
 
-  val previousReleaseVersion = "3.2.14"
+  val previousReleaseVersion = "3.2.15"
 
   val plusJUnitVersion = "3.2.10.0"
   val plusTestNGVersion = "3.2.10.0"
