@@ -751,7 +751,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @param fullstacks a boolean that configures whether full stack traces should be printed for test failures
    * @param stats a boolean that configures whether test and suite statistics are printed to the standard output
    *
-   * @throws NullArgumentException if the passed <code>configMap</code> parameter is <code>null</code>.
+   * @throws org.scalactic.exceptions.NullArgumentException  if the passed <code>configMap</code> parameter is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
@@ -927,7 +927,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    *
-   * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
+   * @throws org.scalactic.exceptions.NullArgumentException  if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
@@ -996,7 +996,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    *
-   * @throws NullArgumentException if any of the passed parameters is <code>null</code>.
+   * @throws org.scalactic.exceptions.NullArgumentException  if any of the passed parameters is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
@@ -1089,7 +1089,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests and nested suites started by this method have completed, and whether or not a failure occurred.
    *         
-   * @throws NullArgumentException if any passed parameter is <code>null</code>.
+   * @throws org.scalactic.exceptions.NullArgumentException  if any passed parameter is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
@@ -1151,7 +1151,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all nested suites started by this method have completed, and whether or not a failure occurred.
    *
-   * @throws NullArgumentException if any passed parameter is <code>null</code>.
+   * @throws org.scalactic.exceptions.NullArgumentException  if any passed parameter is <code>null</code>.
    */
   protected def runNestedSuites(args: Args): Status = {
 
