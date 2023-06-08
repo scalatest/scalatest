@@ -158,10 +158,28 @@ trait Generator[T] { thisGeneratorOfT =>
     */
   def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = (Nil, rnd)
 
+  /**
+    * Implementation that generates the next value of type `T` using the provided `SizeParam`,
+    * validity check function, and `Randomizer`. This method is called by the public `next` method
+    * and is responsible for generating subsequent values along with a new `Randomizer`.
+    *
+    * @param szp the size parameter to control the size of generated values
+    * @param isValidFun the validity check function that determines if a generated value is valid
+    * @param rnd the randomizer instance to use for generating the next value
+    * @return a tuple containing the next generated `RoseTree[T]` and the new `Randomizer`
+    */
   def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer)
 
   private final val MaxLoopCount: Int = 100000
 
+  /**
+    * Constructs a `RoseTree[T]` with a single node `edge` using the provided `SizeParam` and validity check function.
+    *
+    * @param edge the value of type `T` to be used as the single node of the rose tree
+    * @param sizeParam the size parameter to control the size of the generated rose tree
+    * @param isValidFun the validity check function that determines if the generated value is valid
+    * @return a `RoseTree[T]` with a single node `edge`
+    */
   def roseTreeOfEdge(edge: T, sizeParam: SizeParam, isValidFun: (T, SizeParam) => Boolean): RoseTree[T] = Rose(edge)
 
   /**
@@ -408,6 +426,13 @@ trait Generator[T] { thisGeneratorOfT =>
       override def isValid(value: T, size: SizeParam): Boolean = f(value)
     }
 
+  /**
+    * Determines the validity of a value of type `T` based on the provided `SizeParam`.
+    *
+    * @param value the value of type `T` to be checked for validity
+    * @param size the size parameter used for checking validity
+    * @return By default `true`, subclasses can override this to provide a more specific validity check.
+    */
   def isValid(value: T, size: SizeParam): Boolean = true
 
 // XXX
