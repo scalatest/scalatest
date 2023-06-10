@@ -35,14 +35,15 @@ object ObjectMeta {
 
   def objectMetaUsingJavaReflection(v: Any): ObjectMeta =
     new ObjectMeta {
+      val primaryConstructorParameterNames = v.getClass.getDeclaredConstructors.toList.sortBy(_.getParameterCount).head.getParameters.map(_.getName)
       lazy val privFields = v.getClass.getDeclaredFields.filter(!_.isAccessible).map(_.getName)
 
       lazy val fieldNames = {
         v.getClass.getDeclaredMethods.filter { m =>
-          // SKIP-DOTTY-START
-          m.getParameterTypes.isEmpty && privFields.contains(m.getName)
-          // SKIP-DOTTY-END
-          //DOTTY-ONLY m.getParameterTypes.isEmpty && privFields.contains(m.getName) && m.getName != "$outer"
+          m.getParameterTypes.isEmpty && 
+          privFields.contains(m.getName) && 
+          (primaryConstructorParameterNames.contains(m.getName) || java.lang.reflect.Modifier.isPublic(m.getModifiers)) && 
+          m.getName != "$outer"
         }.map { f =>
           if (f.getName.endsWith("$mcI$sp"))
             f.getName.dropRight(7)

@@ -55,7 +55,7 @@ object ObjectMeta {
           replaceAllLiterally("$$und", "_").
           replaceAllLiterally("$mcI", "").
           replaceAllLiterally("$sp", "").
-          replaceAllLiterally("$f", "")
+          replaceAllLiterally("$f", "") 
 
       val decodedKey10 = {
         val idx = decodedKey.indexOf("__f_")
