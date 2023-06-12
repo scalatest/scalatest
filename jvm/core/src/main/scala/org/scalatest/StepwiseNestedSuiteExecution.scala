@@ -28,7 +28,7 @@ import collection.mutable.ListBuffer
  * Trait that causes the nested suites of any suite it is mixed into to be run sequentially even if
  * a <a href="Distributor.html"><code>Distributor</code></a> is passed to <code>runNestedSuites</code>. This trait overrides the 
  * <code>runNestedSuites</code> method and fowards every parameter passed to it to a superclass invocation
- * of <code>runNestedSuites</code>, except it always passes <code>None</code> for the <code>Distributor</code>.
+ * of <code>runNestedSuites</code>, and make sure the nested suites are run and completed one after one in order.
  * Mix in this trait into any suite whose nested suites need to be run sequentially even with the rest of the
  * run is being executed concurrently.
  */
@@ -69,9 +69,18 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
           val rawString = Resources.suiteCompletedNormally
           val formatter = formatterForSuiteCompleted(nestedSuite)
 
-          val duration = System.currentTimeMillis - suiteStartTime
-          report(SuiteCompleted(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), Some(duration), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
-          SucceededStatus
+          distributor match {
+            case Some(_) => 
+              status.withAfterEffect {
+                val duration = System.currentTimeMillis - suiteStartTime
+                report(SuiteCompleted(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), Some(duration), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
+              }
+
+            case None => 
+              val duration = System.currentTimeMillis - suiteStartTime
+              report(SuiteCompleted(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), Some(duration), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
+          }
+          status
         }
         catch {       
           case e: RuntimeException => {

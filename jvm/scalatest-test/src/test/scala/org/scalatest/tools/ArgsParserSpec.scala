@@ -1739,6 +1739,15 @@ class ArgsParserSpec extends AnyFunSpec {
     }
   }
 
+  it("checkArgsForValidity should recognize -S") {
+    assertResult(None) {
+      ArgsParser.checkArgsForValidity(Array("-S", "1234"))
+    }
+    assertResult(None) {
+      ArgsParser.checkArgsForValidity(Array("-S", "1234", "-h", "htmldir"))
+    }
+  }
+
   // SKIP-SCALATESTJS,NATIVE-START
   it("parseChosenStylesIntoChosenStyleSet should work correctly") {
     intercept[IllegalArgumentException] {
