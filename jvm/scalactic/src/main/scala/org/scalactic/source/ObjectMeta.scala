@@ -38,11 +38,16 @@ object ObjectMeta {
       val primaryConstructorParameterNames = v.getClass.getDeclaredConstructors.toList.sortBy(_.getParameterCount).head.getParameters.map(_.getName)
       lazy val privFields = v.getClass.getDeclaredFields.filter(!_.isAccessible).map(_.getName)
 
+      val declaredMethods = v.getClass.getDeclaredMethods
+
       lazy val fieldNames = {
-        v.getClass.getDeclaredMethods.filter { m =>
+        declaredMethods.filter { m =>
           m.getParameterTypes.isEmpty && 
           privFields.contains(m.getName) && 
-          (primaryConstructorParameterNames.contains(m.getName) || java.lang.reflect.Modifier.isPublic(m.getModifiers)) && 
+          (primaryConstructorParameterNames.contains(m.getName) || 
+           java.lang.reflect.Modifier.isPublic(m.getModifiers) || 
+           declaredMethods.find(_.getName.startsWith(s"${m.getName}$$")).isDefined  // for Scala 2.11's case class private field, we can remove this when we drop support for Scala 2.11.
+          ) && 
           m.getName != "$outer"
         }.map { f =>
           if (f.getName.endsWith("$mcI$sp"))
