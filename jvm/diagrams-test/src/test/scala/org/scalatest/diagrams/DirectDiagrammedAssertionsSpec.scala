@@ -22,6 +22,12 @@ import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.funspec.AnyFunSpec
 
+// SKIP-SCALATESTJS,NATIVE-START
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.{Duration, SECONDS}
+import scala.concurrent.{Await, Future}
+// SKIP-SCALATESTJS,NATIVE-END
+
 class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.matchers.should.Matchers {
 
   val fileName: String = "DirectDiagrammedAssertionsSpec.scala"
@@ -2584,6 +2590,15 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
             |org.scalatest.diagrams.Diagrams.assert(java.math.BigInteger.ZERO == java.math.BigInteger.ZERO)
           """.stripMargin)
       }
+
+      // scala js and native does not support Await.result
+      // SKIP-SCALATESTJS,NATIVE-START
+      it("should invoke future one time only") {
+        var count = 0
+        org.scalatest.diagrams.Diagrams.assert(Await.result(Future { count = count + 1; 42 }, Duration(1, SECONDS)) == 42)
+        count shouldBe 1
+      }
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("The org.scalatest.diagrams.Diagrams.assert(boolean, clue) method") {
@@ -5042,6 +5057,15 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
             |org.scalatest.diagrams.Diagrams.assert(java.math.BigDecimal.ZERO == java.math.BigDecimal.ZERO, "this is a clue")
           """.stripMargin)
       }
+
+      // scala js and native does not support Await.result
+      // SKIP-SCALATESTJS,NATIVE-START
+      it("should invoke future one time only") {
+        var count = 0
+        org.scalatest.diagrams.Diagrams.assert(Await.result(Future { count = count + 1; 42 }, Duration(1, SECONDS)) == 42, "this is a clue")
+        count shouldBe 1
+      }
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("The org.scalatest.diagrams.Diagrams.assume(boolean) method") {
@@ -7500,6 +7524,15 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
             |org.scalatest.diagrams.Diagrams.assume(java.math.BigDecimal.ZERO == java.math.BigDecimal.ZERO)
           """.stripMargin)
       }
+
+      // scala js and native does not support Await.result
+      // SKIP-SCALATESTJS,NATIVE-START
+      it("should invoke future one time only") {
+        var count = 0
+        org.scalatest.diagrams.Diagrams.assume(Await.result(Future { count = count + 1; 42 }, Duration(1, SECONDS)) == 42)
+        count shouldBe 1
+      }
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("The org.scalatest.diagrams.Diagrams.assume(boolean, clue) method") {
@@ -9958,6 +9991,15 @@ class DirectDiagrammedAssertionsSpec extends AnyFunSpec with org.scalatest.match
             |org.scalatest.diagrams.Diagrams.assume(java.math.BigDecimal.ZERO == java.math.BigDecimal.ZERO, "this is a clue")
           """.stripMargin)
       }
+
+      // scala js and native does not support Await.result
+      // SKIP-SCALATESTJS,NATIVE-START
+      it("should invoke future one time only") {
+        var count = 0
+        org.scalatest.diagrams.Diagrams.assume(Await.result(Future { count = count + 1; 42 }, Duration(1, SECONDS)) == 42, "this is a clue")
+        count shouldBe 1
+      }
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
   }

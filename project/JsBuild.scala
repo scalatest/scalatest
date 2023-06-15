@@ -458,8 +458,9 @@ trait JsBuild { this: BuildCommons =>
       mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
       mimaBinaryIssueFilters ++= {
        Seq(
-         exclude[DirectMissingMethodProblem]("org.scalatest.Resources.cannotLoadDiscoveredSuite"), // Private class function
-         exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages#cannotLoadDiscoveredSuite.apply") // Private class function
+         exclude[DirectMissingMethodProblem]("org.scalatest.FailureMessages.flexmarkClassNotFound"), // Private class function 
+         exclude[DirectMissingMethodProblem]("org.scalatest.Resources.rawFlexmarkClassNotFound"), // Private class function 
+         exclude[DirectMissingMethodProblem]("org.scalatest.Resources.flexmarkClassNotFound") // Private class function
        )
      }
     ).settings(osgiSettings: _*).settings(

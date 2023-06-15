@@ -23,6 +23,12 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
+// SKIP-SCALATESTJS,NATIVE-START
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.{Duration, SECONDS}
+import scala.concurrent.{Await, Future}
+// SKIP-SCALATESTJS,NATIVE-END
+
 class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
 
   val fileName: String = "DiagramsSpec.scala"
@@ -2586,6 +2592,16 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
             |assert(java.math.BigInteger.ZERO == java.math.BigInteger.ZERO)
           """.stripMargin)
       }
+
+      // scala js and native does not support Await.result
+      // SKIP-SCALATESTJS,NATIVE-START
+      it("should invoke future one time only") {
+        var count = 0
+        assert(Await.result(Future { count = count + 1; 42 }, Duration(1, SECONDS)) == 42)
+        count shouldBe 1
+      }
+      // SKIP-SCALATESTJS,NATIVE-END
+
     }
 
     describe("The assert(boolean, clue) method") {
@@ -5050,8 +5066,16 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
             |assert(java.math.BigDecimal.ZERO == java.math.BigDecimal.ZERO, "this is a clue")
           """.stripMargin)
       }
-    }
 
+      // scala js and native does not support Await.result
+      // SKIP-SCALATESTJS,NATIVE-START
+      it("should invoke future one time only") {
+        var count = 0
+        assert(Await.result(Future { count = count + 1; 42 }, Duration(1, SECONDS)) == 42, "this is a clue")
+        count shouldBe 1
+      }
+      // SKIP-SCALATESTJS,NATIVE-END
+    }
 
     describe("The assume(boolean) method") {
       it("should do nothing when is used to check a == 3") {
@@ -7515,6 +7539,15 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
             |assume(java.math.BigDecimal.ZERO == java.math.BigDecimal.ZERO)
           """.stripMargin)
       }
+
+      // scala js and native does not support Await.result
+      // SKIP-SCALATESTJS,NATIVE-START
+      it("should invoke future one time only") {
+        var count = 0
+        assume(Await.result(Future { count = count + 1; 42 }, Duration(1, SECONDS)) == 42)
+        count shouldBe 1
+      }
+      // SKIP-SCALATESTJS,NATIVE-END
     }
 
     describe("The assume(boolean, clue) method") {
@@ -9979,6 +10012,15 @@ class DiagramsSpec extends AnyFunSpec with Matchers with Diagrams {
             |assume(java.math.BigDecimal.ZERO == java.math.BigDecimal.ZERO, "this is a clue")
           """.stripMargin)
       }
+
+      // scala js and native does not support Await.result
+      // SKIP-SCALATESTJS,NATIVE-START
+      it("should invoke future one time only") {
+        var count = 0
+        assume(Await.result(Future { count = count + 1; 42 }, Duration(1, SECONDS)) == 42, "this is a clue")
+        count shouldBe 1
+      }
+      // SKIP-SCALATESTJS,NATIVE-END
     }
   }
 }
