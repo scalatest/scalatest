@@ -129,6 +129,27 @@ class SuiteRunnerSpec extends AnyFunSpec {
       assert(rep.suiteAbortedEventsReceived.length == 1)
     }
 
+    it("should fire SuiteAborted event when afterEach function in BeforeAndAfterEachTestData throws RuntimeException with a null message") {
+
+      class ExampleSuite extends AnyFunSuite with BeforeAndAfterEachTestData {
+
+        test("test 1") {}
+
+        override protected def afterEach(testData: TestData): Unit = {
+          throw new RuntimeException(null: String)
+        }
+
+      }
+
+      val suite = new ExampleSuite
+      val rep = new EventRecordingReporter
+      val runner = new SuiteRunner(suite, Args(rep), new ScalaTestStatefulStatus)
+      runner.run()
+      assert(rep.suiteStartingEventsReceived.length == 1)
+      assert(rep.suiteCompletedEventsReceived.length == 0)
+      assert(rep.suiteAbortedEventsReceived.length == 1)
+    }
+
   }
 
 }
