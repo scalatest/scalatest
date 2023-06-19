@@ -139,7 +139,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
    * @param testFun the test function
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
-   * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
+   * @throws org.scalactic.exceptions.NullArgumentException  if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
@@ -168,7 +168,7 @@ trait AnyWordSpecLike extends TestSuite with ShouldVerb with MustVerb with CanVe
    * @param testFun the test function
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
-   * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
+   * @throws org.scalactic.exceptions.NullArgumentException  if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS,NATIVE-START
@@ -1226,7 +1226,7 @@ one error found
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    *
-   * @throws NullArgumentException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
+   * @throws org.scalactic.exceptions.NullArgumentException  if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
@@ -1301,7 +1301,7 @@ one error found
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    *
-   * @throws NullArgumentException if any of the passed parameters is <code>null</code>.
+   * @throws org.scalactic.exceptions.NullArgumentException  if any of the passed parameters is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */

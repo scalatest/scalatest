@@ -42,6 +42,10 @@ object DiagramsMacro {
           case '{ $x: t } => '{ DiagrammedExpr.simpleExpr[t]($x, ${ getAnchor(term) } ) }.asTerm
         }
 
+        def byNameExpr(term: Term): Term = term.asExpr match {
+          case '{ $x: t } => '{ DiagrammedExpr.byNameExpr[t]($x, ${ getAnchor(term) } ) }.asTerm
+        }
+
         def xmlSugarExpr(term: Term): Term = term.asExpr match {
           case '{ $x: t } => '{ 
             DiagrammedExpr.simpleExpr[t]($x, ${ 
@@ -74,9 +78,9 @@ object DiagramsMacro {
               case (Typed(Repeated(args, _), _), AppliedType(_, _)) =>
                 (diagrams :++ args.map(parse), others)
               case (arg, ByNameType(_)) =>
-                (diagrams, others :+ arg)
+                (diagrams, others :+ byNameExpr(arg))
               case (arg, tp) =>
-                if (tp.widen.typeSymbol.fullName.startsWith("scala.Function")) (diagrams, others :+ arg)
+                if (tp.widen.typeSymbol.fullName.startsWith("scala.Function")) (diagrams, others :+ byNameExpr(arg))
                 else (diagrams :+ parse(arg), others)
             }
           }
@@ -141,11 +145,13 @@ object DiagramsMacro {
 
                 let(Symbol.spliceOwner, left) { l =>
                   let(Symbol.spliceOwner, diagrams) { rs =>
-                    l.asExpr match {
-                      case '{ $left: DiagrammedExpr[t] } =>
-                        val rights = rs.map(_.asExprOf[DiagrammedExpr[_]])
-                        val res = Select.overloaded(Select.unique(l, "value"), op, Nil, diagrams.map(r => Select.unique(r, "value")) ++ others).asExprOf[r]
-                        '{ DiagrammedExpr.applyExpr[r]($left, ${Expr.ofList(rights)}, $res, $anchor) }.asTerm
+                    let(Symbol.spliceOwner, others) { os =>
+                      l.asExpr match {
+                        case '{ $left: DiagrammedExpr[t] } =>
+                          val rights = rs.map(_.asExprOf[DiagrammedExpr[_]])
+                          val res = Select.overloaded(Select.unique(l, "value"), op, Nil, rs.map(r => Select.unique(r, "value")) ++ os.map(o => Select.unique(o, "value"))).asExprOf[r]
+                          '{ DiagrammedExpr.applyExpr[r]($left, ${Expr.ofList(rights)}, $res, $anchor) }.asTerm
+                      }
                     }
                   }
                 }
@@ -160,11 +166,13 @@ object DiagramsMacro {
 
             let(Symbol.spliceOwner, left) { l =>
               let(Symbol.spliceOwner, diagrams) { rs =>
-                l.asExpr match {
-                  case '{ $left: DiagrammedExpr[t] } =>
-                    val rights = rs.map(_.asExprOf[DiagrammedExpr[_]])
-                    val res = Select.overloaded(Select.unique(l, "value"), op, Nil, diagrams.map(r => Select.unique(r, "value")) ++ others).asExprOf[r]
-                    '{ DiagrammedExpr.applyExpr[r]($left, ${Expr.ofList(rights)}, $res, $anchor) }.asTerm
+                let(Symbol.spliceOwner, others) { os =>
+                  l.asExpr match {
+                    case '{ $left: DiagrammedExpr[t] } =>
+                      val rights = rs.map(_.asExprOf[DiagrammedExpr[_]])
+                      val res = Select.overloaded(Select.unique(l, "value"), op, Nil, rs.map(r => Select.unique(r, "value")) ++ os.map(o => Select.unique(o, "value"))).asExprOf[r]
+                      '{ DiagrammedExpr.applyExpr[r]($left, ${Expr.ofList(rights)}, $res, $anchor) }.asTerm
+                  }
                 }
               }
             }
@@ -197,11 +205,13 @@ object DiagramsMacro {
 
             let(Symbol.spliceOwner, left) { l =>
               let(Symbol.spliceOwner, diagrams) { rs =>
-                l.asExpr match {
-                  case '{ $left: DiagrammedExpr[t] } =>
-                    val rights = rs.map(_.asExprOf[DiagrammedExpr[_]])
-                    val res = Select.overloaded(Select.unique(l, "value"), op, targs.map(_.tpe), diagrams.map(r => Select.unique(r, "value")) ++ others).asExprOf[r]
-                    '{ DiagrammedExpr.applyExpr[r]($left, ${Expr.ofList(rights)}, $res, $anchor) }.asTerm
+                let(Symbol.spliceOwner, others) { os =>
+                  l.asExpr match {
+                    case '{ $left: DiagrammedExpr[t] } =>
+                      val rights = rs.map(_.asExprOf[DiagrammedExpr[_]])
+                      val res = Select.overloaded(Select.unique(l, "value"), op, targs.map(_.tpe), rs.map(r => Select.unique(r, "value")) ++ os.map(o => Select.unique(o, "value"))).asExprOf[r]
+                      '{ DiagrammedExpr.applyExpr[r]($left, ${Expr.ofList(rights)}, $res, $anchor) }.asTerm
+                  }
                 }
               }
             }

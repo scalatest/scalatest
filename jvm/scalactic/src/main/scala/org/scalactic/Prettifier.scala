@@ -121,11 +121,19 @@ import scala.util.Success
  * </p>
  */
 trait Prettifier extends Serializable { // I removed the extends (Any => String), now that we are making this implicit.
+
   /**
    * Prettifies the passed object.
    */
   def apply(o: Any): String
 
+  /**
+   * Prettifies the passed <code>left</code> and <code>right</code>.
+   * 
+   * @param left the left object.
+   * @param right the right object.
+   * @return a <code>PrettyPair</code> that contains the prettified <code>left</code> and <code>right</code>, with optional analysis.
+   */
   def apply(left: Any, right: Any): PrettyPair = {
     AnyDiffer.difference(left, right, this)
   }
@@ -313,6 +321,19 @@ object Prettifier {
     new Prettifier {
       def apply(o: Any): String = fun(o)
     }
+
+  /**
+   * Construct a new `Prettifier` with given <code>prettifier</code> and <code>customDiffer</code>.
+   * @param prettifier the base prettifer that the new prettifier will delegate apply(o: Any) to.
+   * @param fun a partial function with which to implement the apply method of the returned `Prettifier`.
+   */
+  def apply(prettifier: Prettifier, customDiffer: Differ): Prettifier = 
+    new Prettifier {
+      def apply(o: Any): String = prettifier.apply(o)
+      override def apply(left: Any, right: Any): PrettyPair = {
+        customDiffer.difference(left, right, this)
+      }
+    }  
 
   /**
    * A default `Prettifier`. 

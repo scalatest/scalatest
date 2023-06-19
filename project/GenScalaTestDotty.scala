@@ -600,7 +600,7 @@ object GenScalaTestDotty {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
-        "NoArgSpec.scala",  // skipped because tests failed.
+        "NoArgSpec.scala",  // skipped because scala 3 dropped DelayedInit.
       )) ++ 
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
@@ -695,7 +695,7 @@ object GenScalaTestDotty {
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
-        "NoArgSpec.scala",  // skipped because tests failed.
+        "NoArgSpec.scala",  // skipped because scala 3 dropped DelayedInit.
         "SuiteSpec.scala"    // skipped because depends on java reflections
       )) ++ 
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
@@ -1099,7 +1099,7 @@ object GenScalaTestDotty {
     copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir, List.empty) ++
     copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
-        "NoArgSpec.scala",  // skipped because tests failed.
+        "NoArgSpec.scala",  // skipped because scala 3 dropped DelayedInit.
         "SuiteSpec.scala"    // skipped because depends on java reflections
       )) ++ 
     copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
