@@ -22,9 +22,22 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 
-private[scalatest] trait Expectations {
+/**
+ * A representation of an expectation for an assertion.
+ * Expectations provide a way to express assertions that return a [[Fact]] object instead of throwing exceptions
+ * when the assertion fails.
+ */
+trait Expectations {
   
-  // TODO: Need to make this and assertResult use custom equality I think.
+  /**
+   * Asserts that `actual` is equal to `expected` using default equality.
+   *
+   * @param expected the expected value
+   * @param actual the actual value
+   * @param prettifier the prettifier used to pretty-print the values
+   * @param pos the source position
+   * @return a [[Fact]] representing the result of the assertion
+   */
   def expectResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Fact = {
     if (!DefaultEquality.areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
@@ -62,6 +75,14 @@ private[scalatest] trait Expectations {
     }
   }
 
+  /**
+   * Asserts that a block of code throws an exception of type `T`.
+   *
+   * @param f the block of code to be executed
+   * @param classTag the class tag representing the exception type `T`
+   * @param prettifier the prettifier used to pretty-print the values
+   * @return an [[Expectation]] representing the result of the assertion
+   */
   def expectThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], prettifier: Prettifier): Expectation = {
     val clazz = classTag.runtimeClass
     try {
@@ -109,28 +130,87 @@ private[scalatest] trait Expectations {
 
   import language.experimental.macros
 
+  /**
+   * Asserts that a boolean expression is `true`.
+   *
+   * @param expression the boolean expression to be evaluated
+   * @param prettifier the prettifier used to pretty-print the values
+   * @param pos the source position
+   * @return a [[Fact]] representing the result of the assertion
+   */
   def expect(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
 
+  /**
+   * Expects that a given code snippet does not compile.
+   *
+   * @param code the code snippet to be compiled
+   * @param prettifier the prettifier used to pretty-print the values
+   * @param pos the source position
+   * @return a [[Fact]] representing the result of the assertion
+   */
   def expectDoesNotCompile(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectDoesNotCompileImpl
 
+  /**
+   * Expects that a given code snippet compiles successfully.
+   *
+   * @param code the code snippet to be compiled
+   * @param prettifier the prettifier used to pretty-print the values
+   * @param pos the source position
+   * @return a [[Fact]] representing the result of the assertion
+   */
   def expectCompiles(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectCompilesImpl
 
+  /**
+   * Expects that a given code snippet results in a type error during compilation.
+   *
+   * @param code the code snippet to be compiled
+   * @param prettifier the prettifier used to pretty-print the values
+   * @param pos the source position
+   * @return a [[Fact]] representing the result of the assertion
+   */
   def expectTypeError(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectTypeErrorImpl
 
   import scala.language.implicitConversions
 
   /**
-    * Implicit conversion that makes (x &gt; 0) implies expect(x &gt; -1) syntax works
-    */
+   * Implicitly converts a boolean expression to a [[Fact]] for assertion purposes, which makes (x &gt; 0) implies expect(x &gt; -1) syntax works
+   *
+   * @param expression the boolean expression to be evaluated
+   * @param prettifier the prettifier used to pretty-print the values
+   * @param pos the source position
+   * @return a [[Fact]] representing the result of the assertion
+   */  
   implicit def booleanToFact(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro ExpectationsMacro.expect
   
+  /**
+   * Implicitly converts an [[Expectation]] to an [[Assertion]].
+   *
+   * @param exp the expectation to be converted
+   * @return an [[Assertion]] representing the result of the expectation
+   */
   implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
 }
 
-private[scalatest] object Expectations extends Expectations {
 
+/**
+ * The companion object for the `Expectation` trait.
+ */
+object Expectations extends Expectations {
+
+  /**
+   * A helper used by macro-generated code.
+   */
   class ExpectationsHelper {
 
+    /**
+     * A helper method for macro-generated assertions.
+     *
+     * @param bool the [[Bool]] object representing the assertion result
+     * @param clue the clue to be used in case of failure
+     * @param prettifier the prettifier used to pretty-print the values
+     * @param pos the source position
+     * @return a [[Fact]] representing the result of the assertion
+     */
     def macroExpect(bool: Bool, clue: Any, prettifier: Prettifier, pos: source.Position): Fact = {
       //requireNonNull(clue)
       if (!bool.value)
