@@ -9,8 +9,8 @@ import ScalaNativePlugin.autoImport.{nativeLinkStubs, nativeDump}
 
 trait BuildCommons {
 
-  lazy val scalaVersionsSettings: Seq[Setting[_]] = Seq(
-    crossScalaVersions := Seq("2.13.10", "2.12.17", "2.11.12"), 
+  def scalaVersionsSettings: Seq[Setting[_]] = Seq(
+    crossScalaVersions := Seq("2.13.11", "2.12.18", "2.11.12"), 
     scalaVersion := crossScalaVersions.value.head,
   )
 
