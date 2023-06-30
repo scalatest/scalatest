@@ -641,6 +641,9 @@ object GenScalaTestNative {
   def genDiagramsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
 
+  def genExpectationsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("jvm/expectations-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty)  
+
   def genFeatureSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)
 
