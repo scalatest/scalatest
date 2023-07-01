@@ -55,7 +55,6 @@ object GenModulesNative {
         "org/scalatest/concurrent", 
         "org/scalatest/enablers", 
         "org/scalatest/exceptions", 
-        "org/scalatest/expectations", 
         "org/scalatest/events", 
         "org/scalatest/fixture",  
         "org/scalatest/prop", 
