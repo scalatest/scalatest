@@ -18,30 +18,86 @@ package org.scalatest
 import org.scalactic.{UnquotedString => _, _}
 import org.scalatest.exceptions._
 
-// As it stands, this should not extend Product with Serializable because
-// subclasses exists that anen't case classes.
+/**
+ * An abstract class representing a Fact that can be evaluated as either is yes or no.
+ * @param rawSimplifiedFactMessage 
+ * @param rawMidSentenceFactMessage 
+ * @param rawMidSentenceSimplifiedFactMessage 
+ * @param factMessageArgs 
+ * @param simplifiedFactMessageArgs 
+ * @param midSentenceFactMessageArgs 
+ * @param midSentenceSimplifiedFactMessageArgs 
+ * @param isLeaf 
+ * @param isVacuousYes 
+ * @param prettifier 
+ * @param cause 
+ * @param isYes 
+ */
 sealed abstract class Fact {
+  // As it stands, this should not extend Product with Serializable because
+  // subclasses exists that anen't case classes.
 
+  /**
+   * The raw message representing the fact.
+   */
   val rawFactMessage: String
+  /**
+   * The raw simplified message representing the fact.
+   */
   val rawSimplifiedFactMessage: String
+  /**
+   * The raw mid-sentence message representing the fact.
+   */
   val rawMidSentenceFactMessage: String
+  /**
+   * The raw mid-sentence simplified message representing the fact.
+   */
   val rawMidSentenceSimplifiedFactMessage: String
-
+  /**
+   * Arguments used to format the rawFactMessage.
+   */
   val factMessageArgs: IndexedSeq[Any]
+  /**
+   * Arguments used to format the rawSimplifiedFactMessage.
+   */
   val simplifiedFactMessageArgs: IndexedSeq[Any]
+  /**
+   * Arguments used to format the rawMidSentenceFactMessage.
+   */
   val midSentenceFactMessageArgs: IndexedSeq[Any]
+  /**
+   * Arguments used to format the rawMidSentenceSimplifiedFactMessage.
+   */
   val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
-
+  /**
+   * Indicates whether the fact is a leaf (terminal) node in a fact tree.
+   */
   val isLeaf: Boolean
+  /**
+   * Indicates whether the fact is a vacuous yes, which means true in a sense but without meaningful assertions.
+   */
   val isVacuousYes: Boolean
+  /**
+   * A prettifier used to format the messages when constructing failure messages.
+   */
   val prettifier: Prettifier
-
+  /**
+   * An optional cause Throwable associated with the fact.
+   */
   val cause: Option[Throwable] = None
-
+  /**
+   * Indicates whether the fact is a yes.
+   */
   val isYes: Boolean
 
+  /**
+   * Indicates whether the fact is a no.
+   */
   final def isNo: Boolean = !isYes
 
+  /**
+   * Convert the fact to <code>Boolean</code>, same as the value returned by <code>isYes</code>.
+   */
   final def toBoolean: Boolean = isYes
 
   final def toAssertion(implicit pos: source.Position): Assertion = {
@@ -62,18 +118,42 @@ sealed abstract class Fact {
   }
 
   /**
-   * Get a simplified version of this Fact, sub type will be simplified and all messages field will be substituted with its counter-part.
+   * Negates this Fact, creating a version with the opposite value.
    *
-   * @return a simplified version of this Fact
-   */
+   * @return A version of this Fact with the opposite value.
+   */ 
   def unary_! : Fact = Fact.Unary_!(this)
 
+  /**
+   * Creates a new Fact that represents a logical OR between this Fact and the provided Fact.
+   *
+   * @param rhs The Fact to be combined with this Fact using a logical OR.
+   * @return A new Fact representing the logical OR between this Fact and the provided Fact.
+   */
   final def ||(rhs: => Fact): Fact = if (isYes) this else Fact.Binary_||(this, rhs)
 
+  /**
+   * Creates a new Fact that represents a logical AND between this Fact and the provided Fact.
+   *
+   * @param rhs The Fact to be combined with this Fact using a logical AND.
+   * @return A new Fact representing the logical AND between this Fact and the provided Fact.
+   */
   final def &&(rhs: => Fact): Fact = if (isNo) this else Fact.Binary_&&(this, rhs)
 
+  /**
+   * Creates a new Fact that represents a logical OR between this Fact and the provided Fact.
+   *
+   * @param rhs The Fact to be combined with this Fact using a logical OR.
+   * @return A new Fact representing the logical OR between this Fact and the provided Fact.
+   */
   final def |(rhs: Fact): Fact = Fact.Binary_|(this, rhs)
 
+  /**
+   * Creates a new Fact that represents a logical AND between this Fact and the provided Fact.
+   *
+   * @param rhs The Fact to be combined with this Fact using a logical AND.
+   * @return A new Fact representing the logical AND between this Fact and the provided Fact.
+   */
   final def &(rhs: Fact): Fact = Fact.Binary_&(this, rhs)
 
   final def stringPrefix: String =
@@ -82,8 +162,20 @@ sealed abstract class Fact {
     }
     else "No"
 
+  /**
+   * Creates a new Fact that represents the implication (=>) between this Fact and the provided Fact.
+   *
+   * @param rhs The Fact representing the implication's consequent.
+   * @return A new Fact representing the implication between this Fact and the provided Fact.
+   */
   final def implies(rhs: => Fact): Fact = if (isNo) Fact.VacuousYes(this) else Fact.Implies(this, rhs)
 
+  /**
+   * Creates a new Fact that represents the equivalence (eqv) between this Fact and the provided Fact.
+   *
+   * @param rhs The Fact representing the other side of the equivalence.
+   * @return A new Fact representing the equivalence between this Fact and the provided Fact.
+   */
   final def isEqvTo(rhs: Fact): Fact = Fact.IsEqvTo(this, rhs)
 
   /**
@@ -95,6 +187,11 @@ sealed abstract class Fact {
     if (factMessageArgs.isEmpty) rawFactMessage
     else makeString(rawFactMessage, factMessageArgs)
 
+  /**
+   * Construct simplified failure message to report if a fact fails, using <code>rawSimplifiedFactMessage</code>, <code>simplifiedFactMessageArgs</code>, and <code>prettifier</code>
+   *
+   * @return simplified failure message to report if a fact fails
+   */
   def simplifiedFactMessage: String =
     if (simplifiedFactMessageArgs.isEmpty) rawSimplifiedFactMessage
     else makeString(rawSimplifiedFactMessage, simplifiedFactMessageArgs)
@@ -108,6 +205,11 @@ sealed abstract class Fact {
     if (midSentenceFactMessageArgs.isEmpty) rawMidSentenceFactMessage
     else makeString(rawMidSentenceFactMessage, midSentenceFactMessageArgs)
 
+  /**
+   * Construct simplified failure message suitable for appearing mid-sentence, using <code>rawMidSentenceSimplifiedFactMessage</code>, <code>midSentenceSimplifiedFactMessageArgs</code> and <code>prettifier</code>
+   *
+   * @return simplified failure message suitable for appearing mid-sentence
+   */
   def midSentenceSimplifiedFactMessage: String =
     if (midSentenceSimplifiedFactMessageArgs.isEmpty) rawMidSentenceSimplifiedFactMessage
     else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs)
@@ -117,8 +219,14 @@ sealed abstract class Fact {
 
   private[scalatest] val NEWLINE = scala.compat.Platform.EOL
 
-  // This one makes sense for Yes and No only. The other subclassess override it.
+  /**
+   * Generates a fact diagram, which is a textual representation of the fact and its structure.
+   *
+   * @param level The indentation level for formatting the diagram.
+   * @return The fact diagram as a string.
+   */
   def factDiagram(level: Int): String = {
+    // This one makes sense for Yes and No only. The other subclassess override it.
     val msg = midSentenceFactMessage // just compute this once
     val padding = "  " * level
     if (msg.contains("\n")) {
@@ -129,6 +237,11 @@ sealed abstract class Fact {
       padding + stringPrefix + "(" + msg + ")"
   }
 
+  /**
+   * Converts this Fact to its string representation.
+   *
+   * @return The string representation of this Fact.
+   */
   override def toString: String = factDiagram(0)
 }
 
