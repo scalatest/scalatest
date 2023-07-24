@@ -20,6 +20,7 @@ import org.scalatest.exceptions._
 
 /**
  * An abstract class representing a Fact that can be evaluated as either is yes or no.
+ * 
  * @param rawSimplifiedFactMessage 
  * @param rawMidSentenceFactMessage 
  * @param rawMidSentenceSimplifiedFactMessage 
@@ -100,6 +101,14 @@ sealed abstract class Fact {
    */
   final def toBoolean: Boolean = isYes
 
+  /**
+   * Convert this fact to <code>Assertion</code>.
+   *
+   * @param pos the related <code>Position</code> for this fact.
+   * @return <code>Succeeded</code> if this fact is a yes.
+   * @throws TestFailedException if this fact is not yes or vacuous yes.
+   * @throws TestCanceledException if this fact is a vacuous yes.
+   */
   final def toAssertion(implicit pos: source.Position): Assertion = {
     if (isYes) {
       if (!isVacuousYes) Succeeded
@@ -156,6 +165,9 @@ sealed abstract class Fact {
    */
   final def &(rhs: Fact): Fact = Fact.Binary_&(this, rhs)
 
+  /**
+   * String prefix for this fact, return either "Yes", "VacuousYes" or "No".
+   */
   final def stringPrefix: String =
     if (isYes) {
       if (isVacuousYes) "VacuousYes" else "Yes"
