@@ -1066,10 +1066,22 @@ object Fact {
     }
   }
 
+  /**
+   * Represents a binary logical AND operation between two `Fact` instances.
+   *
+   * @param left  The left-hand side `Fact` instance of the AND operation.
+   * @param right The right-hand side `Fact` instance of the AND operation.
+   */
   class Binary_&(left: Fact, right: Fact) extends Fact {
 
     private[scalatest] def operatorName: String = "&"
 
+    /**
+     * The raw message representing the logical AND operation result between the `left` and `right` `Fact` instances.
+     *
+     * @note If both `left` and `right` are leaf nodes, the result will be a comma-separated message.
+     *       Otherwise, a recursive representation of the combined facts will be used.
+     */
     val rawFactMessage: String = {
       if (left.isLeaf && right.isLeaf) {
         if (left.isYes && right.isNo)
@@ -1079,9 +1091,23 @@ object Fact {
       }
       else factDiagram(0)
     }
+    /**
+     * The simplified version of the raw fact message, which is the same as `rawFactMessage`.
+     */
     val rawSimplifiedFactMessage: String = rawFactMessage
+    /**
+     * The raw message used in the middle of a sentence, which is the same as `rawFactMessage`.
+     */
     val rawMidSentenceFactMessage: String = rawFactMessage
+    /**
+     * The simplified version of the raw message used in the middle of a sentence, which is the same as `rawFactMessage`.
+     */
     val rawMidSentenceSimplifiedFactMessage: String = rawFactMessage
+    /**
+     * The arguments used in the fact message. If both `left` and `right` are leaf nodes, the result will be a `Vector`
+     * containing simplified fact messages for both sides. Otherwise, a `Vector` of unquoted strings representing the
+     * fact diagrams of the `left` and `right` instances will be used.
+     */
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
         Vector(
@@ -1093,7 +1119,15 @@ object Fact {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
+    /**
+     * The simplified version of the fact message arguments, which is the same as `factMessageArgs`.
+     */
     val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
+    /**
+     * The arguments used in the middle of a sentence fact message. If both `left` and `right` are leaf nodes, the result
+     * will be a `Vector` containing middle of a sentence simplified fact messages for both sides. Otherwise, a `Vector`
+     * of unquoted strings representing the fact diagrams of the `left` and `right` instances will be used.
+     */
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
         Vector(
@@ -1105,15 +1139,34 @@ object Fact {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
-
+    /**
+     * The simplified version of the middle of a sentence fact message arguments, which is the same as `midSentenceFactMessageArgs`.
+     */
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
-
+    /**
+     * Returns whether this `Binary_&` instance is a leaf node or not. Since it represents an AND operation, it is always `false`.
+     */
     val isLeaf: Boolean = false
+    /**
+     * Returns `true` if both the `left` and `right` `Fact` instances are `yes`, `false` otherwise.
+     */
     val isYes: Boolean = left.isYes && right.isYes
+    /**
+     * Returns `true` if both the `left` and `right` `Fact` instances are `yes` and at least one of them is a vacuous `yes`,
+     * `false` otherwise.
+     */
     val isVacuousYes: Boolean = isYes && (left.isVacuousYes || right.isVacuousYes)
+    /**
+     * The prettifier used in this `Binary_&` instance, which is taken from the `left` `Fact` instance.
+     */
     val prettifier: Prettifier = left.prettifier
 
-
+    /**
+     * Generates the fact diagram for this `Binary_&` instance.
+     *
+     * @param level The indentation level used for pretty printing the fact diagram.
+     * @return The fact diagram as a string representation.
+     */
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
       padding + stringPrefix + "(" + NEWLINE +
@@ -1123,16 +1176,46 @@ object Fact {
     }
   }
 
+  /**
+   * Represents a binary logical AND operation between two `Fact` instances.
+   * This is a factory object used to create `Binary_&` instances.
+   */
   object Binary_& {
+    /**
+     * Creates a new `Binary_&` instance with the specified left and right `Fact` instances.
+     *
+     * @param left  The left-hand side `Fact` instance of the AND operation.
+     * @param right The right-hand side `Fact` instance of the AND operation.
+     * @return A new `Binary_&` instance representing the logical AND operation of the two `Fact` instances.
+     */
     def apply(left: Fact, right: Fact): Fact = new Binary_&(left, right)
   }
 
+  /**
+   * Represents a binary logical AND operation between two `Fact` instances, enforcing that the left-hand side `Fact` instance is `yes`.
+   *
+   * @param left  The left-hand side `Fact` instance of the AND operation. It must be a `yes` fact.
+   * @param right The right-hand side `Fact` instance of the AND operation.
+   * @throws IllegalArgumentException If the `left` `Fact` instance is not a `yes` fact.
+   */
   class Binary_&&(left: Fact, right: Fact) extends Binary_&(left, right) {
     require(left.isYes)
     override private[scalatest] def operatorName: String = "&&"
   }
 
+  /**
+   * Represents a binary logical AND operation between two `Fact` instances, enforcing that the left-hand side `Fact` instance is `yes`.
+   * This is a factory object used to create `Binary_&&` instances.
+   */
   object Binary_&& {
+    /**
+     * Creates a new `Binary_&&` instance with the specified left and right `Fact` instances, enforcing that the left-hand side `Fact` instance is `yes`.
+     *
+     * @param left  The left-hand side `Fact` instance of the AND operation. It must be a `yes` fact.
+     * @param right The right-hand side `Fact` instance of the AND operation.
+     * @return A new `Binary_&&` instance representing the logical AND operation of the two `Fact` instances.
+     * @throws IllegalArgumentException If the `left` `Fact` instance is not a `yes` fact.
+     */
     def apply(left: Fact, right: Fact): Fact = new Binary_&&(left, right)
   }
 
