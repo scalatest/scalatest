@@ -257,8 +257,28 @@ sealed abstract class Fact {
   override def toString: String = factDiagram(0)
 }
 
+/**
+ * Companion object for the <code>Fact</code> trait.
+ */
 object Fact {
 
+  /**
+   * Represents a leaf node in the Fact tree, which is a concrete Fact with known boolean values.
+   *
+   * @param rawFactMessage The raw message representing the fact.
+   * @param rawSimplifiedFactMessage The raw simplified message representing the fact.
+   * @param rawMidSentenceFactMessage The raw mid-sentence message representing the fact.
+   * @param rawMidSentenceSimplifiedFactMessage The raw mid-sentence simplified message representing the fact.
+   * @param factMessageArgs Arguments used to format the rawFactMessage.
+   * @param simplifiedFactMessageArgs Arguments used to format the rawSimplifiedFactMessage.
+   * @param midSentenceFactMessageArgs Arguments used to format the rawMidSentenceFactMessage.
+   * @param midSentenceSimplifiedFactMessageArgs Arguments used to format the rawMidSentenceSimplifiedFactMessage.
+   * @param isYes Indicates whether the fact is evaluated to true.
+   * @param isVacuousYes Indicates whether the fact is a vacuous yes, which means true in a sense but without meaningful assertions.
+   * @param prettifier A prettifier used to format the messages when constructing failure messages.
+   * @param cause An optional cause Throwable associated with the fact.
+   * @throws IllegalArgumentException if `isVacuousYes` is true but `isYes` is false.
+   */
   case class Leaf(
     rawFactMessage: String,
     rawSimplifiedFactMessage: String,
@@ -274,33 +294,93 @@ object Fact {
     override val cause: Option[Throwable] = None
   ) extends Fact {
     require(!isVacuousYes || isYes)
+
+    /**
+     * Indicates whether this Fact is a leaf node in the Fact tree, return <code>true</code>.
+     */
     val isLeaf: Boolean = true
   }
 
+  /**
+   * Represents a vacuous "Yes" Fact, which is a special case of Fact where the underlying Fact is No,
+   * but it is treated as Yes without meaningful assertions.
+   *
+   * @param underlying The underlying Fact that is treated as No but represented as Yes.
+   * @throws IllegalArgumentException if the underlying Fact's <code>isNo</code> is <code>false</code>.
+   */
   class VacuousYes(underlying: Fact) extends Fact {
 
     require(underlying.isNo)
     
+    /**
+     * The raw message representing the vacuous "Yes" Fact.
+     */
     val rawFactMessage: String = underlying.rawFactMessage
+    /**
+     * The raw simplified message representing the vacuous "Yes" Fact.
+     */
     val rawSimplifiedFactMessage: String = underlying.rawSimplifiedFactMessage
+    /**
+     * The raw mid-sentence message representing the vacuous "Yes" Fact.
+     */
     val rawMidSentenceFactMessage: String = underlying.rawMidSentenceFactMessage
+    /**
+     * The raw mid-sentence simplified message representing the vacuous "Yes" Fact.
+     */
     val rawMidSentenceSimplifiedFactMessage: String = underlying.rawMidSentenceSimplifiedFactMessage
 
+    /**
+     * Arguments used to format the rawFactMessage.
+     */
     val factMessageArgs: IndexedSeq[Any] = underlying.factMessageArgs
+    /**
+     * Arguments used to format the rawSimplifiedFactMessage.
+     */
     val simplifiedFactMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
+    /**
+     * Arguments used to format the rawMidSentenceFactMessage.
+     */
     val midSentenceFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceFactMessageArgs
+    /**
+     * Arguments used to format the rawMidSentenceSimplifiedFactMessage.
+     */
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
 
+    /**
+     * Indicates whether this Fact is a leaf node in the Fact tree.
+     */
     val isLeaf: Boolean = underlying.isLeaf
+    /**
+     * The prettifier used to format the messages when constructing failure messages.
+     */
     val prettifier: Prettifier = underlying.prettifier
 
+    /**
+     * An optional cause Throwable associated with the vacuous "Yes" Fact.
+     */
     override val cause: Option[Throwable] = underlying.cause
 
+    /**
+     * Indicates whether this Fact is evaluated to Yes, return <code>true</code>.
+     */
     val isYes: Boolean = true
+    /**
+     * Indicates whether this Fact is a vacuous "Yes", which means true in a sense but without meaningful assertions, return <code>true</code>
+     */
     val isVacuousYes: Boolean = true
   }
 
+  /**
+   * A companion object for the <code>VacuousYes</code> class, providing factory methods to create instances of <code>VacuousYes</code> fact.
+   */
   object VacuousYes {
+    /**
+     * Creates a new <code>VacuousYes</code> fact with the provided underlying <code>Fact</code>.
+     *
+     * @param underlying The underlying <code>Fact</code> that is treated as false (No) but represented as true (Yes).
+     * @return A new <code>VacuousYes</code> fact instance.
+     * @throws IllegalArgumentException if the underlying Fact is not No.
+     */
     def apply(underlying: Fact): VacuousYes = new VacuousYes(underlying)
   }
 
