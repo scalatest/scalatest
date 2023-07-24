@@ -55,7 +55,6 @@ object GenModulesNative {
         "org/scalatest/concurrent", 
         "org/scalatest/enablers", 
         "org/scalatest/exceptions", 
-        "org/scalatest/expectations", 
         "org/scalatest/events", 
         "org/scalatest/fixture",  
         "org/scalatest/prop", 
@@ -139,7 +138,16 @@ object GenModulesNative {
       ).contains(packagePath)
     }.flatMap { case (packagePath, skipList) =>
       copyDir("jvm/diagrams/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
-    }.toList  
+    }.toList
+
+  def genScalaTestExpectations(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    GenScalaTestNative.genScalaPackages.filter { case (packagePath, skipList) =>
+      List(
+        "org/scalatest/expectations"
+      ).contains(packagePath)
+    }.flatMap { case (packagePath, skipList) =>
+      copyDir("jvm/expectations/src/main/scala/" + packagePath, packagePath, targetDir, skipList)
+    }.toList    
 
   def genScalaTestMatchersCore(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     GenScalaTestNative.genScalaPackages.filter { case (packagePath, skipList) =>

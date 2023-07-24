@@ -437,7 +437,6 @@ object GenScalaTestDotty {
   def genScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("dotty/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
     copyDir("dotty/core/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-    copyDir("dotty/core/src/main/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++ 
     copyDir("js/core/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++ 
     copyDir("js/core/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++ 
     copyDir("js/core/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++ 
@@ -498,7 +497,6 @@ object GenScalaTestDotty {
   def genScalaNative(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDir("dotty/core/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
     copyDir("dotty/core/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-    copyDir("dotty/core/src/main/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++ 
     copyDir("native/core/src/main/scala/org/scalatest/compatible", "org/scalatest/compatible", targetDir, List.empty) ++ 
     copyDir("native/core/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++ 
     copyDir("native/core/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir, List.empty) ++ 
@@ -583,7 +581,13 @@ object GenScalaTestDotty {
 
   def genDiagramsScalaNative(targetDir: File, version: String, scalaVersion: String): Seq[File] =
     copyDirNative("dotty/diagrams/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
-    copyDirNative("dotty/diagrams/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)      
+    copyDirNative("dotty/diagrams/src/main/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
+
+  def genExpectationsScalaJS(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDirJS("dotty/expectations/src/main/scala/org/scalatest/expectations", "expectations", targetDir, List.empty)
+
+  def genExpectationsScalaNative(targetDir: File, version: String, scalaVersion: String): Seq[File] =
+    copyDirNative("dotty/expectations/src/main/scala/org/scalatest/expectations", "expectations", targetDir, List.empty)        
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, 
@@ -592,7 +596,6 @@ object GenScalaTestDotty {
         "SeveredStackTracesSpec.scala", // skipped because tests failed 
       )
     ) ++ 
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
@@ -658,7 +661,6 @@ object GenScalaTestDotty {
     copyDirJS("dotty/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
     copyDirJS("dotty/scalatest-test/src/test/scala/org/scalatest/matchers/should", "org/scalatest/matchers/should", targetDir, List.empty) ++
     copyDirJS("dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must", "org/scalatest/matchers/must", targetDir, List.empty) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++ 
     copyDirJS("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, 
       List(
         "WaitersSpec.scala",    // skipped because Waiters not supported.
@@ -1060,7 +1062,6 @@ object GenScalaTestDotty {
     copyDirNative("dotty/scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
     copyDirNative("dotty/scalatest-test/src/test/scala/org/scalatest/matchers/should", "org/scalatest/matchers/should", targetDir, List.empty) ++
     copyDirNative("dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must", "org/scalatest/matchers/must", targetDir, List.empty) ++
-    copyDir("jvm/scalatest-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty) ++ 
     copyDirNative("jvm/scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir, 
       List(
         "AbstractPatienceConfigurationSpec.scala", 
@@ -1142,7 +1143,16 @@ object GenScalaTestDotty {
     copyDirJS("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
 
   def genDiagramsTestNative(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
-    copyDirNative("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)    
+    copyDirNative("jvm/diagrams-test/src/test/scala/org/scalatest/diagrams", "org/scalatest/diagrams", targetDir, List.empty)
+
+  def genExpectationsTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDir("jvm/expectations-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty)
+
+  def genExpectationsTestJS(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDirJS("jvm/expectations-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty)
+
+  def genExpectationsTestNative(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
+    copyDirNative("jvm/expectations-test/src/test/scala/org/scalatest/expectations", "org/scalatest/expectations", targetDir, List.empty)      
 
   def genFeatureSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = 
     copyDir("jvm/featurespec-test/src/test/scala/org/scalatest/featurespec", "org/scalatest/featurespec", targetDir, List.empty)
