@@ -293,6 +293,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     ).dependsOn(commonTest % "test")
      .aggregate(
        scalatestDiagramsTest, 
+       scalatestExpectationsTest, 
        scalatestFeatureSpecTest, 
        scalatestFlatSpecTest, 
        scalatestFreeSpecTest, 
@@ -308,6 +309,13 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     .settings(
       projectTitle := "ScalaTest Diagrams Test"
     ).dependsOn(commonTest % "test")
+
+  lazy val scalatestExpectationsTest = project.in(file("jvm/expectations-test"))
+    .settings(sharedSettings: _*)
+    .settings(sharedTestSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Expectations Test"
+    ).dependsOn(commonTest % "test")  
 
   lazy val scalatestFeatureSpecTest = project.in(file("jvm/featurespec-test"))
     .settings(sharedSettings: _*)
@@ -486,6 +494,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
         scalatestPropSpec % "compile-internal", 
         scalatestWordSpec % "compile-internal", 
         scalatestDiagrams % "compile-internal", 
+        scalatestExpectations % "compile-internal", 
         scalatestMatchersCore % "compile-internal", 
         scalatestShouldMatchers % "compile-internal", 
         scalatestMustMatchers % "compile-internal")
@@ -998,6 +1007,40 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       )
     ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")
 
+  lazy val scalatestExpectations = project.in(file("jvm/expectations"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Expectations",
+      name := "scalatest-expectations",
+      organization := "org.scalatest",
+      Compile / sourceGenerators += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          (new File(crossTarget.value, "classes")).mkdirs()
+          Seq.empty[File]
+        }.taskValue
+      },
+      scalatestDocSettings,
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.expectations"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest Expectations",
+        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
+    ).dependsOn(scalatestCore, scalacticMacro % "compile-internal, test-internal")  
+
   lazy val scalatestMatchersCore = project.in(file("jvm/matchers-core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
@@ -1172,6 +1215,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       scalatestRefSpec, 
       scalatestWordSpec, 
       scalatestDiagrams, 
+      scalatestExpectations, 
       scalatestMatchersCore, 
       scalatestShouldMatchers, 
       scalatestMustMatchers

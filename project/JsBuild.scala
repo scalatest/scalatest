@@ -198,6 +198,7 @@ trait JsBuild { this: BuildCommons =>
       scalatestPropSpecJS % "compile-internal", 
       scalatestWordSpecJS % "compile-internal", 
       scalatestDiagramsJS % "compile-internal", 
+      scalatestExpectationsJS % "compile-internal", 
       scalatestMatchersCoreJS % "compile-internal", 
       scalatestShouldMatchersJS % "compile-internal", 
       scalatestMustMatchersJS % "compile-internal")
@@ -294,7 +295,8 @@ trait JsBuild { this: BuildCommons =>
         }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
      .aggregate(
-       scalatestDiagramsTestJS, 
+       scalatestDiagramsTestJS,
+       scalatestExpectationsTestJS, 
        scalatestFeatureSpecTestJS, 
        scalatestFlatSpecTestJS, 
        scalatestFreeSpecTestJS, 
@@ -316,6 +318,19 @@ trait JsBuild { this: BuildCommons =>
         }.taskValue
       }
     ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestExpectationsTestJS = project.in(file("js/expectations-test"))
+    .settings(sharedSettings: _*)
+    .settings(jsSharedSettings: _*)
+    .settings(sharedTestSettingsJS: _*)
+    .settings(
+      projectTitle := "ScalaTest Expectations Test",
+      Test / sourceGenerators += {
+        Def.task {
+          GenScalaTestJS.genExpectationsTest((Test / sourceManaged).value, version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestJS % "test").enablePlugins(ScalaJSPlugin)  
 
   lazy val scalatestFeatureSpecTestJS = project.in(file("js/featurespec-test"))
     .settings(sharedSettings: _*)
@@ -786,6 +801,39 @@ trait JsBuild { this: BuildCommons =>
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestCoreJS).enablePlugins(ScalaJSPlugin)
 
+  lazy val scalatestExpectationsJS = project.in(file("js/expectations"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(jsSharedSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Expectations JS",
+      organization := "org.scalatest",
+      name := "scalatest-expectations",
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      Compile / sourceGenerators += {
+        Def.task {
+          GenModulesJS.genScalaTestExpectations((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value)
+        }
+      },
+      scalacOptions ++= (if (scalaBinaryVersion.value == "2.10" || scalaVersion.value.startsWith("2.13")) Seq.empty[String] else Seq("-Ypartial-unification")),
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.expectations"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest Expectations JS",
+        "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
+    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalatestCoreJS).enablePlugins(ScalaJSPlugin)  
+
   lazy val scalatestMatchersCoreJS = project.in(file("js/matchers-core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
@@ -924,7 +972,8 @@ trait JsBuild { this: BuildCommons =>
       scalatestFunSpecJS, 
       scalatestPropSpecJS, 
       scalatestWordSpecJS, 
-      scalatestDiagramsJS, 
+      scalatestDiagramsJS,
+      scalatestExpectationsJS, 
       scalatestMatchersCoreJS, 
       scalatestShouldMatchersJS, 
       scalatestMustMatchersJS
@@ -937,7 +986,8 @@ trait JsBuild { this: BuildCommons =>
       scalatestFunSpecJS, 
       scalatestPropSpecJS, 
       scalatestWordSpecJS, 
-      scalatestDiagramsJS, 
+      scalatestDiagramsJS,
+      scalatestExpectationsJS, 
       scalatestMatchersCoreJS, 
       scalatestShouldMatchersJS, 
       scalatestMustMatchersJS

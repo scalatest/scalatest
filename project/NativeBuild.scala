@@ -127,6 +127,7 @@ trait NativeBuild { this: BuildCommons =>
       scalatestPropSpecNative,
       scalatestWordSpecNative,
       scalatestDiagramsNative,
+      scalatestExpectationsNative,
       scalatestMatchersCoreNative,
       scalatestShouldMatchersNative,
       scalatestMustMatchersNative
@@ -140,6 +141,7 @@ trait NativeBuild { this: BuildCommons =>
       scalatestPropSpecNative,
       scalatestWordSpecNative,
       scalatestDiagramsNative,
+      scalatestExpectationsNative,
       scalatestMatchersCoreNative,
       scalatestShouldMatchersNative,
       scalatestMustMatchersNative
@@ -233,6 +235,7 @@ trait NativeBuild { this: BuildCommons =>
         scalatestPropSpecNative % "compile-internal",
         scalatestWordSpecNative % "compile-internal",
         scalatestDiagramsNative % "compile-internal",
+        scalatestExpectationsNative % "compile-internal",
         scalatestMatchersCoreNative % "compile-internal",
         scalatestShouldMatchersNative % "compile-internal",
         scalatestMustMatchersNative % "compile-internal")
@@ -551,6 +554,35 @@ trait NativeBuild { this: BuildCommons =>
     )
   ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalatestCoreNative).enablePlugins(ScalaNativePlugin)
 
+  lazy val scalatestExpectationsNative = project.in(file("native/expectations"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings ++ nativeSharedSettings)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest Expectations Native",
+      organization := "org.scalatest",
+      moduleName := "scalatest-expectations",
+      Compile / sourceGenerators += {
+        Def.task {
+          GenModulesNative.genScalaTestExpectations((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest.expectations"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest Expectations Native",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc."
+    )
+  ).dependsOn(scalacticMacroNative % "compile-internal, test-internal", scalatestCoreNative).enablePlugins(ScalaNativePlugin)
+
   lazy val scalatestMatchersCoreNative = project.in(file("native/matchers-core"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings ++ nativeSharedSettings)
@@ -696,6 +728,7 @@ trait NativeBuild { this: BuildCommons =>
      .enablePlugins(ScalaNativePlugin)
      .aggregate(
        scalatestDiagramsTestNative, 
+       scalatestExpectationsTestNative, 
        scalatestFeatureSpecTestNative, 
        scalatestFlatSpecTestNative, 
        scalatestFreeSpecTestNative, 
@@ -717,6 +750,19 @@ trait NativeBuild { this: BuildCommons =>
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestExpectationsTestNative = project.in(file("native/expectations-test"))
+    .settings(sharedSettings ++ nativeSharedSettings)
+    .settings(sharedTestSettingsNative: _*)
+    .settings(
+      projectTitle := "ScalaTest Expectations Test",
+      nativeLink := file("test.hnir"),
+      Test / sourceGenerators += {
+        Def.task {
+          GenScalaTestNative.genExpectationsTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)  
 
   lazy val scalatestFeatureSpecTestNative = project.in(file("native/featurespec-test"))
     .settings(sharedSettings ++ nativeSharedSettings)
@@ -827,6 +873,7 @@ trait NativeBuild { this: BuildCommons =>
       scalatestPropSpecNative, 
       scalatestWordSpecNative, 
       scalatestDiagramsNative, 
+      scalatestExpectationsNative, 
       scalatestMatchersCoreNative, 
       scalatestShouldMatchersNative, 
       scalatestMustMatchersNative
