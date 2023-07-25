@@ -18,32 +18,97 @@ package org.scalatest
 import org.scalactic.{UnquotedString => _, _}
 import org.scalatest.exceptions._
 
-// As it stands, this should not extend Product with Serializable because
-// subclasses exists that anen't case classes.
+/**
+ * An abstract class representing a Fact that can be evaluated as either is yes or no.
+ * 
+ * @param rawSimplifiedFactMessage 
+ * @param rawMidSentenceFactMessage 
+ * @param rawMidSentenceSimplifiedFactMessage 
+ * @param factMessageArgs 
+ * @param simplifiedFactMessageArgs 
+ * @param midSentenceFactMessageArgs 
+ * @param midSentenceSimplifiedFactMessageArgs 
+ * @param isLeaf 
+ * @param isVacuousYes 
+ * @param prettifier 
+ * @param cause 
+ * @param isYes 
+ */
 sealed abstract class Fact {
+  // As it stands, this should not extend Product with Serializable because
+  // subclasses exists that anen't case classes.
 
+  /**
+   * The raw message representing the fact.
+   */
   val rawFactMessage: String
+  /**
+   * The raw simplified message representing the fact.
+   */
   val rawSimplifiedFactMessage: String
+  /**
+   * The raw mid-sentence message representing the fact.
+   */
   val rawMidSentenceFactMessage: String
+  /**
+   * The raw mid-sentence simplified message representing the fact.
+   */
   val rawMidSentenceSimplifiedFactMessage: String
-
+  /**
+   * Arguments used to format the rawFactMessage.
+   */
   val factMessageArgs: IndexedSeq[Any]
+  /**
+   * Arguments used to format the rawSimplifiedFactMessage.
+   */
   val simplifiedFactMessageArgs: IndexedSeq[Any]
+  /**
+   * Arguments used to format the rawMidSentenceFactMessage.
+   */
   val midSentenceFactMessageArgs: IndexedSeq[Any]
+  /**
+   * Arguments used to format the rawMidSentenceSimplifiedFactMessage.
+   */
   val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
-
+  /**
+   * Indicates whether the fact is a leaf (terminal) node in a fact tree.
+   */
   val isLeaf: Boolean
+  /**
+   * Indicates whether the fact is a vacuous yes, which means true in a sense but without meaningful assertions.
+   */
   val isVacuousYes: Boolean
+  /**
+   * A prettifier used to format the messages when constructing failure messages.
+   */
   val prettifier: Prettifier
-
+  /**
+   * An optional cause Throwable associated with the fact.
+   */
   val cause: Option[Throwable] = None
-
+  /**
+   * Indicates whether the fact is a yes.
+   */
   val isYes: Boolean
 
+  /**
+   * Indicates whether the fact is a no.
+   */
   final def isNo: Boolean = !isYes
 
+  /**
+   * Convert the fact to <code>Boolean</code>, same as the value returned by <code>isYes</code>.
+   */
   final def toBoolean: Boolean = isYes
 
+  /**
+   * Convert this fact to <code>Assertion</code>.
+   *
+   * @param pos the related <code>Position</code> for this fact.
+   * @return <code>Succeeded</code> if this fact is a yes.
+   * @throws TestFailedException if this fact is not yes or vacuous yes.
+   * @throws TestCanceledException if this fact is a vacuous yes.
+   */
   final def toAssertion(implicit pos: source.Position): Assertion = {
     if (isYes) {
       if (!isVacuousYes) Succeeded
@@ -62,28 +127,67 @@ sealed abstract class Fact {
   }
 
   /**
-   * Get a simplified version of this Fact, sub type will be simplified and all messages field will be substituted with its counter-part.
+   * Negates this Fact, creating a version with the opposite value.
    *
-   * @return a simplified version of this Fact
-   */
+   * @return A version of this Fact with the opposite value.
+   */ 
   def unary_! : Fact = Fact.Unary_!(this)
 
+  /**
+   * Creates a new Fact that represents a logical OR between this Fact and the provided Fact.
+   *
+   * @param rhs The Fact to be combined with this Fact using a logical OR.
+   * @return A new Fact representing the logical OR between this Fact and the provided Fact.
+   */
   final def ||(rhs: => Fact): Fact = if (isYes) this else Fact.Binary_||(this, rhs)
 
+  /**
+   * Creates a new Fact that represents a logical AND between this Fact and the provided Fact.
+   *
+   * @param rhs The Fact to be combined with this Fact using a logical AND.
+   * @return A new Fact representing the logical AND between this Fact and the provided Fact.
+   */
   final def &&(rhs: => Fact): Fact = if (isNo) this else Fact.Binary_&&(this, rhs)
 
+  /**
+   * Creates a new Fact that represents a logical OR between this Fact and the provided Fact.
+   *
+   * @param rhs The Fact to be combined with this Fact using a logical OR.
+   * @return A new Fact representing the logical OR between this Fact and the provided Fact.
+   */
   final def |(rhs: Fact): Fact = Fact.Binary_|(this, rhs)
 
+  /**
+   * Creates a new Fact that represents a logical AND between this Fact and the provided Fact.
+   *
+   * @param rhs The Fact to be combined with this Fact using a logical AND.
+   * @return A new Fact representing the logical AND between this Fact and the provided Fact.
+   */
   final def &(rhs: Fact): Fact = Fact.Binary_&(this, rhs)
 
+  /**
+   * String prefix for this fact, return either "Yes", "VacuousYes" or "No".
+   */
   final def stringPrefix: String =
     if (isYes) {
       if (isVacuousYes) "VacuousYes" else "Yes"
     }
     else "No"
 
+  /**
+   * Creates a new Fact that represents the implication (=>) between this Fact and the provided Fact.
+   *
+   * @param rhs The Fact representing the implication's consequent.
+   * @return A new Fact representing the implication between this Fact and the provided Fact.
+   */
   final def implies(rhs: => Fact): Fact = if (isNo) Fact.VacuousYes(this) else Fact.Implies(this, rhs)
 
+  /**
+   * Creates a new Fact that represents the equivalence (eqv) between this Fact and the provided Fact.
+   *
+   * @param rhs The Fact representing the other side of the equivalence.
+   * @return A new Fact representing the equivalence between this Fact and the provided Fact.
+   */
   final def isEqvTo(rhs: Fact): Fact = Fact.IsEqvTo(this, rhs)
 
   /**
@@ -95,6 +199,11 @@ sealed abstract class Fact {
     if (factMessageArgs.isEmpty) rawFactMessage
     else makeString(rawFactMessage, factMessageArgs)
 
+  /**
+   * Construct simplified failure message to report if a fact fails, using <code>rawSimplifiedFactMessage</code>, <code>simplifiedFactMessageArgs</code>, and <code>prettifier</code>
+   *
+   * @return simplified failure message to report if a fact fails
+   */
   def simplifiedFactMessage: String =
     if (simplifiedFactMessageArgs.isEmpty) rawSimplifiedFactMessage
     else makeString(rawSimplifiedFactMessage, simplifiedFactMessageArgs)
@@ -108,6 +217,11 @@ sealed abstract class Fact {
     if (midSentenceFactMessageArgs.isEmpty) rawMidSentenceFactMessage
     else makeString(rawMidSentenceFactMessage, midSentenceFactMessageArgs)
 
+  /**
+   * Construct simplified failure message suitable for appearing mid-sentence, using <code>rawMidSentenceSimplifiedFactMessage</code>, <code>midSentenceSimplifiedFactMessageArgs</code> and <code>prettifier</code>
+   *
+   * @return simplified failure message suitable for appearing mid-sentence
+   */
   def midSentenceSimplifiedFactMessage: String =
     if (midSentenceSimplifiedFactMessageArgs.isEmpty) rawMidSentenceSimplifiedFactMessage
     else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs)
@@ -117,8 +231,14 @@ sealed abstract class Fact {
 
   private[scalatest] val NEWLINE = scala.compat.Platform.EOL
 
-  // This one makes sense for Yes and No only. The other subclassess override it.
+  /**
+   * Generates a fact diagram, which is a textual representation of the fact and its structure.
+   *
+   * @param level The indentation level for formatting the diagram.
+   * @return The fact diagram as a string.
+   */
   def factDiagram(level: Int): String = {
+    // This one makes sense for Yes and No only. The other subclassess override it.
     val msg = midSentenceFactMessage // just compute this once
     val padding = "  " * level
     if (msg.contains("\n")) {
@@ -129,11 +249,36 @@ sealed abstract class Fact {
       padding + stringPrefix + "(" + msg + ")"
   }
 
+  /**
+   * Converts this Fact to its string representation.
+   *
+   * @return The string representation of this Fact.
+   */
   override def toString: String = factDiagram(0)
 }
 
+/**
+ * Companion object for the <code>Fact</code> trait.
+ */
 object Fact {
 
+  /**
+   * Represents a leaf node in the Fact tree, which is a concrete Fact with known boolean values.
+   *
+   * @param rawFactMessage The raw message representing the fact.
+   * @param rawSimplifiedFactMessage The raw simplified message representing the fact.
+   * @param rawMidSentenceFactMessage The raw mid-sentence message representing the fact.
+   * @param rawMidSentenceSimplifiedFactMessage The raw mid-sentence simplified message representing the fact.
+   * @param factMessageArgs Arguments used to format the rawFactMessage.
+   * @param simplifiedFactMessageArgs Arguments used to format the rawSimplifiedFactMessage.
+   * @param midSentenceFactMessageArgs Arguments used to format the rawMidSentenceFactMessage.
+   * @param midSentenceSimplifiedFactMessageArgs Arguments used to format the rawMidSentenceSimplifiedFactMessage.
+   * @param isYes Indicates whether the fact is evaluated to true.
+   * @param isVacuousYes Indicates whether the fact is a vacuous yes, which means true in a sense but without meaningful assertions.
+   * @param prettifier A prettifier used to format the messages when constructing failure messages.
+   * @param cause An optional cause Throwable associated with the fact.
+   * @throws IllegalArgumentException if `isVacuousYes` is true but `isYes` is false.
+   */
   case class Leaf(
     rawFactMessage: String,
     rawSimplifiedFactMessage: String,
@@ -149,33 +294,93 @@ object Fact {
     override val cause: Option[Throwable] = None
   ) extends Fact {
     require(!isVacuousYes || isYes)
+
+    /**
+     * Indicates whether this Fact is a leaf node in the Fact tree, return <code>true</code>.
+     */
     val isLeaf: Boolean = true
   }
 
+  /**
+   * Represents a vacuous "Yes" Fact, which is a special case of Fact where the underlying Fact is No,
+   * but it is treated as Yes without meaningful assertions.
+   *
+   * @param underlying The underlying Fact that is treated as No but represented as Yes.
+   * @throws IllegalArgumentException if the underlying Fact's <code>isNo</code> is <code>false</code>.
+   */
   class VacuousYes(underlying: Fact) extends Fact {
 
     require(underlying.isNo)
     
+    /**
+     * The raw message representing the vacuous "Yes" Fact.
+     */
     val rawFactMessage: String = underlying.rawFactMessage
+    /**
+     * The raw simplified message representing the vacuous "Yes" Fact.
+     */
     val rawSimplifiedFactMessage: String = underlying.rawSimplifiedFactMessage
+    /**
+     * The raw mid-sentence message representing the vacuous "Yes" Fact.
+     */
     val rawMidSentenceFactMessage: String = underlying.rawMidSentenceFactMessage
+    /**
+     * The raw mid-sentence simplified message representing the vacuous "Yes" Fact.
+     */
     val rawMidSentenceSimplifiedFactMessage: String = underlying.rawMidSentenceSimplifiedFactMessage
 
+    /**
+     * Arguments used to format the rawFactMessage.
+     */
     val factMessageArgs: IndexedSeq[Any] = underlying.factMessageArgs
+    /**
+     * Arguments used to format the rawSimplifiedFactMessage.
+     */
     val simplifiedFactMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
+    /**
+     * Arguments used to format the rawMidSentenceFactMessage.
+     */
     val midSentenceFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceFactMessageArgs
+    /**
+     * Arguments used to format the rawMidSentenceSimplifiedFactMessage.
+     */
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
 
+    /**
+     * Indicates whether this Fact is a leaf node in the Fact tree.
+     */
     val isLeaf: Boolean = underlying.isLeaf
+    /**
+     * The prettifier used to format the messages when constructing failure messages.
+     */
     val prettifier: Prettifier = underlying.prettifier
 
+    /**
+     * An optional cause Throwable associated with the vacuous "Yes" Fact.
+     */
     override val cause: Option[Throwable] = underlying.cause
 
+    /**
+     * Indicates whether this Fact is evaluated to Yes, return <code>true</code>.
+     */
     val isYes: Boolean = true
+    /**
+     * Indicates whether this Fact is a vacuous "Yes", which means true in a sense but without meaningful assertions, return <code>true</code>
+     */
     val isVacuousYes: Boolean = true
   }
 
+  /**
+   * A companion object for the <code>VacuousYes</code> class, providing factory methods to create instances of <code>VacuousYes</code> fact.
+   */
   object VacuousYes {
+    /**
+     * Creates a new <code>VacuousYes</code> fact with the provided underlying <code>Fact</code>.
+     *
+     * @param underlying The underlying <code>Fact</code> that is treated as false (No) but represented as true (Yes).
+     * @return A new <code>VacuousYes</code> fact instance.
+     * @throws IllegalArgumentException if the underlying Fact is not No.
+     */
     def apply(underlying: Fact): VacuousYes = new VacuousYes(underlying)
   }
 
@@ -861,10 +1066,22 @@ object Fact {
     }
   }
 
+  /**
+   * Represents a binary logical AND operation between two `Fact` instances.
+   *
+   * @param left  The left-hand side `Fact` instance of the AND operation.
+   * @param right The right-hand side `Fact` instance of the AND operation.
+   */
   class Binary_&(left: Fact, right: Fact) extends Fact {
 
     private[scalatest] def operatorName: String = "&"
 
+    /**
+     * The raw message representing the logical AND operation result between the `left` and `right` `Fact` instances.
+     *
+     * @note If both `left` and `right` are leaf nodes, the result will be a comma-separated message.
+     *       Otherwise, a recursive representation of the combined facts will be used.
+     */
     val rawFactMessage: String = {
       if (left.isLeaf && right.isLeaf) {
         if (left.isYes && right.isNo)
@@ -874,9 +1091,23 @@ object Fact {
       }
       else factDiagram(0)
     }
+    /**
+     * The simplified version of the raw fact message, which is the same as `rawFactMessage`.
+     */
     val rawSimplifiedFactMessage: String = rawFactMessage
+    /**
+     * The raw message used in the middle of a sentence, which is the same as `rawFactMessage`.
+     */
     val rawMidSentenceFactMessage: String = rawFactMessage
+    /**
+     * The simplified version of the raw message used in the middle of a sentence, which is the same as `rawFactMessage`.
+     */
     val rawMidSentenceSimplifiedFactMessage: String = rawFactMessage
+    /**
+     * The arguments used in the fact message. If both `left` and `right` are leaf nodes, the result will be a `Vector`
+     * containing simplified fact messages for both sides. Otherwise, a `Vector` of unquoted strings representing the
+     * fact diagrams of the `left` and `right` instances will be used.
+     */
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
         Vector(
@@ -888,7 +1119,15 @@ object Fact {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
+    /**
+     * The simplified version of the fact message arguments, which is the same as `factMessageArgs`.
+     */
     val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
+    /**
+     * The arguments used in the middle of a sentence fact message. If both `left` and `right` are leaf nodes, the result
+     * will be a `Vector` containing middle of a sentence simplified fact messages for both sides. Otherwise, a `Vector`
+     * of unquoted strings representing the fact diagrams of the `left` and `right` instances will be used.
+     */
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
         Vector(
@@ -900,15 +1139,34 @@ object Fact {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
-
+    /**
+     * The simplified version of the middle of a sentence fact message arguments, which is the same as `midSentenceFactMessageArgs`.
+     */
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
-
+    /**
+     * Returns whether this `Binary_&` instance is a leaf node or not. Since it represents an AND operation, it is always `false`.
+     */
     val isLeaf: Boolean = false
+    /**
+     * Returns `true` if both the `left` and `right` `Fact` instances are `yes`, `false` otherwise.
+     */
     val isYes: Boolean = left.isYes && right.isYes
+    /**
+     * Returns `true` if both the `left` and `right` `Fact` instances are `yes` and at least one of them is a vacuous `yes`,
+     * `false` otherwise.
+     */
     val isVacuousYes: Boolean = isYes && (left.isVacuousYes || right.isVacuousYes)
+    /**
+     * The prettifier used in this `Binary_&` instance, which is taken from the `left` `Fact` instance.
+     */
     val prettifier: Prettifier = left.prettifier
 
-
+    /**
+     * Generates the fact diagram for this `Binary_&` instance.
+     *
+     * @param level The indentation level used for pretty printing the fact diagram.
+     * @return The fact diagram as a string representation.
+     */
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
       padding + stringPrefix + "(" + NEWLINE +
@@ -918,16 +1176,46 @@ object Fact {
     }
   }
 
+  /**
+   * Represents a binary logical AND operation between two `Fact` instances.
+   * This is a factory object used to create `Binary_&` instances.
+   */
   object Binary_& {
+    /**
+     * Creates a new `Binary_&` instance with the specified left and right `Fact` instances.
+     *
+     * @param left  The left-hand side `Fact` instance of the AND operation.
+     * @param right The right-hand side `Fact` instance of the AND operation.
+     * @return A new `Binary_&` instance representing the logical AND operation of the two `Fact` instances.
+     */
     def apply(left: Fact, right: Fact): Fact = new Binary_&(left, right)
   }
 
+  /**
+   * Represents a binary logical AND operation between two `Fact` instances, enforcing that the left-hand side `Fact` instance is `yes`.
+   *
+   * @param left  The left-hand side `Fact` instance of the AND operation. It must be a `yes` fact.
+   * @param right The right-hand side `Fact` instance of the AND operation.
+   * @throws IllegalArgumentException If the `left` `Fact` instance is not a `yes` fact.
+   */
   class Binary_&&(left: Fact, right: Fact) extends Binary_&(left, right) {
     require(left.isYes)
     override private[scalatest] def operatorName: String = "&&"
   }
 
+  /**
+   * Represents a binary logical AND operation between two `Fact` instances, enforcing that the left-hand side `Fact` instance is `yes`.
+   * This is a factory object used to create `Binary_&&` instances.
+   */
   object Binary_&& {
+    /**
+     * Creates a new `Binary_&&` instance with the specified left and right `Fact` instances, enforcing that the left-hand side `Fact` instance is `yes`.
+     *
+     * @param left  The left-hand side `Fact` instance of the AND operation. It must be a `yes` fact.
+     * @param right The right-hand side `Fact` instance of the AND operation.
+     * @return A new `Binary_&&` instance representing the logical AND operation of the two `Fact` instances.
+     * @throws IllegalArgumentException If the `left` `Fact` instance is not a `yes` fact.
+     */
     def apply(left: Fact, right: Fact): Fact = new Binary_&&(left, right)
   }
 
