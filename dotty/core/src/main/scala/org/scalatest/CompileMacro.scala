@@ -108,8 +108,9 @@ object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )($prettifier) 
+            Vector.empty, 
+            $prettifier
+          ) 
         }
         case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
           val messageExpr = Resources.expectedTypeErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
@@ -121,8 +122,9 @@ object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )($prettifier)
+            Vector.empty, 
+            $prettifier
+          )
         }
         case Nil => '{
           val messageExpr = Resources.expectedTypeErrorButGotNone(${ Expr(code) })
@@ -134,8 +136,9 @@ object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )($prettifier)
+            Vector.empty, 
+            $prettifier
+          )
         }
       }
     }
@@ -179,8 +182,9 @@ object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )($prettifier)
+            Vector.empty, 
+            $prettifier
+          )
        }
     else
       '{
@@ -194,8 +198,9 @@ object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )($prettifier)
+            Vector.empty, 
+            $prettifier
+          )
        }
   }
 
@@ -269,8 +274,9 @@ object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )($prettifier)
+            Vector.empty, 
+            $prettifier
+          )
         }
         case Error(msg, _, _, ErrorKind.Parser) :: _ => '{
           val messageExpr = Resources.expectedNoErrorButGotParseError(${ Expr(msg) }, ${ Expr(code) })
@@ -282,8 +288,9 @@ object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )($prettifier)
+            Vector.empty, 
+            $prettifier
+          )
         }
         case Nil => '{ 
           val messageExpr = Resources.compiledSuccessfully(${ Expr(code) })
@@ -295,8 +302,9 @@ object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )($prettifier)
+            Vector.empty, 
+            $prettifier
+          )
         }
       }
     }
