@@ -294,42 +294,42 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
         assert(result.isVacuousYes)
       }
       "for VacuousYes && Yes" in {
-        val result = vacuousYes && Yes("yes")
+        val result = vacuousYes && Yes("yes", Prettifier.default)
         assert(result.isYes)
         assert(result.isVacuousYes)
       }
       "for Yes && VacuousYes" in {
-        val result = Yes("yes") && vacuousYes
+        val result = Yes("yes", Prettifier.default) && vacuousYes
         assert(result.isYes)
         assert(result.isVacuousYes)
       }
       "for VacuousYes && No" in {
-        val result = vacuousYes && No("no")
+        val result = vacuousYes && No("no", Prettifier.default)
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
       "for No && VacuousYes" in {
-        val result = No("no") && vacuousYes
+        val result = No("no", Prettifier.default) && vacuousYes
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
       "for Yes && Yes" in {
-        val result = Yes("yes1") && Yes("yes2")
+        val result = Yes("yes1", Prettifier.default) && Yes("yes2", Prettifier.default)
         assert(result.isYes)
         assert(!result.isVacuousYes)
       }
       "for Yes && No" in {
-        val result = Yes("yes") && No("no")
+        val result = Yes("yes", Prettifier.default) && No("no", Prettifier.default)
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
       "for No && Yes" in {
-        val result = No("no") && Yes("yes")
+        val result = No("no", Prettifier.default) && Yes("yes", Prettifier.default)
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
       "for No && No" in {
-        val result = No("no1") && No("no2")
+        val result = No("no1", Prettifier.default) && No("no2", Prettifier.default)
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
@@ -428,22 +428,22 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
     "should not short-circuit" - {
       "for Yes & Yes" in {
         var evaluated = false
-        Yes("yes1") & { evaluated = true; Yes("yes2") }
+        Yes("yes1", Prettifier.default) & { evaluated = true; Yes("yes2", Prettifier.default) }
         assert(evaluated)
       }
       "for Yes & No" in {
         var evaluated = false
-        Yes("yes1") & { evaluated = true; No("no1") }
+        Yes("yes1", Prettifier.default) & { evaluated = true; No("no1", Prettifier.default) }
         assert(evaluated)
       }
       "for No & Yes" in {
         var evaluated = false
-        No("no1") & { evaluated = true; Yes("yes1") }
+        No("no1", Prettifier.default) & { evaluated = true; Yes("yes1", Prettifier.default) }
         assert(evaluated)
       }
       "for No & No" in {
         var evaluated = false
-        No("no1") & { evaluated = true; No("no2") }
+        No("no1", Prettifier.default) & { evaluated = true; No("no2", Prettifier.default) }
         assert(evaluated)
       }
     }
@@ -458,42 +458,42 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
         assert(result.isVacuousYes)
       }
       "for VacuousYes & Yes" in {
-        val result = vacuousYes & Yes("yes")
+        val result = vacuousYes & Yes("yes", Prettifier.default)
         assert(result.isYes)
         assert(result.isVacuousYes)
       }
       "for Yes & VacuousYes" in {
-        val result = Yes("yes") & vacuousYes
+        val result = Yes("yes", Prettifier.default) & vacuousYes
         assert(result.isYes)
         assert(result.isVacuousYes)
       }
       "for VacuousYes & No" in {
-        val result = vacuousYes & No("no")
+        val result = vacuousYes & No("no", Prettifier.default)
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
       "for No & VacuousYes" in {
-        val result = No("no") & vacuousYes
+        val result = No("no", Prettifier.default) & vacuousYes
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
       "for Yes & Yes" in {
-        val result = Yes("yes1") & Yes("yes2")
+        val result = Yes("yes1", Prettifier.default) & Yes("yes2", Prettifier.default)
         assert(result.isYes)
         assert(!result.isVacuousYes)
       }
       "for Yes & No" in {
-        val result = Yes("yes") & No("no")
+        val result = Yes("yes", Prettifier.default) & No("no", Prettifier.default)
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
       "for No & Yes" in {
-        val result = No("no") & Yes("yes")
+        val result = No("no", Prettifier.default) & Yes("yes", Prettifier.default)
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
       "for No & No" in {
-        val result = No("no1") & No("no2")
+        val result = No("no1", Prettifier.default) & No("no2", Prettifier.default)
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
@@ -596,22 +596,22 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
     "should short-circuit correctly" - {
       "for Yes || Yes" in {
         var evaluated = false
-        Yes("yes1") || { evaluated = true; Yes("yes2") }
+        Yes("yes1", Prettifier.default) || { evaluated = true; Yes("yes2", Prettifier.default) }
         assert(!evaluated)
       }
       "for Yes || No" in {
         var evaluated = false
-        Yes("yes1") || { evaluated = true; No("no1") }
+        Yes("yes1", Prettifier.default) || { evaluated = true; No("no1", Prettifier.default) }
         assert(!evaluated)
       }
       "for No || Yes" in {
         var evaluated = false
-        No("no1") || { evaluated = true; Yes("yes1") }
+        No("no1", Prettifier.default) || { evaluated = true; Yes("yes1", Prettifier.default) }
         assert(evaluated)
       }
       "for No || No" in {
         var evaluated = false
-        No("no1") || { evaluated = true; No("no2") }
+        No("no1", Prettifier.default) || { evaluated = true; No("no2", Prettifier.default) }
         assert(evaluated)
       }
     }
@@ -626,42 +626,42 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
         assert(result.isVacuousYes)
       }
       "for VacuousYes || Yes" in { // Because it short circuits
-        val result = vacuousYes || Yes("yes")
+        val result = vacuousYes || Yes("yes", Prettifier.default)
         assert(result.isYes)
         assert(result.isVacuousYes)
       }
       "for Yes || VacuousYes" in {
-        val result = Yes("yes") || vacuousYes
+        val result = Yes("yes", Prettifier.default) || vacuousYes
         assert(result.isYes)
         assert(!result.isVacuousYes)
       }
       "for VacuousYes || No" in {
-        val result = vacuousYes || No("no")
+        val result = vacuousYes || No("no", Prettifier.default)
         assert(result.isYes)
         assert(result.isVacuousYes)
       }
       "for No || VacuousYes" in {
-        val result = No("no") || vacuousYes
+        val result = No("no", Prettifier.default) || vacuousYes
         assert(result.isYes)
         assert(result.isVacuousYes)
       }
       "for Yes || Yes" in {
-        val result = Yes("yes1") || Yes("yes2")
+        val result = Yes("yes1", Prettifier.default) || Yes("yes2", Prettifier.default)
         assert(result.isYes)
         assert(!result.isVacuousYes)
       }
       "for Yes || No" in {
-        val result = Yes("yes") || No("no")
+        val result = Yes("yes", Prettifier.default) || No("no", Prettifier.default)
         assert(result.isYes)
         assert(!result.isVacuousYes)
       }
       "for No || Yes" in {
-        val result = No("no") || Yes("yes")
+        val result = No("no", Prettifier.default) || Yes("yes", Prettifier.default)
         assert(result.isYes)
         assert(!result.isVacuousYes)
       }
       "for No || No" in {
-        val result = No("no1") || No("no2")
+        val result = No("no1", Prettifier.default) || No("no2", Prettifier.default)
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
@@ -761,22 +761,22 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       "should short-circuit correctly" - {
         "for Yes | Yes" in {
           var evaluated = false
-          Yes("yes1") | { evaluated = true; Yes("yes2") }
+          Yes("yes1", Prettifier.default) | { evaluated = true; Yes("yes2", Prettifier.default) }
           assert(evaluated)
         }
         "for Yes | No" in {
           var evaluated = false
-          Yes("yes1") | { evaluated = true; No("no1") }
+          Yes("yes1", Prettifier.default) | { evaluated = true; No("no1", Prettifier.default) }
           assert(evaluated)
         }
         "for No | Yes" in {
           var evaluated = false
-          No("no1") | { evaluated = true; Yes("yes1") }
+          No("no1", Prettifier.default) | { evaluated = true; Yes("yes1", Prettifier.default) }
           assert(evaluated)
         }
         "for No | No" in {
           var evaluated = false
-          No("no1") | { evaluated = true; No("no2") }
+          No("no1", Prettifier.default) | { evaluated = true; No("no2", Prettifier.default) }
           assert(evaluated)
         }
       }
@@ -792,42 +792,42 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
           assert(result.isVacuousYes)
         }
         "for VacuousYes | Yes" in { // Because it DOES NOT short circuit
-          val result = vacuousYes | Yes("yes")
+          val result = vacuousYes | Yes("yes", Prettifier.default)
           assert(result.isYes)
           assert(!result.isVacuousYes)
         }
         "for Yes | VacuousYes" in {
-          val result = Yes("yes") | vacuousYes
+          val result = Yes("yes", Prettifier.default) | vacuousYes
           assert(result.isYes)
           assert(!result.isVacuousYes)
         }
         "for VacuousYes | No" in {
-          val result = vacuousYes | No("no")
+          val result = vacuousYes | No("no", Prettifier.default)
           assert(result.isYes)
           assert(result.isVacuousYes)
         }
         "for No | VacuousYes" in {
-          val result = No("no") | vacuousYes
+          val result = No("no", Prettifier.default) | vacuousYes
           assert(result.isYes)
           assert(result.isVacuousYes)
         }
         "for Yes | Yes" in {
-          val result = Yes("yes1") | Yes("yes2")
+          val result = Yes("yes1", Prettifier.default) | Yes("yes2", Prettifier.default)
           assert(result.isYes)
           assert(!result.isVacuousYes)
         }
         "for Yes | No" in {
-          val result = Yes("yes") | No("no")
+          val result = Yes("yes", Prettifier.default) | No("no", Prettifier.default)
           assert(result.isYes)
           assert(!result.isVacuousYes)
         }
         "for No | Yes" in {
-          val result = No("no") | Yes("yes")
+          val result = No("no", Prettifier.default) | Yes("yes", Prettifier.default)
           assert(result.isYes)
           assert(!result.isVacuousYes)
         }
         "for No | No" in {
-          val result = No("no1") | No("no2")
+          val result = No("no1", Prettifier.default) | No("no2", Prettifier.default)
           assert(!result.isYes)
           assert(!result.isVacuousYes)
         }
@@ -837,15 +837,15 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
     "toString method" - {
 
       "should display midSentenceFactMessage enclosed with opening and closing bracket" in {
-        val yes = Yes("fact message", "simplified fact message", "mid-sentence fact message", "simplified mid-sentence fact message")
+        val yes = Yes("fact message", "simplified fact message", "mid-sentence fact message", "simplified mid-sentence fact message", Prettifier.default)
         yes.toString shouldBe "Yes(mid-sentence fact message)"
 
-        val no = No("fact message", "simplified fact message", "mid-sentence fact message", "simplified mid-sentence fact message")
+        val no = No("fact message", "simplified fact message", "mid-sentence fact message", "simplified mid-sentence fact message", Prettifier.default)
         no.toString shouldBe "No(mid-sentence fact message)"
       }
 
       "should prefix new line to midSentenceFactMessage in toString when the midSentenceFactMessage contains \\n" in {
-        val fact = Yes("fact message", "simplified fact message", "line 1\nline 2\nline 3", "simplified mid-sentence fact message")
+        val fact = Yes("fact message", "simplified fact message", "line 1\nline 2\nline 3", "simplified mid-sentence fact message", Prettifier.default)
         fact.toString shouldBe "Yes(" + NEWLINE + "  line 1\n  line 2\n  line 3" + NEWLINE + ")"
       }
     }
@@ -853,7 +853,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
 
   "The Yes and No companion objects factory methods" - {
     "that takes two strings should work correctly" in {
-      val fact = Yes("one", "two")
+      val fact = Yes("one", "two", Prettifier.default)
       fact.factMessage shouldBe ("one")
       fact.simplifiedFactMessage shouldBe ("one")
       fact.midSentenceFactMessage shouldBe ("two")
@@ -870,7 +870,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
 
-      val ms = No("aaa", "bbb")
+      val ms = No("aaa", "bbb", Prettifier.default)
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("aaa")
       ms.midSentenceFactMessage shouldBe ("bbb")
@@ -888,7 +888,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       ms.isVacuousYes shouldBe (false)
     }
     "that takes four strings should work correctly" in {
-      val fact = Yes("one", "two", "three", "four")
+      val fact = Yes("one", "two", "three", "four", Prettifier.default)
       fact.factMessage shouldBe ("one")
       fact.simplifiedFactMessage shouldBe ("two")
       fact.midSentenceFactMessage shouldBe ("three")
@@ -905,7 +905,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
 
-      val ms = No("aaa", "bbb", "ccc", "ddd")
+      val ms = No("aaa", "bbb", "ccc", "ddd", Prettifier.default)
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("bbb")
       ms.midSentenceFactMessage shouldBe ("ccc")
@@ -923,7 +923,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       ms.isVacuousYes shouldBe (false)
     }
     "that takes four strings and two IndexedSeqs should work correctly" in {
-      val fact = Yes("one", "two", "three", "four", Vector(42), Vector(42.0))
+      val fact = Yes("one", "two", "three", "four", Vector(42), Vector(42.0), Prettifier.default)
       fact.factMessage shouldBe ("one")
       fact.simplifiedFactMessage shouldBe ("two")
       fact.midSentenceFactMessage shouldBe ("three")
@@ -939,7 +939,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
-      val ms = No("aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"))
+      val ms = No("aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"), Prettifier.default)
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("bbb")
       ms.midSentenceFactMessage shouldBe ("ccc")
@@ -957,7 +957,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       ms.isVacuousYes shouldBe (false)
     }
     "that takes two strings and one IndexedSeq should work correctly" in {
-      val fact = Yes("one", "two", Vector(42))
+      val fact = Yes("one", "two", Vector(42), Prettifier.default)
       fact.factMessage shouldBe ("one")
       fact.simplifiedFactMessage shouldBe ("one")
       fact.midSentenceFactMessage shouldBe ("two")
@@ -973,7 +973,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
-      val ms = No("aaa", "bbb", Vector("ho", "he"))
+      val ms = No("aaa", "bbb", Vector("ho", "he"), Prettifier.default)
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("aaa")
       ms.midSentenceFactMessage shouldBe ("bbb")
@@ -991,7 +991,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       ms.isVacuousYes shouldBe (false)
     }
     "that takes two strings and two IndexedSeqs should work correctly" in {
-      val fact = Yes("one", "two", Vector(42), Vector(42.0))
+      val fact = Yes("one", "two", Vector(42), Vector(42.0), Prettifier.default)
       fact.factMessage shouldBe ("one")
       fact.simplifiedFactMessage shouldBe ("one")
       fact.midSentenceFactMessage shouldBe ("two")
@@ -1007,7 +1007,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
-      val ms = No("aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"))
+      val ms = No("aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"), Prettifier.default)
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("aaa")
       ms.midSentenceFactMessage shouldBe ("bbb")
@@ -1025,7 +1025,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       ms.isVacuousYes shouldBe (false)
     }
     "that takes four strings and four IndexedSeqs should work correctly" in {
-      val fact = Yes("one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4))
+      val fact = Yes("one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4), Prettifier.default)
       fact.factMessage shouldBe ("one")
       fact.simplifiedFactMessage shouldBe ("two")
       fact.midSentenceFactMessage shouldBe ("three")
@@ -1041,7 +1041,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       fact.isLeaf shouldBe (true)
       fact.isYes shouldBe (true)
       fact.isVacuousYes shouldBe (false)
-      val ms = No("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'))
+      val ms = No("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'), Prettifier.default)
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("bbb")
       ms.midSentenceFactMessage shouldBe ("ccc")
@@ -1063,8 +1063,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
   "The Fact obtained from combining two Facts with implies" - {
     "should be lazy about constructing strings" - {
       "for No implies No" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'), Prettifier.default)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'), Prettifier.default)
         val fact = leftSideNo implies rightSideNo
         fact shouldBe a [VacuousYes]
         fact.isNo shouldBe false
@@ -1085,8 +1085,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for No implies Yes" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'), Prettifier.default)
+        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'), Prettifier.default)
         val fact = leftSideNo implies rightSideYes
         fact shouldBe a [VacuousYes]
         fact.isNo shouldBe false
@@ -1107,8 +1107,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for Yes implies No" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'), Prettifier.default)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'), Prettifier.default)
         val fact = leftSideYes implies rightSideNo
         fact shouldBe a [Implies]
         fact.isNo shouldBe true
@@ -1130,8 +1130,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for Yes implies Yes" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), Prettifier.default)
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), Prettifier.default)
         val fact = leftSideYes implies rightSideYes
         fact shouldBe a [Implies]
         fact.isYes shouldBe true
@@ -1156,22 +1156,22 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
     "should short-circuit correctly" - {
       "for Yes implies Yes" in {
         var evaluated = false
-        Yes("yes1") && { evaluated = true; Yes("yes2") }
+        Yes("yes1", Prettifier.default) && { evaluated = true; Yes("yes2", Prettifier.default) }
         assert(evaluated)
       }
       "for Yes implies No" in {
         var evaluated = false
-        Yes("yes1") && { evaluated = true; No("no1") }
+        Yes("yes1", Prettifier.default) && { evaluated = true; No("no1", Prettifier.default) }
         assert(evaluated)
       }
       "for No implies Yes" in {
         var evaluated = false
-        No("no1") && { evaluated = true; Yes("yes1") }
+        No("no1", Prettifier.default) && { evaluated = true; Yes("yes1", Prettifier.default) }
         assert(!evaluated)
       }
       "for No implies No" in {
         var evaluated = false
-        No("no1") && { evaluated = true; No("no2") }
+        No("no1", Prettifier.default) && { evaluated = true; No("no2", Prettifier.default) }
         assert(!evaluated)
       }
     }
@@ -1181,8 +1181,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
     "should be lazy about constructing strings" - {
 
       "for No isEqvTo No" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'), Prettifier.default)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'), Prettifier.default)
         val fact = leftSideNo isEqvTo rightSideNo
         fact shouldBe a [IsEqvTo]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
@@ -1204,8 +1204,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
 
 
       "for No isEqvTo Yes" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'), Prettifier.default)
+        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'), Prettifier.default)
         val fact = leftSideNo isEqvTo rightSideYes
         fact shouldBe a [IsEqvTo]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
@@ -1226,8 +1226,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for Yes isEqvTo No" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'), Prettifier.default)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'), Prettifier.default)
         val fact = leftSideYes isEqvTo rightSideNo
         fact shouldBe a [IsEqvTo]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
@@ -1246,8 +1246,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for Yes isEqvTo Yes" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), Prettifier.default)
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), Prettifier.default)
         val fact = leftSideYes isEqvTo rightSideYes
         fact shouldBe a [IsEqvTo]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
@@ -1269,22 +1269,22 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
     "should short-circuit correctly" - {
       "for Yes isEqvTo Yes" in {
         var evaluated = false
-        Yes("yes1") isEqvTo { evaluated = true; Yes("yes2") }
+        Yes("yes1", Prettifier.default) isEqvTo { evaluated = true; Yes("yes2", Prettifier.default) }
         assert(evaluated)
       }
       "for Yes isEqvTo No" in {
         var evaluated = false
-        Yes("yes1") isEqvTo { evaluated = true; No("no1") }
+        Yes("yes1", Prettifier.default) isEqvTo { evaluated = true; No("no1", Prettifier.default) }
         assert(evaluated)
       }
       "for No isEqvTo Yes" in {
         var evaluated = false
-        No("no1") isEqvTo { evaluated = true; Yes("yes1") }
+        No("no1", Prettifier.default) isEqvTo { evaluated = true; Yes("yes1", Prettifier.default) }
         assert(evaluated)
       }
       "for No isEqvTo No" in {
         var evaluated = false
-        No("no1") isEqvTo { evaluated = true; No("no2") }
+        No("no1", Prettifier.default) isEqvTo { evaluated = true; No("no2", Prettifier.default) }
         assert(evaluated)
       }
     }
@@ -1299,42 +1299,42 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
         assert(result.isVacuousYes)
       }
       "for VacuousYes isEqvTo Yes" in {
-        val result = vacuousYes isEqvTo Yes("yes")
+        val result = vacuousYes isEqvTo Yes("yes", Prettifier.default)
         assert(result.isYes)
         assert(result.isVacuousYes)
       }
       "for Yes isEqvTo VacuousYes" in {
-        val result = Yes("yes") isEqvTo vacuousYes
+        val result = Yes("yes", Prettifier.default) isEqvTo vacuousYes
         assert(result.isYes)
         assert(result.isVacuousYes)
       }
       "for VacuousYes isEqvTo No" in {
-        val result = vacuousYes isEqvTo No("no")
+        val result = vacuousYes isEqvTo No("no", Prettifier.default)
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
       "for No isEqvTo VacuousYes" in {
-        val result = No("no") isEqvTo vacuousYes
+        val result = No("no", Prettifier.default) isEqvTo vacuousYes
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
       "for Yes isEqvTo Yes" in {
-        val result = Yes("yes1") isEqvTo Yes("yes2")
+        val result = Yes("yes1", Prettifier.default) isEqvTo Yes("yes2", Prettifier.default)
         assert(result.isYes)
         assert(!result.isVacuousYes)
       }
       "for Yes isEqvTo No" in {
-        val result = Yes("yes") isEqvTo No("no")
+        val result = Yes("yes", Prettifier.default) isEqvTo No("no", Prettifier.default)
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
       "for No isEqvTo Yes" in {
-        val result = No("no") isEqvTo Yes("yes")
+        val result = No("no", Prettifier.default) isEqvTo Yes("yes", Prettifier.default)
         assert(!result.isYes)
         assert(!result.isVacuousYes)
       }
       "for No isEqvTo No" in {
-        val result = No("no1") isEqvTo No("no2")
+        val result = No("no1", Prettifier.default) isEqvTo No("no2", Prettifier.default)
         assert(result.isYes)
         assert(!result.isVacuousYes)
       }
@@ -1344,15 +1344,15 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
   def examples: TableFor1[Expectation] =
     Table(
       "fact",
-      No("message", "simplified message"),
-      Yes("message", "simplified message"),
-      !(No("message", "simplified message")),
-      !(Yes("message", "simplified message")),
-      No("message", "simplified message") && Yes("message", "simplified message"),
-      Yes("message", "simplified message") && Yes("message", "simplified message"),
-      Yes("message", "simplified message") && No("message", "simplified message"),
-      Yes("message", "simplified message") || No("message", "simplified message"),
-      No("message", "simplified message") || Yes("message", "simplified message"),
-      No("message", "simplified message") || No("message", "simplified message")
+      No("message", "simplified message", Prettifier.default),
+      Yes("message", "simplified message", Prettifier.default),
+      !(No("message", "simplified message", Prettifier.default)),
+      !(Yes("message", "simplified message", Prettifier.default)),
+      No("message", "simplified message", Prettifier.default) && Yes("message", "simplified message", Prettifier.default),
+      Yes("message", "simplified message", Prettifier.default) && Yes("message", "simplified message", Prettifier.default),
+      Yes("message", "simplified message", Prettifier.default) && No("message", "simplified message", Prettifier.default),
+      Yes("message", "simplified message", Prettifier.default) || No("message", "simplified message", Prettifier.default),
+      No("message", "simplified message", Prettifier.default) || Yes("message", "simplified message", Prettifier.default),
+      No("message", "simplified message", Prettifier.default) || No("message", "simplified message", Prettifier.default)
     )
 }
