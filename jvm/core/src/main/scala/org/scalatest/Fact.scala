@@ -391,10 +391,25 @@ object Fact {
    */
   object No {
 
-    // TODO: Does the Prettifier really need to be curried and implicit? It seems to be only used
-    // explicitly by us. Possibly this is desired, though, so people can just say No(...). But then
-    // they would need to fill in all the fields, so that seems hard anyway. When the time comes to
-    // make this public, look into this question.
+    /**
+     * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
+     * <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code>, 
+     * <code>rawMidSentenceSimplifiedFactMessage</code>, <code>factMessageArgs</code>, <code>simplifiedFactMessageArgs</code>, 
+     * <code>midSentenceFactMessageArgs</code>, <code>midSentenceSimplifiedFactMessageArgs</code>, and <code>cause</code> fields.  
+     * This is suitable to create <code>No</code> with eager error messages.
+     *
+     * @param rawFactMessage raw message to report for this fact
+     * @param rawSimplifiedFactMessage raw simplified to report for this fact
+     * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
+     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
+     * @param factMessageArgs arguments for <code>rawFactMessage</code>
+     * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code>
+     * @param midSentenceFactMessageArgs arguments for <code>rawMidSentenceFactMessage</code>
+     * @param midSentenceSimplifiedFactMessageArgs arguments for <code>rawMidSentenceSimplifiedFactMessage</code>
+     * @param cause the causing throwable of this No instance
+     * @param prettifier the prettifier used to prettify message
+     * @return a <code>No</code> instance
+     */
     def apply(
       rawFactMessage: String,
       rawSimplifiedFactMessage: String,
@@ -432,6 +447,7 @@ object Fact {
      * @param rawFactMessage raw failure message to report if a match fails
      * @param rawMidSentenceFactMessage raw failure message to report if a match fails
      * @param factMessageArgs arguments for constructing failure message to report if a match fails
+     * @param prettifier the prettifier used to prettify message 
      * @return a <code>No</code> instance
      */
     def apply(
@@ -466,6 +482,7 @@ object Fact {
      * @param rawMidSentenceFactMessage raw mid sentence fact message to report if a match fails
      * @param factMessageArgs arguments for constructing fact message to report if a match fails
      * @param midSentenceFactMessageArgs arguments for constructing mid sentence fact message to report if a match fails
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>No</code> instance
      */
     def apply(
@@ -498,6 +515,7 @@ object Fact {
      *
      * @param rawFactMessage raw failure message to report if a match fails
      * @param rawMidSentenceFactMessage raw failure message to report if a match fails
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>No</code> instance
      */
     def apply(
@@ -530,6 +548,7 @@ object Fact {
      * @param rawSimplifiedFactMessage raw simplified to report for this fact
      * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
      * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>No</code> instance
      */
     def apply(
@@ -566,6 +585,7 @@ object Fact {
      * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
      * @param factMessageArgs arguments for <code>rawFactMessage</code> and <code>rawMidSentenceFactMessage</code>
      * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code> and <code>rawMidSentenceSimplifiedFactMessage</code>
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>No</code> instance
      */
     def apply(
@@ -606,6 +626,7 @@ object Fact {
      * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code>
      * @param midSentenceFactMessageArgs arguments for <code>rawMidSentenceFactMessage</code>
      * @param midSentenceSimplifiedFactMessageArgs arguments for <code>rawMidSentenceSimplifiedFactMessage</code>
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>No</code> instance
      */
     def apply(
@@ -643,6 +664,7 @@ object Fact {
      *
      * @param rawFactMessage raw failure message to report if a match fails
      * @param rawSimplifiedFailureMessage raw message with a meaning opposite to that of the failure message
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>No</code> instance
      */
     def apply(
@@ -678,6 +700,7 @@ object Fact {
      * @param rawSimplifiedFailureMessage raw message with a meaning opposite to that of the failure message
      * @param factMessageArgs arguments for constructing failure message to report if a match fails
      * @param simplifiedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>No</code> instance
      */
     def apply(
@@ -709,6 +732,7 @@ object Fact {
      *
      * @param rawFactMessage raw fact message
      * @param cause the causing throwable of this No instance
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>No</code> instance
      */
     def apply(
@@ -739,6 +763,25 @@ object Fact {
    */
   object Yes {
   
+    /**
+     * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
+     * <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code>, 
+     * <code>rawMidSentenceSimplifiedFactMessage</code>, <code>factMessageArgs</code>, <code>simplifiedFactMessageArgs</code>, 
+     * <code>midSentenceFactMessageArgs</code>, <code>midSentenceSimplifiedFactMessageArgs</code>, and <code>cause</code> fields.  
+     * This is suitable to create <code>Yes</code> with eager error messages.
+     *
+     * @param rawFactMessage raw message to report for this fact
+     * @param rawSimplifiedFactMessage raw simplified to report for this fact
+     * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
+     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
+     * @param factMessageArgs arguments for <code>rawFactMessage</code>
+     * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code>
+     * @param midSentenceFactMessageArgs arguments for <code>rawMidSentenceFactMessage</code>
+     * @param midSentenceSimplifiedFactMessageArgs arguments for <code>rawMidSentenceSimplifiedFactMessage</code>
+     * @param cause the causing throwable of this No instance
+     * @param prettifier the prettifier used to prettify message
+     * @return a <code>Yes</code> instance
+     */
     def apply(
       rawFactMessage: String,
       rawSimplifiedFactMessage: String,
@@ -777,6 +820,7 @@ object Fact {
      * @param rawFactMessage raw failure message to report if a match fails
      * @param rawMidSentenceFactMessage raw failure message to report if a match fails
      * @param factMessageArgs arguments for constructing failure message to report if a match fails
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>Yes</code> instance
      */
     def apply(
@@ -811,6 +855,7 @@ object Fact {
      * @param rawMidSentenceFactMessage raw mid-sentence fact message to report if a match fails
      * @param factMessageArgs arguments for constructing fact message to report if a match fails
      * @param midSentenceFactMessageArgs arguments for constructing mid-sentence fact message to report if a match fails
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>Yes</code> instance
      */
     def apply(
@@ -843,6 +888,7 @@ object Fact {
      *
      * @param rawFactMessage raw failure message to report if a match fails
      * @param rawMidSentenceFactMessage raw failure message to report if a match fails
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>Yes</code> instance
      */
     def apply(
@@ -876,6 +922,7 @@ object Fact {
      * @param rawSimplifiedFactMessage raw simplified message to report for this fact
      * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
      * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>Yes</code> instance
      */
     def apply(
@@ -913,6 +960,7 @@ object Fact {
      * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
      * @param factMessageArgs arguments for <code>rawFactMessage</code> and <code>rawMidSentenceFactMessage</code>
      * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code> and <code>rawMidSentenceSimplifiedFactMessage</code>
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>Yes</code> instance
      */
     def apply(
@@ -954,6 +1002,7 @@ object Fact {
      * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code>
      * @param midSentenceFactMessageArgs arguments for <code>rawMidSentenceFactMessage</code>
      * @param midSentenceSimplifiedFactMessageArgs arguments for <code>rawMidSentenceSimplifiedFactMessage</code>
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>Yes</code> instance
      */
     def apply(
@@ -998,6 +1047,7 @@ object Fact {
      * @param midSentenceFactMessageArgs arguments for <code>rawMidSentenceFactMessage</code>
      * @param midSentenceSimplifiedFactMessageArgs arguments for <code>rawMidSentenceSimplifiedFactMessage</code>
      * @param cause optional cause <code>Throwable</code> associated with the fact.
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>Yes</code> instance
      */
     def apply(
@@ -1035,6 +1085,7 @@ object Fact {
      * This is suitable to create Yes with eager error messages that have same mid-sentence messages.
      *
      * @param rawFactMessage raw failure message to report if a match fails
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>Yes</code> instance
      */
     def apply(
@@ -1068,6 +1119,7 @@ object Fact {
      *
      * @param rawFactMessage raw failure message to report if a match fails
      * @param factMessageArgs arguments for constructing failure message to report if a match fails
+     * @param prettifier the prettifier used to prettify message
      * @return a <code>Yes</code> instance
      */
     def apply(
