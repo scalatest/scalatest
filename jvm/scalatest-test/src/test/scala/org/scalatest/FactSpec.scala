@@ -18,7 +18,7 @@ package org.scalatest
 
 import Fact._
 import prop.TableDrivenPropertyChecks._
-import org.scalactic.PrettyMethods
+import org.scalactic.{PrettyMethods, Prettifier}
 import SharedHelpers.thisLineNumber
 import matchers.{ FailureMessage, NegatedFailureMessage, MidSentenceFailureMessage, MidSentenceNegatedFailureMessage }
 import org.scalatest.exceptions.TestCanceledException
@@ -42,9 +42,9 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
 
   "A Fact" - {
     // As if we said expectResult(3) { 1 + 1 }
-    val noFact: Expectation = No("Expected 3, but got 2", "3 did not equal 2", "expected 3, but got 2", "3 did not equal 2")
+    val noFact: Expectation = No("Expected 3, but got 2", "3 did not equal 2", "expected 3, but got 2", "3 did not equal 2", Prettifier.default)
     // As if we said expectResult(3) { 1 + 2 }
-    val yesFact: Expectation = Yes("3 equaled 3", "3 equaled 3")
+    val yesFact: Expectation = Yes("3 equaled 3", "3 equaled 3", Prettifier.default)
     "should have isYes and isNo methods" in {
       noFact.isYes shouldBe false
       noFact.isNo shouldBe true
@@ -80,7 +80,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       yesFact.toBoolean shouldBe true
     }
     "should construct localized strings from the raw strings and args" in {
-      val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2))
+      val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2), Prettifier.default)
       fact.factMessage shouldBe ("1 did not equal 2")
       fact.simplifiedFactMessage shouldBe ("1 equaled 2")
       fact.midSentenceFactMessage shouldBe ("1 did not equal 2")
@@ -99,16 +99,16 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
     }
 
     "should use midSentenceFactMessageArgs to construct midSentenceFactMessage" in {
-      val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector(1, 2), Vector.empty)
+      val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector(1, 2), Vector.empty, Prettifier.default)
       fact.midSentenceFactMessage should be ("1 did not equal 2")
     }
 
     "should use midSentenceSimplifiedFactMessageArgs to construct midSentenceSimplifiedFactMessage" in {
-      val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2))
+      val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2), Prettifier.default)
       fact.midSentenceSimplifiedFactMessage should be ("1 equaled 2")
     }
     "when inverted with !" - {
-      val fact2 = No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))
+      val fact2 = No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2), Prettifier.default)
       val notFact2 = !fact2
       "should use the simplified message, changing Yes to No or No to Yes" in {
         !noFact should equal (Unary_!(noFact))
@@ -128,7 +128,7 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
         fact2.isYes shouldBe (false)
         fact2.isVacuousYes shouldBe (false)
 
-        notFact2 should equal (Unary_!(No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))))
+        notFact2 should equal (Unary_!(No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2), Prettifier.default)))
         notFact2.factMessage shouldBe ("3 did not equal 2")
         notFact2.simplifiedFactMessage shouldBe ("3 did not equal 2")
         notFact2.midSentenceFactMessage shouldBe ("3 did not equal 2")
@@ -173,8 +173,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
   "The Fact obtained from and-ing two Facts with &&" - {
     "should be lazy about constructing strings" - {
       "for No && No" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'), Prettifier.default)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'), Prettifier.default)
         val fact = leftSideNo && rightSideNo
         fact shouldBe a [Leaf]
         fact.isNo shouldBe true
@@ -194,8 +194,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for No && Yes" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'), Prettifier.default)
+        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'), Prettifier.default)
         val fact = leftSideNo && rightSideYes
         fact shouldBe a [Leaf]
         fact.isNo shouldBe true
@@ -215,8 +215,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for Yes && No" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'), Prettifier.default)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'), Prettifier.default)
         val fact = leftSideYes && rightSideNo
         fact shouldBe a [Binary_&&]
         fact.isNo shouldBe true
@@ -238,8 +238,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for Yes && Yes" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), Prettifier.default)
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), Prettifier.default)
         val fact = leftSideYes && rightSideYes
         fact shouldBe a [Binary_&&]
         fact.isYes shouldBe true
@@ -264,22 +264,22 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
     "should short-circuit correctly" - {
       "for Yes && Yes" in {
         var evaluated = false
-        Yes("yes1") && { evaluated = true; Yes("yes2") }
+        Yes("yes1", Prettifier.default) && { evaluated = true; Yes("yes2", Prettifier.default) }
         assert(evaluated)
       }
       "for Yes && No" in {
         var evaluated = false
-        Yes("yes1") && { evaluated = true; No("no1") }
+        Yes("yes1", Prettifier.default) && { evaluated = true; No("no1", Prettifier.default) }
         assert(evaluated)
       }
       "for No && Yes" in {
         var evaluated = false
-        No("no1") && { evaluated = true; Yes("yes1") }
+        No("no1", Prettifier.default) && { evaluated = true; Yes("yes1", Prettifier.default) }
         assert(!evaluated)
       }
       "for No && No" in {
         var evaluated = false
-        No("no1") && { evaluated = true; No("no2") }
+        No("no1", Prettifier.default) && { evaluated = true; No("no2", Prettifier.default) }
         assert(!evaluated)
       }
     }
@@ -339,8 +339,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
   "The Fact obtained from and-ing two Facts with &" - {
     "should be lazy about constructing strings" - {
       "for No & No" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'), Prettifier.default)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'), Prettifier.default)
         val fact = leftSideNo & rightSideNo
         fact shouldBe a [Binary_&]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
@@ -359,8 +359,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for No & Yes" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'), Prettifier.default)
+        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'), Prettifier.default)
         val fact = leftSideNo & rightSideYes
         fact shouldBe a [Binary_&]
         fact.rawFactMessage should be (Resources.rawCommaAnd)
@@ -379,8 +379,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for Yes & No" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'), Prettifier.default)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'), Prettifier.default)
         val fact = leftSideYes & rightSideNo
         fact shouldBe a [Binary_&]
         fact.isNo shouldBe true
@@ -402,8 +402,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for Yes & Yes" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), Prettifier.default)
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), Prettifier.default)
         val fact = leftSideYes & rightSideYes
         fact shouldBe a [Binary_&]
         fact.isYes shouldBe true
@@ -504,8 +504,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
     "should be lazy about constructing strings" - {
 
       "for No || No" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'), Prettifier.default)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'), Prettifier.default)
         val fact = leftSideNo || rightSideNo
         fact shouldBe a [Binary_||]
         fact.isNo shouldBe true
@@ -528,8 +528,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
 
 
       "for No || Yes" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'), Prettifier.default)
+        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'), Prettifier.default)
         val fact = leftSideNo || rightSideYes
         fact shouldBe a [Binary_||]
         fact.isYes shouldBe true
@@ -551,8 +551,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for Yes || No" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'), Prettifier.default)
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'), Prettifier.default)
         val fact = leftSideYes || rightSideNo
         fact shouldBe a [Leaf]
         fact.isYes shouldBe true
@@ -572,8 +572,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       }
 
       "for Yes || Yes" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), Prettifier.default)
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), Prettifier.default)
         val fact = leftSideYes || rightSideYes
         fact shouldBe a [Leaf]
         fact.isYes shouldBe true
@@ -671,8 +671,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
       "should be lazy about constructing strings" - {
 
         "for No | No" in {
-          val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-          val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+          val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'), Prettifier.default)
+          val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'), Prettifier.default)
           val fact = leftSideNo | rightSideNo
           fact shouldBe a [Binary_|]
           fact.isNo shouldBe true
@@ -695,8 +695,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
 
 
         "for No | Yes" in {
-          val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-          val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+          val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'), Prettifier.default)
+          val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'), Prettifier.default)
           val fact = leftSideNo | rightSideYes
           fact shouldBe a [Binary_|]
           fact.isYes shouldBe true
@@ -718,8 +718,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
         }
 
         "for Yes | No" in {
-          val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-          val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+          val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'), Prettifier.default)
+          val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'), Prettifier.default)
           val fact = leftSideYes | rightSideNo
           fact shouldBe a [Binary_|]
           fact.rawFactMessage should be (Resources.rawCommaAnd)
@@ -738,8 +738,8 @@ class FactSpec extends AnyFreeSpec with Matchers with PrettyMethods with Expecta
         }
 
         "for Yes | Yes" in {
-          val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-          val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+          val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), Prettifier.default)
+          val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), Prettifier.default)
           val fact = leftSideYes | rightSideYes
           fact shouldBe a [Binary_|]
           fact.rawFactMessage should be (Resources.rawCommaAnd)

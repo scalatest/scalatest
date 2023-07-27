@@ -404,8 +404,9 @@ object Fact {
       simplifiedFactMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any],
       midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
-      cause: Option[Throwable] = None
-    )(implicit prettifier: Prettifier): Leaf =
+      cause: Option[Throwable], 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -436,8 +437,9 @@ object Fact {
     def apply(
       rawFactMessage: String,
       rawMidSentenceFactMessage: String,
-      factMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+      factMessageArgs: IndexedSeq[Any], 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -447,7 +449,7 @@ object Fact {
         factMessageArgs,
         factMessageArgs,
         factMessageArgs,
-	false,
+	      false,
         false,
         prettifier,
         None
@@ -470,8 +472,9 @@ object Fact {
       rawFactMessage: String,
       rawMidSentenceFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
-      midSentenceFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+      midSentenceFactMessageArgs: IndexedSeq[Any], 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -499,8 +502,9 @@ object Fact {
      */
     def apply(
       rawFactMessage: String,
-      rawMidSentenceFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
+      rawMidSentenceFactMessage: String, 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -532,8 +536,9 @@ object Fact {
       rawFactMessage: String,
       rawSimplifiedFactMessage: String,
       rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
+      rawMidSentenceSimplifiedFactMessage: String, 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -569,8 +574,9 @@ object Fact {
       rawMidSentenceFactMessage: String,
       rawMidSentenceSimplifiedFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+      simplifiedFactMessageArgs: IndexedSeq[Any], 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -610,8 +616,9 @@ object Fact {
       factMessageArgs: IndexedSeq[Any],
       simplifiedFactMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any],
-      midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+      midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any], 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -639,8 +646,9 @@ object Fact {
      * @return a <code>No</code> instance
      */
     def apply(
-      rawFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
+      rawFactMessage: String, 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -674,8 +682,9 @@ object Fact {
      */
     def apply(
       rawFactMessage: String,
-      factMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+      factMessageArgs: IndexedSeq[Any], 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -704,8 +713,9 @@ object Fact {
      */
     def apply(
       rawFactMessage: String,
-      cause: Throwable
-    )(implicit prettifier: Prettifier): Leaf =
+      cause: Throwable, 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -739,8 +749,9 @@ object Fact {
       midSentenceFactMessageArgs: IndexedSeq[Any],
       midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
       isVacuousYes: Boolean = false,
-      cause: Option[Throwable] = None
-    )(implicit prettifier: Prettifier): Leaf =
+      cause: Option[Throwable], 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -771,8 +782,9 @@ object Fact {
     def apply(
       rawFactMessage: String,
       rawMidSentenceFactMessage: String,
-      factMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+      factMessageArgs: IndexedSeq[Any], 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -805,8 +817,9 @@ object Fact {
       rawFactMessage: String,
       rawMidSentenceFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
-      midSentenceFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+      midSentenceFactMessageArgs: IndexedSeq[Any], 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -834,8 +847,9 @@ object Fact {
      */
     def apply(
       rawFactMessage: String,
-      rawMidSentenceFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
+      rawMidSentenceFactMessage: String, 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -868,8 +882,9 @@ object Fact {
       rawFactMessage: String,
       rawSimplifiedFactMessage: String,
       rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
+      rawMidSentenceSimplifiedFactMessage: String, 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -906,8 +921,9 @@ object Fact {
       rawMidSentenceFactMessage: String,
       rawMidSentenceSimplifiedFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+      simplifiedFactMessageArgs: IndexedSeq[Any], 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -948,8 +964,9 @@ object Fact {
       factMessageArgs: IndexedSeq[Any],
       simplifiedFactMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any],
-      midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+      midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any], 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -964,6 +981,51 @@ object Fact {
         prettifier,
         None
       )
+
+    /**
+     * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
+     * <code>rawFactMessage</code>, <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code> and
+     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code>
+     * values.  This is suitable to create Yes with eager error messages, and its simplified and mid-sentence messages
+     * need to be different.
+     *
+     * @param rawFactMessage raw message to report for this fact
+     * @param rawSimplifiedFactMessage raw simplified message to report for this fact
+     * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
+     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
+     * @param factMessageArgs arguments for <code>rawFactMessage</code>
+     * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code>
+     * @param midSentenceFactMessageArgs arguments for <code>rawMidSentenceFactMessage</code>
+     * @param midSentenceSimplifiedFactMessageArgs arguments for <code>rawMidSentenceSimplifiedFactMessage</code>
+     * @param cause optional cause <code>Throwable</code> associated with the fact.
+     * @return a <code>Yes</code> instance
+     */
+    def apply(
+      rawFactMessage: String,
+      rawSimplifiedFactMessage: String,
+      rawMidSentenceFactMessage: String,
+      rawMidSentenceSimplifiedFactMessage: String,
+      factMessageArgs: IndexedSeq[Any],
+      simplifiedFactMessageArgs: IndexedSeq[Any],
+      midSentenceFactMessageArgs: IndexedSeq[Any],
+      midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any], 
+      cause: Option[Throwable], 
+      prettifier: Prettifier
+    ): Leaf =
+      new Leaf(
+        rawFactMessage,
+        rawSimplifiedFactMessage,
+        rawMidSentenceFactMessage,
+        rawMidSentenceSimplifiedFactMessage,
+        factMessageArgs,
+        simplifiedFactMessageArgs,
+        midSentenceFactMessageArgs,
+        midSentenceSimplifiedFactMessageArgs,
+        true,
+        false,
+        prettifier,
+        cause
+      )  
   
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>, and
@@ -976,8 +1038,9 @@ object Fact {
      * @return a <code>Yes</code> instance
      */
     def apply(
-      rawFactMessage: String
-    )(implicit prettifier: Prettifier): Leaf =
+      rawFactMessage: String, 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -1009,8 +1072,9 @@ object Fact {
      */
     def apply(
       rawFactMessage: String,
-      factMessageArgs: IndexedSeq[Any]
-    )(implicit prettifier: Prettifier): Leaf =
+      factMessageArgs: IndexedSeq[Any], 
+      prettifier: Prettifier
+    ): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
