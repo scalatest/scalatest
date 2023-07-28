@@ -53,8 +53,9 @@ trait Expectations {
         Vector(exp, act),
         Vector(exp, act),
         Vector(exp, act),
-        Vector(exp, act)
-      )(prettifier)
+        Vector(exp, act), 
+        prettifier
+      )
     }
     else {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
@@ -70,8 +71,9 @@ trait Expectations {
         Vector(exp, act),
         Vector(exp, act),
         Vector(exp, act),
-        Vector(exp, act)
-      )(prettifier)
+        Vector(exp, act), 
+        prettifier
+      )
     }
   }
 
@@ -95,8 +97,9 @@ trait Expectations {
         factMessageArgs = Vector(clazz.getName),
         simplifiedFactMessageArgs = Vector.empty,
         midSentenceFactMessageArgs = Vector(clazz.getName),
-        midSentenceSimplifiedFactMessageArgs = Vector.empty
-      )(prettifier)
+        midSentenceSimplifiedFactMessageArgs = Vector.empty, 
+        prettifier
+      )
     }
     catch {
       case u: Throwable => {
@@ -110,8 +113,9 @@ trait Expectations {
             simplifiedFactMessageArgs = Vector(u.getClass.getName),
             midSentenceFactMessageArgs = Vector(clazz.getName, u.getClass.getName),
             midSentenceSimplifiedFactMessageArgs = Vector(u.getClass.getName),
-            cause = Some(u)
-          )(prettifier)
+            cause = Some(u), 
+            prettifier
+          )
         else
           Yes(
             rawFactMessage = Resources.rawExceptionExpected,
@@ -122,8 +126,9 @@ trait Expectations {
             simplifiedFactMessageArgs = Vector(clazz.getName),
             midSentenceFactMessageArgs = Vector(clazz.getName),
             midSentenceSimplifiedFactMessageArgs = Vector(clazz.getName),
-            cause = Some(u)
-          )(prettifier)
+            cause = Some(u), 
+            prettifier
+          )
       }
     }
   }
@@ -222,8 +227,9 @@ object Expectations extends Expectations {
           bool.failureMessageArgs,
           bool.failureMessageArgs,
           bool.failureMessageArgs,
-          bool.failureMessageArgs
-        )(prettifier)
+          bool.failureMessageArgs, 
+          prettifier
+        )
       else
         Yes(
           bool.rawNegatedFailureMessage,
@@ -233,8 +239,9 @@ object Expectations extends Expectations {
           bool.negatedFailureMessageArgs,
           bool.negatedFailureMessageArgs,
           bool.negatedFailureMessageArgs,
-          bool.negatedFailureMessageArgs
-        )(prettifier)
+          bool.negatedFailureMessageArgs, 
+          prettifier
+        )
     }
 
   }

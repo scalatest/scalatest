@@ -348,9 +348,9 @@ abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
   private[scalatest] implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
     new InspectorAssertingImpl[Expectation] {
       type Result = Expectation
-      def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: org.scalactic.source.Position): Expectation = Fact.No(message)(prettifier)
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position, analysis: scala.collection.immutable.IndexedSeq[String]): Expectation = Fact.No(message)(prettifier)
+      def indicateSuccess(message: => String): Expectation = Fact.Yes(message, prettifier)
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: org.scalactic.source.Position): Expectation = Fact.No(message, prettifier)
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position, analysis: scala.collection.immutable.IndexedSeq[String]): Expectation = Fact.No(message, prettifier)
     }
   }
 }

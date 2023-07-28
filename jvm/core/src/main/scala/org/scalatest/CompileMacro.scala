@@ -124,8 +124,9 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )(prettifier.splice)
+            Vector.empty, 
+            prettifier.splice
+          )
         }
       }
       else {
@@ -140,8 +141,9 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )(prettifier.splice)
+            Vector.empty, 
+            prettifier.splice
+          )
         }
       }
 
@@ -158,8 +160,9 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )(prettifier.splice)
+            Vector.empty, 
+            prettifier.splice
+          )
         }
       case e: ParseException =>
         // parse error, generate code to throw TestFailedException
@@ -173,8 +176,9 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )(prettifier.splice)
+            Vector.empty, 
+            prettifier.splice
+          )
         }
     }
   }
@@ -240,8 +244,9 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )(prettifier.splice)
+            Vector.empty, 
+            prettifier.splice
+          )
           //throw new TestFailedException(messageExpr.splice, stackDepth)
         }
       }
@@ -257,8 +262,9 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )(prettifier.splice)
+            Vector.empty, 
+            prettifier.splice
+          )
         }
       }
     } catch {
@@ -274,8 +280,9 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )(prettifier.splice)
+            Vector.empty, 
+            prettifier.splice
+          )
         }
       case e: ParseException =>
         val messageExpr = c.literal(Resources.didNotCompile(codeStr))
@@ -289,8 +296,9 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )(prettifier.splice)
+            Vector.empty, 
+            prettifier.splice
+          )
           //Succeeded
         }
     }
@@ -345,8 +353,9 @@ private[scalatest] object CompileMacro {
           Vector.empty,
           Vector.empty,
           Vector.empty,
-          Vector.empty
-        )(prettifier.splice)
+          Vector.empty, 
+          prettifier.splice
+        )
         //Succeeded
       }
     } catch {
@@ -362,8 +371,9 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )(prettifier.splice)
+            Vector.empty, 
+            prettifier.splice
+          )
         }
       case e: ParseException =>
         // parse error, compiles fails, generate code to throw TestFailedException
@@ -377,8 +387,9 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty,
-            Vector.empty
-          )(prettifier.splice)
+            Vector.empty, 
+            prettifier.splice
+          )
         }
     }
   }
@@ -504,14 +515,14 @@ private[scalatest] object CompileMacro {
           // both parse and type check succeeded, compiles succeeded unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(code))
           reify {
-            Fact.No(messageExpr.splice)(prettifier.splice)
+            Fact.No(messageExpr.splice, prettifier.splice)
           }
         }
         else {
           val messageExpr = c.literal(Resources.compiledSuccessfully(code))
           reify {
             // statement such as val i: Int = null, type check error as expected, return Yes
-            Fact.Yes(messageExpr.splice)(prettifier.splice)
+            Fact.Yes(messageExpr.splice, prettifier.splice)
           }
         }
       } catch {
@@ -519,13 +530,13 @@ private[scalatest] object CompileMacro {
           val messageExpr = c.literal(Resources.compiledSuccessfully(code))
           reify {
             // type check error, compile fails as expected, generate code to return Yes
-            Fact.Yes(messageExpr.splice)(prettifier.splice)
+            Fact.Yes(messageExpr.splice, prettifier.splice)
           }
         case e: ParseException =>
           val messageExpr = c.literal(Resources.compiledSuccessfully(code))
           reify {
             // parse error, compile fails as expected, generate code to return Yes
-            Fact.Yes(messageExpr.splice)(prettifier.splice)
+            Fact.Yes(messageExpr.splice, prettifier.splice)
           }
       }
     }
@@ -709,14 +720,14 @@ private[scalatest] object CompileMacro {
           // both parse and type check succeeded unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(code))
           reify {
-            Fact.No(messageExpr.splice)(prettifier.splice)
+            Fact.No(messageExpr.splice, prettifier.splice)
           }
         }
         else {
           val messageExpr = c.literal(Resources.gotTypeErrorAsExpected(code))
           reify {
             // statement such as val i: Int = null, type check fails as expected, generate code to return Yes
-            Fact.Yes(messageExpr.splice)(prettifier.splice)
+            Fact.Yes(messageExpr.splice, prettifier.splice)
           }
         }
       } catch {
@@ -724,13 +735,13 @@ private[scalatest] object CompileMacro {
           val messageExpr = c.literal(Resources.gotTypeErrorAsExpected(code))
           reify {
             // type check error as expected, generate code to return Yes
-            Fact.Yes(messageExpr.splice)(prettifier.splice)
+            Fact.Yes(messageExpr.splice, prettifier.splice)
           }
         case e: ParseException =>
           // expect type check error but got parse error, generate code to throw No
           val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, code))
           reify {
-            Fact.No(messageExpr.splice)(prettifier.splice)
+            Fact.No(messageExpr.splice, prettifier.splice)
           }
       }
     }
@@ -902,20 +913,20 @@ private[scalatest] object CompileMacro {
         val messageExpr = c.literal(Resources.compiledSuccessfully(code))
         // both parse and type check succeeded, compile succeeded expectedly, generate code to do nothing
         reify {
-          Fact.Yes(messageExpr.splice)(prettifier.splice)
+          Fact.Yes(messageExpr.splice, prettifier.splice)
         }
       } catch {
         case e: TypecheckException =>
           // type check error, compile fails unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, code))
           reify {
-            Fact.No(messageExpr.splice)(prettifier.splice)
+            Fact.No(messageExpr.splice, prettifier.splice)
           }
         case e: ParseException =>
           // parse error, compile failes unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, code))
           reify {
-            Fact.No(messageExpr.splice)(prettifier.splice)
+            Fact.No(messageExpr.splice, prettifier.splice)
           }
       }
     }
