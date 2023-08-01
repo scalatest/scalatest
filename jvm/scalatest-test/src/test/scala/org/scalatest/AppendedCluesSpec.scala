@@ -27,7 +27,9 @@ import AppendedClues._
 import TableDrivenPropertyChecks._
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
+import org.scalactic.Prettifier
 import org.scalatest.exceptions.StackDepthException
+import org.scalatest.Fact._
 
 // TODO: Test with imported AppendedClues
 class AppendedCluesSpec extends flatspec.AnyFlatSpec with matchers.should.Matchers {
@@ -277,6 +279,89 @@ class AppendedCluesSpec extends flatspec.AnyFlatSpec with matchers.should.Matche
     val succeeded = Succeeded
     val result = { succeeded } withClue("a clue")
     result should be theSameInstanceAs succeeded
+  }
+
+  it should "return Yes with appended clue" in {
+    val fact = Yes("message", Prettifier.default)
+    val result = { fact } withClue("a clue")
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "message a clue"
+  }
+
+  it should "return No with appended clue" in {
+    val fact = No("message", Prettifier.default)
+    val result = { fact } withClue("a clue")
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "message a clue"
+  }
+
+  it should "return Unary_! with appended clue" in {
+    val fact = !No("message", Prettifier.default)
+    val result = { fact } withClue("a clue")
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "message a clue"
+  }
+
+  it should "return Binary_| with appended clue" in {
+    val fact = Yes("message 1", Prettifier.default) | No("message 2", Prettifier.default)
+    val result = { fact } withClue("a clue")
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "message 1, and message 2 a clue"
+
+    val fact2 = Yes("message 1", Prettifier.default) | No("message 2", Prettifier.default)
+    val result2 = { fact2 } withClue("a clue")
+    result2 shouldBe a [Fact]
+    result2.factMessage shouldBe "message 1, and message 2 a clue"
+  }
+
+  it should "return Binary_|| with appended clue" in {
+    val fact = No("message 1", Prettifier.default) || Yes("message 2", Prettifier.default)
+    val result = { fact } withClue("a clue")
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "message 1, and message 2 a clue"
+
+    val fact2 = Yes("message 1", Prettifier.default) || No("message 2", Prettifier.default)
+    val result2 = { fact2 } withClue("a clue")
+    result2 shouldBe a [Fact]
+    result2.factMessage shouldBe "message 1 a clue"
+  }
+
+  it should "return Binary_& with appended clue" in {
+    val fact = Yes("message 1", Prettifier.default) & No("message 2", Prettifier.default)
+    val result = { fact } withClue("a clue")
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "message 1, but message 2 a clue"
+
+    val fact2 = No("message 1", Prettifier.default) & Yes("message 2", Prettifier.default)
+    val result2 = { fact2 } withClue("a clue")
+    result2 shouldBe a [Fact]
+    result2.factMessage shouldBe "message 1, and message 2 a clue"
+  }
+
+  it should "return Binary_&& with appended clue" in {
+    val fact = Yes("message 1", Prettifier.default) && No("message 2", Prettifier.default)
+    val result = { fact } withClue("a clue")
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "message 1, but message 2 a clue"
+
+    val fact2 = No("message 1", Prettifier.default) && Yes("message 2", Prettifier.default)
+    val result2 = { fact2 } withClue("a clue")
+    result2 shouldBe a [Fact]
+    result2.factMessage shouldBe "message 1 a clue"
+  }
+
+  it should "return Implies with appended clue" in {
+    val fact = Yes("message 1", Prettifier.default) implies No("message 2", Prettifier.default)
+    val result = { fact } withClue("a clue")
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "message 1, but message 2 a clue"
+  }
+
+  it should "return IsEqvTo with appended clue" in {
+    val fact = Yes("message 1", Prettifier.default) isEqvTo No("message 2", Prettifier.default)
+    val result = { fact } withClue("a clue")
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "message 1, and message 2 a clue"
   }
 }
 

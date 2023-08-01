@@ -1211,6 +1211,8 @@ trait Assertions extends TripleEquals  {
           Failed(e.modifyMessage(prepend)).asInstanceOf[T]
         case Canceled(e: org.scalatest.exceptions.ModifiableMessage[_]) if clue.toString != "" =>
           Canceled(e.modifyMessage(prepend)).asInstanceOf[T]
+        case fact: Fact =>
+          fact.modifyMessage(prepend).asInstanceOf[T]  
         case _ => outcome
       }
     }
