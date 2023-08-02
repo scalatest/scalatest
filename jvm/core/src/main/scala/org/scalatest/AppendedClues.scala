@@ -154,6 +154,8 @@ trait AppendedClues {
             Failed(e.modifyMessage(append)).asInstanceOf[T]
           case Canceled(e: org.scalatest.exceptions.ModifiableMessage[_]) if clue.toString != "" =>
             Canceled(e.modifyMessage(append)).asInstanceOf[T]
+          case fact: Fact =>
+            fact.modifyMessage(append).asInstanceOf[T]  
           case _ => outcome
         }
       }

@@ -90,7 +90,10 @@ sealed abstract class Fact {
    * Indicates whether the fact is a yes.
    */
   val isYes: Boolean
-
+  /**
+   * Get a new instance of <code>Fact</code> with the messages modified using the passed <code>fun</code> function.
+   */
+  def modifyMessage(fun: Option[String] => Option[String]): Fact
   /**
    * Indicates whether the fact is a no.
    */
@@ -299,6 +302,24 @@ object Fact {
      * Indicates whether this Fact is a leaf node in the Fact tree, return <code>true</code>.
      */
     val isLeaf: Boolean = true
+    /**
+     * Get a new instance of <code>Fact</code> with the messages modified using the passed <code>fun</code> function.
+     */
+    def modifyMessage(fun: Option[String] => Option[String]): Fact = 
+      Leaf(
+        fun(Some(rawFactMessage)).getOrElse(rawFactMessage),
+        fun(Some(rawSimplifiedFactMessage)).getOrElse(rawSimplifiedFactMessage),
+        fun(Some(rawMidSentenceFactMessage)).getOrElse(rawMidSentenceFactMessage),
+        fun(Some(rawMidSentenceSimplifiedFactMessage)).getOrElse(rawMidSentenceSimplifiedFactMessage),
+        factMessageArgs,
+        simplifiedFactMessageArgs,
+        midSentenceFactMessageArgs,
+        midSentenceSimplifiedFactMessageArgs,
+        isYes,
+        isVacuousYes,
+        prettifier,
+        cause
+      )
   }
 
   /**
@@ -368,6 +389,11 @@ object Fact {
      * Indicates whether this Fact is a vacuous "Yes", which means true in a sense but without meaningful assertions, return <code>true</code>
      */
     val isVacuousYes: Boolean = true
+
+    /**
+     * Get a new instance of <code>Fact</code> with the messages modified using the passed <code>fun</code> function.
+     */
+    def modifyMessage(fun: Option[String] => Option[String]): Fact = new VacuousYes(underlying.modifyMessage(fun))
   }
 
   /**
@@ -1180,6 +1206,11 @@ object Fact {
       } +
       padding + ")"
     }
+
+    /**
+     * Get a new instance of <code>Fact</code> with the messages modified using the passed <code>fun</code> function.
+     */
+    def modifyMessage(fun: Option[String] => Option[String]): Fact = Unary_!(underlying.modifyMessage(fun))
   }
 
   /**
@@ -1187,8 +1218,9 @@ object Fact {
    *
    * @param left  The left-hand side `Fact` instance of the AND operation.
    * @param right The right-hand side `Fact` instance of the AND operation.
+   * @param messageFun An optional message function to modify messages.
    */
-  class Binary_&(left: Fact, right: Fact) extends Fact {
+  class Binary_&(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
     private[scalatest] def operatorName: String = "&"
 
@@ -1199,13 +1231,15 @@ object Fact {
      *       Otherwise, a recursive representation of the combined facts will be used.
      */
     val rawFactMessage: String = {
-      if (left.isLeaf && right.isLeaf) {
-        if (left.isYes && right.isNo)
-          Resources.rawCommaBut
-        else
-          Resources.rawCommaAnd
-      }
-      else factDiagram(0)
+      val msg = 
+        if (left.isLeaf && right.isLeaf) {
+          if (left.isYes && right.isNo)
+            Resources.rawCommaBut
+          else
+            Resources.rawCommaAnd
+        }
+        else factDiagram(0)
+      messageFun.flatMap(msgFun => msgFun(Some(msg))).getOrElse(msg)  
     }
     /**
      * The simplified version of the raw fact message, which is the same as `rawFactMessage`.
@@ -1290,6 +1324,11 @@ object Fact {
         right.factDiagram(level + 1) + NEWLINE +
         padding + ")"
     }
+
+    /**
+     * Get a new instance of <code>Fact</code> with the messages modified using the passed <code>fun</code> function.
+     */
+    def modifyMessage(fun: Option[String] => Option[String]): Fact = new Binary_&(left, right, Some(fun))
   }
 
   /**
@@ -1304,7 +1343,16 @@ object Fact {
      * @param right The right-hand side `Fact` instance of the AND operation.
      * @return A new `Binary_&` instance representing the logical AND operation of the two `Fact` instances.
      */
-    def apply(left: Fact, right: Fact): Fact = new Binary_&(left, right)
+    def apply(left: Fact, right: Fact): Fact = new Binary_&(left, right, None)
+    /**
+     * Creates a new `Binary_&` instance with the specified left and right `Fact` instances, and an optional clue.
+     *
+     * @param left  The left-hand side `Fact` instance of the AND operation.
+     * @param right The right-hand side `Fact` instance of the AND operation.
+     * @param messageFun An optional messaage function to modify the messages.
+     * @return A new `Binary_&` instance representing the logical AND operation of the two `Fact` instances.
+     */
+    def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Binary_&(left, right, messageFun)
   }
 
   /**
@@ -1312,11 +1360,16 @@ object Fact {
    *
    * @param left  The left-hand side `Fact` instance of the AND operation. It must be a `yes` fact.
    * @param right The right-hand side `Fact` instance of the AND operation.
+   * @param messageFun An optional message function to modify the messages.
    * @throws IllegalArgumentException If the `left` `Fact` instance is not a `yes` fact.
    */
-  class Binary_&&(left: Fact, right: Fact) extends Binary_&(left, right) {
+  class Binary_&&(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Binary_&(left, right, messageFun) {
     require(left.isYes)
     override private[scalatest] def operatorName: String = "&&"
+    /**
+     * Get a new instance of <code>Fact</code> with the messages modified using the passed <code>fun</code> function.
+     */
+    override def modifyMessage(fun: Option[String] => Option[String]): Fact = new Binary_&&(left, right, Some(fun))
   }
 
   /**
@@ -1332,18 +1385,30 @@ object Fact {
      * @return A new `Binary_&&` instance representing the logical AND operation of the two `Fact` instances.
      * @throws IllegalArgumentException If the `left` `Fact` instance is not a `yes` fact.
      */
-    def apply(left: Fact, right: Fact): Fact = new Binary_&&(left, right)
+    def apply(left: Fact, right: Fact): Fact = new Binary_&&(left, right, None)
+    /**
+     * Creates a new `Binary_&&` instance with the specified left and right `Fact` instances and an optional clue, enforcing that the left-hand side `Fact` instance is `yes`.
+     *
+     * @param left  The left-hand side `Fact` instance of the AND operation. It must be a `yes` fact.
+     * @param right The right-hand side `Fact` instance of the AND operation.
+     * @param messageFun An optional message function to modify the messages.
+     * @return A new `Binary_&&` instance representing the logical AND operation of the two `Fact` instances.
+     * @throws IllegalArgumentException If the `left` `Fact` instance is not a `yes` fact.
+     */
+    def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Binary_&&(left, right, messageFun)
   }
 
-  class Binary_|(left: Fact, right: Fact) extends Fact {
+  class Binary_|(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
     private[scalatest] def operatorName: String = "|"
 
     val rawFactMessage: String = {
-      if (left.isLeaf && right.isLeaf) {
-        Resources.rawCommaAnd
-      }
-      else factDiagram(0)
+      val msg = 
+        if (left.isLeaf && right.isLeaf) {
+          Resources.rawCommaAnd
+        }
+        else factDiagram(0)
+      messageFun.flatMap(fun => fun(Some(msg))).getOrElse(msg)
     }
     val rawSimplifiedFactMessage: String = rawFactMessage
     val rawMidSentenceFactMessage: String = rawFactMessage
@@ -1379,37 +1444,50 @@ object Fact {
       right.factDiagram(level + 1) + NEWLINE +
       padding + ")"
     }
+
+    /**
+     * Get a new instance of <code>Fact</code> with the messages modified using the passed <code>fun</code> function.
+     */
+    def modifyMessage(fun: Option[String] => Option[String]): Fact = new Binary_|(left, right, Some(fun))
   }
 
   object Binary_| {
-    def apply(left: Fact, right: Fact): Fact = new Binary_|(left, right)
+    def apply(left: Fact, right: Fact): Fact = new Binary_|(left, right, None)
+    def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Binary_|(left, right, messageFun)
   }
 
-  class Binary_||(left: Fact, right: Fact) extends Binary_|(left, right) {
+  class Binary_||(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Binary_|(left, right, messageFun) {
     require(left.isNo)
     override private[scalatest] def operatorName: String = "||"
+    /**
+     * Get a new instance of <code>Fact</code> with the messages modified using the passed <code>fun</code> function.
+     */
+    override def modifyMessage(fun: Option[String] => Option[String]): Fact = new Binary_||(left, right, Some(fun))
   }
 
   object Binary_|| {
-    def apply(left: Fact, right: Fact): Fact = new Binary_||(left, right)
+    def apply(left: Fact, right: Fact): Fact = new Binary_||(left, right, None)
+    def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Binary_||(left, right, messageFun)
   }
 
 /*
   Yes implies No // x, but y
   Yes implies Yes // x, and y
 */
-  class Implies(left: Fact, right: Fact) extends Fact {
+  class Implies(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
     require(left.isYes)
 
     val rawFactMessage: String = {
-      if (left.isLeaf && right.isLeaf) {
-        if (left.isYes && right.isNo)
-          Resources.rawCommaBut
-        else
-          Resources.rawCommaAnd
-      }
-      else factDiagram(0)
+      val msg = 
+        if (left.isLeaf && right.isLeaf) {
+          if (left.isYes && right.isNo)
+            Resources.rawCommaBut
+          else
+            Resources.rawCommaAnd
+        }
+        else factDiagram(0)
+      messageFun.flatMap(fun => fun(Some(msg))).getOrElse(msg)  
     }
     val rawSimplifiedFactMessage: String = rawFactMessage
     val rawMidSentenceFactMessage: String = rawFactMessage
@@ -1453,19 +1531,27 @@ object Fact {
         right.factDiagram(level + 1) + NEWLINE +
         padding + ")"
     }
+
+    /**
+     * Get a new instance of <code>Fact</code> with the messages modified using the passed <code>fun</code> function.
+     */
+    def modifyMessage(fun: Option[String] => Option[String]): Fact = new Implies(left, right, Some(fun))
   }
 
   object Implies {
-    def apply(left: Fact, right: Fact): Fact = new Implies(left, right)
+    def apply(left: Fact, right: Fact): Fact = new Implies(left, right, None)
+    def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new Implies(left, right, messageFun)
   }
 
-  class IsEqvTo(left: Fact, right: Fact) extends Fact {
+  class IsEqvTo(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]) extends Fact {
 
     val rawFactMessage: String = {
-      if (left.isLeaf && right.isLeaf) {
-        Resources.rawCommaAnd
-      }
-      else factDiagram(0)
+      val msg = 
+        if (left.isLeaf && right.isLeaf) {
+          Resources.rawCommaAnd
+        }
+        else factDiagram(0)
+      messageFun.flatMap(fun => fun(Some(msg))).getOrElse(msg)  
     }
     val rawSimplifiedFactMessage: String = rawFactMessage
     val rawMidSentenceFactMessage: String = rawFactMessage
@@ -1501,10 +1587,16 @@ object Fact {
       right.factDiagram(level + 1) + NEWLINE +
       padding + ")"
     }
+
+    /**
+     * Get a new instance of <code>Fact</code> with the messages modified using the passed <code>fun</code> function.
+     */
+    def modifyMessage(fun: Option[String] => Option[String]): Fact = new IsEqvTo(left, right, Some(fun))
   }
 
   object IsEqvTo {
-    def apply(left: Fact, right: Fact): Fact = new IsEqvTo(left, right)
+    def apply(left: Fact, right: Fact): Fact = new IsEqvTo(left, right, None)
+    def apply(left: Fact, right: Fact, messageFun: Option[Option[String] => Option[String]]): Fact = new IsEqvTo(left, right, messageFun)
   }
 
   // Idea is to override toString each time it is used.
