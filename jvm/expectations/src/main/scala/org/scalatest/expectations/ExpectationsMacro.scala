@@ -50,4 +50,30 @@ private[scalatest] object ExpectationsMacro {
       pos)
   }
 
+  def expectWithClue(context: Context)(expression: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Fact] = {
+    import context.universe._
+    new BooleanMacro[context.type](context).genMacro[Fact](
+      Select(
+        Select(
+          Select(
+            Select(
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
+              newTermName("scalatest")
+            ),
+            newTermName("expectations")
+          ),
+          newTermName("Expectations")
+        ),
+        newTermName("expectationsHelper")
+      ),
+      expression,
+      "macroExpect",
+      clue,
+      prettifier,
+      pos)
+  }
+
 }

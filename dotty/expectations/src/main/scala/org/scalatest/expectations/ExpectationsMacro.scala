@@ -28,4 +28,9 @@ object ExpectationsMacro {
     val bool = BooleanMacro.parse(condition, prettifier)
     '{ Expectations.expectationsHelper.macroExpect($bool, "", $prettifier) }
   }
+
+  def expectWithClue(condition: Expr[Boolean], clue: Expr[Any])(prettifier: Expr[Prettifier])(using Quotes): Expr[Fact] = {
+    val bool = BooleanMacro.parse(condition, prettifier)
+    '{ Expectations.expectationsHelper.macroExpect($bool, $clue, $prettifier) }
+  }
 }
