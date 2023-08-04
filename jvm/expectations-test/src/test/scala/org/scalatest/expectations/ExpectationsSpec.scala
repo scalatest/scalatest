@@ -21,9 +21,19 @@ import OptionValues._
 import org.scalatest.Fact.Unary_!
 import org.scalatest.funspec.AnyFunSpec
 
+import org.scalactic.exceptions.NullArgumentException
+
 class ExpectationsSpec extends AnyFunSpec with Expectations {
 
   val NEWLINE = scala.compat.Platform.EOL
+
+  class Stateful {
+    var state = false
+    def changeState: Boolean = {
+      state = true
+      state
+    }
+  }
 
   describe("The expectResult method") {
     it("should give a correct Fact result when the expectation fails") {
@@ -371,7 +381,7 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
     }
   }
 
-  describe("The expect method") {
+  describe("The expect(condition) method") {
 
     val a = 1
 
@@ -389,6 +399,469 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
       assert(fact.isNo)
       assert(fact.factMessage == "1 did not equal 2")
       assert(!fact.isVacuousYes)
+    }
+  }
+
+  describe("The expect(condition, clue) method") {
+    val a = 3
+    val b = 5
+
+    val bob = "bob"
+    val alice = "alice"
+
+    it("should throw NullArgumentException when null is passed in as clue") {
+      val e = intercept[NullArgumentException] {
+        expect(a == 3, null)
+      }
+      assert(e.getMessage == "clue was null")
+    }
+
+    it("should return Yes with correct message") {
+      val fact = expect(a == 3, "dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3 dude")
+    }
+
+    it("should return No with correct message when is used to check a == 5") {
+      val fact = expect(a == 5, "dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 5 dude")
+    }
+
+    it("should return No when is used to check 5 == b") {
+      val fact = expect(5 == b, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "5 equaled 5, dude")
+    }
+
+    it("should return No with correct message when is used to check 3 == b") {
+      val fact = expect(3 == b, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 5, dude")
+    }
+
+    it("should return Yes with correct message when is used to check a != 5") {
+      val fact = expect(a != 5, ". dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 did not equal 5. dude")
+    }
+
+    it("should return No with correct message when is used to check a != 3") {
+      val fact = expect(a != 3, ". dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3. dude")
+    }
+
+    it("should return Yes with correct message when is used to check 3 != b") {
+      val fact = expect(3 != b, "; dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 did not equal 5; dude")
+    }
+
+    it("should return No with correct message when is used to check 5 != b") {
+      val fact = expect(5 != b, "; dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "5 equaled 5; dude")
+    }
+
+    it("should return Yes with correct message when is used to check 3 == 3") {
+      val fact = expect(3 == 3, "dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "Expression was true dude")
+    }
+
+    it("should return No with correct message when is used to check 3 == 5") {
+      // This is because the compiler simply pass the false boolean literal
+      // to the macro, can't find a way to get the 3 == 5 literal.
+      val f1 = expect(3 == 5, "dude")
+      assert(f1.isNo)
+      assert(f1.factMessage === "Expression was false dude")
+
+      val f2 = expect(3 == 5, "3 did not equal 5")
+      assert(f2.isNo)
+      assert(f2.factMessage === "Expression was false 3 did not equal 5")
+    }
+
+    it("should return No with correct message when is used to check a == b") {
+      val fact = expect(a == b, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 5, dude")
+    }
+
+    it("should return No with correct message when is used to check a == null") {
+      val s = "test"
+      val fact = expect(s == null, ". dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "\"test\" did not equal null. dude")
+    }
+
+    it("should return No with correct message when is used to check null == a") {
+      val s = "test"
+      val fact = expect(null == s, "; dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "null did not equal \"test\"; dude")
+    }
+
+    it("should return No with correct message when is used to check 3 != a") {
+      val fact = expect(3 != a, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3, dude")
+    }
+
+    it("should return Yes with correct message when is used to check 5 != a") {
+      val fact = expect(5 != a, ". dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "5 did not equal 3. dude")
+    }
+
+    it("should return Yes with correct message when is used to check a > 2") {
+      val fact = expect(a > 2, ". dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 was greater than 2. dude")
+    }
+
+    it("should return Yes with correct message when is used to check 5 > a") {
+      val fact = expect(5 > a, ". dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "5 was greater than 3. dude")
+    }
+
+    it("should return No with correct message when is used to check a > 3") {
+      val fact = expect(a > 3, ". dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 was not greater than 3. dude")
+    }
+
+    it("should return No with correct message when is used to check 3 > a") {
+      val fact = expect(3 > a, "; dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 was not greater than 3; dude")
+    }
+
+    it("should return Yes with correct message when is used to check a >= 3") {
+      val fact = expect(a >= 3, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 was greater than or equal to 3, dude")
+    }
+
+    it("should return Yes with correct message when is used to check 3 >= a") {
+      val fact = expect(3 >= a, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 was greater than or equal to 3, dude")
+    }
+
+    it("should return No with correct message when is used to check a >= 4") {
+      val fact = expect(a >= 4, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 was not greater than or equal to 4, dude")
+    }
+
+    it("should return No with correct message when is used to check 2 >= a") {
+      val fact = expect(2 >= a, ". dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "2 was not greater than or equal to 3. dude")
+    }
+
+    it("should return Yes with correct message when is used to check b < 6") {
+      val fact = expect(b < 6, "; dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "5 was less than 6; dude")
+    }
+
+    it("should return Yes with correct message when is used to check 3 < b") {
+      val fact = expect(3 < b, "; dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 was less than 5; dude")
+    }
+
+    it("should return No with correct message when is used to check b < 5") {
+      val fact = expect(b < 5, "; dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "5 was not less than 5; dude")
+    }
+
+    it("should return No with correct message when is used to check 5 < b") {
+      val fact = expect(5 < b, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "5 was not less than 5, dude")
+    }
+
+    it("should return Yes with correct message when is used to check b <= 5") {
+      val fact = expect(b <= 5, ". dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "5 was less than or equal to 5. dude")
+    }
+
+    it("should return Yes with correct message when is used to check 5 <= b") {
+      val fact = expect(5 <= b, ". dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "5 was less than or equal to 5. dude")
+    }
+
+    it("should return No with correct message when is used to check b <= 4") {
+      val fact = expect(b <= 4, ". dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "5 was not less than or equal to 4. dude")
+    }
+
+    it("should return No with correct message when is used to check 6 <= b") {
+      val fact = expect(6 <= b, "; dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "6 was not less than or equal to 5; dude")
+    }
+
+    it("should return No with correct message when is used to check java.lang.Integer(5) < java.lang.Integer(4) with import scala.math.Ordering.Implicits.infixOrderingOps in scope") {
+      import scala.math.Ordering.Implicits.infixOrderingOps
+      val first = new java.lang.Integer(5)
+      val second = new java.lang.Integer(4)
+      val fact = expect(first < second, "; dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "5 was not less than 4; dude")
+    }
+
+    it("should return Yes with correct message when is used to check bob == \"bob\"") {
+      val fact = expect(bob == "bob", "dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "\"bob\" equaled \"bob\" dude")
+    }
+
+    it("should return Yes with correct message when is used to check bob != \"alice\"") {
+      val fact = expect(bob != "alice", "dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "\"[bob]\" did not equal \"[alice]\" dude")
+    }
+
+    it("should return Yes with correct message when is used to check alice == \"alice\"") {
+      val fact = expect(alice == "alice", "dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "\"alice\" equaled \"alice\" dude")
+    }
+
+    it("should return Yes with correct message when is used to check alice != \"bob\"") {
+      val fact = expect(alice != "bob", "dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "\"[alice]\" did not equal \"[bob]\" dude")
+    }
+
+    it("should return No with correct message when is used to check bob == \"alice\"") {
+      val fact = expect(bob == "alice", "dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "\"[bob]\" did not equal \"[alice]\" dude")
+    }
+
+    it("should return No with correct message when is used to check bob != \"bob\"") {
+      val fact = expect(bob != "bob", ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "\"bob\" equaled \"bob\", dude")
+    }
+
+    it("should return No with correct message when is used to check alice == \"bob\"") {
+      val fact = expect(alice == "bob", ". dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "\"[alice]\" did not equal \"[bob]\". dude")
+    }
+
+    it("should return No with correct message when is used to check alice != \"alice\"") {
+      val fact = expect(alice != "alice", "; dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "\"alice\" equaled \"alice\"; dude")
+    }
+
+    // TripleEquals tests
+    // currently these tests are not calling TripleEquals's === and !== yet, import org.scalactic.TripleEquals does not seems to work
+    // Should make Assertions to extend TripleEquals instead of LegacyTripleEquals instead.
+
+    it("should return Yes with correct message when is used to check a === 3") {
+      val fact = expect(a === 3, "dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3 dude")
+    }
+
+    it("should return No with correct message when is used to check a === 5") {
+      val fact = expect(a === 5, "dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 5 dude")
+    }
+
+    it("should return Yes with correct message when is used to check 3 === a") {
+      val fact = expect(3 === a, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, dude")
+    }
+
+    it("should return No with correct message when is used to check 5 === a") {
+      val fact = expect(5 === a, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "5 did not equal 3, dude")
+    }
+
+    it("should return Yes with correct message when is used to check a !== 5") {
+      val fact = expect(a !== 5, ". dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 did not equal 5. dude")
+    }
+
+    it("should return No with correct message when is used to check a !== 3") {
+      val fact = expect(a !== 3, ". dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3. dude")
+    }
+
+    it("should return Yes with correct message when is used to check 5 !== a") {
+      val fact = expect(5 !== a, "; dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "5 did not equal 3; dude")
+    }
+
+    it("should return No with correct message when is used to check 3 !== a") {
+      val fact = expect(3 !== a, "; dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3; dude")
+    }
+
+    it("should return Yes with correct message when is used to check a == 3 && b == 5") {
+      val fact = expect(a == 3 && b == 5, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, and 5 equaled 5, dude")
+    }
+
+    it("should return No with correct message when is used to check a == 3 && b == 6") {
+      val fact = expect(a == 3 && b == 6, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3, but 5 did not equal 6, dude")
+    }
+
+    it("should return No with correct message when is used to check a == 2 && b == 5") {
+      val fact = expect(a == 2 && b == 5, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 2, dude")
+    }
+
+    it("should return No with correct message when is used to check a == 2 && b == 6") {
+      val fact = expect(a == 2 && b == 6, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 2, dude")
+    }
+
+    it("should return No with correct message when is used to check a == 3 & b == 5") {
+      val fact = expect(a == 3 & b == 5, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, and 5 equaled 5, dude")
+    }
+
+    it("should return No with correct message when is used to check a == 3 & b == 6") {
+      val fact = expect(a == 3 & b == 6, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3, but 5 did not equal 6, dude")
+    }
+
+    it("should return No with correct message when is used to check a == 2 & b == 5") {
+      val fact = expect(a == 2 & b == 5, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 2, dude")
+    }
+
+    it("should return No with correct message when is used to check a == 2 & b == 6") {
+      val fact = expect(a == 2 & b == 6, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 2, dude")
+    }
+
+    it("should return Yes with correct message when is used to check a == 3 || b == 5") {
+      val fact = expect(a == 3 || b == 5, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, dude")
+    }
+
+    it("should return Yes with correct message when is used to check a == 3 || b == 6") {
+      val fact = expect(a == 3 || b == 6, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, dude")
+    }
+
+    it("should return Yes with correct message when is used to check a == 2 || b == 5") {
+      val fact = expect(a == 2 || b == 5, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 did not equal 2, but 5 equaled 5, dude")
+    }
+
+    it("should return No with correct message when is used to check a == 2 || b == 6") {
+      val fact = expect(a == 2 || b == 6, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 2, and 5 did not equal 6, dude")
+    }
+
+    it("should return Yes with correct message when is used to check a == 3 | b == 5") {
+      val fact = expect(a == 3 | b == 5, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, dude")
+    }
+
+    it("should return Yes with correct message when is used to check a == 3 | b == 6") {
+      val fact = expect(a == 3 | b == 6, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, dude")
+    }
+
+    it("should return Yes with correct message when is used to check a == 2 | b == 5") {
+      val fact = expect(a == 2 | b == 5, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 did not equal 2, but 5 equaled 5, dude")
+    }
+
+    it("should return No with correct message when is used to check a == 2 | b == 6") {
+      val fact = expect(a == 2 | b == 6, ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 2, and 5 did not equal 6, dude")
+    }
+
+    it("should return Yes with correct message when is used to check a == 3 && (b == 5 && b > 3)") {
+      val fact = expect(a == 3 && (b == 5 && b > 3), ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, and 5 equaled 5, and 5 was greater than 3, dude")
+    }
+
+    it("should return No with correct message when is used to check a == 3 && (b == 5 && b > 5)") {
+      val fact = expect(a == 3 && (b == 5 && b > 5), ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3, but 5 equaled 5, but 5 was not greater than 5, dude")
+    }
+
+    it("should return Yes with correct message when is used to check !(a == 5)") {
+      val fact = expect(!(a == 5), ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 did not equal 5, dude")
+    }
+
+    it("should return No with correct message when is used to check !(a == 3)") {
+      val fact = expect(!(a == 3), ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3, dude")
+    }
+
+    it("should return No with correct message when is used to check a == 3 && !(b == 5)") {
+      val fact = expect(a == 3 && !(b == 5), ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3, but 5 equaled 5, dude")
+    }
+
+    it("should return Yes with correct message when is used to check (a == 3) == (b == 5)") {
+      val fact = expect((a == 3) == (b == 5), ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage == "true equaled true, dude")
+    }
+
+    it("should return No with correct message when is used to check (a == 3) == (b != 5)") {
+      val fact = expect((a == 3) == (b != 5), ", dude")
+      assert(fact.isNo)
+      assert(fact.factMessage == "true did not equal false, dude")
+    }
+
+    it("should short-circuit && when first condition was false") {
+      val s = new Stateful
+      val fact = expect(a == 5 && s.changeState, ", dude")
+      assert(fact.isNo)
+      assert(s.state == false)
     }
   }
 

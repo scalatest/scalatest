@@ -16,7 +16,7 @@
 package org.scalatest.expectations
 
 import org.scalactic.{Resources => _, _}
-import org.scalatest.{Assertion, CompileMacro, Expectation, Fact, Suite, Resources}
+import org.scalatest.{Assertion, CompileMacro, Expectation, Fact, Suite, Resources, AppendedClues}
 import Fact._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -143,6 +143,9 @@ trait Expectations {
   inline def expect(expression: Boolean)(implicit prettifier: Prettifier): Fact =
     ${ ExpectationsMacro.expect('{expression})('{prettifier}) }
 
+  inline def expect(expression: Boolean, clue: Any)(implicit prettifier: Prettifier): Fact =
+    ${ ExpectationsMacro.expectWithClue('{expression}, '{clue})('{prettifier}) }  
+
   /**
    * Expects that a given code snippet does not compile.
    *
@@ -205,6 +208,8 @@ object Expectations extends Expectations {
    */
   class ExpectationsHelper {
 
+    import org.scalactic.Requirements.requireNonNull
+
     /**
      * A helper method for macro-generated assertions.
      *
@@ -214,31 +219,33 @@ object Expectations extends Expectations {
      * @return a [[Fact]] representing the result of the assertion
      */
     def macroExpect(bool: Bool, clue: Any, prettifier: Prettifier): Fact = {
-      //requireNonNull(clue)
-      if (!bool.value)
-        No(
-          bool.rawFailureMessage,
-          bool.rawFailureMessage,
-          bool.rawFailureMessage,
-          bool.rawFailureMessage,
-          bool.failureMessageArgs,
-          bool.failureMessageArgs,
-          bool.failureMessageArgs,
-          bool.failureMessageArgs, 
-          prettifier
-        )
-      else
-        Yes(
-          bool.rawNegatedFailureMessage,
-          bool.rawNegatedFailureMessage,
-          bool.rawNegatedFailureMessage,
-          bool.rawNegatedFailureMessage,
-          bool.negatedFailureMessageArgs,
-          bool.negatedFailureMessageArgs,
-          bool.negatedFailureMessageArgs,
-          bool.negatedFailureMessageArgs, 
-          prettifier
-        )
+      requireNonNull(clue)
+      val result = 
+        if (!bool.value)
+          No(
+            bool.rawFailureMessage,
+            bool.rawFailureMessage,
+            bool.rawFailureMessage,
+            bool.rawFailureMessage,
+            bool.failureMessageArgs,
+            bool.failureMessageArgs,
+            bool.failureMessageArgs,
+            bool.failureMessageArgs, 
+            prettifier
+          )
+        else
+          Yes(
+            bool.rawNegatedFailureMessage,
+            bool.rawNegatedFailureMessage,
+            bool.rawNegatedFailureMessage,
+            bool.rawNegatedFailureMessage,
+            bool.negatedFailureMessageArgs,
+            bool.negatedFailureMessageArgs,
+            bool.negatedFailureMessageArgs,
+            bool.negatedFailureMessageArgs, 
+            prettifier
+          )
+      if (clue == "") result else result.modifyMessage(_.map(ori => AppendedClues.appendClue(ori, clue.toString)))    
     }
 
   }

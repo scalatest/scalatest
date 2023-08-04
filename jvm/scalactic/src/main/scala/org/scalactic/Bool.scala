@@ -458,7 +458,7 @@ private[scalactic] class OrBool(bool1: Bool, bool2: => Bool, val prettifier: Pre
    *
    * @return Localized raw string for "{0}, and {1}"
    */
-  def rawNegatedFailureMessage: String = Resources.rawCommaAnd
+  def rawNegatedFailureMessage: String = if (bool1.value) bool1.rawNegatedFailureMessage else Resources.rawCommaBut
 
   /**
    * raw mid sentence message to report a failure
@@ -486,7 +486,7 @@ private[scalactic] class OrBool(bool1: Bool, bool2: => Bool, val prettifier: Pre
    *
    * @return <code>Vector</code> that contains <code>bool1.failureMessage</code> and <code>bool2.midSentenceNegatedFailureMessage</code>
    */
-  def negatedFailureMessageArgs = Vector(UnquotedString(bool1.failureMessage), UnquotedString(bool2.midSentenceNegatedFailureMessage))
+  def negatedFailureMessageArgs = if (bool1.value) bool1.negatedFailureMessageArgs else Vector(UnquotedString(bool1.failureMessage), UnquotedString(bool2.midSentenceNegatedFailureMessage))
 
   /**
    * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.
@@ -761,7 +761,14 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
       case "eq" => Resources.rawWasTheSameInstanceAs
       case "ne" => Resources.rawWasNotTheSameInstanceAs
       case "&&" | "&" => Resources.rawCommaAnd
-      case "||" | "|" => Resources.rawCommaAnd
+      case "||" | "|" => 
+        left match {
+          case leftBool: Bool => 
+            if (leftBool.value)
+              leftBool.rawNegatedFailureMessage
+            else
+              Resources.rawCommaBut
+        }
       case _ => Resources.rawExpressionWasTrue
     }
 
@@ -855,12 +862,18 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
       case "||" | "|" =>
         (left, right) match {
           case (leftBool: Bool, rightBool: Bool) =>
-            Vector(
-              UnquotedString(if (leftBool.value) leftBool.negatedFailureMessage else leftBool.failureMessage),
-              UnquotedString(if (rightBool.value) rightBool.midSentenceNegatedFailureMessage else rightBool.midSentenceFailureMessage)
-            )
+            if (leftBool.value)
+              leftBool.negatedFailureMessageArgs
+            else
+              Vector(
+                UnquotedString(if (leftBool.value) leftBool.negatedFailureMessage else leftBool.failureMessage),
+                UnquotedString(if (rightBool.value) rightBool.midSentenceNegatedFailureMessage else rightBool.midSentenceFailureMessage)
+              )
           case (leftBool: Bool, rightAny: Any) =>
-            Vector(UnquotedString(if (leftBool.value) leftBool.negatedFailureMessage else leftBool.failureMessage), rightAny)
+            if (leftBool.value)
+              leftBool.negatedFailureMessageArgs
+            else  
+              Vector(UnquotedString(if (leftBool.value) leftBool.negatedFailureMessage else leftBool.failureMessage), rightAny)
           case (leftAny: Any, rightBool: Bool) =>
             Vector(leftAny, UnquotedString(if (rightBool.value) rightBool.midSentenceNegatedFailureMessage else rightBool.midSentenceFailureMessage))
           case _ =>
