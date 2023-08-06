@@ -793,7 +793,28 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
           case _ =>
             Resources.rawCommaBut
         }
-      case "||" | "|" => Resources.rawCommaAnd
+      case "||"=> 
+        (left, right) match {
+          case (leftBool: Bool, rightBool: Bool) =>
+            if (leftBool.value)
+              leftBool.rawNegatedFailureMessage
+            else
+              if (leftBool.value == rightBool.value) Resources.rawCommaAnd else Resources.rawCommaBut
+          case (leftBool: Bool, rightAny: Any) =>
+            if (leftBool.value)
+              leftBool.rawNegatedFailureMessage
+            else
+              Resources.rawCommaBut
+          case _ =>
+            Resources.rawCommaBut
+        }
+      case "|" => 
+        (left, right) match {
+          case (leftBool: Bool, rightBool: Bool) =>
+            if (leftBool.value == rightBool.value) Resources.rawCommaAnd else Resources.rawCommaBut
+          case _ =>
+            Resources.rawCommaBut
+        }
       case _ => Resources.rawExpressionWasFalse
     }
   }
@@ -942,13 +963,13 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
         (left, right) match {
           case (leftBool: Bool, rightBool: Bool) =>
             Vector(
-              UnquotedString(if (leftBool.value) leftBool.negatedFailureMessage else leftBool.failureMessage),
-              UnquotedString(if (rightBool.value) rightBool.midSentenceNegatedFailureMessage else rightBool.midSentenceFailureMessage)
+              UnquotedString(leftBool.negatedFailureMessage),
+              UnquotedString(rightBool.midSentenceNegatedFailureMessage)
             )
           case (leftBool: Bool, rightAny: Any) =>
-            Vector(UnquotedString(if (leftBool.value) leftBool.negatedFailureMessage else leftBool.failureMessage), rightAny)
+            Vector(UnquotedString(leftBool.negatedFailureMessage), rightAny)
           case (leftAny: Any, rightBool: Bool) =>
-            Vector(leftAny, UnquotedString(if (rightBool.value) rightBool.midSentenceNegatedFailureMessage else rightBool.negatedFailureMessage))
+            Vector(leftAny, UnquotedString(rightBool.midSentenceNegatedFailureMessage))
           case _ =>
             Vector(left, right)
         }
