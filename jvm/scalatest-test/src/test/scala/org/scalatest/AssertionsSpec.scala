@@ -3020,7 +3020,7 @@ class AssertionsSpec extends AnyFunSpec {
     }
 
     it("should do nothing when is used to check !(l1.length == 2)") {
-      assert(!(l1.length == 2))
+      assert(!(l1.length == 2), ", dude")
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check !(l1.length == 9)") {
