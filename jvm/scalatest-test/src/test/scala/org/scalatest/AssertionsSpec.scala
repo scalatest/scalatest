@@ -761,7 +761,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         assert(a == 2 & b == 5)
       }
-      assert(e.message === Some(didNotEqual(3, 2)))
+      assert(e.message === Some(commaBut(didNotEqual(3, 2), equaled(5, 5))))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -770,7 +770,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         assert(a == 2 & b == 6)
       }
-      assert(e.message === Some(didNotEqual(3, 2)))
+      assert(e.message === Some(commaAnd(didNotEqual(3, 2), didNotEqual(5, 6))))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -873,12 +873,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(s.state == false)
     }
 
-    it("should short-circuit & when first condition was false") {
+    it("should not short-circuit & when first condition was false") {
       val s = new Stateful
       intercept[TestFailedException] {
         assert(a == 5 & s.changeState)
       }
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should short-circuit || when first condition was true") {
@@ -887,10 +887,10 @@ class AssertionsSpec extends AnyFunSpec {
       assert(s.state == false)
     }
 
-    it("should short-circuit | when first condition was true") {
+    it("should not short-circuit | when first condition was true") {
       val s = new Stateful
       assert(a == 3 | s.changeState)
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
@@ -2247,7 +2247,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         assert(a == 2 & b == 5, ", dude")
       }
-      assert(e.message === Some(didNotEqual(3, 2) + ", dude"))
+      assert(e.message === Some(commaBut(didNotEqual(3, 2), equaled(5, 5)) + ", dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -2256,7 +2256,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         assert(a == 2 & b == 6, ", dude")
       }
-      assert(e.message === Some(didNotEqual(3, 2) + ", dude"))
+      assert(e.message === Some(commaAnd(didNotEqual(3, 2), didNotEqual(5, 6)) + ", dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -2359,12 +2359,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(s.state == false)
     }
 
-    it("should short-circuit & when first condition was false") {
+    it("should not short-circuit & when first condition was false") {
       val s = new Stateful
       intercept[TestFailedException] {
         assert(a == 5 & s.changeState, ", dude")
       }
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should short-circuit || when first condition was true") {
@@ -2373,10 +2373,10 @@ class AssertionsSpec extends AnyFunSpec {
       assert(s.state == false)
     }
 
-    it("should short-circuit | when first condition was true") {
+    it("should not short-circuit | when first condition was true") {
       val s = new Stateful
       assert(a == 3 | s.changeState, ", dude")
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
@@ -3724,7 +3724,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         assume(a == 2 & b == 5)
       }
-      assert(e.message === Some(didNotEqual(3, 2)))
+      assert(e.message === Some(commaBut(didNotEqual(3, 2), equaled(5, 5))))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -3733,7 +3733,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         assume(a == 2 & b == 6)
       }
-      assert(e.message === Some(didNotEqual(3, 2)))
+      assert(e.message === Some(commaAnd(didNotEqual(3, 2), didNotEqual(5, 6))))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -3836,12 +3836,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(s.state == false)
     }
 
-    it("should short-circuit & when first condition was false") {
+    it("should not short-circuit & when first condition was false") {
       val s = new Stateful
       intercept[TestCanceledException] {
         assume(a == 5 & s.changeState)
       }
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should short-circuit || when first condition was true") {
@@ -3850,10 +3850,10 @@ class AssertionsSpec extends AnyFunSpec {
       assert(s.state == false)
     }
 
-    it("should short-circuit | when first condition was true") {
+    it("should not short-circuit | when first condition was true") {
       val s = new Stateful
       assume(a == 3 | s.changeState)
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
@@ -5207,7 +5207,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         assume(a == 2 & b == 5, ", dude")
       }
-      assert(e.message === Some(didNotEqual(3, 2) + ", dude"))
+      assert(e.message === Some(commaBut(didNotEqual(3, 2), equaled(5, 5)) + ", dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -5216,7 +5216,7 @@ class AssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         assume(a == 2 & b == 6, ", dude")
       }
-      assert(e.message === Some(didNotEqual(3, 2) + ", dude"))
+      assert(e.message === Some(commaAnd(didNotEqual(3, 2), didNotEqual(5, 6)) + ", dude"))
       assert(e.failedCodeFileName === (Some(fileName)))
       assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -5319,12 +5319,12 @@ class AssertionsSpec extends AnyFunSpec {
       assert(s.state == false)
     }
 
-    it("should short-circuit & when first condition was false") {
+    it("should not short-circuit & when first condition was false") {
       val s = new Stateful
       intercept[TestCanceledException] {
         assume(a == 5 & s.changeState, ", dude")
       }
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should short-circuit || when first condition was true") {
@@ -5333,10 +5333,10 @@ class AssertionsSpec extends AnyFunSpec {
       assert(s.state == false)
     }
 
-    it("should short-circuit | when first condition was true") {
+    it("should not short-circuit | when first condition was true") {
       val s = new Stateful
       assume(a == 3 | s.changeState, ", dude")
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {

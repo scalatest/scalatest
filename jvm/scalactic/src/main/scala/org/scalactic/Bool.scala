@@ -117,7 +117,7 @@ trait Bool {
    */
   def &&(bool: => Bool): Bool =
     if (value)
-      new AndBool(this, bool, prettifier)
+      new AndBool(this, bool, true, prettifier)
     else
       this
 
@@ -127,7 +127,7 @@ trait Bool {
    * @param bool another <code>Bool</code>
    * @return a <code>Bool</code> that represents the result of logical <code>and</code>
    */
-  def &(bool: => Bool): Bool = &&(bool)
+  def &(bool: => Bool): Bool = new AndBool(this, bool, false, prettifier)
 
   /**
    * Logical <code>or</code> this <code>Bool</code> with another <code>Bool</code>
@@ -135,7 +135,11 @@ trait Bool {
    * @param bool another <code>Bool</code>
    * @return a <code>Bool</code> that represents the result of logical <code>or</code>
    */
-  def ||(bool: => Bool): Bool = new OrBool(this, bool, prettifier)
+  def ||(bool: => Bool): Bool = 
+    if (value)
+      this
+    else  
+      new OrBool(this, bool, true, prettifier)
 
   /**
    * Logical <code>or</code> this <code>Bool</code> with another <code>Bool</code>
@@ -143,7 +147,7 @@ trait Bool {
    * @param bool another <code>Bool</code>
    * @return a <code>Bool</code> that represents the result of logical <code>or</code>
    */
-  def |(bool: => Bool): Bool = ||(bool)
+  def |(bool: => Bool): Bool = new OrBool(this, bool, false, prettifier)
 
   /**
    * Negate this <code>Bool</code>
@@ -369,7 +373,7 @@ private[scalactic] class SimpleBool(expression: Boolean, val prettifier: Prettif
  * @param bool1 the first <code>Bool</code>
  * @param bool2 the second <code>Bool</code>
  */
-private[scalactic] class AndBool(bool1: Bool, bool2: => Bool, val prettifier: Prettifier) extends Bool {
+private[scalactic] class AndBool(bool1: Bool, bool2: => Bool, shortCircuit: Boolean, val prettifier: Prettifier) extends Bool {
 
   /**
    * the result of <code>bool1.value</code> logical <code>AND</code> <code>bool2.value</code>
@@ -381,14 +385,23 @@ private[scalactic] class AndBool(bool1: Bool, bool2: => Bool, val prettifier: Pr
    *
    * @return Localized raw string for "{0}, but {1}"
    */
-  def rawFailureMessage: String = Resources.rawCommaBut
+  def rawFailureMessage: String = 
+    if (shortCircuit && !bool1.value) 
+      bool1.rawFailureMessage
+    else {
+      if (bool1.value == bool2.value)
+        Resources.rawCommaAnd
+      else
+        Resources.rawCommaBut
+    }
 
   /**
    * raw message with a meaning opposite to that of the failure message
    *
    * @return Localized raw string for "{0}, and {1}"
    */
-  def rawNegatedFailureMessage: String = Resources.rawCommaAnd
+  def rawNegatedFailureMessage: String = 
+      Resources.rawCommaAnd
 
   /**
    * raw mid sentence message to report a failure
@@ -409,7 +422,14 @@ private[scalactic] class AndBool(bool1: Bool, bool2: => Bool, val prettifier: Pr
    *
    * @return <code>Vector</code> that contains <code>bool1.negatedFailureMessage</code> and <code>bool2.midSentenceFailureMessage</code>
    */
-  def failureMessageArgs = Vector(UnquotedString(bool1.negatedFailureMessage), UnquotedString(bool2.midSentenceFailureMessage))
+  def failureMessageArgs = 
+    if (shortCircuit && !bool1.value) 
+      bool1.failureMessageArgs
+    else  
+      Vector(
+        if (bool1.value) UnquotedString(bool1.negatedFailureMessage) else UnquotedString(bool1.failureMessage), 
+        if (bool2.value) UnquotedString(bool2.midSentenceNegatedFailureMessage) else UnquotedString(bool2.midSentenceFailureMessage)
+      )
 
   /**
    * Arguments to construct final negated failure message with raw message returned from <code>rawNegatedFailureMessage</code>.
@@ -439,26 +459,46 @@ private[scalactic] class AndBool(bool1: Bool, bool2: => Bool, val prettifier: Pr
  * @param bool1 the first <code>Bool</code>
  * @param bool2 the second <code>Bool</code>
  */
-private[scalactic] class OrBool(bool1: Bool, bool2: => Bool, val prettifier: Prettifier) extends Bool {
+private[scalactic] class OrBool(bool1: Bool, bool2: => Bool, shortCircuit: Boolean, val prettifier: Prettifier) extends Bool {
 
   /**
    * the result of <code>bool1.value</code> logical <code>OR</code> <code>bool2.value</code>
    */
-  lazy val value: Boolean = bool1.value || bool2.value
+  lazy val value: Boolean = 
+    if (shortCircuit)
+      bool1.value || bool2.value
+    else
+      bool1.value | bool2.value  
 
   /**
    * raw message to report a failure
    *
    * @return Localized raw string for "{0}, and {1}"
    */
-  def rawFailureMessage: String = Resources.rawCommaAnd
+  def rawFailureMessage: String = 
+    if (shortCircuit && bool1.value) 
+      bool1.rawFailureMessage
+    else {
+      if (bool1.value == bool2.value)
+        Resources.rawCommaAnd
+      else
+        Resources.rawCommaBut
+    }
 
   /**
    * raw message with a meaning opposite to that of the failure message
    *
    * @return Localized raw string for "{0}, and {1}"
    */
-  def rawNegatedFailureMessage: String = Resources.rawCommaAnd
+  def rawNegatedFailureMessage: String = 
+    if (shortCircuit && bool1.value) 
+      bool1.rawNegatedFailureMessage 
+    else { 
+      if (bool1.value == bool2.value)
+        Resources.rawCommaAnd
+      else
+        Resources.rawCommaBut
+    }
 
   /**
    * raw mid sentence message to report a failure
@@ -479,14 +519,25 @@ private[scalactic] class OrBool(bool1: Bool, bool2: => Bool, val prettifier: Pre
    *
    * @return <code>Vector</code> that contains <code>bool1.failureMessage</code> and <code>bool2.midSentenceFailureMessage</code>
    */
-  def failureMessageArgs = Vector(UnquotedString(bool1.failureMessage), UnquotedString(bool2.midSentenceFailureMessage))
+  def failureMessageArgs = 
+    Vector(
+      if (bool1.value) UnquotedString(bool1.negatedFailureMessage) else UnquotedString(bool1.failureMessage), 
+      if (bool2.value) UnquotedString(bool2.midSentenceNegatedFailureMessage) else UnquotedString(bool2.midSentenceFailureMessage)
+    )
 
   /**
    * Arguments to construct final negated failure message with raw message returned from <code>rawNegatedFailureMessage</code>.
    *
    * @return <code>Vector</code> that contains <code>bool1.failureMessage</code> and <code>bool2.midSentenceNegatedFailureMessage</code>
    */
-  def negatedFailureMessageArgs = Vector(UnquotedString(bool1.failureMessage), UnquotedString(bool2.midSentenceNegatedFailureMessage))
+  def negatedFailureMessageArgs = 
+    if (shortCircuit && bool1.value) 
+      bool1.negatedFailureMessageArgs 
+    else 
+      Vector(
+        if (bool1.value) UnquotedString(bool1.negatedFailureMessage) else UnquotedString(bool1.failureMessage), 
+        if (bool2.value) UnquotedString(bool2.midSentenceNegatedFailureMessage) else UnquotedString(bool2.midSentenceFailureMessage)
+      )
 
   /**
    * Arguments to construct final mid sentence failure message with raw message returned from <code>rawMidSentenceFailureMessage</code>.
@@ -715,7 +766,7 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
         }
       case "eq" => Resources.rawWasNotTheSameInstanceAs
       case "ne" => Resources.rawWasTheSameInstanceAs
-      case "&&" | "&" =>
+      case "&&" =>
         (left, right) match {
           case (leftBool: Bool, rightBool: Bool) =>
             if (leftBool.value)
@@ -727,6 +778,18 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
               Resources.rawCommaBut
             else
               leftBool.rawFailureMessage
+          case _ =>
+            Resources.rawCommaBut
+        }
+      case "&" => 
+        (left, right) match {
+          case (leftBool: Bool, rightBool: Bool) =>
+            if (leftBool.value == rightBool.value)
+              Resources.rawCommaAnd
+            else
+              Resources.rawCommaBut
+          case (leftBool: Bool, rightAny: Any) =>
+            Resources.rawCommaBut
           case _ =>
             Resources.rawCommaBut
         }
@@ -761,7 +824,22 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
       case "eq" => Resources.rawWasTheSameInstanceAs
       case "ne" => Resources.rawWasNotTheSameInstanceAs
       case "&&" | "&" => Resources.rawCommaAnd
-      case "||" | "|" => Resources.rawCommaAnd
+      case "||" => 
+        left match {
+          case leftBool: Bool => 
+            if (leftBool.value)
+              leftBool.rawNegatedFailureMessage
+            else
+              Resources.rawCommaBut
+        }
+      case "|" =>
+        (left, right) match {
+          case (leftBool: Bool, rightBool: Bool) => 
+            if (leftBool.value == rightBool.value)
+              Resources.rawCommaAnd
+            else
+              Resources.rawCommaBut
+        }  
       case _ => Resources.rawExpressionWasTrue
     }
 
@@ -793,7 +871,7 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
         Vector(leftee, rightee)
       case "startsWith" | "endsWith" | "contains" | "eq" | "ne" =>
         Vector(left, right)
-      case "&&" | "&" =>
+      case "&&" =>
         (left, right) match {
           case (leftBool: Bool, rightBool: Bool) =>
             if (leftBool.value)
@@ -810,6 +888,28 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
           case _ =>
             Vector(left, right)
         }
+
+      case "&" => 
+        (left, right) match {
+          case (leftBool: Bool, rightBool: Bool) =>
+            Vector(
+              if (leftBool.value) UnquotedString(leftBool.negatedFailureMessage) else UnquotedString(leftBool.failureMessage), 
+              if (rightBool.value) UnquotedString(rightBool.negatedFailureMessage) else UnquotedString(rightBool.failureMessage)
+            )
+          case (leftBool: Bool, rightAny: Any) =>
+            Vector(
+              if (leftBool.value) UnquotedString(leftBool.negatedFailureMessage) else UnquotedString(leftBool.failureMessage), 
+              rightAny
+            )
+          case (leftAny: Any, rightBool: Bool) =>
+            Vector(
+              leftAny, 
+              if (rightBool.value) UnquotedString(rightBool.negatedFailureMessage) else UnquotedString(rightBool.failureMessage)
+            )
+          case _ =>
+            Vector(left, right)
+        }
+
       case "||" | "|" =>
         (left, right) match {
           case (leftBool: Bool, rightBool: Bool) =>
@@ -852,7 +952,8 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
           case _ =>
             Vector(left, right)
         }
-      case "||" | "|" =>
+        
+      case "||" =>
         (left, right) match {
           case (leftBool: Bool, rightBool: Bool) =>
             Vector(
@@ -866,6 +967,22 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
           case _ =>
             Vector(left, right)
         }
+
+      case "|" =>
+        (left, right) match {
+          case (leftBool: Bool, rightBool: Bool) =>
+            Vector(
+              UnquotedString(if (leftBool.value) leftBool.negatedFailureMessage else leftBool.failureMessage),
+              UnquotedString(if (rightBool.value) rightBool.midSentenceNegatedFailureMessage else rightBool.midSentenceFailureMessage)
+            )
+          case (leftBool: Bool, rightAny: Any) =>
+            Vector(UnquotedString(if (leftBool.value) leftBool.negatedFailureMessage else leftBool.failureMessage), rightAny)
+          case (leftAny: Any, rightBool: Bool) =>
+            Vector(leftAny, UnquotedString(if (rightBool.value) rightBool.midSentenceNegatedFailureMessage else rightBool.midSentenceFailureMessage))
+          case _ =>
+            Vector(left, right)
+        }
+
       case _ => Vector.empty
     }
 
