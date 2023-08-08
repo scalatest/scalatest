@@ -459,7 +459,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
             case argTypeApply: TypeApply => transformAst(argTypeApply.duplicate, prettifierTree)
             case _ => simpleMacroBool(rightExpr.duplicate, getText(rightExpr), prettifierTree)
           }
-        if (operator == "&&" || operator == "&")  {// generate if (left.value) {...} else false
+        if (operator == "&&")  {// generate if (left.value) {...} else false
           If(
             Select(
               Ident(newTermName("$org_scalatest_assert_macro_left")),
@@ -469,7 +469,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
             simpleMacroBool(context.literal(false).tree, "", prettifierTree)
           )
         }
-        else if (operator == "||" || operator == "|") // || and |, generate if (left.value) true else {...}
+        else if (operator == "||") // || and |, generate if (left.value) true else {...}
           If(
             Select(
               Ident(newTermName("$org_scalatest_assert_macro_left")),

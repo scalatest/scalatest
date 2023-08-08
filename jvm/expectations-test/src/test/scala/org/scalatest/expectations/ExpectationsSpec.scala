@@ -758,13 +758,13 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
     it("should return No with correct message when is used to check a == 2 & b == 5") {
       val fact = expect(a == 2 & b == 5, ", dude")
       assert(fact.isNo)
-      assert(fact.factMessage == "3 did not equal 2, dude")
+      assert(fact.factMessage == "3 did not equal 2, but 5 equaled 5, dude")
     }
 
     it("should return No with correct message when is used to check a == 2 & b == 6") {
       val fact = expect(a == 2 & b == 6, ", dude")
       assert(fact.isNo)
-      assert(fact.factMessage == "3 did not equal 2, dude")
+      assert(fact.factMessage == "3 did not equal 2, and 5 did not equal 6, dude")
     }
 
     it("should return Yes with correct message when is used to check a == 3 || b == 5") {
@@ -794,13 +794,13 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
     it("should return Yes with correct message when is used to check a == 3 | b == 5") {
       val fact = expect(a == 3 | b == 5, ", dude")
       assert(fact.isYes)
-      assert(fact.factMessage == "3 equaled 3, dude")
+      assert(fact.factMessage == "3 equaled 3, and 5 equaled 5, dude")
     }
 
     it("should return Yes with correct message when is used to check a == 3 | b == 6") {
       val fact = expect(a == 3 | b == 6, ", dude")
       assert(fact.isYes)
-      assert(fact.factMessage == "3 equaled 3, dude")
+      assert(fact.factMessage == "3 equaled 3, but 5 did not equal 6, dude")
     }
 
     it("should return Yes with correct message when is used to check a == 2 | b == 5") {
@@ -862,6 +862,34 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
       val fact = expect(a == 5 && s.changeState, ", dude")
       assert(fact.isNo)
       assert(s.state == false)
+    }
+
+    it("should not short-circuit & when first condition was false") {
+      val s = new Stateful
+      val fact = expect(a == 5 & s.changeState, ", dude")
+      assert(fact.isNo)
+      assert(s.state == true)
+    }
+
+    it("should short-circuit || when first condition was true") {
+      val s = new Stateful
+      val fact = expect(a == 3 || s.changeState, ", dude")
+      assert(fact.isYes)
+      assert(s.state == false)
+    }
+
+    it("should not short-circuit | when first condition was true") {
+      val s = new Stateful
+      val fact = expect(a == 3 | s.changeState, ", dude")
+      assert(fact.isYes)
+      assert(s.state == true)
+    }
+
+    it("should return Yes with correct message when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
+      val fact = expect(a == 3 && { println("hi"); b == 5}, ", dude")
+      assert(fact.isYes)
+      assert(fact.factMessage.startsWith("3 equaled 3, and "))
+      assert(fact.factMessage.endsWith(" was true, dude"))
     }
   }
 
