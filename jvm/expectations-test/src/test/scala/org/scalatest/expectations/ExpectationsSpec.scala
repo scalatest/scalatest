@@ -734,6 +734,698 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
       assert(fact.factMessage == "3 did not equal 5")
     }
 
+    it("should return No with correct message when is used to check a !== 3") {
+      val fact = expect(a !== 3)
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3")
+    }
+
+    it("should return Yes with correct message when is used to check 5 !== a") {
+      val fact = expect(5 !== a)
+      assert(fact.isYes)
+      assert(fact.factMessage == "5 did not equal 3")
+    }
+
+    it("should return No with correct message when is used to check 3 !== a") {
+      val fact = expect(3 !== a)
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3")
+    }
+
+    it("should do nothing when is used to check a == 3 && b == 5") {
+      val fact = expect(a == 3 && b == 5)
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, and 5 equaled 5")
+    }
+
+    it("should return No with correct message when is used to check a == 3 && b == 6") {
+      val fact = expect(a == 3 && b == 6)
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3, but 5 did not equal 6")
+    }
+
+    it("should return No with correct message when is used to check a == 2 && b == 5") {
+      val fact = expect(a == 2 && b == 5)
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 2")
+    }
+
+    it("should return No with correct message when is used to check a == 2 && b == 6") {
+      val fact = expect(a == 2 && b == 6)
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 2")
+    }
+
+    it("should return Yes with correct message when is used to check a == 3 & b == 5") {
+      val fact = expect(a == 3 & b == 5)
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, and 5 equaled 5")
+    }
+
+    it("should return No with correct message when is used to check a == 3 & b == 6") {
+      val fact = expect(a == 3 & b == 6)
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3, but 5 did not equal 6")
+    }
+
+    it("should return No with correct message when is used to check a == 2 & b == 5") {
+      val fact = expect(a == 2 & b == 5)
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 2, but 5 equaled 5")
+    }
+
+    it("should return No with correct message when is used to check a == 2 & b == 6") {
+      val fact = expect(a == 2 & b == 6)
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 2, and 5 did not equal 6")
+    }
+
+    it("should return Yes with correct message when is used to check a == 3 || b == 5") {
+      val fact = expect(a == 3 || b == 5)
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3")
+    }
+
+    it("should return Yes with correct message when is used to check a == 3 || b == 6") {
+      val fact = expect(a == 3 || b == 6)
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3")
+    }
+
+    it("should return Yes with correct message when is used to check a == 2 || b == 5") {
+      val fact = expect(a == 2 || b == 5)
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 did not equal 2, but 5 equaled 5")
+    }
+
+    it("should return No with correct message when is used to check a == 2 || b == 6") {
+      val fact = expect(a == 2 || b == 6)
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 2, and 5 did not equal 6")
+    }
+
+    it("should return Yes with correct message when is used to check a == 3 | b == 5") {
+      val fact = expect(a == 3 | b == 5)
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, and 5 equaled 5")
+    }
+
+    it("should return Yes with correct message when is used to check a == 3 | b == 6") {
+      val fact = expect(a == 3 | b == 6)
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, but 5 did not equal 6")
+    }
+
+    it("should return Yes with correct message when is used to check a == 2 | b == 5") {
+      val fact = expect(a == 2 | b == 5)
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 did not equal 2, but 5 equaled 5")
+    }
+
+    it("should return No with correct message when is used to check a == 2 | b == 6") {
+      val fact = expect(a == 2 | b == 6)
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 did not equal 2, and 5 did not equal 6")
+    }
+
+    it("should return Yes with correct message when is used to check a == 3 && (b == 5 && b > 3)") {
+      val fact = expect(a == 3 && (b == 5 && b > 3))
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 equaled 3, and 5 equaled 5, and 5 was greater than 3")
+    }
+
+    it("should return No with correct message when is used to check a == 3 && (b == 5 && b > 5)") {
+      val fact = expect(a == 3 && (b == 5 && b > 5))
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3, but 5 equaled 5, but 5 was not greater than 5")
+    }
+
+    it("should return Yes with correct message when is used to check !(a == 5)") {
+      val fact = expect(!(a == 5))
+      assert(fact.isYes)
+      assert(fact.factMessage == "3 did not equal 5")
+    }
+
+    it("should return No with correct message when is used to check !(a == 3)") {
+      val fact = expect(!(a == 3))
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3")
+    }
+
+    it("should return No with correct message when is used to check a == 3 && !(b == 5)") {
+      val fact = expect(a == 3 && !(b == 5))
+      assert(fact.isNo)
+      assert(fact.factMessage == "3 equaled 3, but 5 equaled 5")
+    }
+
+    it("should return Yes with correct message when is used to check (a == 3) == (b == 5)") {
+      val fact = expect((a == 3) == (b == 5))
+      assert(fact.isYes)
+      assert(fact.factMessage == "true equaled true")
+    }
+
+    it("should return No with correct message when is used to check (a == 3) == (b != 5)") {
+      val fact = expect((a == 3) == (b != 5))
+      assert(fact.isNo)
+      assert(fact.factMessage == "true did not equal false")
+    }
+
+    it("should short-circuit && when first condition was false") {
+      val s = new Stateful
+      val fact = expect(a == 5 && s.changeState)
+      assert(fact.isNo)
+      assert(s.state == false)
+    }
+
+    it("should not short-circuit & when first condition was false") {
+      val s = new Stateful
+      val fact = expect(a == 5 & s.changeState)
+      assert(fact.isNo)
+      assert(s.state == true)
+    }
+
+    it("should short-circuit || when first condition was true") {
+      val s = new Stateful
+      val fact = expect(a == 3 || s.changeState)
+      assert(fact.isYes)
+      assert(s.state == false)
+    }
+
+    it("should not short-circuit | when first condition was true") {
+      val s = new Stateful
+      val fact = expect(a == 3 | s.changeState)
+      assert(fact.isYes)
+      assert(s.state == true)
+    }
+
+    it("should return Yes with correct message when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
+      val fact = expect(a == 3 && { println("hi"); b == 5})
+      assert(fact.isYes)
+      assert(fact.factMessage.startsWith("3 equaled 3, "))
+      assert(fact.factMessage.endsWith(" was true"))
+    }
+
+    it("should return No with correct message when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
+      val fact = expect(a == 3 && { println("hi"); b == 3})
+      assert(fact.isNo)
+      assert(fact.factMessage.startsWith("3 equaled 3,"))
+      assert(fact.factMessage.endsWith(" was false"))
+    }
+
+    it("should return Yes with correct message when it is used to check { println(\"hi\"); b == 5} && a == 3") {
+      val fact = expect({ println("hi"); b == 5} && a == 3)
+      assert(fact.isYes)
+      assert(fact.factMessage.endsWith(" was true, and 3 equaled 3"))
+    }
+
+    it("should return No with correct message when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
+      val fact = expect({ println("hi"); b == 5} && a == 5)
+      assert(fact.isNo)
+      assert(fact.factMessage.endsWith(" was true, but 3 did not equal 5"))
+    }
+
+    it("should preserve side effects when Apply with single argument is passed in") {
+      val fact = expect(neverRuns1(sys.error("Sad times 1")))
+      assert(fact.isYes)
+      assert(fact.factMessage.endsWith(" was true"))
+    }
+
+    it("should preserve side effects when Apply with 2 argument list is passed in") {
+      val fact = expect(neverRuns2(sys.error("Sad times 2"))(0))
+      assert(fact.isYes)
+      assert(fact.factMessage.endsWith(" was true"))
+    }
+
+    it("should preserve side effects when typed Apply with 2 argument list is passed in") {
+      val fact = expect(neverRuns3(sys.error("Sad times 3"))(0))
+      assert(fact.isYes)
+      assert(fact.factMessage.endsWith(" was true"))
+    }
+
+    val s1 = "hi ScalaTest"
+    val s2 = "ScalaTest hi"
+    val s3 = "Say hi to ScalaTest"
+    val s4 = ""
+
+    val ci1 = new CustomInt(123)
+    val ci2 = new CustomInt(321)
+    val ci3 = ci1
+
+    val l1 = List(1, 2, 3)
+    val l2 = List.empty[Int]
+    val l3 = List("one", "two", "three")
+
+    val m1 = Map(1 -> "one", 2 -> "two", 3 -> "three")
+    val m2 = Map.empty[Int, String]
+
+    val ct1 = new CustomContainer(8)
+
+    val date = new Date
+
+    it("should return No with correct message when is used to check s1 startsWith \"hi\"") {
+      val fact = expect(s1 startsWith "hi")
+      assert(fact.isYes)
+      assert(fact.factMessage == "\"hi ScalaTest\" started with \"hi\"")
+
+      val fact2 = expect(s1.startsWith("hi"))
+      assert(fact2.isYes)
+      assert(fact2.factMessage == "\"hi ScalaTest\" started with \"hi\"")
+    }
+
+    it("should return No with correct message when is used to check s2 startsWith \"hi\"") {
+      val fact = expect(s2 startsWith "hi")
+      assert(fact.isNo)
+      assert(fact.factMessage == "\"ScalaTest hi\" did not start with \"hi\"")
+      
+      val fact2 = expect(s2.startsWith("hi"))
+      assert(fact2.isNo)
+      assert(fact2.factMessage == "\"ScalaTest hi\" did not start with \"hi\"")
+    }
+
+    it("should return Yes with correct message when is used to check ci1 startsWith 1") {
+      val fact = expect(ci1 startsWith 1)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(ci1) + " started with 1")
+
+      val fact2 = expect(ci1.startsWith(1))
+      assert(fact2.isYes)
+      assert(fact2.factMessage == Prettifier.default(ci1) + " started with 1")
+    }
+
+    it("should return No with correct message when is used to check ci2 startsWith 1") {
+      val fact1 = expect(ci2 startsWith 1)
+      assert(fact1.isNo)
+      assert(fact1.factMessage == Prettifier.default(ci2) + " did not start with 1")
+
+      val fact2 = expect(ci2.startsWith(1))
+      assert(fact2.isNo)
+      assert(fact2.factMessage == Prettifier.default(ci2) + " did not start with 1")
+    }
+
+    it("should return Yes with correct message when is used to check !s2.startsWith(\"hi\")") {
+      val fact = expect(!s2.startsWith("hi"))
+      assert(fact.isYes)
+      assert(fact.factMessage == "\"ScalaTest hi\" did not start with \"hi\"")
+    }
+
+    it("should return No with correct message when is used to check !s1.startsWith(\"hi\")") {
+      val fact = expect(!s1.startsWith("hi"))
+      assert(fact.isNo)
+      assert(fact.factMessage == "\"hi ScalaTest\" started with \"hi\"")
+    }
+
+    it("should return Yes with correct message when is used to check s2 endsWith \"hi\"") {
+      val fact1 = expect(s2 endsWith "hi")
+      assert(fact1.isYes)
+      assert(fact1.factMessage == "\"ScalaTest hi\" ended with \"hi\"")
+
+      val fact2 = expect(s2.endsWith("hi"))
+      assert(fact2.isYes)
+      assert(fact2.factMessage == "\"ScalaTest hi\" ended with \"hi\"")
+    }
+
+    it("should return No with correct message when is used to check s1 endsWith \"hi\"") {
+      val fact1 = expect(s1 endsWith "hi")
+      assert(fact1.isNo)
+      assert(fact1.factMessage == "\"hi ScalaTest\" did not end with \"hi\"")
+
+      val fact2 = expect(s1.endsWith("hi"))
+      assert(fact2.isNo)
+      assert(fact2.factMessage == "\"hi ScalaTest\" did not end with \"hi\"")
+    }
+
+    it("should return Yes with correct message when is used to check ci2 endsWith 1") {
+      val fact1 = expect(ci2 endsWith 1)
+      assert(fact1.isYes)
+      assert(fact1.factMessage == Prettifier.default(ci2) + " ended with 1")
+      
+      val fact2 = expect(ci2.endsWith(1))
+      assert(fact2.isYes)
+      assert(fact2.factMessage == Prettifier.default(ci2) + " ended with 1")
+    }
+
+    it("should return No with correct message when is used to check ci1 endsWith 1") {
+      val fact1 = expect(ci1 endsWith 1)
+      assert(fact1.isNo)
+      assert(fact1.factMessage == Prettifier.default(ci1) + " did not end with 1")
+
+      val fact2 = expect(ci1.endsWith(1))
+      assert(fact2.isNo)
+      assert(fact2.factMessage == Prettifier.default(ci1) + " did not end with 1")
+    }
+
+    it("should return Yes with correct message when is used to check !s1.endsWith(\"hi\")") {
+      val fact = expect(!s1.endsWith("hi"))
+      assert(fact.isYes)
+      assert(fact.factMessage == "\"hi ScalaTest\" did not end with \"hi\"")
+    }
+
+    it("should return No with correct message when is used to check !s2.endsWith(\"hi\")") {
+      val fact = expect(!s2.endsWith("hi"))
+      assert(fact.isNo)
+      assert(fact.factMessage == "\"ScalaTest hi\" ended with \"hi\"")
+    }
+
+    it("should return Yes with correct message when is used to check s3 contains \"hi\"") {
+      val fact1 = expect(s3 contains "hi")
+      assert(fact1.isYes)
+      assert(fact1.factMessage == "\"Say hi to ScalaTest\" contained \"hi\"")
+      
+      val fact2 = expect(s3.contains("hi"))
+      assert(fact2.isYes)
+      assert(fact2.factMessage == "\"Say hi to ScalaTest\" contained \"hi\"")
+    }
+
+    it("should return No with correct message when is used to check s3 contains \"hello\"") {
+      val fact1 = expect(s3 contains "hello")
+      assert(fact1.isNo)
+      assert(fact1.factMessage == "\"Say hi to ScalaTest\" did not contain \"hello\"")
+
+      val fact2 = expect(s3.contains("hello"))
+      assert(fact2.isNo)
+      assert(fact2.factMessage == "\"Say hi to ScalaTest\" did not contain \"hello\"")
+    }
+
+    it("should return Yes with correct message when is used to check ci2 contains 2") {
+      val fact1 = expect(ci2 contains 2)
+      assert(fact1.isYes)
+      assert(fact1.factMessage == Prettifier.default(ci2) + " contained 2")
+
+      val fact2 = expect(ci2.contains(2))
+      assert(fact2.isYes)
+      assert(fact2.factMessage == Prettifier.default(ci2) + " contained 2")
+    }
+
+    it("should return No with correct message when is used to check ci1 contains 5") {
+      val fact1 = expect(ci1 contains 5)
+      assert(fact1.isNo)
+      assert(fact1.factMessage == Prettifier.default(ci1) + " did not contain 5")
+
+      val fact2 = expect(ci1.contains(5))
+      assert(fact2.isNo)
+      assert(fact2.factMessage == Prettifier.default(ci1) + " did not contain 5")
+    }
+
+    it("should return Yes with correct message when is used to check !s1.contains(\"hello\")") {
+      val fact = expect(!s3.contains("hello"))
+      assert(fact.isYes)
+      assert(fact.factMessage == "\"Say hi to ScalaTest\" did not contain \"hello\"")
+    }
+
+    it("should return No with correct message when is used to check !s3.contains(\"hi\")") {
+      val fact = expect(!s3.contains("hi"))
+      assert(fact.isNo)
+      assert(fact.factMessage == "\"Say hi to ScalaTest\" contained \"hi\"")
+    }
+
+    it("should return Ok with correct message when is used to check l1 contains 2") {
+      val fact1 = expect(l1 contains 2)
+      assert(fact1.isYes)
+      assert(fact1.factMessage == Prettifier.default(l1) + " contained 2")
+
+      val fact2 = expect(l1.contains(2))
+      assert(fact2.isYes)
+      assert(fact2.factMessage == Prettifier.default(l1) + " contained 2")
+    }
+
+    it("should return No with correct message when is used to check l1 contains 5") {
+      val fact1 = expect(l1 contains 5)
+      assert(fact1.isNo)
+      assert(fact1.factMessage == Prettifier.default(l1) + " did not contain 5")
+      
+      val fact2 = expect(l1.contains(5))
+      assert(fact2.isNo)
+      assert(fact2.factMessage == Prettifier.default(l1) + " did not contain 5")
+    }
+
+    it("should return Yes with correct message when is used to check !(l1 contains 5)") {
+      val fact1 = expect(!(l1 contains 5))
+      assert(fact1.isYes)
+      assert(fact1.factMessage == Prettifier.default(l1) + " did not contain 5")
+
+      val fact2 = expect(!l1.contains(5))
+      assert(fact2.isYes)
+      assert(fact2.factMessage == Prettifier.default(l1) + " did not contain 5")
+    }
+
+    it("should return No with correct message when is used to check !(l1 contains 2)") {
+      val fact1 = expect(!(l1 contains 2))
+      assert(fact1.isNo)
+      assert(fact1.factMessage == Prettifier.default(l1) + " contained 2")
+
+      val fact2 = expect(!l1.contains(2))
+      assert(fact2.isNo)
+      assert(fact2.factMessage == Prettifier.default(l1) + " contained 2")
+    }
+
+    it("should return Yes with correct message when is used to check m1 contains 2") {
+      val fact1 = expect(m1 contains 2)
+      assert(fact1.isYes)
+      assert(fact1.factMessage == Prettifier.default(m1) + " contained key 2")
+
+      val fact2 = expect(m1.contains(2))
+      assert(fact2.isYes)
+      assert(fact2.factMessage == Prettifier.default(m1) + " contained key 2")
+    }
+
+    it("should return No with correct message when is used to check m1 contains 5") {
+      val fact1 = expect(m1 contains 5)
+      assert(fact1.isNo)
+      assert(fact1.factMessage == Prettifier.default(m1) + " did not contain key 5")
+
+      val fact2 = expect(m1.contains(5))
+      assert(fact2.isNo)
+      assert(fact2.factMessage == Prettifier.default(m1) + " did not contain key 5")
+    }
+
+    it("should do nothing when is used to check !(m1 contains 5)") {
+      assert(!(m1 contains 5))
+      assert(!m1.contains(5))
+    }
+
+    it("should return No with correct message when is used to check !(m1 contains 2)") {
+      val fact1 = expect(!(m1 contains 2))
+      assert(fact1.isNo)
+      assert(fact1.factMessage == Prettifier.default(m1) + " contained key 2")
+      
+      val fact2 = expect(!m1.contains(2))
+      assert(fact1.isNo)
+      assert(fact1.factMessage == Prettifier.default(m1) + " contained key 2")
+    }
+
+    it("should return Yes with correct message when is used to check ct1 contains 8") {
+      val fact1 = expect(ct1 contains 8)
+      assert(fact1.isYes)
+      assert(fact1.factMessage == Prettifier.default(ct1) + " contained 8")
+
+      val fact2 = expect(ct1.contains(8))
+      assert(fact2.isYes)
+      assert(fact2.factMessage == Prettifier.default(ct1) + " contained 8")
+    }
+
+    it("should return No with correct message when is used to check ct1 contains 5") {
+      val fact1 = expect(ct1 contains 5)
+      assert(fact1.isNo)
+      assert(fact1.factMessage == Prettifier.default(ct1) + " did not contain 5")
+      
+      val fact2 = expect(ct1.contains(5))
+      assert(fact2.isNo)
+      assert(fact2.factMessage == Prettifier.default(ct1) + " did not contain 5")
+    }
+
+    it("should return Yes with correct message when is used to check !ct1.contains(5)") {
+      val fact = expect(!ct1.contains(5))
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(ct1) + " did not contain 5")
+    }
+
+    it("should return No with correct message when is used to check !ct1.contains(8)") {
+      val fact = expect(!ct1.contains(8))
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(ct1) + " contained 8")
+    }
+
+    it("should return Yes with correct message when is used to check ci1 eq ci3") {
+      val fact1 = expect(ci1 eq ci3)
+      assert(fact1.isYes)
+      assert(fact1.factMessage == Prettifier.default(ci1) + " was the same instance as " + Prettifier.default(ci3))
+
+      val fact2 = expect(ci1.eq(ci3))
+      assert(fact2.isYes)
+      assert(fact2.factMessage == Prettifier.default(ci1) + " was the same instance as " + Prettifier.default(ci3))
+    }
+
+    it("should return No with correct message and stack depth when is used to check ci1 eq ci2") {
+      val fact1 = expect(ci1 eq ci2)
+      assert(fact1.isNo)
+      assert(fact1.factMessage == Prettifier.default(ci1) + " was not the same instance as " + Prettifier.default(ci2))
+
+      val fact2 = expect(ci1.eq(ci2))
+      assert(fact2.isNo)
+      assert(fact2.factMessage == Prettifier.default(ci1) + " was not the same instance as " + Prettifier.default(ci2))
+    }
+
+    it("should return Yes with correct message when is used to check !ci1.eq(ci2)") {
+      val fact = expect(!ci1.eq(ci2))
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(ci1) + " was not the same instance as " + Prettifier.default(ci2))
+    }
+
+    it("should return No with correct message when is used to check !ci1.eq(ci3)") {
+      val fact = expect(!ci1.eq(ci3))
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(ci1) + " was the same instance as " + Prettifier.default(ci3))
+    }
+
+    it("should return Yes with correct message when is used to check ci1 ne ci2") {
+      val fact1 = expect(ci1 ne ci2)
+      assert(fact1.isYes)
+      assert(fact1.factMessage == Prettifier.default(ci1) + " was not the same instance as " + Prettifier.default(ci2))
+
+      val fact2 = expect(ci1.ne(ci2))
+      assert(fact2.isYes)
+      assert(fact2.factMessage == Prettifier.default(ci1) + " was not the same instance as " + Prettifier.default(ci2))
+    }
+
+    it("should return No with correct message when is used to check ci1 ne ci3") {
+      val fact1 = expect(ci1 ne ci3)
+      assert(fact1.isNo)
+      assert(fact1.factMessage == Prettifier.default(ci1) + " was the same instance as " + Prettifier.default(ci3))
+
+      val fact2 = expect(ci1.ne(ci3))
+      assert(fact2.isNo)
+      assert(fact2.factMessage == Prettifier.default(ci1) + " was the same instance as " + Prettifier.default(ci3))
+    }
+
+    it("should return Yes with correct message when is used to check !ci1.ne(ci3)") {
+      val fact = expect(!ci1.ne(ci3))
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(ci1) + " was the same instance as " + Prettifier.default(ci3))
+    }
+
+    it("should return No with correct message when is used to check !ci1.ne(ci2)") {
+      val fact = expect(!ci1.ne(ci2))
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(ci1) + " was not the same instance as " + Prettifier.default(ci2))
+    }
+
+    it("should return Yes with correct message when is used to check s4.isEmpty") {
+      val fact = expect(s4.isEmpty)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(s4) + " was empty")
+    }
+
+    it("should return No with correct message when is used to check s3.isEmpty") {
+      val fact = expect(s3.isEmpty)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(s3) + " was not empty")
+    }
+
+    it("should return Yes with correct message when is used to check !s3.isEmpty") {
+      val fact = expect(!s3.isEmpty)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(s3) + " was not empty")
+    }
+
+    it("should return No with correct message when is used to check !s4.isEmpty") {
+      val fact = expect(!s4.isEmpty)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(s4) + " was empty")
+    }
+
+    it("should return Yes with correct message when is used to check l2.isEmpty") {
+      val fact = expect(l2.isEmpty)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l2) + " was empty")
+    }
+
+    it("should return No with correct message when is used to check l1.isEmpty") {
+      val fact = expect(l1.isEmpty)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l1) + " was not empty")
+    }
+
+    it("should return Yes with correct message when is used to check !l1.isEmpty") {
+      val fact = expect(!l1.isEmpty)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l1) + " was not empty")
+    }
+
+    it("should return No with correct message when is used to check !l2.isEmpty") {
+      val fact = expect(!l2.isEmpty)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l2) + " was empty")
+    }
+
+    it("should return Yes with correct message when is used to check s3.nonEmpty") {
+      val fact = expect(s3.nonEmpty)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(s3) + " was not empty")
+    }
+
+    it("should return No with correct message when is used to check s4.nonEmpty ") {
+      val fact = expect(s4.nonEmpty)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(s4) + " was empty")
+    }
+
+    it("should return Yes when is used to check !s4.nonEmpty") {
+      val fact = expect(!s4.nonEmpty)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(s4) + " was empty")
+    }
+
+    it("should return No with correct message when is used to check !s3.nonEmpty") {
+      val fact = expect(!s3.nonEmpty)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(s3) + " was not empty")
+    }
+
+    it("should return Yes with correct message when is used to check l1.nonEmpty") {
+      val fact = expect(l1.nonEmpty)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l1) + " was not empty")
+    }
+
+    it("should return No with correct message when is used to check l2.nonEmpty") {
+      val fact = expect(l2.nonEmpty)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l2) + " was empty")
+    }
+
+    it("should return Yes with correct message when is used to check !l2.isEmpty") {
+      val fact = expect(!l2.nonEmpty)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l2) + " was empty")
+    }
+
+    it("should return No with correct message when is used to check !l1.nonEmpty") {
+      val fact = expect(!l1.nonEmpty)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l1) + " was not empty")
+    }
+
+    it("should return Yes with correct message when is used to check s1.isInstanceOf[String]") {
+      val fact = expect(s1.isInstanceOf[String])
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(s1) + " was instance of scala.Predef.String")
+    }
+
+    it("should return No with correct message when is used to check l1.isInstanceOf[String]") {
+      val fact = expect(l1.isInstanceOf[String])
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l1) + " was not instance of scala.Predef.String")
+    }
+
+    it("should return Yes with correct message when is used to check l1.isInstanceOf[List[Int]]") {
+      val fact = expect(l1.isInstanceOf[List[Int]])
+      assert(fact.isYes)
+      if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
+        assert(fact.factMessage == Prettifier.default(l1) + " was instance of scala.collection.immutable.List[scala.Int]")
+      else
+        assert(fact.factMessage == Prettifier.default(l1) + " was instance of scala.List")
+    }
+
   }
 
   describe("The expect(condition, clue) method") {
