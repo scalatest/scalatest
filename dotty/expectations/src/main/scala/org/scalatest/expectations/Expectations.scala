@@ -17,6 +17,7 @@ package org.scalatest.expectations
 
 import org.scalactic.{Resources => _, _}
 import org.scalatest.{Assertion, CompileMacro, Expectation, Fact, Suite, Resources, AppendedClues}
+import org.scalactic.Requirements.requireNonNull
 import Fact._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -68,6 +69,56 @@ trait Expectations {
         rawSimplifiedFactMessage,
         rawMidSentenceFactMessage,
         rawMidSentenceSimplifiedFactMessage,
+        Vector(exp, act),
+        Vector(exp, act),
+        Vector(exp, act),
+        Vector(exp, act), 
+        prettifier
+      )
+    }
+  }
+
+  /**
+   * Expects that `actual` is equal to `expected` using default equality.
+   *
+   * @param expected the expected value
+   * @param clue an object whose <code>toString</code> method returns a message to be appended to the result [[Fact]]'s message
+   * @param actual the actual value
+   * @param prettifier the prettifier used to pretty-print the values
+   * @param pos the source position
+   * @return a [[Fact]] representing the result of the assertion
+   */
+  def expectResult(expected: Any, clue: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Fact = {
+    requireNonNull(clue)
+    if (!DefaultEquality.areEqualComparingArraysStructurally(actual, expected)) {
+      val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
+      val rawFactMessage = Resources.rawExpectedButGot
+      val rawSimplifiedFactMessage = Resources.rawDidNotEqual
+      val rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedButGot
+      val rawMidSentenceSimplifiedFactMessage = Resources.rawDidNotEqual
+      No(
+        AppendedClues.appendClue(rawFactMessage, clue.toString()),
+        AppendedClues.appendClue(rawSimplifiedFactMessage, clue.toString()),
+        AppendedClues.appendClue(rawMidSentenceFactMessage, clue.toString()),
+        AppendedClues.appendClue(rawMidSentenceSimplifiedFactMessage, clue.toString()),
+        Vector(exp, act),
+        Vector(exp, act),
+        Vector(exp, act),
+        Vector(exp, act), 
+        prettifier
+      )
+    }
+    else {
+      val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
+      val rawFactMessage = Resources.rawExpectedAndGot
+      val rawSimplifiedFactMessage = Resources.rawEqualed
+      val rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedAndGot
+      val rawMidSentenceSimplifiedFactMessage = Resources.rawEqualed
+      Yes(
+        AppendedClues.appendClue(rawFactMessage, clue.toString()),
+        AppendedClues.appendClue(rawSimplifiedFactMessage, clue.toString()),
+        AppendedClues.appendClue(rawMidSentenceFactMessage, clue.toString()),
+        AppendedClues.appendClue(rawMidSentenceSimplifiedFactMessage, clue.toString()),
         Vector(exp, act),
         Vector(exp, act),
         Vector(exp, act),

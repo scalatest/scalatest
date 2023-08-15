@@ -377,6 +377,307 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
     }
   }
 
+  describe("The expectResult method that 'gets a clue'") {
+    it("should give a correct Fact result when the expectation fails") {
+      val fact = expectResult(3, ", dude") { 2 }
+      assert(fact.isNo)
+      assert(fact.factMessage  == "Expected 3, but got 2, dude")
+      assert(fact.simplifiedFactMessage == "3 did not equal 2, dude")
+      assert(fact.midSentenceFactMessage == "expected 3, but got 2, dude")
+      assert(fact.midSentenceSimplifiedFactMessage == "3 did not equal 2, dude")
+      assert(fact.rawFactMessage == "Expected {0}, but got {1}, dude")
+      assert(fact.rawSimplifiedFactMessage == "{0} did not equal {1}, dude")
+      assert(fact.rawMidSentenceFactMessage == "expected {0}, but got {1}, dude")
+      assert(fact.rawMidSentenceSimplifiedFactMessage == "{0} did not equal {1}, dude")
+      assert(fact.factMessageArgs == Vector(3, 2))
+      assert(fact.simplifiedFactMessageArgs == Vector(3, 2))
+      assert(fact.midSentenceFactMessageArgs == Vector(3, 2))
+      assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 2))
+      assert(fact.isLeaf)
+      assert(!fact.isVacuousYes)
+    }
+    it("should give a correct Fact result when the expectation succeeds") {
+      val fact = expectResult(3, ", dude") { 3 }
+      assert(fact.isYes)
+      assert(fact.factMessage  == "Expected 3, and got 3, dude")
+      assert(fact.simplifiedFactMessage == "3 equaled 3, dude")
+      assert(fact.midSentenceFactMessage == "expected 3, and got 3, dude")
+      assert(fact.midSentenceSimplifiedFactMessage == "3 equaled 3, dude")
+      assert(fact.rawFactMessage == "Expected {0}, and got {1}, dude")
+      assert(fact.rawSimplifiedFactMessage == "{0} equaled {1}, dude")
+      assert(fact.rawMidSentenceFactMessage == "expected {0}, and got {1}, dude")
+      assert(fact.rawMidSentenceSimplifiedFactMessage == "{0} equaled {1}, dude")
+      assert(fact.factMessageArgs == Vector(3, 3))
+      assert(fact.simplifiedFactMessageArgs == Vector(3, 3))
+      assert(fact.midSentenceFactMessageArgs == Vector(3, 3))
+      assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 3))
+      assert(fact.isLeaf)
+      assert(!fact.isVacuousYes)
+    }
+    it("should give a basic (non-diagrammed) error message for simple leaf nodes") {
+      val fact = expectResult(3, ", dude") { 4 }
+      assert(fact.isNo)
+      assert(fact.factMessage  == "Expected 3, but got 4, dude")
+      assert(fact.simplifiedFactMessage == "3 did not equal 4, dude")
+      assert(fact.midSentenceFactMessage == "expected 3, but got 4, dude")
+      assert(fact.midSentenceSimplifiedFactMessage == "3 did not equal 4, dude")
+      assert(fact.rawFactMessage == "Expected {0}, but got {1}, dude")
+      assert(fact.rawSimplifiedFactMessage == "{0} did not equal {1}, dude")
+      assert(fact.rawMidSentenceFactMessage == "expected {0}, but got {1}, dude")
+      assert(fact.rawMidSentenceSimplifiedFactMessage == "{0} did not equal {1}, dude")
+      assert(fact.factMessageArgs == Vector(3, 4))
+      assert(fact.simplifiedFactMessageArgs == Vector(3, 4))
+      assert(fact.midSentenceFactMessageArgs == Vector(3, 4))
+      assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 4))
+      assert(fact.isLeaf)
+      assert(!fact.isVacuousYes)
+      assert(fact.toString == "No(expected 3, but got 4, dude)")
+    }
+    it("should still give a basic error message after negating a leaf with !") {
+      val fact = !expectResult(3, ", dude") { 3 }
+      assert(fact.isNo)
+      assert(fact.factMessage  == "3 equaled 3, dude")
+      assert(fact.simplifiedFactMessage == "3 equaled 3, dude")
+      assert(fact.midSentenceFactMessage == "3 equaled 3, dude")
+      assert(fact.midSentenceSimplifiedFactMessage == "3 equaled 3, dude")
+      assert(fact.rawFactMessage == "{0} equaled {1}, dude")
+      assert(fact.rawSimplifiedFactMessage == "{0} equaled {1}, dude")
+      assert(fact.rawMidSentenceFactMessage == "{0} equaled {1}, dude")
+      assert(fact.rawMidSentenceSimplifiedFactMessage == "{0} equaled {1}, dude")
+      assert(fact.factMessageArgs == Vector(3, 3))
+      assert(fact.simplifiedFactMessageArgs == Vector(3, 3))
+      assert(fact.midSentenceFactMessageArgs == Vector(3, 3))
+      assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 3))
+      assert(fact.isLeaf)
+      assert(!fact.isVacuousYes)
+      assert(fact.toString ==
+        "No(" + NEWLINE +
+        "  !Yes(expected 3, and got 3, dude)" + NEWLINE +
+        ")"
+      )
+    }
+    it("should give a basic message for a && binary expression with 2 leafs") {
+      val fact1 = expectResult(3, ", dude") { 3 } && expectResult(3, ", dudedu") { 4 }
+      assert(fact1.isNo)
+      assert(fact1.factMessage  == "3 equaled 3, dude, but 3 did not equal 4, dudedu")
+      assert(fact1.toString ==
+        "No(" + NEWLINE +
+        "  Yes(expected 3, and got 3, dude) &&" + NEWLINE +
+        "  No(expected 3, but got 4, dudedu)" + NEWLINE +
+        ")"
+      )
+      assert(!fact1.isVacuousYes)
+
+      val fact2 = expectResult(3, ", dude") { 3 } && !expectResult(4, ", dudede") { 4 }
+      assert(fact2.isNo)
+      assert(fact2.factMessage  == "3 equaled 3, dude, but 4 equaled 4, dudede")
+      assert(fact2.toString ==
+        "No(" + NEWLINE +
+        "  Yes(expected 3, and got 3, dude) &&" + NEWLINE +
+        "  No(" + NEWLINE +
+        "    !Yes(expected 4, and got 4, dudede)" + NEWLINE +
+        "  )" + NEWLINE +
+        ")"
+      )
+      assert(!fact2.isVacuousYes)
+    }
+    it("should give a basic message for a & binary expression with 2 leafs") {
+      val fact1 = expectResult(3, ", dude") { 3 } & expectResult(3, ", dudedu") { 4 }
+      assert(fact1.isNo)
+      assert(fact1.factMessage  == "3 equaled 3, dude, but 3 did not equal 4, dudedu")
+      assert(fact1.toString ==
+        "No(" + NEWLINE +
+          "  Yes(expected 3, and got 3, dude) &" + NEWLINE +
+          "  No(expected 3, but got 4, dudedu)" + NEWLINE +
+          ")"
+      )
+      assert(!fact1.isVacuousYes)
+
+      val fact2 = expectResult(3, ", dude") { 3 } & !expectResult(4, ", dudede") { 4 }
+      assert(fact2.isNo)
+      assert(fact2.factMessage  == "3 equaled 3, dude, but 4 equaled 4, dudede")
+      assert(fact2.toString ==
+        "No(" + NEWLINE +
+          "  Yes(expected 3, and got 3, dude) &" + NEWLINE +
+          "  No(" + NEWLINE +
+          "    !Yes(expected 4, and got 4, dudede)" + NEWLINE +
+          "  )" + NEWLINE +
+          ")"
+      )
+      assert(!fact2.isVacuousYes)
+    }
+    it("should use vertical diagrammed style of message when one of component in && and || binary expression is not a leaf") {
+      val fact = (expectResult(3, ", dude") { 3 } && expectResult(3, ", dedude") { 4 }) || expectResult(5, ", daduda") { 6 }
+      assert(fact.factMessage ==
+        "No(" + NEWLINE +
+        "  No(" + NEWLINE +
+        "    Yes(expected 3, and got 3, dude) &&" + NEWLINE +
+        "    No(expected 3, but got 4, dedude)" + NEWLINE +
+        "  ) ||" + NEWLINE +
+        "  No(expected 5, but got 6, daduda)" + NEWLINE +
+        ")"
+      )
+      assert(fact.toString ==
+        "No(" + NEWLINE +
+        "  No(" + NEWLINE +
+        "    Yes(expected 3, and got 3, dude) &&" + NEWLINE +
+        "    No(expected 3, but got 4, dedude)" + NEWLINE +
+        "  ) ||" + NEWLINE +
+        "  No(expected 5, but got 6, daduda)" + NEWLINE +
+        ")"
+      )
+      assert(!fact.isVacuousYes)
+    }
+    it("should use vertical diagrammed style of message when one of component in & and | binary expression is not a leaf") {
+      val fact = (expectResult(3, ", dude") { 3 } & expectResult(3, ", dedude") { 4 }) | expectResult(5, ", daduda") { 6 }
+      assert(fact.factMessage ==
+        "No(" + NEWLINE +
+          "  No(" + NEWLINE +
+          "    Yes(expected 3, and got 3, dude) &" + NEWLINE +
+          "    No(expected 3, but got 4, dedude)" + NEWLINE +
+          "  ) |" + NEWLINE +
+          "  No(expected 5, but got 6, daduda)" + NEWLINE +
+          ")"
+      )
+      assert(fact.toString ==
+        "No(" + NEWLINE +
+          "  No(" + NEWLINE +
+          "    Yes(expected 3, and got 3, dude) &" + NEWLINE +
+          "    No(expected 3, but got 4, dedude)" + NEWLINE +
+          "  ) |" + NEWLINE +
+          "  No(expected 5, but got 6, daduda)" + NEWLINE +
+          ")"
+      )
+      assert(!fact.isVacuousYes)
+    }
+    it("should use vertical diagrammed style of message and prefix Unary_! instance with !") {
+      val fact = (expectResult(3, ", dude") { 3 } && !expectResult(4, ", dudedu") { 4 }) || expectResult(5, ", daduda") { 6 }
+      assert(fact.factMessage ==
+        "No(" + NEWLINE +
+        "  No(" + NEWLINE +
+        "    Yes(expected 3, and got 3, dude) &&" + NEWLINE +
+        "    No(" + NEWLINE +
+        "      !Yes(expected 4, and got 4, dudedu)" + NEWLINE +
+        "    )" + NEWLINE +
+        "  ) ||" + NEWLINE +
+        "  No(expected 5, but got 6, daduda)" + NEWLINE +
+        ")"
+      )
+      assert(fact.toString ==
+        "No(" + NEWLINE +
+        "  No(" + NEWLINE +
+        "    Yes(expected 3, and got 3, dude) &&" + NEWLINE +
+        "    No(" + NEWLINE +
+        "      !Yes(expected 4, and got 4, dudedu)" + NEWLINE +
+        "    )" + NEWLINE +
+        "  ) ||" + NEWLINE +
+        "  No(expected 5, but got 6, daduda)" + NEWLINE +
+        ")"
+      )
+      assert(!fact.isVacuousYes)
+    }
+    it("should short-circuit and just return No when used with No && No") {
+      val fact = expectResult(2, ", dude") {4} && expectResult(3, ", daduda") {5}
+      assert(fact.isInstanceOf[Fact.Leaf])
+      assert(fact.isNo)
+      assert(fact.factMessage == "Expected 2, but got 4, dude")
+      assert(!fact.isVacuousYes)
+    }
+    it("should short-circuit and just return No when used with No && Yes") {
+      val fact = expectResult(2, ", dude") {4} && expectResult(3, ", dudadu") {3}
+      assert(fact.isInstanceOf[Fact.Leaf])
+      assert(fact.isNo)
+      assert(fact.factMessage == "Expected 2, but got 4, dude")
+      assert(!fact.isVacuousYes)
+    }
+    it("should return Binary_&& when used with Yes && No") {
+      val fact = expectResult(4, ", dude") {4} && expectResult(3, ", dudadu") {5}
+      assert(fact.isInstanceOf[Fact.Binary_&&])
+      assert(fact.factMessage == "4 equaled 4, dude, but 3 did not equal 5, dudadu")
+      assert(!fact.isVacuousYes)
+    }
+    it("should return Binary_&& when used with Yes && Yes") {
+      val fact = expectResult(4, ", dude") {4} && expectResult(3, ", dudadu") {3}
+      assert(fact.isInstanceOf[Fact.Binary_&&])
+      assert(fact.factMessage == "4 equaled 4, dude, and 3 equaled 3, dudadu")
+      assert(!fact.isVacuousYes)
+    }
+    it("should return Binary_& when used with No & No") {
+      val fact = expectResult(2, ", dude") {4} & expectResult(3, ", dudadu") {5}
+      assert(fact.isInstanceOf[Fact.Binary_&])
+      assert(fact.factMessage == "2 did not equal 4, dude, and 3 did not equal 5, dudadu")
+      assert(!fact.isVacuousYes)
+    }
+    it("should return Binary_& when used with No & Yes") {
+      val fact = expectResult(2, ", dude") {4} & expectResult(3, ", dudadu") {3}
+      assert(fact.isInstanceOf[Fact.Binary_&])
+      assert(fact.factMessage == "2 did not equal 4, dude, and 3 equaled 3, dudadu")
+      assert(!fact.isVacuousYes)
+    }
+    it("should return Binary_& when used with Yes & No") {
+      val fact = expectResult(4, ", dude") {4} & expectResult(3, ", dudadu") {5}
+      assert(fact.isInstanceOf[Fact.Binary_&])
+      assert(fact.factMessage == "4 equaled 4, dude, but 3 did not equal 5, dudadu")
+      assert(!fact.isVacuousYes)
+    }
+    it("should return Binary_& when used with Yes & Yes") {
+      val fact = expectResult(4, ", dude") {4} & expectResult(3, ", dudadu") {3}
+      assert(fact.isInstanceOf[Fact.Binary_&])
+      assert(fact.factMessage == "4 equaled 4, dude, and 3 equaled 3, dudadu")
+      assert(!fact.isVacuousYes)
+    }
+    it("should return Binary_|| when used with No || No") {
+      val fact = expectResult(2, ", dude") {4} || expectResult(3, ", dudadu") {5}
+      assert(fact.isInstanceOf[Fact.Binary_||])
+      assert(fact.factMessage == "2 did not equal 4, dude, and 3 did not equal 5, dudadu")
+      assert(!fact.isVacuousYes)
+    }
+    it("should return Binary_|| when used with No || Yes") {
+      val fact = expectResult(2, ", dude") {4} || expectResult(3, ", dudadu") {3}
+      assert(fact.isInstanceOf[Fact.Binary_||])
+      assert(fact.factMessage == "2 did not equal 4, dude, and 3 equaled 3, dudadu")
+      assert(!fact.isVacuousYes)
+    }
+    it("should short-circuit and return Yes when used with Yes || No") {
+      val fact = expectResult(4, ", dude") {4} || expectResult(3, ", dudadu") {5}
+      assert(fact.isInstanceOf[Fact.Leaf])
+      assert(fact.isYes)
+      assert(fact.factMessage == "Expected 4, and got 4, dude")
+      assert(!fact.isVacuousYes)
+    }
+    it("should short-circuit and return Yes when used with Yes || Yes") {
+      val fact = expectResult(4, ", dude") {4} || expectResult(3, ", dudadu") {3}
+      assert(fact.isInstanceOf[Fact.Leaf])
+      assert(fact.isYes)
+      assert(fact.factMessage == "Expected 4, and got 4, dude")
+      assert(!fact.isVacuousYes)
+    }
+    it("should return Binary_| when used with No | No") {
+      val fact = expectResult(2, ", dude") {4} | expectResult(3, ", dudadu") {5}
+      assert(fact.isInstanceOf[Fact.Binary_|])
+      assert(fact.factMessage == "2 did not equal 4, dude, and 3 did not equal 5, dudadu")
+      assert(!fact.isVacuousYes)
+    }
+    it("should return Binary_| when used with No | Yes") {
+      val fact = expectResult(2, ", dude") {4} | expectResult(3, ", dudadu") {3}
+      assert(fact.isInstanceOf[Fact.Binary_|])
+      assert(fact.factMessage == "2 did not equal 4, dude, and 3 equaled 3, dudadu")
+      assert(!fact.isVacuousYes)
+    }
+    it("should return Binary_| when used with Yes | No") {
+      val fact = expectResult(4, ", dude") {4} | expectResult(3, ", dudadu") {5}
+      assert(fact.isInstanceOf[Fact.Binary_|])
+      assert(fact.factMessage == "4 equaled 4, dude, and 3 did not equal 5, dudadu")
+      assert(!fact.isVacuousYes)
+    }
+    it("should return Binary_| when used with Yes | Yes") {
+      val fact = expectResult(4, ", dude") {4} | expectResult(3, ", dudadu") {3}
+      assert(fact.isInstanceOf[Fact.Binary_|])
+      assert(fact.factMessage == "4 equaled 4, dude, and 3 equaled 3, dudadu")
+      assert(!fact.isVacuousYes)
+    }
+  }
+
   describe("The expectThrows method") {
     it("should catch subtypes") {
       class MyException extends RuntimeException
