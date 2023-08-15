@@ -1426,6 +1426,255 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
         assert(fact.factMessage == Prettifier.default(l1) + " was instance of scala.List")
     }
 
+    it("should return No with correct message when is used to check s1.isInstanceOf[List[Int]]") {
+      val fact = expect(s1.isInstanceOf[List[Int]])
+      assert(fact.isNo)
+      if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
+        assert(fact.factMessage == Prettifier.default(s1) + " was not instance of scala.collection.immutable.List[scala.Int]")
+      else
+        assert(fact.factMessage == Prettifier.default(s1) + " was not instance of scala.List")
+    }
+    
+    it("should return Yes with correct message when is used to check date.isInstanceOf[Date]") {
+      val fact = expect(date.isInstanceOf[Date])
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(date) + " was instance of java.util.Date")
+    }
+
+    it("should return No with correct message when is used to check l1.isInstanceOf[Date]") {
+      val fact = expect(l1.isInstanceOf[Date])
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l1) + " was not instance of java.util.Date")
+    }
+
+    it("should return No with correct message when is used to check !l1.isInstanceOf[List[Int]]") {
+      val fact = expect(!l1.isInstanceOf[List[Int]])
+      assert(fact.isNo)
+      if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3."))
+        assert(fact.factMessage == Prettifier.default(l1) + " was instance of scala.collection.immutable.List[scala.Int]")
+      else
+        assert(fact.factMessage == Prettifier.default(l1) + " was instance of scala.List")
+    }
+
+    it("should return Yes with correct message when is used to check !l1.isInstanceOf[Date]") {
+      val fact = expect(!l1.isInstanceOf[Date])
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l1) + " was not instance of java.util.Date")
+    }
+
+    it("should return No with correct message when is used to check !date.isInstanceOf[Date]") {
+      val fact = expect(!date.isInstanceOf[Date])
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(date) + " was instance of java.util.Date")
+    }
+
+    it("should return Yes when is used to check s1.length == 9") {
+      val fact = expect(s1.length == 12)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(s1) + " had length 12")
+    }
+
+    it("should return No with correct message when is used to check s1.length == 10") {
+      val fact = expect(s1.length == 10)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(s1) + " had length 12 instead of expected length 10")
+    }
+
+    it("should return Yes with correct message when is used to check l1.length == 3") {
+      val fact = expect(l1.length == 3)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l1) + " had length 3")
+    }
+
+    it("should return No with correct message and stack depth when is used to check l1.length == 10") {
+      val fact = expect(l1.length == 10)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l1) + " had length 3 instead of expected length 10")
+    }
+
+    it("should return Yes with correct message when is used to check !(s1.length == 10)") {
+      val fact = expect(!(s1.length == 10))
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(s1) + " had length 12 instead of expected length 10")
+    }
+
+    it("should return No with correct message when is used to check !(s1.length == 9)") {
+      val fact = expect(!(s1.length == 12))
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(s1) + " had length 12")
+    }
+
+    it("should return Yes with correct message when is used to check !(l1.length == 2)") {
+      val fact = expect(!(l1.length == 2))
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l1) + " had length 3 instead of expected length 2")
+    }
+
+    it("should return No with correct message when is used to check !(l1.length == 9)") {
+      val fact = expect(!(l1.length == 3))
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l1) + " had length 3")
+    }
+
+    it("should return Yes with correct message when is used to check floatLengthSize.length == 2.0f") {
+      val fact = expect(floatLengthSize.length == 2.0f)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(floatLengthSize) + " had length 2.0")
+    }
+
+    it("should return No with correct message when is used to check floatLengthSize.length == 1.0f") {
+      val fact = expect(floatLengthSize.length == 1.0f)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(floatLengthSize) + " had length 2.0 instead of expected length 1.0")
+    }
+
+    it("should return Yes with correct message when is used to check s1.size == 9") {
+      val fact = expect(s1.size == 12)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(s1) + " had size 12")
+    }
+
+    it("should return No with correct message when is used to check s1.size == 10") {
+      val fact = expect(s1.size == 10)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(s1) + " had size 12 instead of expected size 10")
+    }
+
+    it("should return Yes with correct message when is used to check l1.size == 3") {
+      val fact = expect(l1.size == 3)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l1) + " had size 3")
+    }
+
+    it("should return No with correct message and stack depth when is used to check l1.size == 10") {
+      val fact = expect(l1.size == 10)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l1) + " had size 3 instead of expected size 10")
+    }
+
+    it("should return Yes with correct message when is used to check !(s1.size == 10)") {
+      val fact = expect(!(s1.size == 10))
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(s1) + " had size 12 instead of expected size 10")
+    }
+
+    it("should return No with correct message when is used to check !(s1.size == 9)") {
+      val fact = expect(!(s1.size == 12))
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(s1) + " had size 12")
+    }
+
+    it("should return Yes with correct message when is used to check !(l1.size == 2)") {
+      val fact = expect(!(l1.size == 2))
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l1) + " had size 3 instead of expected size 2")
+    }
+
+    it("should return No with correct message when is used to check !(l1.size == 9)") {
+      val fact = expect(!(l1.size == 3))
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l1) + " had size 3")
+    }
+
+    it("should return Yes with correct message when is used to check floatLengthSize.size == 2.0f") {
+      val fact = expect(floatLengthSize.size == 2.0f)
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(floatLengthSize) + " had size 2.0")
+    }
+
+    it("should return No with correct message when is used to check floatLengthSize.size == 1.0f") {
+      val fact = expect(floatLengthSize.size == 1.0f)
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(floatLengthSize) + " had size 2.0 instead of expected size 1.0")
+    }
+
+    it("should return Yes with correct message when is used to check l1.exists(_ == 3)") {
+      val fact = expect(l1.exists(_ == 3))
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l1) + " contained 3")
+    }
+
+    it("should return Yes with correct message when is used to check l1.exists(3 == _)") {
+      val fact = expect(l1.exists(3 == _))
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l1) + " contained 3")
+    }
+
+    it("should return No with correct message when is used to check l1.exists(_ == 5)") {
+      val fact = expect(l1.exists(_ == 5))
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l1) + " did not contain 5")
+    }
+
+    it("should return No with correct message when is used to check l1.exists(5 == _)") {
+      val fact = expect(l1.exists(5 == _))
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l1) + " did not contain 5")
+    }
+
+    it("should return Yes with correct message when is used to check !l1.exists(_ == 5)") {
+      val fact = expect(!l1.exists(_ == 5))
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l1) + " did not contain 5")
+    }
+
+    it("should return Yes with correct message when is used to check !l1.exists(5 == _)") {
+      val fact = expect(!l1.exists(5 == _))
+      assert(fact.isYes)
+      assert(fact.factMessage == Prettifier.default(l1) + " did not contain 5")
+    }
+
+    it("should return No with correct message when is used to check !l1.exists(_ == 3)") {
+      val fact = expect(!l1.exists(_ == 3))
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l1) + " contained 3")
+    }
+
+    it("should return No with correct message and stack depth when is used to check !l1.exists(3 == _)") {
+      val fact = expect(!l1.exists(3 == _))
+      assert(fact.isNo)
+      assert(fact.factMessage == Prettifier.default(l1) + " contained 3")
+    }
+
+    it("should return No with correct message when is used to check l1.exists(_ > 3)") {
+      val fact = expect(l1.exists(_ > 3))
+      assert(fact.isNo)
+      assert(fact.factMessage.endsWith(" was false"))
+    }
+
+    it("should return No with correct message when is used to check l1.exists(3 < _)") {
+      val fact = expect(l1.exists(3 < _))
+      assert(fact.isNo)
+      assert(fact.factMessage.endsWith(" was false"))
+    }
+
+    it("should return No with correct message when is used to check l3.exists(_.isEmpty)") {
+      val fact = expect(l3.exists(_.isEmpty))
+      assert(fact.isNo)
+      assert(fact.factMessage.endsWith(" was false"))
+    }
+    
+    it("should return No with correct message when is used to check l3.exists(false)") {
+      val fact = expect(ci1.exists(321))
+      assert(fact.isNo)
+      assert(fact.factMessage.endsWith("was false"))
+    }
+
+    def woof(f: => Unit) = "woof"
+    def meow(x: Int = 0, y: Int = 3) = "meow"
+
+    it("should return Yes with correct messasge when used to check woof { meow(y = 5) } == \"woof\"") {
+      val fact = expect(woof { meow(y = 5) } == "woof")
+      assert(fact.isYes)
+      assert(fact.factMessage == "\"woof\" equaled \"woof\"")
+    }
+
+    it("should return No with correct message when is used to check woof { meow(y = 5) } == \"meow\"") {
+      val fact = expect(woof { meow(y = 5) } == "meow")
+      assert(fact.isNo)
+      assert(fact.factMessage == "\"[woof]\" did not equal \"[meow]\"")
+    }
+
   }
 
   describe("The expect(condition, clue) method") {
