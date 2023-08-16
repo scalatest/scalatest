@@ -1820,13 +1820,13 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
     it("should return Yes with correct message when is used to check floatLengthSize.length == 2.0f") {
       val fact = expect(floatLengthSize.length == 2.0f)
       assert(fact.isYes)
-      assert(fact.factMessage == Prettifier.default(floatLengthSize) + " had length 2.0")
+      assert(fact.factMessage == Prettifier.default(floatLengthSize) + " had length " + Prettifier.default(2.0f))
     }
 
     it("should return No with correct message when is used to check floatLengthSize.length == 1.0f") {
       val fact = expect(floatLengthSize.length == 1.0f)
       assert(fact.isNo)
-      assert(fact.factMessage == Prettifier.default(floatLengthSize) + " had length 2.0 instead of expected length 1.0")
+      assert(fact.factMessage == Prettifier.default(floatLengthSize) + " had length " + Prettifier.default(2.0f) + " instead of expected length " + Prettifier.default(1.0f))
     }
 
     it("should return Yes with correct message when is used to check s1.size == 9") {
@@ -1880,13 +1880,13 @@ class ExpectationsSpec extends AnyFunSpec with Expectations {
     it("should return Yes with correct message when is used to check floatLengthSize.size == 2.0f") {
       val fact = expect(floatLengthSize.size == 2.0f)
       assert(fact.isYes)
-      assert(fact.factMessage == Prettifier.default(floatLengthSize) + " had size 2.0")
+      assert(fact.factMessage == Prettifier.default(floatLengthSize) + " had size " + Prettifier.default(2.0f))
     }
 
     it("should return No with correct message when is used to check floatLengthSize.size == 1.0f") {
       val fact = expect(floatLengthSize.size == 1.0f)
       assert(fact.isNo)
-      assert(fact.factMessage == Prettifier.default(floatLengthSize) + " had size 2.0 instead of expected size 1.0")
+      assert(fact.factMessage == Prettifier.default(floatLengthSize) + " had size " + Prettifier.default(2.0f) + " instead of expected size " + Prettifier.default(1.0f))
     }
 
     it("should return Yes with correct message when is used to check l1.exists(_ == 3)") {
