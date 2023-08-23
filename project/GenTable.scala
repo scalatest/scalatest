@@ -1989,6 +1989,8 @@ $columnsOfTwos$
          |import org.scalatest.FailureMessages
          |import org.scalatest.UnquotedString
          |import org.scalatest.Resources
+         |import org.scalatest.Expectation
+         |import org.scalatest.Fact
          |import org.scalatest.exceptions.StackDepthException
          |import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
          |import org.scalatest.exceptions.DiscardedEvaluationException
@@ -2321,20 +2323,35 @@ $columnsOfTwos$
          |  * Abstract class that in the future will hold an intermediate priority <code>TableAsserting</code> implicit, which will enable inspector expressions
          |  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
          |  */
-         |/*abstract class ExpectationTableAsserting extends UnitTableAsserting with  {
+         |abstract class ExpectationTableAsserting extends UnitTableAsserting {
          |
-         |  implicit def assertingNatureOfExpectation: TableAsserting[Expectation] { type Result = Expectation } = {
-         |    new TableAsserting[Expectation] {
+         |  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): TableAsserting[Expectation] { type Result = Expectation } = {
+         |    new TableAssertingImpl[Expectation] {
          |      type Result = Expectation
+         |      def indicateSuccess(message: => String): Expectation = Fact.Yes(message, prettifier)
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: org.scalactic.Prettifier, pos: org.scalactic.source.Position): Expectation = Fact.No(message, prettifier)
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int) = {
+         |        val e = new TableDrivenPropertyCheckFailedException(
+         |          messageFun,
+         |          optionalCause,
+         |          pos,
+         |          payload,
+         |          undecoratedMessage,
+         |          args,
+         |          namesOfArgs,
+         |          idx
+         |        )
+         |        Fact.No(e.getMessage, prettifier)
+         |      }
          |    }
          |  }
-         |}*/
+         |}
          |
          |/**
          | * Companion object to <code>TableAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
          | * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
          | */
-         |object TableAsserting extends UnitTableAsserting /*ExpectationTableAsserting*/ {
+         |object TableAsserting extends ExpectationTableAsserting {
          |
          |  /**
          |    * Provides support of [[org.scalatest.enablers.TableAsserting TableAsserting]] for Assertion.  Returns [[org.scalatest.Succeeded Succeeded]] when the check succeeds,
@@ -2367,7 +2384,7 @@ $columnsOfTwos$
          |
          |  implicit def assertingNatureOfFutureAssertion(implicit exeCtx: scala.concurrent.ExecutionContext): TableAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
          |    new FutureTableAssertingImpl[Assertion] {
-         |      implicit val executionContext = exeCtx
+         |      implicit val executionContext: scala.concurrent.ExecutionContext = exeCtx
          |      def indicateSuccess(message: => String): Assertion = org.scalatest.Succeeded
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
          |        throw new TableDrivenPropertyCheckFailedException(
