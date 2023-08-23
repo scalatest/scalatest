@@ -2329,7 +2329,7 @@ $columnsOfTwos$
          |    new TableAssertingImpl[Expectation] {
          |      type Result = Expectation
          |      def indicateSuccess(message: => String, prettifier: Prettifier): Expectation = Fact.Yes(message, prettifier)
-         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: org.scalactic.Prettifier, pos: org.scalactic.source.Position): Expectation = Fact.No(message, prettifier)
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: org.scalactic.Prettifier, pos: org.scalactic.source.Position): Expectation = Fact.No(message, message, message, message, Vector.empty, Vector.empty, Vector.empty, Vector.empty, optionalCause, prettifier)
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int) = {
          |        val e = new TableDrivenPropertyCheckFailedException(
          |          messageFun,
@@ -2341,7 +2341,7 @@ $columnsOfTwos$
          |          namesOfArgs,
          |          idx
          |        )
-         |        Fact.No(e.getMessage, prettifier)
+         |        Fact.No(e.getMessage, e.getMessage, e.getMessage, e.getMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Some(e), prettifier)
          |      }
          |    }
          |  }
