@@ -1625,7 +1625,7 @@ $columnsOfTwos$
                                  |        )
                                  |      }
                                  |  }
-                                 |  indicateSuccess(FailureMessages.propertyCheckSucceeded)
+                                 |  indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
                                  |}
                                """.stripMargin
 
@@ -2106,7 +2106,7 @@ $columnsOfTwos$
          |          prettifier,
          |          pos
          |        )
-         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
          |    }
          |
          |    $existsMethodImpls$
@@ -2123,10 +2123,10 @@ $columnsOfTwos$
          |          pos
          |        )
          |      }
-         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
          |    }
          |
-         |    private[scalatest] def indicateSuccess(message: => String): Result
+         |    private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Result
          |
          |    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Result
          |
@@ -2255,7 +2255,7 @@ $columnsOfTwos$
          |            prettifier,
          |            pos
          |          )
-         |        else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |        else indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
          |        org.scalatest.Succeeded
          |      }
          |    }
@@ -2275,14 +2275,14 @@ $columnsOfTwos$
          |            pos
          |          )
          |        }
-         |        else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |        else indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
          |        org.scalatest.Succeeded
          |      }
          |    }
          |
          |    $asyncExistsMethodImpls$
          |
-         |    private[scalatest] def indicateSuccess(message: => String): Assertion
+         |    private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Assertion
          |
          |    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion
          |
@@ -2297,7 +2297,7 @@ $columnsOfTwos$
          |  implicit def assertingNatureOfT[T]: TableAsserting[T] { type Result = Unit } = {
          |    new TableAssertingImpl[T] {
          |      type Result = Unit
-         |      def indicateSuccess(message: => String): Unit = ()
+         |      def indicateSuccess(message: => String, prettifier: Prettifier): Unit = ()
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Unit =
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
@@ -2325,10 +2325,10 @@ $columnsOfTwos$
          |  */
          |abstract class ExpectationTableAsserting extends UnitTableAsserting {
          |
-         |  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): TableAsserting[Expectation] { type Result = Expectation } = {
+         |  implicit def assertingNatureOfExpectation: TableAsserting[Expectation] { type Result = Expectation } = {
          |    new TableAssertingImpl[Expectation] {
          |      type Result = Expectation
-         |      def indicateSuccess(message: => String): Expectation = Fact.Yes(message, prettifier)
+         |      def indicateSuccess(message: => String, prettifier: Prettifier): Expectation = Fact.Yes(message, prettifier)
          |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: org.scalactic.Prettifier, pos: org.scalactic.source.Position): Expectation = Fact.No(message, prettifier)
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int) = {
          |        val e = new TableDrivenPropertyCheckFailedException(
@@ -2361,7 +2361,7 @@ $columnsOfTwos$
          |  implicit def assertingNatureOfAssertion: TableAsserting[Assertion] { type Result = Assertion } = {
          |    new TableAssertingImpl[Assertion] {
          |      type Result = Assertion
-         |      def indicateSuccess(message: => String): Assertion = Succeeded
+         |      def indicateSuccess(message: => String, prettifier: Prettifier): Assertion = Succeeded
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
@@ -2385,7 +2385,7 @@ $columnsOfTwos$
          |  implicit def assertingNatureOfFutureAssertion(implicit exeCtx: scala.concurrent.ExecutionContext): TableAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
          |    new FutureTableAssertingImpl[Assertion] {
          |      implicit val executionContext: scala.concurrent.ExecutionContext = exeCtx
-         |      def indicateSuccess(message: => String): Assertion = org.scalatest.Succeeded
+         |      def indicateSuccess(message: => String, prettifier: Prettifier): Assertion = org.scalatest.Succeeded
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
