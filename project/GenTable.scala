@@ -1586,7 +1586,7 @@ $columnsOfTwos$
 
     val forAllImplTemplate: String =
       doForAllMethodTemplate + """ = {
-                                 |  def loop(idx: Int, pending: List[($alphaUpper$)]): Result = 
+                                 |  @scala.annotation.tailrec def loop(idx: Int, pending: List[($alphaUpper$)]): Result = 
                                  |    pending match {
                                  |      case ($alphaLower$) :: tail => 
                                  |        try {
@@ -1616,12 +1616,10 @@ $columnsOfTwos$
                                  |              idx
                                  |            )
                                  |          }
-                                 |          else 
-                                 |            loop(idx + 1, pending.tail)
+                                 |          // In the else case, will fall to the loop call after the catch block.
                                  |        }
                                  |        catch {
-                                 |          case _: DiscardedEvaluationException =>  
-                                 |            loop(idx + 1, pending.tail) // discard this evaluation and move on to the next
+                                 |          case _: DiscardedEvaluationException =>  // discard this evaluation and move on to the next, will fall to the loop call after the catch block.
                                  |          case tdpcfe: TableDrivenPropertyCheckFailedException => throw tdpcfe // just propagate TableDrivenPropertyCheckFailedException, thrown from recur call in the try block.
                                  |          case ex: Throwable => 
                                  |            val ($alphaName$) = heading
@@ -1656,6 +1654,7 @@ $columnsOfTwos$
                                  |            )
                                  |            
                                  |        }
+                                 |        loop(idx + 1, pending.tail)
                                  |        
                                  |      case Nil => indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
                                  |    }
