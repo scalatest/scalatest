@@ -1599,7 +1599,7 @@ $columnsOfTwos$
                                  |            // SKIP-SCALATESTJS,NATIVE-END
                                  |            //SCALATESTJS,NATIVE-ONLY val stackDepth = 1
                                  |
-                                 |            indicateFailure(
+                                 |            return indicateFailure(
                                  |              (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString("No exception.")) +
                                  |                ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
                                  |                "  " + FailureMessages.thrownExceptionsMessage(prettifier, "None") + "\n" +
@@ -1629,7 +1629,7 @@ $columnsOfTwos$
                                  |            // SKIP-SCALATESTJS,NATIVE-END
                                  |            //SCALATESTJS,NATIVE-ONLY val stackDepth = 1
                                  |
-                                 |            indicateFailure(
+                                 |            return indicateFailure(
                                  |              (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
                                  |                ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
                                  |                "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
@@ -1656,7 +1656,7 @@ $columnsOfTwos$
                                  |        }
                                  |        loop(idx + 1, pending.tail)
                                  |        
-                                 |      case Nil => indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
+                                 |      case Nil => return indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
                                  |    }
                                  |  loop(0, rows.toList)
                                  |}
