@@ -2080,8 +2080,36 @@ $columnsOfTwos$
          |          val head = itr.next
          |          val newResult =
          |            try {
-         |              fun(head)
-         |              result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
+         |              val res = fun(head)
+         |              if (isFailure(res)) {
+         |                result.copy(failedElements =
+         |                  result.failedElements :+ ((index,
+         |                    head,
+         |                    new org.scalatest.exceptions.TableDrivenPropertyCheckFailedException(
+         |                      ((sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString("None")) +
+         |                        (sde.failedCodeFileNameAndLineNumberString match {
+         |                          case Some(s) => " (" + s + ")";
+         |                          case None => ""
+         |                        }) + "\n" +
+         |                        "  " + FailureMessages.thrownExceptionsMessage(prettifier, "None") + "\n" +
+         |                        "  " + FailureMessages.occurredAtRow(prettifier, index) + "\n" +
+         |                        indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
+         |                          name + " = " + value
+         |                        }.toIndexedSeq).mkString("\n") +
+         |                        "  )"),
+         |                      None,
+         |                      pos,
+         |                      None,
+         |                      FailureMessages.undecoratedPropertyCheckFailureMessage,
+         |                      head.productIterator.toList,
+         |                      namesOfArgs,
+         |                      index
+         |                    ))
+         |                  )
+         |                )
+         |              }
+         |              else
+         |                result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
          |            }
          |            catch {
          |              case _: org.scalatest.exceptions.DiscardedEvaluationException => result.copy(discardedCount = result.discardedCount + 1) // discard this evaluation and move on to the next
