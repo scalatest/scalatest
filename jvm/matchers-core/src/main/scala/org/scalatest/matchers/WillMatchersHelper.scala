@@ -25,31 +25,31 @@ private[scalatest] object WillMatchersHelper {
   def checkNoException(fun: => Any)(implicit prettifier: Prettifier): Fact = {
     try {
       fun
-      Fact.Yes(Resources.noExceptionWasThrown)(prettifier)
+      Fact.Yes(Resources.noExceptionWasThrown, prettifier)
     }
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        Fact.No(message, u)(prettifier)
+        Fact.No(message, u, prettifier)
       }
     }
   }
 
-  def indicateSuccess(message: => String)(implicit prettifier: Prettifier): Fact = Fact.Yes(message)(prettifier)
+  def indicateSuccess(message: => String)(implicit prettifier: Prettifier): Fact = Fact.Yes(message, prettifier)
 
   def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String)(implicit prettifier: Prettifier): Fact =
-    Fact.Yes(if (shouldBeTrue) message else negatedMessage)(prettifier)
+    Fact.Yes(if (shouldBeTrue) message else negatedMessage, prettifier)
 
-  def indicateFailure(failureMessage: => String)(implicit prettifier: Prettifier): Fact = Fact.No(failureMessage)(prettifier)
+  def indicateFailure(failureMessage: => String)(implicit prettifier: Prettifier): Fact = Fact.No(failureMessage, prettifier)
 
   def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String)(implicit prettifier: Prettifier): Fact =
-    Fact.No(if (shouldBeTrue) failureMessage else negatedFailureMessage)(prettifier)
+    Fact.No(if (shouldBeTrue) failureMessage else negatedFailureMessage, prettifier)
 
   def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0)(implicit prettifier: Prettifier): Fact =
-    Fact.No(if (shouldBeTrue) failureMessage else negatedFailureMessage)(prettifier)
+    Fact.No(if (shouldBeTrue) failureMessage else negatedFailureMessage, prettifier)
 
   def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], stackDepthAdjustment: Int, prettifier: Prettifier): Fact =
-    Fact.No(failureMessage)(prettifier)
+    Fact.No(failureMessage, prettifier)
 
   def indicateFailure(shouldBeTrue: Boolean, withFriendlyReminder: Boolean, failureMessageWithFriendlyReminder: => String, failureMessageWithoutFriendlyReminder: => String,
                       negatedFailureMessageWithFriendlyReminder: => String, negatedFailureMessageWithoutFriendlyReminder: => String, optionalCause: Option[Throwable],
@@ -64,10 +64,11 @@ private[scalatest] object WillMatchersHelper {
       if (withFriendlyReminder)
         negatedFailureMessageWithFriendlyReminder
       else
-        negatedFailureMessageWithoutFriendlyReminder
-    )(prettifier)
+        negatedFailureMessageWithoutFriendlyReminder, 
+      prettifier  
+    )
 
   def indicateFailure(e: TestFailedException)(implicit prettifier: Prettifier): Fact =
-    Fact.No(e.getMessage)(prettifier)
+    Fact.No(e.getMessage, prettifier)
 
 }

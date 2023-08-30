@@ -16,7 +16,8 @@
 package org.scalatest.expectations
 
 import org.scalactic.{Resources => _, _}
-import org.scalatest.{Assertion, CompileMacro, Expectation, Fact, Suite, Resources}
+import org.scalatest.{Assertion, CompileMacro, Expectation, Fact, Suite, Resources, AppendedClues}
+import org.scalactic.Requirements.requireNonNull
 import Fact._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -53,8 +54,9 @@ trait Expectations {
         Vector(exp, act),
         Vector(exp, act),
         Vector(exp, act),
-        Vector(exp, act)
-      )(prettifier)
+        Vector(exp, act), 
+        prettifier
+      )
     }
     else {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
@@ -70,8 +72,59 @@ trait Expectations {
         Vector(exp, act),
         Vector(exp, act),
         Vector(exp, act),
-        Vector(exp, act)
-      )(prettifier)
+        Vector(exp, act), 
+        prettifier
+      )
+    }
+  }
+
+  /**
+   * Expects that `actual` is equal to `expected` using default equality.
+   *
+   * @param expected the expected value
+   * @param clue an object whose <code>toString</code> method returns a message to be appended to the result [[Fact]]'s message
+   * @param actual the actual value
+   * @param prettifier the prettifier used to pretty-print the values
+   * @param pos the source position
+   * @return a [[Fact]] representing the result of the assertion
+   */
+  def expectResult(expected: Any, clue: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Fact = {
+    requireNonNull(clue)
+    if (!DefaultEquality.areEqualComparingArraysStructurally(actual, expected)) {
+      val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
+      val rawFactMessage = Resources.rawExpectedButGot
+      val rawSimplifiedFactMessage = Resources.rawDidNotEqual
+      val rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedButGot
+      val rawMidSentenceSimplifiedFactMessage = Resources.rawDidNotEqual
+      No(
+        AppendedClues.appendClue(rawFactMessage, clue.toString()),
+        AppendedClues.appendClue(rawSimplifiedFactMessage, clue.toString()),
+        AppendedClues.appendClue(rawMidSentenceFactMessage, clue.toString()),
+        AppendedClues.appendClue(rawMidSentenceSimplifiedFactMessage, clue.toString()),
+        Vector(exp, act),
+        Vector(exp, act),
+        Vector(exp, act),
+        Vector(exp, act), 
+        prettifier
+      )
+    }
+    else {
+      val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
+      val rawFactMessage = Resources.rawExpectedAndGot
+      val rawSimplifiedFactMessage = Resources.rawEqualed
+      val rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedAndGot
+      val rawMidSentenceSimplifiedFactMessage = Resources.rawEqualed
+      Yes(
+        AppendedClues.appendClue(rawFactMessage, clue.toString()),
+        AppendedClues.appendClue(rawSimplifiedFactMessage, clue.toString()),
+        AppendedClues.appendClue(rawMidSentenceFactMessage, clue.toString()),
+        AppendedClues.appendClue(rawMidSentenceSimplifiedFactMessage, clue.toString()),
+        Vector(exp, act),
+        Vector(exp, act),
+        Vector(exp, act),
+        Vector(exp, act), 
+        prettifier
+      )
     }
   }
 
@@ -95,8 +148,9 @@ trait Expectations {
         factMessageArgs = Vector(clazz.getName),
         simplifiedFactMessageArgs = Vector.empty,
         midSentenceFactMessageArgs = Vector(clazz.getName),
-        midSentenceSimplifiedFactMessageArgs = Vector.empty
-      )(prettifier)
+        midSentenceSimplifiedFactMessageArgs = Vector.empty, 
+        prettifier
+      )
     }
     catch {
       case u: Throwable => {
@@ -110,8 +164,9 @@ trait Expectations {
             simplifiedFactMessageArgs = Vector(u.getClass.getName),
             midSentenceFactMessageArgs = Vector(clazz.getName, u.getClass.getName),
             midSentenceSimplifiedFactMessageArgs = Vector(u.getClass.getName),
-            cause = Some(u)
-          )(prettifier)
+            cause = Some(u), 
+            prettifier
+          )
         else
           Yes(
             rawFactMessage = Resources.rawExceptionExpected,
@@ -122,8 +177,9 @@ trait Expectations {
             simplifiedFactMessageArgs = Vector(clazz.getName),
             midSentenceFactMessageArgs = Vector(clazz.getName),
             midSentenceSimplifiedFactMessageArgs = Vector(clazz.getName),
-            cause = Some(u)
-          )(prettifier)
+            cause = Some(u), 
+            prettifier
+          )
       }
     }
   }
@@ -137,6 +193,9 @@ trait Expectations {
    */
   inline def expect(expression: Boolean)(implicit prettifier: Prettifier): Fact =
     ${ ExpectationsMacro.expect('{expression})('{prettifier}) }
+
+  inline def expect(expression: Boolean, clue: Any)(implicit prettifier: Prettifier): Fact =
+    ${ ExpectationsMacro.expectWithClue('{expression}, '{clue})('{prettifier}) }  
 
   /**
    * Expects that a given code snippet does not compile.
@@ -200,6 +259,8 @@ object Expectations extends Expectations {
    */
   class ExpectationsHelper {
 
+    import org.scalactic.Requirements.requireNonNull
+
     /**
      * A helper method for macro-generated assertions.
      *
@@ -209,29 +270,33 @@ object Expectations extends Expectations {
      * @return a [[Fact]] representing the result of the assertion
      */
     def macroExpect(bool: Bool, clue: Any, prettifier: Prettifier): Fact = {
-      //requireNonNull(clue)
-      if (!bool.value)
-        No(
-          bool.rawFailureMessage,
-          bool.rawFailureMessage,
-          bool.rawFailureMessage,
-          bool.rawFailureMessage,
-          bool.failureMessageArgs,
-          bool.failureMessageArgs,
-          bool.failureMessageArgs,
-          bool.failureMessageArgs
-        )(prettifier)
-      else
-        Yes(
-          bool.rawNegatedFailureMessage,
-          bool.rawNegatedFailureMessage,
-          bool.rawNegatedFailureMessage,
-          bool.rawNegatedFailureMessage,
-          bool.negatedFailureMessageArgs,
-          bool.negatedFailureMessageArgs,
-          bool.negatedFailureMessageArgs,
-          bool.negatedFailureMessageArgs
-        )(prettifier)
+      requireNonNull(clue)
+      val result = 
+        if (!bool.value)
+          No(
+            bool.rawFailureMessage,
+            bool.rawFailureMessage,
+            bool.rawFailureMessage,
+            bool.rawFailureMessage,
+            bool.failureMessageArgs,
+            bool.failureMessageArgs,
+            bool.failureMessageArgs,
+            bool.failureMessageArgs, 
+            prettifier
+          )
+        else
+          Yes(
+            bool.rawNegatedFailureMessage,
+            bool.rawNegatedFailureMessage,
+            bool.rawNegatedFailureMessage,
+            bool.rawNegatedFailureMessage,
+            bool.negatedFailureMessageArgs,
+            bool.negatedFailureMessageArgs,
+            bool.negatedFailureMessageArgs,
+            bool.negatedFailureMessageArgs, 
+            prettifier
+          )
+      if (clue == "") result else result.modifyMessage(_.map(ori => AppendedClues.appendClue(ori, clue.toString)))    
     }
 
   }

@@ -575,7 +575,37 @@ trait DottyBuild { this: BuildCommons =>
         "org.scalatest", 
         "org.scalatest.diagrams"
       ),
-    ).dependsOn(scalatestCoreDottyNative).enablePlugins(ScalaNativePlugin)  
+    ).dependsOn(scalatestCoreDottyNative).enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestExpectationsDotty = project.in(file("dotty/expectations"))
+    .scalatestModule("scalatest-expectations", "ScalaTest Expectations Dotty")
+    .dependsOn(
+      scalatestCoreDotty
+    )
+
+  lazy val scalatestExpectationsDottyJS = project.in(file("dotty/expectations.js"))
+    .scalatestSubModule(
+      "scalatest-expectations", 
+      "ScalaTest Expectations Dotty JS", 
+      (targetDir, version, scalaVersion) =>
+        GenScalaTestDotty.genExpectationsScalaJS(targetDir / "org" / "scalatest", version, scalaVersion)
+    ).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.expectations"
+      ),
+    ).dependsOn(scalatestCoreDottyJS).enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestExpectationsDottyNative = project.in(file("dotty/expectations.native"))
+    .scalatestSubModule(
+      "scalatest-expectations", 
+      "ScalaTest Expectations Dotty Native", 
+      (targetDir, version, scalaVersion) =>
+        GenScalaTestDotty.genExpectationsScalaNative(targetDir / "org" / "scalatest", version, scalaVersion)
+    ).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.expectations"
+      ),
+    ).dependsOn(scalatestCoreDottyNative).enablePlugins(ScalaNativePlugin)    
 
   lazy val scalatestMatchersCoreDotty = project.in(file("dotty/matchers-core"))
     .scalatestSubModule(
@@ -705,6 +735,7 @@ trait DottyBuild { this: BuildCommons =>
       scalatestRefSpecDotty, 
       scalatestWordSpecDotty, 
       scalatestDiagramsDotty, 
+      scalatestExpectationsDotty, 
       scalatestMatchersCoreDotty, 
       scalatestShouldMatchersDotty, 
       scalatestMustMatchersDotty
@@ -730,6 +761,7 @@ trait DottyBuild { this: BuildCommons =>
       scalatestRefSpecDotty, 
       scalatestWordSpecDotty, 
       scalatestDiagramsDotty, 
+      scalatestExpectationsDotty, 
       scalatestMatchersCoreDotty, 
       scalatestShouldMatchersDotty, 
       scalatestMustMatchersDotty
@@ -744,6 +776,7 @@ trait DottyBuild { this: BuildCommons =>
       scalatestRefSpecDotty, 
       scalatestWordSpecDotty, 
       scalatestDiagramsDotty, 
+      scalatestExpectationsDotty, 
       scalatestMatchersCoreDotty, 
       scalatestShouldMatchersDotty, 
       scalatestMustMatchersDotty
@@ -769,6 +802,7 @@ trait DottyBuild { this: BuildCommons =>
       scalatestRefSpecDottyJS, 
       scalatestWordSpecDottyJS, 
       scalatestDiagramsDottyJS, 
+      scalatestExpectationsDottyJS, 
       scalatestMatchersCoreDottyJS, 
       scalatestShouldMatchersDottyJS, 
       scalatestMustMatchersDottyJS
@@ -783,6 +817,7 @@ trait DottyBuild { this: BuildCommons =>
       scalatestRefSpecDottyJS, 
       scalatestWordSpecDottyJS, 
       scalatestDiagramsDottyJS, 
+      scalatestExpectationsDottyJS, 
       scalatestMatchersCoreDottyJS, 
       scalatestShouldMatchersDottyJS, 
       scalatestMustMatchersDottyJS
@@ -808,6 +843,7 @@ trait DottyBuild { this: BuildCommons =>
       scalatestRefSpecDottyNative, 
       scalatestWordSpecDottyNative, 
       scalatestDiagramsDottyNative, 
+      scalatestExpectationsDottyNative, 
       scalatestMatchersCoreDottyNative, 
       scalatestShouldMatchersDottyNative, 
       scalatestMustMatchersDottyNative
@@ -822,6 +858,7 @@ trait DottyBuild { this: BuildCommons =>
       scalatestRefSpecDottyNative, 
       scalatestWordSpecDottyNative, 
       scalatestDiagramsDottyNative, 
+      scalatestExpectationsDottyNative, 
       scalatestMatchersCoreDottyNative, 
       scalatestShouldMatchersDottyNative, 
       scalatestMustMatchersDottyNative
@@ -962,6 +999,7 @@ trait DottyBuild { this: BuildCommons =>
       }.taskValue,
     ).dependsOn(commonTestDotty % "test").aggregate(
       scalatestDiagramsTestDotty, 
+      scalatestExpectationsTestDotty, 
       scalatestFeatureSpecTestDotty, 
       scalatestFlatSpecTestDotty, 
       scalatestFreeSpecTestDotty, 
@@ -1008,6 +1046,7 @@ trait DottyBuild { this: BuildCommons =>
     ).dependsOn(scalacticDottyJS, scalatestDottyJS % "test", commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
      .aggregate(
        scalatestDiagramsTestDottyJS, 
+       scalatestExpectationsTestDottyJS, 
        scalatestFeatureSpecTestDottyJS, 
        scalatestFlatSpecTestDottyJS, 
        scalatestFreeSpecTestDottyJS, 
@@ -1030,6 +1069,7 @@ trait DottyBuild { this: BuildCommons =>
     ).dependsOn(scalacticDottyNative, scalatestDottyNative % "test", commonTestDottyNative % "test").enablePlugins(ScalaNativePlugin)
      .aggregate(
        scalatestDiagramsTestDottyNative, 
+       scalatestExpectationsTestDottyNative, 
        scalatestFeatureSpecTestDottyNative, 
        scalatestFlatSpecTestDottyNative, 
        scalatestFreeSpecTestDottyNative, 
@@ -1071,7 +1111,40 @@ trait DottyBuild { this: BuildCommons =>
       Test / sourceGenerators += Def.task {
         GenScalaTestDotty.genDiagramsTestNative((Test / sourceManaged).value, version.value, scalaVersion.value)
       }.taskValue,
-    ).dependsOn(commonTestDottyNative % "test").enablePlugins(ScalaNativePlugin)  
+    ).dependsOn(commonTestDottyNative % "test").enablePlugins(ScalaNativePlugin)
+
+  lazy val scalatestExpectationsTestDotty = project.in(file("dotty/expectations-test"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDotty)
+    .settings(
+      projectTitle := "ScalaTest Expectations Test",
+      Test / sourceGenerators += Def.task {
+        GenScalaTestDotty.genExpectationsTest((Test / sourceManaged).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDotty % "test")
+
+  lazy val scalatestExpectationsTestDottyJS = project.in(file("dotty/expectations-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsDottyJS)
+    .settings(
+      projectTitle := "ScalaTest Expectations Test",
+      Test / sourceGenerators += Def.task {
+        GenScalaTestDotty.genExpectationsTestJS((Test / sourceManaged).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyJS % "test").enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestExpectationsTestDottyNative = project.in(file("dotty/expectations-test.native"))
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(sharedTestSettingsNative)
+    .settings(
+      projectTitle := "ScalaTest Expectations Test",
+      Test / sourceGenerators += Def.task {
+        GenScalaTestDotty.genExpectationsTestNative((Test / sourceManaged).value, version.value, scalaVersion.value)
+      }.taskValue,
+    ).dependsOn(commonTestDottyNative % "test").enablePlugins(ScalaNativePlugin)    
 
   lazy val scalatestFeatureSpecTestDotty = project.in(file("dotty/featurespec-test"))
     .settings(sharedSettings: _*)

@@ -1586,46 +1586,87 @@ $columnsOfTwos$
 
     val forAllImplTemplate: String =
       doForAllMethodTemplate + """ = {
-                                 |  for ((($alphaLower$), idx) <- rows.zipWithIndex) {
-                                 |    try {
-                                 |      fun($alphaLower$)
+                                 |  @scala.annotation.tailrec def loop(idx: Int, pending: List[($alphaUpper$)]): Result = 
+                                 |    pending match {
+                                 |      case ($alphaLower$) :: tail => 
+                                 |        try {
+                                 |          val res = fun($alphaLower$)
+                                 |          val (isFailure, exOpt, msgOpt) = checkFailure(res)
+                                 |          if (isFailure) {
+                                 |            val ($alphaName$) = heading
+                                 |
+                                 |            // SKIP-SCALATESTJS,NATIVE-START
+                                 |            val stackDepth = 2
+                                 |            // SKIP-SCALATESTJS,NATIVE-END
+                                 |            //SCALATESTJS,NATIVE-ONLY val stackDepth = 1
+                                 |
+                                 |            return indicateFailure(
+                                 |              (sde: StackDepthException) => exOpt.map(ex => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName))).getOrElse(FailureMessages.propertyFailed(prettifier, idx)) +
+                                 |                ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+                                 |                "  " + FailureMessages.thrownExceptionsMessage(prettifier, msgOpt.map(UnquotedString(_)).getOrElse("None")) + "\n" +
+                                 |                (
+                                 |                  exOpt match {
+                                 |                    case Some(sd: StackDepth) if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                                 |                      "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                                 |                    case _ => ""
+                                 |                  }
+                                 |                ) +
+                                 |                "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
+                                 |                $namesAndValues$
+                                 |                "  )",
+                                 |              FailureMessages.undecoratedPropertyCheckFailureMessage,
+                                 |              List($alphaLower$),
+                                 |              List($alphaName$),
+                                 |              exOpt, 
+                                 |              None, // Payload
+                                 |              prettifier,
+                                 |              pos,
+                                 |              idx
+                                 |            )
+                                 |          }
+                                 |          // In the else case, will fall to the loop call after the catch block.
+                                 |        }
+                                 |        catch {
+                                 |          case _: DiscardedEvaluationException =>  // discard this evaluation and move on to the next, will fall to the loop call after the catch block.
+                                 |          case tdpcfe: TableDrivenPropertyCheckFailedException => throw tdpcfe // just propagate TableDrivenPropertyCheckFailedException, thrown from recur call in the try block.
+                                 |          case ex: Throwable => 
+                                 |            val ($alphaName$) = heading
+                                 |
+                                 |            // SKIP-SCALATESTJS,NATIVE-START
+                                 |            val stackDepth = 2
+                                 |            // SKIP-SCALATESTJS,NATIVE-END
+                                 |            //SCALATESTJS,NATIVE-ONLY val stackDepth = 1
+                                 |
+                                 |            return indicateFailure(
+                                 |              (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+                                 |                ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+                                 |                "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+                                 |                (
+                                 |                  ex match {
+                                 |                    case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                                 |                      "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                                 |                    case _ => ""
+                                 |                  }
+                                 |                ) +
+                                 |                "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
+                                 |                $namesAndValues$
+                                 |                "  )",
+                                 |              FailureMessages.undecoratedPropertyCheckFailureMessage,
+                                 |              List($alphaLower$),
+                                 |              List($alphaName$),
+                                 |              Some(ex),
+                                 |              None, // Payload
+                                 |              prettifier,
+                                 |              pos,
+                                 |              idx
+                                 |            )
+                                 |            
+                                 |        }
+                                 |        loop(idx + 1, pending.tail)
+                                 |        
+                                 |      case Nil => return indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
                                  |    }
-                                 |    catch {
-                                 |      case _: DiscardedEvaluationException => // discard this evaluation and move on to the next
-                                 |      case ex: Throwable =>
-                                 |        val ($alphaName$) = heading
-                                 |
-                                 |        // SKIP-SCALATESTJS,NATIVE-START
-                                 |        val stackDepth = 2
-                                 |        // SKIP-SCALATESTJS,NATIVE-END
-                                 |        //SCALATESTJS,NATIVE-ONLY val stackDepth = 1
-                                 |
-                                 |        indicateFailure(
-                                 |          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
-                                 |            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-                                 |            "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
-                                 |            (
-                                 |              ex match {
-                                 |                case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                                 |                  "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                                 |                case _ => ""
-                                 |              }
-                                 |            ) +
-                                 |            "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
-                                 |            $namesAndValues$
-                                 |            "  )",
-                                 |          FailureMessages.undecoratedPropertyCheckFailureMessage,
-                                 |          List($alphaLower$),
-                                 |          List($alphaName$),
-                                 |          Some(ex),
-                                 |          None, // Payload
-                                 |          prettifier,
-                                 |          pos,
-                                 |          idx
-                                 |        )
-                                 |      }
-                                 |  }
-                                 |  indicateSuccess(FailureMessages.propertyCheckSucceeded)
+                                 |  loop(0, rows.toList)
                                  |}
                                """.stripMargin
 
@@ -1989,6 +2030,8 @@ $columnsOfTwos$
          |import org.scalatest.FailureMessages
          |import org.scalatest.UnquotedString
          |import org.scalatest.Resources
+         |import org.scalatest.Expectation
+         |import org.scalatest.Fact
          |import org.scalatest.exceptions.StackDepthException
          |import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
          |import org.scalatest.exceptions.DiscardedEvaluationException
@@ -2045,8 +2088,44 @@ $columnsOfTwos$
          |          val head = itr.next
          |          val newResult =
          |            try {
-         |              fun(head)
-         |              result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
+         |              val res = fun(head)
+         |              val (isFailure, exOpt, msgOpt) = checkFailure(res)
+         |              if (isFailure) {
+         |                result.copy(failedElements =
+         |                  result.failedElements :+ ((index,
+         |                    head,
+         |                    new org.scalatest.exceptions.TableDrivenPropertyCheckFailedException(
+         |                      ((sde: StackDepthException) => exOpt.map(ex => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName))).getOrElse(FailureMessages.propertyFailed(prettifier, index)) +
+         |                        (sde.failedCodeFileNameAndLineNumberString match {
+         |                          case Some(s) => " (" + s + ")";
+         |                          case None => ""
+         |                        }) + "\n" +
+         |                        "  " + FailureMessages.thrownExceptionsMessage(prettifier, msgOpt.map(UnquotedString(_)).getOrElse("None")) + "\n" +
+         |                        (
+         |                          exOpt match {
+         |                            case Some(sd: StackDepth) if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+         |                              "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+         |                            case _ => ""
+         |                          }
+         |                          ) +
+         |                        "  " + FailureMessages.occurredAtRow(prettifier, index) + "\n" +
+         |                        indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
+         |                          name + " = " + value
+         |                        }.toIndexedSeq).mkString("\n") +
+         |                        "  )"),
+         |                      exOpt,
+         |                      pos,
+         |                      None,
+         |                      FailureMessages.undecoratedPropertyCheckFailureMessage,
+         |                      head.productIterator.toList,
+         |                      namesOfArgs,
+         |                      index
+         |                    ))
+         |                  )
+         |                )
+         |              }
+         |              else
+         |                result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
          |            }
          |            catch {
          |              case _: org.scalatest.exceptions.DiscardedEvaluationException => result.copy(discardedCount = result.discardedCount + 1) // discard this evaluation and move on to the next
@@ -2104,7 +2183,7 @@ $columnsOfTwos$
          |          prettifier,
          |          pos
          |        )
-         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
          |    }
          |
          |    $existsMethodImpls$
@@ -2121,14 +2200,16 @@ $columnsOfTwos$
          |          pos
          |        )
          |      }
-         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
          |    }
          |
-         |    private[scalatest] def indicateSuccess(message: => String): Result
+         |    private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Result
          |
          |    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Result
          |
          |    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Result
+         |  
+         |    private[scalatest] def checkFailure(ass: ASSERTION): (Boolean, Option[Throwable], Option[String])
          |  }
          |
          |  abstract class FutureTableAssertingImpl[ASSERTION] extends TableAsserting[Future[ASSERTION]] {
@@ -2253,7 +2334,7 @@ $columnsOfTwos$
          |            prettifier,
          |            pos
          |          )
-         |        else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |        else indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
          |        org.scalatest.Succeeded
          |      }
          |    }
@@ -2273,18 +2354,19 @@ $columnsOfTwos$
          |            pos
          |          )
          |        }
-         |        else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |        else indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
          |        org.scalatest.Succeeded
          |      }
          |    }
          |
          |    $asyncExistsMethodImpls$
          |
-         |    private[scalatest] def indicateSuccess(message: => String): Assertion
+         |    private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Result
          |
-         |    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion
+         |    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Result
          |
-         |    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Assertion
+         |    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Result
+         |    
          |  }
          |
          |  /**
@@ -2295,8 +2377,8 @@ $columnsOfTwos$
          |  implicit def assertingNatureOfT[T]: TableAsserting[T] { type Result = Unit } = {
          |    new TableAssertingImpl[T] {
          |      type Result = Unit
-         |      def indicateSuccess(message: => String): Unit = ()
-         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Unit =
+         |      def indicateSuccess(message: => String, prettifier: Prettifier) = ()
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int) = {
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
          |          optionalCause,
@@ -2307,12 +2389,14 @@ $columnsOfTwos$
          |          namesOfArgs,
          |          idx
          |        )
-         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Unit =
+         |      }
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position) =
          |        throw new org.scalatest.exceptions.TestFailedException(
          |          (_: StackDepthException) => Some(message),
          |          optionalCause,
          |          pos
          |        )
+         |      def checkFailure(ass: T): (Boolean, Option[Throwable], Option[String]) = (false, None, None)
          |    }
          |  }
          |}
@@ -2321,20 +2405,36 @@ $columnsOfTwos$
          |  * Abstract class that in the future will hold an intermediate priority <code>TableAsserting</code> implicit, which will enable inspector expressions
          |  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
          |  */
-         |/*abstract class ExpectationTableAsserting extends UnitTableAsserting with  {
+         |abstract class ExpectationTableAsserting extends UnitTableAsserting {
          |
          |  implicit def assertingNatureOfExpectation: TableAsserting[Expectation] { type Result = Expectation } = {
-         |    new TableAsserting[Expectation] {
+         |    new TableAssertingImpl[Expectation] {
          |      type Result = Expectation
+         |      def indicateSuccess(message: => String, prettifier: Prettifier): Expectation = Fact.Yes(message, prettifier)
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: org.scalactic.Prettifier, pos: org.scalactic.source.Position): Expectation = Fact.No(message, message, message, message, Vector.empty, Vector.empty, Vector.empty, Vector.empty, optionalCause, prettifier)
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int) = {
+         |        val e = new TableDrivenPropertyCheckFailedException(
+         |          messageFun,
+         |          optionalCause,
+         |          pos,
+         |          payload,
+         |          undecoratedMessage,
+         |          args,
+         |          namesOfArgs,
+         |          idx
+         |        )
+         |        Fact.No(e.getMessage, e.getMessage, e.getMessage, e.getMessage, Vector.empty, Vector.empty, Vector.empty, Vector.empty, Some(e), prettifier)
+         |      }
+         |      def checkFailure(fact: Expectation): (Boolean, Option[Throwable], Option[String]) = (fact.isNo, fact.cause, Option(fact.factMessage))
          |    }
          |  }
-         |}*/
+         |}
          |
          |/**
          | * Companion object to <code>TableAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
          | * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
          | */
-         |object TableAsserting extends UnitTableAsserting /*ExpectationTableAsserting*/ {
+         |object TableAsserting extends ExpectationTableAsserting {
          |
          |  /**
          |    * Provides support of [[org.scalatest.enablers.TableAsserting TableAsserting]] for Assertion.  Returns [[org.scalatest.Succeeded Succeeded]] when the check succeeds,
@@ -2344,7 +2444,7 @@ $columnsOfTwos$
          |  implicit def assertingNatureOfAssertion: TableAsserting[Assertion] { type Result = Assertion } = {
          |    new TableAssertingImpl[Assertion] {
          |      type Result = Assertion
-         |      def indicateSuccess(message: => String): Assertion = Succeeded
+         |      def indicateSuccess(message: => String, prettifier: Prettifier): Assertion = Succeeded
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
@@ -2362,14 +2462,15 @@ $columnsOfTwos$
          |          optionalCause,
          |          pos
          |        )
+         |      def checkFailure(ass: Assertion): (Boolean, Option[Throwable], Option[String]) = (false, None, None)
          |    }
          |  }
          |
          |  implicit def assertingNatureOfFutureAssertion(implicit exeCtx: scala.concurrent.ExecutionContext): TableAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
          |    new FutureTableAssertingImpl[Assertion] {
-         |      implicit val executionContext = exeCtx
-         |      def indicateSuccess(message: => String): Assertion = org.scalatest.Succeeded
-         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
+         |      implicit val executionContext: scala.concurrent.ExecutionContext = exeCtx
+         |      def indicateSuccess(message: => String, prettifier: Prettifier) = Future.successful(org.scalatest.Succeeded)
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int) =
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
          |          optionalCause,
@@ -2380,7 +2481,7 @@ $columnsOfTwos$
          |          namesOfArgs,
          |          idx
          |        )
-         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Assertion =
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position) =
          |        throw new org.scalatest.exceptions.TestFailedException(
          |          (_: StackDepthException) => Some(message),
          |          optionalCause,

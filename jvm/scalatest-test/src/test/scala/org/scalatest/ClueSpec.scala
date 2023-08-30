@@ -27,12 +27,14 @@ import org.scalatest.exceptions.StackDepth
 import SharedHelpers.EventRecordingReporter
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
+import org.scalactic.Prettifier
 import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestFailedException
 import prop.TableFor1
 import time.{Second, Span}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.Fact._
 
 class ClueSpec extends AnyFlatSpec with Matchers {
 
@@ -248,6 +250,89 @@ class ClueSpec extends AnyFlatSpec with Matchers {
     val succeeded = Succeeded
     val result = withClue("a clue") { succeeded }
     result should be theSameInstanceAs succeeded
+  }
+
+  it should "return Yes prepended clue" in {
+    val fact = Yes("message", Prettifier.default)
+    val result = withClue("a clue") { fact }
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "a clue message"
+  }
+
+  it should "return No prepended clue" in {
+    val fact = No("message", Prettifier.default)
+    val result = withClue("a clue") { fact }
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "a clue message"
+  }
+
+  it should "return Unary_! prepended clue" in {
+    val fact = !No("message", Prettifier.default)
+    val result = withClue("a clue") { fact }
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "a clue message"
+  }
+
+  it should "return Binary_| prepended clue" in {
+    val fact = Yes("message 1", Prettifier.default) | No("message 2", Prettifier.default)
+    val result = withClue("a clue") { fact }
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "a clue message 1, and message 2"
+
+    val fact2 = Yes("message 1", Prettifier.default) | No("message 2", Prettifier.default)
+    val result2 = withClue("a clue") { fact2 }
+    result2 shouldBe a [Fact]
+    result2.factMessage shouldBe "a clue message 1, and message 2"
+  }
+
+  it should "return Binary_|| prepended clue" in {
+    val fact = No("message 1", Prettifier.default) || Yes("message 2", Prettifier.default)
+    val result = withClue("a clue") { fact }
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "a clue message 1, and message 2"
+
+    val fact2 = Yes("message 1", Prettifier.default) || No("message 2", Prettifier.default)
+    val result2 = withClue("a clue") { fact2 }
+    result2 shouldBe a [Fact]
+    result2.factMessage shouldBe "a clue message 1"
+  }
+
+  it should "return Binary_& prepended clue" in {
+    val fact = Yes("message 1", Prettifier.default) & No("message 2", Prettifier.default)
+    val result = withClue("a clue") { fact }
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "a clue message 1, but message 2"
+
+    val fact2 = No("message 1", Prettifier.default) & Yes("message 2", Prettifier.default)
+    val result2 = withClue("a clue") { fact2 }
+    result2 shouldBe a [Fact]
+    result2.factMessage shouldBe "a clue message 1, and message 2"
+  }
+
+  it should "return Binary_&& prepended clue" in {
+    val fact = Yes("message 1", Prettifier.default) && No("message 2", Prettifier.default)
+    val result = withClue("a clue") { fact }
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "a clue message 1, but message 2"
+
+    val fact2 = No("message 1", Prettifier.default) && Yes("message 2", Prettifier.default)
+    val result2 = withClue("a clue") { fact2 }
+    result2 shouldBe a [Fact]
+    result2.factMessage shouldBe "a clue message 1"
+  }
+
+  it should "return Implies prepended clue" in {
+    val fact = Yes("message 1", Prettifier.default) implies No("message 2", Prettifier.default)
+    val result = withClue("a clue") { fact }
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "a clue message 1, but message 2"
+  }
+
+  it should "return IsEqvTo prepended clue" in {
+    val fact = Yes("message 1", Prettifier.default) isEqvTo No("message 2", Prettifier.default)
+    val result = withClue("a clue") { fact }
+    result shouldBe a [Fact]
+    result.factMessage shouldBe "a clue message 1, and message 2"
   }
 
   // SKIP-SCALATESTJS,NATIVE-START

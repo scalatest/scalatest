@@ -730,7 +730,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(a == 2 & b == 5)
       }
-      org.scalatest.Assertions.assert(e.message === Some(didNotEqual(3, 2)))
+      org.scalatest.Assertions.assert(e.message === Some(commaBut(didNotEqual(3, 2), equaled(5, 5))))
       org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -739,7 +739,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(a == 2 & b == 6)
       }
-      org.scalatest.Assertions.assert(e.message === Some(didNotEqual(3, 2)))
+      org.scalatest.Assertions.assert(e.message === Some(commaAnd(didNotEqual(3, 2), didNotEqual(5, 6))))
       org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -842,12 +842,12 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(s.state == false)
     }
 
-    it("should short-circuit & when first condition was false") {
+    it("should not short-circuit & when first condition was false") {
       val s = new Stateful
       intercept[TestFailedException] {
         org.scalatest.Assertions.assert(a == 5 & s.changeState)
       }
-      org.scalatest.Assertions.assert(s.state == false)
+      org.scalatest.Assertions.assert(s.state == true)
     }
 
     it("should short-circuit || when first condition was true") {
@@ -856,10 +856,10 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(s.state == false)
     }
 
-    it("should short-circuit | when first condition was true") {
+    it("should not short-circuit | when first condition was true") {
       val s = new Stateful
       org.scalatest.Assertions.assert(a == 3 | s.changeState)
-      org.scalatest.Assertions.assert(s.state == false)
+      org.scalatest.Assertions.assert(s.state == true)
     }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
@@ -2179,7 +2179,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(a == 2 & b == 5, ", dude")
       }
-      org.scalatest.Assertions.assert(e.message === Some(didNotEqual(3, 2) + ", dude"))
+      org.scalatest.Assertions.assert(e.message === Some(commaBut(didNotEqual(3, 2), equaled(5, 5)) + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -2188,7 +2188,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestFailedException] {
         org.scalatest.Assertions.assert(a == 2 & b == 6, ", dude")
       }
-      org.scalatest.Assertions.assert(e.message === Some(didNotEqual(3, 2) + ", dude"))
+      org.scalatest.Assertions.assert(e.message === Some(commaAnd(didNotEqual(3, 2), didNotEqual(5, 6)) + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -2291,12 +2291,12 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(s.state == false)
     }
 
-    it("should short-circuit & when first condition was false") {
+    it("should not short-circuit & when first condition was false") {
       val s = new Stateful
       intercept[TestFailedException] {
         org.scalatest.Assertions.assert(a == 5 & s.changeState, ", dude")
       }
-      org.scalatest.Assertions.assert(s.state == false)
+      org.scalatest.Assertions.assert(s.state == true)
     }
 
     it("should short-circuit || when first condition was true") {
@@ -2305,10 +2305,10 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(s.state == false)
     }
 
-    it("should short-circuit | when first condition was true") {
+    it("should not short-circuit | when first condition was true") {
       val s = new Stateful
       org.scalatest.Assertions.assert(a == 3 | s.changeState, ", dude")
-      org.scalatest.Assertions.assert(s.state == false)
+      org.scalatest.Assertions.assert(s.state == true)
     }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
@@ -3621,7 +3621,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(a == 2 & b == 5)
       }
-      org.scalatest.Assertions.assert(e.message === Some(didNotEqual(3, 2)))
+      org.scalatest.Assertions.assert(e.message === Some(commaBut(didNotEqual(3, 2), equaled(5, 5))))
       org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -3630,7 +3630,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(a == 2 & b == 6)
       }
-      org.scalatest.Assertions.assert(e.message === Some(didNotEqual(3, 2)))
+      org.scalatest.Assertions.assert(e.message === Some(commaAnd(didNotEqual(3, 2), didNotEqual(5, 6))))
       org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -3733,12 +3733,12 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(s.state == false)
     }
 
-    it("should short-circuit & when first condition was false") {
+    it("should not short-circuit & when first condition was false") {
       val s = new Stateful
       intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(a == 5 & s.changeState)
       }
-      org.scalatest.Assertions.assert(s.state == false)
+      org.scalatest.Assertions.assert(s.state == true)
     }
 
     it("should short-circuit || when first condition was true") {
@@ -3747,10 +3747,10 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(s.state == false)
     }
 
-    it("should short-circuit | when first condition was true") {
+    it("should not short-circuit | when first condition was true") {
       val s = new Stateful
       org.scalatest.Assertions.assume(a == 3 | s.changeState)
-      org.scalatest.Assertions.assert(s.state == false)
+      org.scalatest.Assertions.assert(s.state == true)
     }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
@@ -5070,7 +5070,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(a == 2 & b == 5, ", dude")
       }
-      org.scalatest.Assertions.assert(e.message === Some(didNotEqual(3, 2) + ", dude"))
+      org.scalatest.Assertions.assert(e.message === Some(commaBut(didNotEqual(3, 2), equaled(5, 5)) + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -5079,7 +5079,7 @@ class DirectAssertionsSpec extends AnyFunSpec {
       val e = intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(a == 2 & b == 6, ", dude")
       }
-      org.scalatest.Assertions.assert(e.message === Some(didNotEqual(3, 2) + ", dude"))
+      org.scalatest.Assertions.assert(e.message === Some(commaAnd(didNotEqual(3, 2), didNotEqual(5, 6)) + ", dude"))
       org.scalatest.Assertions.assert(e.failedCodeFileName === (Some(fileName)))
       org.scalatest.Assertions.assert(e.failedCodeLineNumber === (Some(thisLineNumber - 4)))
     }
@@ -5182,12 +5182,12 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(s.state == false)
     }
 
-    it("should short-circuit & when first condition was false") {
+    it("should not short-circuit & when first condition was false") {
       val s = new Stateful
       intercept[TestCanceledException] {
         org.scalatest.Assertions.assume(a == 5 & s.changeState, ", dude")
       }
-      org.scalatest.Assertions.assert(s.state == false)
+      org.scalatest.Assertions.assert(s.state == true)
     }
 
     it("should short-circuit || when first condition was true") {
@@ -5196,10 +5196,10 @@ class DirectAssertionsSpec extends AnyFunSpec {
       org.scalatest.Assertions.assert(s.state == false)
     }
 
-    it("should short-circuit | when first condition was true") {
+    it("should not short-circuit | when first condition was true") {
       val s = new Stateful
       org.scalatest.Assertions.assume(a == 3 | s.changeState, ", dude")
-      org.scalatest.Assertions.assert(s.state == false)
+      org.scalatest.Assertions.assert(s.state == true)
     }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
