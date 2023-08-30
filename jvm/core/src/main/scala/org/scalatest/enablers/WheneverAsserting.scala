@@ -15,7 +15,7 @@
  */
 package org.scalatest.enablers
 
-import org.scalatest.Assertion
+import org.scalatest.{Assertion, Expectation}
 import org.scalatest.exceptions.DiscardedEvaluationException
 import scala.concurrent.Future
 
@@ -71,7 +71,7 @@ abstract class UnitWheneverAsserting {
   * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
   */
 abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
-  /*private[scalatest] implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
+  implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
     new WheneverAsserting[Expectation] {
       type Result = Expectation
       def whenever(condition: Boolean)(fun: => Expectation): Expectation =
@@ -80,7 +80,7 @@ abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
         else
          fun
     }
-  }*/
+  }
   implicit def assertingNatureOfFutureAssertion: WheneverAsserting[Future[Assertion]] { type Result = Future[Assertion] } = {
     new WheneverAsserting[Future[Assertion]] {
       type Result = Future[Assertion]
