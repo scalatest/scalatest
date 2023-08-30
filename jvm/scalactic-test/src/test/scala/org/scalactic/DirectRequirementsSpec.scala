@@ -401,14 +401,14 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
       val e = intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(a == 2 & b == 5)
       }
-      assert(e.getMessage == didNotEqual(3, 2))
+      assert(e.getMessage == commaBut(didNotEqual(3, 2), equaled(5, 5)))
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a == 2 & b == 6") {
       val e = intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(a == 2 & b == 6)
       }
-      assert(e.getMessage == didNotEqual(3, 2))
+      assert(e.getMessage == commaAnd(didNotEqual(3, 2), didNotEqual(5, 6)))
     }
 
     it("should do nothing when is used to check a == 3 || b == 5") {
@@ -497,12 +497,12 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
       assert(s.state == false)
     }
 
-    it("should short-circuit & when first condition was false") {
+    it("should not short-circuit & when first condition was false") {
       val s = new Stateful
       intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(a == 5 & s.changeState)
       }
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should short-circuit || when first condition was true") {
@@ -511,10 +511,10 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
       assert(s.state == false)
     }
 
-    it("should short-circuit | when first condition was true") {
+    it("should not short-circuit | when first condition was true") {
       val s = new Stateful
       org.scalactic.Requirements.require(a == 3 | s.changeState)
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
@@ -1564,14 +1564,14 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
       val e = intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(a == 2 & b == 5, ", dude")
       }
-      assert(e.getMessage == didNotEqual(3, 2) + ", dude")
+      assert(e.getMessage == commaBut(didNotEqual(3, 2), equaled(5, 5)) + ", dude")
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a == 2 & b == 6") {
       val e = intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(a == 2 & b == 6, ", dude")
       }
-      assert(e.getMessage == didNotEqual(3, 2) + ", dude")
+      assert(e.getMessage == commaAnd(didNotEqual(3, 2), didNotEqual(5, 6)) + ", dude")
     }
 
     it("should do nothing when is used to check a == 3 || b == 5") {
@@ -1660,12 +1660,12 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
       assert(s.state == false)
     }
 
-    it("should short-circuit & when first condition was false") {
+    it("should not short-circuit & when first condition was false") {
       val s = new Stateful
       intercept[IllegalArgumentException] {
         org.scalactic.Requirements.require(a == 5 & s.changeState, ", dude")
       }
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should short-circuit || when first condition was true") {
@@ -1674,10 +1674,10 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
       assert(s.state == false)
     }
 
-    it("should short-circuit | when first condition was true") {
+    it("should not short-circuit | when first condition was true") {
       val s = new Stateful
       org.scalactic.Requirements.require(a == 3 | s.changeState, ", dude")
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
@@ -2687,14 +2687,14 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
       val e = intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(a == 2 & b == 5)
       }
-      assert(e.getMessage == didNotEqual(3, 2))
+      assert(e.getMessage == commaBut(didNotEqual(3, 2), equaled(5, 5)))
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 & b == 6") {
       val e = intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(a == 2 & b == 6)
       }
-      assert(e.getMessage == didNotEqual(3, 2))
+      assert(e.getMessage == commaAnd(didNotEqual(3, 2), didNotEqual(5, 6)))
     }
 
     it("should do nothing when is used to check a == 3 || b == 5") {
@@ -2783,12 +2783,12 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
       assert(s.state == false)
     }
 
-    it("should short-circuit & when first condition was false") {
+    it("should not short-circuit & when first condition was false") {
       val s = new Stateful
       intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(a == 5 & s.changeState)
       }
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should short-circuit || when first condition was true") {
@@ -2797,10 +2797,10 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
       assert(s.state == false)
     }
 
-    it("should short-circuit | when first condition was true") {
+    it("should not short-circuit | when first condition was true") {
       val s = new Stateful
       org.scalactic.Requirements.requireState(a == 3 | s.changeState)
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
@@ -3850,14 +3850,14 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
       val e = intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(a == 2 & b == 5, ", dude")
       }
-      assert(e.getMessage == didNotEqual(3, 2) + ", dude")
+      assert(e.getMessage == commaBut(didNotEqual(3, 2), equaled(5, 5)) + ", dude")
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 & b == 6") {
       val e = intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(a == 2 & b == 6, ", dude")
       }
-      assert(e.getMessage == didNotEqual(3, 2) + ", dude")
+      assert(e.getMessage == commaAnd(didNotEqual(3, 2), didNotEqual(5, 6)) + ", dude")
     }
 
     it("should do nothing when is used to check a == 3 || b == 5") {
@@ -3946,12 +3946,12 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
       assert(s.state == false)
     }
 
-    it("should short-circuit & when first condition was false") {
+    it("should not short-circuit & when first condition was false") {
       val s = new Stateful
       intercept[IllegalStateException] {
         org.scalactic.Requirements.requireState(a == 5 & s.changeState, ", dude")
       }
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should short-circuit || when first condition was true") {
@@ -3960,10 +3960,10 @@ class DirectRequirementsSpec extends funspec.AnyFunSpec with OptionValues {
       assert(s.state == false)
     }
 
-    it("should short-circuit | when first condition was true") {
+    it("should not short-circuit | when first condition was true") {
       val s = new Stateful
       org.scalactic.Requirements.requireState(a == 3 | s.changeState, ", dude")
-      assert(s.state == false)
+      assert(s.state == true)
     }
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
