@@ -22,9 +22,6 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.NotSerializableException
 import java.util.Date
-// SKIP-SCALATESTJS,NATIVE-START
-import scala.xml.Elem
-// SKIP-SCALATESTJS,NATIVE-END
 import exceptions.StackDepthException
 import exceptions.NotSerializableWrapperException
 
@@ -83,10 +80,6 @@ sealed abstract class Event extends Ordered[Event] with Product with Serializabl
   def compare(that: Event): Int = ordinal.compare(that.ordinal)
 
   private [scalatest] def toJson: String
-
-  // SKIP-SCALATESTJS,NATIVE-START
-  private [scalatest] def toXml: Elem
-  // SKIP-SCALATESTJS,NATIVE-END
 
   private[events] object EventJsonHelper {
 
@@ -299,27 +292,6 @@ final case class TestStarting (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  private [scalatest] def toXml = {
-    import EventXmlHelper._
-    <TestStarting>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <suiteName>{ suiteName }</suiteName>
-      <suiteId>{ suiteId }</suiteId>
-      <suiteClassName>{ stringOption(suiteClassName) }</suiteClassName>
-      <testName>{ testName }</testName>
-      <testText>{ testText }</testText>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <rerunner>{ stringOption(rerunner) }</rerunner>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </TestStarting>
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "TestStarting", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "testName": ${string(testName)}, "testText": ${string(testText)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -405,29 +377,6 @@ final case class TestSucceeded (
                  rerunner,
                  payload,
                  threadName)
-
-  // SKIP-SCALATESTJS,NATIVE-START
-  private [scalatest] def toXml = {
-    import EventXmlHelper._
-    <TestSucceeded>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <suiteName>{ suiteName }</suiteName>
-      <suiteId>{ suiteId }</suiteId>
-      <suiteClassName>{ stringOption(suiteClassName) }</suiteClassName>
-      <duration>{ longOption(duration) }</duration>
-      <testName>{ testName }</testName>
-      <testText>{ testText }</testText>
-      <recordedEvents>{ recordedEvents.map(_.toXml) }</recordedEvents>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <rerunner>{ stringOption(rerunner) }</rerunner>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </TestSucceeded>
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -523,32 +472,6 @@ final case class TestFailed (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  private [scalatest] def toXml = {
-    import EventXmlHelper._
-    <TestFailed>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <message>{ message }</message>
-      <suiteName>{ suiteName }</suiteName>
-      <suiteId>{ suiteId }</suiteId>
-      <suiteClassName>{ stringOption(suiteClassName) }</suiteClassName>
-      <duration>{ longOption(duration) }</duration>
-      <testName>{ testName }</testName>
-      <testText>{ testText }</testText>
-      <recordedEvents>{ recordedEvents.map(_.toXml) }</recordedEvents>
-      <analysis>analysis.map(a => <message>a</message>)</analysis>
-      <throwable>{ throwableOption(throwable) }</throwable>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <rerunner>{ stringOption(rerunner) }</rerunner>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </TestFailed>
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "TestFailed", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -631,26 +554,6 @@ final case class TestIgnored (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  private [scalatest] def toXml = {
-    import EventXmlHelper._
-    <TestIgnored>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <suiteName>{ suiteName }</suiteName>
-      <suiteId>{ suiteId }</suiteId>
-      <suiteClassName>{ stringOption(suiteClassName) }</suiteClassName>
-      <testName>{ testName }</testName>
-      <testText>{ testText }</testText>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </TestIgnored>
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "TestIgnored", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "testName": ${string(testName)}, "testText": ${string(testText)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -726,28 +629,6 @@ final case class TestPending (
                  location,
                  payload,
                  threadName)
-
-  // SKIP-SCALATESTJS,NATIVE-START
-  private [scalatest] def toXml = {
-    import EventXmlHelper._
-    <TestPending>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <suiteName>{ suiteName }</suiteName>
-      <suiteId>{ suiteId }</suiteId>
-      <suiteClassName>{ stringOption(suiteClassName) }</suiteClassName>
-      <duration>{ longOption(duration) }</duration>
-      <testName>{ testName }</testName>
-      <testText>{ testText }</testText>
-      <recordedEvents>{ recordedEvents.map(_.toXml) }</recordedEvents>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </TestPending>
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -836,31 +717,6 @@ final case class TestCanceled (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  private [scalatest] def toXml = {
-    import EventXmlHelper._
-    <TestCanceled>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <message>{ message }</message>
-      <suiteName>{ suiteName }</suiteName>
-      <suiteId>{ suiteId }</suiteId>
-      <suiteClassName>{ stringOption(suiteClassName) }</suiteClassName>
-      <duration>{ longOption(duration) }</duration>
-      <testName>{ testName }</testName>
-      <testText>{ testText }</testText>
-      <recordedEvents>{ recordedEvents.map(_.toXml) }</recordedEvents>
-      <throwable>{ throwableOption(throwable) }</throwable>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <rerunner>{ stringOption(rerunner) }</rerunner>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </TestCanceled>
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "TestCanceled", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "testName": ${string(testName)}, "testText": ${string(testText)}, "recordedEvents" : [${recordedEvents.map(_.toJson).mkString(", ")}], "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -940,25 +796,6 @@ final case class SuiteStarting (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  private [scalatest] def toXml = {
-    import EventXmlHelper._
-    <SuiteStarting>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <suiteName>{ suiteName }</suiteName>
-      <suiteId>{ suiteId }</suiteId>
-      <suiteClassName>{ stringOption(suiteClassName) }</suiteClassName>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <rerunner>{ stringOption(rerunner) }</rerunner>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </SuiteStarting>
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "SuiteStarting", "ordinal": ${ordinal.runStamp}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -1036,26 +873,6 @@ final case class SuiteCompleted (
                  rerunner,
                  payload,
                  threadName)
-
-  // SKIP-SCALATESTJS,NATIVE-START
-  private [scalatest] def toXml = {
-    import EventXmlHelper._
-    <SuiteCompleted>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <suiteName>{ suiteName }</suiteName>
-      <suiteId>{ suiteId }</suiteId>
-      <suiteClassName>{ stringOption(suiteClassName) }</suiteClassName>
-      <duration>{ longOption(duration) }</duration>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <rerunner>{ stringOption(rerunner) }</rerunner>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </SuiteCompleted>
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1144,28 +961,6 @@ final case class SuiteAborted (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  private [scalatest] def toXml = {
-    import EventXmlHelper._
-    <SuiteAborted>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <message>{ message }</message>
-      <suiteName>{ suiteName }</suiteName>
-      <suiteId>{ suiteId }</suiteId>
-      <suiteClassName>{ stringOption(suiteClassName) }</suiteClassName>
-      <duration>{ longOption(duration) }</duration>
-      <throwable>{ throwableOption(throwable) }</throwable>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <rerunner>{ stringOption(rerunner) }</rerunner>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </SuiteAborted>
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "SuiteAborted", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "suiteName": ${string(suiteName)}, "suiteId": ${string(suiteId)}, "suiteClassName": ${stringOption(suiteClassName)}, "duration": ${duration.getOrElse("null")}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "rerunner": ${stringOption(rerunner)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -1233,31 +1028,6 @@ final case class RunStarting (
 
   if (testCount < 0)
     throw new IllegalArgumentException("testCount was less than zero: " + testCount)
-
-  // SKIP-SCALATESTJS,NATIVE-START
-  import EventXmlHelper._
-  private [scalatest] def toXml = 
-    <RunStarting>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <testCount>{ testCount }</testCount>
-      <configMap>
-        { 
-          for ((key, value) <- configMap) yield {
-            <entry>
-              <key>{ key }</key>
-              <value>{ value }</value>
-            </entry>
-          }
-        }
-      </configMap>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </RunStarting>
-  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1333,22 +1103,6 @@ final case class RunCompleted (
                  location,
                  payload,
                  threadName)
-
-  // SKIP-SCALATESTJS,NATIVE-START
-  import EventXmlHelper._
-  private [scalatest] def toXml = 
-    <RunCompleted>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <duration>{ longOption(duration) }</duration>
-      <summary>{ summaryOption(summary) }</summary>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </RunCompleted>
-  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1426,22 +1180,6 @@ final case class RunStopped (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  import EventXmlHelper._
-  private [scalatest] def toXml = 
-    <RunStopped>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <duration>{ longOption(duration) }</duration>
-      <summary>{ summaryOption(summary) }</summary>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </RunStopped>
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "RunStopped", "ordinal": ${ordinal.runStamp}, "duration": ${duration.getOrElse(0L)}, "summary": ${summaryOption(summary)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -1515,24 +1253,6 @@ final case class RunAborted (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  import EventXmlHelper._
-  private [scalatest] def toXml = 
-    <RunAborted>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <message>{ message }</message>
-      <throwable>{ throwableOption(throwable) }</throwable>
-      <duration>{ longOption(duration) }</duration>
-      <summary>{ summaryOption(summary) }</summary>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </RunAborted>
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "RunAborted", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "throwable": ${throwableOption(throwable)}, "duration": ${duration.getOrElse(0L)}, "summary": ${summaryOption(summary)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -1604,24 +1324,6 @@ final case class InfoProvided (
                  location,
                  payload,
                  threadName)
-
-  // SKIP-SCALATESTJS,NATIVE-START
-  private [scalatest] def toXml = {
-    import EventXmlHelper._
-    <InfoProvided>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <message>{ message }</message>
-      <nameInfo>{ nameInfoOption(nameInfo) }</nameInfo>
-      <throwable>{ throwableOption(throwable) }</throwable>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </InfoProvided>
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -1705,23 +1407,6 @@ final case class AlertProvided (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  import EventXmlHelper._
-  private [scalatest] def toXml = 
-    <AlertProvided>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <message>{ message }</message>
-      <nameInfo>{ nameInfoOption(nameInfo) }</nameInfo>
-      <throwable>{ throwableOption(throwable) }</throwable>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </AlertProvided>
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "AlertProvided", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nameInfoOption(nameInfo)}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -1804,23 +1489,6 @@ final case class NoteProvided (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  import EventXmlHelper._
-  private [scalatest] def toXml = 
-    <NoteProvided>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <message>{ message }</message>
-      <nameInfo>{ nameInfoOption(nameInfo) }</nameInfo>
-      <throwable>{ throwableOption(throwable) }</throwable>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </NoteProvided>
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "NoteProvided", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nameInfoOption(nameInfo)}, "throwable": ${throwableOption(throwable)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -1889,22 +1557,6 @@ final case class MarkupProvided (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  import EventXmlHelper._
-  private [scalatest] def toXml = 
-    <MarkupProvided>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <text>{ text }</text>
-      <nameInfo>{ nameInfoOption(nameInfo) }</nameInfo>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </MarkupProvided>
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "MarkupProvided", "ordinal": ${ordinal.runStamp}, "text": ${string(text)}, "nameInfo": ${nameInfoOption(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -1965,23 +1617,6 @@ final case class ScopeOpened (
                  location,
                  payload,
                  threadName)
-
-  // SKIP-SCALATESTJS,NATIVE-START
-  private [scalatest] def toXml = {
-    import EventXmlHelper._
-    <ScopeOpened>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <message>{ message }</message>
-      <nameInfo>{ nameInfoOption(if (nameInfo != null) Some(nameInfo) else None) }</nameInfo>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </ScopeOpened>
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -2044,22 +1679,6 @@ final case class ScopeClosed (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  import EventXmlHelper._
-  private [scalatest] def toXml = 
-    <ScopeClosed>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <message>{ message }</message>
-      <nameInfo>{ nameInfoOption(if (nameInfo != null) Some(nameInfo) else None) }</nameInfo>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </ScopeClosed>
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "ScopeClosed", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nmInfo(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -2119,22 +1738,6 @@ final case class ScopePending (
                  payload,
                  threadName)
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  import EventXmlHelper._
-  private [scalatest] def toXml = 
-    <ScopePending>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <message>{ message }</message>
-      <nameInfo>{ nameInfoOption(if (nameInfo != null) Some(nameInfo) else None) }</nameInfo>
-      <formatter>{ formatterOption(formatter) }</formatter>
-      <location>{ locationOption(location) }</location>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </ScopePending>
-  // SKIP-SCALATESTJS,NATIVE-END
-
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
     s"""{ "eventType": "ScopePending", "ordinal": ${ordinal.runStamp}, "message": ${string(message)}, "nameInfo": ${nmInfo(nameInfo)}, "formatter": ${formatterOption(formatter)}, "location": ${locationOption(location)}, "threadName": ${string(threadName)}, "timeStamp": ${timeStamp} }""".stripMargin
@@ -2180,27 +1783,6 @@ final case class DiscoveryStarting (
    * <code>Formatter</code> in a <code>DiscoveryStarting</code> is always set to <code>None</code>.
    */
   val formatter: Option[Formatter] = None
-
-  // SKIP-SCALATESTJS,NATIVE-START
-    private [scalatest] def toXml = 
-    <DiscoveryStarting>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <configMap>
-        { 
-          for ((key, value) <- configMap) yield {
-            <entry>
-              <key>{ key }</key>
-              <value>{ value }</value>
-            </entry>
-          }
-        }
-      </configMap>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </DiscoveryStarting>
-  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
@@ -2249,18 +1831,6 @@ final case class DiscoveryCompleted (
    * <code>Formatter</code> in a <code>DiscoveryCompleted</code> is always set to <code>None</code>.
    */
   val formatter: Option[Formatter] = None
-  // SKIP-SCALATESTJS,NATIVE-START
-  import EventXmlHelper._
-  private [scalatest] def toXml = 
-    <DiscoveryCompleted>
-      <ordinal>
-        <runStamp>{ ordinal.runStamp }</runStamp>
-      </ordinal>
-      <duration>{ longOption(duration) }</duration>
-      <threadName>{ threadName }</threadName>
-      <timeStamp>{ timeStamp }</timeStamp>
-    </DiscoveryCompleted>
-  // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def toJson: String = {
     import EventJsonHelper._
