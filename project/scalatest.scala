@@ -398,6 +398,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
+        "images",
         "org.scalatest",
         "org.scalatest.compatible",
         "org.scalatest.concurrent",
