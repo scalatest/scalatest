@@ -15,7 +15,7 @@
  */
 package org.scalatest.tools
 
-import org.scalatest.events.Event
+import org.scalatest.events.{Event, EventXmlHelper}
 import org.scalatest.ResourcefulReporter
 import java.net.Socket
 import java.io.PrintWriter
@@ -27,7 +27,7 @@ private[scalatest] class XmlSocketReporter(host: String, port: Int) extends Reso
   private val out = new PrintWriter(new BufferedOutputStream(socket.getOutputStream))
   
   def apply(event: Event): Unit = {
-    out.println(event.toXml.toString)
+    out.println(EventXmlHelper.toXml(event).toString)
     out.flush()
   }
 
