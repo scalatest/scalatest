@@ -146,7 +146,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
       "org.apache.ant" % "ant" % "1.10.12" % "optional",
-      "org.ow2.asm" % "asm-all" % "4.1" % "optional",
       commonmark
     )
 
