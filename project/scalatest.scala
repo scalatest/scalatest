@@ -238,7 +238,13 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       docTaskSetting,
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
-      mimaBinaryIssueFilters ++= Seq()
+      mimaBinaryIssueFilters ++= 
+        Seq(
+          exclude[DirectMissingMethodProblem]("org.scalactic.AndBool.failureMessageArgs"), // Private class function
+          exclude[DirectMissingMethodProblem]("org.scalactic.AndBool.this"), // Private class function
+          exclude[DirectMissingMethodProblem]("org.scalactic.OrBool.negatedFailureMessageArgs"), // Private class function
+          exclude[DirectMissingMethodProblem]("org.scalactic.OrBool.this") // Private class function
+        )
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",

@@ -76,9 +76,13 @@ trait JsBuild { this: BuildCommons =>
       mappings in (Compile, packageSrc) ++= mappings.in(scalacticMacroJS, Compile, packageSrc).value,
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
       mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
-      mimaBinaryIssueFilters ++= {
-        Seq()
-      }
+      mimaBinaryIssueFilters ++= 
+        Seq(
+          exclude[DirectMissingMethodProblem]("org.scalactic.AndBool.failureMessageArgs"), // Private class function
+          exclude[DirectMissingMethodProblem]("org.scalactic.AndBool.this"), // Private class function
+          exclude[DirectMissingMethodProblem]("org.scalactic.OrBool.negatedFailureMessageArgs"), // Private class function
+          exclude[DirectMissingMethodProblem]("org.scalactic.OrBool.this") // Private class function
+        )
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
