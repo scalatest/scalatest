@@ -208,6 +208,9 @@ private[scalatest] class HtmlReporter(
     try {
       pw.println {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + 
+        "<!-- " + suiteResult.testsSucceededCount + "," + suiteResult.testsFailedCount + "," + suiteResult.testsIgnoredCount + "," + 
+        suiteResult.testsPendingCount + "," + suiteResult.testsCanceledCount + "," + suiteResult.scopesPendingCount + "," + 
+        suiteResult.duration.getOrElse(0L) + "," + (if (suiteResult.isCompleted) "1" else "0") + " -->" +  "\n" + 
         "<!DOCTYPE html" + "\n" + 
         "  PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"" + "\n" + 
         "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">" + "\n" + 
