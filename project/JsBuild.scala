@@ -82,9 +82,7 @@ trait JsBuild { this: BuildCommons =>
       Compile / packageSrc / mappings ++= (scalacticMacroJS / Compile / packageSrc / mappings).value,
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
       mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
-      mimaBinaryIssueFilters ++= {
-        Seq()
-      }
+      mimaBinaryIssueFilters ++= Seq()
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
