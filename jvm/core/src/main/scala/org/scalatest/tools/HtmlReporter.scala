@@ -450,7 +450,9 @@ private[scalatest] class HtmlReporter(
   }
   
   private def makeIndexFile(completeMessageFun: => String, completeInMessageFun: String => String, duration: Option[Long]): Unit = {
-    val pw = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(new File(targetDir, "index.html")), BufferSize), "UTF-8"))
+    val fos = new FileOutputStream(new File(targetDir, "index.html"))
+    val lock = fos.getChannel().lock()
+    val pw = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(fos, BufferSize), "UTF-8"))
     try {
       pw.println {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -463,6 +465,8 @@ private[scalatest] class HtmlReporter(
     finally {
       pw.flush()
       pw.close()
+      if (lock.isValid)  // release lock if it is still valid
+        lock.release()
     }
   }
   
