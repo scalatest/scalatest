@@ -516,17 +516,6 @@ private[scalatest] class HtmlReporter(
   }
 
   private def createSummary(): (Summary, Long, List[SuiteSummary]) = {
-    /*val (succeeded, failed, ignored, pending, canceled, scopesPending) = results.suiteList.foldLeft((0, 0, 0, 0, 0, 0)) { case ((succeeded, failed, ignored, pending, canceled, scopesPending), r) =>
-      (succeeded + r.testsSucceededCount, failed + r.testsFailedCount, ignored + r.testsIgnoredCount, 
-       pending + r.testsPendingCount, canceled + r.testsCanceledCount, scopesPending + r.scopesPendingCount)
-    }*/
-
-    /*
-      "<!-- " + suiteResult.testsSucceededCount + "," + suiteResult.testsFailedCount + "," + suiteResult.testsIgnoredCount + "," + 
-        suiteResult.testsPendingCount + "," + suiteResult.testsCanceledCount + "," + suiteResult.scopesPendingCount + "," + 
-        suiteResult.duration.getOrElse(0L) + "," + (if (suiteResult.isCompleted) "1" else "0") + " -->" +  "\n"
-    */
-
     val files = targetDir.listFiles
     files.foldLeft((Summary(0, 0, 0, 0, 0, 0, 0, 0), 0L, List.empty[SuiteSummary])) { case ((summary, duration, suites), file) =>
       if (file.getName.endsWith(".html") && !file.getName.endsWith("index.html")) {
@@ -536,7 +525,6 @@ private[scalatest] class HtmlReporter(
           linesItr.next()
           val line = linesItr.next()
           if (line.startsWith("<!-- ") && line.endsWith(" -->")) {
-            // <!-- suiteName,764,0,0,0,0,0,1879,1 -->
             val summaryLine = line.substring(5, line.length - 4)
             val summaryArray = summaryLine.split(",")
             val suiteName = summaryArray(0).replace("##scalatest_comma##", ",")
