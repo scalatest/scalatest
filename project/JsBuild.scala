@@ -15,7 +15,7 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 trait JsBuild { this: BuildCommons =>
 
   private lazy val jsSharedSettings = Seq(
-    crossScalaVersions := Seq("2.13.11", "2.12.18")
+    crossScalaVersions := Seq("2.13.12", "2.12.18")
   )
 
   val sjsPrefix = "_sjs1_"
