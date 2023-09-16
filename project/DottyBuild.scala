@@ -889,6 +889,7 @@ trait DottyBuild { this: BuildCommons =>
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
+      libraryDependencies += "org.scala-js" %%% "scala-js-macrotask-executor" % "1.1.1", 
       Compile / sourceGenerators += Def.task {
         GenCommonTestDotty.genMainJS((Compile / sourceManaged).value / "scala", version.value, scalaVersion.value) ++ 
         GenCompatibleClasses.genTest((Compile / sourceManaged).value, version.value, scalaVersion.value)

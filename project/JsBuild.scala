@@ -210,6 +210,7 @@ trait JsBuild { this: BuildCommons =>
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
+      libraryDependencies += "org.scala-js" %%% "scala-js-macrotask-executor" % "1.1.1", 
       Compile / sourceGenerators += {
         Def.task{
           GenCommonTestJS.genMain((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
