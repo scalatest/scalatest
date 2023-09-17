@@ -30,6 +30,8 @@ import org.scalatest.ParallelTestExecution
 
 class AsyncFlatSpecSpec2 extends funspec.AsyncFunSpec {
 
+  //SCALATESTJS-ONLY override implicit val executionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
+
   describe("AsyncFlatSpec") {
 
     // ParallelTestExecution not working yet.
@@ -738,7 +740,7 @@ class AsyncFlatSpecSpec2 extends funspec.AsyncFunSpec {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
-        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+        //SCALATESTJS-ONLY override implicit val executionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
         val a = 1
         "feature 1" should "test A" in {
           Future { assert(a == 1) }
@@ -754,13 +756,14 @@ class AsyncFlatSpecSpec2 extends funspec.AsyncFunSpec {
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
 
-      // SKIP-SCALATESTJS,NATIVE-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS,NATIVE-END
-      assert(reporter.scopeOpenedEventsReceived.length == 3)
-      assert(reporter.scopeClosedEventsReceived.length == 3)
-      assert(reporter.testStartingEventsReceived.length == 3)
-      assert(reporter.testSucceededEventsReceived.length == 3)
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        assert(repo.scopeOpenedEventsReceived.length == 3)
+        assert(repo.scopeClosedEventsReceived.length == 3)
+        assert(repo.testStartingEventsReceived.length == 3)
+        assert(repo.testSucceededEventsReceived.length == 3)
+      }
     }
 
   }
