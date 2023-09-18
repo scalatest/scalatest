@@ -26,6 +26,8 @@ import org.scalatest.funspec.AsyncFunSpec
 
 class DeprecatedAsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
+  //SCALATESTJS-ONLY override implicit val executionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
+
   describe("AsyncFeatureSpecLike") {
 
     it("can be used for tests that return Future under parallel async test execution") {
@@ -854,7 +856,7 @@ class DeprecatedAsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
-        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+        //SCALATESTJS-ONLY override implicit val executionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
         val a = 1
         Feature("feature 1") {
           Scenario("scenario A") {
