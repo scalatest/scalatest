@@ -971,11 +971,25 @@ class FixtureAsyncFunSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should allow other execution context to be used") {
+      //SCALATESTJS-ONLY var changeMe = false
+
+      //SCALATESTJS-ONLY object CustomTestExecutionContext extends scala.concurrent.ExecutionContextExecutor {
+      //SCALATESTJS-ONLY   override def execute(runnable: Runnable): Unit = {
+      //SCALATESTJS-ONLY     changeMe = true
+      //SCALATESTJS-ONLY     try {
+      //SCALATESTJS-ONLY       runnable.run()
+      //SCALATESTJS-ONLY     } catch {
+      //SCALATESTJS-ONLY       case t: Throwable => reportFailure(t)
+      //SCALATESTJS-ONLY     }
+      //SCALATESTJS-ONLY   }
+      //SCALATESTJS-ONLY   def reportFailure(t: Throwable): Unit =
+      //SCALATESTJS-ONLY     t.printStackTrace()
+      //SCALATESTJS-ONLY }
       class TestSpec extends funspec.FixtureAsyncFunSpec {
         // SKIP-SCALATESTJS,NATIVE-START
-        override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        override implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
-        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+        //SCALATESTJS-ONLY override implicit val executionContext: ExecutionContext = CustomTestExecutionContext
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome =
@@ -1009,6 +1023,7 @@ class FixtureAsyncFunSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(reporter.scopeClosedEventsReceived.length == 3)
       assert(reporter.testStartingEventsReceived.length == 3)
       assert(reporter.testSucceededEventsReceived.length == 3)
+      //SCALATESTJS-ONLY assert(changeMe)
     }
 
   }
