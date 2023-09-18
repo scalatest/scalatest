@@ -33,7 +33,6 @@ import scala.concurrent.Promise
 import scala.concurrent.Future
 import scala.concurrent.Await
 import scala.util.Success
-import scala.scalajs.concurrent.JSExecutionContext
 
 import scala.compat.Platform
 import scala.concurrent.duration.Duration
@@ -61,10 +60,9 @@ final class TaskRunner(task: TaskDef,
   def taskDef(): TaskDef = task
 
   def execute(eventHandler: EventHandler, loggers: Array[Logger], continuation: (Array[Task]) => Unit): Unit = {
-    implicit val execCtx = JSExecutionContext.queue
+    import org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits._
     val future = executionFuture(eventHandler, loggers)
     future.recover { case t =>
-println("GOT TO THIS RECOVER CALL")
       loggers.foreach(_.trace(t))
     }.onComplete{ _ =>
       continuation(Array.empty)

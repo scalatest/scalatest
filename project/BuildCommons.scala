@@ -7,6 +7,8 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.scalaJSVersion
 import scalanative.sbtplugin.ScalaNativePlugin
 import ScalaNativePlugin.autoImport.{nativeLinkStubs, nativeDump}
 
+import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
+
 trait BuildCommons {
 
   def scalaVersionsSettings: Seq[Setting[_]] = Seq(
@@ -16,10 +18,13 @@ trait BuildCommons {
 
   val runFlickerTests = Option(System.getenv("SCALATEST_RUN_FLICKER_TESTS")).getOrElse("FALSE").toUpperCase == "TRUE"
 
-  def scalatestJSLibraryDependencies =
+  def scalatestJSLibraryDependencies = Def.setting {
     Seq(
-      ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).cross(CrossVersion.for3Use2_13)
+      ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).cross(CrossVersion.for3Use2_13), 
+      "org.scala-js" %%% "scala-js-macrotask-executor" % "1.1.1"
     )
+  }    
+    
 
   val releaseVersion = "3.3.0-SNAP3"
   val previousReleaseVersion = "3.2.14"

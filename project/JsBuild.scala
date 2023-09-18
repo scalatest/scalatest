@@ -117,7 +117,7 @@ trait JsBuild { this: BuildCommons =>
       name := "scalatest-app",
       organization := "org.scalatest",
       moduleName := "scalatest-app",
-      libraryDependencies ++= scalatestJSLibraryDependencies,
+      libraryDependencies ++= scalatestJSLibraryDependencies.value,
       // include the scalactic classes and resources in the jar
       Compile / packageBin / mappings ++= (scalacticJS / Compile / packageBin / mappings).value,
       // include the scalactic sources in the source jar
@@ -210,7 +210,6 @@ trait JsBuild { this: BuildCommons =>
     .settings(
       projectTitle := "Common test classes used by scalactic.js and scalatest.js",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
-      libraryDependencies += "org.scala-js" %%% "scala-js-macrotask-executor" % "1.1.1", 
       Compile / sourceGenerators += {
         Def.task{
           GenCommonTestJS.genMain((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
@@ -459,7 +458,7 @@ trait JsBuild { this: BuildCommons =>
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
-      libraryDependencies ++= scalatestJSLibraryDependencies,
+      libraryDependencies ++= scalatestJSLibraryDependencies.value,
       //jsDependencies += RuntimeDOM % "test",
       Compile / sourceGenerators += {
         Def.task {
