@@ -344,14 +344,14 @@ trait Retries {
     firstOutcome match {
       case Failed(ex) =>
         if (delay != Span.Zero)
-          SleepHelper.sleep(delay.millisPart)
+          SleepHelper.sleep(delay.millisPart, delay.nanosPart)
         blk match {
           case Succeeded => Canceled(Resources.testFlickered, ex)
           case other => firstOutcome
         }
       case Canceled(ex) =>
         if (delay != Span.Zero)
-          SleepHelper.sleep(delay.millisPart)
+          SleepHelper.sleep(delay.millisPart, delay.nanosPart)
         blk match {
           case Succeeded => Succeeded
           case failed: Failed => failed // Never hide a failure.
@@ -569,7 +569,7 @@ trait Retries {
     firstOutcome match {
       case Failed(ex) =>
         if (delay != Span.Zero)
-          SleepHelper.sleep(delay.millisPart)
+          SleepHelper.sleep(delay.millisPart, delay.nanosPart)
         blk match {
           case Succeeded => Canceled(Resources.testFlickered, ex)
           case other => firstOutcome
@@ -784,7 +784,7 @@ trait Retries {
     firstOutcome match {
       case Canceled(ex) =>
         if (delay != Span.Zero)
-          SleepHelper.sleep(delay.millisPart)
+          SleepHelper.sleep(delay.millisPart, delay.nanosPart)
         blk match {
           case Succeeded => Succeeded
           case failed: Failed => failed // Never hide a failure.
