@@ -27,7 +27,7 @@ trait NativeBuild { this: BuildCommons =>
     //
     // Details: https://github.com/scala-native/scala-native/issues/1930
     Compile / resourceDirectories += (Compile / classDirectory).value, 
-    crossScalaVersions := Seq("2.13.11", "2.12.18")
+    crossScalaVersions := Seq("2.13.12", "2.12.18")
   )
 
   lazy val scalacticMacroNative = project.in(file("native/scalactic-macro"))
