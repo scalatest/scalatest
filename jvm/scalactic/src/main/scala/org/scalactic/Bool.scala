@@ -996,6 +996,7 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
         }
 
       case "|" =>
+
         (left, right) match {
           case (leftBool: Bool, rightBool: Bool) =>
             Vector(

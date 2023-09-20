@@ -518,7 +518,7 @@ class Framework extends SbtFramework {
         )
       }
        else
-         throw new IllegalArgumentException("Class " + taskDefinition.fullyQualifiedName + " is neither accessible accesible org.scalatest.Suite nor runnable.")
+         throw new IllegalArgumentException("Class " + taskDefinition.fullyQualifiedName + " is neither accessible org.scalatest.Suite nor runnable.")
     }
 
     def taskDef = taskDefinition
