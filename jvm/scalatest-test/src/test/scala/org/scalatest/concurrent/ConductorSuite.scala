@@ -267,6 +267,9 @@ class ConductorSuite extends AnyFunSuite with Matchers with Conductors with Seve
         case t: ThreadDeath =>
           threadWasKilled.set(true)
           throw t
+        case t: InterruptedException =>
+          threadWasKilled.set(true)
+          throw t  
       }
     }
     thread {
