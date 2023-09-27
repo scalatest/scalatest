@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2023 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,14 @@
  */
 package org.scalatest.tools
 
-import scala.collection.mutable.ListBuffer
-import org.scalatest.events.Summary
-
-private[scalatest] class SuiteResultHolder {
-
-  val suiteList = new ListBuffer[SuiteResult]()
-  
-  def +=(result: SuiteResult): Unit = {
-    suiteList += result
-  }
-  
-  def totalDuration: Long = suiteList.map(s => if (s.duration.isDefined) s.duration.get else 0).sum
-}
+private[scalatest] case class SuiteSummary(
+  suiteName: String, 
+  suiteClassName: Option[String], 
+  duration: Option[Long], 
+  testsSucceededCount: Int, 
+  testsFailedCount: Int, 
+  testsIgnoredCount: Int, 
+  testsPendingCount: Int, 
+  testsCanceledCount: Int, 
+  scopesPendingCount: Int, 
+  isCompleted: Boolean)
