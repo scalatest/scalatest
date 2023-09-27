@@ -1190,11 +1190,25 @@ class FixtureAsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
     }
 
     it("should allow other execution context to be used") {
+      //SCALATESTJS,NATIVE-ONLY var changeMe = false
+
+      //SCALATESTJS,NATIVE-ONLY object CustomTestExecutionContext extends scala.concurrent.ExecutionContextExecutor {
+      //SCALATESTJS,NATIVE-ONLY   override def execute(runnable: Runnable): Unit = {
+      //SCALATESTJS,NATIVE-ONLY     changeMe = true
+      //SCALATESTJS,NATIVE-ONLY     try {
+      //SCALATESTJS,NATIVE-ONLY       runnable.run()
+      //SCALATESTJS,NATIVE-ONLY     } catch {
+      //SCALATESTJS,NATIVE-ONLY       case t: Throwable => reportFailure(t)
+      //SCALATESTJS,NATIVE-ONLY     }
+      //SCALATESTJS,NATIVE-ONLY   }
+      //SCALATESTJS,NATIVE-ONLY   def reportFailure(t: Throwable): Unit =
+      //SCALATESTJS,NATIVE-ONLY     t.printStackTrace()
+      //SCALATESTJS,NATIVE-ONLY }
       class TestSpec extends wordspec.FixtureAsyncWordSpec {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
-        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+        //SCALATESTJS,NATIVE-ONLY override implicit val executionContext: ExecutionContext = CustomTestExecutionContext
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
@@ -1227,15 +1241,16 @@ class FixtureAsyncWordSpecSpec extends scalatest.funspec.AnyFunSpec {
       assert(reporter.scopeClosedEventsReceived.length == 3)
       assert(reporter.testStartingEventsReceived.length == 3)
       assert(reporter.testSucceededEventsReceived.length == 3)
+      //SCALATESTJS,NATIVE-ONLY assert(changeMe)
     }
 
     it("should throw DuplicateTestNameException when duplicate test name is detected inside in a forAll") {
       class TestSpec extends wordspec.FixtureAsyncWordSpec {
 
         // SKIP-SCALATESTJS,NATIVE-START
-        override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        override implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
-        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+        // SCALATESTJS-ONLY override implicit val executionContext: ExecutionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }

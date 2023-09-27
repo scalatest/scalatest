@@ -291,7 +291,7 @@ trait DottyBuild { this: BuildCommons =>
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
       libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.1.0", 
-      libraryDependencies ++= scalatestJSLibraryDependencies, 
+      libraryDependencies ++= scalatestJSLibraryDependencies.value, 
       packageManagedSources,
       Compile / sourceGenerators += Def.task {
         GenModulesDotty.genScalaTestCoreJS((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
