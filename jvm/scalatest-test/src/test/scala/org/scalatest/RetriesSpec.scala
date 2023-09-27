@@ -596,6 +596,131 @@ class RetriesSpec extends AnyFunSpec {
         executionCount shouldBe 2
       }
     }
+    describe("offers a withRetries(delay, maxRetries) method that") {
+      it("should return Succeeded on Succeeded") {
+        var executionCount = 0
+        val outcome =
+          withRetries(delay = 1 millisecond, 3) {
+            executionCount += 1
+            Succeeded
+          }
+        outcome shouldBe Succeeded
+        executionCount shouldBe 1
+      }
+      it("should return Pending on Pending") {
+        var executionCount = 0
+        val outcome =
+          withRetries(delay = 1 millisecond, 3) {
+            executionCount += 1
+            Pending
+          }
+        outcome shouldBe Pending
+        executionCount shouldBe 1
+      }
+      it("should return first Failed if fails 3 times") {
+        var executionCount = 0
+        val firstFailed = Failed()
+        val secondFailed = Failed()
+        val thirdFailed = Failed()
+        val outcome =
+          withRetries(delay = 1 millisecond, 3) {
+            executionCount += 1
+            if (executionCount == 1) 
+              firstFailed 
+            else if (executionCount == 2) 
+              secondFailed
+            else
+              thirdFailed  
+          }
+        outcome should be theSameInstanceAs firstFailed 
+        executionCount shouldBe 4 // 4 because the original call + 3 retries.
+      }
+      it("should return Failed if fails first then gives Pending") { // unlikely case
+        var executionCount = 0
+        val failed = Failed()
+        val outcome =
+          withRetries(delay = 1 millisecond, 3) {
+            executionCount += 1
+            if (executionCount < 3) failed else Pending
+          }
+        outcome should be theSameInstanceAs failed
+        executionCount shouldBe 3 // 3 because the original call + 2 retries until it gets Pending.
+      }
+      it("should return Failed if fails first then gives Canceled") {
+        var executionCount = 0
+        val failed = Failed()
+        val outcome =
+          withRetries(delay = 1 millisecond, 3) {
+            executionCount += 1
+            if (executionCount < 3) failed else Canceled()
+          }
+        outcome should be theSameInstanceAs failed
+        executionCount shouldBe 4 // 4 because the original call + 4 retries until it gets 2x Canceled.
+      }
+      it("should return Canceled if fails first then succeeds") {
+        var executionCount = 0
+        val failed = Failed()
+        val outcome =
+          withRetries(delay = 1 millisecond, 3) {
+            executionCount += 1
+            if (executionCount < 3) failed else Succeeded
+          }
+        outcome shouldBe a [Canceled]
+        executionCount shouldBe 3 // 3 because the original call + 2 retries until it gets Canceled.
+        outcome match {
+          case Canceled(ex) =>
+            ex.getMessage should be (Resources.testFlickered)
+            ex.getCause should be (failed.exception)
+          case _ => fail()
+        }
+      }
+      it("should return first Canceled if cancels continuously") {
+        var executionCount = 0
+        val firstCanceled = Canceled()
+        val secondCanceled = Canceled()
+        val outcome =
+          withRetries(delay = 1 millisecond, 3) {
+            executionCount += 1
+            if (executionCount == 1) firstCanceled else secondCanceled
+          }
+        outcome should be theSameInstanceAs firstCanceled 
+        executionCount shouldBe 4 // 4 because the original call + 4 retries until it gets 2x Canceled.
+      }
+      it("should return Canceled if cancels first then gives Pending") { // unlikely case
+        var executionCount = 0
+        val canceled = Canceled()
+        val outcome =
+          withRetries(delay = 1 millisecond, 3) {
+            executionCount += 1
+            if (executionCount < 3) canceled else Pending
+          }
+        outcome should be theSameInstanceAs canceled
+        executionCount shouldBe 3 // 3 because the original call + 2 retries until it gets Pending.
+      }
+      it("should return Failed if cancels first then fails") {
+        var executionCount = 0
+        val canceled = Canceled()
+        val failed = Failed()
+        val outcome =
+          withRetries(delay = 1 millisecond, 3) {
+            executionCount += 1
+            if (executionCount < 3) canceled else failed
+          }
+        outcome should be theSameInstanceAs failed
+        executionCount shouldBe 4 // 4 because the original call + 4 retries until it gets failed.
+      }
+      it("should return Succeeded if cancels first then succeeds") {
+        var executionCount = 0
+        val canceled = Canceled()
+        val outcome =
+          withRetries(delay = 1 millisecond, 3) {
+            executionCount += 1
+            if (executionCount < 4) canceled else Succeeded
+          }
+        outcome shouldBe Succeeded
+        executionCount shouldBe 4 // 4 because the original call + 4 retries until it gets succeed.
+      }
+    }
     describe("offers an isRetryable method that") {
       it("should indicate given a TestData whether a test is tagged with org.scalatest.tags.Retryable") {
         val yes = new TestData {

@@ -17,6 +17,8 @@ package org.scalatest
 
 import org.scalatest.concurrent.SleepHelper
 import time.Span
+import org.scalactic.anyvals.PosInt
+import scala.annotation.tailrec
 
 /**
  * Provides methods that can be used in <code>withFixture</code> implementations to retry tests in various scenarios.
@@ -339,27 +341,176 @@ trait Retries {
    * @param delay the amount of time to sleep before retrying
    * @param blk the block to execute and potentially retry
    */
-  def withRetry(delay: Span)(blk: => Outcome): Outcome = {
-    val firstOutcome = blk
-    firstOutcome match {
-      case Failed(ex) =>
-        if (delay != Span.Zero)
-          SleepHelper.sleep(delay.millisPart, delay.nanosPart)
-        blk match {
-          case Succeeded => Canceled(Resources.testFlickered, ex)
-          case other => firstOutcome
+  def withRetry(delay: Span)(blk: => Outcome): Outcome = 
+    withRetries(delay, 1)(blk)
+
+  @tailrec private def recurTry(delay: Span, remainingTry: Int, firstFailed: Option[Failed], firstCanceled: Option[Canceled])(blk: => Outcome): Outcome = {
+    blk match {
+      case Succeeded => firstFailed.map(first => Canceled(Resources.testFlickered, first.exception)).getOrElse(Succeeded)
+
+      case failed: Failed =>
+        if (remainingTry > 0) {
+          if (delay != Span.Zero)
+            SleepHelper.sleep(delay.millisPart, delay.nanosPart)
+          recurTry(delay, remainingTry - 1, Some(firstFailed.getOrElse(failed)), firstCanceled)(blk) 
         }
-      case Canceled(ex) =>
-        if (delay != Span.Zero)
-          SleepHelper.sleep(delay.millisPart, delay.nanosPart)
-        blk match {
-          case Succeeded => Succeeded
-          case failed: Failed => failed // Never hide a failure.
-          case other => firstOutcome
+        else 
+          firstFailed.getOrElse(failed) // Never hide a failure.
+
+      case canceled: Canceled =>
+        if (remainingTry > 0) {
+          if (delay != Span.Zero)
+            SleepHelper.sleep(delay.millisPart, delay.nanosPart)
+          recurTry(delay, remainingTry - 1, firstFailed, Some(firstCanceled.getOrElse(canceled)))(blk) 
         }
+        else 
+          firstFailed.getOrElse(firstCanceled.getOrElse(canceled)) // Never hide a failure or cancel.
+
+      case Pending => firstFailed.getOrElse(firstCanceled.getOrElse(Pending))
+
       case other => other
     }
-  }
+  }  
+
+  /**
+   * Retries the given block with a given delay and maximum number of retries if the <a href="Outcome.html"><code>Outcome</code></a> of executing
+   * the block is either <a href="Failed.html"><code>Failed</code></a> or <a href="Canceled.html"><code>Canceled</code></a>.
+   *
+   * <p>
+   * The behavior of this method is defined in the table below. The first two rows show the main "retry" behavior: if
+   * executing the block initially fails, and on retry it succeeds, the result is <code>Canceled</code>. The purpose of this is
+   * to deal with "flickering" tests by downgrading a failure that succeeds on retry
+   * to a cancelation.
+   * Or, if executing the block initially results in <code>Canceled</code>, and on retry it succeeds, the result
+   * is <code>Succeeded</code>. The purpose of this is to deal with tests that intermittently cancel by ignoring a cancelation that
+   * succeeds on retry.
+   * </p>
+   *
+   * <p>
+   * In the table below, if the &ldquo;Retry <code>Outcome</code>&rdquo; has just a dash, the block is not retried.
+   * Otherwise, the block is retried on the same thread, after sleeping the given delay.
+   * </p>
+   *
+   * <table style="border-collapse: collapse; border: 1px solid black">
+   * <tr><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black"><strong>First <code>Outcome</code></strong></th><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black"><strong>Retry <code>Outcome</code></strong></th><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black"><strong>Result</strong></th></tr>
+   * <tr>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Failed</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Succeeded</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Canceled</code> (the <code>Succeeded</code> and <code>Failed</code> are
+   *     discarded; the exception from the <code>Failed</code> is the cause of the exception in the <code>Canceled</code>)
+   * </td>
+   * </tr>
+   * <tr>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Canceled</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Succeeded</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Succeeded</code> (the <code>Canceled</code> is discarded)
+   * </td>
+   * </tr>
+   * <tr>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Succeeded</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * &mdash;
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Succeeded</code> (no retry)
+   * </td>
+   * </tr>
+   * <tr>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Pending</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * &mdash;
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Pending</code> (no retry)
+   * </td>
+   * </tr>
+   * <tr>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Failed</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Failed</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * the first <code>Failed</code> (the second <code>Failed</code> is discarded)
+   * </td>
+   * </tr>
+   * <tr>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Failed</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Pending</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * the <code>Failed</code> (the <code>Pending</code> is discarded)
+   * </td>
+   * </tr>
+   * <tr>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Failed</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Canceled</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * the <code>Failed</code> (the <code>Canceled</code> is discarded)
+   * </td>
+   * </tr>
+   * <tr>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Canceled</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Canceled</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * the first <code>Canceled</code> (the second <code>Canceled</code> is discarded)
+   * </td>
+   * </tr>
+   * <tr>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Canceled</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Pending</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * the <code>Canceled</code> (the <code>Pending</code> is discarded)
+   * </td>
+   * </tr>
+   * <tr>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Canceled</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * <code>Failed</code>
+   * </td>
+   * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
+   * the <code>Failed</code> (the <code>Canceled</code> is discarded)
+   * </td>
+   * </tr>
+   * </table>
+   * 
+   * @param delay the amount of time to sleep before retrying
+   * @param maxRetries the maximum number of retries allowed, does not include the initial try
+   * @param blk the block to execute and potentially retry
+   */
+  def withRetries(delay: Span, maxRetries: PosInt)(blk: => Outcome): Outcome = recurTry(delay, maxRetries, None, None)(blk)
 
   /**
    * Retries the given block immediately (with no delay) if the <a href="Outcome.html"><code>Outcome</code></a> of executing
