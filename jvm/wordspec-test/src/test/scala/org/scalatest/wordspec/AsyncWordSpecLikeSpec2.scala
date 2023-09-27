@@ -27,6 +27,8 @@ import org.scalatest.wordspec.AsyncWordSpecLike
 
 class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
 
+  //SCALATESTJS-ONLY override implicit val executionContext: ExecutionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
+
   describe("AsyncWordSpecLike") {
 
     it("can be used for tests that return Future under parallel async test execution") {
@@ -850,7 +852,7 @@ class AsyncWordSpecLikeSpec2 extends AsyncFunSpec {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
-        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+        //SCALATESTJS-ONLY override implicit val executionContext: ExecutionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
         val a = 1
         "feature 1" should {
           "test A" in {
