@@ -159,9 +159,9 @@ trait NativeBuild { this: BuildCommons =>
         // include the scalactic sources in the source jar
         mappings in (Compile, packageSrc) ++= mappings.in(scalacticNative, Compile, packageSrc).value,
         // include the scalatest classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalacticNative, Compile, packageBin).value,
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestNative, Compile, packageBin).value,
         // include the scalatest sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalacticNative, Compile, packageSrc).value,
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestNative, Compile, packageSrc).value,
         sourceGenerators in Compile += {
           // Little trick to get rid of bnd error when publish.
           Def.task{

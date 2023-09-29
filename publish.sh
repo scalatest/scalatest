@@ -49,6 +49,9 @@ sbt "project scalatest" sonatypeBundleUpload
 
 sbt clean
 sbt "project scalatestApp" clean +publishSigned
+sbt "project scalatestAppDotty" clean publishSigned
+sbt "project scalatestAppDottyJS" clean publishSigned
+sbt "project scalatestAppDottyNative" clean publishSigned
 export SCALAJS_VERSION=0.6.33
 sbt "project scalacticMacroJS" clean
 sbt "project scalacticJS" clean

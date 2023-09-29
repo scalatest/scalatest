@@ -21,6 +21,8 @@ trait BuildCommons {
       "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
     )
 
+  val sjsPrefix = if (scalaJSVersion.startsWith("1.")) "_sjs1_" else "_sjs0.6_"  
+
   val releaseVersion = "3.2.17"
 
   val previousReleaseVersion = "3.2.16"
