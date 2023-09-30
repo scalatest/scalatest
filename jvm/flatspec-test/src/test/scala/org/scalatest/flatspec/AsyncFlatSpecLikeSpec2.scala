@@ -30,6 +30,8 @@ import org.scalatest.Succeeded
 
 class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
 
+  //SCALATESTJS-ONLY override implicit val executionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
+
   describe("AsyncFlatSpecLike") {
 
     // ParallelTestExecution not working yet.
@@ -739,7 +741,7 @@ class AsyncFlatSpecLikeSpec2 extends funspec.AsyncFunSpec {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
-        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+        //SCALATESTJS-ONLY override implicit val executionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
         val a = 1
         "feature 1" should "test A" in {
           Future { assert(a == 1) }

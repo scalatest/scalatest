@@ -27,6 +27,8 @@ import org.scalatest.wordspec
 
 class FixtureAsyncWordSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
 
+  //SCALATESTJS-ONLY override implicit val executionContext: ExecutionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
+
   describe("AsyncWordSpec") {
 
     it("can be used for tests that return Future under parallel async test execution") {
@@ -916,7 +918,7 @@ class FixtureAsyncWordSpecSpec2 extends scalatest.funspec.AsyncFunSpec {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
-        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+        //SCALATESTJS-ONLY override implicit val executionContext: ExecutionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
 
         type FixtureParam = String
         def withFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }

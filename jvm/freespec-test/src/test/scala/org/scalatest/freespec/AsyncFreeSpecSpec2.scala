@@ -30,6 +30,8 @@ import org.scalatest.freespec.AsyncFreeSpec
 
 class AsyncFreeSpecSpec2 extends funspec.AsyncFunSpec {
 
+  //SCALATESTJS-ONLY override implicit val executionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
+
   describe("AsyncFreeSpec") {
 
     it("can be used for tests that return Future under parallel async test execution") {
@@ -852,7 +854,7 @@ class AsyncFreeSpecSpec2 extends funspec.AsyncFunSpec {
         // SKIP-SCALATESTJS,NATIVE-START
         override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS,NATIVE-END
-        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+        //SCALATESTJS-ONLY override implicit val executionContext = org.scalajs.macrotaskexecutor.MacrotaskExecutor.Implicits.global
         val a = 1
         "feature 1" - {
           "scenario A" in {

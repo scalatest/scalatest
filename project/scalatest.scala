@@ -145,9 +145,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   def scalatestLibraryDependencies =
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-      "com.google.inject" % "guice" % "4.0" % "optional",
-      "org.apache.ant" % "ant" % "1.10.12" % "optional",
-      "org.ow2.asm" % "asm-all" % "4.1" % "optional",
+      "org.apache.ant" % "ant" % "1.10.14" % "optional",
       commonmark
     )
 
@@ -431,6 +429,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
+        "images",
         "org.scalatest",
         "org.scalatest.compatible",
         "org.scalatest.concurrent",

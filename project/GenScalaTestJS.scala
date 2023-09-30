@@ -148,7 +148,9 @@ object GenScalaTestJS {
         "SpecLike.scala"
       ), 
       "org/scalatest/diagrams" -> List.empty, 
-      "org/scalatest/events" -> List.empty, 
+      "org/scalatest/events" -> List(
+        "EventXmlHelper.scala"
+      ), 
       "org/scalatest/expectations" -> List.empty, 
       "org/scalatest/matchers" -> List.empty, 
       "org/scalatest/matchers/dsl" -> List(

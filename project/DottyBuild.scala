@@ -18,7 +18,7 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.0")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.1")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
@@ -291,7 +291,7 @@ trait DottyBuild { this: BuildCommons =>
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
       libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.1.0", 
-      libraryDependencies ++= scalatestJSLibraryDependencies, 
+      libraryDependencies ++= scalatestJSLibraryDependencies.value, 
       packageManagedSources,
       Compile / sourceGenerators += Def.task {
         GenModulesDotty.genScalaTestCoreJS((Compile / sourceManaged).value, version.value, scalaVersion.value) ++

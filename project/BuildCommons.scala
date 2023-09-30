@@ -7,26 +7,30 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.scalaJSVersion
 import scalanative.sbtplugin.ScalaNativePlugin
 import ScalaNativePlugin.autoImport.{nativeLinkStubs, nativeDump}
 
+import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
+
 trait BuildCommons {
 
   def scalaVersionsSettings: Seq[Setting[_]] = Seq(
-    crossScalaVersions := Seq("2.13.11", "2.12.18", "2.11.12"), 
+    crossScalaVersions := Seq("2.13.12", "2.12.18", "2.11.12"), 
     scalaVersion := crossScalaVersions.value.head,
   )
 
   val runFlickerTests = Option(System.getenv("SCALATEST_RUN_FLICKER_TESTS")).getOrElse("FALSE").toUpperCase == "TRUE"
 
-  def scalatestJSLibraryDependencies =
+  def scalatestJSLibraryDependencies = Def.setting {
     Seq(
-      ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).cross(CrossVersion.for3Use2_13)
+      ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).cross(CrossVersion.for3Use2_13), 
+      "org.scala-js" %%% "scala-js-macrotask-executor" % "1.1.1"
     )
-
+  }    
+    
   val releaseVersion = "3.3.0-SNAP4"
-  val previousReleaseVersion = "3.2.14"
+  val previousReleaseVersion = "3.2.17"
 
   val plusJUnitVersion = "3.2.14.0"
   val plusTestNGVersion = "3.2.14.0"
-  val commonmarkVersion = "0.19.0"
+  val commonmarkVersion = "0.21.0"
 
   def rootProject: Project
 
@@ -255,10 +259,10 @@ trait BuildCommons {
       organization := "org.scalatest",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
-      fork in test := false,
-      nativeLinkStubs in Test := true,
-      nativeDump in Test := false, 
-      testOptions in Test := scalatestTestJSNativeOptions,
+      Test / fork := false,
+      Test / nativeLinkStubs := true,
+      Test / nativeDump := false, 
+      Test / testOptions := scalatestTestJSNativeOptions,
       publishArtifact := false,
       publish := {},
       publishLocal := {}

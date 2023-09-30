@@ -1048,10 +1048,17 @@ trait Conductors extends PatienceConfiguration {
         // TIMED_WAITING. (BLOCKED is waiting for a lock. WAITING is in the wait set.)
         while (threadGroup.areAnyThreadsAlive) {
           if (!firstExceptionThrown.isEmpty) {
-            // If any exception has been thrown, stop any live test thread.
+            // If any exception has been thrown, stop or interrupt any live test thread.
             threadGroup.getThreads.foreach { t =>
-              if (t.isAlive)
-                t.stop()
+              if (t.isAlive) { 
+                try{
+                  t.stop()
+                }
+                catch {
+                  case _: UnsupportedOperationException => t.interrupt()
+                }
+                
+              }
             }
           }
           // If any threads are in the RUNNABLE state, just check to see if there's been

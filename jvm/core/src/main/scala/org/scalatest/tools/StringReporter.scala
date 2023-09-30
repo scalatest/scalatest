@@ -23,6 +23,8 @@ import Suite.indentation
 import org.scalatest.exceptions.PropertyCheckFailedException
 import org.scalatest.exceptions.StackDepth
 
+import org.scalactic.Prettifier
+
 /**
  * A <code>Reporter</code> that prints test status information to
  * a <code>Writer</code>, <code>OutputStream</code>, or file.
@@ -787,7 +789,7 @@ private[scalatest] object StringReporter {
 
       case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
-        fragmentsOnError(Resources.abortedNote, Any => Resources.runAborted, message, throwable, Vector.empty, formatter, None, None, duration,
+        fragmentsOnError(Resources.abortedNote, Any => Resources.runAborted + Option(message).map(msg => Prettifier.lineSeparator + msg.toString).getOrElse(""), message, throwable, Vector.empty, formatter, None, None, duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentFilePathname, AnsiRed)
 
       case SuiteStarting(ordinal, suiteName, suiteId, suiteClassName, formatter, location, rerunnable, payload, threadName, timeStamp) =>

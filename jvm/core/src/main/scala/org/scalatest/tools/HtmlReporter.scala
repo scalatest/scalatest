@@ -208,6 +208,10 @@ private[scalatest] class HtmlReporter(
     try {
       pw.println {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + 
+        "<!-- " + suiteResult.suiteName.replace(",", "##scalatest_comma##") + "," + suiteResult.suiteClassName.getOrElse("-") + "," + 
+        suiteResult.testsSucceededCount + "," + suiteResult.testsFailedCount + "," + suiteResult.testsIgnoredCount + "," + 
+        suiteResult.testsPendingCount + "," + suiteResult.testsCanceledCount + "," + suiteResult.scopesPendingCount + "," + 
+        suiteResult.duration.getOrElse(-1L) + "," + (if (suiteResult.isCompleted) "1" else "0") + " -->" +  "\n" + 
         "<!DOCTYPE html" + "\n" + 
         "  PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"" + "\n" + 
         "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">" + "\n" + 
@@ -220,7 +224,7 @@ private[scalatest] class HtmlReporter(
     }
   }
   
-  private def appendCombinedStatus(name: String, r: SuiteResult) = 
+  private def appendCombinedStatus(name: String, r: SuiteSummary) = 
     if (r.testsFailedCount > 0)
       name + "_with_failed"
     else if (r.testsIgnoredCount > 0 || r.testsPendingCount > 0 || r.testsCanceledCount > 0)
@@ -446,7 +450,9 @@ private[scalatest] class HtmlReporter(
   }
   
   private def makeIndexFile(completeMessageFun: => String, completeInMessageFun: String => String, duration: Option[Long]): Unit = {
-    val pw = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(new File(targetDir, "index.html")), BufferSize), "UTF-8"))
+    val fos = new FileOutputStream(new File(targetDir, "index.html"))
+    val lock = fos.getChannel().lock()
+    val pw = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(fos, BufferSize), "UTF-8"))
     try {
       pw.println {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -459,6 +465,8 @@ private[scalatest] class HtmlReporter(
     finally {
       pw.flush()
       pw.close()
+      if (lock.isValid)  // release lock if it is still valid
+        lock.release()
     }
   }
   
@@ -510,9 +518,74 @@ private[scalatest] class HtmlReporter(
     "    .attr(\"fill\", function(d, i) { return color[i]; })" + "\n" +  
     "    .attr(\"d\", arc);\n"
   }
+
+  private def createSummary(): (Summary, Long, List[SuiteSummary]) = {
+    val files = targetDir.listFiles
+    files.foldLeft((Summary(0, 0, 0, 0, 0, 0, 0, 0), 0L, List.empty[SuiteSummary])) { case ((summary, duration, suites), file) =>
+      if (file.getName.endsWith(".html") && !file.getName.endsWith("index.html")) {
+        val source = Source.fromFile(file)
+        try {
+          val linesItr = source.getLines
+          linesItr.next()
+          val line = linesItr.next()
+          if (line.startsWith("<!-- ") && line.endsWith(" -->")) {
+            val summaryLine = line.substring(5, line.length - 4)
+            val summaryArray = summaryLine.split(",")
+            val suiteName = summaryArray(0).replace("##scalatest_comma##", ",")
+            val suiteClassName = if (summaryArray(1) == "-") None else Some(summaryArray(1))
+            val testsSucceededCount = summaryArray(2).toInt
+            val testsFailedCount = summaryArray(3).toInt
+            val testsIgnoredCount = summaryArray(4).toInt
+            val testsPendingCount = summaryArray(5).toInt
+            val testsCanceledCount = summaryArray(6).toInt
+            val scopesPendingCount = summaryArray(7).toInt
+            val suiteDurationRaw = summaryArray(8).toLong
+            val suiteDuration = if (suiteDurationRaw >= 0) Some(suiteDurationRaw) else None
+            val isCompleted = summaryArray(9).toInt == 1
+
+            val suiteSummary = 
+              SuiteSummary(
+                suiteName, 
+                suiteClassName, 
+                suiteDuration,  
+                testsSucceededCount, 
+                testsFailedCount, 
+                testsIgnoredCount, 
+                testsPendingCount, 
+                testsCanceledCount, 
+                scopesPendingCount, 
+                isCompleted
+              )
+
+            (
+              summary.copy(
+                testsSucceededCount = summary.testsSucceededCount + testsSucceededCount, 
+                testsFailedCount = summary.testsFailedCount + testsFailedCount,
+                testsIgnoredCount = summary.testsIgnoredCount + testsIgnoredCount,
+                testsPendingCount = summary.testsPendingCount + testsPendingCount,
+                testsCanceledCount = summary.testsCanceledCount + testsCanceledCount,
+                scopesPendingCount = summary.scopesPendingCount + scopesPendingCount, 
+                suitesCompletedCount = if (isCompleted) summary.suitesCompletedCount + 1 else summary.suitesCompletedCount,
+                suitesAbortedCount = if (!isCompleted) summary.suitesAbortedCount + 1 else summary.suitesAbortedCount
+              ), 
+              duration + suiteDuration.getOrElse(0L), 
+              suiteSummary :: suites
+            )
+          }
+          else
+            (summary, duration, suites)
+        } finally {
+          source.close()
+        }
+      }
+      else
+        (summary, duration, suites)
+    }
+  }
   
-  private def getIndexHtml(completeMessageFun: => String, completeInMessageFun: String => String, duration: Option[Long]) = {
-    val summary = results.summary
+  private def getIndexHtml(completeMessageFun: => String, completeInMessageFun: String => String, passedInDuration: Option[Long]) = {
+    val (summary, summaryDuration, suiteSummaries) = createSummary()
+    val duration = Math.max(summaryDuration, passedInDuration.getOrElse(0L))
     import summary._
 
     val decimalFormat = new DecimalFormat("#.##")
@@ -583,7 +656,7 @@ private[scalatest] class HtmlReporter(
       </head>
       <body onresize="resizeDetailsView()">
         <div class="scalatest-report"> 
-          { header(completeMessageFun, completeInMessageFun, duration, summary) }
+          { header(completeMessageFun, completeInMessageFun, Some(duration), summary) }
           <table id="summary_view">
             <tr id="summary_view_row_1">
               <td id="summary_view_row_1_chart">
@@ -622,7 +695,7 @@ private[scalatest] class HtmlReporter(
             <tr id="summary_view_row_2">
               <td id="summary_view_row_2_results" colspan="2">
                 { getStatistic(summary) }
-                { suiteResults }
+                { suiteResults(suiteSummaries) }
               </td>
             </tr>
           </table>
@@ -679,7 +752,7 @@ private[scalatest] class HtmlReporter(
   
   val tagMap = collection.mutable.HashMap[String, Int]()
         
-  private def suiteResults = 
+  private def suiteResults(suiteSummaries: List[SuiteSummary]) = 
     <table class="sortable">
       <tr>
         <td>Suite</td>
@@ -692,12 +765,12 @@ private[scalatest] class HtmlReporter(
         <td>Total</td>
       </tr>
     {
-      val sortedSuiteList = results.suiteList.sortWith { (a, b) => 
+      val sortedSuiteList = suiteSummaries.sortWith { (a, b) => 
         if (a.testsFailedCount == b.testsFailedCount) { 
           if (a.testsCanceledCount == b.testsCanceledCount) {
             if (a.testsIgnoredCount == b.testsIgnoredCount) {
               if (a.testsPendingCount == b.testsPendingCount)
-                a.startEvent.suiteName < b.startEvent.suiteName
+                a.suiteName < b.suiteName
               else
                 a.testsPendingCount > b.testsPendingCount
             }
@@ -714,7 +787,7 @@ private[scalatest] class HtmlReporter(
         val elementId = generateElementId
         import r._
 
-        val suiteAborted = endEvent.isInstanceOf[SuiteAborted]
+        val suiteAborted = !isCompleted
 
         val totalTestsCount =
           testsSucceededCount + testsFailedCount + testsIgnoredCount +
@@ -729,7 +802,7 @@ private[scalatest] class HtmlReporter(
           (if (testsPendingCount > 0) PENDING_BIT else 0) + 
           (if (testsCanceledCount > 0) CANCELED_BIT else 0)
         tagMap.put(elementId, bits)
-        suiteSummary(elementId,  getSuiteFileName(r), r)
+        suiteSummary(elementId,  r.suiteClassName.getOrElse(r.suiteName), r)
       }
     }
     </table>
@@ -743,17 +816,17 @@ private[scalatest] class HtmlReporter(
   private def durationDisplay(duration: Option[Long]) = 
     duration.getOrElse("-")
     
-  private def suiteSummary(elementId: String, suiteFileName: String, suiteResult: SuiteResult) = {
-    import suiteResult._
+  private def suiteSummary(elementId: String, suiteFileName: String, suiteSummary: SuiteSummary) = {
+    import suiteSummary._
     <tr id={ elementId }>
-      <td class={ appendCombinedStatus("suite_name", suiteResult) }><a href={ "javascript: showDetails('" + suiteFileName + "')" }>{ suiteName }</a></td>
-      <td class={ appendCombinedStatus("duration", suiteResult) }>{ durationDisplay(duration) }</td>
+      <td class={ appendCombinedStatus("suite_name", suiteSummary) }><a href={ "javascript: showDetails('" + suiteFileName + "')" }>{ suiteName }</a></td>
+      <td class={ appendCombinedStatus("duration", suiteSummary) }>{ durationDisplay(duration) }</td>
       <td class={ countStyle("succeeded", testsSucceededCount) }>{ testsSucceededCount }</td>
       <td class={ countStyle("failed", testsFailedCount) }>{ testsFailedCount }</td>
       <td class={ countStyle("canceled", testsCanceledCount) }>{ testsCanceledCount }</td>
       <td class={ countStyle("ignored", testsIgnoredCount) }>{ testsIgnoredCount }</td>
       <td class={ countStyle("pending", testsPendingCount) }>{ testsPendingCount }</td>
-      <td class={ appendCombinedStatus("total", suiteResult) }>{ testsSucceededCount + testsFailedCount + testsIgnoredCount + testsPendingCount + testsCanceledCount }</td>
+      <td class={ appendCombinedStatus("total", suiteSummary) }>{ testsSucceededCount + testsFailedCount + testsIgnoredCount + testsPendingCount + testsCanceledCount }</td>
     </tr>
   }
         

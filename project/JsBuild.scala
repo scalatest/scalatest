@@ -15,7 +15,7 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 trait JsBuild { this: BuildCommons =>
 
   private lazy val jsSharedSettings = Seq(
-    crossScalaVersions := Seq("2.13.11", "2.12.18")
+    crossScalaVersions := Seq("2.13.12", "2.12.18")
   )
 
   val sjsPrefix = "_sjs1_"
@@ -82,9 +82,7 @@ trait JsBuild { this: BuildCommons =>
       Compile / packageSrc / mappings ++= (scalacticMacroJS / Compile / packageSrc / mappings).value,
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
       mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar"), 
-      mimaBinaryIssueFilters ++= {
-        Seq()
-      }
+      mimaBinaryIssueFilters ++= Seq()
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
@@ -117,7 +115,7 @@ trait JsBuild { this: BuildCommons =>
       name := "scalatest-app",
       organization := "org.scalatest",
       moduleName := "scalatest-app",
-      libraryDependencies ++= scalatestJSLibraryDependencies,
+      libraryDependencies ++= scalatestJSLibraryDependencies.value,
       // include the scalactic classes and resources in the jar
       Compile / packageBin / mappings ++= (scalacticJS / Compile / packageBin / mappings).value,
       // include the scalactic sources in the source jar
@@ -458,7 +456,7 @@ trait JsBuild { this: BuildCommons =>
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + rootProject.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
-      libraryDependencies ++= scalatestJSLibraryDependencies,
+      libraryDependencies ++= scalatestJSLibraryDependencies.value,
       //jsDependencies += RuntimeDOM % "test",
       Compile / sourceGenerators += {
         Def.task {
