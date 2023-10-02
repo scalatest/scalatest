@@ -520,11 +520,11 @@ trait Assertions extends TripleEquals  {
    * </p>
    *
    * @param condition the boolean condition to assert
-   * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
+   * @param clue A by-name which returns object whose <code>toString</code> method returns a message to include in a failure report.
    * @throws TestFailedException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  def assert(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsMacro.assertWithClue
+  def assert(condition: Boolean, clue: => Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsMacro.assertWithClue
 
   /**
    * Assume that a boolean condition is true.
@@ -619,11 +619,11 @@ trait Assertions extends TripleEquals  {
    * </p>
    *
    * @param condition the boolean condition to assume
-   * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
+   * @param clue A by-name which returns object whose <code>toString</code> method returns a message to include in a failure report.
    * @throws TestCanceledException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  def assume(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsMacro.assumeWithClue
+  def assume(condition: Boolean, clue: => Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro AssertionsMacro.assumeWithClue
 
   /**
    * Asserts that a given string snippet of code does not pass the Scala type checker, failing if the given
@@ -835,11 +835,11 @@ trait Assertions extends TripleEquals  {
    * obtained by invoking <code>toString</code> on the passed <code>clue</code>.
    *
    * @param expected the expected value
-   * @param clue An object whose <code>toString</code> method returns a message to include in a failure report.
+   * @param clue A by-name which returns object whose <code>toString</code> method returns a message to include in a failure report.
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  def assertResult(expected: Any, clue: Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = {
+  def assertResult(expected: Any, clue: => Any)(actual: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(prettifier, exp, act)
@@ -1049,7 +1049,7 @@ trait Assertions extends TripleEquals  {
    *
    * @throws NullArgumentException if the passed <code>clue</code> is <code>null</code>
   */
-  def withClue[T](clue: Any)(fun: => T): T = {
+  def withClue[T](clue: => Any)(fun: => T): T = {
     requireNonNull(clue)
     val prepend = (currentMessage: Option[String]) => {
       currentMessage match {

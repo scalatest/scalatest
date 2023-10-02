@@ -524,11 +524,11 @@ trait Assertions extends TripleEquals  {
    * </p>
    *
    * @param condition the boolean condition to assert
-   * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
+   * @param clue A by-name which returns object whose <code>toString</code> method returns a message to include in a failure report.
    * @throws org.scalatest.exceptions.TestFailedException if the condition is <code>false</code>.
    * @throws org.scalactic.exceptions.NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  inline def assert(inline condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position, use: UseDefaultAssertions.type): Assertion =
+  inline def assert(inline condition: Boolean, clue: => Any)(implicit prettifier: Prettifier, pos: source.Position, use: UseDefaultAssertions.type): Assertion =
     ${ AssertionsMacro.assert('{condition}, '{prettifier}, '{pos}, '{clue}) }
 
   /**

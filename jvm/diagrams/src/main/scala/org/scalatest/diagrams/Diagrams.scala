@@ -193,11 +193,11 @@ trait Diagrams extends Assertions {
    * </p>
    *
    * @param condition the boolean condition to assert
-   * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
+   * @param clue A by-name which returns object whose <code>toString</code> method returns a message to include in a failure report.
    * @throws TestFailedException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  override def assert(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro DiagramsMacro.assertWithClue
+  override def assert(condition: Boolean, clue: => Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro DiagramsMacro.assertWithClue
 
   /**
    * Assume that a boolean condition is true.
@@ -234,11 +234,11 @@ trait Diagrams extends Assertions {
    * </p>
    *
    * @param condition the boolean condition to assume
-   * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
+   * @param clue A by-name which returns objects whose <code>toString</code> method returns a message to include in a failure report.
    * @throws TestCanceledException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  override def assume(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro DiagramsMacro.assumeWithClue
+  override def assume(condition: Boolean, clue: => Any)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro DiagramsMacro.assumeWithClue
 }
 
 /**
