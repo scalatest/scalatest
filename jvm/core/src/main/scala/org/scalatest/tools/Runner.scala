@@ -90,7 +90,6 @@ w - wildcard path
 W - slowpoke detector (with two integral args, for timeout (delay) and interval (period), in seconds)
 x - save for ScalaTest native XML
 X -
-y - sets org.scalatest.chosenstyle -y FunSpec or -y "FunSpec FunSuite" DEACTIVATED IN 3.1.0
 -Y for after -h to set a custom style sheet
 z - test name wildcard
 Z -

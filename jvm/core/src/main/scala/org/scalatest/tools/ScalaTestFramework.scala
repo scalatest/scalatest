@@ -435,7 +435,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
 
             report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
-            try {  // TODO: I had to pass Set.empty for chosen styles now. Fix this later.
+            try {
               val status = suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, false, None, None))
 
               val formatter = formatterForSuiteCompleted(suite)
