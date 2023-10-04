@@ -237,6 +237,6 @@ trait NoArg extends DelayedInit with (() => Unit) {
    * the the main Scaladoc comment for this trait.
    * </p>
    */
-  final val styleName: Int = 0 // So can't mix into Suite
+  final val suiteId: Int = 0 // So can't mix into Suite
 }
 

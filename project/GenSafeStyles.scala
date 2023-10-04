@@ -29,7 +29,6 @@ object GenSafeStyles {
         .replaceAllLiterally(traitName, (if (traitName.startsWith("Any")) traitName.drop(3) else traitName))
         .replaceAllLiterally("Resources.concurrentSafe" + traitName + "Mod", "Resources.concurrent" + traitName + "Mod")
         .replaceAllLiterally("Resources.concurrentFixtureSafe" + traitName + "Mod", "Resources.concurrentFixture" + traitName + "Mod")
-        //.replaceAllLiterally("final override val styleName: String = \"org.scalatest.Safe" + traitName + "\"", "final override val styleName: String = \"org.scalatest." + traitName + "\"")
         .replaceAllLiterally("@Finders(Array(\"org.scalatest.finders.Safe" + traitName + "Finder\"))", "@Finders(Array(\"org.scalatest.finders." + traitName + "Finder\"))")
         .replaceAllLiterally("SafeTestRegistrationClosedException", "TestRegistrationClosedException")
 
