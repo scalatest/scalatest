@@ -824,7 +824,6 @@ object Runner {
       wildcardArgs,
       testNGArgs,
       suffixes, 
-      chosenStyles, 
       spanScaleFactors, 
       testSortingReporterTimeouts,
       slowpokeArgs,

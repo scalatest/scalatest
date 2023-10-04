@@ -975,7 +975,6 @@ class Framework extends SbtFramework {
       wildcardArgs,
       testNGArgs,
       suffixes,
-      chosenStyles,
       spanScaleFactors,
       testSortingReporterTimeouts,
       slowpokeArgs,

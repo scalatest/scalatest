@@ -42,7 +42,6 @@ class ArgsParserSpec extends AnyFunSpec {
                 expectedBeginsWithList: List[String],
                 expectedTestNGList: List[String],
                 expectedSuffixes: Option[Pattern],
-                expectedChosenStyleList: List[String],
                 expectedScaleFactorList: List[String],
                 expectedTestSortingReporterTimeoutList: List[String],
                 expectedSlowpokeList: List[String]
@@ -69,7 +68,6 @@ class ArgsParserSpec extends AnyFunSpec {
       // SKIP-SCALATESTJS,NATIVE-START
       testNGList,
       suffixes,
-      chosenStyleList,
       spanScaleFactorList,
       testSortingReporterTimeoutList,
       slowpokeList,
@@ -96,7 +94,6 @@ class ArgsParserSpec extends AnyFunSpec {
       // SKIP-SCALATESTJS,NATIVE-START
       assert(beginsWithList === expectedBeginsWithList)
       assert(testNGList === expectedTestNGList)
-      assert(chosenStyleList === expectedChosenStyleList)
       assert(spanScaleFactorList == expectedScaleFactorList)
       assert(testSortingReporterTimeoutList == expectedTestSortingReporterTimeoutList)
       assert(slowpokeList == expectedSlowpokeList)
@@ -128,7 +125,6 @@ class ArgsParserSpec extends AnyFunSpec {
         None,
         Nil,
         Nil,
-        Nil,
         Nil
       )
     }
@@ -153,7 +149,6 @@ class ArgsParserSpec extends AnyFunSpec {
         None,
         Nil,
         Nil,
-        Nil,
         Nil
       )
     }
@@ -173,7 +168,6 @@ class ArgsParserSpec extends AnyFunSpec {
       Nil,
       Nil,
       None,
-      Nil,
       Nil,
       Nil,
       Nil
@@ -199,7 +193,6 @@ class ArgsParserSpec extends AnyFunSpec {
         None,
         Nil,
         Nil,
-        Nil,
         Nil
       )
     }
@@ -224,7 +217,6 @@ class ArgsParserSpec extends AnyFunSpec {
         None,
         Nil,
         Nil,
-        Nil,
         Nil
       )
     }
@@ -247,7 +239,6 @@ class ArgsParserSpec extends AnyFunSpec {
         Nil,
         Nil,
         None,
-        Nil,
         Nil,
         Nil,
         Nil
@@ -273,7 +264,6 @@ class ArgsParserSpec extends AnyFunSpec {
         List("-w", "com.example.root"),
         Nil,
         None,
-        Nil,
         Nil,
         Nil,
         Nil
@@ -302,7 +292,6 @@ class ArgsParserSpec extends AnyFunSpec {
         None,
         Nil,
         Nil,
-        Nil,
         Nil
       )
     }
@@ -327,7 +316,6 @@ class ArgsParserSpec extends AnyFunSpec {
         List("-w", "com.example.root"),
         List("-b", "some/path/file.xml"),
         None,
-        Nil,
         Nil,
         Nil,
         Nil
@@ -356,7 +344,6 @@ class ArgsParserSpec extends AnyFunSpec {
         None,
         Nil,
         Nil,
-        Nil,
         Nil
       )
     }
@@ -381,7 +368,6 @@ class ArgsParserSpec extends AnyFunSpec {
         List("-w", "com.example.root"),
         List("-b", "some/path/file.xml"),
         Some(Pattern.compile(".*(Spec|Suite)$")),
-        Nil,
         Nil,
         Nil,
         Nil
@@ -410,7 +396,6 @@ class ArgsParserSpec extends AnyFunSpec {
         Some(Pattern.compile(".*(Spec|Suite)$")),
         Nil,
         Nil,
-        Nil,
         Nil
       )
     }
@@ -437,7 +422,6 @@ class ArgsParserSpec extends AnyFunSpec {
         Some(Pattern.compile(".*(Spec|Suite|foo)$")),
         Nil,
         Nil,
-        Nil,
         Nil
       )
     }
@@ -462,7 +446,6 @@ class ArgsParserSpec extends AnyFunSpec {
         List("-w", "com.example.root"),
         List("-b", "some/path/file.xml"),
         Some(Pattern.compile(".*(Spec|Suite|foo)$")),
-        Nil,
         Nil,
         Nil,
         List("-W", "60", "60")
@@ -522,7 +505,6 @@ class ArgsParserSpec extends AnyFunSpec {
                 expectedBeginsWithList: List[String],
                 expectedTestNGList: List[String],
                 expectedSuffixes: Option[Pattern],
-                expectedChosenStyleList: List[String],
                 expectedSpanScaleFactorList: List[String],
                 expectedTestSortingReporterTimeoutList: List[String],
                 expectedSeedList: List[String]
@@ -549,7 +531,6 @@ class ArgsParserSpec extends AnyFunSpec {
       // SKIP-SCALATESTJS,NATIVE-START
       testNGList,
       suffixes,
-      chosenStyleList,
       spanScaleFactorList,
       testSortingReporterTimeoutList,
       slowpokeList,
@@ -576,7 +557,6 @@ class ArgsParserSpec extends AnyFunSpec {
       // SKIP-SCALATESTJS,NATIVE-START
       assert(beginsWithList === expectedBeginsWithList)
       assert(testNGList === expectedTestNGList)
-      assert(chosenStyleList === expectedChosenStyleList)
       assert(spanScaleFactorList == expectedSpanScaleFactorList)
       assert(testSortingReporterTimeoutList == expectedTestSortingReporterTimeoutList)
       if (expectedSuffixes.isEmpty) {
@@ -608,7 +588,6 @@ class ArgsParserSpec extends AnyFunSpec {
       None,
       Nil,
       Nil,
-      Nil,
       Nil
     )
 
@@ -631,7 +610,6 @@ class ArgsParserSpec extends AnyFunSpec {
       None,
       Nil,
       Nil,
-      Nil,
       Nil
     )
 
@@ -650,7 +628,6 @@ class ArgsParserSpec extends AnyFunSpec {
       Nil,
       Nil,
       None,
-      Nil,
       Nil,
       Nil,
       Nil
@@ -675,7 +652,6 @@ class ArgsParserSpec extends AnyFunSpec {
       None,
       Nil,
       Nil,
-      Nil,
       Nil
     )
 
@@ -698,7 +674,6 @@ class ArgsParserSpec extends AnyFunSpec {
       None,
       Nil,
       Nil,
-      Nil,
       Nil
     )
 
@@ -719,7 +694,6 @@ class ArgsParserSpec extends AnyFunSpec {
       Nil,
       Nil,
       None,
-      Nil,
       Nil,
       Nil,
       Nil
@@ -745,7 +719,6 @@ class ArgsParserSpec extends AnyFunSpec {
       None,
       Nil,
       Nil,
-      Nil,
       Nil
     )
     // Try a TestNGSuite
@@ -767,7 +740,6 @@ class ArgsParserSpec extends AnyFunSpec {
       List("-w", "com.example.root"),
       List("-b", "some/path/file.xml"),
       None,
-      Nil,
       Nil,
       Nil,
       Nil
@@ -793,7 +765,6 @@ class ArgsParserSpec extends AnyFunSpec {
       None,
       Nil,
       Nil,
-      Nil,
       Nil
     )
     // Test -u option
@@ -815,7 +786,6 @@ class ArgsParserSpec extends AnyFunSpec {
       List("-w", "com.example.root"),
       List("-b", "some/path/file.xml"),
       None,
-      Nil,
       Nil,
       Nil,
       Nil
@@ -841,7 +811,6 @@ class ArgsParserSpec extends AnyFunSpec {
       Some(Pattern.compile(".*(Spec|Suite)$")),
       Nil,
       Nil,
-      Nil,
       Nil
     )
     // Test -q option
@@ -863,7 +832,6 @@ class ArgsParserSpec extends AnyFunSpec {
       List("-w", "com.example.root"),
       List("-b", "some/path/file.xml"),
       Some(Pattern.compile(".*(Spec|Suite)$")),
-      Nil,
       Nil,
       Nil,
       Nil
@@ -889,7 +857,6 @@ class ArgsParserSpec extends AnyFunSpec {
       Some(Pattern.compile(".*(Spec|Suite|foo)$")),
       Nil,
       Nil,
-      Nil,
       Nil
     )
     // Test -F option
@@ -911,7 +878,6 @@ class ArgsParserSpec extends AnyFunSpec {
       List("-w", "com.example.root"),
       List("-b", "some/path/file.xml"),
       Some(Pattern.compile(".*(Spec|Suite|foo)$")),
-      Nil,
       List("-F", "200"),
       Nil,
       Nil
@@ -935,7 +901,6 @@ class ArgsParserSpec extends AnyFunSpec {
       List("-w", "com.example.root"),
       List("-b", "some/path/file.xml"),
       Some(Pattern.compile(".*(Spec|Suite|foo)$")),
-      Nil,
       Nil,
       List("-T", "20"),
       Nil
@@ -961,7 +926,6 @@ class ArgsParserSpec extends AnyFunSpec {
       None,
       Nil,
       Nil,
-      Nil,
       Nil
     )
     // Test -h -Y option
@@ -985,7 +949,6 @@ class ArgsParserSpec extends AnyFunSpec {
       None,
       Nil,
       Nil,
-      Nil,
       Nil
     )
 
@@ -1005,7 +968,6 @@ class ArgsParserSpec extends AnyFunSpec {
       Nil,
       Nil,
       None,
-      Nil,
       Nil,
       Nil,
       Nil
@@ -1034,7 +996,6 @@ class ArgsParserSpec extends AnyFunSpec {
       None,
       Nil,
       Nil,
-      Nil,
       Nil
     )
 
@@ -1054,7 +1015,6 @@ class ArgsParserSpec extends AnyFunSpec {
       Nil,
       Nil,
       None,
-      Nil,
       Nil,
       Nil,
       Nil
@@ -1083,7 +1043,6 @@ class ArgsParserSpec extends AnyFunSpec {
       None,
       Nil,
       Nil,
-      Nil,
       Nil
     )
     // SKIP-SCALATESTJS,NATIVE-END
@@ -1104,7 +1063,6 @@ class ArgsParserSpec extends AnyFunSpec {
       Nil,
       Nil,
       None,
-      Nil,
       Nil,
       Nil,
       List("-S", "123456789")
@@ -1748,28 +1706,6 @@ class ArgsParserSpec extends AnyFunSpec {
     }
   }
 
-  // SKIP-SCALATESTJS,NATIVE-START
-  it("parseChosenStylesIntoChosenStyleSet should work correctly") {
-    intercept[IllegalArgumentException] {
-      ArgsParser.parseChosenStylesIntoChosenStyleSet(List("-a", "aStyle"), "-y")
-    }
-    intercept[IllegalArgumentException] {
-      ArgsParser.parseChosenStylesIntoChosenStyleSet(List("-y"), "-y")
-    }
-    intercept[IllegalArgumentException] {
-      ArgsParser.parseChosenStylesIntoChosenStyleSet(List("-y", "aStyle", "-y"), "-y")
-    }
-    val singleStyle = ArgsParser.parseChosenStylesIntoChosenStyleSet(List("-y", "aStyle"), "-y")
-    assert(singleStyle.size === 1)
-    assert(singleStyle.contains("aStyle"))
-    val multiStyle = ArgsParser.parseChosenStylesIntoChosenStyleSet(List("-y", "aStyle", "-y", "bStyle", "-y", "cStyle"), "-y")
-    assert(multiStyle.size === 3)
-    assert(multiStyle.contains("aStyle"))
-    assert(multiStyle.contains("bStyle"))
-    assert(multiStyle.contains("cStyle"))
-  }
-  // SKIP-SCALATESTJS,NATIVE-END
-
   it("parseDoubleArgument should work correctly") {
     intercept[IllegalArgumentException] {
       ArgsParser.parseDoubleArgument(List("-a", "123"), "-F", 1.0)
@@ -2015,13 +1951,6 @@ class ArgsParserSpec extends AnyFunSpec {
       ArgsParser.parseArgs(Array("-K\"super", "host\"", "9000"))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -K\"super")
-  }
-
-  it("""parseArgs should disallow -y"chosen""") {
-    val e = intercept[IllegalArgumentException] {
-      ArgsParser.parseArgs(Array("-y\"chosen", "style\""))
-    }
-    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -y\"chosen")
   }
 
   it("parseArgs should disallow -F2") {
