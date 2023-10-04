@@ -820,8 +820,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
           filter,
           configMap,
           None,
-          tracker,
-          Set.empty)
+          tracker)
         )
       status.waitUntilCompleted()
       val suiteCompletedFormatter = formatterForSuiteCompleted(thisSuite)
@@ -1173,9 +1172,9 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
         report(SuiteStarting(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName)), nestedSuite.rerunner))
 
-        try { // TODO: pass runArgs down and that will get the chosenStyles passed down
+        try {
           // Same thread, so OK to send same tracker
-          val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
+          val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker))
 
           val rawString = Resources.suiteCompletedNormally
           val formatter = formatterForSuiteCompleted(nestedSuite)
@@ -1366,7 +1365,6 @@ private[scalatest] object Suite {
   val IgnoreTagName = "org.scalatest.Ignore"
 
   private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
-  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
 
   private[scalatest] val defaultTestSortingReporterTimeoutInSeconds = 2.0
 

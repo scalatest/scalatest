@@ -40,8 +40,7 @@ private[scalatest] class TestRerunner(suiteClassName: String, testName: String) 
 
       report(RunStarting(tracker.nextOrdinal(), 1, configMap))
 
-      // TODO: I Had to pass Set.empty for chosenStyles for now. Check this later.
-      suite.run(Some(testName), Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
+      suite.run(Some(testName), Args(report, stopper, filter, configMap, distributor, tracker))
 
       val duration = System.currentTimeMillis - runStartTime
       report(RunCompleted(tracker.nextOrdinal(), Some(duration)))

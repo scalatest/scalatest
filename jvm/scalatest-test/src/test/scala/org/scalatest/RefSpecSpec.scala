@@ -19,7 +19,6 @@ import SharedHelpers._
 import org.scalatest.events._
 import org.scalactic.Prettifier
 import org.scalatest.refspec.RefSpec
-import Suite.CHOSEN_STYLES
 import collection.immutable.TreeSet
 import exceptions.TestFailedException
 import java.awt.AWTError
@@ -51,7 +50,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val rep = new EventRecordingReporter
-      a.run(None, Args(rep, new Stopper {}, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
+      a.run(None, Args(rep, new Stopper {}, Filter(), ConfigMap.empty, None, new Tracker()))
       val testPending = rep.testPendingEventsReceived
       assert(testPending.size === 1)
       val recordedEvents = testPending(0).recordedEvents
@@ -73,7 +72,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val rep = new EventRecordingReporter
-      a.run(None, Args(rep, new Stopper {}, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
+      a.run(None, Args(rep, new Stopper {}, Filter(), ConfigMap.empty, None, new Tracker()))
       val testSucceeded = rep.testSucceededEventsReceived
       assert(testSucceeded.size === 1)
       val recordedEvents = testSucceeded(0).recordedEvents
@@ -95,7 +94,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val rep = new EventRecordingReporter
-      a.run(None, Args(rep, new Stopper {}, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
+      a.run(None, Args(rep, new Stopper {}, Filter(), ConfigMap.empty, None, new Tracker()))
       val testCanceled = rep.testCanceledEventsReceived
       assert(testCanceled.size === 1)
       val recordedEvents = testCanceled(0).recordedEvents
@@ -260,7 +259,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
     it("should execute all tests when run is called with testName None") {
 
       val b = new TestWasCalledSpec
-      b.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      b.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(b.theTestThisCalled)
       assert(b.theTestThatCalled)
     }
@@ -268,7 +267,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
     it("should execute one test when run is called with a defined testName") {
 
       val a = new TestWasCalledSpec
-      a.run(Some("test: this"), Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(Some("test: this"), Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(a.theTestThisCalled)
       assert(!a.theTestThatCalled)
     }
@@ -286,7 +285,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       import scala.language.reflectiveCalls
 
       val repA = new TestIgnoredTrackingReporter
-      a.run(None, Args(repA, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(repA, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(!repA.testIgnoredReceived)
       assert(a.theTestThisCalled)
       assert(a.theTestThatCalled)
@@ -301,7 +300,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val b = new SpecB
 
       val repB = new TestIgnoredTrackingReporter
-      b.run(None, Args(repB, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      b.run(None, Args(repB, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(repB.testIgnoredReceived)
       assert(repB.lastEvent.isDefined)
       assert(repB.lastEvent.get.testName endsWith "test: this")
@@ -318,7 +317,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val c = new SpecC
 
       val repC = new TestIgnoredTrackingReporter
-      c.run(None, Args(repC, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      c.run(None, Args(repC, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(repC.testIgnoredReceived)
       assert(repC.lastEvent.isDefined)
       assert(repC.lastEvent.get.testName endsWith "test: that", repC.lastEvent.get.testName)
@@ -336,7 +335,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val d = new SpecD
 
       val repD = new TestIgnoredTrackingReporter
-      d.run(None, Args(repD, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      d.run(None, Args(repD, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(repD.testIgnoredReceived)
       assert(repD.lastEvent.isDefined)
       assert(repD.lastEvent.get.testName === "test: this") // last because run alphabetically
@@ -358,7 +357,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       import scala.language.reflectiveCalls
 
       val repE = new TestIgnoredTrackingReporter
-      e.run(Some("test: this"), Args(repE, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      e.run(Some("test: this"), Args(repE, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(repE.testIgnoredReceived)
       assert(!e.theTestThisCalled)
       assert(!e.theTestThatCalled)
@@ -378,7 +377,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       import scala.language.reflectiveCalls
 
       val repE = new TestIgnoredTrackingReporter
-      e.run(Some("test: this"), Args(repE, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
+      e.run(Some("test: this"), Args(repE, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker))
       assert(!repE.testIgnoredReceived)
       assert(!e.theTestThisCalled)
       assert(!e.theTestThatCalled)
@@ -399,7 +398,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       import scala.language.reflectiveCalls
 
       val repA = new TestIgnoredTrackingReporter
-      a.run(None, Args(repA, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(repA, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(!repA.testIgnoredReceived)
       assert(a.theTestThisCalled)
       assert(a.theTestThatCalled)
@@ -414,7 +413,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       }
       val b = new SpecB
       val repB = new TestIgnoredTrackingReporter
-      b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
+      b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker))
       assert(!repB.testIgnoredReceived)
       assert(b.theTestThisCalled)
       assert(!b.theTestThatCalled)
@@ -430,7 +429,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       }
       val c = new SpecC
       val repC = new TestIgnoredTrackingReporter
-      c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
+      c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker))
       assert(!repC.testIgnoredReceived)
       assert(c.theTestThisCalled)
       assert(c.theTestThatCalled)
@@ -447,7 +446,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       }
       val d = new SpecD
       val repD = new TestIgnoredTrackingReporter
-      d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
+      d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker))
       assert(repD.testIgnoredReceived)
       assert(!d.theTestThisCalled)
       assert(d.theTestThatCalled)
@@ -467,7 +466,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val e = new SpecE
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
-        ConfigMap.empty, None, new Tracker, Set.empty))
+        ConfigMap.empty, None, new Tracker))
       assert(!repE.testIgnoredReceived)
       assert(!e.theTestThisCalled)
       assert(e.theTestThatCalled)
@@ -489,7 +488,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val f = new SpecF
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
-        ConfigMap.empty, None, new Tracker, Set.empty))
+        ConfigMap.empty, None, new Tracker))
       assert(!repF.testIgnoredReceived)
       assert(!f.theTestThisCalled)
       assert(f.theTestThatCalled)
@@ -511,7 +510,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val g = new SpecG
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
-        ConfigMap.empty, None, new Tracker, Set.empty))
+        ConfigMap.empty, None, new Tracker))
       assert(!repG.testIgnoredReceived)
       assert(!g.theTestThisCalled)
       assert(g.theTestThatCalled)
@@ -531,7 +530,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       }
       val h = new SpecH
       val repH = new TestIgnoredTrackingReporter
-      h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
+      h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker))
       assert(!repH.testIgnoredReceived)
       assert(!h.theTestThisCalled)
       assert(h.theTestThatCalled)
@@ -551,7 +550,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       }
       val i = new SpecI
       val repI = new TestIgnoredTrackingReporter
-      i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
+      i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker))
       assert(!repI.testIgnoredReceived)
       assert(!i.theTestThisCalled)
       assert(!i.theTestThatCalled)
@@ -573,7 +572,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       }
       val j = new SpecJ
       val repJ = new TestIgnoredTrackingReporter
-      j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
+      j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker))
       assert(!repI.testIgnoredReceived)
       assert(!j.theTestThisCalled)
       assert(!j.theTestThatCalled)
@@ -596,7 +595,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       }
       val k = new SpecK
       val repK = new TestIgnoredTrackingReporter
-      k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
+      k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker))
       assert(repK.testIgnoredReceived)
       assert(!k.theTestThisCalled)
       assert(!k.theTestThatCalled)
@@ -699,7 +698,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
       intercept[IllegalArgumentException] {
         // Here, they forgot that the name is actually `test: this`(Fixture)
-        spec.run(Some(encode("test: misspelled")), Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(Some(encode("test: misspelled")), Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       }
     }
 
@@ -765,7 +764,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       }
       val suite = new MySuite
       val reporter = new EventRecordingReporter
-      suite.run(None, Args(reporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      suite.run(None, Args(reporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
 
       val infoList = reporter.infoProvidedEventsReceived
 
@@ -788,7 +787,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val rep = new EventRecordingReporter
-      a.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
+      a.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker()))
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 2)
     }
@@ -808,7 +807,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val rep = new EventRecordingReporter
-      a.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
+      a.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker()))
       val tp = rep.testCanceledEventsReceived
       assert(tp.size === 2)
     }
@@ -828,7 +827,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val rep = new EventRecordingReporter
-      a.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
+      a.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker()))
       val tp = rep.testCanceledEventsReceived
       assert(tp.size === 2)
     }
@@ -841,7 +840,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `test: throws Throwable`(): Unit = { throw new Throwable }
       }
       val rep = new EventRecordingReporter
-      a.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
+      a.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker()))
       val tf = rep.testFailedEventsReceived
       assert(tf.size === 3)
     }
@@ -852,7 +851,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `test: throws AssertionError`(): Unit = { throw new OutOfMemoryError }
       }
       intercept[OutOfMemoryError] {
-        a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
+        a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker()))
       }
     }
 
@@ -872,7 +871,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
       import scala.language.reflectiveCalls
 
-      a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
+      a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker()))
       assert(a.withFixtureWasInvoked)
       assert(a.theTestWasInvoked)
     }
@@ -890,7 +889,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
       import scala.language.reflectiveCalls
 
-      a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
+      a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker()))
       assert(a.correctTestNameWasPassed)
     }
 
@@ -907,7 +906,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
       import scala.language.reflectiveCalls
 
-      a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker(), Set.empty))
+      a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> 7), None, new Tracker()))
       assert(a.correctConfigMapWasPassed)
     }
 
@@ -919,7 +918,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val myRep = new EventRecordingReporter
-      new MySpec().run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      new MySpec().run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       val testStarting = myRep.testStartingEventsReceived
       assert(testStarting.size === 1)
       val testSucceeded = myRep.testSucceededEventsReceived
@@ -955,7 +954,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `must start with proper words`: Unit = {}
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(reportHadCorrectTestName)
       assert(reportHadCorrectSpecText)
       assert(reportHadCorrectFormattedSpecText)
@@ -987,7 +986,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `must start with proper words`: Unit = {}
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(reportHadCorrectTestName)
       assert(reportHadCorrectSpecText)
       assert(reportHadCorrectFormattedSpecText)
@@ -1019,7 +1018,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `must start with proper words`: Unit = { fail() }
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(reportHadCorrectTestName)
       assert(reportHadCorrectSpecText)
       assert(reportHadCorrectFormattedSpecText)
@@ -1076,7 +1075,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(reportHadCorrectTestName)
       assert(reportHadCorrectSpecText)
       assert(reportHadCorrectFormattedSpecText)
@@ -1135,7 +1134,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(reportHadCorrectTestName)
       assert(reportHadCorrectSpecText)
       assert(reportHadCorrectFormattedSpecText)
@@ -1194,7 +1193,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(reportHadCorrectTestName)
       assert(reportHadCorrectSpecText)
       assert(reportHadCorrectFormattedSpecText)
@@ -1272,7 +1271,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(reportHadCorrectTestName)
       assert(reportHadCorrectSpecText)
       assert(reportHadCorrectFormattedSpecText)
@@ -1349,7 +1348,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(reportHadCorrectTestName)
       assert(reportHadCorrectSpecText)
       assert(reportHadCorrectFormattedSpecText)
@@ -1376,7 +1375,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `this thing must start with proper words`: Unit = {}
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(testSucceededReportHadCorrectTestName)
     }
 
@@ -1396,7 +1395,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `this thing must start with proper words`: Unit = { fail() }
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(testFailedReportHadCorrectTestName)
     }
 
@@ -1420,7 +1419,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(testSucceededReportHadCorrectTestName)
     }
 
@@ -1463,7 +1462,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       }
       val a = new MySpec
       val myRep = new MyReporter
-      a.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(!myRep.gotAnUndefinedFormatter, myRep.lastEventWithUndefinedFormatter.toString)
     }
 
@@ -1490,7 +1489,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         def `My spec text must have the proper words`: Unit = {}
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(testSucceededReportHadCorrectSpecText, lastSpecText match { case Some(s) => s; case None => "No report"})
     }
 
@@ -1519,7 +1518,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(testSucceededReportHadCorrectSpecText, lastSpecText match { case Some(s) => s; case None => "No report"})
     }
 
@@ -1550,7 +1549,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
       }
       val a = new MySpec
-      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(new MyReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(testSucceededReportHadCorrectSpecText, lastSpecText match { case Some(s) => s; case None => "No report"})
     }
 
@@ -1585,7 +1584,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
       val a = new MySpec
       val myRep = new MyReporter
-      a.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(myRep.scopeOpenedCalled)
       assert(myRep.expectedMessageReceived)
     }
@@ -1630,7 +1629,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       }
       val a = new MySpec
       val myRep = new MyReporter
-      a.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      a.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(myRep.infoProvidedCalled)
       assert(myRep.expectedMessageReceived)
     }
@@ -1644,7 +1643,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
       val mySpec = new MySpec
       val myReporter = new TestDurationReporter
-      mySpec.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      mySpec.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       assert(myReporter.testSucceededWasFiredAndHadADuration)
       assert(myReporter.testFailedWasFiredAndHadADuration)
     }
@@ -1657,7 +1656,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
       val mySuite = new MySpec
       val myReporter = new SuiteDurationReporter
-      mySuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      mySuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       assert(myReporter.suiteCompletedWasFiredAndHadADuration)
     }
 
@@ -1675,7 +1674,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
       val mySuite = new MySpec
       val myReporter = new SuiteDurationReporter
-      mySuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      mySuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       assert(myReporter.suiteAbortedWasFiredAndHadADuration)
     }
 
@@ -1687,7 +1686,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
       val mySuite = new MySpec
       val myReporter = new PendingReporter
-      mySuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      mySuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       assert(myReporter.testPendingWasFired)
     }
 
@@ -1778,7 +1777,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
 
         val x = Suites(a, b, c, d, e, f, g)
-        x.run(None, Args(SilentReporter, new IgnoreStopRequestStopper, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        x.run(None, Args(SilentReporter, new IgnoreStopRequestStopper, Filter(), ConfigMap.empty, None, new Tracker))
 
         assert(a.executed)
         assert(b.executed)
@@ -1798,7 +1797,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         val n = new SpecG
 
         val y = Suites(h, i, j, k, l, m, n)
-        y.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        y.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
 
         assert(k.executed)
         assert(i.executed)
@@ -1825,7 +1824,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
 
         val x = new MySpec
-        x.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        x.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
         assert(x.theTestsExecutedCount === 7)
 
         val myStopper = Stopper.default
@@ -1845,7 +1844,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
 
         val y = new MyStoppingSpec
-        y.run(None, Args(SilentReporter, myStopper, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        y.run(None, Args(SilentReporter, myStopper, Filter(), ConfigMap.empty, None, new Tracker))
         assert(y.testsExecutedCount === 4)
       }
     }
@@ -1866,7 +1865,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
           getIndexesForInformerEventOrderTests(spec, spec.testName, spec.msg)
         assert(testSucceededIndex < infoProvidedIndex)*/
         val myRep = new EventRecordingReporter
-        spec.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
         val testStarting = myRep.testStartingEventsReceived
         assert(1 === testStarting.size)
         val testSucceeded = myRep.testSucceededEventsReceived
@@ -1900,7 +1899,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
         }
         val spec = new MySpec
         val myRep = new EventRecordingReporter
-        spec.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
         spec.callInfo() // TODO: Actually test that This prints to stdout
       }
       it("should send an InfoProvided with an IndentedText formatter with level 0 when called outside a test") {
@@ -1911,7 +1910,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       it("should send an InfoProvided with an IndentedText formatter with level 1 when called within a test") {
         val spec = new InfoInsideTestSpec
         val myRep = new EventRecordingReporter
-        spec.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
         val indentedText = getIndentedTextFromTestInfoProvided(spec)
         assert(indentedText === IndentedText("  + " + spec.msg, spec.msg, 1))
       }
@@ -1993,7 +1992,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
     val mySpec = new MySpec
     val myReporter = new TestDurationReporter
-    mySpec.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+    mySpec.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
     assert(myReporter.testSucceededWasFiredAndHadADuration)
     assert(myReporter.testFailedWasFiredAndHadADuration)
   }
@@ -2016,7 +2015,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
     val mySpec = new MySpec
     val myReporter = new SuiteDurationReporter
-    mySpec.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+    mySpec.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
     assert(myReporter.suiteCompletedWasFiredAndHadADuration)
 
   }
@@ -2033,7 +2032,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
     val myOtherSpec = new MyOtherSpec
     val myOtherReporter = new SuiteDurationReporter
-    myOtherSpec.run(None, Args(myOtherReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+    myOtherSpec.run(None, Args(myOtherReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
     assert(myOtherReporter.suiteAbortedWasFiredAndHadADuration)
   }
 
@@ -2045,7 +2044,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
     val mySpec = new MySpec
     val myReporter = new PendingReporter
-    mySpec.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+    mySpec.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
     assert(myReporter.testPendingWasFired)
   }
 
@@ -2309,32 +2308,32 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
 
       val defaultFilter = Filter(None, Set.empty)
       val defaultReporter = new EventRecordingReporter
-      masterSpec.runNestedSuites(Args(defaultReporter, Stopper.default, defaultFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      masterSpec.runNestedSuites(Args(defaultReporter, Stopper.default, defaultFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       assert(defaultReporter.suiteStartingEventsReceived.size === 4)
       assert(defaultReporter.testIgnoredEventsReceived.size === 3)
       val defaultReporterDist = new EventRecordingReporter
       val defaultDistributor = new CounterDistributor
-      masterSpec.runNestedSuites(Args(defaultReporterDist, Stopper.default, defaultFilter, ConfigMap.empty, Some(defaultDistributor), new Tracker(new Ordinal(99)), Set.empty))
+      masterSpec.runNestedSuites(Args(defaultReporterDist, Stopper.default, defaultFilter, ConfigMap.empty, Some(defaultDistributor), new Tracker(new Ordinal(99))))
       assert(defaultDistributor.count === 4)
 
       val includeFilter = Filter(Some(Set("org.scalatest.FastAsLight")), Set.empty)
       val includeReporter = new EventRecordingReporter
-      masterSpec.runNestedSuites(Args(includeReporter, Stopper.default, includeFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      masterSpec.runNestedSuites(Args(includeReporter, Stopper.default, includeFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       assert(includeReporter.suiteStartingEventsReceived.size === 4)
       assert(includeReporter.testIgnoredEventsReceived.size === 0)
       val includeReporterDist = new EventRecordingReporter
       val includeDistributor = new CounterDistributor
-      masterSpec.runNestedSuites(Args(includeReporterDist, Stopper.default, includeFilter, ConfigMap.empty, Some(includeDistributor), new Tracker(new Ordinal(99)), Set.empty))
+      masterSpec.runNestedSuites(Args(includeReporterDist, Stopper.default, includeFilter, ConfigMap.empty, Some(includeDistributor), new Tracker(new Ordinal(99))))
       assert(includeDistributor.count === 4)
 
       val excludeFilter = Filter(None, Set("org.scalatest.SlowAsMolasses"))
       val excludeReporter = new EventRecordingReporter
-      masterSpec.runNestedSuites(Args(excludeReporter, Stopper.default, excludeFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      masterSpec.runNestedSuites(Args(excludeReporter, Stopper.default, excludeFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       assert(excludeReporter.suiteStartingEventsReceived.size === 4)
       assert(excludeReporter.testIgnoredEventsReceived.size === 3)
       val excludeReporterDist = new EventRecordingReporter
       val excludeDistributor = new CounterDistributor
-      masterSpec.runNestedSuites(Args(excludeReporterDist, Stopper.default, excludeFilter, ConfigMap.empty, Some(excludeDistributor), new Tracker(new Ordinal(99)), Set.empty))
+      masterSpec.runNestedSuites(Args(excludeReporterDist, Stopper.default, excludeFilter, ConfigMap.empty, Some(excludeDistributor), new Tracker(new Ordinal(99))))
       assert(excludeDistributor.count === 4)
     }
   }
@@ -2398,7 +2397,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       }
       val rep = new EventRecordingReporter
       val s1 = new TestSpec
-      s1.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      s1.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(rep.testFailedEventsReceived.size === 1)
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "RefSpecSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 8)
@@ -2417,7 +2416,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       }
       val rep = new EventRecordingReporter
       val s1 = new TestSpec
-      s1.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      s1.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(rep.testFailedEventsReceived.size === 2)
       // The 'A scenario should fail' will be execute first because tests are executed in alphanumerical order.
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "RefSpecSpec.scala")
@@ -2436,7 +2435,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val e = intercept[NotAllowedException] {
         val spec = new TestSpec
         val rep = new EventRecordingReporter
-        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       }
       assert("RefSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
@@ -2461,7 +2460,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val e = intercept[NotAllowedException] {
         val spec = new TestSpec
         val rep = new EventRecordingReporter
-        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       }
       assert("RefSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
@@ -2485,10 +2484,10 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val e = intercept[NotAllowedException] {
         val spec = new TestSpec
         val rep = new EventRecordingReporter
-        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       }
       assert("RefSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == 2488)
+      assert(e.failedCodeLineNumber.get == 2487)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
       assert(e.message == Some(FailureMessages.exceptionWasThrownInObject(prettifier, UnquotedString(causeThrowable.getClass.getName), UnquotedString("a feature"))))
@@ -2507,7 +2506,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val e = intercept[AnnotationFormatError] {
         val spec = new TestSpec
         val rep = new EventRecordingReporter
-        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       }
       assert(e.getMessage == "on purpose")
     }
@@ -2521,7 +2520,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val e = intercept[AWTError] {
         val spec = new TestSpec
         val rep = new EventRecordingReporter
-        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       }
       assert(e.getMessage == "on purpose")
     }
@@ -2535,7 +2534,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val e = intercept[CoderMalfunctionError] {
         val spec = new TestSpec
         val rep = new EventRecordingReporter
-        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       }
       assert(e.getMessage == "java.lang.RuntimeException: on purpose")
     }
@@ -2549,7 +2548,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val e = intercept[FactoryConfigurationError] {
         val spec = new TestSpec
         val rep = new EventRecordingReporter
-        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       }
       assert(e.getMessage == "on purpose")
     }
@@ -2563,7 +2562,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val e = intercept[LinkageError] {
         val spec = new TestSpec
         val rep = new EventRecordingReporter
-        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       }
       assert(e.getMessage == "on purpose")
     }
@@ -2577,7 +2576,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val e = intercept[ThreadDeath] {
         val spec = new TestSpec
         val rep = new EventRecordingReporter
-        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       }
       assert(e.getMessage == null)
     }
@@ -2591,7 +2590,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val e = intercept[TransformerFactoryConfigurationError] {
         val spec = new TestSpec
         val rep = new EventRecordingReporter
-        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       }
       assert(e.getMessage == "on purpose")
     }
@@ -2605,7 +2604,7 @@ class RefSpecSpec extends AnyFunSpec with PrivateMethodTester {
       val e = intercept[VirtualMachineError] {
         val spec = new TestSpec
         val rep = new EventRecordingReporter
-        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+        spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       }
       assert(e.getMessage == "on purpose")
     }

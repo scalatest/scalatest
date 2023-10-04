@@ -34,7 +34,7 @@ import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 import org.scalatest.time.Millis
 import java.util.concurrent.atomic.AtomicInteger
-import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG}
+import Suite.{mergeMap, SELECTED_TAG}
 import ArgsParser._
 import org.scalactic.Requirements._
 import org.scalatest.prop.Seed
@@ -843,7 +843,6 @@ object Runner {
     val agains: List[String] = parseAgainArgs(againArgs)
     val junitsList: List[String] = parseSuiteArgsIntoNameStrings(junitArgs, "-j")
     val runpathList: List[String] = parseRunpathArgIntoList(runpathArgs)
-    val propertiesMap: ConfigMap = parsePropertiesArgsIntoMap(propertiesArgs)
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
     val concurrent: Boolean = !concurrentArgs.isEmpty
@@ -851,7 +850,6 @@ object Runner {
     val membersOnlyList: List[String] = parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")
     val wildcardList: List[String] = parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")
     val testNGList: List[String] = parseSuiteArgsIntoNameStrings(testNGArgs, "-b")
-    val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
     val slowpokeConfig: Option[SlowpokeConfig] = parseSlowpokeConfig(slowpokeArgs)
     val seedList: Option[Long] = parseLongArgument(seedArgs, "-S")
 
@@ -890,16 +888,7 @@ object Runner {
 
     val passFailReporter = if (runWithPassFailReporter) Some(new PassFailReporter) else None
 
-    if (propertiesMap.isDefinedAt(CHOSEN_STYLES))
-      throw new IllegalArgumentException("Property name '" + CHOSEN_STYLES + "' is used by ScalaTest, please choose other property name.")
-    val configMap: ConfigMap = 
-      if (chosenStyleSet.isEmpty)
-        propertiesMap
-      else
-        propertiesMap + (CHOSEN_STYLES -> chosenStyleSet)
-
-    if (chosenStyleSet.nonEmpty)
-      println(Resources.deprecatedChosenStyleWarning)
+    val configMap: ConfigMap = parsePropertiesArgsIntoMap(propertiesArgs)
 
     val (detectSlowpokes: Boolean, slowpokeDetectionDelay: Long, slowpokeDetectionPeriod: Long) =
       slowpokeConfig match {
@@ -941,7 +930,6 @@ object Runner {
             passFailReporter,
             concurrentConfig,
             suffixes,
-            chosenStyleSet,
             detectSlowpokes,
             slowpokeDetectionDelay,
             slowpokeDetectionPeriod,
@@ -988,7 +976,6 @@ object Runner {
             1,
             concurrentConfig,
             suffixes,
-            chosenStyleSet,
             testSortingReporterTimeout
           )
         }
@@ -1061,7 +1048,6 @@ object Runner {
     runStamp: Int,
     concurrentConfig: ConcurrentConfig,
     suffixes: Option[Pattern],
-    chosenStyleSet: Set[String],
     testSortingReporterTimeout: Span
   ): Unit = {
 
@@ -1080,8 +1066,7 @@ object Runner {
                    testNGList,
                    runpath,
                    loader,
-                   doneListener,
-                   chosenStyleSet)
+                   doneListener)
 
     val (globSuites, nonGlobSuites) = suitesList.partition(_.isGlob)
 
@@ -1282,14 +1267,14 @@ object Runner {
                 Executors.newCachedThreadPool(threadFactory)
             try {
 
-              val distributor = new ConcurrentDistributor(Args(dispatch, stopper, Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet), configMap, None, tracker, chosenStyleSet, false, None, None), execSvc)
+              val distributor = new ConcurrentDistributor(Args(dispatch, stopper, Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet), configMap, None, tracker, false, None, None), execSvc)
               if (System.getProperty("org.scalatest.tools.Runner.forever", "false") == "true") {
 
                 while (true) {
                   val statuses = for (suiteConfig <- suiteInstances) yield {
                     val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
                     val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
-                    val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker(), chosenStyleSet, false, None, distributedSuiteSorter)
+                    val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker(), false, None, distributedSuiteSorter)
                     distributor.apply(suiteConfig.suite, runArgs)
                   }
                   distributor.waitUntilDone()
@@ -1300,7 +1285,7 @@ object Runner {
                 val statuses = for (suiteConfig <- suiteInstances) yield {
                   val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
                   val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
-                  val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker(), chosenStyleSet, false, None, distributedSuiteSorter)
+                  val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker(), false, None, distributedSuiteSorter)
                   distributor.apply(suiteConfig.suite, runArgs)
                 }
                 distributor.waitUntilDone()
@@ -1315,7 +1300,7 @@ object Runner {
             for (suiteConfig <- suiteInstances) {
               val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
               val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
-              val runArgs = Args(dispatch, stopper, filter, configMap, None, tracker, chosenStyleSet, false, None, None)
+              val runArgs = Args(dispatch, stopper, filter, configMap, None, tracker, false, None, None)
               val status = new ScalaTestStatefulStatus()
               val suiteRunner = new SuiteRunner(suiteConfig.suite, runArgs, status)
               suiteRunner.run()

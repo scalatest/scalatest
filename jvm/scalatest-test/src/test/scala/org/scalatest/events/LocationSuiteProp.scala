@@ -36,7 +36,7 @@ class LocationSuiteProp extends SuiteProp
   test("All suite types should have correct location in SuiteStarting, SuiteCompleted, SuiteAborted and TestFailed event.") {
     forAll(examples) { suite =>
       val reporter = new EventRecordingReporter
-      suite.run(None, Args(reporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      suite.run(None, Args(reporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       val eventList = reporter.eventsReceived
       eventList.foreach { event => suite.checkFun(event) }
       suite.allChecked

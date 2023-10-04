@@ -62,9 +62,9 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
 
         report(SuiteStarting(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
 
-        try { // TODO: pass runArgs down and that will get the chosenStyles passed down
+        try {
           // Same thread, so OK to send same tracker
-          val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
+          val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker))
 
           val rawString = Resources.suiteCompletedNormally
           val formatter = formatterForSuiteCompleted(nestedSuite)

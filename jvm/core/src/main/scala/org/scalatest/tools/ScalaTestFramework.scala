@@ -183,14 +183,7 @@ class ScalaTestFramework extends SbtFramework {
 
           testSortingReporterTimeout.getAndSet(Some(Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", Suite.defaultTestSortingReporterTimeoutInSeconds), Seconds)))
 
-          val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgs)
-          val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
-          if (propertiesMap.isDefinedAt(Suite.CHOSEN_STYLES))
-            throw new IllegalArgumentException("Property name '" + Suite.CHOSEN_STYLES + "' is used by ScalaTest, please choose other property name.")
-          configMap.getAndSet(Some(if (chosenStyleSet.isEmpty) propertiesMap else propertiesMap + (Suite.CHOSEN_STYLES -> chosenStyleSet)))
-
-          if (chosenStyleSet.nonEmpty)
-            println(Resources.deprecatedChosenStyleWarning)
+          configMap.getAndSet(Some(parsePropertiesArgsIntoMap(propertiesArgs)))
 
           val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
           val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
@@ -444,7 +437,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
             report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
             try {  // TODO: I had to pass Set.empty for chosen styles now. Fix this later.
-              val status = suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty, false, None, None))
+              val status = suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, false, None, None))
 
               val formatter = formatterForSuiteCompleted(suite)
 

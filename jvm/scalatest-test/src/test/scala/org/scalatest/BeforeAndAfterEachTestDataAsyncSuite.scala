@@ -85,25 +85,25 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
   test("super's runTest must be called") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     assert(a.runTestWasCalled)
   }
   
   test("super's run must be called") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     assert(a.runWasCalled)
   }
 
   test("beforeEach gets called before runTest") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     assert(a.beforeEachTestDataCalledBeforeRunTest)
   }
 
   test("afterEach gets called after runTest") {
     val a = new MySuite
-    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     val promise = Promise[MySuite] // Promise...my suite
     status whenCompleted { _ => promise.success(a) }
     promise.future.map { mySuite =>
@@ -113,13 +113,13 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
   test("beforeAll gets called before run") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     assert(a.beforeAllConfigCalledBeforeExecute)
   }
   
   test("afterAll gets called after run") {
     val a = new MySuite
-    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     val promise = Promise[MySuite]
     status whenCompleted { _ => promise.success(a) }
     promise.future.map { mySuite =>
@@ -129,13 +129,13 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   
   test("beforeEach(config) gets the config passed to run") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     assert(a.beforeEachTestDataGotTheGreeting)
   }
 
   test("afterEach(config) gets the config passed to run") {
     val a = new MySuite
-    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     val promise = Promise[MySuite]
     status whenCompleted { _ => promise.success(a) }
     promise.future.map { mySuite =>
@@ -145,13 +145,13 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
   test("beforeAll(config) gets the config passed to run") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     assert(a.beforeAllConfigGotTheGreeting)
   }
 
   test("afterAll(config) gets the config passed to run") {
     val a = new MySuite
-    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     val promise = Promise[MySuite]
     status whenCompleted { _ => promise.success(a) }
     promise.future.map { mySuite =>

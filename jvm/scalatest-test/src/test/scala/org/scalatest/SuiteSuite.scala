@@ -28,7 +28,6 @@ import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.refspec.{RefSpec, RefSpecLike}
 import scala.collection.immutable.TreeSet
-import Suite.CHOSEN_STYLES
 import org.scalatest.funspec.AnyFunSpec
 
 /* Uncomment after remove type aliases in org.scalatest package object
@@ -183,32 +182,32 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
     
     val defaultFilter = Filter(None, Set.empty)
     val defaultReporter = new EventRecordingReporter
-    masterSuite.runNestedSuites(Args(defaultReporter, Stopper.default, defaultFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+    masterSuite.runNestedSuites(Args(defaultReporter, Stopper.default, defaultFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99))))
     assert(defaultReporter.suiteStartingEventsReceived.size === 4)
     assert(defaultReporter.testIgnoredEventsReceived.size === 3)
     val defaultReporterDist = new EventRecordingReporter
     val defaultDistributor = new CounterDistributor
-    masterSuite.runNestedSuites(Args(defaultReporterDist, Stopper.default, defaultFilter, ConfigMap.empty, Some(defaultDistributor), new Tracker(new Ordinal(99)), Set.empty))
+    masterSuite.runNestedSuites(Args(defaultReporterDist, Stopper.default, defaultFilter, ConfigMap.empty, Some(defaultDistributor), new Tracker(new Ordinal(99))))
     assert(defaultDistributor.count === 4)
     
     val includeFilter = Filter(Some(Set("org.scalatest.FastAsLight")), Set.empty)
     val includeReporter = new EventRecordingReporter
-    masterSuite.runNestedSuites(Args(includeReporter, Stopper.default, includeFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+    masterSuite.runNestedSuites(Args(includeReporter, Stopper.default, includeFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99))))
     assert(includeReporter.suiteStartingEventsReceived.size === 4) 
     assert(includeReporter.testIgnoredEventsReceived.size === 0) 
     val includeReporterDist = new EventRecordingReporter
     val includeDistributor = new CounterDistributor
-    masterSuite.runNestedSuites(Args(includeReporterDist, Stopper.default, includeFilter, ConfigMap.empty, Some(includeDistributor), new Tracker(new Ordinal(99)), Set.empty))
+    masterSuite.runNestedSuites(Args(includeReporterDist, Stopper.default, includeFilter, ConfigMap.empty, Some(includeDistributor), new Tracker(new Ordinal(99))))
     assert(includeDistributor.count === 4) 
     
     val excludeFilter = Filter(None, Set("org.scalatest.SlowAsMolasses"))
     val excludeReporter = new EventRecordingReporter
-    masterSuite.runNestedSuites(Args(excludeReporter, Stopper.default, excludeFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+    masterSuite.runNestedSuites(Args(excludeReporter, Stopper.default, excludeFilter, ConfigMap.empty, None, new Tracker(new Ordinal(99))))
     assert(excludeReporter.suiteStartingEventsReceived.size === 4)
     assert(excludeReporter.testIgnoredEventsReceived.size === 3)
     val excludeReporterDist = new EventRecordingReporter
     val excludeDistributor = new CounterDistributor
-    masterSuite.runNestedSuites(Args(excludeReporterDist, Stopper.default, excludeFilter, ConfigMap.empty, Some(excludeDistributor), new Tracker(new Ordinal(99)), Set.empty))
+    masterSuite.runNestedSuites(Args(excludeReporterDist, Stopper.default, excludeFilter, ConfigMap.empty, Some(excludeDistributor), new Tracker(new Ordinal(99))))
     assert(excludeDistributor.count === 4)
   }
   

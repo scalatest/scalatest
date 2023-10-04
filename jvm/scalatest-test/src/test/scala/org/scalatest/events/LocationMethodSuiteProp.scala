@@ -24,7 +24,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
   test("Method suites should have correct TopOfMethod location in test events.") {
     forAll(examples) { suite =>
       val reporter = new EventRecordingReporter
-      suite.run(None, Args(reporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      suite.run(None, Args(reporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       val eventList = reporter.eventsReceived
       eventList.foreach { event => suite.checkFun(event) }
       suite.allChecked
