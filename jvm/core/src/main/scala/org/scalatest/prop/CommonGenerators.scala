@@ -944,8 +944,7 @@ trait CommonGenerators {
       private val totalWeight: Int = distribution.toMap.keys.sum
       // gens contains, for each distribution pair, weight generators.
       private val gens: Vector[Generator[T]] =
-      // TODO: Try dropping toVector. distribution is already a Vector
-        distribution.toVector flatMap { case (w, g) =>
+        distribution flatMap { case (w, g) =>
           Vector.fill(w)(g)
         }
       def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
