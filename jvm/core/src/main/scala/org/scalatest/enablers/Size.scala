@@ -102,7 +102,7 @@ trait Size[T] {
  * Companion object for <code>Size</code> that provides implicit implementations for the following types:
  *
  * <ul>
- * <li><code>scala.collection.GenTraversable</code></li>
+ * <li><code>org.scalactic.ColCompatHelper.Iterable</code></li>
  * <li><code>String</code></li>
  * <li><code>Array</code></li>
  * <li><code>java.util.Collection</code></li>
@@ -144,14 +144,14 @@ object Size {
     }
 
   /**
-   * Enable <code>Size</code> implementation for <code>scala.collection.GenTraversable</code>
+   * Enable <code>Size</code> implementation for <code>org.scalactic.ColCompatHelper.Iterable</code>
    *
-   * @tparam TRAV any subtype of <code>scala.collection.GenTraversable</code>
-   * @return <code>Size[TRAV]</code> that supports <code>scala.collection.GenTraversable</code> in <code>have size</code> syntax
+   * @tparam ITR any subtype of <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @return <code>Size[ITR]</code> that supports <code>org.scalactic.ColCompatHelper.Iterable</code> in <code>have size</code> syntax
    */
-  implicit def sizeOfGenTraversable[TRAV <: scala.collection.GenTraversable[_]]: Size[TRAV] = 
-    new Size[TRAV] {
-      def sizeOf(trav: TRAV): Long = trav.size
+  implicit def sizeOfIterable[ITR <: Iterable[_]]: Size[ITR] = 
+    new Size[ITR] {
+      def sizeOf(itr: ITR): Long = itr.size
     }
 
   /**
