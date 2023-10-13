@@ -19,7 +19,7 @@ import Aggregating.tryEquality
 import org.scalactic.Equality
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 
 /**
  * Supertrait for typeclasses that enable <code>be empty</code> matcher syntax.
@@ -32,7 +32,7 @@ import scala.collection.GenTraversable
  * for the type and making it available implicitly.
  * 
  * <p>
- * ScalaTest provides implicit <code>Emptiness</code> instances for <code>scala.collection.GenTraversable</code>,
+ * ScalaTest provides implicit <code>Emptiness</code> instances for <code>org.scalactic.ColCompatHelper.Iterable</code>,
  * <code>java.util.Collection</code>, <code>java.util.Map</code>, <code>String</code>, <code>Array</code>, 
  * and <code>scala.Option</code> in the <code>Emptiness</code> companion object.
  * </p>
@@ -52,7 +52,7 @@ trait Emptiness[-T] {
  * Companion object for <code>Emptiness</code> that provides implicit implementations for the following types:
  *
  * <ul>
- * <li><code>scala.collection.GenTraversable</code></li>
+ * <li><code>org.scalactic.ColCompatHelper.Iterable</code></li>
  * <li><code>String</code></li>
  * <li><code>Array</code></li>
  * <li><code>scala.Option</code></li>
@@ -68,15 +68,15 @@ object Emptiness {
   //DOTTY-ONLY import scala.reflect.Selectable.reflectiveSelectable
 
   /**
-   * Enable <code>Emptiness</code> implementation for <code>scala.collection.GenTraversable</code>
+   * Enable <code>Emptiness</code> implementation for <code>org.scalactic.ColCompatHelper.Iterable</code>
    *
-   * @tparam E the type of the element in the <code>scala.collection.GenTraversable</code>
-   * @tparam TRAV any subtype of <code>scala.collection.GenTraversable</code>
-   * @return <code>Emptiness[TRAV[E]]</code> that supports <code>scala.collection.GenTraversable</code> in <code>be empty</code> syntax
+   * @tparam E the type of the element in the <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @tparam ITR any subtype of <code>org.scalactic.ColCompatHelper.Iterable</code>
+   * @return <code>Emptiness[ITR[E]]</code> that supports <code>org.scalactic.ColCompatHelper.Iterable</code> in <code>be empty</code> syntax
    */
-  implicit def emptinessOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]]: Emptiness[TRAV[E]] =
-    new Emptiness[TRAV[E]] {
-      def isEmpty(trav: TRAV[E]): Boolean = trav.isEmpty
+  implicit def emptinessOfIterable[E, ITR[e] <: Iterable[e]]: Emptiness[ITR[E]] =
+    new Emptiness[ITR[E]] {
+      def isEmpty(itr: ITR[E]): Boolean = itr.isEmpty
     }
   
   /**
