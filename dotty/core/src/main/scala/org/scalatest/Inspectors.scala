@@ -641,7 +641,7 @@ object Inspectors extends Inspectors {
   import scala.quoted._
 
   def forAllImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forAll(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAllMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -649,7 +649,7 @@ object Inspectors extends Inspectors {
   }
 
   def forAllForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forAll(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAllForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -657,7 +657,7 @@ object Inspectors extends Inspectors {
   }
 
   def forAllForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forAll(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAllForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -665,7 +665,7 @@ object Inspectors extends Inspectors {
   }
 
   def forAllForStringImpl[ASSERTION, RESULT](xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAll(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forAll(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAllForStringMacro[ASSERTION, RESULT](xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -673,7 +673,7 @@ object Inspectors extends Inspectors {
   }
 
   def forAtLeastImpl[E, C[_], ASSERTION, RESULT](min: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forAtLeast(min, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAtLeastMacro[E, C[_], ASSERTION, RESULT](min: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -681,7 +681,7 @@ object Inspectors extends Inspectors {
   }
 
   def forAtLeastForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](min: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forAtLeast(min, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAtLeastForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](min: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -689,7 +689,7 @@ object Inspectors extends Inspectors {
   }
 
   def forAtLeastForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](min: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forAtLeast(min, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAtLeastForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](min: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -697,7 +697,7 @@ object Inspectors extends Inspectors {
   }
 
   def forAtLeastForStringImpl[ASSERTION, RESULT](min: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtLeast(min, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forAtLeast(min, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAtLeastForStringMacro[ASSERTION, RESULT](min: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -705,7 +705,7 @@ object Inspectors extends Inspectors {
   }
 
   def forAtMostImpl[E, C[_], ASSERTION, RESULT](max: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forAtMost(max, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAtMostMacro[E, C[_], ASSERTION, RESULT](max: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -713,7 +713,7 @@ object Inspectors extends Inspectors {
   }
 
   def forAtMostForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](max: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forAtMost(max, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAtMostForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](max: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -721,7 +721,7 @@ object Inspectors extends Inspectors {
   }
 
   def forAtMostForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](max: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forAtMost(max, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAtMostForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](max: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -729,7 +729,7 @@ object Inspectors extends Inspectors {
   }
 
   def forAtMostForStringImpl[ASSERTION, RESULT](max: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forAtMost(max, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forAtMost(max, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forAtMostForStringMacro[ASSERTION, RESULT](max: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -737,7 +737,7 @@ object Inspectors extends Inspectors {
   }
 
   def forExactlyImpl[E, C[_], ASSERTION, RESULT](succeededCount: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forExactly(succeededCount, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forExactlyMacro[E, C[_], ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -745,7 +745,7 @@ object Inspectors extends Inspectors {
   }
 
   def forExactlyForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](succeededCount: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forExactly(succeededCount, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forExactlyForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -753,7 +753,7 @@ object Inspectors extends Inspectors {
   }
 
   def forExactlyForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](succeededCount: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forExactly(succeededCount, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forExactlyForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -761,7 +761,7 @@ object Inspectors extends Inspectors {
   }
 
   def forExactlyForStringImpl[ASSERTION, RESULT](succeededCount: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forExactly(succeededCount, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forExactlyForStringMacro[ASSERTION, RESULT](succeededCount: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -769,7 +769,7 @@ object Inspectors extends Inspectors {
   }
 
   def forNoImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forNo(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forNoMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -777,7 +777,7 @@ object Inspectors extends Inspectors {
   }
 
   def forNoForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forNo(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forNoForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -785,7 +785,7 @@ object Inspectors extends Inspectors {
   }
 
   def forNoForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forNo(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forNoForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -793,7 +793,7 @@ object Inspectors extends Inspectors {
   }
 
   def forNoForStringImpl[ASSERTION, RESULT](xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forNo(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forNo(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forNoForStringMacro[ASSERTION, RESULT](xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -801,7 +801,7 @@ object Inspectors extends Inspectors {
   }
 
   def forBetweenImpl[E, C[_], ASSERTION, RESULT](from: Int, upTo: Int, xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forBetween(from, upTo, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forBetweenMacro[E, C[_], ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -809,7 +809,7 @@ object Inspectors extends Inspectors {
   }
 
   def forBetweenForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forBetween(from, upTo, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forBetweenForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -817,7 +817,7 @@ object Inspectors extends Inspectors {
   }
 
   def forBetweenForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](from: Int, upTo: Int, xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forBetween(from, upTo, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forBetweenForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -825,7 +825,7 @@ object Inspectors extends Inspectors {
   }
 
   def forBetweenForStringImpl[ASSERTION, RESULT](from: Int, upTo: Int, xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forBetween(from, upTo, collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forBetweenForStringMacro[ASSERTION, RESULT](from: Expr[Int], upTo: Expr[Int], xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -833,7 +833,7 @@ object Inspectors extends Inspectors {
   }
 
   def forEveryImpl[E, C[_], ASSERTION, RESULT](xs: C[E], fun: E => ASSERTION, collecting: Collecting[E, C[E]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forEvery(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forEveryMacro[E, C[_], ASSERTION, RESULT](xs: Expr[C[E]])(fun: Expr[E => ASSERTION], collecting: Expr[Collecting[E, C[E]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeE: Type[E], typeC: Type[C], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -841,7 +841,7 @@ object Inspectors extends Inspectors {
   }
 
   def forEveryForMapImpl[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: MAP[K, V], fun: ((K, V)) => ASSERTION, collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forEvery(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forEveryForMapMacro[K, V, MAP[k, v] <: scala.collection.GenMap[k, v], ASSERTION, RESULT](xs: Expr[MAP[K, V]])(fun: Expr[((K, V)) => ASSERTION], collecting: Expr[Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[MAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -849,7 +849,7 @@ object Inspectors extends Inspectors {
   }
 
   def forEveryForJMapImpl[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: JMAP[K, V], fun: org.scalatest.Entry[K, V] => ASSERTION, collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forEvery(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forEveryForJMapMacro[K, V, JMAP[k, v] <: java.util.Map[k, v], ASSERTION, RESULT](xs: Expr[JMAP[K, V]])(fun: Expr[org.scalatest.Entry[K, V] => ASSERTION], collecting: Expr[Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeK: Type[K], typeV: Type[V], typeMap: Type[JMAP], typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {
@@ -857,7 +857,7 @@ object Inspectors extends Inspectors {
   }
 
   def forEveryForStringImpl[ASSERTION, RESULT](xs: String, fun: Char => ASSERTION, collecting: Collecting[Char, String], asserting: InspectorAsserting[ASSERTION, RESULT], prettifier: Prettifier, pos: source.Position): RESULT = {
-    asserting.forEvery(collecting.genTraversableFrom(xs), xs, false, prettifier, pos)(fun)
+    asserting.forEvery(collecting.iterableFrom(xs), xs, false, prettifier, pos)(fun)
   }
 
   private[scalatest] def forEveryForStringMacro[ASSERTION, RESULT](xs: Expr[String])(fun: Expr[Char => ASSERTION], collecting: Expr[Collecting[Char, String]], asserting: Expr[InspectorAsserting[ASSERTION, RESULT]], prettifier: Expr[Prettifier])(using quotes: Quotes, typeAssertion: Type[ASSERTION], typeResult: Type[RESULT]): Expr[RESULT] = {

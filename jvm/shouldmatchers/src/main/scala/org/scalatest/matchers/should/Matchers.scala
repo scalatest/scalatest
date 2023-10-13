@@ -6971,7 +6971,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def all[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(AllCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
     * This method enables the following syntax for <code>scala.collection.GenMap</code>:
@@ -6982,7 +6982,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * </pre>
     */
   def all[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-    new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(AllCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -6993,7 +6993,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def all[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(AllCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -7004,7 +7004,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def all(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(AllCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -7015,7 +7015,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def atLeast[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
     * This method enables the following syntax for <code>scala.collection.GenMap</code>:
@@ -7026,7 +7026,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * </pre>
     */
   def atLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -7037,7 +7037,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def atLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -7048,7 +7048,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def atLeast(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -7059,7 +7059,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def every[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(EveryCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
     * This method enables the following syntax for <code>scala.collection.GenMap</code>:
@@ -7070,7 +7070,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * </pre>
     */
   def every[K, V, MAP[k, v] <: scala.collection.Map[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(EveryCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -7082,7 +7082,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def every[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(EveryCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -7093,7 +7093,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def every(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(EveryCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -7104,7 +7104,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def exactly[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
     * This method enables the following syntax for <code>scala.collection.GenMap</code>:
@@ -7115,7 +7115,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * </pre>
     */
   def exactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -7126,7 +7126,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def exactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -7137,7 +7137,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def exactly(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -7148,7 +7148,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */ 
   def no[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(NoCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -7159,7 +7159,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def no[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(NoCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -7170,7 +7170,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def no(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(NoCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -7181,7 +7181,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def between[E, C[_]](from: Int, upTo:Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -7192,7 +7192,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def between[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo:Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -7203,7 +7203,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def between(from: Int, upTo:Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -7214,7 +7214,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def atMost[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
     * This method enables the following syntax for <code>scala.collection.GenMap</code>:
@@ -7225,7 +7225,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * </pre>
     */
   def atMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
-    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -7236,7 +7236,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def atMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -7247,7 +7247,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * </pre>
    */
   def atMost(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:

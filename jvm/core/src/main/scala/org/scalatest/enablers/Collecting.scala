@@ -16,7 +16,7 @@
 package org.scalatest.enablers
 
 import org.scalactic.Every
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
 import scala.language.higherKinds
@@ -34,7 +34,7 @@ import scala.language.higherKinds
  * </p>
  * 
  * <p>
- * ScalaTest provides implicit <code>Collecting</code> instances for <code>scala.collection.GenTraversable</code>,
+ * ScalaTest provides implicit <code>Collecting</code> instances for <code>scala.collection.Iterable</code>,
  * <code>Array</code>, <code>java.util.Collection</code> and <code>java.util.Map</code> in the
  * <code>Collecting</code> companion object.
  * </p>
@@ -63,20 +63,20 @@ trait Collecting[E, C] {
   def sizeOf(collection: C): Int
 
   /**
-   * Returns a <code>GenTraversable[E]</code> containing the same elements (in the same
+   * Returns a <code>Iterable[E]</code> containing the same elements (in the same
    * order, if the original collection had a defined order), as the passed <code>collection</code> .
    *
    * @param collection a <code>collection</code> to check the size of
-   * @return a <code>GenTraversable[E]</code> containing the same elements as the passed <code>collection</code>
+   * @return a <code>Iterable[E]</code> containing the same elements as the passed <code>collection</code>
    */
-  def genTraversableFrom(collection: C): GenTraversable[E]
+  def iterableFrom(collection: C): Iterable[E]
 }
 
 /**
  * Companion object for <code>Collecting</code> that provides implicit implementations for the following types:
  *
  * <ul>
- * <li><code>scala.collection.GenTraversable</code></li>
+ * <li><code>scala.collection.Iterable</code></li>
  * <li><code>Array</code></li>
  * <li><code>java.util.Collection</code></li>
  * <li><code>java.util.Map</code></li>
@@ -85,19 +85,19 @@ trait Collecting[E, C] {
 object Collecting {
 
   /**
-   * Implicit to support <code>Collecting</code> nature of <code>GenTraversable</code>.
+   * Implicit to support <code>Collecting</code> nature of <code>Iterable</code>.
    *
-   * @tparam E the type of the element in the <code>GenTraversable</code>
-   * @tparam TRAV any subtype of <code>GenTraversable</code>
-   * @return <code>Collecting[E, TRAV[E]]</code> that supports <code>GenTraversable</code> in <code>loneElement</code> syntax
+   * @tparam E the type of the element in the <code>Iterable</code>
+   * @tparam ITR any subtype of <code>Iterable</code>
+   * @return <code>Collecting[E, TRAV[E]]</code> that supports <code>Iterable</code> in <code>loneElement</code> syntax
    */
-  implicit def collectingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]]: Collecting[E, TRAV[E]] = 
-    new Collecting[E, TRAV[E]] {
-      def loneElementOf(trav: TRAV[E]): Option[E] = {
+  implicit def collectingNatureOfIterable[E, ITR[e] <: Iterable[e]]: Collecting[E, ITR[E]] = 
+    new Collecting[E, ITR[E]] {
+      def loneElementOf(trav: ITR[E]): Option[E] = {
         if (trav.size == 1) Some(trav.head) else None
       }
-      def sizeOf(trav: TRAV[E]): Int = trav.size
-      def genTraversableFrom(collection: TRAV[E]): GenTraversable[E] = collection
+      def sizeOf(trav: ITR[E]): Int = trav.size
+      def iterableFrom(collection: ITR[E]): Iterable[E] = collection
     }
 
   /**
@@ -112,7 +112,7 @@ object Collecting {
         if (array.size == 1) Some(array.head) else None
       }
       def sizeOf(array: Array[E]): Int = array.length
-      def genTraversableFrom(collection: Array[E]): GenTraversable[E] = collection
+      def iterableFrom(collection: Array[E]): Iterable[E] = collection
     }
 
   /**
@@ -126,7 +126,7 @@ object Collecting {
         if (string.size == 1) Some(string.head) else None
       }
       def sizeOf(string: String): Int = string.length
-      def genTraversableFrom(collection: String): GenTraversable[Char] = collection.toVector
+      def iterableFrom(collection: String): Iterable[Char] = collection.toVector
     }
 
   /**
@@ -142,7 +142,7 @@ object Collecting {
         if (coll.size == 1) Some(coll.iterator.next) else None
       }
       def sizeOf(coll: JCOL[E]): Int = coll.size
-      def genTraversableFrom(collection: JCOL[E]): GenTraversable[E] = {
+      def iterableFrom(collection: JCOL[E]): Iterable[E] = {
         import scala.collection.JavaConverters._
         /*
         This is what asScala does, to make sure it keeps the order of Lists
@@ -178,7 +178,7 @@ object Collecting {
         /*
         Original order needs to be preserved
         */
-      def genTraversableFrom(collection: JMAP[K, V]): scala.collection.GenTraversable[org.scalatest.Entry[K, V]] = {
+      def iterableFrom(collection: JMAP[K, V]): scala.collection.Iterable[org.scalatest.Entry[K, V]] = {
         import scala.collection.JavaConverters._
         collection.entrySet.iterator.asScala.map(entry => org.scalatest.Entry(entry.getKey, entry.getValue)).toList
       }
@@ -196,7 +196,7 @@ object Collecting {
       def loneElementOf(every: EVERY[E]): Option[E] =
         if (every.size == 1) Some(every.head) else None
       def sizeOf(every: EVERY[E]): Int = every.size
-      def genTraversableFrom(collection: EVERY[E]): GenTraversable[E] = collection.toVector
+      def iterableFrom(collection: EVERY[E]): Iterable[E] = collection.toVector
     }
 
 }

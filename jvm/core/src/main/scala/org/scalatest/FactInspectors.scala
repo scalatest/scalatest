@@ -227,7 +227,7 @@ private[scalatest] trait FactInspectors {
    *
    */
   def forAll[E, C[_]](xs: C[E])(fun: E => Expectation)(implicit collecting: Collecting[E, C[E]]): Expectation = {
-    doForAll(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAll", stackDepthAdjustment)(fun)
+    doForAll(collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forAll", stackDepthAdjustment)(fun)
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -250,7 +250,7 @@ private[scalatest] trait FactInspectors {
    *
    */
   def forAll[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Expectation)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): Expectation = {
-    doForAll(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAll", stackDepthAdjustment)(fun)
+    doForAll(collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forAll", stackDepthAdjustment)(fun)
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -270,7 +270,7 @@ private[scalatest] trait FactInspectors {
    *
    */
   def forAll(xs: String)(fun: Char => Expectation)(implicit collecting: Collecting[Char, String]): Expectation = {
-    doForAll(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAll", stackDepthAdjustment)(fun)
+    doForAll(collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forAll", stackDepthAdjustment)(fun)
   }
 
   /**
@@ -285,7 +285,7 @@ private[scalatest] trait FactInspectors {
    *
    */
   def forAtLeast[E, C[_]](min: Int, xs: C[E])(fun: E => Expectation)(implicit collecting: Collecting[E, C[E]]): Expectation = {
-    doForAtLeast(min, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAtLeast", stackDepthAdjustment)(fun)
+    doForAtLeast(min, collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forAtLeast", stackDepthAdjustment)(fun)
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -302,7 +302,7 @@ private[scalatest] trait FactInspectors {
    *
    */
   def forAtLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](min: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Expectation)(implicit collecting: Collecting[org.scalatest.Entry[K, V],JMAP[K, V]]): Expectation = {
-    doForAtLeast(min, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAtLeast", stackDepthAdjustment)(fun)
+    doForAtLeast(min, collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forAtLeast", stackDepthAdjustment)(fun)
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -316,7 +316,7 @@ private[scalatest] trait FactInspectors {
    *
    */
   def forAtLeast(min: Int, xs: String)(fun: Char => Expectation)(implicit collecting: Collecting[Char, String]): Expectation = {
-    doForAtLeast(min, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAtLeast", stackDepthAdjustment)(fun)
+    doForAtLeast(min, collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forAtLeast", stackDepthAdjustment)(fun)
   }
 
   private def shouldIncludeIndex[T, R](xs: GenTraversable[T]) = xs.isInstanceOf[GenSeq[T]]
@@ -332,7 +332,7 @@ private[scalatest] trait FactInspectors {
    * @tparam C the type of collection
    */
   def forAtMost[E, C[_]](max: Int, xs: C[E])(fun: E => Expectation)(implicit collecting: Collecting[E, C[E]]): Expectation = {
-    doForAtMost(max, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAtMost", stackDepthAdjustment)(fun)
+    doForAtMost(max, collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forAtMost", stackDepthAdjustment)(fun)
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -348,7 +348,7 @@ private[scalatest] trait FactInspectors {
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
   def forAtMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](max: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Expectation)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): Expectation = {
-    doForAtMost(max, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAtMost", stackDepthAdjustment)(fun)
+    doForAtMost(max, collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forAtMost", stackDepthAdjustment)(fun)
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -361,7 +361,7 @@ private[scalatest] trait FactInspectors {
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
   def forAtMost(max: Int, xs: String)(fun: Char => Expectation)(implicit collecting: Collecting[Char, String]): Expectation = {
-    doForAtMost(max, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forAtMost", stackDepthAdjustment)(fun)
+    doForAtMost(max, collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forAtMost", stackDepthAdjustment)(fun)
   }
 
   /**
@@ -375,7 +375,7 @@ private[scalatest] trait FactInspectors {
    * @tparam C the type of collection
    */
   def forExactly[E, C[_]](succeededCount: Int, xs: C[E])(fun: E => Expectation)(implicit collecting: Collecting[E, C[E]]): Expectation = {
-    doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forExactly", stackDepthAdjustment)(fun)
+    doForExactly(succeededCount, collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forExactly", stackDepthAdjustment)(fun)
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -391,7 +391,7 @@ private[scalatest] trait FactInspectors {
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
   def forExactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](succeededCount: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Expectation)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): Expectation = {
-    doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forExactly", stackDepthAdjustment)(fun)
+    doForExactly(succeededCount, collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forExactly", stackDepthAdjustment)(fun)
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -404,21 +404,21 @@ private[scalatest] trait FactInspectors {
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
   def forExactly(succeededCount: Int, xs: String)(fun: Char => Expectation)(implicit collecting: Collecting[Char, String]): Expectation = {
-    doForExactly(succeededCount, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forExactly", stackDepthAdjustment)(fun)
+    doForExactly(succeededCount, collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forExactly", stackDepthAdjustment)(fun)
   }
   
   private[scalatest] def forNo[E, C[_]](xs: C[E])(fun: E => Expectation)(implicit collecting: Collecting[E, C[E]]): Expectation = {
-    doForNo(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forNo", stackDepthAdjustment)(fun)
+    doForNo(collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forNo", stackDepthAdjustment)(fun)
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
   private[scalatest] def forNo[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Expectation)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): Expectation = {
-    doForNo(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forNo", stackDepthAdjustment)(fun)
+    doForNo(collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forNo", stackDepthAdjustment)(fun)
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
   private[scalatest] def forNo(xs: String)(fun: Char => Expectation)(implicit collecting: Collecting[Char, String]): Expectation = {
-    doForNo(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forNo", stackDepthAdjustment)(fun)
+    doForNo(collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forNo", stackDepthAdjustment)(fun)
   }
 
   /**
@@ -433,7 +433,7 @@ private[scalatest] trait FactInspectors {
    * @tparam C the type of collection
    */
   def forBetween[E, C[_]](from: Int, upTo: Int, xs: C[E])(fun: E => Expectation)(implicit collecting: Collecting[E, C[E]]): Expectation = {
-    doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forBetween", stackDepthAdjustment)(fun)
+    doForBetween(from, upTo, collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forBetween", stackDepthAdjustment)(fun)
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -450,7 +450,7 @@ private[scalatest] trait FactInspectors {
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
   def forBetween[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo: Int, xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Expectation)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): Expectation = {
-    doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forBetween", stackDepthAdjustment)(fun)
+    doForBetween(from, upTo, collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forBetween", stackDepthAdjustment)(fun)
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -464,7 +464,7 @@ private[scalatest] trait FactInspectors {
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
   def forBetween(from: Int, upTo: Int, xs: String)(fun: Char => Expectation)(implicit collecting: Collecting[Char, String]): Expectation = {
-    doForBetween(from, upTo, collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forBetween", stackDepthAdjustment)(fun)
+    doForBetween(from, upTo, collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forBetween", stackDepthAdjustment)(fun)
   }
 
   /**
@@ -484,7 +484,7 @@ private[scalatest] trait FactInspectors {
    * @tparam C the type of collection
    */
   def forEvery[E, C[_]](xs: C[E])(fun: E => Expectation)(implicit collecting: Collecting[E, C[E]]): Expectation = {
-    doForEvery(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forEvery", stackDepthAdjustment)(fun)
+    doForEvery(collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forEvery", stackDepthAdjustment)(fun)
   }
 
   // SKIP-SCALATESTJS,NATIVE-START
@@ -506,7 +506,7 @@ private[scalatest] trait FactInspectors {
    * @tparam JMAP subtype of <code>java.util.Map</code>
    */
   def forEvery[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(fun: org.scalatest.Entry[K, V] => Expectation)(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): Expectation = {
-    doForEvery(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forEvery", stackDepthAdjustment)(fun)
+    doForEvery(collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forEvery", stackDepthAdjustment)(fun)
   }
   // SKIP-SCALATESTJS,NATIVE-END
 
@@ -525,7 +525,7 @@ private[scalatest] trait FactInspectors {
    * @param collecting the implicit <code>Collecting</code> that can transform <code>xs</code> into a <code>scala.collection.GenTraversable</code>
    */
   def forEvery(xs: String)(fun: Char => Expectation)(implicit collecting: Collecting[Char, String]): Expectation = {
-    doForEvery(collecting.genTraversableFrom(xs), xs, false, "Inspectors.scala", "forEvery", stackDepthAdjustment)(fun)
+    doForEvery(collecting.iterableFrom(xs), xs, false, "Inspectors.scala", "forEvery", stackDepthAdjustment)(fun)
   }
 }
 

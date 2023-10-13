@@ -49,6 +49,8 @@ object GenColCompatHelper {
           |
           |  type WithFilter[+A, +CC[_]] = scala.collection.WithFilter[A, CC]
           |
+          |  type Iterable[+A] = scala.collection.Iterable[A]
+          |
           |  type IterableOnce[+A] = scala.collection.IterableOnce[A]
           |
           |  type Factory[-A, +C] = scala.collection.Factory[A, C]
@@ -97,6 +99,8 @@ object GenColCompatHelper {
           |  def aggregate[A, B](col: scala.collection.GenTraversable[A], z: =>B)(seqop: (B, A) => B, combop: (B, B) => B): B = col.aggregate(z)(seqop, combop)
           |
           |  type WithFilter[+A, +Repr] = scala.collection.generic.FilterMonadic[A, Repr]
+          |
+          |  type Iterable[+A] = scala.collection.GenTraversable[A]
           |
           |  type IterableOnce[+A] = scala.collection.GenTraversableOnce[A]
           |
