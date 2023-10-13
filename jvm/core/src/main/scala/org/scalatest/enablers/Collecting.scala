@@ -34,7 +34,7 @@ import scala.language.higherKinds
  * </p>
  * 
  * <p>
- * ScalaTest provides implicit <code>Collecting</code> instances for <code>scala.collection.Iterable</code>,
+ * ScalaTest provides implicit <code>Collecting</code> instances for <code>org.scalactic.ColCompatHelper.Iterable</code>,
  * <code>Array</code>, <code>java.util.Collection</code> and <code>java.util.Map</code> in the
  * <code>Collecting</code> companion object.
  * </p>
@@ -76,7 +76,7 @@ trait Collecting[E, C] {
  * Companion object for <code>Collecting</code> that provides implicit implementations for the following types:
  *
  * <ul>
- * <li><code>scala.collection.Iterable</code></li>
+ * <li><code>org.scalactic.ColCompatHelper.Iterable</code></li>
  * <li><code>Array</code></li>
  * <li><code>java.util.Collection</code></li>
  * <li><code>java.util.Map</code></li>
@@ -178,7 +178,7 @@ object Collecting {
         /*
         Original order needs to be preserved
         */
-      def iterableFrom(collection: JMAP[K, V]): scala.collection.Iterable[org.scalatest.Entry[K, V]] = {
+      def iterableFrom(collection: JMAP[K, V]): Iterable[org.scalatest.Entry[K, V]] = {
         import scala.collection.JavaConverters._
         collection.entrySet.iterator.asScala.map(entry => org.scalatest.Entry(entry.getKey, entry.getValue)).toList
       }

@@ -31,7 +31,7 @@ import org.scalactic.ColCompatHelper.aggregate
  * type <code>U</code> by defining an <code>Containing[U]</code> for the type and making it available implicitly.
  * 
  * <p>
- * ScalaTest provides implicit <code>Containing</code> instances for <code>scala.collection.Iterable</code>,
+ * ScalaTest provides implicit <code>Containing</code> instances for <code>org.scalactic.ColCompatHelper.Iterable</code>,
  * <code>java.util.Collection</code>, <code>java.util.Map</code>, <code>String</code>, <code>Array</code>, 
  * and <code>scala.Option</code> in the <code>Containing</code> companion object.
  * </p>
@@ -315,10 +315,10 @@ trait ContainingStandardImplicits extends JavaContainingImplicits {
     *
     * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
     * @tparam E type of elements in the <code>Iterable</code>
-    * @tparam TRAV subtype of <code>Iterable</code>
-    * @return <code>Containing</code> of type <code>TRAV[E]</code>
+    * @tparam ITR subtype of <code>Iterable</code>
+    * @return <code>Containing</code> of type <code>ITR[E]</code>
     */
-  implicit def convertEqualityToIterableContaining[E, TRAV[e] <: scala.collection.Iterable[e]](equality: Equality[E]): Containing[TRAV[E]] =
+  implicit def convertEqualityToIterableContaining[E, ITR[e] <: Iterable[e]](equality: Equality[E]): Containing[ITR[E]] =
     containingNatureOfIterable(equality)
 
   // OPT so that it will work with Some also, but it doesn't work with None
@@ -545,7 +545,7 @@ trait ContainingHighPriorityImplicits extends ContainingStandardImplicits {
  * Companion object for <code>Containing</code> that provides implicit implementations for the following types:
  *
  * <ul>
- * <li><code>scala.collection.Iterable</code></li>
+ * <li><code>org.scalactic.ColCompatHelper.Iterable</code></li>
  * <li><code>String</code></li>
  * <li><code>Array</code></li>
  * <li><code>scala.Option</code></li>

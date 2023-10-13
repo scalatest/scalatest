@@ -35,7 +35,7 @@ import scala.annotation.tailrec
  * </p>
  * 
  * <ul>
- * <li><code>scala.collection.Iterable</code></li>
+ * <li><code>org.scalactic.ColCompatHelper.Iterable</code></li>
  * <li><code>String</code></li>
  * <li><code>Array</code></li>
  * <li><code>java.util.Collection</code></li>
@@ -566,7 +566,7 @@ trait AggregatingHighPriorityImplicits extends AggregatingStandardImplicits {
  * Companion object for <code>Aggregating</code> that provides implicit implementations for the following types:
  *
  * <ul>
- * <li><code>scala.collection.Iterable</code></li>
+ * <li><code>org.scalactic.ColCompatHelper.Iterable</code></li>
  * <li><code>String</code></li>
  * <li><code>Array</code></li>
  * <li><code>java.util.Collection</code></li>
