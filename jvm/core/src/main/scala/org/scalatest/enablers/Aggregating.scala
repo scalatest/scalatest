@@ -17,7 +17,7 @@ package org.scalatest.enablers
 
 import scala.collection.JavaConverters._
 import org.scalactic.{Equality, Every}
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import org.scalatest.FailureMessages
 import org.scalatest.verbs.ArrayWrapper
 import org.scalactic.ColCompatHelper.aggregate
@@ -35,7 +35,7 @@ import scala.annotation.tailrec
  * </p>
  * 
  * <ul>
- * <li><code>scala.collection.GenTraversable</code></li>
+ * <li><code>scala.collection.Iterable</code></li>
  * <li><code>String</code></li>
  * <li><code>Array</code></li>
  * <li><code>java.util.Collection</code></li>
@@ -85,7 +85,7 @@ trait Aggregating[-A] {
    * @param rightAggregation an aggregation that should contain the same elements as the passed <code>leftAggregation</code>
    * @return true if the passed <code>leftAggregation</code> contains the same elements as the passed <code>rightAggregation</code>
    */
-  def containsTheSameElementsAs(leftAggregation: A, rightAggregation: GenTraversable[Any]): Boolean
+  def containsTheSameElementsAs(leftAggregation: A, rightAggregation: Iterable[Any]): Boolean
 
   /**
    * Implements <code>contain</code> <code>only</code> syntax for aggregations of type <code>A</code>.
@@ -123,7 +123,7 @@ trait AggregatingImpls {
       case cce: ClassCastException => false
     }
 
-  private[scalatest] def checkTheSameElementsAs[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+  private[scalatest] def checkTheSameElementsAs[T](left: Iterable[T], right: Iterable[Any], equality: Equality[T]): Boolean = {
     case class ElementCount(element: Any, leftCount: Int, rightCount: Int)
     object ZipNoMatch
 
@@ -169,13 +169,13 @@ trait AggregatingImpls {
     !counts.exists(e => e.leftCount != e.rightCount)
   }
 
-  private[scalatest] def checkOnly[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean =
+  private[scalatest] def checkOnly[T](left: Iterable[T], right: Iterable[Any], equality: Equality[T]): Boolean =
     left.forall(l => right.find(r => tryEquality(l, r, equality)).isDefined) &&
       right.forall(r => left.find(l => tryEquality(l, r, equality)).isDefined)
 
-  private[scalatest] def checkAllOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+  private[scalatest] def checkAllOf[T](left: Iterable[T], right: Iterable[Any], equality: Equality[T]): Boolean = {
     @tailrec
-    def checkEqual(left: GenTraversable[T], rightItr: Iterator[Any]): Boolean = {
+    def checkEqual(left: Iterable[T], rightItr: Iterator[Any]): Boolean = {
       if (rightItr.hasNext) {
         val nextRight = rightItr.next
         if (left.exists(t => equality.areEqual(t, nextRight)))
@@ -189,7 +189,7 @@ trait AggregatingImpls {
     checkEqual(left, right.toIterator)
   }
 
-  private[scalatest] def checkAtMostOneOf[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+  private[scalatest] def checkAtMostOneOf[T](left: Iterable[T], right: Iterable[Any], equality: Equality[T]): Boolean = {
 
     def countElements: Int =
       aggregate(right, 0)(
@@ -226,7 +226,7 @@ trait AggregatingJavaImplicits extends AggregatingImpls {
       def containsAtLeastOneOf(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
         col.asScala.exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
-      def containsTheSameElementsAs(col: JCOL[E], elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsAs(col: JCOL[E], elements: Iterable[Any]): Boolean = {
         checkTheSameElementsAs(col.asScala, elements, equality)
       }
       def containsOnly(col: JCOL[E], elements: scala.collection.Seq[Any]): Boolean = {
@@ -278,7 +278,7 @@ trait AggregatingJavaImplicits extends AggregatingImpls {
       def containsAtLeastOneOf(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
         map.entrySet.asScala.exists((e: java.util.Map.Entry[K, V]) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
-      def containsTheSameElementsAs(map: JMAP[K, V], elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsAs(map: JMAP[K, V], elements: Iterable[Any]): Boolean = {
         checkTheSameElementsAs(map.entrySet.asScala, elements, equality)
       }
       def containsOnly(map: JMAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
@@ -336,7 +336,7 @@ trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
       def containsAtLeastOneOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
         new ArrayWrapper(array).exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
-      def containsTheSameElementsAs(array: Array[E], elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsAs(array: Array[E], elements: Iterable[Any]): Boolean = {
         checkTheSameElementsAs[E](new ArrayWrapper(array), elements, equality)
       }
       def containsOnly(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
@@ -380,7 +380,7 @@ trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
       def containsAtLeastOneOf(s: String, elements: scala.collection.Seq[Any]): Boolean = {
         s.exists((e: Char) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
-      def containsTheSameElementsAs(s: String, elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsAs(s: String, elements: Iterable[Any]): Boolean = {
         checkTheSameElementsAs(s, elements, equality)
       }
       def containsOnly(s: String, elements: scala.collection.Seq[Any]): Boolean = {
@@ -425,7 +425,7 @@ trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
       def containsAtLeastOneOf(every: Every[E], elements: scala.collection.Seq[Any]): Boolean = {
         every.exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
-      def containsTheSameElementsAs(every: Every[E], elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsAs(every: Every[E], elements: Iterable[Any]): Boolean = {
         checkTheSameElementsAs[E](every, elements, equality)
       }
       def containsOnly(every: Every[E], elements: scala.collection.Seq[Any]): Boolean = {
@@ -459,35 +459,35 @@ trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
     aggregatingNatureOfEvery(equality)
 
   /**
-    * Implicit to support <code>Aggregating</code> nature of <code>GenTraversable</code>.
+    * Implicit to support <code>Aggregating</code> nature of <code>Iterable</code>.
     *
-    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>GenTraversable</code>
-    * @tparam E the type of the element in the <code>GenTraversable</code>
-    * @tparam TRAV any subtype of <code>GenTraversable</code>
-    * @return <code>Aggregating[TRAV[E]]</code> that supports <code>GenTraversable</code> in relevant <code>contain</code> syntax
+    * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> type class that is used to check equality of element in the <code>Iterable</code>
+    * @tparam E the type of the element in the <code>Iterable</code>
+    * @tparam ITR any subtype of <code>Iterable</code>
+    * @return <code>Aggregating[ITR[E]]</code> that supports <code>Iterable</code> in relevant <code>contain</code> syntax
     */
-  implicit def aggregatingNatureOfGenTraversable[E, TRAV[e] <: scala.collection.GenTraversable[e]](implicit equality: Equality[E]): Aggregating[TRAV[E]] =
-    new Aggregating[TRAV[E]] {
-      def containsAtLeastOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        trav.exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
+  implicit def aggregatingNatureOfIterable[E, ITR[e] <: Iterable[e]](implicit equality: Equality[E]): Aggregating[ITR[E]] =
+    new Aggregating[ITR[E]] {
+      def containsAtLeastOneOf(itr: ITR[E], elements: scala.collection.Seq[Any]): Boolean = {
+        itr.exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
-      def containsTheSameElementsAs(trav: TRAV[E], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsAs[E](trav, elements, equality)
+      def containsTheSameElementsAs(itr: ITR[E], elements: Iterable[Any]): Boolean = {
+        checkTheSameElementsAs[E](itr, elements, equality)
       }
-      def containsOnly(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkOnly[E](trav, elements, equality)
+      def containsOnly(itr: ITR[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkOnly[E](itr, elements, equality)
       }
-      def containsAllOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkAllOf(trav, elements, equality)
+      def containsAllOf(itr: ITR[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkAllOf(itr, elements, equality)
       }
-      def containsAtMostOneOf(trav: TRAV[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkAtMostOneOf(trav, elements, equality)
+      def containsAtMostOneOf(itr: ITR[E], elements: scala.collection.Seq[Any]): Boolean = {
+        checkAtMostOneOf(itr, elements, equality)
       }
     }
 
   /**
     * Implicit conversion that converts an <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-    * into <code>Aggregating</code> of type <code>TRAV[E]</code>, where <code>TRAV</code> is a subtype of <code>GenTraversable</code>.
+    * into <code>Aggregating</code> of type <code>TRAV[E]</code>, where <code>TRAV</code> is a subtype of <code>Iterable</code>.
     * This is required to support the explicit <a href="../../scalactic/Equality.html"><code>Equality</code></a> syntax, for example:
     *
     * <pre class="stHighlight">
@@ -498,12 +498,12 @@ trait AggregatingStandardImplicits extends AggregatingJavaImplicits {
     * and this implicit conversion will convert it into <code>Aggregating[List[String]]</code>.
     *
     * @param equality <a href="../../scalactic/Equality.html"><code>Equality</code></a> of type <code>E</code>
-    * @tparam E type of elements in the <code>GenTraversable</code>
-    * @tparam TRAV subtype of <code>GenTraversable</code>
+    * @tparam E type of elements in the <code>Iterable</code>
+    * @tparam TRAV subtype of <code>Iterable</code>
     * @return <code>Aggregating</code> of type <code>TRAV[E]</code>
     */
-  implicit def convertEqualityToGenTraversableAggregating[E, TRAV[e] <: scala.collection.GenTraversable[e]](equality: Equality[E]): Aggregating[TRAV[E]] =
-    aggregatingNatureOfGenTraversable(equality)
+  implicit def convertEqualityToIterableAggregating[E, ITR[e] <: Iterable[e]](equality: Equality[E]): Aggregating[ITR[E]] =
+    aggregatingNatureOfIterable(equality)
 
 }
 
@@ -523,7 +523,7 @@ trait AggregatingHighPriorityImplicits extends AggregatingStandardImplicits {
       def containsAtLeastOneOf(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
         map.exists((e: (K, V)) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
-      def containsTheSameElementsAs(map: MAP[K, V], elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsAs(map: MAP[K, V], elements: Iterable[Any]): Boolean = {
         checkTheSameElementsAs(map, elements, equality)
       }
       def containsOnly(map: MAP[K, V], elements: scala.collection.Seq[Any]): Boolean = {
@@ -566,7 +566,7 @@ trait AggregatingHighPriorityImplicits extends AggregatingStandardImplicits {
  * Companion object for <code>Aggregating</code> that provides implicit implementations for the following types:
  *
  * <ul>
- * <li><code>scala.collection.GenTraversable</code></li>
+ * <li><code>scala.collection.Iterable</code></li>
  * <li><code>String</code></li>
  * <li><code>Array</code></li>
  * <li><code>java.util.Collection</code></li>
