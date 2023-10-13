@@ -565,18 +565,18 @@ private[scalatest] object FactInspectorsHelper {
             if (xsIsMap)
               Resources.forAssertionsGenMapMessageWithStackDepth(messageKey, sde.getMessage, failedCodeFileNameAndLineNumber)
             else
-              Resources.forAssertionsGenTraversableMessageWithStackDepth(messageKey, sde.getMessage, failedCodeFileNameAndLineNumber)
+              Resources.forAssertionsIterableMessageWithStackDepth(messageKey, sde.getMessage, failedCodeFileNameAndLineNumber)
           case None =>
             if (xsIsMap)
               Resources.forAssertionsGenMapMessageWithoutStackDepth(messageKey, sde.getMessage)
             else
-              Resources.forAssertionsGenTraversableMessageWithoutStackDepth(messageKey, sde.getMessage)
+              Resources.forAssertionsIterableMessageWithoutStackDepth(messageKey, sde.getMessage)
         }
       case _ =>
         if (xsIsMap)
           Resources.forAssertionsGenMapMessageWithoutStackDepth(messageKey, if (t.getMessage != null) t.getMessage else "null")
         else
-          Resources.forAssertionsGenTraversableMessageWithoutStackDepth(messageKey, if (t.getMessage != null) t.getMessage else "null")
+          Resources.forAssertionsIterableMessageWithoutStackDepth(messageKey, if (t.getMessage != null) t.getMessage else "null")
     }
   
   def elementLabel(count: Int): String = 

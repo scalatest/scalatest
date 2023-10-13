@@ -46,7 +46,7 @@ class ShouldBeDefinedLogicalAndSpec extends AnyFunSpec {
     FailureMessages.wasDefined(prettifier, left)
     
   def allError(message: String, lineNumber: Int, left: Any): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(prettifier, 0, UnquotedString(message), UnquotedString(optName + ":" + lineNumber)))
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsIterableMessageWithStackDepth(prettifier, 0, UnquotedString(message), UnquotedString(optName + ":" + lineNumber)))
     FailureMessages.allShorthandFailed(prettifier, messageWithIndex, left)
   }
     
