@@ -16,9 +16,8 @@
 package org.scalatest.enablers
 
 import org.scalactic.{Equality, NormalizingEquality, Every}
-import scala.collection.{GenTraversableOnce}
 
-import org.scalactic.ColCompatHelper.Iterable
+import org.scalactic.ColCompatHelper.{Iterable, IterableOnce}
 import org.scalactic.ColCompatHelper.aggregate
 
 /**
@@ -126,7 +125,7 @@ trait ContainingImpls {
       case cce: ClassCastException => false
     }
 
-  private[scalatest] def checkOneOf[T](left: GenTraversableOnce[T], right: Iterable[Any], equality: Equality[T]): Set[Any] = {
+  private[scalatest] def checkOneOf[T](left: IterableOnce[T], right: Iterable[Any], equality: Equality[T]): Set[Any] = {
     // aggregate version is more verbose, but it allows parallel execution.
     aggregate(right, Set.empty[Any])(
       { case (fs, r) =>
@@ -150,7 +149,7 @@ trait ContainingImpls {
     )
   }
 
-  private[scalatest] def checkNoneOf[T](left: GenTraversableOnce[T], right: Iterable[Any], equality: Equality[T]): Option[Any] = {
+  private[scalatest] def checkNoneOf[T](left: IterableOnce[T], right: Iterable[Any], equality: Equality[T]): Option[Any] = {
     aggregate(right, None)(
       { case (f, r) =>
         if (left.toIterable.exists(t => equality.areEqual(t, r)))
