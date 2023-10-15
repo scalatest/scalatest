@@ -33,7 +33,7 @@ import org.scalatest.verbs.TypeCheckWord
 import org.scalatest.verbs.ShouldVerb
 import org.scalatest.matchers.dsl.ResultOfNoElementsOfApplication
 import org.scalatest.matchers.dsl.ResultOfOneElementOfApplication
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import scala.reflect.{classTag, ClassTag}
 import scala.util.matching.Regex
 import DefaultEquality.areEqualComparingArraysStructurally
@@ -270,7 +270,7 @@ import org.scalatest.exceptions._
  * The <code>length</code> syntax can be used with <code>String</code>, <code>Array</code>, any <code>scala.collection.GenSeq</code>,
  * any <code>java.util.List</code>, and any type <code>T</code> for which an implicit <code>Length[T]</code> type class is
  * available in scope.
- * Similarly, the <code>size</code> syntax can be used with <code>Array</code>, any <code>scala.collection.GenTraversable</code>,
+ * Similarly, the <code>size</code> syntax can be used with <code>Array</code>, any <code>org.scalactic.ColCompatHelper.Iterable</code>,
  * any <code>java.util.Collection</code>, any <code>java.util.Map</code>, and any type <code>T</code> for which an implicit <code>Size[T]</code> type class is
  * available in scope. You can enable the <code>length</code> or <code>size</code> syntax for your own arbitrary types, therefore,
  * by defining <a href="../../enablers/Length.html"><code>Length</code></a> or <a href="../../enablers/Size.html"><code>Size</code></a> type
@@ -533,7 +533,7 @@ import org.scalatest.exceptions._
  *
  * <p>
  * The <code>empty</code> token can be used with any type <code>L</code> for which an implicit <code>Emptiness[L]</code> exists.
- * The <code>Emptiness</code> companion object provides implicits for <code>GenTraversable[E]</code>, <code>java.util.Collection[E]</code>,
+ * The <code>Emptiness</code> companion object provides implicits for <code>Iterable[E]</code>, <code>java.util.Collection[E]</code>,
  * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[E]</code>, and <code>Option[E]</code>. In addition, the
  * <code>Emptiness</code> companion object provides structural implicits for types that declare an <code>isEmpty</code> method that
  * returns a <code>Boolean</code>. Here are some examples:
@@ -573,7 +573,7 @@ import org.scalatest.exceptions._
  * The <code>contain</code> syntax shown above can be used with any type <code>C</code> that has a "containing" nature, evidenced by
  * an implicit <code>org.scalatest.enablers.Containing[L]</code>, where <code>L</code> is left-hand type on
  * which <code>should</code> is invoked. In the <code>Containing</code>
- * companion object, implicits are provided for types <code>GenTraversable[E]</code>, <code>java.util.Collection[E]</code>,
+ * companion object, implicits are provided for types <code>Iterable[E]</code>, <code>java.util.Collection[E]</code>,
  * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[E]</code>, and <code>Option[E]</code>.
  * Here are some examples:
  * </p>
@@ -718,7 +718,7 @@ import org.scalatest.exceptions._
  *
  * <p>
  * The <code>Aggregating</code> companion object provides implicit instances of <code>Aggregating[L]</code>
- * for types <code>GenTraversable[E]</code>, <code>java.util.Collection[E]</code>,
+ * for types <code>Iterable[E]</code>, <code>java.util.Collection[E]</code>,
  * <code>java.util.Map[K, V]</code>, <code>String</code>, <code>Array[E]</code>. Note that these are the same types as are supported with
  * <code>Containing</code>, but with <code>Option[E]</code> missing.
  * Here are some examples:
@@ -803,7 +803,7 @@ import org.scalatest.exceptions._
  *
  * <p>
  * The "<code>contain</code> <code>theSameElementsAs</code>" and "<code>contain</code> <code>theSameElementsInOrderAs</code> syntax differ from the others
- * in that the right hand side is a <code>GenTraversable[_]</code> rather than a varargs of <code>Any</code>. (Note: in a future 2.0 milestone release, possibly
+ * in that the right hand side is a <code>Iterable[_]</code> rather than a varargs of <code>Any</code>. (Note: in a future 2.0 milestone release, possibly
  * 2.0.M6, these will likely be widened to accept any type <code>R</code> for which an <code>Aggregating[R]</code> exists.)
  * </p>
  *
@@ -1054,7 +1054,7 @@ import org.scalatest.exceptions._
  *
  * <p>
  * Like <a href=""><code>Inspectors</code></a>, objects used with inspector shorthands can be any type <code>T</code> for which a <code>Collecting[T, E]</code>
- * is availabe, which by default includes <code>GenTraversable</code>,
+ * is availabe, which by default includes <code>Iterable</code>,
  * Java <code>Collection</code>, Java <code>Map</code>, <code>Array</code>s, and <code>String</code>s.
  * Here are some examples:
  * </p>
@@ -1102,7 +1102,7 @@ import org.scalatest.exceptions._
  * <p>
  * You can invoke <code>loneElement</code> on any type <code>T</code> for which an implicit <a href="../../enablers/Collecting.html"><code>Collecting[E, T]</code></a>
  * is available, where <code>E</code> is the element type returned by the <code>loneElement</code> invocation. By default, you can use <code>loneElement</code>
- * on <code>GenTraversable</code>, Java <code>Collection</code>, Java <code>Map</code>, <code>Array</code>, and <code>String</code>.
+ * on <code>Iterable</code>, Java <code>Collection</code>, Java <code>Map</code>, <code>Array</code>, and <code>String</code>.
  * </p>
  *
  * <a name="javaCollectionsAndMaps"></a>
@@ -2910,7 +2910,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def oneElementOf(elements: GenTraversable[Any]) = {
+  def oneElementOf(elements: Iterable[Any]) = {
     val xs = elements.toList
     new ResultOfOneElementOfApplication(xs)
   }
@@ -2938,7 +2938,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def atLeastOneElementOf(elements: GenTraversable[Any]) = {
+  def atLeastOneElementOf(elements: Iterable[Any]) = {
     val xs = elements.toList
     new ResultOfAtLeastOneElementOfApplication(xs)
   }
@@ -2966,7 +2966,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def noElementsOf(elements: GenTraversable[Any]) = {
+  def noElementsOf(elements: Iterable[Any]) = {
     val xs = elements.toList
     new ResultOfNoElementsOfApplication(xs)
   }
@@ -2979,7 +2979,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def theSameElementsAs(xs: GenTraversable[_]) = 
+  def theSameElementsAs(xs: Iterable[_]) = 
     new ResultOfTheSameElementsAsApplication(xs)
 
   /**
@@ -2990,7 +2990,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def theSameElementsInOrderAs(xs: GenTraversable[_]) = 
+  def theSameElementsInOrderAs(xs: Iterable[_]) = 
     new ResultOfTheSameElementsInOrderAsApplication(xs)
 
   /**
@@ -3047,7 +3047,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def allElementsOf[R](elements: GenTraversable[R]) = {
+  def allElementsOf[R](elements: Iterable[R]) = {
     val xs = elements.toList
     new ResultOfAllElementsOfApplication(xs)
   }
@@ -3075,7 +3075,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def inOrderElementsOf[R](elements: GenTraversable[R]) = {
+  def inOrderElementsOf[R](elements: Iterable[R]) = {
     val xs = elements.toList
     new ResultOfInOrderElementsOfApplication(xs)
   }
@@ -3103,7 +3103,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def atMostOneElementOf[R](elements: GenTraversable[R]) = {
+  def atMostOneElementOf[R](elements: Iterable[R]) = {
     val xs = elements.toList
     new ResultOfAtMostOneElementOfApplication(xs)
   }
@@ -3179,7 +3179,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   private val NoCollected = new Collected("NoCollected")
   private case class ExactlyCollected(num: Int) extends Collected("ExactlyCollected")
 
-  private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, prettifier: Prettifier, pos: source.Position)(fun: T => Assertion): Assertion = {
+  private[scalatest] def doCollected[T](collected: Collected, xs: Iterable[T], original: Any, prettifier: Prettifier, pos: source.Position)(fun: T => Assertion): Assertion = {
 
     val asserting = InspectorAsserting.assertingNatureOfAssertion
 
@@ -3222,7 +3222,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfNotWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfNotWordForCollectedAny[T](collected: Collected, xs: Iterable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
 
     /**
@@ -4088,7 +4088,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsOnly(e, right) != shouldBeTrue) {
-          val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
+          val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[Iterable[_]] || right(0).isInstanceOf[Every[_]])
           indicateFailure(
             if (shouldBeTrue)
               if (withFriendlyReminder)
@@ -4666,7 +4666,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfContainWordForCollectedAny[T](collected: Collected, xs: Iterable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax:
@@ -4710,9 +4710,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[T]): Assertion = {
+    //DOTTY-ONLY infix def oneElementOf(elements: Iterable[Any])(implicit containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-START 
-    def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[T]): Assertion = {
+    def oneElementOf(elements: Iterable[Any])(implicit containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-END  
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
@@ -4776,9 +4776,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
+    //DOTTY-ONLY infix def atLeastOneElementOf(elements: Iterable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-START 
-    def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
+    def atLeastOneElementOf(elements: Iterable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-END  
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
@@ -4842,9 +4842,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[T]): Assertion = {
+    //DOTTY-ONLY infix def noElementsOf(elements: Iterable[Any])(implicit containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-START 
-    def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[T]): Assertion = {
+    def noElementsOf(elements: Iterable[Any])(implicit containing: Containing[T]): Assertion = {
     // SKIP-DOTTY-END  
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
@@ -4874,9 +4874,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]): Assertion = {
+    //DOTTY-ONLY infix def theSameElementsAs(right: Iterable[_])(implicit aggregating: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-START 
-    def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]): Assertion = {
+    def theSameElementsAs(right: Iterable[_])(implicit aggregating: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
@@ -4905,9 +4905,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[T]): Assertion = {
+    //DOTTY-ONLY infix def theSameElementsInOrderAs(right: Iterable[_])(implicit sequencing: Sequencing[T]): Assertion = {
     // SKIP-DOTTY-START 
-    def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[T]): Assertion = {
+    def theSameElementsInOrderAs(right: Iterable[_])(implicit sequencing: Sequencing[T]): Assertion = {
     // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
@@ -4946,7 +4946,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         throw new NotAllowedException(FailureMessages.onlyDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsOnly(e, right) != shouldBeTrue) {
-          val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
+          val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[Iterable[_]] || right(0).isInstanceOf[Every[_]])
           indicateFailure(
             if (shouldBeTrue)
               if (withFriendlyReminder)
@@ -5047,9 +5047,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def allElementsOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
+    //DOTTY-ONLY infix def allElementsOf(elements: Iterable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-START 
-    def allElementsOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
+    def allElementsOf(elements: Iterable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-END  
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
@@ -5113,9 +5113,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    //DOTTY-ONLY infix def inOrderElementsOf(elements: GenTraversable[Any])(implicit sequencing: Sequencing[T]): Assertion = {
+    //DOTTY-ONLY infix def inOrderElementsOf(elements: Iterable[Any])(implicit sequencing: Sequencing[T]): Assertion = {
     // SKIP-DOTTY-START 
-    def inOrderElementsOf(elements: GenTraversable[Any])(implicit sequencing: Sequencing[T]): Assertion = {
+    def inOrderElementsOf(elements: Iterable[Any])(implicit sequencing: Sequencing[T]): Assertion = {
     // SKIP-DOTTY-END  
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
@@ -5179,9 +5179,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                        ^
      * </pre>
      */
-    //DOTTY-ONLY infix def atMostOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
+    //DOTTY-ONLY infix def atMostOneElementOf(elements: Iterable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-START 
-    def atMostOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
+    def atMostOneElementOf(elements: Iterable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
     // SKIP-DOTTY-END  
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
@@ -5279,7 +5279,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: Iterable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     // TODO: Missing should(AMatcher) and should(AnMatcher)
 
@@ -5497,7 +5497,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfBeWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position)
+  final class ResultOfBeWordForCollectedArray[T](collected: Collected, xs: Iterable[Array[T]], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position)
     extends ResultOfBeWordForCollectedAny(collected, xs, original, shouldBeTrue, prettifier, pos) {
 
     /**
@@ -5529,7 +5529,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfCollectedAny[T](collected: Collected, xs: Iterable[T], original: Any, prettifier: Prettifier, pos: source.Position) {
 
 // TODO: shouldBe null works, b ut should be (null) does not when type is Any:
 /*
@@ -6455,7 +6455,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START 
     def should(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString =
     // SKIP-DOTTY-END
-      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true, prettifier, pos)
+      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[Iterable[String]], original, true, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -6469,7 +6469,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START 
     def should(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString =
     // SKIP-DOTTY-END
-      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true, prettifier, pos)
+      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[Iterable[String]], original, true, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -6483,7 +6483,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START 
     def should(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString =
     // SKIP-DOTTY-END
-      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true, prettifier, pos)
+      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[Iterable[String]], original, true, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -6497,7 +6497,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START 
     def should(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString =
     // SKIP-DOTTY-END
-      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true, prettifier, pos)
+      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[Iterable[String]], original, true, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -6511,7 +6511,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START 
     def shouldNot(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString =
     // SKIP-DOTTY-END
-      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false, prettifier, pos)
+      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[Iterable[String]], original, false, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -6525,7 +6525,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START 
     def shouldNot(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString =
     // SKIP-DOTTY-END
-      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false, prettifier, pos)
+      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[Iterable[String]], original, false, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -6539,7 +6539,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START 
     def shouldNot(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString =
     // SKIP-DOTTY-END
-      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false, prettifier, pos)
+      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[Iterable[String]], original, false, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -6553,7 +6553,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-START 
     def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString =
     // SKIP-DOTTY-END
-      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false, prettifier, pos)
+      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[Iterable[String]], original, false, prettifier, pos)
 
     /**
      * Overrides to return pretty toString.
@@ -6569,7 +6569,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class ResultOfHaveWordForCollectedExtent[A](collected: Collected, xs: scala.collection.GenTraversable[A], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfHaveWordForCollectedExtent[A](collected: Collected, xs: Iterable[A], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax:
@@ -6649,7 +6649,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfStartWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfStartWithWordForCollectedString(collected: Collected, xs: Iterable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax:
@@ -6729,7 +6729,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfIncludeWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfIncludeWordForCollectedString(collected: Collected, xs: Iterable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax:
@@ -6809,7 +6809,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfEndWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfEndWithWordForCollectedString(collected: Collected, xs: Iterable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax:
@@ -6889,7 +6889,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfFullyMatchWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
+  final class ResultOfFullyMatchWordForCollectedString(collected: Collected, xs: Iterable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax:
@@ -6981,7 +6981,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
-  def all[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  def all[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
     new ResultOfCollectedAny(AllCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7025,7 +7025,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
-  def atLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  def atLeast[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
     new ResultOfCollectedAny(AtLeastCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7069,7 +7069,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
-  def every[K, V, MAP[k, v] <: scala.collection.Map[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  def every[K, V, MAP[k, v] <: scala.collection.Map[k, v]](xs: MAP[K, V])(implicit collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
     new ResultOfCollectedAny(EveryCollected, collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7114,7 +7114,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
-  def exactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  def exactly[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
     new ResultOfCollectedAny(ExactlyCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
@@ -7224,7 +7224,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     * ^
     * </pre>
     */
-  def atMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
+  def atMost[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](num: Int, xs: MAP[K, V])(implicit collecting: Collecting[(K, V), Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[(K, V)] =
     new ResultOfCollectedAny(AtMostCollected(num), collecting.iterableFrom(xs), xs, prettifier, pos)
 
   /**
