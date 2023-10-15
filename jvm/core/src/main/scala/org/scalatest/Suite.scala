@@ -71,8 +71,8 @@ import Suite.takesInformer
 import Suite.getSuiteClassName
 import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import annotation.tailrec
-import collection.GenTraversable
 import collection.mutable.ListBuffer
+import org.scalactic.ColCompatHelper.Iterable
 
 // SKIP-SCALATESTJS,NATIVE-START
 import Suite.getTopOfClass
@@ -1612,7 +1612,7 @@ used for test events like succeeded/failed, etc.
 
   def indentation(level: Int) = "  " * level
   
-  def indentLines(level: Int, lines: GenTraversable[String]) = 
+  def indentLines(level: Int, lines: Iterable[String]) = 
     lines.map(line => line.split("\n").map(indentation(level) + _).mkString("\n"))
     
   def substituteHtmlSpace(value: String) = value.replaceAll(" ", "&nbsp;")
