@@ -17,7 +17,7 @@ package org.scalactic.anyvals
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.collection.GenSeq
-import org.scalactic.ColCompatHelper.{IterableOnce, Iterable}
+import org.scalactic.ColCompatHelper.{IterableOnce, Iterable, GenIterable}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
@@ -1185,13 +1185,13 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
     new NonEmptyList(toList.reverseMap(f))
 
   /**
-   * Checks if the given <code>Iterable</code> contains the same elements in the same order as this <code>NonEmptyList</code>.
+   * Checks if the given <code>GenIterable</code> contains the same elements in the same order as this <code>NonEmptyList</code>.
    *
-   * @param that the <code>Iterable</code> with which to compare
-   * @return <code>true</code>, if both this <code>NonEmptyList</code> and the given <code>Iterable</code> contain the same elements
+   * @param that the <code>GenIterable</code> with which to compare
+   * @return <code>true</code>, if both this <code>NonEmptyList</code> and the given <code>GenIterable</code> contain the same elements
    *     in the same order, <code>false</code> otherwise. 
    */
-  final def sameElements[U >: T](that: Iterable[U]): Boolean = toList.sameElements(that)
+  final def sameElements[U >: T](that: GenIterable[U]): Boolean = toList.sameElements(that)
 
   /**
    * Checks if the given <code>Every</code> contains the same elements in the same order as this <code>NonEmptyList</code>.
@@ -1481,7 +1481,7 @@ final class NonEmptyList[+T] private (val toList: List[T]) extends AnyVal {
    *
    * @return an <code>Iterable</code> containing all elements of this <code>NonEmptyList</code>. 
    */ 
-  final def toIterable: Iterable[T] = toList.toIterable
+  final def toIterable: scala.collection.Iterable[T] = toList.toIterable
 
   /**
    * Returns an <code>Iterator</code> over the elements in this <code>NonEmptyList</code>.

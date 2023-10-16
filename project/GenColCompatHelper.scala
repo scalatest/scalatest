@@ -53,6 +53,8 @@ object GenColCompatHelper {
           |
           |  type IterableOnce[+A] = scala.collection.IterableOnce[A]
           |
+          |  type GenIterable[+A] = scala.collection.Iterable[A]
+          |
           |  type Factory[-A, +C] = scala.collection.Factory[A, C]
           |
           |  object Factory {}
@@ -103,6 +105,8 @@ object GenColCompatHelper {
           |  type Iterable[+A] = scala.collection.GenTraversable[A]
           |
           |  type IterableOnce[+A] = scala.collection.GenTraversableOnce[A]
+          |
+          |  type GenIterable[+A] = scala.collection.GenIterable[A]
           |
           |  type Factory[-A, +C] = scala.collection.generic.CanBuildFrom[Nothing, A, C] // Ideally, this would be an opaque type
           |

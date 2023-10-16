@@ -17,7 +17,7 @@ package org.scalactic.anyvals
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.collection.GenSeq
-import org.scalactic.ColCompatHelper.{IterableOnce, Iterable}
+import org.scalactic.ColCompatHelper.{IterableOnce, Iterable, GenIterable}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
@@ -666,13 +666,13 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
   final def reduceRightOption[U >: (K, V)](op: ((K, V), U) => U): Option[U] = toMap.reduceRightOption(op)
 
   /**
-    * Checks if the given <code>Iterable</code> contains the same entries in the same order as this <code>NonEmptyMap</code>.
+    * Checks if the given <code>GenIterable</code> contains the same entries in the same order as this <code>NonEmptyMap</code>.
     *
-    * @param that the <code>Iterable</code> with which to compare
-    * @return <code>true</code>, if both this <code>NonEmptyMap</code> and the given <code>Iterable</code> contain the same entries
+    * @param that the <code>GenIterable</code> with which to compare
+    * @return <code>true</code>, if both this <code>NonEmptyMap</code> and the given <code>GenIterable</code> contain the same entries
     *     in the same order, <code>false</code> otherwise. 
     */
-  final def sameElements[U >: (K, V)](that: Iterable[U]): Boolean = toMap.sameElements(that)
+  final def sameElements[U >: (K, V)](that: GenIterable[U]): Boolean = toMap.sameElements(that)
 
   /**
     * Checks if the given <code>Every</code> contains the same entries in the same order as this <code>NonEmptyMap</code>.
@@ -801,7 +801,7 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     *
     * @return an <code>Iterable</code> containing all entries of this <code>NonEmptyMap</code>.
     */
-  final def toIterable: Iterable[(K, V)] = toMap.toIterable
+  final def toIterable: scala.collection.Iterable[(K, V)] = toMap.toIterable
 
   /**
     * Returns an <code>Iterator</code> over the entries in this <code>NonEmptyMap</code>.

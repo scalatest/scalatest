@@ -17,7 +17,7 @@ package org.scalactic.anyvals
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.collection.GenSet
-import org.scalactic.ColCompatHelper.{IterableOnce, Iterable}
+import org.scalactic.ColCompatHelper.{IterableOnce, Iterable, GenIterable}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
@@ -664,13 +664,13 @@ final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
   final def reduceRightOption[U >: T](op: (T, U) => U): Option[U] = toSet.reduceRightOption(op)
 
   /**
-    * Checks if the given <code>Iterable</code> contains the same elements in the same order as this <code>NonEmptySet</code>.
+    * Checks if the given <code>GenIterable</code> contains the same elements in the same order as this <code>NonEmptySet</code>.
     *
-    * @param that the <code>Iterable</code> with which to compare
-    * @return <code>true</code>, if both this <code>NonEmptySet</code> and the given <code>Iterable</code> contain the same elements
+    * @param that the <code>GenIterable</code> with which to compare
+    * @return <code>true</code>, if both this <code>NonEmptySet</code> and the given <code>GenIterable</code> contain the same elements
     *     in the same order, <code>false</code> otherwise. 
     */
-  final def sameElements[U >: T](that: Iterable[U]): Boolean = toSet.sameElements(that)
+  final def sameElements[U >: T](that: GenIterable[U]): Boolean = toSet.sameElements(that)
 
   /**
     * Checks if the given <code>Every</code> contains the same elements in the same order as this <code>NonEmptySet</code>.
@@ -848,7 +848,7 @@ final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
     *
     * @return an <code>Iterable</code> containing all elements of this <code>NonEmptySet</code>. 
     */
-  final def toIterable: Iterable[T] = toSet.toIterable
+  final def toIterable: scala.collection.Iterable[T] = toSet.toIterable
 
   /**
     * Returns an <code>Iterator</code> over the elements in this <code>NonEmptySet</code>.
