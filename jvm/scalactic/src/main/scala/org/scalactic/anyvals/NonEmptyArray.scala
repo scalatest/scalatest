@@ -16,9 +16,8 @@
 package org.scalactic.anyvals
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
-import scala.collection.GenIterable
 import scala.collection.GenSeq
-import scala.collection.GenTraversableOnce
+import scala.collection.{Iterable, IterableOnce}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
@@ -147,12 +146,12 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
   // TODO: Have I added these extra ++, etc. methods to Every that take a NonEmptyList?
 
   /**
-    * Returns a new <code>NonEmptyArray</code> containing the elements of this <code>NonEmptyArray</code> followed by the elements of the passed <code>GenTraversableOnce</code>.
+    * Returns a new <code>NonEmptyArray</code> containing the elements of this <code>NonEmptyArray</code> followed by the elements of the passed <code>IterableOnce</code>.
     * The element type of the resulting <code>NonEmptyArray</code> is the most specific superclass encompassing the element types of this <code>NonEmptyArray</code>
-    * and the passed <code>GenTraversableOnce</code>.
+    * and the passed <code>IterableOnce</code>.
     *
     * @tparam U the element type of the returned <code>NonEmptyArray</code>
-    * @param other the <code>GenTraversableOnce</code> to append
+    * @param other the <code>IterableOnce</code> to append
     * @return a new <code>NonEmptyArray</code> that contains all the elements of this <code>NonEmptyArray</code> followed by all elements of <code>other</code>.
     */
   def ++[U >: T](other: org.scalactic.ColCompatHelper.IterableOnce[U])(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
@@ -415,8 +414,8 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * formed by the elements of the nested <code>NonEmptyArray</code>s.
     *
     * <p>
-    * Note: You cannot use this <code>flatten</code> method on a <code>NonEmptyArray</code> that contains a <code>GenTraversableOnce</code>s, because 
-    * if all the nested <code>GenTraversableOnce</code>s were empty, you'd end up with an empty <code>NonEmptyArray</code>.
+    * Note: You cannot use this <code>flatten</code> method on a <code>NonEmptyArray</code> that contains a <code>IterableOnce</code>s, because 
+    * if all the nested <code>IterableOnce</code>s were empty, you'd end up with an empty <code>NonEmptyArray</code>.
     * </p>
     *
     * @tparm B the type of the elements of each nested <code>NonEmptyArray</code>
@@ -542,7 +541,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     */
   final def head: T = toArray.head
 
-  // Methods like headOption I can't get rid of because of the implicit conversion to GenTraversable.
+  // Methods like headOption I can't get rid of because of the implicit conversion to Iterable.
   // Users can call any of the methods I've left out on a NonEmptyArray, and get whatever Array would return
   // for that method call. Eventually I'll probably implement them all to save the implicit conversion.
 
@@ -1054,13 +1053,13 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     new NonEmptyArray(toArray.reverseMap(f).toArray)
 
   /**
-    * Checks if the given <code>GenIterable</code> contains the same elements in the same order as this <code>NonEmptyArray</code>.
+    * Checks if the given <code>Iterable</code> contains the same elements in the same order as this <code>NonEmptyArray</code>.
     *
-    * @param that the <code>GenIterable</code> with which to compare
-    * @return <code>true</code>, if both this <code>NonEmptyArray</code> and the given <code>GenIterable</code> contain the same elements
+    * @param that the <code>Iterable</code> with which to compare
+    * @return <code>true</code>, if both this <code>NonEmptyArray</code> and the given <code>Iterable</code> contain the same elements
     *     in the same order, <code>false</code> otherwise. 
     */
-  final def sameElements[U >: T](that: GenIterable[U]): Boolean = toArray.sameElements(that)
+  final def sameElements[U >: T](that: Iterable[U]): Boolean = toArray.sameElements(that)
 
   /**
     * Checks if the given <code>Every</code> contains the same elements in the same order as this <code>NonEmptyArray</code>.
