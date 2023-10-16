@@ -17,7 +17,7 @@ package org.scalactic.anyvals
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.collection.GenSeq
-import scala.collection.{Iterable, IterableOnce}
+import org.scalactic.ColCompatHelper.{Iterable, IterableOnce}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
