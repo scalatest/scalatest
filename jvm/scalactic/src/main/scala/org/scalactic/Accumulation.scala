@@ -16,7 +16,7 @@
 package org.scalactic
 
 import scala.collection.GenSet
-import scala.collection.GenTraversableOnce
+import org.scalactic.ColCompatHelper.IterableOnce
 import scala.collection.generic.CanBuildFrom
 import Accumulation.Accumulatable
 import Accumulation.Combinable
@@ -31,7 +31,7 @@ import scala.util.control.NonFatal
 trait AccumulationLowPriorityImplicits {
 
   /**
-    * Implicitly converts a <em>covariant</em> <code>GenTraversableOnce</code> containing accumulating <code>Or</code>s to an instance of
+    * Implicitly converts a <em>covariant</em> <code>IterableOnce</code> containing accumulating <code>Or</code>s to an instance of
     * <a href="Accumulation$$Combinable.html"><code>Combinable</code></a>, which
     * enables the <code>combined</code> method to be invoked on it.
     *
@@ -39,16 +39,16 @@ trait AccumulationLowPriorityImplicits {
     * For more information and examples, see the <a href="Or.html#usingCombined">Using <code>combined</code></a> section of the main documentation for class <code>Or</code>.
     * </p>
     */
-  implicit def convertGenTraversableOnceToCombinable[G, ERR, EVERY[b] <: Every[b], TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[G Or EVERY[ERR]])(implicit cbf: CanBuildFrom[TRAVONCE[G Or EVERY[ERR]], G, TRAVONCE[G]]): Combinable[G, ERR, TRAVONCE] =
-    new Combinable[G, ERR, TRAVONCE] {
+  implicit def convertIterableOnceToCombinable[G, ERR, EVERY[b] <: Every[b], ITRONCE[+e] <: IterableOnce[e]](xs: ITRONCE[G Or EVERY[ERR]])(implicit cbf: CanBuildFrom[ITRONCE[G Or EVERY[ERR]], G, ITRONCE[G]]): Combinable[G, ERR, ITRONCE] =
+    new Combinable[G, ERR, ITRONCE] {
 
-      def combined: TRAVONCE[G] Or Every[ERR] = {
+      def combined: ITRONCE[G] Or Every[ERR] = {
         // So now I have an empty builder
-        val emptyTRAVONCEOfGBuilder: Builder[G, TRAVONCE[G]] = cbf(xs)
-        // So now I want to foldLeft across my TRAVONCE[G Or EVERY[ERR]], starting with an empty TRAVONCEOfGBuilder, and each step along the way, I'll
+        val emptyITRONCEOfGBuilder: Builder[G, ITRONCE[G]] = cbf(xs)
+        // So now I want to foldLeft across my ITRONCE[G Or EVERY[ERR]], starting with an empty ITRONCEOfGBuilder, and each step along the way, I'll
         // += into the builder, what? Oh I get it. The result type of my foldLeft needs to be Builder[Seq[G]] Or Every[ERR]
-        val tempOr: Builder[G, TRAVONCE[G]] Or Every[ERR] =
-        xs.foldLeft((Good(emptyTRAVONCEOfGBuilder): Builder[G, TRAVONCE[G]] Or Every[ERR])) { (accumulator: Builder[G, TRAVONCE[G]] Or Every[ERR],  nextElem: G Or Every[ERR]) =>
+        val tempOr: Builder[G, ITRONCE[G]] Or Every[ERR] =
+        xs.foldLeft((Good(emptyITRONCEOfGBuilder): Builder[G, ITRONCE[G]] Or Every[ERR])) { (accumulator: Builder[G, ITRONCE[G]] Or Every[ERR],  nextElem: G Or Every[ERR]) =>
           (accumulator, nextElem) match {
             case (Good(bldr), Good(ele)) => Good(bldr += ele)
             case (Good(_), Bad(err)) => Bad(err)
@@ -60,12 +60,12 @@ trait AccumulationLowPriorityImplicits {
       }
     }
 
-  implicit def convertGenTraversableOnceToCombinable3[E, TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[Bad[Every[E]]]): Combinable[Nothing, E, TRAVONCE] =
-    new Combinable[Nothing, E, TRAVONCE] {
-      override def combined: Or[TRAVONCE[Nothing], Every[E]] = {
-        val either: Either[Every[E], TRAVONCE[Nothing]] =
+  implicit def convertIterableOnceToCombinable3[E, ITRONCE[+e] <: IterableOnce[e]](xs: ITRONCE[Bad[Every[E]]]): Combinable[Nothing, E, ITRONCE] =
+    new Combinable[Nothing, E, ITRONCE] {
+      override def combined: Or[ITRONCE[Nothing], Every[E]] = {
+        val either: Either[Every[E], ITRONCE[Nothing]] =
           if (xs.isEmpty)
-            Right(Vector.empty[Nothing].asInstanceOf[TRAVONCE[Nothing]])
+            Right(Vector.empty[Nothing].asInstanceOf[ITRONCE[Nothing]])
           else {
             val i = xs.toIterable
             Left(
@@ -151,16 +151,16 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
       }
     }
 
-  implicit def convertGenTraversableOnceToCombinable2[E, TRAVONCE[+e] <: Iterable[e]](xs: TRAVONCE[Good[E]])(implicit cbf: CanBuildFrom[TRAVONCE[Good[E]], Good[E], TRAVONCE[Good[E]]]): Combinable[E, Nothing, TRAVONCE] =
-    new Combinable[E, Nothing, TRAVONCE] {
-      override def combined: Or[TRAVONCE[E], Every[Nothing]] = {
+  implicit def convertIterableOnceToCombinable2[E, ITRONCE[+e] <: Iterable[e]](xs: ITRONCE[Good[E]])(implicit cbf: CanBuildFrom[ITRONCE[Good[E]], Good[E], ITRONCE[Good[E]]]): Combinable[E, Nothing, ITRONCE] =
+    new Combinable[E, Nothing, ITRONCE] {
+      override def combined: Or[ITRONCE[E], Every[Nothing]] = {
         // So now I have an empty builder
-        val emptyTRAVONCEOfGBuilder: Builder[Good[E], TRAVONCE[Good[E]]] = cbf(xs)
+        val emptyITRONCEOfGBuilder: Builder[Good[E], ITRONCE[Good[E]]] = cbf(xs)
         Or.from(
           Right(
-            (xs.foldLeft(emptyTRAVONCEOfGBuilder) { case (res, ele) =>
+            (xs.foldLeft(emptyITRONCEOfGBuilder) { case (res, ele) =>
               res += ele
-            }).mapResult(_.map(_.get)).result().asInstanceOf[TRAVONCE[E]]
+            }).mapResult(_.map(_.get)).result().asInstanceOf[ITRONCE[E]]
           )
         )
       }
@@ -179,9 +179,9 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
    * </p>
    *
    * <p>
-   * Note: This implicit is required for <code>Set</code>s because although <code>Set</code>s are <code>GenTraversableOnce</code>s, they aren't covariant, so 
-   * the implicit conversion provided by <code>convertGenTraversableOnceToCombinable</code> will not be applied, because it only works on <em>covariant</em>
-   * <code>GenTraversableOnce</code>s.
+   * Note: This implicit is required for <code>Set</code>s because although <code>Set</code>s are <code>IterableOnce</code>s, they aren't covariant, so 
+   * the implicit conversion provided by <code>convertIterableOnceToCombinable</code> will not be applied, because it only works on <em>covariant</em>
+   * <code>IterableOnce</code>s.
    * </p>
    */
   implicit def convertGenSetToCombinable[G, ERR, X, EVERY[b] <: Every[b], SET[e] <: GenSet[e]](xs: SET[X with (G Or EVERY[ERR])])(implicit cbf: CanBuildFrom[SET[X with (G Or EVERY[ERR])], G, SET[G]]): Combinable[G, ERR, SET] = 
@@ -212,19 +212,19 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
    * enables the <code>combined</code> method to be invoked on it.
    *
    * <p>
-   * Note: This implicit is required for <code>Set</code>s because although <code>Set</code>s are <code>GenTraversableOnce</code>s, they aren't covariant, so 
-   * the implicit conversion provided by <code>convertGenTraversableOnceToCombinableNothing</code> will not be applied, because it only works on <em>covariant</em>
-   * <code>GenTraversableOnce</code>s.
+   * Note: This implicit is required for <code>Set</code>s because although <code>Set</code>s are <code>IterableOnce</code>s, they aren't covariant, so 
+   * the implicit conversion provided by <code>convertIterableOnceToCombinableNothing</code> will not be applied, because it only works on <em>covariant</em>
+   * <code>IterableOnce</code>s.
    * </p>
    */
   implicit def convertGenSetOnceToCombinable2[E, SET[e] <: GenSet[e]](xs: SET[Good[E]])(implicit cbf: CanBuildFrom[SET[Good[E]], Good[E], SET[Good[E]]]): Combinable[E, Nothing, SET] =
     new Combinable[E, Nothing, SET] {
       override def combined: Or[SET[E], Every[Nothing]] = {
         // So now I have an empty builder
-        val emptyTRAVONCEOfGBuilder: Builder[Good[E], SET[Good[E]]] = cbf(xs)
+        val emptyITRONCEOfGBuilder: Builder[Good[E], SET[Good[E]]] = cbf(xs)
         Or.from(
           Right(
-            (xs.foldLeft(emptyTRAVONCEOfGBuilder) { case (res, ele) =>
+            (xs.foldLeft(emptyITRONCEOfGBuilder) { case (res, ele) =>
               res += ele
             }).mapResult(_.map(_.get)).result().asInstanceOf[SET[E]]
           )
@@ -239,9 +239,9 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
     * enables the <code>combined</code> method to be invoked on it.
     *
     * <p>
-    * Note: This implicit is required for <code>Set</code>s because although <code>Set</code>s are <code>GenTraversableOnce</code>s, they aren't covariant, so
+    * Note: This implicit is required for <code>Set</code>s because although <code>Set</code>s are <code>IterableOnce</code>s, they aren't covariant, so
     * the implicit conversion provided by <code>convertGenSetToCombinableNothing</code> will not be applied, because it only works on <em>covariant</em>
-    * <code>GenTraversableOnce</code>s.
+    * <code>IterableOnce</code>s.
     * </p>
     */
   implicit def convertGenSetOnceToCombinable3[E, SET[e] <: GenSet[e], EVERY[f] <: Every[f]](xs: SET[Bad[EVERY[E]]]): Combinable[Nothing, E, SET] =
@@ -312,7 +312,7 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
     }
 
   /**
-   * Implicitly converts a <code>GenTraversableOnce</code> to an instance of <code>Validatable</code>, which
+   * Implicitly converts a <code>IterableOnce</code> to an instance of <code>Validatable</code>, which
    * enables the <code>validatedBy</code> method to be invoked on it.
    *
    * <p>
@@ -320,18 +320,18 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
    * the main documentation for class <code>Or</code>.
    * </p>
    */
-  implicit def convertGenTraversableOnceToValidatable[G, TRAVONCE[e] <: GenTraversableOnce[e]](xs: TRAVONCE[G]): TravValidatable[G, TRAVONCE] = 
+  implicit def convertIterableOnceToValidatable[G, ITRONCE[e] <: IterableOnce[e]](xs: ITRONCE[G]): TravValidatable[G, ITRONCE] = 
 
-    new TravValidatable[G, TRAVONCE] {
+    new TravValidatable[G, ITRONCE] {
 
-      def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR])(implicit cbf: CanBuildFrom[TRAVONCE[G], H, TRAVONCE[H]]): TRAVONCE[H] Or Every[ERR] = {
+      def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR])(implicit cbf: CanBuildFrom[ITRONCE[G], H, ITRONCE[H]]): ITRONCE[H] Or Every[ERR] = {
 
         // So now I have an empty builder
-        val emptyTRAVONCEOfGBuilder: Builder[H, TRAVONCE[H]] = cbf(xs)
-        // So now I want to foldLeft across my TRAVONCE[G Or EVERY[ERR]], starting with an empty TRAVONCEOfGBuilder, and each step along the way, I'll
+        val emptyITRONCEOfGBuilder: Builder[H, ITRONCE[H]] = cbf(xs)
+        // So now I want to foldLeft across my ITRONCE[G Or EVERY[ERR]], starting with an empty ITRONCEOfGBuilder, and each step along the way, I'll
         // += into the builder, what? Oh I get it. The result type of my foldLeft needs to be Builder[Seq[G]] Or Every[ERR]
-        val tempOr: Builder[H, TRAVONCE[H]] Or Every[ERR] = 
-          xs.foldLeft((Good(emptyTRAVONCEOfGBuilder): Builder[H, TRAVONCE[H]] Or Every[ERR])) { (accumulator: Builder[H, TRAVONCE[H]] Or Every[ERR],  nextElem: G) =>
+        val tempOr: Builder[H, ITRONCE[H]] Or Every[ERR] = 
+          xs.foldLeft((Good(emptyITRONCEOfGBuilder): Builder[H, ITRONCE[H]] Or Every[ERR])) { (accumulator: Builder[H, ITRONCE[H]] Or Every[ERR],  nextElem: G) =>
             (accumulator, fn(nextElem)) match {
               case (Good(bldr), Good(ele)) => Good(bldr += ele)
               case (Good(bldr), Bad(err)) => Bad(err)
@@ -1713,7 +1713,7 @@ object Accumulation extends Accumulation {
   }
 
   /**
-   * Adds a <code>validatedBy</code> method to (non-<code>GenTraversableOnce</code>) &ldquo;collections&rdquo; via an implicit conversion provided by
+   * Adds a <code>validatedBy</code> method to (non-<code>IterableOnce</code>) &ldquo;collections&rdquo; via an implicit conversion provided by
    * trait <a href="Accumulation.html"><code>Accumulation</code></a>.
    *
    * <p>
@@ -1741,7 +1741,7 @@ object Accumulation extends Accumulation {
   }
 
   /**
-   * Adds a <code>validatedBy</code> method to <code>GenTraversableOnce</code> via an implicit conversion provided by
+   * Adds a <code>validatedBy</code> method to <code>IterableOnce</code> via an implicit conversion provided by
    * trait <a href="Accumulation.html"><code>Accumulation</code></a>.
    *
    * <p>
@@ -1749,10 +1749,10 @@ object Accumulation extends Accumulation {
    * the main documentation for class <code>Or</code>.
    * </p>
    */
-  trait TravValidatable[G, TRAVONCE[e] <: GenTraversableOnce[e]] {
+  trait TravValidatable[G, ITRONCE[e] <: IterableOnce[e]] {
 
     /**
-     * Maps a <code>GenTraversableOnce</code> of <code>G</code>s into <code>Or</code>s of type <code>H</code> <code>Or</code> <code>EVERY[ERR]</code> (where <code>EVERY</code>
+     * Maps a <code>IterableOnce</code> of <code>G</code>s into <code>Or</code>s of type <code>H</code> <code>Or</code> <code>EVERY[ERR]</code> (where <code>EVERY</code>
      * is some subtype of <code>Every</code>) using the passed function <code>fn</code>, then combines the resulting <code>Or</code>s into a single <code>Or</code> of
      * type <code>COLL[H]</code> <code>Or</code> <code>Every[ERR]</code>.
      *
@@ -1765,7 +1765,7 @@ object Accumulation extends Accumulation {
      * the main documentation for class <code>Or</code>.
      * </p>
      */
-    def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR])(implicit cbf: CanBuildFrom[TRAVONCE[G], H, TRAVONCE[H]]): TRAVONCE[H] Or Every[ERR]
+    def validatedBy[H, ERR, EVERY[e] <: Every[e]](fn: G => H Or EVERY[ERR])(implicit cbf: CanBuildFrom[ITRONCE[G], H, ITRONCE[H]]): ITRONCE[H] Or Every[ERR]
   }
 
   /**
