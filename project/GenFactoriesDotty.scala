@@ -30,7 +30,7 @@ import org.scalatest.enablers._
 import org.scalatest.matchers.MatchersHelper.andMatchersAndApply
 import org.scalatest.matchers.MatchersHelper.orMatchersAndApply
 import org.scalatest.matchers.dsl.MatcherWords
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import scala.util.matching.Regex
 import org.scalactic._
 import TripleEqualsSupport.Spread
@@ -367,7 +367,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    infix def theSameElementsAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    infix def theSameElementsAs(right: Iterable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.contain.theSameElementsAs(right))
 
     /**
@@ -378,7 +378,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    infix def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    infix def theSameElementsInOrderAs(right: Iterable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
       thisMatcherFactory.and(MatcherWords.contain.theSameElementsInOrderAs(right))
 
     /**
@@ -411,7 +411,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    infix def allElementsOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    infix def allElementsOf(elements: Iterable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.contain.allElementsOf(elements))
 
     /**
@@ -433,7 +433,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    infix def inOrderElementsOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    infix def inOrderElementsOf(elements: Iterable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
       thisMatcherFactory.and(MatcherWords.contain.inOrderElementsOf(elements))
 
     /**
@@ -455,7 +455,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    infix def oneElementOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    infix def oneElementOf(elements: Iterable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.and(MatcherWords.contain.oneElementOf(elements))
 
     /**
@@ -477,7 +477,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    infix def atLeastOneElementOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    infix def atLeastOneElementOf(elements: Iterable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.contain.atLeastOneElementOf(elements))
 
     /**
@@ -510,7 +510,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    infix def noElementsOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    infix def noElementsOf(elements: Iterable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.and(MatcherWords.contain.noElementsOf(elements))
 
     /**
@@ -532,7 +532,7 @@ $endif$
      *                             ^
      * </pre>
      */
-    infix def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    infix def atMostOneElementOf(elements: Iterable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.and(MatcherWords.contain.atMostOneElementOf(elements))
   }
 
@@ -1662,7 +1662,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    infix def theSameElementsAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    infix def theSameElementsAs(right: Iterable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.contain.theSameElementsAs(right))
 
     /**
@@ -1673,7 +1673,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    infix def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    infix def theSameElementsInOrderAs(right: Iterable[_]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
       thisMatcherFactory.or(MatcherWords.contain.theSameElementsInOrderAs(right))
 
     /**
@@ -1706,7 +1706,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    infix def allElementsOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    infix def allElementsOf(elements: Iterable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.contain.allElementsOf(elements))
 
     /**
@@ -1728,7 +1728,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    infix def inOrderElementsOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
+    infix def inOrderElementsOf(elements: Iterable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Sequencing] =
       thisMatcherFactory.or(MatcherWords.contain.inOrderElementsOf(elements))
 
     /**
@@ -1750,7 +1750,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    infix def oneElementOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    infix def oneElementOf(elements: Iterable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.or(MatcherWords.contain.oneElementOf(elements))
 
     /**
@@ -1772,7 +1772,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    infix def atLeastOneElementOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    infix def atLeastOneElementOf(elements: Iterable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.contain.atLeastOneElementOf(elements))
 
     /**
@@ -1805,7 +1805,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    infix def noElementsOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
+    infix def noElementsOf(elements: Iterable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Containing] =
       thisMatcherFactory.or(MatcherWords.contain.noElementsOf(elements))
 
     /**
@@ -1827,7 +1827,7 @@ $endif$
      *                            ^
      * </pre>
      */
-    infix def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
+    infix def atMostOneElementOf(elements: Iterable[Any]): MatcherFactory$arityPlusOne$[SC, $commaSeparatedTCNs$, Aggregating] =
       thisMatcherFactory.or(MatcherWords.contain.atMostOneElementOf(elements))
   }
 
