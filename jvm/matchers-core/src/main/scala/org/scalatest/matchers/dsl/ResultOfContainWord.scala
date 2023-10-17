@@ -15,7 +15,7 @@
  */
 package org.scalatest.matchers.dsl
 
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import org.scalatest.enablers.Containing
 import org.scalatest.enablers.Aggregating
 import org.scalatest.enablers.Sequencing
@@ -77,9 +77,9 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
+  //DOTTY-ONLY infix def oneElementOf(elements: Iterable[Any])(implicit containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-START 
-  def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
+  def oneElementOf(elements: Iterable[Any])(implicit containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-END  
     val right = elements.toList
     if (containing.containsOneOf(left, right.distinct) != shouldBeTrue)
@@ -127,9 +127,9 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[L]): Assertion = {
+  //DOTTY-ONLY infix def atLeastOneElementOf(elements: Iterable[Any])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-START 
-  def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[L]): Assertion = {
+  def atLeastOneElementOf(elements: Iterable[Any])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
     val right = elements.toList
     if (aggregating.containsAtLeastOneOf(left, right.distinct) != shouldBeTrue)
@@ -178,9 +178,9 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
+  //DOTTY-ONLY infix def noElementsOf(elements: Iterable[Any])(implicit containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-START 
-  def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
+  def noElementsOf(elements: Iterable[Any])(implicit containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-END  
     val right = elements.toList
     if (containing.containsNoneOf(left, right.distinct) != shouldBeTrue)
@@ -197,9 +197,9 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[L]): Assertion = {
+  //DOTTY-ONLY infix def theSameElementsAs(right: Iterable[_])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-START 
-  def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[L]): Assertion = {
+  def theSameElementsAs(right: Iterable[_])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
     if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElements(prettifier, left, right) else FailureMessages.containedSameElements(prettifier, left, right), None, pos)
@@ -215,9 +215,9 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[L]): Assertion = {
+  //DOTTY-ONLY infix def theSameElementsInOrderAs(right: Iterable[_])(implicit sequencing: Sequencing[L]): Assertion = {
   // SKIP-DOTTY-START 
-  def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[L]): Assertion = {
+  def theSameElementsInOrderAs(right: Iterable[_])(implicit sequencing: Sequencing[L]): Assertion = {
   // SKIP-DOTTY-END  
     if (sequencing.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElementsInOrder(prettifier, left, right) else FailureMessages.containedSameElementsInOrder(prettifier, left, right), None, pos)
@@ -241,7 +241,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
       throw new NotAllowedException(FailureMessages.onlyEmpty, pos)
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.onlyDuplicate, pos)
-    val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
+    val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[Iterable[_]] || right(0).isInstanceOf[Every[_]])
     if (aggregating.containsOnly(left, right) != shouldBeTrue) {
       indicateFailure(
         if (shouldBeTrue)
@@ -346,9 +346,9 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
+  //DOTTY-ONLY infix def allElementsOf[R](elements: Iterable[R])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-START 
-  def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
+  def allElementsOf[R](elements: Iterable[R])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
     val right = elements.toList
     if (aggregating.containsAllOf(left, right.distinct) != shouldBeTrue)
@@ -397,9 +397,9 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: Sequencing[L]): Assertion = {
+  //DOTTY-ONLY infix def inOrderElementsOf[R](elements: Iterable[R])(implicit sequencing: Sequencing[L]): Assertion = {
   // SKIP-DOTTY-START 
-  def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: Sequencing[L]): Assertion = {
+  def inOrderElementsOf[R](elements: Iterable[R])(implicit sequencing: Sequencing[L]): Assertion = {
   // SKIP-DOTTY-END  
     val right = elements.toList
     if (sequencing.containsInOrder(left, right.distinct) != shouldBeTrue)
@@ -484,9 +484,9 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    *                   ^
    * </pre>
    **/
-  //DOTTY-ONLY infix def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
+  //DOTTY-ONLY infix def atMostOneElementOf[R](elements: Iterable[R])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-START 
-  def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
+  def atMostOneElementOf[R](elements: Iterable[R])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
     val right = elements.toList
     if (aggregating.containsAtMostOneOf(left, right.distinct) != shouldBeTrue)
