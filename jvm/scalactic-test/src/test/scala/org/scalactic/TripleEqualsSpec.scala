@@ -16,12 +16,6 @@
 package org.scalactic
 
 import org.scalatest._
-import scala.collection.GenIterable
-import scala.collection.GenMap
-import scala.collection.GenSeq
-import scala.collection.GenSet
-import scala.collection.GenTraversable
-import scala.collection.GenTraversableOnce
 
 class TripleEqualsSpec extends funspec.AnyFunSpec with NonImplicitAssertions {
 
