@@ -20,7 +20,7 @@ import java.io.File
 import org.scalatest.exceptions.StackDepthException
 import scala.annotation.tailrec
 import scala.collection.GenMap
-import scala.collection.Iterable
+import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.SortedMap
 import scala.collection.SortedSet
 import FailureMessages.decorateToStringValue
