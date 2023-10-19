@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalactic.{Prettifier}
 
-import collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import SharedHelpers._
 import matchers.should.Matchers._
 
@@ -25,7 +25,7 @@ class AllElementsOfContainMatcherSpec extends funspec.AnyFunSpec {
 
   describe("allElementsOf ") {
 
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       val leftText = Prettifier.default(left)
       val rightText = Prettifier.default(right)
       e.message should be (Some(leftText + " did not contain all elements of " + rightText))
@@ -180,7 +180,7 @@ class AllElementsOfContainMatcherSpec extends funspec.AnyFunSpec {
 
   describe("not allElementsOf ") {
 
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       val leftText = Prettifier.default(left)
       val rightText = Prettifier.default(right)
       e.message should be (Some(leftText + " contained all elements of " + rightText))
