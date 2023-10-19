@@ -18,7 +18,7 @@ package org.scalatest
 import org.scalactic.Equality
 import org.scalactic.Explicitly
 import org.scalactic.Prettifier
-import collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import SharedHelpers._
 
 import org.scalactic.ArrayHelper.deep
@@ -41,14 +41,14 @@ class InOrderContainMatcherEqualitySpec extends AnyFunSpec with Explicitly {
     
     implicit val equality = new CustomEquality
     
-    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " did not contain all of (" + right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
-    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " contained all of (" + right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderContainMatcherEqualitySpec.scala"))
