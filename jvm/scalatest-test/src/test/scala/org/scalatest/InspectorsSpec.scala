@@ -24,7 +24,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError
 import org.scalactic.Prettifier
 import org.scalatest.prop.TableDrivenPropertyChecks
 import scala.annotation.tailrec
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import FailureMessages.decorateToStringValue
 import org.scalatest.CompatParColls.Converters._
 import org.scalatest.funspec.AnyFunSpec
@@ -35,7 +35,7 @@ class InspectorsSpec extends AnyFunSpec with Inspectors with TableDrivenProperty
   private val prettifier = Prettifier.default
   
   def examples =
-    Table[Set[Int] => GenTraversable[Int]](
+    Table[Set[Int] => Iterable[Int]](
       ("Fun"), 
       ((set: Set[Int]) => set), 
       ((set: Set[Int]) => set.toList), 
