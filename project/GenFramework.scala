@@ -1,4 +1,4 @@
-import collection.GenTraversable
+import collection.Iterable
 import scala.annotation.tailrec
 import scala.util.matching.Regex
 
@@ -395,7 +395,7 @@ object Generator {
   
   import java.io.{File, FileWriter, BufferedWriter}
   
-  def getIndex[T](xs: GenTraversable[T], value: T): Int = {
+  def getIndex[T](xs: Iterable[T], value: T): Int = {
     @tailrec
     def getIndexAcc[T](itr: Iterator[T], count: Int): Int = {
       if (itr.hasNext) {
@@ -420,7 +420,7 @@ object Generator {
       getNext(itr, predicate)
   }
   
-  def getFirst[T](col: GenTraversable[T], predicate: T => Boolean): T = 
+  def getFirst[T](col: Iterable[T], predicate: T => Boolean): T = 
     getNext(col.toIterator, predicate)
   
   @tailrec
@@ -432,7 +432,7 @@ object Generator {
       getNextNot(itr, predicate)
   }
   
-  def getFirstNot[T](col: GenTraversable[T], predicate: T => Boolean): T = 
+  def getFirstNot[T](col: Iterable[T], predicate: T => Boolean): T = 
     getNextNot(col.toIterator, predicate)
   
   def genFile(targetFile: File, template: ScalaFileTemplate): File = {
