@@ -34,7 +34,7 @@ class ShouldContainElementNewSpec extends AnyFunSpec with Explicitly {
       Vector(1, "2") should contain (1)
     }
 
-    it("should use an Equality of the element type of the left-hand \"holder\" on a GenTraversable") {
+    it("should use an Equality of the element type of the left-hand \"holder\" on a Iterable") {
 
       Vector(2, 2) should contain (2)
       val e1 = intercept[TestFailedException] {
