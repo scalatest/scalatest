@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import SharedHelpers._
 import matchers.should.Matchers._
 import FailureMessages.decorateToStringValue
@@ -27,7 +27,7 @@ class OneElementOfContainMatcherSpec extends funspec.AnyFunSpec {
 
   describe("oneElementOf ") {
 
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       e.message should be (Some(FailureMessages.didNotContainOneElementOf(prettifier, left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -272,7 +272,7 @@ class OneElementOfContainMatcherSpec extends funspec.AnyFunSpec {
 
   describe("not oneElementOf ") {
 
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(FailureMessages.containedOneElementOf(prettifier, left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherSpec.scala"))

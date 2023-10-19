@@ -18,7 +18,7 @@ package org.scalatest
 import org.scalactic.Equality
 import org.scalactic.Explicitly
 import org.scalactic.Prettifier
-import collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import SharedHelpers._
 import matchers.should.Matchers._
 
@@ -78,13 +78,13 @@ class OneElementOfContainMatcherEqualitySpec extends funspec.AnyFunSpec with Exp
 
   describe("oneElementOf ") {
 
-    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       e.message should be (Some(FailureMessages.didNotContainOneElementOf(prettifier, left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
 
-    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       e.message should be (Some(FailureMessages.containedOneElementOf(prettifier, left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
