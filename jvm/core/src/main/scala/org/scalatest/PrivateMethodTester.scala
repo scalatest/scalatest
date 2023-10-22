@@ -105,7 +105,31 @@ trait PrivateMethodTester {
      * @return an <code>Invocation</code> object that can be passed to <code>invokePrivate</code> to invoke
      * the private method
      */
-    def apply(args: Any*) = new Invocation[T](methodName, args: _*)
+    def apply() = new Invocation0[T](methodName)
+  }
+
+  final class PrivateMethod1[A1, T] private (methodName: Symbol) {
+    def apply(arg1: A1) = new Invocation1[A1, T](methodName, arg1)
+  }
+
+  final class PrivateMethod2[A1, A2, T] private (methodName: Symbol) {
+    def apply(arg1: A1, arg2: A2) = new Invocation2[A1, A2, T](methodName, arg1, arg2)
+  }
+
+  final class PrivateMethod3[A1, A2, A3, T] private (methodName: Symbol) {
+    def apply(arg1: A1, arg2: A2, arg3: A3) = new Invocation3[A1, A2, A3, T](methodName, arg1, arg2, arg3)
+  }
+
+  final class PrivateMethod4[A1, A2, A3, A4, T] private (methodName: Symbol) {
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4) = new Invocation4[A1, A2, A3, A4, T](methodName, arg1, arg2, arg3, arg4)
+  }
+
+  final class PrivateMethod5[A1, A2, A3, A4, A5, T] private (methodName: Symbol) {
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5) = new Invocation5[A1, A2, A3, A4, A5, T](methodName, arg1, arg2, arg3, arg4, arg5)
+  }
+
+  final class PrivateMethod6[A1, A2, A3, A4, A5, A6, T] private (methodName: Symbol) {
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6) = new Invocation6[A1, A2, A3, A4, A5, A6, T](methodName, arg1, arg2, arg3, arg4, arg5, arg6)
   }
 
   /**
@@ -123,6 +147,35 @@ trait PrivateMethodTester {
     def apply[T](methodName: Symbol) = new PrivateMethod[T](methodName)
   }
 
+  object PrivateMethod1 {
+    def apply[A1, T](methodName: Symbol) = new PrivateMethod1[A1, T](methodName)
+  }
+
+  object PrivateMethod2 {
+    def apply[A1, A2, T](methodName: Symbol) = new PrivateMethod2[A1, A2, T](methodName)
+  }
+
+  object PrivateMethod3 {
+    def apply[A1, A2, A3, T](methodName: Symbol) = new PrivateMethod3[A1, A2, A3, T](methodName)
+  }
+
+  object PrivateMethod4 {
+    def apply[A1, A2, A3, A4, T](methodName: Symbol) = new PrivateMethod4[A1, A2, A3, A4, T](methodName)
+  }
+
+  object PrivateMethod5 {
+    def apply[A1, A2, A3, A4, A5, T](methodName: Symbol) = new PrivateMethod5[A1, A2, A3, A4, A5, T](methodName)
+  }
+
+  object PrivateMethod6 {
+    def apply[A1, A2, A3, A4, A5, A6, T](methodName: Symbol) = new PrivateMethod6[A1, A2, A3, A4, A5, A6, T](methodName)
+  }
+
+  trait Invocation {
+    val methodName: Symbol
+    val args: Array[Any]
+  }
+
   /**
    * Class whose instances represent an invocation of a private method. Instances of this
    * class contain the name of the private method (<code>methodName</code>) and the arguments
@@ -133,8 +186,39 @@ trait PrivateMethodTester {
    * @param args zero to many arguments to pass to the private method when invoked
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
-  final class Invocation[T](val methodName: Symbol, val args: Any*) {
+  final class Invocation0[T](val methodName: Symbol) extends Invocation {
     requireNonNull(methodName)
+    val args = Array.empty[Any]
+  }
+
+  final class Invocation1[A1, T](val methodName: Symbol, val arg1: A1) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array[Any](arg1)
+  }
+
+  final class Invocation2[A1, A2, T](val methodName: Symbol, val arg1: A1, val arg2: A2) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2)
+  }
+
+  final class Invocation3[A1, A2, A3, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3)
+  }
+
+  final class Invocation4[A1, A2, A3, A4, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4)
+  }
+
+  final class Invocation5[A1, A2, A3, A4, A5, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5)
+  }
+
+  final class Invocation6[A1, A2, A3, A4, A5, A6, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6)
   }
 
   /**
@@ -143,6 +227,14 @@ trait PrivateMethodTester {
   final class Invoker(target: AnyRef) {
 
     requireNonNull(target)
+
+    def invokePrivate[T](invocation: Invocation0[T]): T = invokePrivateImpl(invocation)
+    def invokePrivate[A1, T](invocation: Invocation1[A1, T]): T = invokePrivateImpl(invocation)
+    def invokePrivate[A1, A2, T](invocation: Invocation2[A1, A2, T]): T = invokePrivateImpl(invocation)
+    def invokePrivate[A1, A2, A3, T](invocation: Invocation3[A1, A2, A3, T]): T = invokePrivateImpl(invocation)
+    def invokePrivate[A1, A2, A3, A4, T](invocation: Invocation4[A1, A2, A3, A4, T]): T = invokePrivateImpl(invocation)
+    def invokePrivate[A1, A2, A3, A4, A5, T](invocation: Invocation5[A1, A2, A3, A4, A5, T]): T = invokePrivateImpl(invocation)
+    def invokePrivate[A1, A2, A3, A4, A5, A6, T](invocation: Invocation6[A1, A2, A3, A4, A5, A6, T]): T = invokePrivateImpl(invocation)
     
     /**
      * Invoke a private method. This method will attempt to invoke via reflection a private method.
@@ -156,7 +248,7 @@ trait PrivateMethodTester {
      * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
      * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
      */
-    def invokePrivate[T](invocation: Invocation[T]): T = {
+    def invokePrivateImpl[T](invocation: Invocation): T = {
       import invocation._
 
       // If 'getMessage passed as methodName, methodNameToInvoke would be "getMessage"
