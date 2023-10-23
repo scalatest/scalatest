@@ -142,32 +142,120 @@ trait PrivateMethodTester {
      * The type parameter, <code>T</code>, is the return type of the private method.
      *
      * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam T the return type of the private method
      * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
      */
     def apply[T](methodName: Symbol) = new PrivateMethod[T](methodName)
   }
 
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod1</code> objects.
+   */
   object PrivateMethod1 {
+    /**
+     * Construct a new <code>PrivateMethod1</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1</code> is the type of the argument and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
     def apply[A1, T](methodName: Symbol) = new PrivateMethod1[A1, T](methodName)
   }
 
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod2</code> objects.
+   */
   object PrivateMethod2 {
+    /**
+     * Construct a new <code>PrivateMethod2</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A2</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
     def apply[A1, A2, T](methodName: Symbol) = new PrivateMethod2[A1, A2, T](methodName)
   }
 
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod3</code> objects.
+   */
   object PrivateMethod3 {
+    /**
+     * Construct a new <code>PrivateMethod3</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A3</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
     def apply[A1, A2, A3, T](methodName: Symbol) = new PrivateMethod3[A1, A2, A3, T](methodName)
   }
 
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod4</code> objects.
+   */
   object PrivateMethod4 {
+    /**
+     * Construct a new <code>PrivateMethod4</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A4</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
     def apply[A1, A2, A3, A4, T](methodName: Symbol) = new PrivateMethod4[A1, A2, A3, A4, T](methodName)
   }
 
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod5</code> objects.
+   */
   object PrivateMethod5 {
+    /**
+     * Construct a new <code>PrivateMethod5</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A5</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
     def apply[A1, A2, A3, A4, A5, T](methodName: Symbol) = new PrivateMethod5[A1, A2, A3, A4, A5, T](methodName)
   }
 
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod6</code> objects.
+   */
   object PrivateMethod6 {
+    /**
+     * Construct a new <code>PrivateMethod6</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A6</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
     def apply[A1, A2, A3, A4, A5, A6, T](methodName: Symbol) = new PrivateMethod6[A1, A2, A3, A4, A5, A6, T](methodName)
   }
 
