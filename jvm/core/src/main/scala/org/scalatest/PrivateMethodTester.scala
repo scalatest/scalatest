@@ -297,6 +297,477 @@ trait PrivateMethodTester {
   }
 
   /**
+   * Class whose instances represent an invocation of a private method with 7 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 7 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation7[A1, A2, A3, A4, A5, A6, A7, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 8 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 8 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation8[A1, A2, A3, A4, A5, A6, A7, A8, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 9 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 9 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation9[A1, A2, A3, A4, A5, A6, A7, A8, A9, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, arg9: A9) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 10 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 10 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>, <code>arg10</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @param arg10 argument 10 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation10[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, arg9: A9, arg10: A10) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 11 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 11 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>, <code>arg10</code>, 
+   * <code>arg11</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @param arg10 argument 10 to pass to the private method when invoked
+   * @param arg11 argument 11 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 12 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 12 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>, <code>arg10</code>, 
+   * <code>arg11</code>, <code>arg12</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @param arg10 argument 10 to pass to the private method when invoked
+   * @param arg11 argument 11 to pass to the private method when invoked
+   * @param arg12 argument 12 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation12[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 13 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 13 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>, <code>arg10</code>, 
+   * <code>arg11</code>, <code>arg12</code>, <code>arg13</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @param arg10 argument 10 to pass to the private method when invoked
+   * @param arg11 argument 11 to pass to the private method when invoked
+   * @param arg12 argument 12 to pass to the private method when invoked
+   * @param arg13 argument 13 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation13[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 14 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 14 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>, <code>arg10</code>, 
+   * <code>arg11</code>, <code>arg12</code>, <code>arg13</code>, <code>arg14</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @param arg10 argument 10 to pass to the private method when invoked
+   * @param arg11 argument 11 to pass to the private method when invoked
+   * @param arg12 argument 12 to pass to the private method when invoked
+   * @param arg13 argument 13 to pass to the private method when invoked
+   * @param arg14 argument 14 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation14[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 15 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 15 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>, <code>arg10</code>, 
+   * <code>arg11</code>, <code>arg12</code>, <code>arg13</code>, <code>arg14</code>, <code>arg15</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @param arg10 argument 10 to pass to the private method when invoked
+   * @param arg11 argument 11 to pass to the private method when invoked
+   * @param arg12 argument 12 to pass to the private method when invoked
+   * @param arg13 argument 13 to pass to the private method when invoked
+   * @param arg14 argument 14 to pass to the private method when invoked
+   * @param arg15 argument 15 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation15[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 16 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 16 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>, <code>arg10</code>, 
+   * <code>arg11</code>, <code>arg12</code>, <code>arg13</code>, <code>arg14</code>, <code>arg15</code>, <code>arg16</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @param arg10 argument 10 to pass to the private method when invoked
+   * @param arg11 argument 11 to pass to the private method when invoked
+   * @param arg12 argument 12 to pass to the private method when invoked
+   * @param arg13 argument 13 to pass to the private method when invoked
+   * @param arg14 argument 14 to pass to the private method when invoked
+   * @param arg15 argument 15 to pass to the private method when invoked
+   * @param arg16 argument 16 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation16[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 17 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 17 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>, <code>arg10</code>, 
+   * <code>arg11</code>, <code>arg12</code>, <code>arg13</code>, <code>arg14</code>, <code>arg15</code>, <code>arg16</code>, 
+   * <code>arg17</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @param arg10 argument 10 to pass to the private method when invoked
+   * @param arg11 argument 11 to pass to the private method when invoked
+   * @param arg12 argument 12 to pass to the private method when invoked
+   * @param arg13 argument 13 to pass to the private method when invoked
+   * @param arg14 argument 14 to pass to the private method when invoked
+   * @param arg15 argument 15 to pass to the private method when invoked
+   * @param arg16 argument 16 to pass to the private method when invoked
+   * @param arg17 argument 17 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation17[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16, 
+                                                         val arg17: A17) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 18 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 18 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>, <code>arg10</code>, 
+   * <code>arg11</code>, <code>arg12</code>, <code>arg13</code>, <code>arg14</code>, <code>arg15</code>, <code>arg16</code>, 
+   * <code>arg17</code>, <code>arg18</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @param arg10 argument 10 to pass to the private method when invoked
+   * @param arg11 argument 11 to pass to the private method when invoked
+   * @param arg12 argument 12 to pass to the private method when invoked
+   * @param arg13 argument 13 to pass to the private method when invoked
+   * @param arg14 argument 14 to pass to the private method when invoked
+   * @param arg15 argument 15 to pass to the private method when invoked
+   * @param arg16 argument 16 to pass to the private method when invoked
+   * @param arg17 argument 17 to pass to the private method when invoked
+   * @param arg18 argument 18 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation18[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16, 
+                                                         val arg17: A17, val arg18: A18) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 19 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 19 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>, <code>arg10</code>, 
+   * <code>arg11</code>, <code>arg12</code>, <code>arg13</code>, <code>arg14</code>, <code>arg15</code>, <code>arg16</code>, 
+   * <code>arg17</code>, <code>arg18</code>, <code>arg19</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @param arg10 argument 10 to pass to the private method when invoked
+   * @param arg11 argument 11 to pass to the private method when invoked
+   * @param arg12 argument 12 to pass to the private method when invoked
+   * @param arg13 argument 13 to pass to the private method when invoked
+   * @param arg14 argument 14 to pass to the private method when invoked
+   * @param arg15 argument 15 to pass to the private method when invoked
+   * @param arg16 argument 16 to pass to the private method when invoked
+   * @param arg17 argument 17 to pass to the private method when invoked
+   * @param arg18 argument 18 to pass to the private method when invoked
+   * @param arg19 argument 19 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation19[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16, 
+                                                         val arg17: A17, val arg18: A18, val arg19: A19) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 20 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 20 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>, <code>arg10</code>, 
+   * <code>arg11</code>, <code>arg12</code>, <code>arg13</code>, <code>arg14</code>, <code>arg15</code>, <code>arg16</code>, 
+   * <code>arg17</code>, <code>arg18</code>, <code>arg19</code>, <code>arg20</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @param arg10 argument 10 to pass to the private method when invoked
+   * @param arg11 argument 11 to pass to the private method when invoked
+   * @param arg12 argument 12 to pass to the private method when invoked
+   * @param arg13 argument 13 to pass to the private method when invoked
+   * @param arg14 argument 14 to pass to the private method when invoked
+   * @param arg15 argument 15 to pass to the private method when invoked
+   * @param arg16 argument 16 to pass to the private method when invoked
+   * @param arg17 argument 17 to pass to the private method when invoked
+   * @param arg18 argument 18 to pass to the private method when invoked
+   * @param arg19 argument 19 to pass to the private method when invoked
+   * @param arg20 argument 20 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation20[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16, 
+                                                         val arg17: A17, val arg18: A18, val arg19: A19, val arg20: A20) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20)
+  }
+
+  /**
+   * Class whose instances represent an invocation of a private method with 21 arguments. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the 21 arguments
+   * to pass to it during the invocation (<code>arg1</code>, <code>arg2</code>, <code>arg3</code>, <code>arg4</code>, 
+   * <code>arg5</code>, <code>arg6</code>, <code>arg7</code>, <code>arg8</code>, <code>arg9</code>, <code>arg10</code>, 
+   * <code>arg11</code>, <code>arg12</code>, <code>arg13</code>, <code>arg14</code>, <code>arg15</code>, <code>arg16</code>, 
+   * <code>arg17</code>, <code>arg18</code>, <code>arg19</code>, <code>arg20</code>, <code>arg21</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param arg1 argument 1 to pass to the private method when invoked
+   * @param arg2 argument 2 to pass to the private method when invoked
+   * @param arg3 argument 3 to pass to the private method when invoked
+   * @param arg4 argument 4 to pass to the private method when invoked
+   * @param arg5 argument 5 to pass to the private method when invoked
+   * @param arg6 argument 6 to pass to the private method when invoked
+   * @param arg7 argument 7 to pass to the private method when invoked
+   * @param arg8 argument 8 to pass to the private method when invoked
+   * @param arg9 argument 9 to pass to the private method when invoked
+   * @param arg10 argument 10 to pass to the private method when invoked
+   * @param arg11 argument 11 to pass to the private method when invoked
+   * @param arg12 argument 12 to pass to the private method when invoked
+   * @param arg13 argument 13 to pass to the private method when invoked
+   * @param arg14 argument 14 to pass to the private method when invoked
+   * @param arg15 argument 15 to pass to the private method when invoked
+   * @param arg16 argument 16 to pass to the private method when invoked
+   * @param arg17 argument 17 to pass to the private method when invoked
+   * @param arg18 argument 18 to pass to the private method when invoked
+   * @param arg19 argument 19 to pass to the private method when invoked
+   * @param arg20 argument 20 to pass to the private method when invoked
+   * @param arg21 argument 21 to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation21[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16, 
+                                                         val arg17: A17, val arg18: A18, val arg19: A19, val arg20: A20, val arg21: A21) extends Invocation {
+    requireNonNull(methodName)
+    val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21)
+  }
+
+  /**
    * Class used via an implicit conversion to enable private methods to be tested.
    */
   final class Invoker(target: AnyRef) {
