@@ -119,6 +119,36 @@ class PrivateMethodTesterSpec extends AnyFunSpec {
       val secret = PrivateMethod1[String, String](Symbol("secret"))
       assert(((new Modest) invokePrivate secret(null)) === "open sesame!")
     }
+
+    it("should work if the private method takes 4 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod4[String, Int, Float, String, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test")) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, 123)""")
+    }
+
+    it("should work if the private method takes 5 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod5[String, Int, Float, String, Int, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123)) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", "123")""")
+    }
+
+    it("should work if the private method takes 6 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod6[String, Int, Float, String, Int, Float, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f)) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, "5.0f")""")
+    }
   }
 }
 
