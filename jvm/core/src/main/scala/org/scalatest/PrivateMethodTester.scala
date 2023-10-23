@@ -774,6 +774,17 @@ trait PrivateMethodTester {
 
     requireNonNull(target)
 
+    /**
+     * Invoke a private method with no argument. This method will attempt to invoke via reflection a private method.
+     * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+     * The object on which to invoke the private method is the <code>target</code> object passed to this <code>Invoker</code>'s 
+     * primary constructor.  The type parameter, <code>T</code>, is the return type of the private method.
+     *
+     * @param invocation the <code>Invocation0</code> object containing the method name symbol and args of the invocation.
+     * @return the value returned by the invoked private method
+     * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+     * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+     */
     def invokePrivate[T](invocation: Invocation0[T]): T = invokePrivateImpl(invocation)
     
     /**
