@@ -149,6 +149,169 @@ class PrivateMethodTesterSpec extends AnyFunSpec {
       assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f)) === "open sesame!")
       assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, "5.0f")""")
     }
+
+    it("should work if the private method takes 7 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod7[String, Int, Float, String, Int, Float, String, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2")) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, 123)""")
+    }
+
+    it("should work if the private method takes 8 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod8[String, Int, Float, String, Int, Float, String, Int, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456)) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", "456")""")
+    }
+
+    it("should work if the private method takes 9 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod9[String, Int, Float, String, Int, Float, String, Int, Float, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f)) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, "6.0f")""")
+    }
+
+    it("should work if the private method takes 10 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float, a10: String): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod10[String, Int, Float, String, Int, Float, String, Int, Float, String, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3")) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, 3)""")
+    }
+
+    it("should work if the private method takes 11 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float, a10: String, 
+                           a11: Int): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod11[String, Int, Float, String, Int, Float, String, Int, Float, String, Int, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789)) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", "789")""")
+    }
+
+    it("should work if the private method takes 12 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float, a10: String, 
+                           a11: Int, a12: Float): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod12[String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, 7.0f)) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, "7.0f")""")
+    }
+
+    it("should work if the private method takes 13 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float, a10: String, 
+                           a11: Int, a12: Float, a13: String): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod13[String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, 7.0f, "test4")) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, "7.0f", 4)""")
+    }
+
+    it("should work if the private method takes 14 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float, a10: String, 
+                           a11: Int, a12: Float, a13: String, a14: Int): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod14[String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, 7.0f, "test4", 123)) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, "7.0f", "test4", "123")""")
+    }
+
+    it("should work if the private method takes 15 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float, a10: String, 
+                           a11: Int, a12: Float, a13: String, a14: Int, a15: Float): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod15[String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, 7.0f, "test4", 123, 8.0f)) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, "7.0f", "test4", 123, "8.0f")""")
+    }
+
+    it("should work if the private method takes 16 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float, a10: String, 
+                           a11: Int, a12: Float, a13: String, a14: Int, a15: Float, a16: String): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod16[String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, 7.0f, "test4", 123, 8.0f, "test5")) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, "7.0f", "test4", 123, 8.0f, 5)""")
+    }
+
+    it("should work if the private method takes 17 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float, a10: String, 
+                           a11: Int, a12: Float, a13: String, a14: Int, a15: Float, a16: String, a17: Int): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod17[String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, 7.0f, "test4", 123, 8.0f, "test5", 456)) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, "7.0f", "test4", 123, 8.0f, "test5", "456")""")
+    }
+
+    it("should work if the private method takes 18 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float, a10: String, 
+                           a11: Int, a12: Float, a13: String, a14: Int, a15: Float, a16: String, a17: Int, a18: Float): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod18[String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, 7.0f, "test4", 123, 8.0f, "test5", 456, 9.0f)) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, "7.0f", "test4", 123, 8.0f, "test5", 456, "9.0f")""")
+    }
+
+    it("should work if the private method takes 19 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float, a10: String, 
+                           a11: Int, a12: Float, a13: String, a14: Int, a15: Float, a16: String, a17: Int, a18: Float, a19: String): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod19[String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, 7.0f, "test4", 123, 8.0f, "test5", 456, 9.0f, "test6")) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, "7.0f", "test4", 123, 8.0f, "test5", 456, 9.0f, 6)""")
+    }
+
+    it("should work if the private method takes 20 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float, a10: String, 
+                           a11: Int, a12: Float, a13: String, a14: Int, a15: Float, a16: String, a17: Int, a18: Float, a19: String, 
+                           a20: Int): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod20[String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, 7.0f, "test4", 123, 8.0f, "test5", 456, 9.0f, "test6", 789)) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, "7.0f", "test4", 123, 8.0f, "test5", 456, 9.0f, "test6", "789")""")
+    }
+
+    it("should work if the private method takes 21 arguments and returns a String") {
+
+      class Modest {
+        private def secret(a1: String, a2: Int, a3: Float, a4: String, a5: Int, a6: Float, a7: String, a8: Int, a9: Float, a10: String, 
+                           a11: Int, a12: Float, a13: String, a14: Int, a15: Float, a16: String, a17: Int, a18: Float, a19: String, 
+                           a20: Int, a21: Float): String = a1 + " sesame!"
+      }
+      val secret = PrivateMethod21[String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String, Int, Float, String](Symbol("secret"))
+      assert(((new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, 7.0f, "test4", 123, 8.0f, "test5", 456, 9.0f, "test6", 789, 10.0f)) === "open sesame!")
+      assertDoesNotCompile("""(new Modest) invokePrivate secret("open", 2, 3.0f, "test", 123, 5.0f, "test2", 456, 6.0f, "test3", 789, "7.0f", "test4", 123, 8.0f, "test5", 456, 9.0f, "test6", 789, "10.0f")""")
+    }
   }
 }
 

@@ -254,7 +254,7 @@ trait PrivateMethodTester {
    */
   final class PrivateMethod6[A1, A2, A3, A4, A5, A6, T] private (methodName: Symbol) {
     /**
-     * Apply arguments to a private method. This method returns an <code>Invocation5</code>
+     * Apply arguments to a private method. This method returns an <code>Invocation6</code>
      * object, ready to be passed to an <code>invokePrivate</code> method call.
      * The type parameter, <code>A1 - A6</code> are the argument types, while the <code>T</code>, is the return type of the private method.
      *
@@ -267,6 +267,754 @@ trait PrivateMethodTester {
      * @return an <code>Invocation6</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
      */
     def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6) = new Invocation6[A1, A2, A3, A4, A5, A6, T](methodName, arg1, arg2, arg3, arg4, arg5, arg6)
+  }
+
+  /**
+   * Represent a private method with 7 arguments, whose apply method returns an <code>Invocation7</code> object that
+   * records the name of the private method to invoke, and 7 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A7</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod7[A1, A2, A3, A4, A5, A6, A7, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation7</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A7</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @return an <code>Invocation7</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7) = new Invocation7[A1, A2, A3, A4, A5, A6, A7, T](methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+  }
+
+  /**
+   * Represent a private method with 8 arguments, whose apply method returns an <code>Invocation8</code> object that
+   * records the name of the private method to invoke, and 8 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A8</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod8[A1, A2, A3, A4, A5, A6, A7, A8, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation8</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A8</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @return an <code>Invocation8</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8) = new Invocation8[A1, A2, A3, A4, A5, A6, A7, A8, T](methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+  }
+
+  /**
+   * Represent a private method with 9 arguments, whose apply method returns an <code>Invocation9</code> object that
+   * records the name of the private method to invoke, and 9 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A9</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod9[A1, A2, A3, A4, A5, A6, A7, A8, A9, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation9</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A9</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @return an <code>Invocation9</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9) = new Invocation9[A1, A2, A3, A4, A5, A6, A7, A8, A9, T](methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+  }
+
+  /**
+   * Represent a private method with 10 arguments, whose apply method returns an <code>Invocation10</code> object that
+   * records the name of the private method to invoke, and 10 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A10</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam A10 the type of the argument 10
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod10[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation10</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A10</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @param arg10 argument 10 to pass to the private method when invoked
+     * @return an <code>Invocation10</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9, arg10: A10) = new Invocation10[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, T](methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+  }
+
+  /**
+   * Represent a private method with 11 arguments, whose apply method returns an <code>Invocation11</code> object that
+   * records the name of the private method to invoke, and 11 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A11</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam A10 the type of the argument 10
+   * @tparam A11 the type of the argument 11
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation11</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A11</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @param arg10 argument 10 to pass to the private method when invoked
+     * @param arg11 argument 11 to pass to the private method when invoked
+     * @return an <code>Invocation11</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9, arg10: A10, arg11: A11) = new Invocation11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, T](methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
+  }
+
+  /**
+   * Represent a private method with 12 arguments, whose apply method returns an <code>Invocation11</code> object that
+   * records the name of the private method to invoke, and 12 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A12</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam A10 the type of the argument 10
+   * @tparam A11 the type of the argument 11
+   * @tparam A12 the type of the argument 12
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod12[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation11</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A12</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @param arg10 argument 10 to pass to the private method when invoked
+     * @param arg11 argument 11 to pass to the private method when invoked
+     * @param arg12 argument 12 to pass to the private method when invoked
+     * @return an <code>Invocation12</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9, arg10: A10, arg11: A11, arg12: A12) = 
+      new Invocation12[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, T](methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+  }
+
+  /**
+   * Represent a private method with 13 arguments, whose apply method returns an <code>Invocation13</code> object that
+   * records the name of the private method to invoke, and 13 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A13</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam A10 the type of the argument 10
+   * @tparam A11 the type of the argument 11
+   * @tparam A12 the type of the argument 12
+   * @tparam A13 the type of the argument 13
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod13[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation13</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A13</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @param arg10 argument 10 to pass to the private method when invoked
+     * @param arg11 argument 11 to pass to the private method when invoked
+     * @param arg12 argument 12 to pass to the private method when invoked
+     * @param arg13 argument 13 to pass to the private method when invoked
+     * @return an <code>Invocation13</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9, arg10: A10, arg11: A11, arg12: A12, 
+              arg13: A13) = 
+      new Invocation13[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, T](
+        methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13)
+  }
+
+  /**
+   * Represent a private method with 14 arguments, whose apply method returns an <code>Invocation14</code> object that
+   * records the name of the private method to invoke, and 14 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A14</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam A10 the type of the argument 10
+   * @tparam A11 the type of the argument 11
+   * @tparam A12 the type of the argument 12
+   * @tparam A13 the type of the argument 13
+   * @tparam A14 the type of the argument 14
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod14[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation14</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A14</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @param arg10 argument 10 to pass to the private method when invoked
+     * @param arg11 argument 11 to pass to the private method when invoked
+     * @param arg12 argument 12 to pass to the private method when invoked
+     * @param arg13 argument 13 to pass to the private method when invoked
+     * @param arg14 argument 14 to pass to the private method when invoked
+     * @return an <code>Invocation14</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9, arg10: A10, arg11: A11, arg12: A12, 
+              arg13: A13, arg14: A14) = 
+      new Invocation14[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, T](
+        methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
+  }
+
+  /**
+   * Represent a private method with 15 arguments, whose apply method returns an <code>Invocation15</code> object that
+   * records the name of the private method to invoke, and 15 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A15</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam A10 the type of the argument 10
+   * @tparam A11 the type of the argument 11
+   * @tparam A12 the type of the argument 12
+   * @tparam A13 the type of the argument 13
+   * @tparam A14 the type of the argument 14
+   * @tparam A15 the type of the argument 15
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod15[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation15</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A15</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @param arg10 argument 10 to pass to the private method when invoked
+     * @param arg11 argument 11 to pass to the private method when invoked
+     * @param arg12 argument 12 to pass to the private method when invoked
+     * @param arg13 argument 13 to pass to the private method when invoked
+     * @param arg14 argument 14 to pass to the private method when invoked
+     * @param arg15 argument 15 to pass to the private method when invoked
+     * @return an <code>Invocation15</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9, arg10: A10, arg11: A11, arg12: A12, 
+              arg13: A13, arg14: A14, arg15: A15) = 
+      new Invocation15[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, T](
+        methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15)
+  }
+
+  /**
+   * Represent a private method with 16 arguments, whose apply method returns an <code>Invocation16</code> object that
+   * records the name of the private method to invoke, and 16 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A16</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam A10 the type of the argument 10
+   * @tparam A11 the type of the argument 11
+   * @tparam A12 the type of the argument 12
+   * @tparam A13 the type of the argument 13
+   * @tparam A14 the type of the argument 14
+   * @tparam A15 the type of the argument 15
+   * @tparam A16 the type of the argument 16
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod16[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation16</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A16</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @param arg10 argument 10 to pass to the private method when invoked
+     * @param arg11 argument 11 to pass to the private method when invoked
+     * @param arg12 argument 12 to pass to the private method when invoked
+     * @param arg13 argument 13 to pass to the private method when invoked
+     * @param arg14 argument 14 to pass to the private method when invoked
+     * @param arg15 argument 15 to pass to the private method when invoked
+     * @param arg16 argument 16 to pass to the private method when invoked
+     * @return an <code>Invocation16</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9, arg10: A10, arg11: A11, arg12: A12, 
+              arg13: A13, arg14: A14, arg15: A15, arg16: A16) = 
+      new Invocation16[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, T](
+        methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16)
+  }
+
+  /**
+   * Represent a private method with 17 arguments, whose apply method returns an <code>Invocation17</code> object that
+   * records the name of the private method to invoke, and 17 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A17</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam A10 the type of the argument 10
+   * @tparam A11 the type of the argument 11
+   * @tparam A12 the type of the argument 12
+   * @tparam A13 the type of the argument 13
+   * @tparam A14 the type of the argument 14
+   * @tparam A15 the type of the argument 15
+   * @tparam A16 the type of the argument 16
+   * @tparam A17 the type of the argument 17
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod17[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation17</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A17</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @param arg10 argument 10 to pass to the private method when invoked
+     * @param arg11 argument 11 to pass to the private method when invoked
+     * @param arg12 argument 12 to pass to the private method when invoked
+     * @param arg13 argument 13 to pass to the private method when invoked
+     * @param arg14 argument 14 to pass to the private method when invoked
+     * @param arg15 argument 15 to pass to the private method when invoked
+     * @param arg16 argument 16 to pass to the private method when invoked
+     * @param arg17 argument 17 to pass to the private method when invoked
+     * @return an <code>Invocation17</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9, arg10: A10, arg11: A11, arg12: A12, 
+              arg13: A13, arg14: A14, arg15: A15, arg16: A16, arg17: A17) = 
+      new Invocation17[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, T](
+        methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17)
+  }
+
+  /**
+   * Represent a private method with 18 arguments, whose apply method returns an <code>Invocation18</code> object that
+   * records the name of the private method to invoke, and 18 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A18</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam A10 the type of the argument 10
+   * @tparam A11 the type of the argument 11
+   * @tparam A12 the type of the argument 12
+   * @tparam A13 the type of the argument 13
+   * @tparam A14 the type of the argument 14
+   * @tparam A15 the type of the argument 15
+   * @tparam A16 the type of the argument 16
+   * @tparam A17 the type of the argument 17
+   * @tparam A18 the type of the argument 18
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod18[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation18</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A18</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @param arg10 argument 10 to pass to the private method when invoked
+     * @param arg11 argument 11 to pass to the private method when invoked
+     * @param arg12 argument 12 to pass to the private method when invoked
+     * @param arg13 argument 13 to pass to the private method when invoked
+     * @param arg14 argument 14 to pass to the private method when invoked
+     * @param arg15 argument 15 to pass to the private method when invoked
+     * @param arg16 argument 16 to pass to the private method when invoked
+     * @param arg17 argument 17 to pass to the private method when invoked
+     * @param arg18 argument 18 to pass to the private method when invoked
+     * @return an <code>Invocation18</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9, arg10: A10, arg11: A11, arg12: A12, 
+              arg13: A13, arg14: A14, arg15: A15, arg16: A16, arg17: A17, arg18: A18) = 
+      new Invocation18[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, T](
+        methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18)
+  }
+
+  /**
+   * Represent a private method with 19 arguments, whose apply method returns an <code>Invocation19</code> object that
+   * records the name of the private method to invoke, and 19 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A19</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam A10 the type of the argument 10
+   * @tparam A11 the type of the argument 11
+   * @tparam A12 the type of the argument 12
+   * @tparam A13 the type of the argument 13
+   * @tparam A14 the type of the argument 14
+   * @tparam A15 the type of the argument 15
+   * @tparam A16 the type of the argument 16
+   * @tparam A17 the type of the argument 17
+   * @tparam A18 the type of the argument 18
+   * @tparam A19 the type of the argument 19
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod19[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation19</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A19</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @param arg10 argument 10 to pass to the private method when invoked
+     * @param arg11 argument 11 to pass to the private method when invoked
+     * @param arg12 argument 12 to pass to the private method when invoked
+     * @param arg13 argument 13 to pass to the private method when invoked
+     * @param arg14 argument 14 to pass to the private method when invoked
+     * @param arg15 argument 15 to pass to the private method when invoked
+     * @param arg16 argument 16 to pass to the private method when invoked
+     * @param arg17 argument 17 to pass to the private method when invoked
+     * @param arg18 argument 18 to pass to the private method when invoked
+     * @param arg19 argument 19 to pass to the private method when invoked
+     * @return an <code>Invocation19</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9, arg10: A10, arg11: A11, arg12: A12, 
+              arg13: A13, arg14: A14, arg15: A15, arg16: A16, arg17: A17, arg18: A18, arg19: A19) = 
+      new Invocation19[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, T](
+        methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19)
+  }
+
+  /**
+   * Represent a private method with 20 arguments, whose apply method returns an <code>Invocation20</code> object that
+   * records the name of the private method to invoke, and 20 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A20</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam A10 the type of the argument 10
+   * @tparam A11 the type of the argument 11
+   * @tparam A12 the type of the argument 12
+   * @tparam A13 the type of the argument 13
+   * @tparam A14 the type of the argument 14
+   * @tparam A15 the type of the argument 15
+   * @tparam A16 the type of the argument 16
+   * @tparam A17 the type of the argument 17
+   * @tparam A18 the type of the argument 18
+   * @tparam A19 the type of the argument 19
+   * @tparam A20 the type of the argument 20
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod20[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation20</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A20</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @param arg10 argument 10 to pass to the private method when invoked
+     * @param arg11 argument 11 to pass to the private method when invoked
+     * @param arg12 argument 12 to pass to the private method when invoked
+     * @param arg13 argument 13 to pass to the private method when invoked
+     * @param arg14 argument 14 to pass to the private method when invoked
+     * @param arg15 argument 15 to pass to the private method when invoked
+     * @param arg16 argument 16 to pass to the private method when invoked
+     * @param arg17 argument 17 to pass to the private method when invoked
+     * @param arg18 argument 18 to pass to the private method when invoked
+     * @param arg19 argument 19 to pass to the private method when invoked
+     * @param arg20 argument 20 to pass to the private method when invoked
+     * @return an <code>Invocation20</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9, arg10: A10, arg11: A11, arg12: A12, 
+              arg13: A13, arg14: A14, arg15: A15, arg16: A16, arg17: A17, arg18: A18, arg19: A19, arg20: A20) = 
+      new Invocation20[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, T](
+        methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20)
+  }
+
+  /**
+   * Represent a private method with 21 arguments, whose apply method returns an <code>Invocation21</code> object that
+   * records the name of the private method to invoke, and 21 argument types to pass to it when invoked.
+   * The type parameter, <code>A1 - A21</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @tparam A1 the type of the argument 1
+   * @tparam A2 the type of the argument 2
+   * @tparam A3 the type of the argument 3
+   * @tparam A4 the type of the argument 4
+   * @tparam A5 the type of the argument 5
+   * @tparam A6 the type of the argument 6
+   * @tparam A7 the type of the argument 7
+   * @tparam A8 the type of the argument 8
+   * @tparam A9 the type of the argument 9
+   * @tparam A10 the type of the argument 10
+   * @tparam A11 the type of the argument 11
+   * @tparam A12 the type of the argument 12
+   * @tparam A13 the type of the argument 13
+   * @tparam A14 the type of the argument 14
+   * @tparam A15 the type of the argument 15
+   * @tparam A16 the type of the argument 16
+   * @tparam A17 the type of the argument 17
+   * @tparam A18 the type of the argument 18
+   * @tparam A19 the type of the argument 19
+   * @tparam A20 the type of the argument 20
+   * @tparam A21 the type of the argument 21
+   * @tparam T the return type of the private method
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod21[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, T] private (methodName: Symbol) {
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation21</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>A1 - A21</code> are the argument types, while the <code>T</code>, is the return type of the private method.
+     *
+     * @param arg1 argument 1 to pass to the private method when invoked
+     * @param arg2 argument 2 to pass to the private method when invoked
+     * @param arg3 argument 3 to pass to the private method when invoked
+     * @param arg4 argument 4 to pass to the private method when invoked
+     * @param arg5 argument 5 to pass to the private method when invoked
+     * @param arg6 argument 6 to pass to the private method when invoked
+     * @param arg7 argument 7 to pass to the private method when invoked
+     * @param arg8 argument 8 to pass to the private method when invoked
+     * @param arg9 argument 9 to pass to the private method when invoked
+     * @param arg10 argument 10 to pass to the private method when invoked
+     * @param arg11 argument 11 to pass to the private method when invoked
+     * @param arg12 argument 12 to pass to the private method when invoked
+     * @param arg13 argument 13 to pass to the private method when invoked
+     * @param arg14 argument 14 to pass to the private method when invoked
+     * @param arg15 argument 15 to pass to the private method when invoked
+     * @param arg16 argument 16 to pass to the private method when invoked
+     * @param arg17 argument 17 to pass to the private method when invoked
+     * @param arg18 argument 18 to pass to the private method when invoked
+     * @param arg19 argument 19 to pass to the private method when invoked
+     * @param arg20 argument 20 to pass to the private method when invoked
+     * @param arg21 argument 21 to pass to the private method when invoked
+     * @return an <code>Invocation21</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
+     */
+    def apply(arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5, arg6: A6, arg7: A7, arg8: A8, arg9: A9, arg10: A10, arg11: A11, arg12: A12, 
+              arg13: A13, arg14: A14, arg15: A15, arg16: A16, arg17: A17, arg18: A18, arg19: A19, arg20: A20, arg21: A21) = 
+      new Invocation21[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, T](
+        methodName, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21)
   }
 
   /**
@@ -394,6 +1142,449 @@ trait PrivateMethodTester {
      * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
      */
     def apply[A1, A2, A3, A4, A5, A6, T](methodName: Symbol) = new PrivateMethod6[A1, A2, A3, A4, A5, A6, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod7</code> objects.
+   */
+  object PrivateMethod7 {
+    /**
+     * Construct a new <code>PrivateMethod7</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A7</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, T](methodName: Symbol) = new PrivateMethod7[A1, A2, A3, A4, A5, A6, A7, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod8</code> objects.
+   */
+  object PrivateMethod8 {
+    /**
+     * Construct a new <code>PrivateMethod8</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A8</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, T](methodName: Symbol) = new PrivateMethod8[A1, A2, A3, A4, A5, A6, A7, A8, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod9</code> objects.
+   */
+  object PrivateMethod9 {
+    /**
+     * Construct a new <code>PrivateMethod9</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A9</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, T](methodName: Symbol) = new PrivateMethod9[A1, A2, A3, A4, A5, A6, A7, A8, A9, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod10</code> objects.
+   */
+  object PrivateMethod10 {
+    /**
+     * Construct a new <code>PrivateMethod10</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A10</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam A10 the type of the argument 10
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, T](methodName: Symbol) = new PrivateMethod10[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod11</code> objects.
+   */
+  object PrivateMethod11 {
+    /**
+     * Construct a new <code>PrivateMethod11</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A11</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam A10 the type of the argument 10
+     * @tparam A11 the type of the argument 11
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, T](methodName: Symbol) = new PrivateMethod11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod12</code> objects.
+   */
+  object PrivateMethod12 {
+    /**
+     * Construct a new <code>PrivateMethod12</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A12</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam A10 the type of the argument 10
+     * @tparam A11 the type of the argument 11
+     * @tparam A12 the type of the argument 12
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, T](methodName: Symbol) = new PrivateMethod12[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod13</code> objects.
+   */
+  object PrivateMethod13 {
+    /**
+     * Construct a new <code>PrivateMethod13</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A13</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam A10 the type of the argument 10
+     * @tparam A11 the type of the argument 11
+     * @tparam A12 the type of the argument 12
+     * @tparam A13 the type of the argument 13
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, T](methodName: Symbol) = new PrivateMethod13[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod14</code> objects.
+   */
+  object PrivateMethod14 {
+    /**
+     * Construct a new <code>PrivateMethod14</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A14</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam A10 the type of the argument 10
+     * @tparam A11 the type of the argument 11
+     * @tparam A12 the type of the argument 12
+     * @tparam A13 the type of the argument 13
+     * @tparam A14 the type of the argument 14
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, T](methodName: Symbol) = 
+      new PrivateMethod14[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod15</code> objects.
+   */
+  object PrivateMethod15 {
+    /**
+     * Construct a new <code>PrivateMethod15</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A15</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam A10 the type of the argument 10
+     * @tparam A11 the type of the argument 11
+     * @tparam A12 the type of the argument 12
+     * @tparam A13 the type of the argument 13
+     * @tparam A14 the type of the argument 14
+     * @tparam A15 the type of the argument 15
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, T](methodName: Symbol) = 
+      new PrivateMethod15[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod16</code> objects.
+   */
+  object PrivateMethod16 {
+    /**
+     * Construct a new <code>PrivateMethod16</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A16</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam A10 the type of the argument 10
+     * @tparam A11 the type of the argument 11
+     * @tparam A12 the type of the argument 12
+     * @tparam A13 the type of the argument 13
+     * @tparam A14 the type of the argument 14
+     * @tparam A15 the type of the argument 15
+     * @tparam A16 the type of the argument 16
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, T](methodName: Symbol) = 
+      new PrivateMethod16[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod17</code> objects.
+   */
+  object PrivateMethod17 {
+    /**
+     * Construct a new <code>PrivateMethod17</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A17</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam A10 the type of the argument 10
+     * @tparam A11 the type of the argument 11
+     * @tparam A12 the type of the argument 12
+     * @tparam A13 the type of the argument 13
+     * @tparam A14 the type of the argument 14
+     * @tparam A15 the type of the argument 15
+     * @tparam A16 the type of the argument 16
+     * @tparam A17 the type of the argument 17
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, T](methodName: Symbol) = 
+      new PrivateMethod17[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod18</code> objects.
+   */
+  object PrivateMethod18 {
+    /**
+     * Construct a new <code>PrivateMethod18</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A18</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam A10 the type of the argument 10
+     * @tparam A11 the type of the argument 11
+     * @tparam A12 the type of the argument 12
+     * @tparam A13 the type of the argument 13
+     * @tparam A14 the type of the argument 14
+     * @tparam A15 the type of the argument 15
+     * @tparam A16 the type of the argument 16
+     * @tparam A17 the type of the argument 17
+     * @tparam A18 the type of the argument 18
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, T](methodName: Symbol) = 
+      new PrivateMethod18[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod19</code> objects.
+   */
+  object PrivateMethod19 {
+    /**
+     * Construct a new <code>PrivateMethod19</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A19</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam A10 the type of the argument 10
+     * @tparam A11 the type of the argument 11
+     * @tparam A12 the type of the argument 12
+     * @tparam A13 the type of the argument 13
+     * @tparam A14 the type of the argument 14
+     * @tparam A15 the type of the argument 15
+     * @tparam A16 the type of the argument 16
+     * @tparam A17 the type of the argument 17
+     * @tparam A18 the type of the argument 18
+     * @tparam A19 the type of the argument 19
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, T](methodName: Symbol) = 
+      new PrivateMethod19[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod20</code> objects.
+   */
+  object PrivateMethod20 {
+    /**
+     * Construct a new <code>PrivateMethod20</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A20</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam A10 the type of the argument 10
+     * @tparam A11 the type of the argument 11
+     * @tparam A12 the type of the argument 12
+     * @tparam A13 the type of the argument 13
+     * @tparam A14 the type of the argument 14
+     * @tparam A15 the type of the argument 15
+     * @tparam A16 the type of the argument 16
+     * @tparam A17 the type of the argument 17
+     * @tparam A18 the type of the argument 18
+     * @tparam A19 the type of the argument 19
+     * @tparam A20 the type of the argument 20
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, T](methodName: Symbol) = 
+      new PrivateMethod20[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, T](methodName)
+  }
+
+  /**
+   * Contains a factory method for instantiating <code>PrivateMethod21</code> objects.
+   */
+  object PrivateMethod21 {
+    /**
+     * Construct a new <code>PrivateMethod21</code> object with passed <code>methodName</code> symbol.
+     * The type parameter, <code>A1 - A21</code> are the types of the arguments and <code>T</code>, is the return type of the private method.
+     *
+     * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+     * @tparam A1 the type of the argument 1
+     * @tparam A2 the type of the argument 2
+     * @tparam A3 the type of the argument 3
+     * @tparam A4 the type of the argument 4
+     * @tparam A5 the type of the argument 5
+     * @tparam A6 the type of the argument 6
+     * @tparam A7 the type of the argument 7
+     * @tparam A8 the type of the argument 8
+     * @tparam A9 the type of the argument 9
+     * @tparam A10 the type of the argument 10
+     * @tparam A11 the type of the argument 11
+     * @tparam A12 the type of the argument 12
+     * @tparam A13 the type of the argument 13
+     * @tparam A14 the type of the argument 14
+     * @tparam A15 the type of the argument 15
+     * @tparam A16 the type of the argument 16
+     * @tparam A17 the type of the argument 17
+     * @tparam A18 the type of the argument 18
+     * @tparam A19 the type of the argument 19
+     * @tparam A20 the type of the argument 20
+     * @tparam A21 the type of the argument 21
+     * @tparam T the return type of the private method
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+     */
+    def apply[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, T](methodName: Symbol) = 
+      new PrivateMethod21[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, T](methodName)
   }
 
   trait Invocation {
