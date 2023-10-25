@@ -1,5 +1,6 @@
 package org.scalatest.prop
 
+import scala.annotation.tailrec
 import org.scalatest.Assertions.fail
 
 trait StatefulModel {
@@ -29,19 +30,25 @@ trait StatefulModel {
 
     val sut = createSystemUnderTest(state)
 
-    while (true) {
-      val cmd = command(state)
-      if (preCondition(state, cmd)) {
-        val newState = nextState(state, cmd)
-        val sutNewState = sut.nextState(state, cmd)
-        if (newState != sutNewState)
-          fail("SUT returned different state")
-        else if (!postCondition(newState, cmd))
-          fail("Post condition failed")
+    @tailrec def loop(count: Int, state: State): Unit = {
+      if (count > 0) {
+        val cmd = command(state)
+        if (preCondition(state, cmd)) {
+          val newState = nextState(state, cmd)
+          val sutNewState = sut.nextState(state, cmd)
+          if (newState != sutNewState)
+            fail("SUT returned different state")
+          else if (!postCondition(newState, cmd))
+            fail("Post condition failed")
+          else
+            loop(count - 1, newState)
+        }
         else
-          state = newState
+          loop(count, state)
       }
     }
+
+    loop(100, state)
   }
 
 }
