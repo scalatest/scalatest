@@ -1,9 +1,10 @@
 package org.scalatest.prop
 
 import scala.annotation.tailrec
-import org.scalatest.Assertions.fail
+import org.scalatest.exceptions.StackDepthException
+import org.scalactic.source
 
-trait StatefulModel {
+trait StatefulModel[R] {
 
   type Command
   type State
@@ -24,31 +25,41 @@ trait StatefulModel {
 
   def postCondition(state: State, command: Command): Boolean
 
-  def test(): Unit = {
+  private[scalatest] def indicateSuccess(message: => String): R
+
+  private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, optionalCause: Option[Throwable], pos: source.Position): R
+
+  def test(szp: SizeParam)(implicit pos: source.Position): Unit = {
 
     val (initState, initGen) = initialState
 
     val sut = createSystemUnderTest(initState)
 
-    @tailrec def loop(count: Int, state: State, gen: Generator[Command]): Unit = {
+    @tailrec def loop(count: Int, state: State, gen: Generator[Command]): R = {
       if (count > 0) {
         val (cmd, newGen) = command(state, gen)
         if (preCondition(state, cmd)) {
           val newState = nextState(state, cmd)
           val sutNewState = sut.nextState(state, cmd)
-          if (newState != sutNewState)
-            fail("SUT returned different state")
-          else if (!postCondition(newState, cmd))
-            fail("Post condition failed")
+          if (newState != sutNewState) {
+            val failureMsg = "SUT returned different state." // TODO: shrink and construct more meaning full message.
+            indicateFailure(sde => failureMsg, failureMsg, None, pos)
+          }
+          else if (!postCondition(newState, cmd)) {
+            val failureMsg = "Post condition failed." // TODO: shrink and construct more meaning full message.
+            indicateFailure(sde => failureMsg, failureMsg, None, pos)
+          }
           else
             loop(count - 1, newState, newGen)
         }
         else
           loop(count, state, newGen)
       }
+      else
+        indicateSuccess("OK, passed " + count + " tests")
     }
 
-    loop(100, initState, initGen)
+    loop(szp.size, initState, initGen)
   }
 
 }
