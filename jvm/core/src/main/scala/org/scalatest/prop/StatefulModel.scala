@@ -14,7 +14,7 @@ trait StatefulModel {
 
   def initialState: (State, Generator[Command])
 
-  def createSystemUnderTest(initState: State, initGen: Generator[Command]): SystemUnderTest
+  def createSystemUnderTest(initState: State): SystemUnderTest
 
   def nextState(state: State, command: Command): State
 
@@ -28,7 +28,7 @@ trait StatefulModel {
 
     val (initState, initGen) = initialState
 
-    val sut = createSystemUnderTest(initState, initGen)
+    val sut = createSystemUnderTest(initState)
 
     @tailrec def loop(count: Int, state: State, gen: Generator[Command]): Unit = {
       if (count > 0) {
