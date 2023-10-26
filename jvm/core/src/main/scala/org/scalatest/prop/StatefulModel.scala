@@ -35,7 +35,7 @@ trait StatefulModel[R] {
 
     val sut = createSystemUnderTest(initState)
 
-    @tailrec def loop(count: Int, state: State, gen: Generator[Command]): R = {
+    @tailrec def loop(count: Int, state: State, gen: Generator[Command], accCmd: IndexedSeq[Command], accRes: IndexedSeq[State]): R = {
       if (count > 0) {
         val (cmd, newGen) = command(state, gen)
         if (preCondition(state, cmd)) {
@@ -50,16 +50,16 @@ trait StatefulModel[R] {
             indicateFailure(sde => failureMsg, failureMsg, None, pos)
           }
           else
-            loop(count - 1, newState, newGen)
+            loop(count - 1, newState, newGen, accCmd :+ cmd, accRes :+ newState)
         }
         else
-          loop(count, state, newGen)
+          loop(count, state, newGen, accCmd, accRes)
       }
       else
         indicateSuccess("OK, passed " + count + " tests")
     }
 
-    loop(szp.size, initState, initGen)
+    loop(szp.size, initState, initGen, IndexedSeq.empty, IndexedSeq.empty)
   }
 
 }
