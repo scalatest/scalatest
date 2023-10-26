@@ -4,7 +4,7 @@ import scala.annotation.tailrec
 import org.scalatest.exceptions.StackDepthException
 import org.scalactic.source
 
-trait StatefulModel[R] {
+trait StatefulPropertyCheckModel[R] {
 
   type Command
   type State
