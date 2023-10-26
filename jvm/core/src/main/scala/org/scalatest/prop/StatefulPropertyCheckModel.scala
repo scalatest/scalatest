@@ -29,7 +29,7 @@ trait StatefulPropertyCheckModel[R] {
 
   private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, optionalCause: Option[Throwable], pos: source.Position): R
 
-  def test(szp: SizeParam)(implicit pos: source.Position): Unit = {
+  def check(szp: SizeParam)(implicit pos: source.Position): Unit = {
 
     val (initState, initGen) = initialState
 
