@@ -13,6 +13,7 @@ trait StatefulPropertyCheckModel[R] {
 
   trait SystemUnderTest {
     def nextState(state: TState, command: TCommand): TState
+    def state(): TState
   }
 
   def initialize: (TState, Generator[TCommand], Randomizer)
@@ -31,7 +32,7 @@ trait StatefulPropertyCheckModel[R] {
 
   private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, optionalCause: Option[Throwable], pos: source.Position): R
 
-  def check(szp: SizeParam)(implicit pos: source.Position): Unit = {
+  def check(szp: SizeParam)(implicit pos: source.Position): R = {
 
     val (initState, gen, initRnd) = initialize
 

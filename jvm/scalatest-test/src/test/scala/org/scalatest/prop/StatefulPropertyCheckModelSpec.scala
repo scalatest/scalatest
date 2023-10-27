@@ -1,16 +1,18 @@
 package org.scalatest.prop
 
+import org.scalatest.funsuite.AnyFunSuite
+
 class StaffManagementSystem {
   
     private var staffs: Map[String, String] = Map.empty
   
-    def addStaff(id: String, name: String): Unit = {
+    def addStaff(id: String, name: String): Unit = 
       staffs = staffs + (id -> name)
-    }
   
-    def searchStaff(id: String): Option[String] = {
+    def searchStaff(id: String): Option[String] = 
       staffs.get(id)
-    }
+
+    def getStaffs: Map[String, String] = staffs
 }
 
 class StaffManagementSystemModel extends AssertiongStatefulPropertyCheckModel {
@@ -42,9 +44,15 @@ class StaffManagementSystemModel extends AssertiongStatefulPropertyCheckModel {
       val sut = new StaffManagementSystem
       def nextState(state: Map[String, String], command: Command): Map[String, String] = 
         command match {
-          case AddStaff(id, name) => state + (id -> name)
-          case SearchStaff(id) => state
+          case AddStaff(id, name) => 
+            sut.addStaff(id, name)
+            sut.getStaffs
+
+          case SearchStaff(id) => 
+            sut.searchStaff(id)
+            sut.getStaffs
         }
+      def state(): Map[String, String] = sut.getStaffs  
     }
 
   def nextState(state: Map[String, String], command: Command): Map[String, String] = 
@@ -54,12 +62,21 @@ class StaffManagementSystemModel extends AssertiongStatefulPropertyCheckModel {
     }
 
   def command(state: Map[String, String], gen: Generator[Command], rnd: Randomizer): (Command, Randomizer) = {
-    val (roseTree, results, newRnd) = gen.next(SizeParam(1, 1, 1), List.empty, rnd)
-    (results.head, newRnd)
+    val (nextV, _, newRnd) = gen.next(SizeParam(1, 10, 10), List.empty, rnd)
+    (nextV.value, newRnd)
   }
 
   def preCondition(state: Map[String, String], command: Command, accCmd: IndexedSeq[Command], accRes: IndexedSeq[Map[String, String]]): Boolean = true
 
   def postCondition(oldState: Map[String, String], newState: Map[String, String], command: Command, accCmd: IndexedSeq[Command], accRes: IndexedSeq[Map[String, String]]): Boolean = true
+
+}
+
+class StatefulPropertyCheckModelSpec extends AnyFunSuite {
+
+  test("StaffManagementSystemModel should be able to add staff and search staff") {
+    val model = new StaffManagementSystemModel()
+    model.check(SizeParam(0, 100, 100))
+  }
 
 }
