@@ -1,10 +1,14 @@
 package org.scalatest.prop
 
 import scala.annotation.tailrec
+import scala.compat.Platform.EOL
+
 import org.scalatest.Assertion
 import org.scalatest.Assertions.{succeed, fail}
 import org.scalatest.exceptions.StackDepthException
-import org.scalactic.source
+import org.scalatest.FailureMessages
+
+import org.scalactic.{source, Prettifier}
 
 trait StatefulPropertyCheckModel[R] {
 
@@ -32,7 +36,7 @@ trait StatefulPropertyCheckModel[R] {
 
   private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, optionalCause: Option[Throwable], pos: source.Position): R
 
-  def check(szp: SizeParam)(implicit pos: source.Position): R = {
+  def check(szp: SizeParam)(implicit pos: source.Position, prettifier: Prettifier): R = {
 
     val (initState, gen, initRnd) = initialize
 
@@ -45,11 +49,13 @@ trait StatefulPropertyCheckModel[R] {
           val newState = nextState(state, cmd)
           val sutNewState = sut.nextState(state, cmd)
           if (newState != sutNewState) {
-            val failureMsg = "SUT returned different state." // TODO: shrink and construct more meaning full message.
+            val failingCommands = accCmd :+ cmd
+            val failureMsg = FailureMessages.sutReturnedDifferentStateAfterExecutingCommands + EOL + failingCommands.map(_.toString).mkString("\n") + EOL + FailureMessages.initState(prettifier, initState) + EOL + FailureMessages.initSeed(prettifier, initRnd.seed)
             indicateFailure(sde => failureMsg, failureMsg, None, pos)
           }
           else if (!postCondition(state, newState, cmd, accCmd, accRes)) {
-            val failureMsg = "Post condition failed." // TODO: shrink and construct more meaning full message.
+            val failingCommands = accCmd :+ cmd
+            val failureMsg = FailureMessages.postConditionFailedAfterExecutingCommands + EOL + failingCommands.map(_.toString).mkString("\n") + EOL + FailureMessages.initState(prettifier, initState) + EOL + FailureMessages.initSeed(prettifier, initRnd.seed)
             indicateFailure(sde => failureMsg, failureMsg, None, pos)
           }
           else
@@ -59,7 +65,7 @@ trait StatefulPropertyCheckModel[R] {
           loop(count, state, newRnd, accCmd, accRes)
       }
       else
-        indicateSuccess("OK, passed " + count + " tests")
+        indicateSuccess(FailureMessages.propertyCheckSucceeded)
     }
 
     loop(szp.size, initState, initRnd, IndexedSeq.empty, IndexedSeq.empty)
