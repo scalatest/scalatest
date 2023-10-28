@@ -10,6 +10,8 @@ import org.scalatest.FailureMessages
 
 import org.scalactic.{source, Prettifier}
 
+import org.scalactic.ColCompatHelper.LazyListOrStream
+
 trait StatefulPropertyCheckModel[R] {
 
   type TCommand
@@ -36,11 +38,7 @@ trait StatefulPropertyCheckModel[R] {
 
   private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, optionalCause: Option[Throwable], pos: source.Position): R
 
-  def check(szp: SizeParam)(implicit pos: source.Position, prettifier: Prettifier): R = {
-
-    val (initState, gen, initRnd) = initialize
-
-    val sut = createSystemUnderTest(initState)
+  def check(szp: SizeParam, sut: SystemUnderTest, initState: TState, gen: Generator[TCommand], initRnd: Randomizer)(implicit pos: source.Position, prettifier: Prettifier): R = {
 
     @tailrec def loop(count: Int, state: TState, rnd: Randomizer, accCmd: IndexedSeq[TCommand], accRes: IndexedSeq[TState]): R = {
       if (count > 0) {
@@ -69,6 +67,16 @@ trait StatefulPropertyCheckModel[R] {
     }
 
     loop(szp.size, initState, initRnd, IndexedSeq.empty, IndexedSeq.empty)
+  }
+
+
+  def check(szp: SizeParam)(implicit pos: source.Position, prettifier: Prettifier): R = {
+
+    val (initState, gen, initRnd) = initialize
+
+    val sut = createSystemUnderTest(initState)
+
+    check(szp, sut, initState, gen, initRnd)
   }
 
 }
