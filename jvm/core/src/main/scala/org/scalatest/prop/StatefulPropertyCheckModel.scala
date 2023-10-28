@@ -38,24 +38,33 @@ trait StatefulPropertyCheckModel[R] {
 
   private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, optionalCause: Option[Throwable], pos: source.Position): R
 
-  def check(szp: SizeParam, sut: SystemUnderTest, initState: TState, gen: Generator[TCommand], initRnd: Randomizer)(implicit pos: source.Position, prettifier: Prettifier): R = {
+  case class NextRoseTree(value: Seq[TCommand]) extends RoseTree[Seq[TCommand]] {
+    def shrinks: LazyListOrStream[RoseTree[Seq[TCommand]]] = {
+      def resLazyListOrStream(theValue: Seq[TCommand]): LazyListOrStream[RoseTree[Seq[TCommand]]] = {
+        if (theValue.length > 1) {
+          val half: Int = theValue.length / 2
+          val (left, right) = theValue.splitAt(half)
+          Rose(right) #:: LazyListOrStream.empty
+        }
+        else 
+          LazyListOrStream.empty
+      }
+      resLazyListOrStream(value)
+    }
+  }
 
-    @tailrec def loop(count: Int, state: TState, rnd: Randomizer, accCmd: IndexedSeq[TCommand], accRes: IndexedSeq[TState]): R = {
+  private def checkSut(szp: SizeParam, sut: SystemUnderTest, initState: TState, gen: Generator[TCommand], initRnd: Randomizer)(implicit pos: source.Position, prettifier: Prettifier): (IndexedSeq[TCommand], IndexedSeq[TState], Option[TState]) = {
+
+    @tailrec def loop(count: Int, state: TState, rnd: Randomizer, accCmd: IndexedSeq[TCommand], accRes: IndexedSeq[TState]): (IndexedSeq[TCommand], IndexedSeq[TState], Option[TState]) = {
       if (count > 0) {
         val (cmd, newRnd) = command(state, gen, rnd)
         if (preCondition(state, cmd, accCmd, accRes)) {
           val newState = nextState(state, cmd)
           val sutNewState = sut.nextState(state, cmd)
-          if (newState != sutNewState) {
-            val failingCommands = accCmd :+ cmd
-            val failureMsg = FailureMessages.sutReturnedDifferentStateAfterExecutingCommands + EOL + failingCommands.map(_.toString).mkString("\n") + EOL + FailureMessages.initState(prettifier, initState) + EOL + FailureMessages.initSeed(prettifier, initRnd.seed)
-            indicateFailure(sde => failureMsg, failureMsg, None, pos)
-          }
-          else if (!postCondition(state, newState, cmd, accCmd, accRes)) {
-            val failingCommands = accCmd :+ cmd
-            val failureMsg = FailureMessages.postConditionFailedAfterExecutingCommands + EOL + failingCommands.map(_.toString).mkString("\n") + EOL + FailureMessages.initState(prettifier, initState) + EOL + FailureMessages.initSeed(prettifier, initRnd.seed)
-            indicateFailure(sde => failureMsg, failureMsg, None, pos)
-          }
+          if (newState != sutNewState) 
+            (accCmd :+ cmd, accRes :+ newState, Some(sutNewState))
+          else if (!postCondition(state, newState, cmd, accCmd, accRes)) 
+            (accCmd :+ cmd, accRes :+ newState, Some(sutNewState))
           else
             loop(count - 1, newState, newRnd, accCmd :+ cmd, accRes :+ newState)
         }
@@ -63,7 +72,7 @@ trait StatefulPropertyCheckModel[R] {
           loop(count, state, newRnd, accCmd, accRes)
       }
       else
-        indicateSuccess(FailureMessages.propertyCheckSucceeded)
+        (accCmd, accRes, None)
     }
 
     loop(szp.size, initState, initRnd, IndexedSeq.empty, IndexedSeq.empty)
@@ -76,7 +85,19 @@ trait StatefulPropertyCheckModel[R] {
 
     val sut = createSystemUnderTest(initState)
 
-    check(szp, sut, initState, gen, initRnd)
+    val (accCmd, accRes, failingSutState) = checkSut(szp, sut, initState, gen, initRnd)
+
+    failingSutState match {
+      case Some(sutState) =>
+        val failureMsg = 
+          if (accRes.last == sutState)
+            FailureMessages.postConditionFailedAfterExecutingCommands + EOL + accCmd.map(_.toString).mkString("\n") + EOL + FailureMessages.initState(prettifier, initState) + EOL + FailureMessages.initSeed(prettifier, initRnd.seed)
+          else
+            FailureMessages.sutReturnedDifferentStateAfterExecutingCommands + EOL + accCmd.map(_.toString).mkString("\n") + EOL + FailureMessages.initState(prettifier, initState) + EOL + FailureMessages.initSeed(prettifier, initRnd.seed)
+        indicateFailure(sde => failureMsg, failureMsg, None, pos)
+      case None =>
+        indicateSuccess(FailureMessages.propertyCheckSucceeded)
+    }      
   }
 
 }
