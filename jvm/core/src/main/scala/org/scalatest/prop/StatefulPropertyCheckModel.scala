@@ -4,8 +4,8 @@ import scala.annotation.tailrec
 import scala.compat.Platform.EOL
 
 import org.scalatest.Assertion
-import org.scalatest.Assertions.{succeed, fail}
-import org.scalatest.exceptions.StackDepthException
+import org.scalatest.Assertions.succeed
+import org.scalatest.exceptions.{StackDepthException, GeneratorDrivenPropertyCheckFailedException}
 import org.scalatest.FailureMessages
 
 import org.scalactic.{source, Prettifier}
@@ -37,7 +37,8 @@ trait StatefulPropertyCheckModel[R] {
 
   private[scalatest] def indicateSuccess(message: => String): R
 
-  private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, optionalCause: Option[Throwable], pos: source.Position): R
+  private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, optionalCause: Option[Throwable], pos: source.Position, 
+                                         initState: TState, initRnd: Randomizer, failingCmds: List[TCommand]): R
 
   case class NextRoseTree(value: Seq[TCommand]) extends RoseTree[Seq[TCommand]] {
     def shrinks: LazyListOrStream[RoseTree[Seq[TCommand]]] = {
@@ -90,7 +91,7 @@ trait StatefulPropertyCheckModel[R] {
     def shrinkLoop(gen: Generator[TCommand], base: (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]), remainings: (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState])): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
       val (remainingCmd, remainingRnd, remainingRes) = remainings
       val (baseCmd, baseRnd, baseRes, baseFailingSutState) = base
-      if (remainingCmd.length > 1) {  
+      if (remainingCmd.length > 2) {  
         val halfSize = remainingCmd.length / 2
 
         val firstHalfRemainingCmd = remainingCmd.take(halfSize)
@@ -102,7 +103,7 @@ trait StatefulPropertyCheckModel[R] {
         val firstHalfRemainingRes = remainingRes.take(halfSize)
         val secondHalfRemainingRes = remainingRes.drop(halfSize)
 
-        val nextLength = PosZInt.ensuringValid(secondHalfRemainingRnd.length)
+        val nextLength = PosZInt.ensuringValid(secondHalfRemainingRnd.length + 1)
       
         val nextSzp = SizeParam(0, nextLength, nextLength)
         val (secondHalfCmd, secondHalfRnd, secondHalfRes, secondHalfFailingSutState) = tryRun(nextSzp, firstHalfRemainingRes.last, gen, secondHalfRemainingRnd.head)
@@ -135,7 +136,7 @@ trait StatefulPropertyCheckModel[R] {
             FailureMessages.postConditionFailedAfterExecutingCommands + EOL + accCmd.map(_.toString).mkString("\n") + EOL + FailureMessages.initState(prettifier, resInitState) + EOL + FailureMessages.initSeed(prettifier, resInitRnd.seed)
           else
             FailureMessages.sutReturnedDifferentStateAfterExecutingCommands + EOL + accCmd.map(_.toString).mkString("\n") + EOL + FailureMessages.initState(prettifier, resInitState) + EOL + FailureMessages.initSeed(prettifier, resInitRnd.seed)
-        indicateFailure(sde => failureMsg, failureMsg, None, pos)
+        indicateFailure(sde => failureMsg, failureMsg, None, pos, resInitState, resInitRnd, accCmd.toList)
       case None =>
         indicateSuccess(FailureMessages.propertyCheckSucceeded)
     }      
@@ -147,7 +148,17 @@ trait AssertiongStatefulPropertyCheckModel extends StatefulPropertyCheckModel[As
 
   private[scalatest] def indicateSuccess(message: => String): Assertion = succeed
 
-  private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = 
-    fail(undecoratedMessage)
+  private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, optionalCause: Option[Throwable], pos: source.Position, 
+                                         initState: TState, initRnd: Randomizer, failingCmds: List[TCommand]): Assertion = 
+    throw new GeneratorDrivenPropertyCheckFailedException(
+      messageFun,
+      optionalCause,
+      pos,
+      Some((initState, initRnd)),
+      undecoratedMessage,
+      failingCmds,
+      None,
+      List.empty
+    )
 
 }

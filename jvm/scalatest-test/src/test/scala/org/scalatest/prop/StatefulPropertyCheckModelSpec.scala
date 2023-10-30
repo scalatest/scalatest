@@ -1,11 +1,12 @@
 package org.scalatest.prop
 
+import org.scalatest.OptionValues
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.exceptions.TestFailedException
 
-class StaffManagementSystem {
+class StaffManagementSystem(initStaffs: Map[String, String]) {
   
-  private var staffs: Map[String, String] = Map.empty
+  private var staffs: Map[String, String] = initStaffs
   
   def addStaff(id: String, name: String): Unit = 
     staffs = staffs + (id -> name)
@@ -14,12 +15,6 @@ class StaffManagementSystem {
     staffs.get(id)
 
   def getStaffs: Map[String, String] = staffs
-}
-
-class FaulthyStaffManagementSystem extends StaffManagementSystem {
-  override def addStaff(id: String, name: String): Unit = 
-    if (getStaffs.size < 10)
-      super.addStaff(id, name)
 }
 
 class StaffManagementSystemModel extends AssertiongStatefulPropertyCheckModel {
@@ -46,11 +41,11 @@ class StaffManagementSystemModel extends AssertiongStatefulPropertyCheckModel {
     (Map.empty, gen, Randomizer.default)
   }
 
-  protected def createStaffManagementSystem(): StaffManagementSystem = new StaffManagementSystem
+  protected def createStaffManagementSystem(initState: Map[String, String]): StaffManagementSystem = new StaffManagementSystem(initState)
 
   def createSystemUnderTest(initState: Map[String, String]): SystemUnderTest = 
     new SystemUnderTest {
-      val sut = createStaffManagementSystem()
+      val sut = createStaffManagementSystem(initState)
       def nextState(state: Map[String, String], command: Command): Map[String, String] = 
         command match {
           case AddStaff(id, name) => 
@@ -81,13 +76,19 @@ class StaffManagementSystemModel extends AssertiongStatefulPropertyCheckModel {
 
 }
 
+class FaulthyStaffManagementSystem(initStaffs: Map[String, String]) extends StaffManagementSystem(initStaffs) {
+  override def addStaff(id: String, name: String): Unit = 
+    if (getStaffs.size < 10)
+      super.addStaff(id, name)
+}
+
 class FaulthyStaffManagementSystemModel extends StaffManagementSystemModel {
 
-  override protected def createStaffManagementSystem(): StaffManagementSystem = new FaulthyStaffManagementSystem
+  override protected def createStaffManagementSystem(initState: Map[String, String]): StaffManagementSystem = new FaulthyStaffManagementSystem(initState)
 
 }
 
-class StatefulPropertyCheckModelSpec extends AnyFunSuite {
+class StatefulPropertyCheckModelSpec extends AnyFunSuite with OptionValues {
 
   test("StaffManagementSystemModel should be able to add staff and search staff") {
     val model = new StaffManagementSystemModel()
@@ -99,7 +100,11 @@ class StatefulPropertyCheckModelSpec extends AnyFunSuite {
     val e = intercept[TestFailedException] {
       model.check(SizeParam(0, 100, 100))
     }
-    // TODO: assert the e, we probably need a more specific exception type for this.
+    assert(e.payload.isDefined)
+    val payload = e.payload.value
+    assert(payload.isInstanceOf[Tuple2[_, _]])
+    val (initStat: Map[String, String], initRnd: Randomizer) = payload.asInstanceOf[Tuple2[_, _]]
+    assert(initStat.size == 10)
   }
 
 }
