@@ -1,18 +1,25 @@
 package org.scalatest.prop
 
 import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.exceptions.TestFailedException
 
 class StaffManagementSystem {
   
-    private var staffs: Map[String, String] = Map.empty
+  private var staffs: Map[String, String] = Map.empty
   
-    def addStaff(id: String, name: String): Unit = 
-      staffs = staffs + (id -> name)
+  def addStaff(id: String, name: String): Unit = 
+    staffs = staffs + (id -> name)
   
-    def searchStaff(id: String): Option[String] = 
-      staffs.get(id)
+  def searchStaff(id: String): Option[String] = 
+    staffs.get(id)
 
-    def getStaffs: Map[String, String] = staffs
+  def getStaffs: Map[String, String] = staffs
+}
+
+class FaulthyStaffManagementSystem extends StaffManagementSystem {
+  override def addStaff(id: String, name: String): Unit = 
+    if (getStaffs.size < 10)
+      super.addStaff(id, name)
 }
 
 class StaffManagementSystemModel extends AssertiongStatefulPropertyCheckModel {
@@ -39,9 +46,11 @@ class StaffManagementSystemModel extends AssertiongStatefulPropertyCheckModel {
     (Map.empty, gen, Randomizer.default)
   }
 
+  protected def createStaffManagementSystem(): StaffManagementSystem = new StaffManagementSystem
+
   def createSystemUnderTest(initState: Map[String, String]): SystemUnderTest = 
     new SystemUnderTest {
-      val sut = new StaffManagementSystem
+      val sut = createStaffManagementSystem()
       def nextState(state: Map[String, String], command: Command): Map[String, String] = 
         command match {
           case AddStaff(id, name) => 
@@ -72,11 +81,25 @@ class StaffManagementSystemModel extends AssertiongStatefulPropertyCheckModel {
 
 }
 
+class FaulthyStaffManagementSystemModel extends StaffManagementSystemModel {
+
+  override protected def createStaffManagementSystem(): StaffManagementSystem = new FaulthyStaffManagementSystem
+
+}
+
 class StatefulPropertyCheckModelSpec extends AnyFunSuite {
 
   test("StaffManagementSystemModel should be able to add staff and search staff") {
     val model = new StaffManagementSystemModel()
     model.check(SizeParam(0, 100, 100))
+  }
+
+  test("FaulthyStaffManagementSystemModel should be able to shrink init state and commands to find the bug") {
+    val model = new FaulthyStaffManagementSystemModel()
+    val e = intercept[TestFailedException] {
+      model.check(SizeParam(0, 100, 100))
+    }
+    // TODO: assert the e, we probably need a more specific exception type for this.
   }
 
 }
