@@ -109,8 +109,7 @@ trait StatefulPropertyCheckModel[R] {
 
         val nextLength = PosZInt.ensuringValid(secondHalfRemainingRnd.length + 1)
       
-        val nextSzp = SizeParam(0, nextLength, nextLength)
-        val (secondHalfCmd, secondHalfRnd, secondHalfRes, secondHalfFailingSutState) = tryRun(nextSzp, firstHalfRemainingRes.last, gen, secondHalfRemainingRnd.head)
+        val (secondHalfCmd, secondHalfRnd, secondHalfRes, secondHalfFailingSutState) = tryRun(szp, firstHalfRemainingRes.last, gen, secondHalfRemainingRnd.head)
         secondHalfFailingSutState match {
           case Some(failingSutState) => // Successfully got failure using second half, we'll continue shrinking from there and forget about first half.
             shrinkLoop(gen, (baseCmd, baseRnd, baseRes, secondHalfFailingSutState), (secondHalfRemainingCmd, secondHalfRemainingRnd, secondHalfRemainingRes))
