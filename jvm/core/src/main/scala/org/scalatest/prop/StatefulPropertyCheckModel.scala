@@ -3,7 +3,7 @@ package org.scalatest.prop
 import scala.annotation.tailrec
 import scala.compat.Platform.EOL
 
-import org.scalatest.Assertion
+import org.scalatest.{Assertion, Expectation, Fact}
 import org.scalatest.Assertions.succeed
 import org.scalatest.exceptions.{StackDepthException, GeneratorDrivenPropertyCheckFailedException}
 import org.scalatest.FailureMessages
@@ -35,9 +35,9 @@ trait StatefulPropertyCheckModel[R] {
 
   def postCondition(oldState: TState, newState: TState, command: TCommand, accCmd: IndexedSeq[TCommand], accRes: IndexedSeq[TState]): Boolean
 
-  private[scalatest] def indicateSuccess(message: => String): R
+  private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): R
 
-  private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, optionalCause: Option[Throwable], pos: source.Position, 
+  private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, prettifier: Prettifier, optionalCause: Option[Throwable], pos: source.Position, 
                                          initState: TState, initRnd: Randomizer, failingCmds: List[TCommand]): R
 
   case class NextRoseTree(value: Seq[TCommand]) extends RoseTree[Seq[TCommand]] {
@@ -139,9 +139,9 @@ trait StatefulPropertyCheckModel[R] {
             FailureMessages.postConditionFailedAfterExecutingCommands + EOL + accCmd.map(_.toString).mkString("\n") + EOL + FailureMessages.initState(prettifier, resInitState) + EOL + FailureMessages.initSeed(prettifier, resInitRnd.seed)
           else
             FailureMessages.sutReturnedDifferentStateAfterExecutingCommands + EOL + accCmd.map(_.toString).mkString("\n") + EOL + FailureMessages.initState(prettifier, resInitState) + EOL + FailureMessages.initSeed(prettifier, resInitRnd.seed)
-        indicateFailure(sde => failureMsg, failureMsg, None, pos, resInitState, resInitRnd, accCmd.toList)
+        indicateFailure(sde => failureMsg, failureMsg, prettifier, None, pos, resInitState, resInitRnd, accCmd.toList)
       case None =>
-        indicateSuccess(FailureMessages.propertyCheckSucceeded)
+        indicateSuccess(FailureMessages.propertyCheckSucceeded, prettifier)
     }      
   }
 
@@ -149,9 +149,9 @@ trait StatefulPropertyCheckModel[R] {
 
 trait AssertiongStatefulPropertyCheckModel extends StatefulPropertyCheckModel[Assertion] {
 
-  private[scalatest] def indicateSuccess(message: => String): Assertion = succeed
+  private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Assertion = succeed
 
-  private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, optionalCause: Option[Throwable], pos: source.Position, 
+  private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, prettifier: Prettifier, optionalCause: Option[Throwable], pos: source.Position, 
                                          initState: TState, initRnd: Randomizer, failingCmds: List[TCommand]): Assertion = 
     throw new GeneratorDrivenPropertyCheckFailedException(
       messageFun,
@@ -163,5 +163,28 @@ trait AssertiongStatefulPropertyCheckModel extends StatefulPropertyCheckModel[As
       None,
       List.empty
     )
+
+}
+
+trait ExpectationStatefulPropertyCheckModel extends StatefulPropertyCheckModel[Expectation] {
+
+  private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Expectation = Fact.Yes(message, prettifier)
+
+  private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, prettifier: Prettifier, optionalCause: Option[Throwable], pos: source.Position, 
+                                         initState: TState, initRnd: Randomizer, failingCmds: List[TCommand]): Expectation = {
+    val gdpcfe =
+      new GeneratorDrivenPropertyCheckFailedException(
+        messageFun,
+        optionalCause,
+        pos,
+        Some((initState, initRnd)),
+        undecoratedMessage,
+        failingCmds,
+        None,
+        List.empty
+      )
+    val message: String = gdpcfe.getMessage
+    Fact.No(message, prettifier)  
+  }
 
 }

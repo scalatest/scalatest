@@ -1,6 +1,6 @@
 package org.scalatest.prop
 
-import org.scalatest.OptionValues
+import org.scalatest.{Assertion, OptionValues, Expectation}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.exceptions.TestFailedException
 
@@ -17,7 +17,7 @@ class StaffManagementSystem(initStaffs: Map[String, String]) {
   def getStaffs: Map[String, String] = staffs
 }
 
-class StaffManagementSystemModel extends AssertiongStatefulPropertyCheckModel {
+trait StaffManagementSystemModel[T] extends StatefulPropertyCheckModel[T] {
 
   sealed trait Command
   case class AddStaff(id: String, name: String) extends Command
@@ -82,21 +82,25 @@ class FaulthyStaffManagementSystem(initStaffs: Map[String, String]) extends Staf
       super.addStaff(id, name)
 }
 
-class FaulthyStaffManagementSystemModel extends StaffManagementSystemModel {
+trait FaulthyStaffManagementSystemModel[T] extends StaffManagementSystemModel[T] {
 
   override protected def createStaffManagementSystem(initState: Map[String, String]): StaffManagementSystem = new FaulthyStaffManagementSystem(initState)
 
 }
 
-class StatefulPropertyCheckModelSpec extends AnyFunSuite with OptionValues {
+class AssertingStaffManagementSystemModel extends StaffManagementSystemModel[Assertion] with AssertiongStatefulPropertyCheckModel
 
-  test("StaffManagementSystemModel should be able to add staff and search staff") {
-    val model = new StaffManagementSystemModel()
+class AssertingFaulthyStaffManagementSystemModel extends FaulthyStaffManagementSystemModel[Assertion] with AssertiongStatefulPropertyCheckModel
+
+class AssertingStatefulPropertyCheckModelSpec extends AnyFunSuite with OptionValues {
+
+  test("AssertingStaffManagementSystemModel should be able to add staff and search staff") {
+    val model = new AssertingStaffManagementSystemModel()
     model.check(SizeParam(0, 100, 100))
   }
 
-  test("FaulthyStaffManagementSystemModel should be able to shrink init state and commands to find the bug") {
-    val model = new FaulthyStaffManagementSystemModel()
+  test("AssertingFaulthyStaffManagementSystemModel should be able to shrink init state and commands to find the bug") {
+    val model = new AssertingFaulthyStaffManagementSystemModel()
     val e = intercept[TestFailedException] {
       model.check(SizeParam(0, 100, 100))
     }
@@ -105,6 +109,27 @@ class StatefulPropertyCheckModelSpec extends AnyFunSuite with OptionValues {
     assert(payload.isInstanceOf[Tuple2[_, _]])
     val (initStat: Map[String, String], initRnd: Randomizer) = payload.asInstanceOf[Tuple2[_, _]]
     assert(initStat.size == 10)
+  }
+
+}
+
+class ExpectationStaffManagementSystemModel extends StaffManagementSystemModel[Expectation] with ExpectationStatefulPropertyCheckModel
+
+class ExpectationFaulthyStaffManagementSystemModel extends FaulthyStaffManagementSystemModel[Expectation] with ExpectationStatefulPropertyCheckModel
+
+class ExpectationStatefulPropertyCheckModelSpec extends AnyFunSuite with OptionValues {
+
+  test("ExpectationStaffManagementSystemModel should be able to add staff and search staff") {
+    val model = new ExpectationStaffManagementSystemModel()
+    val fact = model.check(SizeParam(0, 100, 100))
+    assert(fact.isYes)
+  }
+
+  test("ExpectationFaulthyStaffManagementSystemModel should be able to shrink init state and commands to find the bug") {
+    val model = new ExpectationFaulthyStaffManagementSystemModel()
+    val fact = model.check(SizeParam(0, 100, 100))
+    assert(fact.isNo)
+    assert(fact.factMessage.contains("SUT returned different state after executing commands:"))
   }
 
 }
