@@ -219,7 +219,7 @@ trait Generator[T] { thisGeneratorOfT =>
         @tailrec
         def loop(count: Int, nextRnd: Randomizer): (RoseTree[T], Randomizer) = {
           if (count > Generator.MaxLoopCount)
-            throw new IllegalStateException(s"A Generator produced by calling filter or withFilter on another Generator (possibly by using an 'if' clause in a for expression) has filtered out ${Generator.MaxLoopCount} objects in a row in its next method, so aborting. Please define the Generator without using filter or withFilter.")
+            throw new IllegalStateException(Resources.generatorExceededMaxLoopCount(Generator.MaxLoopCount))
           val (b, rnd2) = nextImpl(szp, isValid, nextRnd)
           if (isValid(b.value, szp))
             (b, rnd2)
