@@ -57,7 +57,7 @@ trait StatefulPropertyCheckModel[R] {
 
   private def checkSut(szp: SizeParam, sut: SystemUnderTest, initState: TState, gen: Generator[TCommand], initRnd: Randomizer)(implicit pos: source.Position, prettifier: Prettifier): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
 
-    @tailrec def loop(count: Int, state: TState, rnd: Randomizer, accCmd: IndexedSeq[TCommand], accRnd: IndexedSeq[Randomizer], accRes: IndexedSeq[TState]): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
+    @tailrec def loop(count: Int, state: TState, rnd: Randomizer, accCmd: IndexedSeq[TCommand], accRnd: IndexedSeq[Randomizer], accRes: IndexedSeq[TState], failedPreconditionCount: Int): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
       if (count > 0) {
         val (cmd, newRnd) = command(state, gen, rnd)
         if (preCondition(state, cmd, accCmd, accRes)) {
@@ -68,16 +68,20 @@ trait StatefulPropertyCheckModel[R] {
           else if (!postCondition(state, newState, cmd, accCmd, accRes)) 
             (accCmd :+ cmd, accRnd :+ rnd, accRes :+ newState, Some(sutNewState))
           else
-            loop(count - 1, newState, newRnd, accCmd :+ cmd, accRnd :+ newRnd, accRes :+ newState)
+            loop(count - 1, newState, newRnd, accCmd :+ cmd, accRnd :+ newRnd, accRes :+ newState, 0)
         }
-        else
-          loop(count, state, newRnd, accCmd, accRnd, accRes)
+        else {
+          if (failedPreconditionCount < Generator.MaxLoopCount)
+            loop(count, state, newRnd, accCmd, accRnd, accRes, failedPreconditionCount + 1)
+          else
+            throw new IllegalStateException(FailureMessages.commandGeneratorExceededMaxLoopCount(prettifier, Generator.MaxLoopCount))  
+        }
       }
-      else
+      else 
         (accCmd, accRnd, accRes, None)
     }
 
-    loop(szp.size, initState, initRnd, IndexedSeq.empty, IndexedSeq.empty, IndexedSeq.empty)
+    loop(szp.size, initState, initRnd, IndexedSeq.empty, IndexedSeq.empty, IndexedSeq.empty, 0)
   }
 
 
