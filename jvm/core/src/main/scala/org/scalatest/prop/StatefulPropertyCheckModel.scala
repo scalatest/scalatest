@@ -16,18 +16,11 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
 /**
  * Stateful property check model trait that can be used for building model for stateful property-based testing.
  *
+ * @tparam TCommand the type of the command
+ * @tparam TState the type of the state
  * @tparam R the result type of the property check
  */
-trait StatefulPropertyCheckModel[R] {
-
-  /**
-   * the type of the command
-   */
-  type TCommand
-  /**
-   * the type of the state
-   */
-  type TState
+trait StatefulPropertyCheckModel[TCommand, TState, R] {
 
   /**
    * the trait for the system under test
@@ -232,7 +225,7 @@ trait StatefulPropertyCheckModel[R] {
  *
  * This trait is used for ScalaTest assertions.
  */
-trait AssertiongStatefulPropertyCheckModel extends StatefulPropertyCheckModel[Assertion] {
+trait AssertiongStatefulPropertyCheckModel[TCommand, TState] extends StatefulPropertyCheckModel[TCommand, TState, Assertion] {
 
   private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Assertion = succeed
 
@@ -256,7 +249,7 @@ trait AssertiongStatefulPropertyCheckModel extends StatefulPropertyCheckModel[As
  *
  * This trait is used for ScalaTest expectations.
  */
-trait ExpectationStatefulPropertyCheckModel extends StatefulPropertyCheckModel[Expectation] {
+trait ExpectationStatefulPropertyCheckModel[TCommand, TState] extends StatefulPropertyCheckModel[TCommand, TState, Expectation] {
 
   private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Expectation = Fact.Yes(message, prettifier)
 

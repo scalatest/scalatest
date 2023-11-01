@@ -17,14 +17,11 @@ class StaffManagementSystem(initStaffs: Map[String, String]) {
   def getStaffs: Map[String, String] = staffs
 }
 
-trait StaffManagementSystemModel[T] extends StatefulPropertyCheckModel[T] {
+sealed trait Command
+case class AddStaff(id: String, name: String) extends Command
+case class SearchStaff(id: String) extends Command
 
-  sealed trait Command
-  case class AddStaff(id: String, name: String) extends Command
-  case class SearchStaff(id: String) extends Command
-
-  type TCommand = Command
-  type TState = Map[String, String]
+trait StaffManagementSystemModel[T] extends StatefulPropertyCheckModel[Command, Map[String, String], T] {
 
   def initialize: (Map[String, String], Generator[Command], Randomizer) = {
     val gen = 
@@ -83,9 +80,9 @@ trait FaulthyStaffManagementSystemModel[T] extends StaffManagementSystemModel[T]
 
 }
 
-class AssertingStaffManagementSystemModel extends StaffManagementSystemModel[Assertion] with AssertiongStatefulPropertyCheckModel
+class AssertingStaffManagementSystemModel extends StaffManagementSystemModel[Assertion] with AssertiongStatefulPropertyCheckModel[Command, Map[String, String]]
 
-class AssertingFaulthyStaffManagementSystemModel extends FaulthyStaffManagementSystemModel[Assertion] with AssertiongStatefulPropertyCheckModel
+class AssertingFaulthyStaffManagementSystemModel extends FaulthyStaffManagementSystemModel[Assertion] with AssertiongStatefulPropertyCheckModel[Command, Map[String, String]]
 
 class AssertingStatefulPropertyCheckModelSpec extends AnyFunSuite with OptionValues {
 
@@ -108,9 +105,9 @@ class AssertingStatefulPropertyCheckModelSpec extends AnyFunSuite with OptionVal
 
 }
 
-class ExpectationStaffManagementSystemModel extends StaffManagementSystemModel[Expectation] with ExpectationStatefulPropertyCheckModel
+class ExpectationStaffManagementSystemModel extends StaffManagementSystemModel[Expectation] with ExpectationStatefulPropertyCheckModel[Command, Map[String, String]]
 
-class ExpectationFaulthyStaffManagementSystemModel extends FaulthyStaffManagementSystemModel[Expectation] with ExpectationStatefulPropertyCheckModel
+class ExpectationFaulthyStaffManagementSystemModel extends FaulthyStaffManagementSystemModel[Expectation] with ExpectationStatefulPropertyCheckModel[Command, Map[String, String]]
 
 class ExpectationStatefulPropertyCheckModelSpec extends AnyFunSuite with OptionValues {
 
