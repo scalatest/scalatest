@@ -65,11 +65,6 @@ trait StaffManagementSystemModel[T] extends StatefulPropertyCheckModel[T] {
       case SearchStaff(id) => state
     }
 
-  def command(state: Map[String, String], gen: Generator[Command], rnd: Randomizer): (Command, Randomizer) = {
-    val (nextV, _, newRnd) = gen.next(SizeParam(1, 10, 10), List.empty, rnd)
-    (nextV.value, newRnd)
-  }
-
   def preCondition(state: Map[String, String], command: Command, accCmd: IndexedSeq[Command], accRes: IndexedSeq[Map[String, String]]): Boolean = true
 
   def postCondition(oldState: Map[String, String], newState: Map[String, String], command: Command, accCmd: IndexedSeq[Command], accRes: IndexedSeq[Map[String, String]]): Boolean = true

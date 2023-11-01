@@ -78,7 +78,10 @@ trait StatefulPropertyCheckModel[R] {
    * @param rnd the current randomizer
    * @return a tuple of the next command and randomizer
    */
-  def command(state: TState, gen: Generator[TCommand], rnd: Randomizer): (TCommand, Randomizer)
+  def command(state: TState, gen: Generator[TCommand], rnd: Randomizer): (TCommand, Randomizer) = {
+    val (nextV, _, newRnd) = gen.next(SizeParam(1, 1, 1), List.empty, rnd)
+    (nextV.value, newRnd)
+  }
 
   /**
    * Pre-condition check if the given command can be executed in the given state.
