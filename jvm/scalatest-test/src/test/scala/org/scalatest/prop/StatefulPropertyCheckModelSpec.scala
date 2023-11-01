@@ -40,8 +40,8 @@ trait StaffManagementSystemModel[T] extends StatefulPropertyCheckModel[Command, 
 
   protected def createStaffManagementSystem(initState: Map[String, String]): StaffManagementSystem = new StaffManagementSystem(initState)
 
-  def createSystemUnderTest(initState: Map[String, String]): SystemUnderTest = 
-    new SystemUnderTest {
+  def createSystemUnderTest(initState: Map[String, String]): SystemUnderTest[Command, Map[String, String]] = 
+    new SystemUnderTest[Command, Map[String, String]] {
       val sut = createStaffManagementSystem(initState)
       def nextState(state: Map[String, String], command: Command): Map[String, String] = 
         command match {

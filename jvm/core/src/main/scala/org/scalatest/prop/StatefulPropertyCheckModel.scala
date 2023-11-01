@@ -14,6 +14,26 @@ import org.scalactic.anyvals.PosZInt
 import org.scalactic.ColCompatHelper.LazyListOrStream
 
 /**
+  * the trait for the system under test
+  */
+trait SystemUnderTest[TCommand, TState] {
+  /**
+    * Execute the given command and return the next state.
+    *
+    * @param state the current state
+    * @param command the command to execute
+    * @return the next state
+    */
+  def nextState(state: TState, command: TCommand): TState
+  /**
+    * Return the current state.
+    *
+    * @return the current state
+    */
+  def state(): TState
+}
+
+/**
  * Stateful property check model trait that can be used for building model for stateful property-based testing.
  *
  * @tparam TCommand the type of the command
@@ -21,26 +41,6 @@ import org.scalactic.ColCompatHelper.LazyListOrStream
  * @tparam R the result type of the property check
  */
 trait StatefulPropertyCheckModel[TCommand, TState, R] {
-
-  /**
-   * the trait for the system under test
-   */
-  trait SystemUnderTest {
-    /**
-     * Execute the given command and return the next state.
-     *
-     * @param state the current state
-     * @param command the command to execute
-     * @return the next state
-     */
-    def nextState(state: TState, command: TCommand): TState
-    /**
-     * Return the current state.
-     *
-     * @return the current state
-     */
-    def state(): TState
-  }
 
   /**
    * Initialize state, command generator and randomizer.
@@ -52,7 +52,7 @@ trait StatefulPropertyCheckModel[TCommand, TState, R] {
   /**
    * Create system under test instance with the given initial state.
    */
-  def createSystemUnderTest(initState: TState): SystemUnderTest
+  def createSystemUnderTest(initState: TState): SystemUnderTest[TCommand, TState]
 
   /**
    * Return the next state after executing the given command.
@@ -121,7 +121,7 @@ trait StatefulPropertyCheckModel[TCommand, TState, R] {
     }
   }
 
-  private def checkSut(szp: SizeParam, sut: SystemUnderTest, initState: TState, gen: Generator[TCommand], initRnd: Randomizer)(implicit pos: source.Position, prettifier: Prettifier): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
+  private def checkSut(szp: SizeParam, sut: SystemUnderTest[TCommand, TState], initState: TState, gen: Generator[TCommand], initRnd: Randomizer)(implicit pos: source.Position, prettifier: Prettifier): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
 
     @tailrec def loop(count: Int, state: TState, rnd: Randomizer, accCmd: IndexedSeq[TCommand], accRnd: IndexedSeq[Randomizer], accRes: IndexedSeq[TState], failedPreconditionCount: Int): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
       if (count > 0) {
