@@ -80,9 +80,9 @@ trait FaulthyStaffManagementSystemModel[T] extends StaffManagementSystemModel[T]
 
 }
 
-class AssertingStaffManagementSystemModel extends StaffManagementSystemModel[Assertion] with AssertiongStatefulPropertyCheckModel[Command, Map[String, String]]
+class AssertingStaffManagementSystemModel extends StaffManagementSystemModel[Assertion]
 
-class AssertingFaulthyStaffManagementSystemModel extends FaulthyStaffManagementSystemModel[Assertion] with AssertiongStatefulPropertyCheckModel[Command, Map[String, String]]
+class AssertingFaulthyStaffManagementSystemModel extends FaulthyStaffManagementSystemModel[Assertion]
 
 class AssertingStatefulPropertyCheckModelSpec extends AnyFunSuite with OptionValues {
 
@@ -105,9 +105,9 @@ class AssertingStatefulPropertyCheckModelSpec extends AnyFunSuite with OptionVal
 
 }
 
-class ExpectationStaffManagementSystemModel extends StaffManagementSystemModel[Expectation] with ExpectationStatefulPropertyCheckModel[Command, Map[String, String]]
+class ExpectationStaffManagementSystemModel extends StaffManagementSystemModel[Expectation]
 
-class ExpectationFaulthyStaffManagementSystemModel extends FaulthyStaffManagementSystemModel[Expectation] with ExpectationStatefulPropertyCheckModel[Command, Map[String, String]]
+class ExpectationFaulthyStaffManagementSystemModel extends FaulthyStaffManagementSystemModel[Expectation]
 
 class ExpectationStatefulPropertyCheckModelSpec extends AnyFunSuite with OptionValues {
 

@@ -522,7 +522,7 @@ object Generator {
 
   import scala.language.implicitConversions
 
-  private[prop] final val MaxLoopCount: Int = 100000
+  private[scalatest] final val MaxLoopCount: Int = 100000
 
   /**
     * Allow Generators of a type to be used as Generators of a supertype.
