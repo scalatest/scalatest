@@ -13,26 +13,96 @@ import org.scalactic.anyvals.PosZInt
 
 import org.scalactic.ColCompatHelper.LazyListOrStream
 
+/**
+ * Stateful property check model trait that can be used for building model for stateful property-based testing.
+ *
+ * @tparam R the result type of the property check
+ */
 trait StatefulPropertyCheckModel[R] {
 
+  /**
+   * the type of the command
+   */
   type TCommand
+  /**
+   * the type of the state
+   */
   type TState
 
+  /**
+   * the trait for the system under test
+   */
   trait SystemUnderTest {
+    /**
+     * Execute the given command and return the next state.
+     *
+     * @param state the current state
+     * @param command the command to execute
+     * @return the next state
+     */
     def nextState(state: TState, command: TCommand): TState
+    /**
+     * Return the current state.
+     *
+     * @return the current state
+     */
     def state(): TState
   }
 
+  /**
+   * Initialize state, command generator and randomizer.
+   *
+   * @return a tuple of initialized state, command generator and randomizer
+   */
   def initialize: (TState, Generator[TCommand], Randomizer)
 
+  /**
+   * Create system under test instance with the given initial state.
+   */
   def createSystemUnderTest(initState: TState): SystemUnderTest
 
+  /**
+   * Return the next state after executing the given command.
+   * 
+   * @param state the current state
+   * @param command the command to execute
+   * @return the next state
+   */
   def nextState(state: TState, command: TCommand): TState
 
+  /**
+   * Generate the next command and randomizer.
+   *
+   * @param state the current state
+   * @param gen the command generator
+   * @param rnd the current randomizer
+   * @return a tuple of the next command and randomizer
+   */
   def command(state: TState, gen: Generator[TCommand], rnd: Randomizer): (TCommand, Randomizer)
 
+  /**
+   * Pre-condition check if the given command can be executed in the given state.
+   * If this function returned <code>false</code>, the command will be discarded and a new one will be generated.
+   *
+   * @param state the current state
+   * @param command the command to execute
+   * @param accCmd the accumulated commands
+   * @param accRes the accumulated states
+   * @return true if the given command can be executed in the given state
+   */
   def preCondition(state: TState, command: TCommand, accCmd: IndexedSeq[TCommand], accRes: IndexedSeq[TState]): Boolean
 
+  /**
+   * Post-condition check if the given <code>oldState</code>, <code>newState</code>, <code>command</code> and accumulated values is valid, 
+   * if this function returned <code>false</code>, the check shall fail.
+   *
+   * @param oldState the old state
+   * @param newState the new state
+   * @param command the command executed
+   * @param accCmd the accumulated commands
+   * @param accRes the accumulated states
+   * @return true if pre-condition is valid
+   */
   def postCondition(oldState: TState, newState: TState, command: TCommand, accCmd: IndexedSeq[TCommand], accRes: IndexedSeq[TState]): Boolean
 
   private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): R
@@ -84,7 +154,14 @@ trait StatefulPropertyCheckModel[R] {
     loop(szp.size, initState, initRnd, IndexedSeq.empty, IndexedSeq.empty, IndexedSeq.empty, 0)
   }
 
-
+  /**
+   * Check the property with the given size parameter.
+   *
+   * @param szp the size parameter, which contains the size of the valid command data to be executed.
+   * @param pos the source position
+   * @param prettifier the prettifier
+   * @return the result of the property check
+   */
   def check(szp: SizeParam)(implicit pos: source.Position, prettifier: Prettifier): R = {
 
     def tryRun(trySzp: SizeParam, initState: TState, gen: Generator[TCommand], initRnd: Randomizer): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
@@ -147,6 +224,11 @@ trait StatefulPropertyCheckModel[R] {
 
 }
 
+/**
+ * Stateful property check model trait that can be used for building model for stateful property-based testing using assertions.
+ *
+ * This trait is used for ScalaTest assertions.
+ */
 trait AssertiongStatefulPropertyCheckModel extends StatefulPropertyCheckModel[Assertion] {
 
   private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Assertion = succeed
@@ -166,6 +248,11 @@ trait AssertiongStatefulPropertyCheckModel extends StatefulPropertyCheckModel[As
 
 }
 
+/**
+ * Stateful property check model trait that can be used for building model for stateful property-based testing using expectations.
+ *
+ * This trait is used for ScalaTest expectations.
+ */
 trait ExpectationStatefulPropertyCheckModel extends StatefulPropertyCheckModel[Expectation] {
 
   private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Expectation = Fact.Yes(message, prettifier)
