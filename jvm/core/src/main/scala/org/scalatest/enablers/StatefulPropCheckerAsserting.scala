@@ -32,7 +32,7 @@ trait StatefulPropCheckerAsserting[TCommand, TState, R] {
                                          initState: TState, initRnd: Randomizer, failingCmds: List[TCommand]): R
 }
 
-object StatefulPropCheckerAsserting {
+abstract class UnitStatefulPropCheckerAsserting {
 
   abstract class StatefulPropCheckerAssertingImpl[TCommand, TState, R] extends StatefulPropCheckerAsserting[TCommand, TState, R] {
     private def checkSut(model: StatefulPropertyCheckModel[TCommand, TState, R], szp: SizeParam, sut: SystemUnderTest[TCommand, TState], initState: TState, gen: Generator[TCommand], initRnd: Randomizer)(implicit pos: source.Position, prettifier: Prettifier): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
@@ -121,22 +121,9 @@ object StatefulPropCheckerAsserting {
     }
   }
 
-  implicit def assertingNatureOfAssertion[TCommand, TState]: StatefulPropCheckerAsserting[TCommand, TState, Assertion] =
-    new StatefulPropCheckerAssertingImpl[TCommand, TState, Assertion] {
-      private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Assertion = succeed
-      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, prettifier: Prettifier, optionalCause: Option[Throwable], pos: source.Position, 
-                                             initState: TState, initRnd: Randomizer, failingCmds: List[TCommand]): Assertion = 
-        throw new GeneratorDrivenPropertyCheckFailedException(
-          messageFun,
-          optionalCause,
-          pos,
-          Some((initState, initRnd)),
-          undecoratedMessage,
-          failingCmds,
-          None,
-          List.empty
-        )  
-    }
+}
+
+abstract class ExpectationStatefulPropCheckerAsserting extends UnitStatefulPropCheckerAsserting {
 
   implicit def assertingNatureOfExpectation[TCommand, TState]: StatefulPropCheckerAsserting[TCommand, TState, Expectation] =
     new StatefulPropCheckerAssertingImpl[TCommand, TState, Expectation] {
@@ -158,6 +145,27 @@ object StatefulPropCheckerAsserting {
           val message: String = gdpcfe.getMessage
           Fact.No(message, prettifier)  
       }
+    }
+
+}
+
+object StatefulPropCheckerAsserting extends ExpectationStatefulPropCheckerAsserting {
+
+  implicit def assertingNatureOfAssertion[TCommand, TState]: StatefulPropCheckerAsserting[TCommand, TState, Assertion] =
+    new StatefulPropCheckerAssertingImpl[TCommand, TState, Assertion] {
+      private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Assertion = succeed
+      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, prettifier: Prettifier, optionalCause: Option[Throwable], pos: source.Position, 
+                                             initState: TState, initRnd: Randomizer, failingCmds: List[TCommand]): Assertion = 
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          messageFun,
+          optionalCause,
+          pos,
+          Some((initState, initRnd)),
+          undecoratedMessage,
+          failingCmds,
+          None,
+          List.empty
+        )  
     }  
     
 }
