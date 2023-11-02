@@ -41,7 +41,7 @@ trait SystemUnderTest[TCommand, TState] {
  * @tparam TState the type of the state
  * @tparam R the result type of the property check
  */
-trait StatefulPropertyCheckModel[TCommand, TState, R] {
+trait StatefulPropertyCheckModel[TCommand, TState, TSystemUnderTest, R] {
 
   /**
    * Initialize state, command generator and randomizer.
@@ -53,7 +53,7 @@ trait StatefulPropertyCheckModel[TCommand, TState, R] {
   /**
    * Create system under test instance with the given initial state.
    */
-  def createSystemUnderTest(initState: TState): SystemUnderTest[TCommand, TState]
+  def createSystemUnderTest(initState: TState): TSystemUnderTest
 
   /**
    * Return the next state after executing the given command.
@@ -125,7 +125,7 @@ trait StatefulPropertyCheckModel[TCommand, TState, R] {
    * @param prettifier the prettifier
    * @return the result of the property check
    */
-  def check(szp: SizeParam)(implicit asserting: StatefulPropCheckerAsserting[TCommand, TState, R], pos: source.Position, prettifier: Prettifier): R = {
+  def check(szp: SizeParam)(implicit asserting: StatefulPropCheckerAsserting[TCommand, TState, TSystemUnderTest, R], pos: source.Position, prettifier: Prettifier): R = {
     asserting.check(this, szp, pos, prettifier)
   }
 

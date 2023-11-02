@@ -24,9 +24,10 @@ import org.scalatest.exceptions.{StackDepthException, GeneratorDrivenPropertyChe
 
 import scala.annotation.tailrec
 import scala.compat.Platform.EOL
+import scala.concurrent.Future
 
-trait StatefulPropCheckerAsserting[TCommand, TState, R] {
-  def check(model: StatefulPropertyCheckModel[TCommand, TState, R], szp: SizeParam, pos: source.Position, prettifier: Prettifier): R
+trait StatefulPropCheckerAsserting[TCommand, TState, TSystemUnderTest, R] {
+  def check(model: StatefulPropertyCheckModel[TCommand, TState, TSystemUnderTest, R], szp: SizeParam, pos: source.Position, prettifier: Prettifier): R
   private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): R
   private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, prettifier: Prettifier, optionalCause: Option[Throwable], pos: source.Position, 
                                          initState: TState, initRnd: Randomizer, failingCmds: List[TCommand]): R
@@ -34,8 +35,8 @@ trait StatefulPropCheckerAsserting[TCommand, TState, R] {
 
 abstract class UnitStatefulPropCheckerAsserting {
 
-  abstract class StatefulPropCheckerAssertingImpl[TCommand, TState, R] extends StatefulPropCheckerAsserting[TCommand, TState, R] {
-    private def checkSut(model: StatefulPropertyCheckModel[TCommand, TState, R], szp: SizeParam, sut: SystemUnderTest[TCommand, TState], initState: TState, gen: Generator[TCommand], initRnd: Randomizer)(implicit pos: source.Position, prettifier: Prettifier): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
+  abstract class StatefulPropCheckerAssertingImpl[TCommand, TState, R] extends StatefulPropCheckerAsserting[TCommand, TState, SystemUnderTest[TCommand, TState], R] {
+    private def checkSut(model: StatefulPropertyCheckModel[TCommand, TState, SystemUnderTest[TCommand, TState], R], szp: SizeParam, sut: SystemUnderTest[TCommand, TState], initState: TState, gen: Generator[TCommand], initRnd: Randomizer)(implicit pos: source.Position, prettifier: Prettifier): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
 
       @tailrec def loop(count: Int, state: TState, rnd: Randomizer, accCmd: IndexedSeq[TCommand], accRnd: IndexedSeq[Randomizer], accRes: IndexedSeq[TState], failedPreconditionCount: Int): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
         if (count > 0) {
@@ -64,12 +65,12 @@ abstract class UnitStatefulPropCheckerAsserting {
       loop(szp.size, initState, initRnd, IndexedSeq.empty, IndexedSeq.empty, IndexedSeq.empty, 0)
     }
 
-    def tryRun(model: StatefulPropertyCheckModel[TCommand, TState, R], trySzp: SizeParam, initState: TState, gen: Generator[TCommand], initRnd: Randomizer): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
+    def tryRun(model: StatefulPropertyCheckModel[TCommand, TState, SystemUnderTest[TCommand, TState], R], trySzp: SizeParam, initState: TState, gen: Generator[TCommand], initRnd: Randomizer): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
       val sut = model.createSystemUnderTest(initState)
       checkSut(model, trySzp, sut, initState, gen, initRnd)
     }
 
-    def shrinkLoop(model: StatefulPropertyCheckModel[TCommand, TState, R], trySzp: SizeParam, gen: Generator[TCommand], base: (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]), remainings: (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState])): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
+    def shrinkLoop(model: StatefulPropertyCheckModel[TCommand, TState, SystemUnderTest[TCommand, TState], R], trySzp: SizeParam, gen: Generator[TCommand], base: (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]), remainings: (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState])): (IndexedSeq[TCommand], IndexedSeq[Randomizer], IndexedSeq[TState], Option[TState]) = {
       val (remainingCmd, remainingRnd, remainingRes) = remainings
       val (baseCmd, baseRnd, baseRes, baseFailingSutState) = base
       if (remainingCmd.length > 2) {  
@@ -96,7 +97,7 @@ abstract class UnitStatefulPropCheckerAsserting {
         (remainingCmd ++ baseCmd, remainingRnd ++ baseRnd, remainingRes ++ baseRes, baseFailingSutState)
     }
 
-    def check(model: StatefulPropertyCheckModel[TCommand, TState, R], szp: SizeParam, pos: source.Position, prettifier: Prettifier): R = {
+    def check(model: StatefulPropertyCheckModel[TCommand, TState, SystemUnderTest[TCommand, TState], R], szp: SizeParam, pos: source.Position, prettifier: Prettifier): R = {
       val (initState, gen, initRnd) = model.initialize
 
       val (firstAccCmd, firstAccRnd, firstAccRes, firstFailingSutState) = tryRun(model, szp, initState, gen, initRnd)
@@ -125,7 +126,7 @@ abstract class UnitStatefulPropCheckerAsserting {
 
 abstract class ExpectationStatefulPropCheckerAsserting extends UnitStatefulPropCheckerAsserting {
 
-  implicit def assertingNatureOfExpectation[TCommand, TState]: StatefulPropCheckerAsserting[TCommand, TState, Expectation] =
+  implicit def assertingNatureOfExpectation[TCommand, TState]: StatefulPropCheckerAsserting[TCommand, TState, SystemUnderTest[TCommand, TState], Expectation] =
     new StatefulPropCheckerAssertingImpl[TCommand, TState, Expectation] {
       private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Expectation = Fact.Yes(message, prettifier)
 
@@ -151,7 +152,7 @@ abstract class ExpectationStatefulPropCheckerAsserting extends UnitStatefulPropC
 
 object StatefulPropCheckerAsserting extends ExpectationStatefulPropCheckerAsserting {
 
-  implicit def assertingNatureOfAssertion[TCommand, TState]: StatefulPropCheckerAsserting[TCommand, TState, Assertion] =
+  implicit def assertingNatureOfAssertion[TCommand, TState]: StatefulPropCheckerAsserting[TCommand, TState, SystemUnderTest[TCommand, TState], Assertion] =
     new StatefulPropCheckerAssertingImpl[TCommand, TState, Assertion] {
       private[scalatest] def indicateSuccess(message: => String, prettifier: Prettifier): Assertion = succeed
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, prettifier: Prettifier, optionalCause: Option[Throwable], pos: source.Position, 

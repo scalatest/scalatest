@@ -21,7 +21,7 @@ sealed trait Command
 case class AddStaff(id: String, name: String) extends Command
 case class SearchStaff(id: String) extends Command
 
-trait StaffManagementSystemModel[T] extends StatefulPropertyCheckModel[Command, Map[String, String], T] {
+trait StaffManagementSystemModel[T] extends StatefulPropertyCheckModel[Command, Map[String, String], SystemUnderTest[Command, Map[String, String]], T] {
 
   def initialize: (Map[String, String], Generator[Command], Randomizer) = {
     val gen = 
