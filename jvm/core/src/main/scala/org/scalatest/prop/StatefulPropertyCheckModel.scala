@@ -2,6 +2,7 @@ package org.scalatest.prop
 
 import scala.annotation.tailrec
 import scala.compat.Platform.EOL
+import scala.concurrent.Future
 
 import org.scalatest.{Assertion, Expectation, Fact}
 import org.scalatest.Assertions.succeed
@@ -15,7 +16,7 @@ import org.scalactic.anyvals.PosZInt
 import org.scalactic.ColCompatHelper.LazyListOrStream
 
 /**
-  * the trait for the system under test
+  * The trait for the system under test
   */
 trait SystemUnderTest[TCommand, TState] {
   /**
@@ -32,6 +33,26 @@ trait SystemUnderTest[TCommand, TState] {
     * @return the current state
     */
   def state(): TState
+}
+
+/**
+  * The trait for the asynchronous system under test
+  */
+trait AsyncSystemUnderTest[TCommand, TState] {
+  /**
+    * Execute the given command and return the next state.
+    *
+    * @param state the current state
+    * @param command the command to execute
+    * @return the next state
+    */
+  def nextState(state: TState, command: TCommand): Future[TState]
+  /**
+    * Return the current state.
+    *
+    * @return the current state
+    */
+  def state(): Future[TState]
 }
 
 /**
