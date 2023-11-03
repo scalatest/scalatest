@@ -40,17 +40,17 @@ trait SystemUnderTest[TCommand, TState] {
   */
 trait AsyncSystemUnderTest[TCommand, TState] {
   /**
-    * Execute the given command and return the next state.
+    * Execute the given command and return the future next state.
     *
     * @param state the current state
     * @param command the command to execute
-    * @return the next state
+    * @return the future of next state
     */
   def nextState(state: TState, command: TCommand): Future[TState]
   /**
-    * Return the current state.
+    * Return the future current state.
     *
-    * @return the current state
+    * @return the future current state
     */
   def state(): Future[TState]
 }
