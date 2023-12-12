@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.{Iterable, IterableOnce}
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
@@ -40,7 +40,7 @@ class ChainSpec extends UnitSpec {
     threesie(1) shouldBe 2
     threesie(2) shouldBe 3
   }
-  it can "be constructed from a GenTraversable via the from method on Chain singleton" in {
+  it can "be constructed from a Iterable via the from method on Chain singleton" in {
     Chain.from(List.empty[String]) shouldBe None
     Chain.from(List("1")) shouldBe Some(Chain("1"))
     Chain.from(List(1, 2, 3)) shouldBe Some(Chain(1, 2, 3))
@@ -163,10 +163,10 @@ class ChainSpec extends UnitSpec {
     Chain(1, 2, 3) ++ Every(4) shouldEqual Chain(1, 2, 3, 4)
     Chain(1, 2, 3) ++ One(4) shouldEqual Chain(1, 2, 3, 4)
   }
-  it should "have a ++ method that takes a GenTraversableOnce" in {
+  it should "have a ++ method that takes a IterableOnce" in {
     Chain(1, 2, 3) ++ List(4) shouldEqual Chain(1, 2, 3, 4)
     Chain(1, 2, 3) ++ Vector(4, 5, 6) shouldEqual Chain(1, 2, 3, 4, 5, 6)
-    Chain(1, 2, 3) ++ GenTraversable(4) shouldEqual Chain(1, 2, 3, 4)
+    Chain(1, 2, 3) ++ Iterable(4) shouldEqual Chain(1, 2, 3, 4)
     Chain(1, 2, 3) ++ Set(4, 5) shouldEqual Chain(1, 2, 3, 4, 5)
     Chain(1, 2, 3) ++ Set(4, 5).iterator shouldEqual Chain(1, 2, 3, 4, 5)
   }
@@ -196,10 +196,10 @@ class ChainSpec extends UnitSpec {
     Every(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
     One(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
   }
-  it should "have a ::: method that takes a GenTraversableOnce" in {
+  it should "have a ::: method that takes a IterableOnce" in {
     List(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
     Vector(1, 2, 3) ::: Chain(4, 5, 6) shouldEqual Chain(1, 2, 3, 4, 5, 6)
-    GenTraversable(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
+    Iterable(1) ::: Chain(2, 3, 4) shouldEqual Chain(1, 2, 3, 4)
     Set(1, 2) ::: Chain(3, 4, 5) shouldEqual Chain(1, 2, 3, 4, 5)
     Set(1, 2).iterator ::: Chain(3, 4, 5) shouldEqual Chain(1, 2, 3, 4, 5)
   }
@@ -461,7 +461,7 @@ class ChainSpec extends UnitSpec {
     Chain(Chain(1, 2, 3), Chain(1, 2, 3)).flatten shouldBe Chain(1, 2, 3, 1, 2, 3)
     Chain(Chain(1)).flatten shouldBe Chain(1)
   }
-  it can "be flattened when in a GenTraversableOnce" in {
+  it can "be flattened when in a IterableOnce" in {
     Vector(Chain(1, 2, 3), Chain(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     List(Chain(1, 2, 3), Chain(1, 2, 3)).flatten shouldBe List(1, 2, 3, 1, 2, 3)
     List(Chain(1, 2, 3), Chain(1, 2, 3)).toIterator.flatten.toStream shouldBe List(1, 2, 3, 1, 2, 3).toIterator.toStream

@@ -15,7 +15,7 @@
  */
 package org.scalactic.anyvals
 
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
@@ -44,7 +44,7 @@ class NonEmptySetSpec extends UnitSpec {
     threesie(3) shouldBe true
     threesie(4) shouldBe false
   }
-  it can "be constructed from a GenTraversable via the from method on NonEmptySet singleton" in {
+  it can "be constructed from a Iterable via the from method on NonEmptySet singleton" in {
     NonEmptySet.from(Set.empty[String]) shouldBe None
     NonEmptySet.from(Set("1")) shouldBe Some(NonEmptySet("1"))
     NonEmptySet.from(Set(1, 2, 3)) shouldBe Some(NonEmptySet(1, 2, 3))
@@ -148,10 +148,10 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(1, 2, 3) ++ Every(4) shouldEqual NonEmptySet(1, 2, 3, 4)
     NonEmptySet(1, 2, 3) ++ One(4) shouldEqual NonEmptySet(1, 2, 3, 4)
   }
-  it should "have a ++ method that takes a GenTraversableOnce" in {
+  it should "have a ++ method that takes a IterableOnce" in {
     NonEmptySet(1, 2, 3) ++ Set(4) shouldEqual NonEmptySet(1, 2, 3, 4)
     NonEmptySet(1, 2, 3) ++ Vector(4, 5, 6) shouldEqual NonEmptySet(1, 2, 3, 4, 5, 6)
-    NonEmptySet(1, 2, 3) ++ GenTraversable(4) shouldEqual NonEmptySet(1, 2, 3, 4)
+    NonEmptySet(1, 2, 3) ++ Iterable(4) shouldEqual NonEmptySet(1, 2, 3, 4)
     NonEmptySet(1, 2, 3) ++ Set(4, 5) shouldEqual NonEmptySet(1, 2, 3, 4, 5)
     NonEmptySet(1, 2, 3) ++ Set(4, 5).iterator shouldEqual NonEmptySet(1, 2, 3, 4, 5)
   }
@@ -299,7 +299,7 @@ class NonEmptySetSpec extends UnitSpec {
     NonEmptySet(NonEmptySet(1, 2, 3), NonEmptySet(1, 2, 3)).flatten shouldBe NonEmptySet(1, 2, 3, 1, 2, 3)
     NonEmptySet(NonEmptySet(1)).flatten shouldBe NonEmptySet(1)
   }
-  it can "be flattened when in a GenTraversableOnce" in {
+  it can "be flattened when in a IterableOnce" in {
     Vector(NonEmptySet(1, 2, 3), NonEmptySet(1, 2, 3)).flatten shouldBe Vector(2, 3, 1, 2, 3, 1)
     Set(NonEmptySet(1, 2, 3), NonEmptySet(1, 2, 3)).flatten shouldBe Set(1, 2, 3, 1, 2, 3)
     Set(NonEmptySet(1, 2, 3), NonEmptySet(1, 2, 3)).toIterator.flatten.toStream shouldBe Set(2, 3, 1, 2, 3, 1).toIterator.toStream

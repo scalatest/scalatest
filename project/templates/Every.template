@@ -16,9 +16,8 @@
 package org.scalactic
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
-import scala.collection.GenIterable
 import scala.collection.GenSeq
-import scala.collection.GenTraversableOnce
+import org.scalactic.ColCompatHelper.{IterableOnce, GenIterable}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
@@ -159,15 +158,15 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
   def ++[U >: T](other: Every[U]): Many[U]
 
   /**
-   * Returns a new <code>Many</code> containing the elements of this <code>Every</code> followed by the elements of the passed <code>GenTraversableOnce</code>.
+   * Returns a new <code>Many</code> containing the elements of this <code>Every</code> followed by the elements of the passed <code>IterableOnce</code>.
    * The element type of the resulting <code>Many</code> is the most specific superclass encompassing the element types of this <code>Every</code>
-   * and the passed <code>GenTraversableOnce</code>.
+   * and the passed <code>IterableOnce</code>.
    *
    * @tparam U the element type of the returned <code>Many</code>
    * @param other the <code>Every</code> to append
    * @return a new <code>Many</code> that contains all the elements of this <code>Every</code> followed by all elements of <code>other</code>.
    */
-  def ++[U >: T](other: GenTraversableOnce[U]): Every[U]
+  def ++[U >: T](other: IterableOnce[U]): Every[U]
 
   /**
    * <strong>The <code>/:</code> method has been deprecated and will be removed in a future version of Scalactic. Please use
@@ -456,8 +455,8 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    * formed by the elements of the nested <code>Every</code>s.
    *
    * <p>
-   * Note: You cannot use this <code>flatten</code> method on an <code>Every</code> that contains a <code>GenTraversableOnce</code>s, because
-   * if all the nested <code>GenTraversableOnce</code>s were empty, you'd end up with an empty <code>Every</code>.
+   * Note: You cannot use this <code>flatten</code> method on an <code>Every</code> that contains a <code>IterableOnce</code>s, because
+   * if all the nested <code>IterableOnce</code>s were empty, you'd end up with an empty <code>Every</code>.
    * </p>
    *
    * @tparm B the type of the elements of each nested <code>Every</code>
@@ -577,7 +576,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    */
   final def head: T = underlying.head
 
-  // Methods like headOption I can't get rid of because of the implicit conversion to GenTraversable.
+  // Methods like headOption I can't get rid of because of the implicit conversion to Iterable.
   // Users can call any of the methods I've left out on an Every, and get whatever Vector would return
   // for that method call. Eventually I'll probably implement them all to save the implicit conversion.
 
@@ -1317,7 +1316,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    *
    * @return an <code>Iterable</code> containing all elements of this <code>Every</code>.
    */
-  final def toIterable: Iterable[T] = underlying.toIterable
+  final def toIterable: scala.collection.Iterable[T] = underlying.toIterable
 
   /**
    * Returns an <code>Iterator</code> over the elements in this <code>Every</code>.
@@ -1466,7 +1465,7 @@ sealed abstract class Every[+T] protected (underlying: Vector[T]) extends Partia
    *     is shorter than <code>that</code>, <code>thisElem</code> values are used to pad the result. If <code>that</code> is shorter than this
    *     <code>Every</code>, <code>thatElem</code> values are used to pad the result.
    */
-  final def zipAll[O, U >: T](other: collection.Iterable[O], thisElem: U, otherElem: O): Every[(U, O)] =
+  final def zipAll[O, U >: T](other: Iterable[O], thisElem: U, otherElem: O): Every[(U, O)] =
     Every.from(underlying.zipAll(other, thisElem, otherElem)).get
 
   /**
@@ -1538,10 +1537,10 @@ object Every {
    * res0: scala.collection.immutable.Vector[Int] = Vector(1, 2, 3, 3, 4, 5, 6, 7, 8)
    * </pre>
    *
-   * @param every the <code>Every</code> to convert to a <code>GenTraversableOnce</code>
+   * @param every the <code>Every</code> to convert to a <code>IterableOnce</code>
    * @return an immutable <code>IndexedSeq</code> containing the elements, in order, of this <code>Every</code>
    */
-  implicit def everyToGenTraversableOnce[E](every: Every[E]): scala.collection.immutable.IndexedSeq[E] = every.toVector
+  implicit def everyToIterableOnce[E](every: Every[E]): scala.collection.immutable.IndexedSeq[E] = every.toVector
 
   private def fromNonEmptyVector[E](vec: Vector[E]): Every[E] = Every(vec.head, vec.tail: _*)
 }
@@ -1565,7 +1564,7 @@ final case class One[+T](loneElement: T) extends Every[T](Vector(loneElement)) {
    */
   def asEvery: Every[T] = this
   def ++[U >: T](other: Every[U]): Many[U] = Many(loneElement, other.toVector.head, other.toVector.tail: _*)
-  def ++[U >: T](other: GenTraversableOnce[U]): Every[U] =
+  def ++[U >: T](other: IterableOnce[U]): Every[U] =
     if (other.isEmpty) this else Many(loneElement, other.toVector.head, other.toVector.tail: _*)
   def :+[U >: T](element: U): Many[U] = Many(loneElement, element)
 
@@ -1606,7 +1605,7 @@ final case class Many[+T](firstElement: T, secondElement: T, otherElements: T*) 
    */
   def asEvery: Every[T] = this
   def ++[U >: T](other: Every[U]): Many[U] = Many(firstElement, secondElement, (otherElements.toVector ++ other.toVector): _*)
-  def ++[U >: T](other: GenTraversableOnce[U]): Every[U] =
+  def ++[U >: T](other: IterableOnce[U]): Every[U] =
     if (other.isEmpty) this else Many(firstElement, secondElement, otherElements ++ other.toVector: _*)
   def :+[U >: T](element: U): Many[U] = Many(firstElement, secondElement, (otherElements :+ element): _*)
 

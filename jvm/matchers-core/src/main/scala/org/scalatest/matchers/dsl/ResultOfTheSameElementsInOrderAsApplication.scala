@@ -23,6 +23,6 @@ import org.scalactic.Prettifier
  *
  * @author Bill Venners
  */
-class ResultOfTheSameElementsInOrderAsApplication(val right: scala.collection.GenTraversable[_]) {
+class ResultOfTheSameElementsInOrderAsApplication(val right: org.scalactic.ColCompatHelper.Iterable[_]) {
   override def toString: String = "theSameElementsInOrderAs (" + Prettifier.default(right) + ")" 
 }

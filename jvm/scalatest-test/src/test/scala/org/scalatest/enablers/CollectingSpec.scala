@@ -24,21 +24,21 @@ import org.scalatest.matchers.should.Matchers
 class CollectingSpec extends AnyFunSpec with Matchers {
 
   describe("The implicit Containing providers") {
-    it("should provide a working genTraversableFrom method") {
+    it("should provide a working iterableFrom method") {
 
-      Collecting.collectingNatureOfGenTraversable[Int, List].genTraversableFrom(List(1, 2, 3)) shouldEqual List(1, 2, 3)
+      Collecting.collectingNatureOfIterable[Int, List].iterableFrom(List(1, 2, 3)) shouldEqual List(1, 2, 3)
 
-      Collecting.collectingNatureOfArray[Int].genTraversableFrom(Array(1, 2, 3)) shouldEqual List(1, 2, 3)
+      Collecting.collectingNatureOfArray[Int].iterableFrom(Array(1, 2, 3)) shouldEqual List(1, 2, 3)
 
       // SKIP-SCALATESTJS,NATIVE-START
       import collection.JavaConverters._
       val jList: java.util.List[Int] = List(1, 2, 3).asJava
-      Collecting.collectingNatureOfJavaCollection[Int, java.util.List].genTraversableFrom(jList) shouldEqual List(1, 2, 3)
+      Collecting.collectingNatureOfJavaCollection[Int, java.util.List].iterableFrom(jList) shouldEqual List(1, 2, 3)
       val jSet: java.util.Set[Int] = Set(1, 2, 3).asJava
-      Collecting.collectingNatureOfJavaCollection[Int, java.util.Set].genTraversableFrom(jSet) shouldEqual Set(1, 3, 2)
+      Collecting.collectingNatureOfJavaCollection[Int, java.util.Set].iterableFrom(jSet) shouldEqual Set(1, 3, 2)
 
       val jMap: java.util.Map[String, Int] = Map("one" -> 1, "two" -> 2, "three" -> 3).asJava
-      Collecting.collectingNatureOfJavaMap[String, Int, java.util.Map].genTraversableFrom(jMap) shouldEqual
+      Collecting.collectingNatureOfJavaMap[String, Int, java.util.Map].iterableFrom(jMap) shouldEqual
         List(Entry("one", 1), Entry("two", 2), Entry("three", 3))
       // SKIP-SCALATESTJS,NATIVE-END
     }

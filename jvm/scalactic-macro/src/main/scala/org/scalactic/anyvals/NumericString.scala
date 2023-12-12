@@ -23,7 +23,6 @@ import scala.collection.mutable.Buffer
 import scala.collection.GenSeq
 import scala.collection.SeqView
 import scala.collection.GenIterable
-import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
 import org.scalactic.ColCompatHelper
 //import scala.collection.parallel.ParSeq

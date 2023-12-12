@@ -447,7 +447,7 @@ class ContainWordSpec extends AnyFunSpec {
       }
     }
     
-    describe("theSameElementsAs(GenTraversable) method returns MatcherFactory1") {
+    describe("theSameElementsAs(Iterable) method returns MatcherFactory1") {
       
       val rhs = List(1, 2, 3)
       val mtf = contain theSameElementsAs rhs
@@ -498,7 +498,7 @@ class ContainWordSpec extends AnyFunSpec {
       }
     }
     
-    describe("theSameElementsInOrderAs(GenTraversable) method returns MatcherFactory1") {
+    describe("theSameElementsInOrderAs(Iterable) method returns MatcherFactory1") {
       
       val rhs = List(1, 2, 3)
       val mtf = contain theSameElementsInOrderAs rhs

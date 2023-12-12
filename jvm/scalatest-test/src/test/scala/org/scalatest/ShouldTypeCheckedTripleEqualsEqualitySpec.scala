@@ -19,8 +19,7 @@ import scala.collection.GenSeq
 import scala.collection.GenMap
 import scala.collection.GenSet
 import scala.collection.GenIterable
-import scala.collection.GenTraversable
-import scala.collection.GenTraversableOnce
+import org.scalactic.ColCompatHelper.{Iterable, IterableOnce}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import org.scalactic.Equality
@@ -177,15 +176,15 @@ class ShouldTypeCheckedTripleEqualsEqualitySpec extends AnyFunSpec with NonImpli
         Set(1, 2, 3) should === (Set(1, 2, 3))
         Set(1, 2, 3) should !== (Set(1, 2, 4))
 
-        implicit val e = new Equality[GenTraversable[Int]] {
-          def areEqual(a: GenTraversable[Int], b: Any): Boolean = a != b
+        implicit val e = new Equality[Iterable[Int]] {
+          def areEqual(a: Iterable[Int], b: Any): Boolean = a != b
         }
 
         Set(1, 2, 3) should === (Set(1, 2, 3))
         Set(1, 2, 3) should !== (Set(1, 2, 4))
       }
-      it("with inferred GenTraversable equality") {
-        implicit def travEq[T <: GenTraversable[Int]]: Equality[T] = new Equality[T] {
+      it("with inferred Iterable equality") {
+        implicit def travEq[T <: Iterable[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         Set(1, 2, 3) should !== (Set(1, 2, 3))
@@ -198,9 +197,9 @@ class ShouldTypeCheckedTripleEqualsEqualitySpec extends AnyFunSpec with NonImpli
         Set(1, 2, 3) should !== (Set(1, 2, 3))
         Set(1, 2, 3) should === (Set(1, 2, 4))
       }
-      it("with both GenTraversable and specific Traversable equality") {
-        implicit val e = new Equality[GenTraversable[Int]] {
-          def areEqual(a: GenTraversable[Int], b: Any): Boolean = a == b
+      it("with both Iterable and specific Traversable equality") {
+        implicit val e = new Equality[Iterable[Int]] {
+          def areEqual(a: Iterable[Int], b: Any): Boolean = a == b
         }
         implicit val e2 = new Equality[Set[Int]] { // Should pick the most specific one
           def areEqual(a: Set[Int], b: Any): Boolean = a != b
@@ -208,8 +207,8 @@ class ShouldTypeCheckedTripleEqualsEqualitySpec extends AnyFunSpec with NonImpli
         Set(1, 2, 3) should !== (Set(1, 2, 3))
         Set(1, 2, 3) should === (Set(1, 2, 4))
       }
-      it("with both inferred GenTraversable and specific Traversable equality") {
-        implicit def travEq[T <: GenTraversable[Int]]: Equality[T] = new Equality[T] {
+      it("with both inferred Iterable and specific Traversable equality") {
+        implicit def travEq[T <: Iterable[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         implicit val e2 = new Equality[Set[Int]] { // Should pick the most specific one
@@ -224,15 +223,15 @@ class ShouldTypeCheckedTripleEqualsEqualitySpec extends AnyFunSpec with NonImpli
         mutable.Set(1, 2, 3) should === (mutable.Set(1, 2, 3))
         mutable.Set(1, 2, 3) should !== (mutable.Set(1, 2, 4))
 
-        implicit val e = new Equality[GenTraversable[Int]] {
-          def areEqual(a: GenTraversable[Int], b: Any): Boolean = a != b
+        implicit val e = new Equality[Iterable[Int]] {
+          def areEqual(a: Iterable[Int], b: Any): Boolean = a != b
         }
 
         mutable.Set(1, 2, 3) should === (mutable.Set(1, 2, 3))
         mutable.Set(1, 2, 3) should !== (mutable.Set(1, 2, 4))
       }
-      it("with inferred GenTraversable equality") {
-        implicit def travEq[T <: GenTraversable[Int]]: Equality[T] = new Equality[T] {
+      it("with inferred Iterable equality") {
+        implicit def travEq[T <: Iterable[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         mutable.Set(1, 2, 3) should !== (mutable.Set(1, 2, 3))
@@ -245,9 +244,9 @@ class ShouldTypeCheckedTripleEqualsEqualitySpec extends AnyFunSpec with NonImpli
         mutable.Set(1, 2, 3) should !== (mutable.Set(1, 2, 3))
         mutable.Set(1, 2, 3) should === (mutable.Set(1, 2, 4))
       }
-      it("with both GenTraversable and specific Traversable equality") {
-        implicit val e = new Equality[GenTraversable[Int]] {
-          def areEqual(a: GenTraversable[Int], b: Any): Boolean = a == b
+      it("with both Iterable and specific Traversable equality") {
+        implicit val e = new Equality[Iterable[Int]] {
+          def areEqual(a: Iterable[Int], b: Any): Boolean = a == b
         }
         implicit val e2 = new Equality[mutable.Set[Int]] { // Should pick the most specific one
           def areEqual(a: mutable.Set[Int], b: Any): Boolean = a != b
@@ -255,8 +254,8 @@ class ShouldTypeCheckedTripleEqualsEqualitySpec extends AnyFunSpec with NonImpli
         mutable.Set(1, 2, 3) should !== (mutable.Set(1, 2, 3))
         mutable.Set(1, 2, 3) should === (mutable.Set(1, 2, 4))
       }
-      it("with both inferred GenTraversable and specific Traversable equality") {
-        implicit def travEq[T <: GenTraversable[Int]]: Equality[T] = new Equality[T] {
+      it("with both inferred Iterable and specific Traversable equality") {
+        implicit def travEq[T <: Iterable[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }
         implicit val e2 = new Equality[mutable.Set[Int]] { // Should pick the most specific one
@@ -290,7 +289,7 @@ class ShouldTypeCheckedTripleEqualsEqualitySpec extends AnyFunSpec with NonImpli
       }
 
       it("with inferred Collection equality") {
-        // implicit val e = new Equality[GenTraversable[Int]] { ... does not and should not compile
+        // implicit val e = new Equality[Iterable[Int]] { ... does not and should not compile
         implicit def travEq[T <: java.util.Collection[Int]]: Equality[T] = new Equality[T] {
           def areEqual(a: T, b: Any): Boolean = a != b
         }

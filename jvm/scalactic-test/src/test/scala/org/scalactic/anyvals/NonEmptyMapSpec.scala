@@ -15,7 +15,7 @@
  */
 package org.scalactic.anyvals
 
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
@@ -42,7 +42,7 @@ class NonEmptyMapSpec extends UnitSpec {
     threesie(2) shouldBe "two"
     threesie(3) shouldBe "three"
   }
-  it can "be constructed from a GenTraversable via the from method on NonEmptyMap singleton" in {
+  it can "be constructed from a Iterable via the from method on NonEmptyMap singleton" in {
     NonEmptyMap.from(Map.empty[Int, String]) shouldBe None
     NonEmptyMap.from(Map(1 -> "one")) shouldBe Some(NonEmptyMap(1 -> "one"))
     NonEmptyMap.from(Map(1 -> "one", 2 -> "two", 3 -> "three")) shouldBe Some(NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three"))
@@ -165,10 +165,10 @@ class NonEmptyMapSpec extends UnitSpec {
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three") ++ Every(4 -> "four") shouldEqual NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three") ++ One(4 -> "four") shouldEqual NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
   }
-  it should "have a ++ method that takes a GenTraversableOnce" in {
+  it should "have a ++ method that takes a IterableOnce" in {
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three") ++ Map(4 -> "four") shouldEqual NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three") ++ Vector(4 -> "four", 5 -> "five", 6 -> "six") shouldEqual NonEmptyMap(5 -> "five", 6 -> "six", 1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
-    NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three") ++ GenTraversable(4 -> "four") shouldEqual NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
+    NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three") ++ Iterable(4 -> "four") shouldEqual NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four")
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three") ++ Set(4 -> "four", 5 -> "five") shouldEqual NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")
     NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three") ++ Set(4 -> "four", 5 -> "five").iterator shouldEqual NonEmptyMap(1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")
   }

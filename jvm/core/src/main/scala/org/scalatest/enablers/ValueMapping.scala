@@ -19,7 +19,6 @@ import scala.collection.JavaConverters._
 import org.scalactic.Equality
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
-import scala.collection.GenTraversable
 
 /**
  * Supertrait for typeclasses that enable <code>contain value</code> matcher syntax.

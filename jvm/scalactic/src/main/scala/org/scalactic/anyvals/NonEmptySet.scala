@@ -16,9 +16,8 @@
 package org.scalactic.anyvals
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
-import scala.collection.GenIterable
 import scala.collection.GenSet
-import scala.collection.GenTraversableOnce
+import org.scalactic.ColCompatHelper.{IterableOnce, Iterable, GenIterable}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
@@ -177,11 +176,11 @@ final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
   // TODO: Have I added these extra ++, etc. methods to Every that take a NonEmptySet?
 
   /**
-    * Returns a new <code>NonEmptySet</code> containing the elements of this <code>NonEmptySet</code> followed by the elements of the passed <code>GenTraversableOnce</code>.
+    * Returns a new <code>NonEmptySet</code> containing the elements of this <code>NonEmptySet</code> followed by the elements of the passed <code>IterableOnce</code>.
     * The element type of the resulting <code>NonEmptySet</code> is the most specific superclass encompassing the element types of this <code>NonEmptySet</code>
-    * and the passed <code>GenTraversableOnce</code>.
+    * and the passed <code>IterableOnce</code>.
     *
-    * @param other the <code>GenTraversableOnce</code> to append
+    * @param other the <code>IterableOnce</code> to append
     * @return a new <code>NonEmptySet</code> that contains all the elements of this <code>NonEmptySet</code> followed by all elements of <code>other</code>.
     */
   def ++(other: org.scalactic.ColCompatHelper.IterableOnce[T]): NonEmptySet[T] =
@@ -342,8 +341,8 @@ final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
     * formed by the elements of the nested <code>NonEmptySet</code>s.
     *
     * <p>
-    * Note: You cannot use this <code>flatten</code> method on a <code>NonEmptySet</code> that contains a <code>GenTraversableOnce</code>s, because 
-    * if all the nested <code>GenTraversableOnce</code>s were empty, you'd end up with an empty <code>NonEmptySet</code>.
+    * Note: You cannot use this <code>flatten</code> method on a <code>NonEmptySet</code> that contains a <code>IterableOnce</code>s, because 
+    * if all the nested <code>IterableOnce</code>s were empty, you'd end up with an empty <code>NonEmptySet</code>.
     * </p>
     *
     * @tparm B the type of the elements of each nested <code>NonEmptySet</code>
@@ -465,7 +464,7 @@ final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
     */
   final def head: T = toSet.head
 
-  // Methods like headOption I can't get rid of because of the implicit conversion to GenTraversable.
+  // Methods like headOption I can't get rid of because of the implicit conversion to Iterable.
   // Users can call any of the methods I've left out on a NonEmptySet, and get whatever Set would return
   // for that method call. Eventually I'll probably implement them all to save the implicit conversion.
 
@@ -849,7 +848,7 @@ final class NonEmptySet[T] private (val toSet: Set[T]) extends AnyVal {
     *
     * @return an <code>Iterable</code> containing all elements of this <code>NonEmptySet</code>. 
     */
-  final def toIterable: Iterable[T] = toSet.toIterable
+  final def toIterable: scala.collection.Iterable[T] = toSet.toIterable
 
   /**
     * Returns an <code>Iterator</code> over the elements in this <code>NonEmptySet</code>.

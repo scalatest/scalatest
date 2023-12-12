@@ -15,7 +15,7 @@
  */
 package org.scalactic.anyvals
 
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
@@ -42,7 +42,7 @@ class NonEmptyListSpec extends UnitSpec {
     threesie(1) shouldBe 2
     threesie(2) shouldBe 3
   }
-  it can "be constructed from a GenTraversable via the from method on NonEmptyList singleton" in {
+  it can "be constructed from a Iterable via the from method on NonEmptyList singleton" in {
     NonEmptyList.from(List.empty[String]) shouldBe None
     NonEmptyList.from(List("1")) shouldBe Some(NonEmptyList("1"))
     NonEmptyList.from(List(1, 2, 3)) shouldBe Some(NonEmptyList(1, 2, 3))
@@ -165,10 +165,10 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(1, 2, 3) ++ Every(4) shouldEqual NonEmptyList(1, 2, 3, 4)
     NonEmptyList(1, 2, 3) ++ One(4) shouldEqual NonEmptyList(1, 2, 3, 4)
   }
-  it should "have a ++ method that takes a GenTraversableOnce" in {
+  it should "have a ++ method that takes a IterableOnce" in {
     NonEmptyList(1, 2, 3) ++ List(4) shouldEqual NonEmptyList(1, 2, 3, 4)
     NonEmptyList(1, 2, 3) ++ Vector(4, 5, 6) shouldEqual NonEmptyList(1, 2, 3, 4, 5, 6)
-    NonEmptyList(1, 2, 3) ++ GenTraversable(4) shouldEqual NonEmptyList(1, 2, 3, 4)
+    NonEmptyList(1, 2, 3) ++ Iterable(4) shouldEqual NonEmptyList(1, 2, 3, 4)
     NonEmptyList(1, 2, 3) ++ Set(4, 5) shouldEqual NonEmptyList(1, 2, 3, 4, 5)
     NonEmptyList(1, 2, 3) ++ Set(4, 5).iterator shouldEqual NonEmptyList(1, 2, 3, 4, 5)
   }
@@ -198,10 +198,10 @@ class NonEmptyListSpec extends UnitSpec {
     Every(1) ::: NonEmptyList(2, 3, 4) shouldEqual NonEmptyList(1, 2, 3, 4)
     One(1) ::: NonEmptyList(2, 3, 4) shouldEqual NonEmptyList(1, 2, 3, 4)
   }
-  it should "have a ::: method that takes a GenTraversableOnce" in {
+  it should "have a ::: method that takes a IterableOnce" in {
     List(1) ::: NonEmptyList(2, 3, 4) shouldEqual NonEmptyList(1, 2, 3, 4)
     Vector(1, 2, 3) ::: NonEmptyList(4, 5, 6) shouldEqual NonEmptyList(1, 2, 3, 4, 5, 6)
-    GenTraversable(1) ::: NonEmptyList(2, 3, 4) shouldEqual NonEmptyList(1, 2, 3, 4)
+    Iterable(1) ::: NonEmptyList(2, 3, 4) shouldEqual NonEmptyList(1, 2, 3, 4)
     Set(1, 2) ::: NonEmptyList(3, 4, 5) shouldEqual NonEmptyList(1, 2, 3, 4, 5)
     Set(1, 2).iterator ::: NonEmptyList(3, 4, 5) shouldEqual NonEmptyList(1, 2, 3, 4, 5)
   }
@@ -463,7 +463,7 @@ class NonEmptyListSpec extends UnitSpec {
     NonEmptyList(NonEmptyList(1, 2, 3), NonEmptyList(1, 2, 3)).flatten shouldBe NonEmptyList(1, 2, 3, 1, 2, 3)
     NonEmptyList(NonEmptyList(1)).flatten shouldBe NonEmptyList(1)
   }
-  it can "be flattened when in a GenTraversableOnce" in {
+  it can "be flattened when in a IterableOnce" in {
     Vector(NonEmptyList(1, 2, 3), NonEmptyList(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     List(NonEmptyList(1, 2, 3), NonEmptyList(1, 2, 3)).flatten shouldBe List(1, 2, 3, 1, 2, 3)
     List(NonEmptyList(1, 2, 3), NonEmptyList(1, 2, 3)).toIterator.flatten.toStream shouldBe List(1, 2, 3, 1, 2, 3).toIterator.toStream

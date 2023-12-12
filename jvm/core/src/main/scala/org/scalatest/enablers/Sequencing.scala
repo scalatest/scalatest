@@ -17,7 +17,7 @@ package org.scalatest.enablers
 
 import scala.collection.JavaConverters._
 import org.scalactic.{Equality, Every}
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import org.scalatest.verbs.ArrayWrapper
 import scala.annotation.tailrec
 
@@ -85,7 +85,7 @@ trait Sequencing[-S] {
    * @param rightSequence an sequence that should contain the same elements, in (iterated) order as the passed <code>leftSequence</code>
    * @return true if the passed <code>leftSequence</code> contains the same elements, in (iterated) order, as the passed <code>rightSequence</code>
    */
-  def containsTheSameElementsInOrderAs(leftSequence: S, rightSequence: GenTraversable[Any]): Boolean
+  def containsTheSameElementsInOrderAs(leftSequence: S, rightSequence: Iterable[Any]): Boolean
 }
 
 /**
@@ -104,7 +104,7 @@ trait Sequencing[-S] {
  */
 object Sequencing {
   
-  private def checkTheSameElementsInOrderAs[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+  private def checkTheSameElementsInOrderAs[T](left: Iterable[T], right: Iterable[Any], equality: Equality[T]): Boolean = {
     @tailrec
     def checkEqual(left: Iterator[T], right: Iterator[Any]): Boolean = {
       if (left.hasNext && right.hasNext) {
@@ -121,7 +121,7 @@ object Sequencing {
     checkEqual(left.toIterator, right.toIterator)
   }
 
-  private def checkInOrderOnly[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+  private def checkInOrderOnly[T](left: Iterable[T], right: Iterable[Any], equality: Equality[T]): Boolean = {
   
     @tailrec
     def checkEqual(left: T, right: Any, leftItr: Iterator[T], rightItr: Iterator[Any]): Boolean = {
@@ -158,7 +158,7 @@ object Sequencing {
     else left.isEmpty && right.isEmpty
   }
   
-  private def checkInOrder[T](left: GenTraversable[T], right: GenTraversable[Any], equality: Equality[T]): Boolean = {
+  private def checkInOrder[T](left: Iterable[T], right: Iterable[Any], equality: Equality[T]): Boolean = {
 
     @tailrec
     def lastIndexOf(itr: Iterator[T], element: Any, idx: Option[Int], i: Int): Option[Int] = {
@@ -192,7 +192,7 @@ object Sequencing {
         matchedCurrentRight && !rightItr.hasNext
   
     @tailrec
-    def checkEqualRec(left: GenTraversable[T], rightItr: Iterator[Any]): Boolean = {
+    def checkEqualRec(left: Iterable[T], rightItr: Iterator[Any]): Boolean = {
       if (rightItr.hasNext) {
         val nextRight = rightItr.next
         lastIndexOf(left.toIterator, nextRight, None, 0) match {
@@ -233,7 +233,7 @@ object Sequencing {
       }
 
 // TODO: Make elements a Sequencing
-      def containsTheSameElementsInOrderAs(seq: SEQ[E], elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsInOrderAs(seq: SEQ[E], elements: Iterable[Any]): Boolean = {
         checkTheSameElementsInOrderAs[E](seq, elements, equality)
       }
     }
@@ -279,7 +279,7 @@ object Sequencing {
         checkInOrderOnly[E](set, elements, equality)
       }
 
-      def containsTheSameElementsInOrderAs(set: SET[E], elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsInOrderAs(set: SET[E], elements: Iterable[Any]): Boolean = {
         checkTheSameElementsInOrderAs[E](set, elements, equality)
       }
     }
@@ -324,7 +324,7 @@ object Sequencing {
         checkInOrderOnly(map, elements, equality)
       }
 
-      def containsTheSameElementsInOrderAs(map: MAP[K, V], elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsInOrderAs(map: MAP[K, V], elements: Iterable[Any]): Boolean = {
         checkTheSameElementsInOrderAs(map, elements, equality)
       }
     }
@@ -369,7 +369,7 @@ object Sequencing {
         checkInOrderOnly(new ArrayWrapper(array), elements, equality)
       }
 
-      def containsTheSameElementsInOrderAs(array: Array[E], elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsInOrderAs(array: Array[E], elements: Iterable[Any]): Boolean = {
         checkTheSameElementsInOrderAs[E](new ArrayWrapper(array), elements, equality)
       }
     }
@@ -412,7 +412,7 @@ object Sequencing {
         checkInOrderOnly(col.asScala, elements, equality)
       }
 
-      def containsTheSameElementsInOrderAs(col: JLIST[E], elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsInOrderAs(col: JLIST[E], elements: Iterable[Any]): Boolean = {
         checkTheSameElementsInOrderAs(col.asScala, elements, equality)
       }
     }
@@ -458,7 +458,7 @@ object Sequencing {
         checkInOrderOnly[E](set.iterator.asScala.toVector, elements, equality)
       }
 
-      def containsTheSameElementsInOrderAs(set: JSET[E], elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsInOrderAs(set: JSET[E], elements: Iterable[Any]): Boolean = {
         checkTheSameElementsInOrderAs[E](set.iterator.asScala.toVector, elements, equality)
       }
     }
@@ -505,7 +505,7 @@ object Sequencing {
         checkInOrderOnly(map.entrySet.iterator.asScala.toVector, elements, equality)
       }
 
-      def containsTheSameElementsInOrderAs(map: JMAP[K, V], elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsInOrderAs(map: JMAP[K, V], elements: Iterable[Any]): Boolean = {
         checkTheSameElementsInOrderAs(map.entrySet.iterator.asScala.toVector, elements, equality)
       }
     }
@@ -551,7 +551,7 @@ object Sequencing {
         checkInOrderOnly(s, elements, equality)
       }
 
-      def containsTheSameElementsInOrderAs(s: String, elements: GenTraversable[Any]): Boolean = {
+      def containsTheSameElementsInOrderAs(s: String, elements: Iterable[Any]): Boolean = {
         checkTheSameElementsInOrderAs(s, elements, equality)
       }
     }
@@ -591,7 +591,7 @@ object Sequencing {
       def containsInOrderOnly(every: Every[E], elements: scala.collection.Seq[Any]): Boolean =
         checkInOrderOnly(every, elements, equality)
 
-      def containsTheSameElementsInOrderAs(every: Every[E], elements: GenTraversable[Any]): Boolean =
+      def containsTheSameElementsInOrderAs(every: Every[E], elements: Iterable[Any]): Boolean =
         checkTheSameElementsInOrderAs[E](every, elements, equality)
     }
 

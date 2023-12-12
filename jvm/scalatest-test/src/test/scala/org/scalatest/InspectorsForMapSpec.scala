@@ -16,7 +16,6 @@
 package org.scalatest
 
 import org.scalatest.prop.TableDrivenPropertyChecks
-import scala.collection.GenTraversable
 import scala.annotation.tailrec
 import collection._
 import SharedHelpers._

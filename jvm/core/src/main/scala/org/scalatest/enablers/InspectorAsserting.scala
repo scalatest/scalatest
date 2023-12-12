@@ -19,7 +19,7 @@ import org.scalatest._
 import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
 import scala.annotation.tailrec
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import StackDepthExceptionHelper.getStackDepth
 import Suite.indentLines
 import org.scalatest.FailureMessages.decorateToStringValue
@@ -41,37 +41,37 @@ trait InspectorAsserting[T] {
   /**
    * Implementation method for <code>Inspectors</code> <code>forAll</code> syntax.
    */
-  def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
+  def forAll[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
 
   /**
    * Implementation method for <code>Inspectors</code> <code>forAtLeast</code> syntax.
    */
-  def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
+  def forAtLeast[E](min: Int, xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
 
   /**
    * Implementation method for <code>Inspectors</code> <code>forAtMost</code> syntax.
    */
-  def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
+  def forAtMost[E](max: Int, xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
 
   /**
    * Implementation method for <code>Inspectors</code> <code>forExactly</code> syntax.
    */
-  def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
+  def forExactly[E](succeededCount: Int, xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
 
   /**
    * Implementation method for <code>Inspectors</code> <code>forNo</code> syntax.
    */
-  def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
+  def forNo[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
 
   /**
    * Implementation method for <code>Inspectors</code> <code>forBetween</code> syntax.
    */
-  def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
+  def forBetween[E](from: Int, upTo: Int, xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
 
   /**
    * Implementation method for <code>Inspectors</code> <code>forEvery</code> syntax.
    */
-  def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
+  def forEvery[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result
 }
 
 /**
@@ -88,7 +88,7 @@ abstract class UnitInspectorAsserting {
     import InspectorAsserting._
 
     // Inherit Scaladoc for now. See later if can just make this implementation class private[scalatest].
-    def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
+    def forAll[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
       val xsIsMap = isMap(original)
       val result =
         runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0)
@@ -105,7 +105,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forAll succeeded")
     }
 
-    def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
+    def forAtLeast[E](min: Int, xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
       @tailrec
       def forAtLeastAcc(itr: Iterator[E], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): (Int, IndexedSeq[String]) = {
         if (itr.hasNext) {
@@ -156,7 +156,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forAtLeast succeeded")
     }
 
-    def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
+    def forAtMost[E](max: Int, xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
       if (max <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'max'"))
 
@@ -175,7 +175,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forAtMost succeeded")
     }
 
-    def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
+    def forExactly[E](succeededCount: Int, xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
       if (succeededCount <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'succeededCount'"))
 
@@ -208,7 +208,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forExactly succeeded")
     }
 
-    def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
+    def forNo[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
       val xsIsMap = isMap(original)
       val result =
         runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount != 0)
@@ -224,7 +224,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forNo succeeded")
     }
 
-    def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
+    def forBetween[E](from: Int, upTo: Int, xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
       if (from < 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanEqualZero("'from'"))
       if (upTo <= 0)
@@ -261,7 +261,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forBetween succeeded")
     }
 
-    def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
+    def forEvery[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
       @tailrec
       def runAndCollectErrorMessage[E](itr: Iterator[E], messageList: IndexedSeq[String], index: Int)(fun: E => T): IndexedSeq[String] = {
         if (itr.hasNext) {
@@ -400,7 +400,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
     implicit def executionContext: ExecutionContext
 
     // Inherit Scaladoc for now. See later if can just make this implementation class private[scalatest].
-    def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forAll[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
       val xsIsMap = isMap(original)
       val future = runAsyncSerial(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0)
       future.map { result =>
@@ -417,7 +417,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
       }
     }
 
-    def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forAtLeast[E](min: Int, xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
       def forAtLeastAcc(itr: Iterator[E], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): Future[(Int, IndexedSeq[String])] = {
         if (itr.hasNext) {
           val head = itr.next
@@ -490,7 +490,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
       }
     }
 
-    def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forAtMost[E](max: Int, xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
       if (max <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'max'"))
 
@@ -510,7 +510,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
       }
     }
 
-    def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forExactly[E](succeededCount: Int, xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
       if (succeededCount <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'succeededCount'"))
 
@@ -544,7 +544,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
       }
     }
 
-    def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forNo[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
       val xsIsMap = isMap(original)
       val future = runAsyncSerial(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount != 0)
       future.map { result =>
@@ -561,7 +561,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
       }
     }
 
-    def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forBetween[E](from: Int, upTo: Int, xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
       if (from < 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanEqualZero("'from'"))
       if (upTo <= 0)
@@ -599,7 +599,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
       }
     }
 
-    def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
+    def forEvery[E](xs: Iterable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => Future[T]): Result = {
       val xsIsMap = isMap(original)
       val future = runAsyncParallel(xs, xsIsMap, fun)(executionContext)
       future.map { result =>
@@ -676,18 +676,18 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
             if (xsIsMap)
               Resources.forAssertionsGenMapMessageWithStackDepth(messageKey, sde.getMessage, failedCodeFileNameAndLineNumber)
             else
-              Resources.forAssertionsGenTraversableMessageWithStackDepth(messageKey, sde.getMessage, failedCodeFileNameAndLineNumber)
+              Resources.forAssertionsIterableMessageWithStackDepth(messageKey, sde.getMessage, failedCodeFileNameAndLineNumber)
           case None =>
             if (xsIsMap)
               Resources.forAssertionsGenMapMessageWithoutStackDepth(messageKey, sde.getMessage)
             else
-              Resources.forAssertionsGenTraversableMessageWithoutStackDepth(messageKey, sde.getMessage)
+              Resources.forAssertionsIterableMessageWithoutStackDepth(messageKey, sde.getMessage)
         }
       case _ =>
         if (xsIsMap)
           Resources.forAssertionsGenMapMessageWithoutStackDepth(messageKey, if (t.getMessage != null) t.getMessage else "null")
         else
-          Resources.forAssertionsGenTraversableMessageWithoutStackDepth(messageKey, if (t.getMessage != null) t.getMessage else "null")
+          Resources.forAssertionsIterableMessageWithoutStackDepth(messageKey, if (t.getMessage != null) t.getMessage else "null")
     }
 
   private[scalatest] final def elementLabel(count: Int): String =
@@ -731,7 +731,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
       result
   }
 
-  private[scalatest] final def runAsyncParallel[T, ASSERTION](col: scala.collection.GenTraversable[T], xsIsMap: Boolean, fun: T => Future[ASSERTION])(implicit ctx: ExecutionContext): Future[ForResult[T]] = {
+  private[scalatest] final def runAsyncParallel[T, ASSERTION](col: Iterable[T], xsIsMap: Boolean, fun: T => Future[ASSERTION])(implicit ctx: ExecutionContext): Future[ForResult[T]] = {
     val futCol: IndexedSeq[Future[(T, Int, Try[ASSERTION])]] =
       col.toIndexedSeq.zipWithIndex map { case (next, idx) =>
         try {

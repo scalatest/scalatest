@@ -15,7 +15,7 @@
  */
 package org.scalactic.anyvals
 
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
@@ -58,7 +58,7 @@ class NonEmptyStringSpec extends UnitSpec {
     threesie2(1) shouldBe '2'
     threesie2(2) shouldBe '3'
   }
-  it can "be constructed from a GenTraversable via the from method on NonEmptyString singleton" in {
+  it can "be constructed from a Iterable via the from method on NonEmptyString singleton" in {
     NonEmptyString.from("") shouldBe None
     NonEmptyString.from("1") shouldBe Some(NonEmptyString("1"))
     NonEmptyString.from("123") shouldBe Some(NonEmptyString("123"))
@@ -104,10 +104,10 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("123") ++ Every('4') shouldEqual NonEmptyString("1234")
     NonEmptyString("123") ++ One('4') shouldEqual NonEmptyString("1234")
   }
-  it should "have a ++ method that takes a GenTraversableOnce" in {
+  it should "have a ++ method that takes a IterableOnce" in {
     NonEmptyString("123") ++ "4" shouldEqual NonEmptyString("1234")
     NonEmptyString("123") ++ Vector('4', '5', '6') shouldEqual NonEmptyString("123456")
-    NonEmptyString("123") ++ GenTraversable('4') shouldEqual NonEmptyString("1234")
+    NonEmptyString("123") ++ Iterable('4') shouldEqual NonEmptyString("1234")
     NonEmptyString("123") ++ Set('4', '5') shouldEqual NonEmptyString("12345")
     NonEmptyString("123") ++ Set('4', '5').iterator shouldEqual NonEmptyString("12345")
   }
@@ -348,7 +348,7 @@ class NonEmptyStringSpec extends UnitSpec {
     NonEmptyString("5") flatMap (i => NonEmptyString(i + "3")) shouldBe NonEmptyString("53")
     NonEmptyString("8") flatMap (i => NonEmptyString(i.toString)) shouldBe NonEmptyString("8")
   }
-  it can "be flattened when in a GenTraversableOnce" in {
+  it can "be flattened when in a IterableOnce" in {
     Vector(NonEmptyString("123"), NonEmptyString("123")).flatten shouldBe Vector('1', '2', '3', '1', '2', '3')
     List(NonEmptyString("123"), NonEmptyString("123")).flatten shouldBe List('1', '2', '3', '1', '2', '3')
     // SKIP-SCALATESTJS,NATIVE-START

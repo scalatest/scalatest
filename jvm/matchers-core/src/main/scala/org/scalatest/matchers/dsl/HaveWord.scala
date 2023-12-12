@@ -21,7 +21,6 @@ import org.scalactic._
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.Resources
-import scala.collection.GenTraversable
 import scala.collection.GenSeq
 
 /**
