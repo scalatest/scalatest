@@ -58,25 +58,25 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
 
   test("super's runTest must be called") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     assert(a.runTestWasCalled)
   }
   
   test("super's run must be called") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     assert(a.runWasCalled)
   }
 
   test("before code gets called before runTest") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     assert(a.beforeCodeCalledBeforeRunTest)
   }
   
   test("after code gets called after runTest") {
     val a = new MySuite
-    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker))
     val promise = Promise[MySuite] // Promise...my suite
     status whenCompleted { _ => promise.success(a) }
     promise.future.map { mySuite =>

@@ -32,7 +32,7 @@ class TestDataFixtureSpec extends scalatest.funspec.AnyFunSpec {
         }
       }
       val suite = new MySuite
-      suite.run(None, Args(SilentReporter, Stopper.default, Filter(), myConfigMap, None, new Tracker, Set.empty))
+      suite.run(None, Args(SilentReporter, Stopper.default, Filter(), myConfigMap, None, new Tracker))
       assert(suite.testDataPassed)
     }
   }

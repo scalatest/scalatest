@@ -532,7 +532,7 @@ class FunSpecSpec extends scalatest.freespec.AnyFreeSpec with GivenWhenThen {
       }
       val b = new BFunSpec(TestWasCalledCounts(false, false))
       val repB = new EventRecordingReporter
-      b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
+      b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker))
       assert(repB.testIgnoredEventsReceived.isEmpty)
       assert(b.counts.theTestThisCalled)
       assert(b.counts.theTestThatCalled)
@@ -547,7 +547,7 @@ class FunSpecSpec extends scalatest.freespec.AnyFreeSpec with GivenWhenThen {
       }
       val c = new CFunSpec(TestWasCalledCounts(false, false))
       val repC = new EventRecordingReporter
-      c.run(None, Args(repC, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
+      c.run(None, Args(repC, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker))
       assert(repC.testIgnoredEventsReceived.isEmpty)
       assert(c.counts.theTestThisCalled)
       assert(c.counts.theTestThatCalled)
@@ -561,7 +561,7 @@ class FunSpecSpec extends scalatest.freespec.AnyFreeSpec with GivenWhenThen {
       }
       val d = new DFunSpec(TestWasCalledCounts(false, false))
       val repD = new EventRecordingReporter
-      d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
+      d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker))
       assert(repD.testIgnoredEventsReceived.size === 1)
       assert(!d.counts.theTestThisCalled)
       assert(d.counts.theTestThatCalled)
@@ -579,7 +579,7 @@ class FunSpecSpec extends scalatest.freespec.AnyFreeSpec with GivenWhenThen {
       val e = new EFunSpec(ThreeCounts(false, false, false))
       val repE = new EventRecordingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
-                ConfigMap.empty, None, new Tracker, Set.empty))
+                ConfigMap.empty, None, new Tracker))
       assert(repE.testIgnoredEventsReceived.isEmpty)
       assert(e.counts.theTestThisCalled)
       assert(e.counts.theTestThatCalled)
@@ -597,7 +597,7 @@ class FunSpecSpec extends scalatest.freespec.AnyFreeSpec with GivenWhenThen {
       val f = new FFunSpec(ThreeCounts(false, false, false))
       val repF = new EventRecordingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
-                ConfigMap.empty, None, new Tracker, Set.empty))
+                ConfigMap.empty, None, new Tracker))
       assert(repF.testIgnoredEventsReceived.isEmpty)
       assert(!f.counts.theTestThisCalled)
       assert(f.counts.theTestThatCalled)
@@ -615,7 +615,7 @@ class FunSpecSpec extends scalatest.freespec.AnyFreeSpec with GivenWhenThen {
       val g = new GFunSpec(ThreeCounts(false, false, false))
       val repG = new EventRecordingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
-                ConfigMap.empty, None, new Tracker, Set.empty))
+                ConfigMap.empty, None, new Tracker))
       assert(repG.testIgnoredEventsReceived.isEmpty)
       assert(g.counts.theTestThisCalled)
       assert(g.counts.theTestThatCalled)
@@ -632,7 +632,7 @@ class FunSpecSpec extends scalatest.freespec.AnyFreeSpec with GivenWhenThen {
       }
       val h = new HFunSpec(ThreeCounts(false, false, false))
       val repH = new EventRecordingReporter
-      h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
+      h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker))
       assert(repH.testIgnoredEventsReceived.isEmpty)
       assert(h.counts.theTestThisCalled)
       assert(h.counts.theTestThatCalled)
@@ -650,7 +650,7 @@ class FunSpecSpec extends scalatest.freespec.AnyFreeSpec with GivenWhenThen {
       }
       val i = new IFunSpec(ThreeCounts(false, false, false))
       val repI = new EventRecordingReporter
-      i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
+      i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker))
       assert(repI.testIgnoredEventsReceived.isEmpty)
       assert(i.counts.theTestThisCalled)
       assert(i.counts.theTestThatCalled)
@@ -667,7 +667,7 @@ class FunSpecSpec extends scalatest.freespec.AnyFreeSpec with GivenWhenThen {
       }
       val j = new JFunSpec(ThreeCounts(false, false, false))
       val repJ = new TestIgnoredTrackingReporter
-      j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
+      j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker))
       assert(!repJ.testIgnoredReceived)
       assert(!j.counts.theTestThisCalled)
       assert(!j.counts.theTestThatCalled)
@@ -682,7 +682,7 @@ class FunSpecSpec extends scalatest.freespec.AnyFreeSpec with GivenWhenThen {
       }
       val k = new KFunSpec(ThreeCounts(false, false, false))
       val repK = new TestIgnoredTrackingReporter
-      k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
+      k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker))
       assert(repK.testIgnoredReceived)
       assert(!k.counts.theTestThisCalled)
       assert(!k.counts.theTestThatCalled)

@@ -28,7 +28,7 @@ class StopOnFailureSpec extends AnyFlatSpec {
       }
     }
     val stopper = Stopper.default
-    // (new MySuite).run(None, RunArgs(SilentReporter, stopper, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
+    // (new MySuite).run(None, RunArgs(SilentReporter, stopper, Filter(), ConfigMap.empty, None, new Tracker()))
     (new MySuite).run(None, Args(SilentReporter, stopper))
     assert(!stopper.stopRequested)
   }
@@ -40,7 +40,7 @@ class StopOnFailureSpec extends AnyFlatSpec {
       }
     }
     val stopper = Stopper.default
-    //(new MySuite).run(None, RunArgs(SilentReporter, stopper, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
+    //(new MySuite).run(None, RunArgs(SilentReporter, stopper, Filter(), ConfigMap.empty, None, new Tracker()))
     (new MySuite).run(None, Args(SilentReporter, stopper))
     assert(stopper.stopRequested)
   }

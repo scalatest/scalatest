@@ -25,7 +25,7 @@ class ConfigMapWrapperSuiteSpec extends AnyFunSuite with SeveredStackTraces {
     SavesConfigMapSuite.resetConfigMap()
     val wrapped = new ConfigMapWrapperSuite(classOf[SavesConfigMapSuite])
     val configMap = ConfigMap("salt" -> "pepper", "eggs" -> "bacon")
-    wrapped.run(None, Args(SilentReporter, Stopper.default, Filter(), configMap, None, new Tracker, Set.empty))
+    wrapped.run(None, Args(SilentReporter, Stopper.default, Filter(), configMap, None, new Tracker))
     assert(SavesConfigMapSuite.savedConfigMap === Some(configMap))
   }
   

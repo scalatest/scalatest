@@ -31,23 +31,21 @@ class ArgsSpec extends wordspec.AnyWordSpec {
       val cnf = ConfigMap.empty
       val dst = None
       val trk = new Tracker
-      val sty = Set.empty[String]
       
       val invalidCombos =
-        Table[Reporter, Stopper, Filter, ConfigMap, Option[Distributor], Tracker, Set[String]](
-          ("reporter", "stopper", "filter", "configMap", "distributor", "tracker", "chosenStyles"),
-          (      null,       stp,      flt,         cnf,           dst,       trk,            sty),
-          (       rep,      null,      flt,         cnf,           dst,       trk,            sty),
-          (       rep,       stp,     null,         cnf,           dst,       trk,            sty),
-          (       rep,       stp,      flt,        null,           dst,       trk,            sty),
-          (       rep,       stp,      flt,         cnf,           null,      trk,            sty),
-          (       rep,       stp,      flt,         cnf,           dst,      null,            sty),
-          (       rep,       stp,      flt,         cnf,           dst,       trk,           null)
+        Table[Reporter, Stopper, Filter, ConfigMap, Option[Distributor], Tracker](
+          ("reporter", "stopper", "filter", "configMap", "distributor", "tracker"),
+          (      null,       stp,      flt,         cnf,           dst,       trk),
+          (       rep,      null,      flt,         cnf,           dst,       trk),
+          (       rep,       stp,     null,         cnf,           dst,       trk),
+          (       rep,       stp,      flt,        null,           dst,       trk),
+          (       rep,       stp,      flt,         cnf,           null,      trk),
+          (       rep,       stp,      flt,         cnf,           dst,      null)
         )
 
-      forAll (invalidCombos) { (reporter, stopper, filter, configMap, distributor, tracker, chosenStyles) =>
+      forAll (invalidCombos) { (reporter, stopper, filter, configMap, distributor, tracker) =>
         a [NullArgumentException] should be thrownBy {
-          Args(reporter, stopper, filter, configMap, distributor, tracker, chosenStyles)
+          Args(reporter, stopper, filter, configMap, distributor, tracker)
         }
       }
     }

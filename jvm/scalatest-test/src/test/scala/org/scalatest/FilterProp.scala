@@ -38,7 +38,7 @@ class FilterProp extends SuiteProp {
   test("All suite types should not run nested suite when Filters's excludeNestedSuites contains the suiteId.") {
     forAll(examples) { suite =>
       val reporter = new EventRecordingReporter
-      suite.run(None, Args(reporter, Stopper.default, Filter(None, Set[String](), true), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      suite.run(None, Args(reporter, Stopper.default, Filter(None, Set[String](), true), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       // SKIP-SCALATESTJS,NATIVE-START
       if (!suite.isInstanceOf[TestNGSuite])
       // SKIP-SCALATESTJS,NATIVE-END

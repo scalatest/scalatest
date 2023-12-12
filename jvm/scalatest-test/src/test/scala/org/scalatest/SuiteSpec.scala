@@ -362,7 +362,7 @@ class SuiteSpec extends AnyFunSpec {
       val n = new SuiteG
 
       val y = Suites(h, i, j, k, l, m, n)
-      y.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      y.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
 
       assert(k.executed)
       assert(i.executed)

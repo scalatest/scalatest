@@ -308,7 +308,7 @@ class Framework extends SbtFramework {
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
       report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
-    val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty, false, None, Some(suiteSortingReporter))
+    val args = Args(report, Stopper.default, filter, configMap, None, tracker, false, None, Some(suiteSortingReporter))
 
     val distributor =
       if (suite.isInstanceOf[ParallelTestExecution])
@@ -975,7 +975,6 @@ class Framework extends SbtFramework {
       wildcardArgs,
       testNGArgs,
       suffixes,
-      chosenStyles,
       spanScaleFactors,
       testSortingReporterTimeouts,
       slowpokeArgs,
@@ -999,18 +998,7 @@ class Framework extends SbtFramework {
 
     val testSortingReporterTimeout = Span(parseDoubleArgument(testSortingReporterTimeouts, "-T", Suite.defaultTestSortingReporterTimeoutInSeconds), Seconds)
 
-    val propertiesMap = parsePropertiesArgsIntoMap(propertiesArgs)
-    val chosenStyleSet: Set[String] = parseChosenStylesIntoChosenStyleSet(chosenStyles, "-y")
-    if (propertiesMap.isDefinedAt(Suite.CHOSEN_STYLES))
-      throw new IllegalArgumentException("Property name '" + Suite.CHOSEN_STYLES + "' is used by ScalaTest, please choose other property name.")
-    val configMap: ConfigMap =
-      if (chosenStyleSet.isEmpty)
-        propertiesMap
-      else
-        propertiesMap + (Suite.CHOSEN_STYLES -> chosenStyleSet)
-
-    if (chosenStyleSet.nonEmpty)
-      println(Resources.deprecatedChosenStyleWarning)
+    val configMap: ConfigMap = parsePropertiesArgsIntoMap(propertiesArgs)
 
     val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
     val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")

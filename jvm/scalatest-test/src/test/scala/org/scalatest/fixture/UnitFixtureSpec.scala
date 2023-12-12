@@ -31,7 +31,7 @@ class UnitFixtureSpec extends scalatest.funspec.AnyFunSpec {
         }
       }
       val suite = new MySuite
-      suite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      suite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       assert(suite.unitPassed)
     }
   }

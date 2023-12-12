@@ -97,7 +97,6 @@ private[scalatest] class RunnerJFrame(
   passFailReporter: Option[Reporter],
   concurrentConfig: ConcurrentConfig,
   suffixes: Option[Pattern],
-  chosenStyleSet: Set[String],
   detectSlowpokes: Boolean,
   slowpokeDetectionDelay: Long,
   slowpokeDetectionPeriod: Long,
@@ -1579,7 +1578,6 @@ private[scalatest] class RunnerJFrame(
             nextRunStamp,
             concurrentConfig,
             suffixes,
-            chosenStyleSet,
             testSortingReporterTimeout
           )
         }
