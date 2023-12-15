@@ -3239,8 +3239,8 @@ If it doesn't show up for a while, please delete this comment.
         else {
           val maxSize = PosZInt(100)
           val (size, nextRnd) = rnd.chooseInt(1, maxSize)
-          val (value, _, nextNextRnd) = genOfT.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, rnd)
-          samplesLoop(count + 1, nextNextRnd, value :: acc)
+          val (roseTreeOfT, _, nextNextRnd) = genOfT.next(SizeParam(PosZInt(0), maxSize, PosZInt.ensuringValid(size)), Nil, rnd)
+          samplesLoop(count + 1, nextNextRnd, roseTreeOfT.value :: acc)
         } 
       }
       samplesLoop(0, originalRnd, Nil)
@@ -3258,8 +3258,8 @@ If it doesn't show up for a while, please delete this comment.
           if (n == 0)
             results
           else {
-            val (bool, _, nextRnd) = gen.next(SizeParam(0, 0, 0), Nil, rnd)
-            loop(gen, n - 1, nextRnd, bool :: results)
+            val (nextRoseTreeOfBoolean, _, nextRnd) = gen.next(SizeParam(0, 0, 0), Nil, rnd)
+            loop(gen, n - 1, nextRnd, nextRoseTreeOfBoolean.value :: results)
           }
         }
 
@@ -3473,7 +3473,7 @@ If it doesn't show up for a while, please delete this comment.
         forAll (upperLimits) { upperLimit => 
           def limitedSize(szp: SizeParam): SizeParam = {
             val sz = if (szp.maxSize < upperLimit) szp.maxSize else upperLimit
-            szp.copy(size = sz)
+            SizeParam(0, sz, sz)
           }
           val lengthlimitedLists = lists[Int].havingLengthsDeterminedBy(limitedSize)
           forAll (lengthlimitedLists) { xs => xs.length should be <= upperLimit.value }
@@ -3515,7 +3515,7 @@ If it doesn't show up for a while, please delete this comment.
         forAll (upperLimits) { upperLimit => 
           def limitedSize(szp: SizeParam): SizeParam = {
             val sz = if (szp.maxSize < upperLimit) szp.maxSize else upperLimit
-            szp.copy(size = sz)
+            SizeParam(0, sz, sz)
           }
           val sizelimitedLists = lists[Int].havingSizesDeterminedBy(limitedSize)
           forAll (sizelimitedLists) { xs => xs.size should be <= upperLimit.value }
@@ -5464,6 +5464,35 @@ If it doesn't show up for a while, please delete this comment.
           attr22 should be >= 0
         } // A contrived property check to do something with the generator
       }
+    }
+    "offer a lazily method that wraps any Generator and offers its same services lazily" in {
+      // The lazily combinator will be able to solve infinte loops when defining
+      // generators for recursive data structions.
+      // First, make sure it is lazy:
+      var executedTheDef: Boolean = false
+      def aGenOfInt: Generator[Int] = {
+        executedTheDef = true
+        implicitly[Generator[Int]]
+      }
+      val lazyGen: Generator[Int] = lazily(aGenOfInt)
+      executedTheDef shouldBe false
+      val i = lazyGen.sample
+      executedTheDef shouldBe true
+
+      // These will be used by the subsequent assertions
+      val stableRnd = Randomizer.default
+      val eagerGen = implicitly[Generator[Int]]
+
+      // Then check the initEdges method
+      // maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = (Nil, rnd)
+      val (lazyEdges, _) = lazyGen.initEdges(100, stableRnd)
+      val (eagerEdges, _) = eagerGen.initEdges(100, stableRnd)
+      lazyEdges shouldEqual eagerEdges
+
+      // (Iterator[T], Randomizer)
+      val lazyCanonicalsIt = lazyGen.canonicals
+      val eagerCanonicalsIt = eagerGen.canonicals
+      lazyCanonicalsIt.toList shouldEqual eagerCanonicalsIt.toList
     }
   }
 }

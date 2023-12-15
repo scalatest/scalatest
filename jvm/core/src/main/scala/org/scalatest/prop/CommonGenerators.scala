@@ -26,6 +26,8 @@ import org.scalatest.prop.Generator.function1Generator
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.SortedMap
 
+import org.scalactic.ColCompatHelper.LazyListOrStream
+
 /**
   * Provides various specialized [[Generator]]s that are often useful.
   *
@@ -151,13 +153,9 @@ trait CommonGenerators {
         val (allEdges, nextNextRnd) = Randomizer.shuffle(fromToEdges, nextRnd)
         (allEdges.take(maxLength), nextNextRnd)
       }
-      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            val (nextValue, nextRandomizer) = chooser.choose(from, to)(rnd)
-            (nextValue, Nil, nextRandomizer)
-        }
+      def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer) = {
+        val (nextValue, nextRandomizer) = chooser.choose(from, to)(rnd)
+        (Rose(nextValue), nextRandomizer)
       }
     }
   }
@@ -850,15 +848,10 @@ trait CommonGenerators {
   def specificValues[T](first: T, second: T, rest: T*): Generator[T] =
     new Generator[T] {
       private val seq: Seq[T] = first +: second +: rest
-      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        edges match {
-          case head :: tail =>
-            (head, tail, rnd)
-          case _ =>
-            val (nextInt, nextRandomizer) = rnd.chooseInt(0, seq.length - 1)
-            val nextT = seq(nextInt)
-            (nextT, Nil, nextRandomizer)
-        }
+      def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer) = {
+        val (nextInt, nextRandomizer) = rnd.chooseInt(0, seq.length - 1)
+        val nextT = seq(nextInt)
+        (Rose(nextT), nextRandomizer)
       }
     }
 
@@ -877,13 +870,8 @@ trait CommonGenerators {
     */
   def specificValue[T](theValue: T): Generator[T] =
     new Generator[T] {
-      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        edges match {
-          case head :: tail =>
-            (head, tail, rnd)
-          case _ =>
-            (theValue, Nil, rnd)
-        }
+      def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer) = {
+        (Rose(theValue), rnd)
       }
     }
 
@@ -947,15 +935,10 @@ trait CommonGenerators {
         distribution flatMap { case (w, g) =>
           Vector.fill(w)(g)
         }
-      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        edges match {
-          case head :: tail =>
-            (head, tail, rnd)
-          case _ =>
-            val (nextInt, nextRandomizer) = rnd.chooseInt(0, gens.length - 1)
-            val nextGen = gens(nextInt)
-            nextGen.next(szp, Nil, nextRandomizer)
-        }
+      def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer) = {
+        val (nextInt, nextRandomizer) = rnd.chooseInt(0, gens.length - 1)
+        val nextGen = gens(nextInt)
+        nextGen.nextImpl(szp, isValidFun, nextRandomizer)
       }
     }
   }
@@ -997,15 +980,10 @@ trait CommonGenerators {
     val distributees: Vector[Generator[T]] = (first +: second +: rest).toVector
     new Generator[T] {
       // gens contains, for each distribution pair, weight generators.
-      def next(szp: SizeParam, edges: List[T], rnd: Randomizer): (T, List[T], Randomizer) = {
-        edges match {
-          case head :: tail =>
-            (head, tail, rnd)
-          case _ =>
-            val (nextInt, nextRandomizer) = rnd.chooseInt(0, distributees.length - 1)
-            val nextGen = distributees(nextInt)
-            nextGen.next(szp, Nil, nextRandomizer) // TODO: Is it correct to pass size and maxSize here?
-        }
+      def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer) = {
+        val (nextInt, nextRandomizer) = rnd.chooseInt(0, distributees.length - 1)
+        val nextGen = distributees(nextInt)
+        nextGen.nextImpl(szp, isValidFun, nextRandomizer) // TODO: Is it correct to pass size and maxSize here?
       }
     }
   }
@@ -2383,9 +2361,9 @@ trait CommonGenerators {
     def loop(currentCount: Int, edges: List[A], rnd: Randomizer, acc: Map[String, PosZInt]): Map[String, PosZInt] = {
       if (currentCount >= count) acc
       else {
-        val (nextA, nextEdges, nextRnd) = genOfA.next(SizeParam(PosZInt(0), PosZInt(100), PosZInt(100)), edges, rnd) // TODO: I think this need to mimic forAll.
-        if (pf.isDefinedAt(nextA)) {
-          val category = pf(nextA)
+        val (nextRoseTreeOfA, nextEdges, nextRnd) = genOfA.next(SizeParam(PosZInt(0), PosZInt(100), PosZInt(100)), edges, rnd) // TODO: I think this need to mimic forAll.
+        if (pf.isDefinedAt(nextRoseTreeOfA.value)) {
+          val category = pf(nextRoseTreeOfA.value)
           val prevTotal = acc.getOrElse(category, PosZInt(0))
           val nextAcc = acc + (category -> PosZInt.ensuringValid(prevTotal + 1))
           loop(currentCount + 1, nextEdges, nextRnd, nextAcc)
@@ -2413,16 +2391,35 @@ trait CommonGenerators {
     */
   lazy val first1000Primes: Generator[Int] =
     new Generator[Int] { thisIntGenerator =>
-      def next(szp: SizeParam, edges: List[Int], rnd: Randomizer): (Int, List[Int], Randomizer) = {
-        edges match {
-          case head :: tail => (head, tail, rnd)
-          case _ =>
-            import CommonGenerators.primeNumbers
-            val (index, nextRandomizer) = rnd.chooseInt(0, primeNumbers.length - 1)
-            (primeNumbers(index), Nil, nextRandomizer)
-        }
+      def nextImpl(szp: SizeParam, isValidFun: (Int, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[Int], Randomizer) = {
+        import CommonGenerators.primeNumbers
+        val (index, nextRandomizer) = rnd.chooseInt(0, primeNumbers.length - 1)
+        (Rose(primeNumbers(index)), nextRandomizer)
       }
     }
+
+  def lazily[T](gen: => Generator[T]): Generator[T] = {
+    new Generator[T] {
+      private lazy val underlying: Generator[T] = gen
+
+      override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[T], Randomizer) = underlying.initEdges(maxLength, rnd)
+
+      override def canonicals: LazyListOrStream[RoseTree[T]] = underlying.canonicals
+
+      // gens contains, for each distribution pair, weight generators.
+      def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer) = {
+        gen.nextImpl(szp, isValidFun, rnd)
+      }
+
+      override def map[U](f: T => U): Generator[U] = underlying.map(f)
+
+      override def flatMap[U](f: T => Generator[U]): Generator[U] = underlying.flatMap(f)
+
+      override def filter(p: T => Boolean): Generator[T] = underlying.filter(p)
+
+      override def withFilter(p: T => Boolean): Generator[T] = underlying.withFilter(p)
+    }
+  }
 }
 
 /**

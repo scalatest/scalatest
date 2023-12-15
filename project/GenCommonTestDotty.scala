@@ -143,7 +143,6 @@ object GenCommonTestDotty {
         "LineNumberMacro.scala"
       )
     ) ++
-    copyDir("jvm/common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
     copyDir("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty)
   }
 
@@ -157,8 +156,7 @@ object GenCommonTestDotty {
     ) ++
     copyDirJS("dotty/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++
     copyDirJS("jvm/common-test/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++ 
-    copyDirJS("js/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty) ++ 
-    copyDirJS("jvm/common-test/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty)
+    copyDirJS("js/common-test/src/main/scala/org/scalatest", "org/scalatest", targetDir, List.empty)
   }
 
   /*copyFiles("jvm/common-test/src/main/scala/org/scalatest", "org/scalatest",

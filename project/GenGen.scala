@@ -41,6 +41,7 @@ object GenGen {
 package org.scalatest.prop
 
 import org.scalactic.anyvals.PosZInt
+import org.scalactic.ColCompatHelper.LazyListOrStream
 
 """
 
@@ -831,9 +832,9 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
   val sevenEleven: Generator[String] =
     new Generator[String] {
-      def next(szp: SizeParam, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
+      def nextImpl(szp: SizeParam, isValidFun: (String, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[String], Randomizer) = {
         if (szp.size.value >= 7 && szp.size.value <= 11)
-          ("OKAY", edges, rnd)
+          (Rose("OKAY"), rnd)
         else
           throw new Exception("expected 7 <= size <= 11 but got " + szp.size)
       }
@@ -842,9 +843,9 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
   val fiveFive: Generator[String] =
     new Generator[String] {
-      def next(szp: SizeParam, edges: List[String], rnd: Randomizer): (String, List[String], Randomizer) = {
+      def nextImpl(szp: SizeParam, isValidFun: (String, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[String], Randomizer) = {
         if (szp.size.value == 5)
-          ("OKAY", edges, rnd)
+          (Rose("OKAY"), rnd)
         else
           throw new Exception("expected size 5 but got " + szp.size)
       }
@@ -3595,21 +3596,11 @@ $okayAssertions$
       |    } yield $initToLastName$($initLower$)
       |  }
       |
-      |  def next(szp: SizeParam, edges: List[$lastType$], rnd: Randomizer): ($lastType$, List[$lastType$], Randomizer) = underlying.next(szp, edges, rnd)
+      |  def nextImpl(szp: SizeParam, isValidFun: ($lastType$, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[$lastType$], Randomizer) = underlying.nextImpl(szp, isValidFun, rnd)
       |  override def initEdges(maxLength: PosZInt, rnd: Randomizer): (List[$lastType$], Randomizer) = underlying.initEdges(maxLength, rnd)
       |  override def map[Z](f: ($lastType$) => Z): Generator[Z] = underlying.map(f)
       |  override def flatMap[Z](f: ($lastType$) => Generator[Z]): Generator[Z] = underlying.flatMap(f)
-      |  override def canonicals(rnd: Randomizer): (Iterator[$lastType$], Randomizer) = underlying.canonicals(rnd)
-      |  override def shrink(lastValue: $lastType$, rnd0: Randomizer): (Iterator[$lastType$], Randomizer) = {
-      |    val ($initLower$) = $lastToInitName$(lastValue)
-      |    $initShrinks$
-      |    $initStreams$
-      |    val streamOf$lastType$: Stream[$lastType$] = // TODO: check about the problem with streams and memory leaks, or do this a different way
-      |      for {
-      |        $initStreamArrows$
-      |      } yield $initToLastName$($initLower$)
-      |    (streamOf$lastType$.iterator, rnd$arity$)
-      |  }
+      |  override def canonicals: LazyListOrStream[RoseTree[$lastType$]] = underlying.canonicals
       |}
     """.stripMargin
 
@@ -3630,12 +3621,8 @@ $okayAssertions$
       val lastType = alphaUpper.last.toString
       val initGensDecls = alpha.init.map(a => "genOf" + a.toString.toUpperCase + ": Generator[" + a.toString.toUpperCase + "]").mkString(", \n")
       val initGenArrows = alpha.init.map(a => a + " <- genOf" + a.toString.toUpperCase).mkString("\n")
-      val initShrinks = alpha.init.zipWithIndex.map { case (a, idx) =>
-        "val (itOf" + a.toString.toUpperCase + ", rnd" + (idx + 1) + ") = genOf" + a.toString.toUpperCase + ".shrink(" + a + ", rnd" + idx + ")"
-      }.mkString("\n")
       val initStreams = alpha.init.map(a => "val streamOf" + a.toString.toUpperCase + ": Stream[" + a.toString.toUpperCase + "] = itOf" + a.toString.toUpperCase + ".toStream").mkString("\n")
-      val initStreamArrows = alpha.init.map(a => a + " <- streamOf" + a.toString.toUpperCase).mkString("\n")
-
+      
       val targetFile = new File(targetDir, "GeneratorFor" + i + ".scala")
 
       if (!targetFile.exists || generatorSource.lastModified > targetFile.lastModified) {
@@ -3654,10 +3641,7 @@ $okayAssertions$
         st.setAttribute("lastType", lastType)
         st.setAttribute("initGensDecls", initGensDecls)
         st.setAttribute("initGenArrows", initGenArrows)
-        st.setAttribute("initShrinks", initShrinks)
         st.setAttribute("initStreams", initStreams)
-        st.setAttribute("initStreamArrows", initStreamArrows)
-
         bw.write(st.toString)
 
         bw.flush()
