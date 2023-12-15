@@ -26,11 +26,11 @@ trait BuildCommons {
   }    
     
 
-  val releaseVersion = "3.3.0-SNAP3"
+  val releaseVersion = "3.3.0-alpha.1"
   val previousReleaseVersion = "3.2.17"
 
-  val plusJUnitVersion = "3.2.17.0"
-  val plusTestNGVersion = "3.2.17.0"
+  val plusJUnitVersion = "3.3.0.0-alpha.1"
+  val plusTestNGVersion = "3.3.0.0-alpha.1"
   val commonmarkVersion = "0.21.0"
 
   def rootProject: Project
