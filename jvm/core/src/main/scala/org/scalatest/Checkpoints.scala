@@ -159,6 +159,27 @@ trait Checkpoints {
       }
     }
   }
+
+
+  /**
+   * Run provided function with a new <code>Checkpoint</code> and report the <code>Checkpoint</code>.
+   * You can group your assertions, like this:
+   *
+   *
+   * <pre>
+   * checkpoint { cp =>
+   *    cp { x should be < 0 }
+   *    cp { y should be > 9 }
+   * }
+   * </pre>
+   *
+   * @param f the block of code, likely containing one or more checkpointed assertions, to execute
+   */
+  def checkpoint(f: Checkpoint => Unit): Unit = {
+    val cp = new Checkpoint
+    f(cp)
+    cp.reportAll()
+  }
 }
 
 /**
