@@ -170,8 +170,6 @@ trait Generator[T] { thisGeneratorOfT =>
     */
   def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer)
 
-  private final val MaxLoopCount: Int = 100000
-
   /**
     * Constructs a `RoseTree[T]` with a single node `edge` using the provided `SizeParam` and validity check function.
     *
@@ -220,8 +218,8 @@ trait Generator[T] { thisGeneratorOfT =>
       case _ =>
         @tailrec
         def loop(count: Int, nextRnd: Randomizer): (RoseTree[T], Randomizer) = {
-          if (count > MaxLoopCount)
-            throw new IllegalStateException(s"A Generator produced by calling filter or withFilter on another Generator (possibly by using an 'if' clause in a for expression) has filtered out $MaxLoopCount objects in a row in its next method, so aborting. Please define the Generator without using filter or withFilter.")
+          if (count > Generator.MaxLoopCount)
+            throw new IllegalStateException(Resources.generatorExceededMaxLoopCount(Generator.MaxLoopCount))
           val (b, rnd2) = nextImpl(szp, isValid, nextRnd)
           if (isValid(b.value, szp))
             (b, rnd2)
@@ -523,6 +521,8 @@ trait Generator[T] { thisGeneratorOfT =>
 object Generator {
 
   import scala.language.implicitConversions
+
+  private[scalatest] final val MaxLoopCount: Int = 100000
 
   /**
     * Allow Generators of a type to be used as Generators of a supertype.
