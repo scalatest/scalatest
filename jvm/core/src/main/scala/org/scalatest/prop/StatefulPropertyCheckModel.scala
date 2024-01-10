@@ -58,6 +58,11 @@ trait AsyncSystemUnderTest[TCommand, TState] {
 /**
  * Stateful property check model trait that can be used for building model for stateful property-based testing.
  *
+ * This is inspired by the followings: 
+ *
+ * - [Fede Fernandez - Improve your Tests with Property State-Machine Tests](https://www.youtube.com/watch?v=uzfMG2ykM0s)
+ * - [Tomasz Kowal - Introduction to stateful property based testing - ElixirConf EU 2019](https://www.youtube.com/watch?v=q0wZzFUYCuM)
+ *
  * @tparam TCommand the type of the command
  * @tparam TState the type of the state
  * @tparam R the result type of the property check
