@@ -90,7 +90,7 @@ class CheckpointsSpec extends AnyFunSpec with AssertionsForJUnit {
     describe("with a success condition") {
       it("should not throw an exception") {
         val cp = new Checkpoint
-        noException should thrownBy {
+        noException should be thrownBy {
           cp { 1 should equal (1) }
           cp.reportAll()
         }
@@ -140,7 +140,7 @@ class CheckpointsSpec extends AnyFunSpec with AssertionsForJUnit {
             }
           }
 
-        val failConditionLineNumber = thisLineNumber - 6
+        val failConditionLineNumber = thisLineNumber - 4
         val reportAllLineNumber = failConditionLineNumber + 3
 
         caught.failedCodeLineNumber.value should equal (reportAllLineNumber)
@@ -183,7 +183,7 @@ class CheckpointsSpec extends AnyFunSpec with AssertionsForJUnit {
     describe("with a success condition") {
 
       it("should not throw an exception") {
-        noException should thrownBy {
+        noException should be thrownBy {
           checkpoint { cp =>
             cp { 1 should equal (1) }
           }
