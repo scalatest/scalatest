@@ -141,7 +141,8 @@ class CheckpointsSpec extends AnyFunSpec with AssertionsForJUnit {
           }
 
         val failConditionLineNumber = thisLineNumber - 4
-        val reportAllLineNumber = failConditionLineNumber + 3
+        // For Scala 3 the position is at the end of the application of the checkpoint function.
+        val reportAllLineNumber      = if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) failConditionLineNumber + 1 else failConditionLineNumber - 1
 
         caught.failedCodeLineNumber.value should equal (reportAllLineNumber)
         caught.failedCodeFileName.value should be ("CheckpointsSpec.scala")
@@ -164,7 +165,8 @@ class CheckpointsSpec extends AnyFunSpec with AssertionsForJUnit {
 
         val failCondition1LineNumber = thisLineNumber - 5
         val failCondition2LineNumber = failCondition1LineNumber + 1
-        val reportAllLineNumber      = failCondition1LineNumber + 2
+        // For Scala 3 the position is at the end of the application of the checkpoint function.
+        val reportAllLineNumber      = if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) failCondition1LineNumber + 2 else failCondition1LineNumber - 1
 
         caught.failedCodeLineNumber.value should equal (reportAllLineNumber)
         caught.failedCodeFileName.value should be ("CheckpointsSpec.scala")

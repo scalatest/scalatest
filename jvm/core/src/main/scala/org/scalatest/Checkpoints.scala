@@ -147,10 +147,6 @@ trait Checkpoints {
      * failed checkpoints.
      */
     def reportAll()(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS,NATIVE-START
-      val stackDepth = 1
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY val stackDepth = 10
       if (!failures.isEmpty) {
         val failMessages =
           for (failure <- failures.asScala)
@@ -175,7 +171,7 @@ trait Checkpoints {
    *
    * @param f the block of code, likely containing one or more checkpointed assertions, to execute
    */
-  def checkpoint(f: Checkpoint => Unit): Unit = {
+  def checkpoint(f: Checkpoint => Unit)(implicit pos: source.Position): Unit = {
     val cp = new Checkpoint
     f(cp)
     cp.reportAll()
