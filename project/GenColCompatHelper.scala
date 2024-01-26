@@ -75,9 +75,9 @@ object GenColCompatHelper {
           |    def excl(elem: A): scala.collection.immutable.Set[A] = new InsertionOrderSet(elements.filter(_ != elem))
           |    def incl(elem: A): scala.collection.immutable.Set[A] = 
           |      if (underlying.contains(elem)) 
-          |        new InsertionOrderSet(elements) 
+          |        this 
           |      else 
-          |        new InsertionOrderSet(if (underlying.contains(elem)) elements else elements :+ elem)
+          |        new InsertionOrderSet(elements :+ elem)
           |  }
           |}
           |
@@ -149,9 +149,9 @@ object GenColCompatHelper {
           |    def -(elem: A): scala.collection.immutable.Set[A] = new InsertionOrderSet(elements.filter(_ != elem))
           |    def +(elem: A): scala.collection.immutable.Set[A] = 
           |      if (underlying.contains(elem)) 
-          |        new InsertionOrderSet(elements) 
+          |        this
           |      else 
-          |        new InsertionOrderSet(if (underlying.contains(elem)) elements else elements :+ elem)
+          |        new InsertionOrderSet(elements :+ elem)
           |  }
           |}
           |
