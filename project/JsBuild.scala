@@ -18,8 +18,6 @@ trait JsBuild { this: BuildCommons =>
     crossScalaVersions := Seq("2.13.12", "2.12.18")
   )
 
-  val sjsPrefix = "_sjs1_"
-
   lazy val deleteJsDependenciesTask = taskKey[Unit]("Delete JS_DEPENDENCIES")
 
   lazy val scalacticMacroJS = project.in(file("js/scalactic-macro"))
