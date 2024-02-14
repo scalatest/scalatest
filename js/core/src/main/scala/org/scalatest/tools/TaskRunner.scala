@@ -26,7 +26,6 @@ import org.scalatest.events.{TestFailed,
                              SeeStackDepthException}
 import org.scalatest.tools.StringReporter._
 import sbt.testing._
-import scala.scalajs.reflect.Reflect
 import org.scalatest._
 import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.Promise
@@ -38,6 +37,7 @@ import scala.compat.Platform
 import scala.concurrent.duration.Duration
 
 final class TaskRunner(task: TaskDef,
+                       allRunningSuites: () => List[RunningSuite],
                        cl: ClassLoader,
                        tracker: Tracker,
                        tagsToInclude: Set[String],
@@ -56,6 +56,8 @@ final class TaskRunner(task: TaskDef,
                        presentFilePathname: Boolean,
                        presentJson: Boolean,
                        notifyServer: Option[String => Unit]) extends Task {
+  val runningSuite: RunningSuite = SuiteInstantiationHelper.createRunningSuite(task.fullyQualifiedName())
+
   def tags(): Array[String] = Array.empty
   def taskDef(): TaskDef = task
 
@@ -76,7 +78,7 @@ final class TaskRunner(task: TaskDef,
 
   def executionFuture(eventHandler: EventHandler, loggers: Array[Logger]): Future[Unit] = {
     val suiteStartTime = Platform.currentTime
-    val suite = Reflect.lookupInstantiatableClass(task.fullyQualifiedName).getOrElse(throw new RuntimeException("Cannot load suite class: " + task.fullyQualifiedName)).newInstance().asInstanceOf[Suite]
+    val suite = runningSuite.lazyHandle.apply()
     val sbtLogInfoReporter = new SbtLogInfoReporter(
       loggers,
       presentAllDurations,
@@ -143,7 +145,7 @@ final class TaskRunner(task: TaskDef,
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
       reporter(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
-    val args = Args(reporter, Stopper.default, filter, ConfigMap.empty, None, tracker)
+    val args = Args(reporter, Stopper.default, filter, ConfigMap.empty, None, tracker, allRunningSuites())
 
     val future: Future[Unit] =
       try {

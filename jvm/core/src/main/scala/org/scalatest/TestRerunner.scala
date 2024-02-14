@@ -40,7 +40,7 @@ private[scalatest] class TestRerunner(suiteClassName: String, testName: String) 
 
       report(RunStarting(tracker.nextOrdinal(), 1, configMap))
 
-      suite.run(Some(testName), Args(report, stopper, filter, configMap, distributor, tracker))
+      suite.run(Some(testName), Args(report, stopper, filter, configMap, distributor, tracker, List.empty))
 
       val duration = System.currentTimeMillis - runStartTime
       report(RunCompleted(tracker.nextOrdinal(), Some(duration)))

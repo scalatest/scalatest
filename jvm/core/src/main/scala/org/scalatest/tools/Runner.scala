@@ -34,7 +34,7 @@ import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 import org.scalatest.time.Millis
 import java.util.concurrent.atomic.AtomicInteger
-import Suite.{mergeMap, SELECTED_TAG}
+import Suite.{SELECTED_TAG, getSuiteClassName, mergeMap}
 import ArgsParser._
 import org.scalactic.Requirements._
 import org.scalatest.prop.Seed
@@ -1225,6 +1225,8 @@ object Runner {
 
           val expectedTestCount = sumInts(testCountList)
 
+          val runningSuites = suiteInstances.map(suiteConfig => RunningSuite(getSuiteClassName(suiteConfig.suite), () => suiteConfig.suite))
+
           dispatch(RunStarting(tracker.nextOrdinal(), expectedTestCount, configMap))
           
           if (concurrent) {
@@ -1265,14 +1267,14 @@ object Runner {
                 Executors.newCachedThreadPool(threadFactory)
             try {
 
-              val distributor = new ConcurrentDistributor(Args(dispatch, stopper, Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet), configMap, None, tracker, false, None, None), execSvc)
+              val distributor = new ConcurrentDistributor(Args(dispatch, stopper, Filter(if (tagsToIncludeSet.isEmpty) None else Some(tagsToIncludeSet), tagsToExcludeSet), configMap, None, tracker, runningSuites, false, None, None), execSvc)
               if (System.getProperty("org.scalatest.tools.Runner.forever", "false") == "true") {
 
                 while (true) {
                   val statuses = for (suiteConfig <- suiteInstances) yield {
                     val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
                     val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
-                    val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker(), false, None, distributedSuiteSorter)
+                    val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker(), runningSuites, false, None, distributedSuiteSorter)
                     distributor.apply(suiteConfig.suite, runArgs)
                   }
                   distributor.waitUntilDone()
@@ -1283,7 +1285,7 @@ object Runner {
                 val statuses = for (suiteConfig <- suiteInstances) yield {
                   val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
                   val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
-                  val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker(), false, None, distributedSuiteSorter)
+                  val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker(), runningSuites, false, None, distributedSuiteSorter)
                   distributor.apply(suiteConfig.suite, runArgs)
                 }
                 distributor.waitUntilDone()
@@ -1298,7 +1300,7 @@ object Runner {
             for (suiteConfig <- suiteInstances) {
               val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
               val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
-              val runArgs = Args(dispatch, stopper, filter, configMap, None, tracker, false, None, None)
+              val runArgs = Args(dispatch, stopper, filter, configMap, None, tracker, runningSuites, false, None, None)
               val status = new ScalaTestStatefulStatus()
               val suiteRunner = new SuiteRunner(suiteConfig.suite, runArgs, status)
               suiteRunner.run()

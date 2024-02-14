@@ -820,7 +820,8 @@ trait Suite extends Assertions with Serializable { thisSuite =>
           filter,
           configMap,
           None,
-          tracker)
+          tracker,
+          List.empty)
         )
       status.waitUntilCompleted()
       val suiteCompletedFormatter = formatterForSuiteCompleted(thisSuite)
@@ -1174,7 +1175,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
         try {
           // Same thread, so OK to send same tracker
-          val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker))
+          val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, runningSuites))
 
           val rawString = Resources.suiteCompletedNormally
           val formatter = formatterForSuiteCompleted(nestedSuite)

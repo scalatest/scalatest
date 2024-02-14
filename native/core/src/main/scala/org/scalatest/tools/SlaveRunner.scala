@@ -15,7 +15,7 @@
  */
 package org.scalatest.tools
 
-import org.scalatest.{Resources, Tracker}
+import org.scalatest.{Resources, RunningSuite, Tracker}
 import org.scalatest.events.Summary
 import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => SbtStatus, _}
 import ArgsParser._
@@ -132,11 +132,18 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
         paths.exists(path => td.fullyQualifiedName().startsWith(path) && td.fullyQualifiedName().substring(path.length).lastIndexOf('.') <= 0)
       }
 
-    def createTask(t: TaskDef): Task =
-      new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+    def createTask(allRunningSuites: () => List[RunningSuite], t: TaskDef): TaskRunner =
+      new TaskRunner(t, allRunningSuites, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
         presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(notifyServer))
 
-    (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
+    val chosenTaskDefs = if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
+
+    lazy val taskRunners: Array[TaskRunner] = {
+      val allRunningSuites = () => taskRunners.map(_.runningSuite).toList
+      chosenTaskDefs.map(createTask(allRunningSuites, _))
+    }
+
+    taskRunners.toArray[Task]
   }
 
   def receiveMessage(msg: String): Option[String] =
@@ -147,8 +154,9 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
 
   def deserializeTask(task: String, deserializer: (String) => TaskDef): Task = {
     val taskDef = deserializer(task)
-    new TaskRunner(taskDef, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+    lazy val taskRunner: TaskRunner = new TaskRunner(taskDef, () => List(taskRunner.runningSuite), testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
       presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(notifyServer))
+    taskRunner
   }
 
 }

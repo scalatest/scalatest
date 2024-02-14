@@ -436,7 +436,10 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
             report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
             try {
-              val status = suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, false, None, None))
+              // Old SBT interface does not pass any information about the other discovered suites to us, so it's impossible to properly populate `runningSuites` here
+              val runningSuites = List.empty[RunningSuite]
+
+              val status = suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, runningSuites, false, None, None))
 
               val formatter = formatterForSuiteCompleted(suite)
 

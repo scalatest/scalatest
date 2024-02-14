@@ -230,6 +230,7 @@ class Framework extends SbtFramework {
 
   private def runSuite(
     taskDefinition: TaskDef,
+    allRunningSuites: () => List[RunningSuite],
     rerunSuiteId: String,
     suite: Suite,
     loader: ClassLoader,
@@ -308,7 +309,7 @@ class Framework extends SbtFramework {
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
       report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
-    val args = Args(report, Stopper.default, filter, configMap, None, tracker, false, None, Some(suiteSortingReporter))
+    val args = Args(report, Stopper.default, filter, configMap, None, tracker, allRunningSuites(), false, None, Some(suiteSortingReporter))
 
     val distributor =
       if (suite.isInstanceOf[ParallelTestExecution])
@@ -377,6 +378,7 @@ class Framework extends SbtFramework {
 
   private class ScalaTestTask(
     taskDefinition: TaskDef,
+    allRunningSuites: () => List[RunningSuite],
     loader: ClassLoader,
     suiteSortingReporter: SuiteSortingReporter,
     tracker: Tracker,
@@ -419,6 +421,27 @@ class Framework extends SbtFramework {
     lazy val shouldDiscover =
       taskDefinition.explicitlySpecified || ((accessible || runnable) && isDiscoverableSuite(suiteClass))
 
+    val runningSuite: RunningSuite = {
+      lazy val suite =
+        try {
+          if (runnable) { // When it is runnable WrapWith is available, this will take precedence and this behavior will be consistent with Runner and the old ScalaTestFramework.
+            val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
+            val suiteClazz = wrapWithAnnotation.value
+            val constructorList = suiteClazz.getDeclaredConstructors()
+            val constructor = constructorList.find { c =>
+              val types = c.getParameterTypes
+              types.length == 1 && types(0) == classOf[java.lang.Class[_]]
+            }
+            constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
+          }
+          else
+            suiteClass.newInstance.asInstanceOf[Suite]
+        } catch {
+          case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, suiteClass.getName, t)
+        }
+      RunningSuite(taskDefinition.fullyQualifiedName, () => suite)
+    }
+
     def tags =
       for {
         a <- suiteClass.getAnnotations
@@ -438,23 +461,7 @@ class Framework extends SbtFramework {
 
     def execute(eventHandler: EventHandler, loggers: Array[Logger]) = {
       if (accessible || runnable) {
-        val suite =
-          try {
-            if (runnable) { // When it is runnable WrapWith is available, this will take precedence and this behavior will be consistent with Runner and the old ScalaTestFramework.
-              val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
-              val suiteClazz = wrapWithAnnotation.value
-              val constructorList = suiteClazz.getDeclaredConstructors()
-              val constructor = constructorList.find { c =>
-                val types = c.getParameterTypes
-                types.length == 1 && types(0) == classOf[java.lang.Class[_]]
-              }
-              constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
-            }
-            else
-              suiteClass.newInstance.asInstanceOf[Suite]
-          } catch {
-            case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, suiteClass.getName, t)
-          }
+        val suite = runningSuite.lazyHandle.apply()
 
         if (useSbtLogInfoReporter) {
           val sbtLogInfoReporter =
@@ -489,6 +496,7 @@ class Framework extends SbtFramework {
 
         runSuite(
           taskDefinition,
+          allRunningSuites,
           suite.suiteId,
           suite,
           loader,
@@ -708,9 +716,10 @@ class Framework extends SbtFramework {
       else
         Executors.newCachedThreadPool(threadFactory)
 
-    private def createTask(td: TaskDef): ScalaTestTask =
+    private def createTask(allRunningSuites: () => List[RunningSuite], td: TaskDef): ScalaTestTask =
       new ScalaTestTask(
           td,
+          allRunningSuites,
           loader,
           suiteSortingReporter,
           tracker,
@@ -745,12 +754,15 @@ class Framework extends SbtFramework {
         paths.exists(path => td.fullyQualifiedName.startsWith(path) && td.fullyQualifiedName.substring(path.length).lastIndexOf('.') <= 0)
       }
 
-    def tasks(taskDefs: Array[TaskDef]): Array[Task] =
-      for {
+    def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
+      lazy val taskRunners: Array[ScalaTestTask] = for {
         taskDef <- if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
-        task = createTask(taskDef)
+        allRunningSuites = () => taskRunners.map(_.runningSuite).toList
+        task = createTask(allRunningSuites, taskDef)
         if task.shouldDiscover
       } yield task
+      taskRunners.toArray[Task]
+    }
 
     def done = {
       if (!isDone.getAndSet(true)) {

@@ -51,6 +51,7 @@ import org.scalatest.time.{Seconds, Span}
  *                              for the parallel-executed tests of one suite back into sequential order on the fly, with a timeout in case a test takes too long to complete
  * @param distributedSuiteSorter an optional <a href="DistributedSuiteSorter.html"><code>DistributedSuiteSorter</code></a> used by <code>ParallelTestExecution</code> to ensure the events
  *                              for the parallel-executed suites are sorted back into sequential order, with a timeout in case a suite takes to long to complete, even when tests are executed in parallel
+ * @param runningSuites information about all the suites running in the current test run. The <code>List</code> may be empty if the current suite is the only suite in this run.
  * @throws NullArgumentException if any passed parameter is <code>null</code>.
  *
  */
@@ -61,6 +62,7 @@ case class Args(
   configMap: ConfigMap = ConfigMap.empty,
   distributor: Option[Distributor] = None,
   tracker: Tracker = Tracker.default,
+  runningSuites: List[RunningSuite] = List.empty,
   runTestInNewInstance: Boolean = false,
   distributedTestSorter: Option[DistributedTestSorter] = None,
   distributedSuiteSorter: Option[DistributedSuiteSorter] = None

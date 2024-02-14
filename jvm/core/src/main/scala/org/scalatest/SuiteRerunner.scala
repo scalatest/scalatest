@@ -65,7 +65,7 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
         val formatter = formatterForSuiteStarting(suite)
 
         report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
-        suite.run(None, Args(report, stopper, filter, configMap, distributor, tracker))
+        suite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, List.empty))
 
         val rawString2 = Resources.suiteCompletedNormally
         val formatter2 = formatterForSuiteCompleted(suite)
