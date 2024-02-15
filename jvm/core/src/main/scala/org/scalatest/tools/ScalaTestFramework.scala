@@ -437,7 +437,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
 
             try {
               // Old SBT interface does not pass any information about the other discovered suites to us, so it's impossible to properly populate `runningSuites` here
-              val runningSuites = List.empty[RunningSuite]
+              val runningSuites = List(RunningSuite(suiteClassName, () => suite, true))
 
               val status = suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, runningSuites, false, None, None))
 
