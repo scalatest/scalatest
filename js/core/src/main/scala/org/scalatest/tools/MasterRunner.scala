@@ -15,7 +15,7 @@
  */
 package org.scalatest.tools
 
-import org.scalatest.Tracker
+import org.scalatest.{RunningSuite, Tracker}
 import org.scalatest.events.Summary
 import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => SbtStatus, _}
 
@@ -127,7 +127,10 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
   val tracker = new Tracker
   val summaryCounter = new SummaryCounter
 
+  var knownSuites: Map[(String, List[Selector]), TaskRunner] = Map.empty
+
   def done(): String = {
+    knownSuites = Map.empty
     val duration = Platform.currentTime - runStartTime
     val summary = new Summary(summaryCounter.testsSucceededCount, summaryCounter.testsFailedCount, summaryCounter.testsIgnoredCount, summaryCounter.testsPendingCount,
       summaryCounter.testsCanceledCount, summaryCounter.suitesCompletedCount, summaryCounter.suitesAbortedCount, summaryCounter.scopesPendingCount)
@@ -164,11 +167,23 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
         paths.exists(path => td.fullyQualifiedName.startsWith(path) && td.fullyQualifiedName.substring(path.length).lastIndexOf('.') <= 0)
       }
 
-    def createTask(t: TaskDef): Task =
-      new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+    def createTask(allRunningSuites: () => List[RunningSuite], t: TaskDef): TaskRunner =
+      new TaskRunner(t, allRunningSuites, true, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
         presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(send))
 
-    (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
+    val chosenTaskDefs = if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
+
+    lazy val taskRunners: Array[TaskRunner] = {
+      val allRunningSuites = () => taskRunners.map(_.runningSuite).toList
+      chosenTaskDefs.map(createTask(allRunningSuites, _))
+    }
+
+    knownSuites ++= taskRunners.map { t =>
+      val taskDef = t.taskDef()
+      (taskDef.fullyQualifiedName() -> taskDef.selectors().toList) -> t
+    }.toMap
+
+    taskRunners.toArray[Task]
   }
 
   private def send(msg: String): Unit = {
@@ -199,13 +214,29 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
     None
   }
 
-  def serializeTask(task: Task, serializer: (TaskDef) => String): String =
-    serializer(task.taskDef())
+  def serializeTask(task: Task, serializer: (TaskDef) => String): String = {
+    val knownSuitesInfoSerialized = task match {
+      case taskRunner: TaskRunner =>
+        TaskRunner.serializeKnownSuites(taskRunner)
+      case _ => ""
+    }
+    knownSuitesInfoSerialized + serializer(task.taskDef())
+  }
 
   def deserializeTask(task: String, deserializer: (String) => TaskDef): Task = {
-    val taskDef = deserializer(task)
-    new TaskRunner(taskDef, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
-      presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(send))
+    // ignore serialized suite info and use saved `knownSuites` instead if we're on the master thread
+    val taskIgnoreSuites = TaskRunner.stripKnownSuites(task)
+    val taskDef = deserializer(taskIgnoreSuites)
+    val knownSuites = this.knownSuites
+    val key = taskDef.fullyQualifiedName() -> taskDef.selectors().toList
+    knownSuites.get(key) match {
+      case Some(knownTask) =>
+        knownTask
+      case None =>
+        val knownRunningSuites = knownSuites.map(_._2.runningSuite).toList
+        new TaskRunner(taskDef, () => knownRunningSuites, true, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+          presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(send))
+    }
   }
 
 }

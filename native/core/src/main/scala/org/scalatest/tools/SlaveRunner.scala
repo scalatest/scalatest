@@ -15,7 +15,7 @@
  */
 package org.scalatest.tools
 
-import org.scalatest.{Resources, Tracker}
+import org.scalatest.{Resources, RunningSuite, Tracker}
 import org.scalatest.events.Summary
 import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => SbtStatus, _}
 import ArgsParser._
@@ -132,22 +132,39 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
         paths.exists(path => td.fullyQualifiedName().startsWith(path) && td.fullyQualifiedName().substring(path.length).lastIndexOf('.') <= 0)
       }
 
-    def createTask(t: TaskDef): Task =
-      new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+    def createTask(allRunningSuites: () => List[RunningSuite], t: TaskDef): TaskRunner =
+      new TaskRunner(t, allRunningSuites, false, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
         presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(notifyServer))
 
-    (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
+    val chosenTaskDefs = if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
+
+    lazy val taskRunners: Array[TaskRunner] = {
+      val allRunningSuites = () => taskRunners.map(_.runningSuite).toList
+      chosenTaskDefs.map(createTask(allRunningSuites, _))
+    }
+
+    taskRunners.toArray[Task]
   }
 
   def receiveMessage(msg: String): Option[String] =
     None
 
-  def serializeTask(task: Task, serializer: (TaskDef) => String): String =
-    serializer(task.taskDef())
+  def serializeTask(task: Task, serializer: (TaskDef) => String): String = {
+    val knownSuitesInfoSerialized = task match {
+      case taskRunner: TaskRunner =>
+        TaskRunner.serializeKnownSuites(taskRunner)
+      case _ => ""
+    }
+    knownSuitesInfoSerialized + serializer(task.taskDef())
+  }
 
   def deserializeTask(task: String, deserializer: (String) => TaskDef): Task = {
-    val taskDef = deserializer(task)
-    new TaskRunner(taskDef, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+    // on Scala.js worker thread has no access to global mutable state, so the best
+    // we can do is deserialize classNames serialized on the MasterRunner
+    val (runningSuites, taskIgnoreSuites) = TaskRunner.deserializeKnownSuites(task, testClassLoader)
+    val taskDef = deserializer(taskIgnoreSuites)
+
+    new TaskRunner(taskDef, () => runningSuites, false, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
       presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(notifyServer))
   }
 

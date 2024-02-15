@@ -263,7 +263,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
 
   def getIndexesForTestInformerEventOrderTests(suite: Suite, testName: String, infoMsg: String): (Int, Int) = {
     val myRep = new EventRecordingReporter
-    suite.run(None, Args(myRep))
+    suite.run(None, Args(myRep, runningSuites = List.empty))
 
     val indexedList = myRep.eventsReceived.zipWithIndex
 
@@ -293,7 +293,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   def getIndexesForInformerEventOrderTests(suite: Suite, testName: String, infoMsg: String): (Int, Int, Int) = {
 
     val myRep = new EventRecordingReporter
-    suite.run(None, Args(myRep))
+    suite.run(None, Args(myRep, runningSuites = List.empty))
 
     val indexedList = myRep.eventsReceived.zipWithIndex
 
@@ -326,7 +326,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   def getIndentedTextFromInfoProvided(suite: Suite): IndentedText = {
 
     val myRep = new EventRecordingReporter
-    suite.run(None, Args(myRep))
+    suite.run(None, Args(myRep, runningSuites = List.empty))
 
     val infoProvidedOption = myRep.eventsReceived.find(_.isInstanceOf[InfoProvided])
 
@@ -342,7 +342,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
 
   def getIndentedTextFromTestInfoProvided(suite: Suite): IndentedText = {
     val myRep = new EventRecordingReporter
-    suite.run(None, Args(myRep))
+    suite.run(None, Args(myRep, runningSuites = List.empty))
     val recordedEvents: Seq[Event] = myRep.eventsReceived.find { e =>
       e match {
         case testSucceeded: TestSucceeded =>
@@ -385,7 +385,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
 
   def ensureTestFailedEventReceived(suite: Suite, testName: String): Unit = {
     val reporter = new EventRecordingReporter
-    suite.run(None, Args(reporter))
+    suite.run(None, Args(reporter, runningSuites = List.empty))
     val testFailedEvent = reporter.eventsReceived.find(_.isInstanceOf[TestFailed])
     assert(testFailedEvent.isDefined)
     assert(testFailedEvent.get.asInstanceOf[TestFailed].testName === testName)
@@ -393,7 +393,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
 
   def ensureTestFailedEventReceivedWithCorrectMessage(suite: Suite, testName: String, expectedMessage: String): Unit = {
     val reporter = new EventRecordingReporter
-    suite.run(None, Args(reporter))
+    suite.run(None, Args(reporter, runningSuites = List.empty))
     val testFailedEvent = reporter.eventsReceived.find(_.isInstanceOf[TestFailed])
     assert(testFailedEvent.isDefined)
     assert(testFailedEvent.get.asInstanceOf[TestFailed].testName == testName)
