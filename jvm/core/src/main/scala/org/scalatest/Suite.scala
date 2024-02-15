@@ -821,7 +821,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
           configMap,
           None,
           tracker,
-          List.empty)
+          List(RunningSuite(suiteClassName, () => this, true)))
         )
       status.waitUntilCompleted()
       val suiteCompletedFormatter = formatterForSuiteCompleted(thisSuite)
@@ -2127,5 +2127,3 @@ used for test events like succeeded/failed, etc.
   }
   // SKIP-SCALATESTJS-END
 }
-
-

@@ -37,7 +37,8 @@ import scala.compat.Platform
 import scala.concurrent.duration.Duration
 
 final class TaskRunner(task: TaskDef,
-                       allRunningSuites: () => List[RunningSuite],
+                       val allRunningSuites: () => List[RunningSuite],
+                       isMaster: Boolean,
                        cl: ClassLoader,
                        tracker: Tracker,
                        tagsToInclude: Set[String],
@@ -56,7 +57,7 @@ final class TaskRunner(task: TaskDef,
                        presentFilePathname: Boolean,
                        presentJson: Boolean,
                        notifyServer: Option[String => Unit]) extends Task {
-  val runningSuite: RunningSuite = SuiteInstantiationHelper.createRunningSuite(task.fullyQualifiedName())
+  val runningSuite: RunningSuite = SuiteInstantiationHelper.createRunningSuite(task.fullyQualifiedName(), isMaster)
 
   def tags(): Array[String] = Array.empty
   def taskDef(): TaskDef = task
@@ -249,4 +250,34 @@ final class TaskRunner(task: TaskDef,
 
     def dispose() = ()
   }
+}
+
+object TaskRunner {
+  def serializeKnownSuites(taskRunner: TaskRunner): String = {
+    KnownSuitesPreamble +
+      taskRunner.allRunningSuites().map(_.className).mkString(KnownSuitesSeparator) +
+      KnownSuitesEnd
+  }
+
+  def deserializeKnownSuites(task: String): (List[RunningSuite], String) = {
+    val afterPreamble = task.stripPrefix(KnownSuitesPreamble)
+    if (afterPreamble != task) {
+      val endingPosition = afterPreamble.indexOf(KnownSuitesEnd)
+      val (suitesStr, restWithEnding) = afterPreamble.splitAt(endingPosition)
+      val classNames = suitesStr.split(KnownSuitesSeparator)
+      val runningSuites = classNames.map(SuiteInstantiationHelper.createRunningSuite(_, false)).toList
+      val rest = restWithEnding.stripPrefix(KnownSuitesEnd)
+
+      (runningSuites, rest)
+    } else (List.empty, task)
+  }
+
+  def stripKnownSuites(task: String): String = {
+    val endingPosition = task.indexOf(KnownSuitesEnd)
+    task.drop(endingPosition).stripPrefix(KnownSuitesEnd)
+  }
+
+  private val KnownSuitesPreamble = "{org.scalatest.tools.TaskRunner.allRunningSuites}[[["
+  private val KnownSuitesSeparator = ";;;"
+  private val KnownSuitesEnd = "]]]{org.scalatest.tools.TaskRunner.allRunningSuites}"
 }

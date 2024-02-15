@@ -439,7 +439,7 @@ class Framework extends SbtFramework {
         } catch {
           case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, suiteClass.getName, t)
         }
-      RunningSuite(taskDefinition.fullyQualifiedName, () => suite)
+      RunningSuite(taskDefinition.fullyQualifiedName, () => suite, true)
     }
 
     def tags =

@@ -1225,7 +1225,7 @@ object Runner {
 
           val expectedTestCount = sumInts(testCountList)
 
-          val runningSuites = suiteInstances.map(suiteConfig => RunningSuite(getSuiteClassName(suiteConfig.suite), () => suiteConfig.suite))
+          val runningSuites = suiteInstances.map(suiteConfig => RunningSuite(getSuiteClassName(suiteConfig.suite), () => suiteConfig.suite, true))
 
           dispatch(RunStarting(tracker.nextOrdinal(), expectedTestCount, configMap))
           
@@ -1544,4 +1544,3 @@ object Runner {
     )
   }
 }
-

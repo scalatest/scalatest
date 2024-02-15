@@ -4,8 +4,8 @@ import org.scalajs.testinterface.TestUtils
 import org.scalatest.{RunningSuite, Suite}
 
 object SuiteInstantiationHelper {
-  def createRunningSuite(className: String, cl: ClassLoader): RunningSuite = {
+  def createRunningSuite(className: String, cl: ClassLoader, isMaster: Boolean): RunningSuite = {
     lazy val suite = TestUtils.newInstance(className, cl)(Seq.empty).asInstanceOf[Suite]
-    RunningSuite(className, () => suite)
+    RunningSuite(className, () => suite, isMaster)
   }
 }

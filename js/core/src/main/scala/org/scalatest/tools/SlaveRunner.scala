@@ -133,7 +133,7 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
       }
 
     def createTask(allRunningSuites: () => List[RunningSuite], t: TaskDef): TaskRunner =
-      new TaskRunner(t, allRunningSuites, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+      new TaskRunner(t, allRunningSuites, false, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
         presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(notifyServer))
 
     val chosenTaskDefs = if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
@@ -149,14 +149,23 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
   def receiveMessage(msg: String): Option[String] =
     None
 
-  def serializeTask(task: Task, serializer: (TaskDef) => String): String =
-    serializer(task.taskDef())
+  def serializeTask(task: Task, serializer: (TaskDef) => String): String = {
+    val knownSuitesInfoSerialized = task match {
+      case taskRunner: TaskRunner =>
+        TaskRunner.serializeKnownSuites(taskRunner)
+      case _ => ""
+    }
+    knownSuitesInfoSerialized + serializer(task.taskDef())
+  }
 
   def deserializeTask(task: String, deserializer: (String) => TaskDef): Task = {
-    val taskDef = deserializer(task)
-    lazy val taskRunner: TaskRunner = new TaskRunner(taskDef, () => List(taskRunner.runningSuite), testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+    // on Scala.js worker thread has no access to global mutable state, so the best
+    // we can do is deserialize classNames serialized on the MasterRunner
+    val (runningSuites, taskIgnoreSuites) = TaskRunner.deserializeKnownSuites(task)
+    val taskDef = deserializer(taskIgnoreSuites)
+
+    new TaskRunner(taskDef, () => runningSuites, false, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
       presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(notifyServer))
-    taskRunner
   }
 
 }
