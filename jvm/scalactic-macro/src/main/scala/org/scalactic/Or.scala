@@ -578,7 +578,10 @@ import scala.collection.mutable.Builder
  * <a href="https://github.com/vpatryshev/ScalaKittens">ScalaKittens</a>.</em>
  * </p>
  */
+// SKIP-DOTTY-START 
 sealed abstract class Or[+G,+B] extends Product with Serializable {
+// SKIP-DOTTY-END
+//DOTTY-ONLY infix sealed abstract class Or[+G,+B] extends Product with Serializable {  
 
   /**
    * Indicates whether this <code>Or</code> is a <code>Good</code>
