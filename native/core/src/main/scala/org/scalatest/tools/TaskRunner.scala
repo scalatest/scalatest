@@ -26,7 +26,7 @@ import org.scalatest.events.{TestFailed,
                              SeeStackDepthException}
 import org.scalatest.tools.StringReporter._
 import sbt.testing._
-import org.scalajs.testinterface.TestUtils
+import scala.scalanative.reflect.Reflect
 import org.scalatest._
 import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.Promise
@@ -77,7 +77,7 @@ println("GOT TO THIS RECOVER CALL")
 
   def executionFuture(eventHandler: EventHandler, loggers: Array[Logger]): Future[Unit] = {
     val suiteStartTime = Platform.currentTime
-    val suite = TestUtils.newInstance(task.fullyQualifiedName(), cl)(Seq.empty).asInstanceOf[Suite]
+    val suite = Reflect.lookupInstantiatableClass(task.fullyQualifiedName).getOrElse(throw new RuntimeException("Cannot load suite class: " + task.fullyQualifiedName)).newInstance().asInstanceOf[Suite]
     val sbtLogInfoReporter = new SbtLogInfoReporter(
       loggers,
       presentAllDurations,

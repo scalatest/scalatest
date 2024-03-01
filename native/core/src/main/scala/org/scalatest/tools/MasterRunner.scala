@@ -19,6 +19,8 @@ import org.scalatest.Tracker
 import org.scalatest.events.Summary
 import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => SbtStatus, _}
 
+import scala.scalanative.reflect.Reflect
+
 import scala.compat.Platform
 import ArgsParser._
 import org.scalatest.prop.Seed
@@ -155,7 +157,14 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
     theArgs
   }
 
+  private def runnerInstance() = {
+    val runnerCompanionClass = Reflect.lookupLoadableModuleClass("org.scalatest.tools.Runner$").getOrElse(throw new RuntimeException("Cannot load org.scalatest.tools.Runner$ class."))
+    val obj = runnerCompanionClass.loadModule()
+    obj.asInstanceOf[Runner.type]
+  }
+
   def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
+    println("-------------MasterRunner's tasks")
     def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
       taskDefs.filter(td => paths.exists(td.fullyQualifiedName().startsWith(_)))
 
@@ -168,7 +177,15 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
       new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
         presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(send))
 
-    (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
+    runnerInstance().internalDiscoveredSuites.getAndSet(Some(Set("123", "456", "789")))
+    println("xxxxxxxxxxxxxxxxxxxxread it: " + runnerInstance())
+
+    val tasks = (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
+
+    val discoveredSuites = tasks.map(_.taskDef.fullyQualifiedName).toSet
+    //runnerInstance().internalDiscoveredSuites.set(Some(discoveredSuites))
+
+    tasks
   }
 
   private def send(msg: String): Unit = {
@@ -199,10 +216,13 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
     None
   }
 
-  def serializeTask(task: Task, serializer: (TaskDef) => String): String =
+  def serializeTask(task: Task, serializer: (TaskDef) => String): String = {
+    println("+++++++++++++++++++++++++serializeTask: " + runnerInstance().discoveredSuites)
     serializer(task.taskDef())
+  }
 
   def deserializeTask(task: String, deserializer: (String) => TaskDef): Task = {
+    println("-------------------------serializeTask: " + runnerInstance().discoveredSuites)
     val taskDef = deserializer(task)
     new TaskRunner(taskDef, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
       presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(send))

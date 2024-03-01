@@ -28,6 +28,8 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class AnyFunSuiteSpec extends AnyFunSpec {
 
+  println("########debug AnyFunSuiteSpec: " + org.scalatest.tools.Runner.discoveredSuites + ", Runner: " + org.scalatest.tools.Runner.toString)
+
   describe("A FunSuite") {
 
     it("should return the test names in registration order from testNames") {
