@@ -86,6 +86,7 @@ abstract class ResultOfStringPassedToVerb(val verb: String, val rest: String) {
    * for trait <code>FlatSpec</code>.
    * </p>
    */
+  //DOTTY-ONLY infix  
   def is(fun: => PendingStatement): Unit
 
   /**
@@ -105,5 +106,6 @@ abstract class ResultOfStringPassedToVerb(val verb: String, val rest: String) {
    * for trait <code>FlatSpec</code>.
    * </p>
    */
+  //DOTTY-ONLY infix  
   def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocation
 }
