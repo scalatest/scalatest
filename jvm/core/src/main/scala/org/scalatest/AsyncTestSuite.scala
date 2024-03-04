@@ -213,7 +213,9 @@ import enablers.Futuristic
  */
 trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thisAsyncTestSuite =>
 
-  private final val serialExecutionContext: ExecutionContext = new concurrent.SerialExecutionContext
+  private final val serialExecutionContext = new concurrent.SerialExecutionContext
+
+  protected def executeSerialECTasks(): Unit = serialExecutionContext.runNow(Future.successful(Succeeded))
 
   /**
    * An implicit execution context used by async styles to transform <code>Future[Assertion]</code> values
