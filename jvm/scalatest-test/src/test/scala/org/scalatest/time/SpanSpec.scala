@@ -737,45 +737,45 @@ class SpanSpec extends AnyFunSpec with Matchers with SpanMatchers {
     describe("when scaled via the scaleBy method") {
       it("should throw IllegalArgumentException when a negative number is passed") {
         intercept[IllegalArgumentException] {
-          Span(1, Second) scaledBy -1
+          Span(1, Second).scaledBy(-1)
         }
         intercept[IllegalArgumentException] {
-          Span(1, Second) scaledBy -1.0
+          Span(1, Second).scaledBy(-1.0)
         }
       }
       it("should return the exact same Span when 1 is passed") {
         val span = Span(1, Second)
-        assert(span scaledBy 1 eq span)
-        assert(span scaledBy 1.0 eq span)
+        assert(span.scaledBy(1) eq span)
+        assert(span.scaledBy(1.0) eq span)
       }
       it("should return an zero-length Span when 0 is passed") {
-        assert((Span(1, Second) scaledBy 0) === Span.Zero)
-        assert((Span(1, Second) scaledBy 0.0) === Span.Zero)
+        assert((Span(1, Second).scaledBy(0)) === Span.Zero)
+        assert((Span(1, Second).scaledBy(0.0)) === Span.Zero)
       }
       it("should give correct results when only operating in the nanosPart") {
-        assert((Span(1, Nanosecond) scaledBy 100) === Span(100, Nanoseconds))
-        assert((Span(1, Nanosecond) scaledBy 100.0) === Span(100, Nanoseconds))
+        assert((Span(1, Nanosecond).scaledBy(100)) === Span(100, Nanoseconds))
+        assert((Span(1, Nanosecond).scaledBy(100.0)) === Span(100, Nanoseconds))
       }
       it("should give correct results when only operating in the millisPart") {
-        assert((Span(1, Millisecond) scaledBy 100) === Span(100, Milliseconds))
-        assert((Span(1, Millisecond) scaledBy 100.0) === Span(100, Milliseconds))
+        assert((Span(1, Millisecond).scaledBy(100)) === Span(100, Milliseconds))
+        assert((Span(1, Millisecond).scaledBy(100.0)) === Span(100, Milliseconds))
       }
       it("should give Span.Max when overflow occurs") {
-        assert((Span.Max scaledBy 2) === Span.Max)
-        assert((Span.Max scaledBy 2.0) === Span.Max)
+        assert((Span.Max.scaledBy(2)) === Span.Max)
+        assert((Span.Max.scaledBy(2.0)) === Span.Max)
       }
       it("should give Span.Zero if less than 1 nanosecond") {
-        assert((Span(1, Nanosecond) scaledBy 0.1) === Span.Zero)
+        assert((Span(1, Nanosecond).scaledBy(0.1)) === Span.Zero)
       }
       it("should be 0 Nanoseconds if zero length span") {
         {
-          val span = Span(1, Day) scaledBy 0
+          val span = Span(1, Day).scaledBy(0)
           assert(span === Span(0, Nanoseconds))
           assert(span.toString === "Span(0, Nanoseconds)")
           assert(span.prettyString === "0 nanoseconds")
         }
         {
-          val span = Span(0, Nanoseconds) scaledBy 100
+          val span = Span(0, Nanoseconds).scaledBy(100)
           assert(span === Span(0, Nanoseconds))
           assert(span.toString === "Span(0, Nanoseconds)")
           assert(span.prettyString === "0 nanoseconds")
@@ -783,25 +783,25 @@ class SpanSpec extends AnyFunSpec with Matchers with SpanMatchers {
       }
       it("should have nanosecond units if < 1000 nanoseconds") {
         {
-          val span = Span(100, Nanoseconds) scaledBy 0.01
+          val span = Span(100, Nanoseconds).scaledBy(0.01)
           assert(span === Span(1, Nanosecond))
           assert(span.toString === "Span(1, Nanosecond)")
           assert(span.prettyString === "1 nanosecond")
         }
         {
-          val span = Span(100, Nanoseconds) scaledBy 5
+          val span = Span(100, Nanoseconds).scaledBy(5)
           assert(span === Span(500, Nanoseconds))
           assert(span.toString === "Span(500, Nanoseconds)")
           assert(span.prettyString === "500 nanoseconds")
         }
         {
-          val span = Span(100, Nanoseconds) scaledBy 5.001
+          val span = Span(100, Nanoseconds).scaledBy(5.001)
           assert(span === Span(500.1, Nanoseconds))
           assert(span.toString === "Span(500.1, Nanoseconds)")
           assert(span.prettyString === "500.1 nanoseconds")
         }
         {
-          val span = Span(1, Nanosecond) scaledBy 999
+          val span = Span(1, Nanosecond).scaledBy(999)
           assert(span === Span(999, Nanoseconds))
           assert(span.toString === "Span(999, Nanoseconds)")
           assert(span.prettyString === "999 nanoseconds")
@@ -809,31 +809,31 @@ class SpanSpec extends AnyFunSpec with Matchers with SpanMatchers {
       }
       it("should have microsecond units if > 1 and < 1000 microseconds") {
         {
-          val span = Span(1, Nanosecond) scaledBy 1000
+          val span = Span(1, Nanosecond).scaledBy(1000)
           assert(span === Span(1, Microsecond))
           assert(span.toString === "Span(1, Microsecond)")
           assert(span.prettyString === "1 microsecond")
         }
         {
-          val span = Span(100, Microseconds) scaledBy 0.01
+          val span = Span(100, Microseconds).scaledBy(0.01)
           assert(span === Span(1, Microsecond))
           assert(span.toString === "Span(1, Microsecond)")
           assert(span.prettyString === "1 microsecond")
         }
         {
-          val span = Span(100, Microseconds) scaledBy 5
+          val span = Span(100, Microseconds).scaledBy(5)
           assert(span === Span(500, Microseconds))
           assert(span.toString === "Span(500, Microseconds)")
           assert(span.prettyString === "500 microseconds")
         }
         {
-          val span = Span(3, Microseconds) scaledBy 0.5
+          val span = Span(3, Microseconds).scaledBy(0.5)
           assert(span === Span(1.5, Microseconds))
           assert(span.toString === "Span(1.5, Microseconds)")
           assert(span.prettyString === "1.5 microseconds")
         }
         {
-          val span = Span(1, Microsecond) scaledBy 999
+          val span = Span(1, Microsecond).scaledBy(999)
           assert(span === Span(999, Microseconds))
           assert(span.toString === "Span(999, Microseconds)")
           assert(span.prettyString === "999 microseconds")
@@ -841,31 +841,31 @@ class SpanSpec extends AnyFunSpec with Matchers with SpanMatchers {
       }
       it("should have millisecond units if > 1 and < 1000 milliseconds") {
         {
-          val span = Span(1, Microsecond) scaledBy 1000
+          val span = Span(1, Microsecond).scaledBy(1000)
           assert(span === Span(1, Millisecond))
           assert(span.toString === "Span(1, Millisecond)")
           assert(span.prettyString === "1 millisecond")
         }
         {
-          val span = Span(100, Millis) scaledBy 0.01
+          val span = Span(100, Millis).scaledBy(0.01)
           assert(span === Span(1, Millisecond))
           assert(span.toString === "Span(1, Millisecond)")
           assert(span.prettyString === "1 millisecond")
         }
         {
-          val span = Span(100, Millis) scaledBy 5
+          val span = Span(100, Millis).scaledBy(5)
           assert(span === Span(500, Millis))
           assert(span.toString === "Span(500, Millis)")
           assert(span.prettyString === "500 milliseconds")
         }
         {
-          val span = Span(3, Millis) scaledBy 0.5
+          val span = Span(3, Millis).scaledBy(0.5)
           assert(span === Span(1.5, Millis))
           assert(span.toString === "Span(1.5, Millis)")
           assert(span.prettyString === "1.5 milliseconds")
         }
         {
-          val span = Span(1, Millisecond) scaledBy 999
+          val span = Span(1, Millisecond).scaledBy(999)
           assert(span === Span(999, Millis))
           assert(span.toString === "Span(999, Millis)")
           assert(span.prettyString === "999 milliseconds")
@@ -873,31 +873,31 @@ class SpanSpec extends AnyFunSpec with Matchers with SpanMatchers {
       }
       it("should have second units if > 1 and < 60 seconds") {
         {
-          val span = Span(1, Millisecond) scaledBy 1000
+          val span = Span(1, Millisecond).scaledBy(1000)
           assert(span === Span(1, Second))
           assert(span.toString === "Span(1, Second)")
           assert(span.prettyString === "1 second")
         }
         {
-          val span = Span(100, Seconds) scaledBy 0.01
+          val span = Span(100, Seconds).scaledBy(0.01)
           assert(span === Span(1, Second))
           assert(span.toString === "Span(1, Second)")
           assert(span.prettyString === "1 second")
         }
         {
-          val span = Span(10, Seconds) scaledBy 5
+          val span = Span(10, Seconds).scaledBy(5)
           assert(span === Span(50, Seconds))
           assert(span.toString === "Span(50, Seconds)")
           assert(span.prettyString === "50 seconds")
         }
         {
-          val span = Span(3, Seconds) scaledBy 0.5
+          val span = Span(3, Seconds).scaledBy(0.5)
           assert(span === Span(1.5, Seconds))
           assert(span.toString === "Span(1.5, Seconds)")
           assert(span.prettyString === "1.5 seconds")
         }
         {
-          val span = Span(1, Second) scaledBy 59
+          val span = Span(1, Second).scaledBy(59)
           assert(span === Span(59, Seconds))
           assert(span.toString === "Span(59, Seconds)")
           assert(span.prettyString === "59 seconds")
@@ -905,31 +905,31 @@ class SpanSpec extends AnyFunSpec with Matchers with SpanMatchers {
       }
       it("should have minute units if > 1 and < 60 minutes") {
         {
-          val span = Span(1, Second) scaledBy 60
+          val span = Span(1, Second).scaledBy(60)
           assert(span === Span(1, Minute))
           assert(span.toString === "Span(1, Minute)")
           assert(span.prettyString === "1 minute")
         }
         {
-          val span = Span(100, Minutes) scaledBy 0.01
+          val span = Span(100, Minutes).scaledBy(0.01)
           assert(span === Span(1, Minute))
           assert(span.toString === "Span(1, Minute)")
           assert(span.prettyString === "1 minute")
         }
         {
-          val span = Span(10, Minutes) scaledBy 5
+          val span = Span(10, Minutes).scaledBy(5)
           assert(span === Span(50, Minutes))
           assert(span.toString === "Span(50, Minutes)")
           assert(span.prettyString === "50 minutes")
         }
         {
-          val span = Span(3, Minutes) scaledBy 0.5
+          val span = Span(3, Minutes).scaledBy(0.5)
           assert(span === Span(1.5, Minutes))
           assert(span.toString === "Span(1.5, Minutes)")
           assert(span.prettyString === "1.5 minutes")
         }
         {
-          val span = Span(1, Minute) scaledBy 59
+          val span = Span(1, Minute).scaledBy(59)
           assert(span === Span(59, Minutes))
           assert(span.toString === "Span(59, Minutes)")
           assert(span.prettyString === "59 minutes")
@@ -937,31 +937,31 @@ class SpanSpec extends AnyFunSpec with Matchers with SpanMatchers {
       }
       it("should have hour units if > 1 and < 24 hours") {
         {
-          val span = Span(1, Minute) scaledBy 60
+          val span = Span(1, Minute).scaledBy(60)
           assert(span === Span(1, Hour))
           assert(span.toString === "Span(1, Hour)")
           assert(span.prettyString === "1 hour")
         }
         {
-          val span = Span(100, Hours) scaledBy 0.01
+          val span = Span(100, Hours).scaledBy(0.01)
           assert(span === Span(1, Hour))
           assert(span.toString === "Span(1, Hour)")
           assert(span.prettyString === "1 hour")
         }
         {
-          val span = Span(3, Hours) scaledBy 4
+          val span = Span(3, Hours).scaledBy(4)
           assert(span === Span(12, Hours))
           assert(span.toString === "Span(12, Hours)")
           assert(span.prettyString === "12 hours")
         }
         {
-          val span = Span(3, Hours) scaledBy 0.5
+          val span = Span(3, Hours).scaledBy(0.5)
           assert(span === Span(1.5, Hours))
           assert(span.toString === "Span(1.5, Hours)")
           assert(span.prettyString === "1.5 hours")
         }
         {
-          val span = Span(1, Hours) scaledBy 23
+          val span = Span(1, Hours).scaledBy(23)
           assert(span === Span(23, Hours))
           assert(span.toString === "Span(23, Hours)")
           assert(span.prettyString === "23 hours")
@@ -969,31 +969,31 @@ class SpanSpec extends AnyFunSpec with Matchers with SpanMatchers {
       }
       it("should have day units if > 1 and < ? days") {
         {
-          val span = Span(1, Hour) scaledBy 24
+          val span = Span(1, Hour).scaledBy(24)
           assert(span === Span(1, Day))
           assert(span.toString === "Span(1, Day)")
           assert(span.prettyString === "1 day")
         }
         {
-          val span = Span(100, Days) scaledBy 0.01
+          val span = Span(100, Days).scaledBy(0.01)
           assert(span === Span(1, Day))
           assert(span.toString === "Span(1, Day)")
           assert(span.prettyString === "1 day")
         }
         {
-          val span = Span(3, Days) scaledBy 4
+          val span = Span(3, Days).scaledBy(4)
           assert(span === Span(12, Days))
           assert(span.toString === "Span(12, Days)")
           assert(span.prettyString === "12 days")
         }
         {
-          val span = Span(3, Days) scaledBy 0.5
+          val span = Span(3, Days).scaledBy(0.5)
           assert(span === Span(1.5, Days))
           assert(span.toString === "Span(1.5, Days)")
           assert(span.prettyString === "1.5 days")
         }
         {
-          val span = Span(53376, Days) scaledBy 2
+          val span = Span(53376, Days).scaledBy(2)
           assert(span === Span(106751.99116730063, Days))
           assert(span.toString === "Span(106751.99116730063, Days)")
           assert(span.prettyString === "106751.99116730063 days")

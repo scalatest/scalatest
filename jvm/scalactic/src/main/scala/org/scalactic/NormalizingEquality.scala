@@ -142,6 +142,7 @@ trait NormalizingEquality[A] extends Equality[A] { thisNormEq =>
    * @param other a <code>Uniformity</code> to 'and' with this one
    * @return a <code>NormalizingEquality</code> representing the composition of this and the passed <code>Uniformity</code>
    */
+  //DOTTY-ONLY infix  
   final def and(other: Uniformity[A]): NormalizingEquality[A] =
     new ComposedNormalizingEquality[A](afterNormalizationEquality, this.toUniformity and other)
 
