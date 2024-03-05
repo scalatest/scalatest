@@ -79,6 +79,7 @@ trait NormalizingEquivalence[A] extends Equivalence[A] { thisNormEq =>
    * @param a the object to normalize
    * @return the normalized form of the passed object
    */
+  //DOTTY-ONLY infix  
   def normalized(a: A): A
 
   /**
@@ -98,6 +99,7 @@ trait NormalizingEquivalence[A] extends Equivalence[A] { thisNormEq =>
    * @param other a <code>Normalization</code> to 'and' with this one
    * @return a <code>NormalizingEquivalence</code> representing the composition of this and the passed <code>Normalization</code>
    */
+  //DOTTY-ONLY infix  
   final def and(other: Normalization[A]): NormalizingEquivalence[A] =
     new ComposedNormalizingEquivalence[A](afterNormalizationEquivalence, this.toNormalization and other)
 

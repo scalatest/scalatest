@@ -1111,7 +1111,7 @@ trait Conductors extends PatienceConfiguration {
       private def detectDeadlock(): Unit = {
         // Should never get to >= before ==, but just playing it safe
         if (deadlockCount >= MaxDeadlockDetectionsBeforeDeadlock) {
-          val errorMessage = Resources.suspectedDeadlock(MaxDeadlockDetectionsBeforeDeadlock.toString, (clockInterval scaledBy MaxDeadlockDetectionsBeforeDeadlock).prettyString)
+          val errorMessage = Resources.suspectedDeadlock(MaxDeadlockDetectionsBeforeDeadlock.toString, (clockInterval.scaledBy(MaxDeadlockDetectionsBeforeDeadlock)).prettyString)
           firstExceptionThrown offer new RuntimeException(errorMessage)
 
           // The mainThread is likely joined to some test thread, so wake it up. It will look and

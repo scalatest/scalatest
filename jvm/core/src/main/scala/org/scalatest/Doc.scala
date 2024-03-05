@@ -109,7 +109,10 @@ private[scalatest] trait Doc extends Suite { thisDoc =>
    * Returns a list containing the suites mentioned in the body XML element,
    * in the order they were mentioned.
    */
-  final override lazy val nestedSuites: collection.immutable.IndexedSeq[Suite] = for (IncludedSuite(suite) <- snippets) yield suite
+  final override lazy val nestedSuites: collection.immutable.IndexedSeq[Suite] = 
+    snippets.collect {
+      case IncludedSuite(suite) => suite
+    }
 /*
 println("^^^^^^^^^^^")
 println(body.text)

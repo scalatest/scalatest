@@ -141,6 +141,7 @@ private[scalatest] trait WillVerb {
      * <code>"will"</code>, and right, and returns the result.
      * </p>
      */
+    //DOTTY-ONLY infix 
     def will(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
       svsi(leftSideString, "will", right, pos)
     }
@@ -164,6 +165,7 @@ private[scalatest] trait WillVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
+    //DOTTY-ONLY infix 
     def will(right: BehaveWord)(implicit svbli: StringVerbBehaveLikeInvocation): BehaveWord = {
       svbli(leftSideString, pos)
     }
@@ -190,6 +192,7 @@ private[scalatest] trait WillVerb {
      * no-arg function.
      * </p>
      */
+    //DOTTY-ONLY infix 
     def will(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
       fun(leftSideString, "will", pos, () => right)
     }
@@ -217,6 +220,7 @@ private[scalatest] trait WillVerb {
      * <code>"will"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>will</code>.
      * </p>
      */
+    //DOTTY-ONLY infix 
     def will(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration): Unit = {
       swawr(leftSideString, "will", resultOfAfterWordApplication, pos)
     }

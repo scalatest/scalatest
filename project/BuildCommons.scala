@@ -16,6 +16,8 @@ trait BuildCommons {
     scalaVersion := crossScalaVersions.value.head,
   )
 
+  val sjsPrefix = "_sjs1_"
+
   val runFlickerTests = Option(System.getenv("SCALATEST_RUN_FLICKER_TESTS")).getOrElse("FALSE").toUpperCase == "TRUE"
 
   def scalatestJSLibraryDependencies = Def.setting {
@@ -25,9 +27,8 @@ trait BuildCommons {
     )
   }    
     
-
   val releaseVersion = "3.3.0-alpha.1"
-  val previousReleaseVersion = "3.2.17"
+  val previousReleaseVersion = "3.2.18"
 
   val plusJUnitVersion = "3.3.0.0-alpha.1"
   val plusTestNGVersion = "3.3.0.0-alpha.1"

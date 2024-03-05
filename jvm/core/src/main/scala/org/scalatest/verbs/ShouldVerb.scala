@@ -141,6 +141,7 @@ trait ShouldVerb {
      * <code>"should"</code>, and right, and returns the result.
      * </p>
      */
+    //DOTTY-ONLY infix 
     def should(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
       svsi(leftSideString, "should", right, pos)
     }
@@ -164,6 +165,7 @@ trait ShouldVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
+    //DOTTY-ONLY infix 
     def should(right: BehaveWord)(implicit svbli: StringVerbBehaveLikeInvocation): BehaveWord = {
       svbli(leftSideString, pos)
     }
@@ -190,6 +192,7 @@ trait ShouldVerb {
      * no-arg function.
      * </p>
      */
+    //DOTTY-ONLY infix 
     def should(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
       fun(leftSideString, "should", pos, () => right)
     }
@@ -217,6 +220,7 @@ trait ShouldVerb {
      * <code>"should"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>should</code>.
      * </p>
      */
+    //DOTTY-ONLY infix 
     def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration): Unit = {
       swawr(leftSideString, "should", resultOfAfterWordApplication, pos)
     }

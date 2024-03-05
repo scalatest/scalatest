@@ -71,6 +71,18 @@ object GenColCompatHelper {
           |  def newBuilder[A, C](f: Factory[A, C]): scala.collection.mutable.Builder[A, C] = f.newBuilder
           |
           |  type StringOps = scala.collection.StringOps
+          |
+          |  class InsertionOrderSet[A](elements: List[A]) extends scala.collection.immutable.Set[A] {
+          |    private val underlying = scala.collection.mutable.LinkedHashSet(elements: _*)
+          |    def contains(elem: A): Boolean = underlying.contains(elem)
+          |    def iterator: Iterator[A] = underlying.iterator
+          |    def excl(elem: A): scala.collection.immutable.Set[A] = new InsertionOrderSet(elements.filter(_ != elem))
+          |    def incl(elem: A): scala.collection.immutable.Set[A] = 
+          |      if (underlying.contains(elem)) 
+          |        this 
+          |      else 
+          |        new InsertionOrderSet(elements :+ elem)
+          |  }
           |}
           |
         """.stripMargin
@@ -137,6 +149,18 @@ object GenColCompatHelper {
           |  def newBuilder[A, C](f: Factory[A, C]): scala.collection.mutable.Builder[A, C] = f.apply()
           |
           |  type StringOps = scala.collection.immutable.StringOps
+          |
+          |  class InsertionOrderSet[A](elements: List[A]) extends scala.collection.immutable.Set[A] {
+          |    private val underlying = scala.collection.mutable.LinkedHashSet(elements: _*)
+          |    def contains(elem: A): Boolean = underlying.contains(elem)
+          |    def iterator: Iterator[A] = underlying.iterator
+          |    def -(elem: A): scala.collection.immutable.Set[A] = new InsertionOrderSet(elements.filter(_ != elem))
+          |    def +(elem: A): scala.collection.immutable.Set[A] = 
+          |      if (underlying.contains(elem)) 
+          |        this
+          |      else 
+          |        new InsertionOrderSet(elements :+ elem)
+          |  }
           |}
           |
         """.stripMargin

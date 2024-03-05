@@ -79,5 +79,6 @@ abstract class ResultOfTaggedAsInvocation(val verb: String, val rest: String, va
    * in the main documentation for trait <code>FlatSpec</code>.
    * </p>
    */
+  //DOTTY-ONLY infix  
   def is(testFun: => PendingStatement): Unit
 }

@@ -98,6 +98,7 @@ trait Explicitly {
      *                                        ^
      * </pre>
      */
+    //DOTTY-ONLY infix  
     def by[A](equality: Equality[A]): DecidedByEquality[A] = new DecidedByEquality[A](equality)
   }
 
@@ -130,6 +131,7 @@ trait Explicitly {
      * </pre>
      *
      */
+    //DOTTY-ONLY infix  
     def by[A](equivalence: Equivalence[A]): DeterminedByEquivalence[A] = new DeterminedByEquivalence[A](equivalence)
   }
 
@@ -187,6 +189,7 @@ trait Explicitly {
      * before comparing them for equality using the <code>Equality[A]</code> passed to this object's
      * constructor.
      */
+    //DOTTY-ONLY infix  
     def afterBeing(uniformity: Uniformity[A]): NormalizingEquality[A] =
       new ComposedNormalizingEquality[A](equality, uniformity)
   } 
@@ -234,6 +237,7 @@ trait Explicitly {
      * before comparing them for equality using the <code>Equivalence[T]</code> passed to this object's
      * constructor.
      */
+    //DOTTY-ONLY infix  
     def afterBeing(normalization: Normalization[T]): NormalizingEquivalence[T] =
       new ComposedNormalizingEquivalence[T](equivalence, normalization)
   } 
@@ -259,6 +263,7 @@ trait Explicitly {
      *          before comparing it for equality with another <code>N</code> using the implicitly
      *          passed <code>Equality[N]</code>.
      */
+    //DOTTY-ONLY infix  
     def being[N](uniformity: Uniformity[N])(implicit equality: Equality[N]): NormalizingEquality[N] =
       new ComposedNormalizingEquality[N](equality, uniformity)
 
@@ -277,6 +282,7 @@ trait Explicitly {
      *          before comparing it for equality with another <code>N</code> using the implicitly
      *          passed <code>Equivalence[N]</code>.
      */
+    //DOTTY-ONLY infix  
     def being[N](normalization: Normalization[N])(implicit equivalence: Equivalence[N]): NormalizingEquivalence[N] =
       new ComposedNormalizingEquivalence[N](equivalence, normalization)
   }

@@ -280,7 +280,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
   /**
    * For a.isEmpty and method call that does not has any argument, it'll generate the AST for the following code:
    *
-   * org.scalactic.Bool.unaryMacroBool($org_scalatest_assert_macro_left, "isEmpty", $org_scalatest_assert_macro_left.isEmpty)
+   * org.scalactic.Bool.unaryMacroBool($org_scalatest_assert_macro_left, "isEmpty", $org_scalatest_assert_macro_left.isEmpty, prettifier)
    */
   def unaryMacroBool(select: Select, prettifier: Tree): Apply =
     Apply(
@@ -307,6 +307,40 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         prettifier.duplicate
       )
     )
+
+  /**
+   * For a.isEmpty() and method call that does not has any argument, it'll generate the AST for the following code:
+   *
+   * org.scalactic.Bool.unaryMacroBool($org_scalatest_assert_macro_left, "isEmpty", $org_scalatest_assert_macro_left.isEmpty(), prettifier)
+   */
+  def unaryApplyMacroBool(select: Select, prettifier: Tree): Apply =
+    Apply(
+      Select(
+        Select(
+          Select(
+            Select(
+              Ident(newTermName("_root_")),
+              newTermName("org")
+            ),
+            newTermName("scalactic")
+          ),
+          newTermName("Bool")
+        ),
+        newTermName("unaryMacroBool")
+      ),
+      List(
+        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        context.literal(select.name.decoded).tree,
+        Apply(
+          Select(
+            Ident(newTermName("$org_scalatest_assert_macro_left")),
+            select.name
+          ), 
+          List.empty
+        ),
+        prettifier.duplicate
+      )
+    )    
 
   /**
    * For a.isInstanceOf[String] == 1, it'll generate the AST for the following code:
@@ -786,7 +820,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
           case select: Select if isSupportedUnaryOperator(select.name.decoded) =>
             Block(
               valDef("$org_scalatest_assert_macro_left", select.qualifier.duplicate),
-              unaryMacroBool(select.duplicate, prettifierTree)
+              unaryApplyMacroBool(select.duplicate, prettifierTree)
             )
           case _ => simpleMacroBool(tree.duplicate, getText(tree), prettifierTree)
         }

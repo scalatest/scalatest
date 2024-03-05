@@ -25,6 +25,7 @@ import annotation.implicitNotFound
  * </p>
  */
 @implicitNotFound(msg = "types ${A} and ${B} do not adhere to the type constraint selected for the === and !== operators; the missing implicit parameter is of type org.scalactic.CanEqual[${A},${B}]")
+//DOTTY-ONLY infix
 abstract class CanEqual[A, B] {
 
   /**

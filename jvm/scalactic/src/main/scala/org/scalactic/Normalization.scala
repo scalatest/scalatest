@@ -98,6 +98,7 @@ trait Normalization[A] { thisNormalization =>
    * @param other a <code>Normalization</code> to 'and' with this one
    * @return a <code>Normalization</code> representing the composition of this and the passed <code>Normalization</code>
    */
+  //DOTTY-ONLY infix  
   final def and(other: Normalization[A]): Normalization[A] =
     new Normalization[A] {
       def normalized(a: A): A = other.normalized(thisNormalization.normalized(a))

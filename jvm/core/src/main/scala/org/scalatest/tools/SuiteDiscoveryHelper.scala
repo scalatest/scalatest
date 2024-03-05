@@ -273,17 +273,8 @@ private[scalatest] object SuiteDiscoveryHelper {
   //
   private def processFileNames(fileNames: Iterator[String], fileSeparator: Char, loader: ClassLoader,
                                suffixes: Option[Pattern]): Set[String] =
-  {
-    val classNameOptions = // elements are Some(<class name>) if processed, else None
-      for (className <- extractClassNames(fileNames, fileSeparator))
-        yield processClassName(className, loader, suffixes)
-
-    val classNames = 
-      for (Some(className) <- classNameOptions)
-        yield className
-
-    Set[String]() ++ classNames.toIterable
-  }
+    Set[String]() ++ 
+    extractClassNames(fileNames, fileSeparator).flatMap(processClassName(_, loader, suffixes)).toIterable
 
   private def getFileNamesSetFromFile(file: File, fileSeparator: Char): Set[String] = {
 
@@ -328,12 +319,6 @@ private[scalatest] object SuiteDiscoveryHelper {
   // Given a fileNames iterator, returns an iterator of class names
   // corresponding to .class files found.
   //
-  private def extractClassNames(fileNames: Iterator[String], fileSeparator: Char): Iterator[String] = {
-    val options =
-      for (fileName <- fileNames) yield
-        transformToClassName(fileName, fileSeparator)
-
-    for (Some(className) <- options) yield
-      className
-  }
+  private def extractClassNames(fileNames: Iterator[String], fileSeparator: Char): Iterator[String] = 
+    fileNames.flatMap(transformToClassName(_, fileSeparator))
 }
