@@ -152,7 +152,7 @@ import org.scalatest.compatible.Assertion
  *         ...
  * </pre>
  *
- * <p>Trait <code>DiagrammedAssertions</code> was inspired by Peter Niederwieser's work in <a href="http://code.google.com/p/spock/">Spock</a> and <a href="https://github.com/pniederw/expecty">Expecty</a>.
+ * <p>Trait <code>DiagrammedAssertions</code> was inspired by Peter Niederwieser's work in <a href="https://github.com/spockframework/spock">Spock</a> and <a href="https://github.com/pniederw/expecty">Expecty</a>.
  */
 trait Diagrams extends Assertions {
   // https://github.com/lampepfl/dotty/pull/8601#pullrequestreview-380646858
