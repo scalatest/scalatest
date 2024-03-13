@@ -4,7 +4,6 @@ import java.io.PrintWriter
 import scala.io.Source
 
 import scalanative.sbtplugin.ScalaNativePlugin
-import ScalaNativePlugin.autoImport.{nativeLinkStubs, nativeDump}
 
 trait BuildCommons {
 
@@ -259,8 +258,6 @@ trait BuildCommons {
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
       fork in test := false,
-      nativeLinkStubs in Test := true,
-      nativeDump in Test := false, 
       testOptions in Test := scalatestTestJSNativeOptions,
       publishArtifact := false,
       publish := {},
