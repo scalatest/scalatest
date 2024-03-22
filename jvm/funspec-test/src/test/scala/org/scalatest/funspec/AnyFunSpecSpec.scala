@@ -49,8 +49,6 @@ class AnyFunSpecSpec extends AnyFreeSpec with GivenWhenThen {
 
   private val prettifier = Prettifier.default
 
-  println("########debug AnyFunSpecSpec: " + org.scalatest.tools.Runner.discoveredSuites + ", Runner: " + org.scalatest.tools.Runner.toString)
-
   "A FunSpec" - {
 
     "should return the test names in registration order from testNames" in {
