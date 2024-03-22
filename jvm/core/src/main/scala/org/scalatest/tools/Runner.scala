@@ -29,6 +29,7 @@ import org.scalatest.events._
 import java.util.concurrent.Executors
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ThreadFactory
+import java.util.concurrent.atomic.AtomicReference
 import SuiteDiscoveryHelper._
 import org.scalatest.time.Span
 import org.scalatest.time.Seconds
@@ -691,6 +692,10 @@ object Runner {
   @volatile private[scalatest] var spanScaleFactor: Double = 1.0
 
   private final val DefaultNumFilesToArchive = 2
+
+  private[scalatest] val internalDiscoveredSuites: AtomicReference[Option[Set[String]]] = new AtomicReference(None)
+
+  def discoveredSuites: Option[Set[String]] = internalDiscoveredSuites.get
   
   //                     TO
   // We always include a PassFailReporter on runs in order to determine
@@ -1143,6 +1148,8 @@ object Runner {
         val discoveryDuration = System.currentTimeMillis - discoveryStartTime
         dispatch(
           DiscoveryCompleted(tracker.nextOrdinal(), Some(discoveryDuration)))
+
+        internalDiscoveredSuites.set(Some(discoSuites.map(_.suite.getClass.getName).toSet))  
 
         discoSuites
       }

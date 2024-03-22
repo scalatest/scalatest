@@ -745,12 +745,24 @@ class Framework extends SbtFramework {
         paths.exists(path => td.fullyQualifiedName.startsWith(path) && td.fullyQualifiedName.substring(path.length).lastIndexOf('.') <= 0)
       }
 
-    def tasks(taskDefs: Array[TaskDef]): Array[Task] =
-      for {
-        taskDef <- if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
-        task = createTask(taskDef)
-        if task.shouldDiscover
-      } yield task
+    def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
+      val filteredTaskDefs = 
+        (if (wildcard.isEmpty && membersOnly.isEmpty) 
+          taskDefs 
+        else 
+          (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct)
+      val tasks: Array[Task] = 
+        for {
+          taskDef <- filteredTaskDefs
+          task = createTask(taskDef)
+          if task.shouldDiscover
+        } yield task
+      
+      val discoveredSuites = tasks.map(_.taskDef.fullyQualifiedName).toSet
+      runnerInstance(loader).internalDiscoveredSuites.set(Some(discoveredSuites))
+
+      tasks 
+    }
 
     def done = {
       if (!isDone.getAndSet(true)) {
@@ -949,6 +961,13 @@ class Framework extends SbtFramework {
     wildcards.toList
   }
 
+  private def runnerInstance(loader: ClassLoader) = {
+    val runnerCompanionClass = loader.loadClass("org.scalatest.tools.Runner$")
+    val module = runnerCompanionClass.getField("MODULE$")
+    val obj = module.get(runnerCompanionClass)
+    obj.asInstanceOf[Runner.type]
+  }
+
   /**
    *
    * Initiates a ScalaTest run.
@@ -1011,12 +1030,7 @@ class Framework extends SbtFramework {
         case _ => (false, 60000L, 60000L)
       }
 
-    val runnerCompanionClass = testClassLoader.loadClass("org.scalatest.tools.Runner$")
-    val module = runnerCompanionClass.getField("MODULE$")
-    val obj = module.get(runnerCompanionClass)
-    val runnerInstance = obj.asInstanceOf[Runner.type]
-
-    runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+    runnerInstance(testClassLoader).spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
     parseLongArgument(seedArgs, "-S") match {
       case Some(seed) => Seed.configuredRef.getAndSet(Some(seed))
