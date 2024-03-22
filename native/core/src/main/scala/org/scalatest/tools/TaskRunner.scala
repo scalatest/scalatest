@@ -77,7 +77,7 @@ println("GOT TO THIS RECOVER CALL")
 
   def executionFuture(eventHandler: EventHandler, loggers: Array[Logger]): Future[Unit] = {
     val suiteStartTime = Platform.currentTime
-    val suite = Reflect.lookupInstantiatableClass(task.fullyQualifiedName).getOrElse(throw new RuntimeException("Cannot load suite class: " + task.fullyQualifiedName)).newInstance().asInstanceOf[Suite]
+    val suite = Reflect.lookupInstantiatableClass(task.fullyQualifiedName()).getOrElse(throw new RuntimeException("Cannot load suite class: " + task.fullyQualifiedName())).newInstance().asInstanceOf[Suite]
     val sbtLogInfoReporter = new SbtLogInfoReporter(
       loggers,
       presentAllDurations,

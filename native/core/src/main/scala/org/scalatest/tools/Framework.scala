@@ -33,10 +33,9 @@ class Framework extends BaseFramework {
         def requireNoArgConstructor(): Boolean = true
       })
 
-
-  def slaveRunner(args: Array[String], remoteArgs: Array[String], testClassLoader: ClassLoader, send: (String) => Unit): Runner =
+  def slaveRunner(args: Array[String], remoteArgs: Array[String], testClassLoader: ClassLoader, send: (String) => Unit): Runner = 
     new SlaveRunner(args, remoteArgs, testClassLoader, send)
 
-  def runner(args: Array[String], remoteArgs: Array[String], testClassLoader: ClassLoader): Runner =
+  def runner(args: Array[String], remoteArgs: Array[String], testClassLoader: ClassLoader): Runner = 
     new MasterRunner(args, remoteArgs, testClassLoader)
 }

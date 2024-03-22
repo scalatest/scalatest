@@ -26,7 +26,6 @@ import scala.scalanative.reflect.Reflect
 import scala.compat.Platform
 
 class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClassLoader: ClassLoader, notifyServer: String => Unit) extends Runner {
-
   val sbtNoFormat = false   // System property not supported in scala-js
   val ParsedArgs(
     reporterArgs,
@@ -37,6 +36,8 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
     wildcardArgs, 
     seedArgs
   ) = parseArgs(args)
+
+  Runner.setMasterFun(notifyServer)
 
   val (
   presentAllDurations,
@@ -116,23 +117,13 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
 
   def done(): String = ""
 
-  def remoteArgs(): Array[String] = {
+  def remoteArgs(): Array[String] = 
     theRemoteArgs
-  }
 
-  def args: Array[String] = {
+  def args: Array[String] = 
     theArgs
-  }
-
-  private def runnerInstance() = {
-    val runnerCompanionClass = Reflect.lookupLoadableModuleClass("org.scalatest.tools.Runner$").getOrElse(throw new RuntimeException("Cannot load org.scalatest.tools.Runner$ class."))
-    val obj = runnerCompanionClass.loadModule()
-    obj.asInstanceOf[Runner.type]
-  }
 
   def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
-
-    println("-------------SlaveRunner's tasks")
 
     def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
       taskDefs.filter(td => paths.exists(td.fullyQualifiedName().startsWith(_)))
@@ -142,14 +133,14 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
         paths.exists(path => td.fullyQualifiedName().startsWith(path) && td.fullyQualifiedName().substring(path.length).lastIndexOf('.') <= 0)
       }
 
+    val discoveredSuites = taskDefs.map(_.fullyQualifiedName()).toSet
+    Runner.setDiscoveredSuites(discoveredSuites)  
+
     def createTask(t: TaskDef): Task =
       new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
         presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(notifyServer))
 
     val tasks = (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
-
-    val discoveredSuites = tasks.map(_.taskDef.fullyQualifiedName).toSet
-    runnerInstance().internalDiscoveredSuites.set(Some(discoveredSuites))
 
     tasks
   }
