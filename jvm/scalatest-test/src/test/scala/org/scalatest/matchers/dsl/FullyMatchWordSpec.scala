@@ -33,7 +33,7 @@ class FullyMatchWordSpec extends AnyFreeSpec with Matchers {
       val mt = fullyMatch regex decimal
       
       "should have pretty toString" in {
-        mt.toString should be ("fullyMatch regex \"" + decimal + "\"")
+        mt.toString should be ("""fullyMatch regex "(-)?(\\d+)(\\.\\d*)?"""")
       }
       
       val mr = mt("2.7")

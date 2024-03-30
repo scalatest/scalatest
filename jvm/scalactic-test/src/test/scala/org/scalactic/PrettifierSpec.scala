@@ -48,6 +48,8 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
         }
       myLittlePretty(Yell("I like fruit loops")) should be ("I LIKE FRUIT LOOPS!!!")
       myLittlePretty("hi") should be ("\"hi\"")
+      myLittlePretty("h\u0000i") should be ("\"h\\" + "u0000i\"")
+      myLittlePretty("h\ti") should be (raw""""h\ti"""")
       myLittlePretty('h') should be ("'h'")
       myLittlePretty(Array(1, 2, 3)) should be ("Array(1, 2, 3)")
       myLittlePretty(WrappedArray.make(Array(1, 2, 3))) should be ("Array(1, 2, 3)")

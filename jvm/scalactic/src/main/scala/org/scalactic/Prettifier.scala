@@ -15,6 +15,7 @@
  */
 package org.scalactic
 
+import scala.annotation.switch
 import scala.collection._
 import mutable.WrappedArray
 import scala.util.Success
@@ -197,6 +198,22 @@ private[scalactic] class DefaultPrettifier extends Prettifier {
       case anythingElse => anythingElse.toString
     }
 
+  private def escapedString(s: String): String = {
+    def escapedChar(c: Char): String = (c: @switch) match {
+      case '\b' => raw"\b"
+      case '\t' => raw"\t"
+      case '\n' => raw"\n"
+      case '\f' => raw"\f"
+      case '\r' => raw"\r"
+      case '"'  => "\\\"" // raw"\"" Scala 2.11 compatible
+      case '\'' => raw"\'"
+      case '\\' => raw"\\"
+      case _    => if (c.isControl) "\\u%04X".format(c.toInt) else String.valueOf(c)
+    }
+    if (s.exists(c => c.isControl || c == '\\')) s.flatMap(escapedChar)
+    else s
+  }
+
   protected def prettify(o: Any, processed: Set[Any]): String = 
     if (processed.contains(o))
       throw new StackOverflowError("Cyclic relationship detected, let's fail early!")
@@ -204,7 +221,7 @@ private[scalactic] class DefaultPrettifier extends Prettifier {
       o match {
         case null => "null"
         case aUnit: Unit => "<(), the Unit value>"
-        case aString: String => "\"" + aString + "\""
+        case aString: String => s""""${escapedString(aString)}""""
         case aStringWrapper: org.scalactic.ColCompatHelper.StringOps => "\"" + aStringWrapper.mkString + "\""
         case aChar: Char =>  "\'" + aChar + "\'"
         case Some(e) => "Some(" + prettify(e, processed) + ")"
