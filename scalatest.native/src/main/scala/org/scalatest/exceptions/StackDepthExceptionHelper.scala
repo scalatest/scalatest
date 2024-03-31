@@ -22,7 +22,7 @@ private[scalatest] object StackDepthExceptionHelper {
 
   def getStackDepth(stackTraces: Array[StackTraceElement], fileName: String, methodName: String, adjustment: Int = 0): Int = {
     // the scala-js part is temporary short-cut way to overcome locally built scala-js problem.
-    // stackTraces.takeWhile(st => st.getFileName.startsWith("https://") || st.getFileName.contains("scala-js")).length + adjustment
+    //stackTraces.takeWhile(st => st.getFileName.startsWith("https://") || st.getFileName.contains("scala-js")).length + adjustment
     val depth1 = stackTraces.takeWhile(st => st.getFileName != null && (st.getFileName.startsWith("https://") || st.getFileName.contains("scala-js"))).length
     if (depth1 > 0 && stackTraces(depth1).getFileName == stackTraces(depth1 + 2).getFileName && stackTraces(depth1).getFileName == stackTraces(depth1 + 4).getFileName && stackTraces(depth1 + 1).getFileName == stackTraces(depth1 + 3).getFileName)
       depth1 + 5 + adjustment
