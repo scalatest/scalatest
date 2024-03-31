@@ -35,7 +35,7 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
   val presentReminderWithFullStackTraces: Boolean = false
   val presentReminderWithoutCanceledTests: Boolean = false*/
 
-  val sbtNoFormat = false   // System property not supported in Scala.js
+  val sbtNoFormat = false   // System property not supported in scala-js
 
   val ParsedArgs(
   reporterArgs,

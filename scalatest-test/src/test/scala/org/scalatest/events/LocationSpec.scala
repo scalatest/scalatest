@@ -56,7 +56,7 @@ class LocationSpec extends FunSpec {
           case testSucceed:TestSucceeded => 
             assertResult(thisLineNumber - 23) { testSucceed.location.get.asInstanceOf[LineInFile].lineNumber }
             assertResult("LocationSpec.scala") { testSucceed.location.get.asInstanceOf[LineInFile].fileName }
-            val sep = System.getProperty("file.separator") // Not using File.separator because it is not Scala.js friendly
+            val sep = System.getProperty("file.separator") // Not using File.separator because it is not scala-js friendly
             inside (testSucceed.location) { case Some(location) =>
               inside (location) { case lineInFile: LineInFile =>
                 inside (lineInFile.filePathname) { case Some(filePathname) =>

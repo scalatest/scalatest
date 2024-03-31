@@ -909,7 +909,7 @@ final class NonEmptyArray[T] private (val toArray: Array[T]) extends AnyVal {
     * @param replaced the number of elements to drop in the original <code>NonEmptyArray</code>
     */
   final def patch[U >: T](from: Int, that: NonEmptyArray[U], replaced: Int)(implicit classTag: ClassTag[U]): NonEmptyArray[U] =
-    new NonEmptyArray(toArray.toVector.patch(from, that.toVector, replaced).toArray)  // Current version of toArray.patch seems to be buggy in Scala 2.13.0 Scala.js, we may try to remove it when newer version of Scala/Scala.js is available.
+    new NonEmptyArray(toArray.toVector.patch(from, that.toVector, replaced).toArray)  // Current version of toArray.patch seems to be buggy in Scala 2.13.0 scala-js, we may try to remove it when newer version of scala/scala-js is available.
 
   /**
     * Iterates over distinct permutations. 

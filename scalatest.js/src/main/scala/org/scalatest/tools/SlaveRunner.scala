@@ -24,7 +24,7 @@ import scala.compat.Platform
 
 class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClassLoader: ClassLoader, notifyServer: String => Unit) extends Runner {
 
-  val sbtNoFormat = false   // System property not supported in Scala.js
+  val sbtNoFormat = false   // System property not supported in scala-js
   val ParsedArgs(
     reporterArgs,
     suiteArgs,

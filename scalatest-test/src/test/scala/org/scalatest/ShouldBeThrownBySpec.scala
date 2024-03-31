@@ -396,7 +396,7 @@ class ShouldBeThrownBySpec extends FunSpec {
       val offendingLine = thisLineNumber - 4
       assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
       assert(e.failedCodeFileName === Some(fileName))
-      // TODO: Skipped because stack trace for multiline expression in Scala.js is wrong, should re-enable this after we got macro based stack depth working or Scala.js fix the problem.
+      // TODO: Skipped because stack trace for multiline expression in scala-js is wrong, should re-enable this after we got macro based stack depth working or scala-js fix the problem.
       // SKIP-SCALATESTJS,NATIVE-START
       assert(e.failedCodeLineNumber === Some(offendingLine))
       // SKIP-SCALATESTJS,NATIVE-END

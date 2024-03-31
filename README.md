@@ -66,7 +66,7 @@ You can also run different groups generated tests separately:
 
 What it does is simply switch to gentests project and run test.
 
-To run Scala.js tests: 
+To run scala-js tests: 
 
 ```
 $ sbt scalatestAppJS/clean
