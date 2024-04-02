@@ -372,6 +372,8 @@ object Prettifier {
    */
   implicit val default: Prettifier = new DefaultPrettifier()
 
+  val withEscapingDiffer: Prettifier = Prettifier.apply(default, new EscapingStringDiffer)
+
   /**
    * Create a default prettifier instance with collection size limit.
    */
