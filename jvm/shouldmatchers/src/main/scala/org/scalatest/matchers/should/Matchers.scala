@@ -7299,6 +7299,15 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
             indicateFailure(failureMessage, None, pos, analysis)
           }
 
+        case equalMatchResult: ContainingStringMatchResult =>
+            if (equalMatchResult.matches)
+              indicateSuccess(result.negatedFailureMessage(prettifier))
+            else {
+              val failureMessage = equalMatchResult.failureMessage(prettifier)
+              val analysis = equalMatchResult.analysis
+              indicateFailure(failureMessage, None, pos, analysis)
+            }    
+
         case _ =>
           MatchFailed.unapply(result)(prettifier) match {
             case Some(failureMessage) => indicateFailure(failureMessage, None, pos)

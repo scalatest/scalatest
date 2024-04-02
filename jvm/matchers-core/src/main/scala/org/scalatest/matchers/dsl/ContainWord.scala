@@ -88,6 +88,25 @@ final class ContainWord {
         }
       override def toString: String = "contain (" + Prettifier.default(expectedElement) + ")"
     }
+
+  def apply(expectedElement: String): MatcherFactory1[Any, Containing] =
+    new MatcherFactory1[Any, Containing] {
+      def matcher[U <: Any : Containing]: Matcher[U] = 
+        new Matcher[U] {
+          def apply(left: U): MatchResult = {
+            val containing = implicitly[Containing[U]]
+            new ContainingStringMatchResult(
+              containing.contains(left, expectedElement),
+              Resources.rawDidNotContainExpectedElement,
+              Resources.rawContainedExpectedElement,
+              Vector(left, expectedElement), 
+              Vector(left, expectedElement)
+            )
+          }
+          override def toString: String = "contain (" + Prettifier.default(expectedElement) + ")"
+        }
+      override def toString: String = "contain (" + Prettifier.default(expectedElement) + ")"
+    }  
   
   //
   // This key method is called when "contain" is used in a logical expression, such as:

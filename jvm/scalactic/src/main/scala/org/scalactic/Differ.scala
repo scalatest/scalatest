@@ -57,6 +57,22 @@ private[scalactic] object Differ {
 
 private[scalactic] trait StringDiffer extends Differ {
 
+  private[scalactic] def escapedString(s: String): String = {
+    def escapedChar(c: Char): String = (c: @scala.annotation.switch) match {
+      case '\b' => raw"\b"
+      case '\t' => raw"\t"
+      case '\n' => raw"\n"
+      case '\f' => raw"\f"
+      case '\r' => raw"\r"
+      case '"'  => "\\\"" // raw"\"" Scala 2.11 compatible
+      case '\'' => raw"\'"
+      case '\\' => raw"\\"
+      case _    => if (c.isControl) "\\u%04X".format(c.toInt) else String.valueOf(c)
+    }
+    if (s.exists(c => c.isControl || c == '\\')) s.flatMap(escapedChar)
+    else s
+  }
+
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
     def diffStrings(s: String, t: String): Tuple2[String, String] = {
       def findCommonPrefixLength(s: String, t: String): Int = {
@@ -101,7 +117,7 @@ private[scalactic] trait StringDiffer extends Differ {
 
     (a, b) match {
       case (aStr: String, bStr: String) =>
-        val (aRes, bRes) = diffStrings(aStr, bStr)
+        val (aRes, bRes) = diffStrings(escapedString(aStr), escapedString(bStr))
         PrettyPair(
           prettifier(aRes),
           prettifier(bRes),
@@ -319,3 +335,32 @@ private[scalactic] class AnyDiffer extends Differ {
 }
 
 private[scalactic] object AnyDiffer extends AnyDiffer
+
+private[scalactic] class EscapingStringDiffer extends Differ {
+  private def escapeString(a: Any): Any = a match {
+    case s: String => StringDiffer.escapedString(s)
+    case _ => a
+  }
+  def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = 
+    (a, b) match {
+      case (s1: scala.collection.GenMap[_, _], s2: String) => // TODO: Should not need prettifying the arguments here, should do in analysis.
+        PrettyPair(prettifier(s1.map { case (k, v) => (escapeString(k), escapeString(v)) }), prettifier(escapeString(s2)), None)
+      case (s1: scala.collection.GenSeq[_], s2: String) => 
+        val s2Escapted = escapeString(s2)
+        val analysis = 
+          if (s2 != s2Escapted)
+            Some("RHS contains characters that might cause problem: " + s2Escapted)
+          else 
+            s1.find { e => 
+              val eEscaped = escapeString(e)
+              println("e: " + e + ", eEscaped: " + eEscaped)
+              e != eEscaped
+            }.map { e => 
+              "LHS element contains characters that might cause problem: " + escapeString(e)
+            }  
+        PrettyPair(prettifier(s1), prettifier(s2), analysis)
+      case (s1: scala.collection.GenSet[_], s2: String) => 
+        PrettyPair(prettifier(s1), prettifier(s2), None)
+      case _ => AnyDiffer.difference(a, b, prettifier)
+    }
+}

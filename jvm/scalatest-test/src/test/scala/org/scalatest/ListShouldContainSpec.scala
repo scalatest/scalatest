@@ -39,6 +39,12 @@ class ListShouldContainSpec extends AnyFunSpec {
 
     describe("when used with contain (value) syntax") {
 
+      it("test") {
+        val a = "\u0000test"
+        val b = "test"
+        List(a) should contain (b)
+      }
+
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         xs should contain ("hi")
 
