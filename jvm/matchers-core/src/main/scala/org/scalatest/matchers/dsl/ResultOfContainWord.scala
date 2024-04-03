@@ -420,8 +420,11 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   // SKIP-DOTTY-START 
   def key(expectedKey: Any)(implicit keyMapping: KeyMapping[L]): Assertion = {
   // SKIP-DOTTY-END
-    if (keyMapping.containsKey(left, expectedKey) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainKey(prettifier, left, expectedKey) else FailureMessages.containedKey(prettifier, left, expectedKey), None, pos)
+    if (keyMapping.containsKey(left, expectedKey) != shouldBeTrue) {
+      val p = Prettifier.withEscapingDiffer
+      val prettyPair = p(left, expectedKey)
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainKey(prettifier, left, expectedKey) else FailureMessages.containedKey(prettifier, left, expectedKey), None, pos, prettyPair.analysis)
+    }
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedKey(prettifier, left, expectedKey), FailureMessages.didNotContainKey(prettifier, left, expectedKey))
   }

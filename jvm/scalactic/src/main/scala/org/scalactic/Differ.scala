@@ -341,28 +341,55 @@ private[scalactic] class EscapingStringDiffer extends Differ {
     case s: String => StringDiffer.escapedString(s)
     case _ => a
   }
+  //private def differenceForIterable(itr: )
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = 
     (a, b) match {
-      case (s1: scala.collection.GenMap[_, _], s2: String) => // TODO: Should not need prettifying the arguments here, should do in analysis.
-        PrettyPair(prettifier(s1.map { case (k, v) => (escapeString(k), escapeString(v)) }), prettifier(escapeString(s2)), None)
-      case (s1: scala.collection.GenSeq[_], s2: String) => 
+      case (s1: scala.collection.GenMap[_, _], s2: String) => 
         val s2Escapted = escapeString(s2)
         val analysis = 
           if (s2 != s2Escapted)
             Some("RHS contains characters that might cause problem: " + s2Escapted)
           else {
-            val limit = Differ.prettifierLimit(prettifier).getOrElse(s1.length)
+            val limit = Differ.prettifierLimit(prettifier).getOrElse(s1.size)
+            s1.take(limit).find { case (k, v) => 
+              val kEscaped = escapeString(k)
+              val vEscaped = escapeString(v)
+              (k, v) != (kEscaped, vEscaped)
+            }.map { case (k, v) => 
+              "LHS contains at least one entry with characters that might cause problem: " + escapeString(k) + " -> " + escapeString(v)
+            }
+          }
+        PrettyPair(prettifier(s1), prettifier(s2), analysis)
+      case (s1: scala.collection.Iterable[_], s2: String) => 
+        val s2Escapted = escapeString(s2)
+        val analysis = 
+          if (s2 != s2Escapted)
+            Some("RHS contains characters that might cause problem: " + s2Escapted)
+          else {
+            val limit = Differ.prettifierLimit(prettifier).getOrElse(s1.size)
             s1.take(limit).find { e => 
               val eEscaped = escapeString(e)
-              println("e: " + e + ", eEscaped: " + eEscaped)
               e != eEscaped
             }.map { e => 
               "LHS contains at least one string with characters that might cause problem: " + escapeString(e)
             }
           }  
         PrettyPair(prettifier(s1), prettifier(s2), analysis)
-      case (s1: scala.collection.GenSet[_], s2: String) => 
-        PrettyPair(prettifier(s1), prettifier(s2), None)
+      case (s1: Array[_], s2: String) => 
+        val s2Escapted = escapeString(s2)
+        val analysis = 
+          if (s2 != s2Escapted)
+            Some("RHS contains characters that might cause problem: " + s2Escapted)
+          else {
+            val limit = Differ.prettifierLimit(prettifier).getOrElse(s1.size)
+            s1.take(limit).find { e => 
+              val eEscaped = escapeString(e)
+              e != eEscaped
+            }.map { e => 
+              "LHS contains at least one string with characters that might cause problem: " + escapeString(e)
+            }
+          }  
+        PrettyPair(prettifier(s1), prettifier(s2), analysis)  
       case _ => AnyDiffer.difference(a, b, prettifier)
     }
 }
