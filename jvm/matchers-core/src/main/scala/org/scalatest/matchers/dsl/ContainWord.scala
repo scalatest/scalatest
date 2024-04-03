@@ -144,10 +144,11 @@ final class ContainWord {
         new Matcher[U] {
           def apply(left: U): MatchResult = {
             val keyMapping = implicitly[KeyMapping[U]]
-            MatchResult(
+            new ContainingStringMatchResult(
               keyMapping.containsKey(left, expectedKey),
               Resources.rawDidNotContainKey,
               Resources.rawContainedKey,
+              Vector(left, expectedKey), 
               Vector(left, expectedKey)
             )
           }
