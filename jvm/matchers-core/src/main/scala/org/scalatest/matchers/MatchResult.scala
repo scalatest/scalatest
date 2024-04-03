@@ -475,7 +475,40 @@ private[scalatest] class ContainingStringMatchResult(
     Resources.formatString(rawMidSentenceFailureMessage, Array(prettyPair.left, prettyPair.right))
   }
 
-  //override def negated: MatchResult =
-    //new NotEqualMatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, negatedFailureMessageArgs, failureMessageArgs)
+  override def negated: MatchResult =
+    new NotContainingStringMatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, negatedFailureMessageArgs, failureMessageArgs)
+
+}
+
+private[scalatest] class NotContainingStringMatchResult(
+  matches: Boolean,
+  rawFailureMessage: String,
+  rawNegatedFailureMessage: String,
+  failureMessageArgs: IndexedSeq[Any],
+  negatedFailureMessageArgs: IndexedSeq[Any]
+) extends MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage,
+  failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs) {
+
+  private[scalatest] val atomicAnalysis: AtomicReference[Option[String]] = new AtomicReference[Option[String]](None)
+  private[scalatest] def analysis = {
+    atomicAnalysis.get
+  }
+
+  override def negatedFailureMessage(implicit prettifier: Prettifier): String = {
+    val p = Prettifier.withEscapingDiffer
+    val prettyPair = p(negatedFailureMessageArgs(0), negatedFailureMessageArgs(1))
+    atomicAnalysis.getAndSet(prettyPair.analysis)
+    Resources.formatString(rawNegatedFailureMessage, Array(prettyPair.left, prettyPair.right))
+  }
+
+  override def midSentenceNegatedFailureMessage(implicit prettifier: Prettifier): String = {
+    val p = Prettifier.withEscapingDiffer
+    val prettyPair = p(midSentenceNegatedFailureMessageArgs(0), midSentenceNegatedFailureMessageArgs(1))
+    atomicAnalysis.getAndSet(prettyPair.analysis)
+    Resources.formatString(rawMidSentenceNegatedFailureMessage, Array(prettyPair.left, prettyPair.right))
+  }
+
+  override def negated: MatchResult =
+    new ContainingStringMatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, negatedFailureMessageArgs, failureMessageArgs)
 
 }
