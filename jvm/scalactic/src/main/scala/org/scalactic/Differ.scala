@@ -350,14 +350,16 @@ private[scalactic] class EscapingStringDiffer extends Differ {
         val analysis = 
           if (s2 != s2Escapted)
             Some("RHS contains characters that might cause problem: " + s2Escapted)
-          else 
-            s1.find { e => 
+          else {
+            val limit = Differ.prettifierLimit(prettifier).getOrElse(s1.length)
+            s1.take(limit).find { e => 
               val eEscaped = escapeString(e)
               println("e: " + e + ", eEscaped: " + eEscaped)
               e != eEscaped
             }.map { e => 
               "LHS contains at least one string with characters that might cause problem: " + escapeString(e)
-            }  
+            }
+          }  
         PrettyPair(prettifier(s1), prettifier(s2), analysis)
       case (s1: scala.collection.GenSet[_], s2: String) => 
         PrettyPair(prettifier(s1), prettifier(s2), None)
