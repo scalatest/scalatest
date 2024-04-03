@@ -117,11 +117,11 @@ private[scalactic] trait StringDiffer extends Differ {
 
     (a, b) match {
       case (aStr: String, bStr: String) =>
-        val (aRes, bRes) = diffStrings(escapedString(aStr), escapedString(bStr))
+        val (aRes, bRes) = diffStrings(aStr, bStr)
         PrettyPair(
           prettifier(aRes),
           prettifier(bRes),
-          Some(prettifier(aRes) + " -> " + prettifier(bRes))
+          Some(prettifier(escapedString(aRes)) + " -> " + prettifier(escapedString(bRes)))
         )
 
       case _ =>
@@ -356,7 +356,7 @@ private[scalactic] class EscapingStringDiffer extends Differ {
               println("e: " + e + ", eEscaped: " + eEscaped)
               e != eEscaped
             }.map { e => 
-              "LHS element contains characters that might cause problem: " + escapeString(e)
+              "LHS contains at least one string with characters that might cause problem: " + escapeString(e)
             }  
         PrettyPair(prettifier(s1), prettifier(s2), analysis)
       case (s1: scala.collection.GenSet[_], s2: String) => 
