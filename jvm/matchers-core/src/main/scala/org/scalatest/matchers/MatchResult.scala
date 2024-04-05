@@ -387,7 +387,7 @@ object MatchResult {
     )
 }
 
-private[scalatest] class EqualMatchResult(
+private[scalatest] abstract class MatchResultWithAnalysis(
   matches: Boolean,
   rawFailureMessage: String,
   rawNegatedFailureMessage: String,
@@ -396,10 +396,20 @@ private[scalatest] class EqualMatchResult(
 ) extends MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage,
                       failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs) {
 
+  private[scalatest] def analysis: Option[String]
+
+}
+
+private[scalatest] class EqualMatchResult(
+  matches: Boolean,
+  rawFailureMessage: String,
+  rawNegatedFailureMessage: String,
+  failureMessageArgs: IndexedSeq[Any],
+  negatedFailureMessageArgs: IndexedSeq[Any]
+) extends MatchResultWithAnalysis(matches, rawFailureMessage, rawNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs) {
+
   private[scalatest] val atomicAnalysis: AtomicReference[Option[String]] = new AtomicReference[Option[String]](None)
-  private[scalatest] def analysis = {
-    atomicAnalysis.get
-  }
+  private[scalatest] def analysis = atomicAnalysis.get
 
   override def failureMessage(implicit prettifier: Prettifier): String = {
     val prettyPair = prettifier(failureMessageArgs(0), failureMessageArgs(1))
@@ -424,13 +434,10 @@ private[scalatest] class NotEqualMatchResult(
   rawNegatedFailureMessage: String,
   failureMessageArgs: IndexedSeq[Any],
   negatedFailureMessageArgs: IndexedSeq[Any]
-) extends MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage,
-  failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs) {
+) extends MatchResultWithAnalysis(matches, rawFailureMessage, rawNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs) {
 
   private[scalatest] val atomicAnalysis: AtomicReference[Option[String]] = new AtomicReference[Option[String]](None)
-  private[scalatest] def analysis = {
-    atomicAnalysis.get
-  }
+  private[scalatest] def analysis = atomicAnalysis.get
 
   override def negatedFailureMessage(implicit prettifier: Prettifier): String = {
     val prettyPair = prettifier(negatedFailureMessageArgs(0), negatedFailureMessageArgs(1))
@@ -455,8 +462,7 @@ private[scalatest] class ContainingStringMatchResult(
   rawNegatedFailureMessage: String,
   failureMessageArgs: IndexedSeq[Any],
   negatedFailureMessageArgs: IndexedSeq[Any]
-) extends MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage,
-                      failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs) {
+) extends MatchResultWithAnalysis(matches, rawFailureMessage, rawNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs) {
 
   private[scalatest] val atomicAnalysis: AtomicReference[Option[String]] = new AtomicReference[Option[String]](None)
   private[scalatest] def analysis = atomicAnalysis.get                      
@@ -486,13 +492,10 @@ private[scalatest] class NotContainingStringMatchResult(
   rawNegatedFailureMessage: String,
   failureMessageArgs: IndexedSeq[Any],
   negatedFailureMessageArgs: IndexedSeq[Any]
-) extends MatchResult(matches, rawFailureMessage, rawNegatedFailureMessage, rawFailureMessage, rawNegatedFailureMessage,
-  failureMessageArgs, negatedFailureMessageArgs, failureMessageArgs, negatedFailureMessageArgs) {
+) extends MatchResultWithAnalysis(matches, rawFailureMessage, rawNegatedFailureMessage, failureMessageArgs, negatedFailureMessageArgs) {
 
   private[scalatest] val atomicAnalysis: AtomicReference[Option[String]] = new AtomicReference[Option[String]](None)
-  private[scalatest] def analysis = {
-    atomicAnalysis.get
-  }
+  private[scalatest] def analysis = atomicAnalysis.get
 
   override def negatedFailureMessage(implicit prettifier: Prettifier): String = {
     val p = Prettifier.withEscapingDiffer

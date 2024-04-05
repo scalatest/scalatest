@@ -5568,12 +5568,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = rightMatcher(e)
         result match {
-          case equalMatchResult: EqualMatchResult =>
-            if (equalMatchResult.matches)
+          case resultWithAnalysis: MatchResultWithAnalysis =>
+            if (resultWithAnalysis.matches)
               indicateSuccess(result.negatedFailureMessage(prettifier))
             else {
-              val failureMessage = equalMatchResult.failureMessage(prettifier)
-              val analysis = equalMatchResult.analysis
+              val failureMessage = resultWithAnalysis.failureMessage(prettifier)
+              val analysis = resultWithAnalysis.analysis
               indicateFailure(failureMessage, None, pos, analysis)
             }
 
@@ -5796,12 +5796,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = rightMatcher(e)
         result match {
-          case equalMatchResult: EqualMatchResult =>
-            if (equalMatchResult.matches)
+          case resultWithAnalysis: MatchResultWithAnalysis =>
+            if (resultWithAnalysis.matches)
               indicateSuccess(result.negatedFailureMessage(prettifier))
             else {
-              val failureMessage = equalMatchResult.failureMessage(prettifier)
-              val analysis = equalMatchResult.analysis
+              val failureMessage = resultWithAnalysis.failureMessage(prettifier)
+              val analysis = resultWithAnalysis.analysis
               indicateFailure(failureMessage, None, pos, analysis)
             }
 
@@ -5830,12 +5830,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = rightMatcher(e)
         result match {
-          case equalMatchResult: EqualMatchResult =>
-            if (equalMatchResult.matches)
+          case resultWithAnalysis: MatchResultWithAnalysis =>
+            if (resultWithAnalysis.matches)
               indicateSuccess(result.negatedFailureMessage(prettifier))
             else {
-              val failureMessage = equalMatchResult.failureMessage(prettifier)
-              val analysis = equalMatchResult.analysis
+              val failureMessage = resultWithAnalysis.failureMessage(prettifier)
+              val analysis = resultWithAnalysis.analysis
               indicateFailure(failureMessage, None, pos, analysis)
             }
 
@@ -7290,23 +7290,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, pos: source.Position): Assertion = {
       val result = rightMatcher(left)
       result match {
-        case equalMatchResult: EqualMatchResult =>
-          if (equalMatchResult.matches)
+        case resultWithAnalysis: MatchResultWithAnalysis =>
+          if (resultWithAnalysis.matches)
             indicateSuccess(result.negatedFailureMessage(prettifier))
           else {
-            val failureMessage = equalMatchResult.failureMessage(prettifier)
-            val analysis = equalMatchResult.analysis
+            val failureMessage = resultWithAnalysis.failureMessage(prettifier)
+            val analysis = resultWithAnalysis.analysis
             indicateFailure(failureMessage, None, pos, analysis)
           }
-
-        case equalMatchResult: ContainingStringMatchResult =>
-            if (equalMatchResult.matches)
-              indicateSuccess(result.negatedFailureMessage(prettifier))
-            else {
-              val failureMessage = equalMatchResult.failureMessage(prettifier)
-              val analysis = equalMatchResult.analysis
-              indicateFailure(failureMessage, None, pos, analysis)
-            }    
 
         case _ =>
           MatchFailed.unapply(result)(prettifier) match {
