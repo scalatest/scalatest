@@ -39,12 +39,6 @@ class ListShouldContainSpec extends AnyFunSpec {
 
     describe("when used with contain (value) syntax") {
 
-      it("test") {
-        val a = "\u0000test"
-        val b = "test"
-        List(a) should contain (b)
-      }
-
       it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         xs should contain ("hi")
 
@@ -127,6 +121,14 @@ class ListShouldContainSpec extends AnyFunSpec {
         e.message.get should be (Resources.didNotContainNull(decorateToStringValue(prettifier, xs)))
         e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
+      it("should show escaped string in analysis") {
+        val a = "\u0000test"
+        val b = "test"
+        val e = intercept[TestFailedException] {
+          List(a) should contain (b)
+        }
+        e.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000test\""))
       }
     }
 
