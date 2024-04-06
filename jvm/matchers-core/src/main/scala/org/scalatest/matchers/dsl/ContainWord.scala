@@ -77,10 +77,11 @@ final class ContainWord {
         new Matcher[U] {
           def apply(left: U): MatchResult = {
             val containing = implicitly[Containing[U]]
-            MatchResult(
+            new ContainingStringMatchResult(
               containing.contains(left, expectedElement),
               Resources.rawDidNotContainExpectedElement,
               Resources.rawContainedExpectedElement,
+              Vector(left, expectedElement), 
               Vector(left, expectedElement)
             )
           }
