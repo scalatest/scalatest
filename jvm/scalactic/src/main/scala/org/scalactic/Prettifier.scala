@@ -372,7 +372,11 @@ object Prettifier {
    */
   implicit val default: Prettifier = new DefaultPrettifier()
 
-  val withEscapingDiffer: Prettifier = Prettifier.apply(default, new EscapingStringDiffer)
+  def withEscapingDiffer(p: Prettifier): Prettifier = 
+    if (p == default || p == basic)
+      Prettifier.apply(p, new EscapingStringDiffer)
+    else
+      p  
 
   /**
    * Create a default prettifier instance with collection size limit.

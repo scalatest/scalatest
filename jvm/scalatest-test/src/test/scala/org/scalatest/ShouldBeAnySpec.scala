@@ -225,5 +225,15 @@ class ShouldBeAnySpec extends AnyFunSpec with PropertyChecks with ReturnsNormall
       oos.writeObject(result) // Should not throw an exeption
     }
     // SKIP-SCALATESTJS,NATIVE-END
+
+    it("should show escaped string in analysis") {
+      val a = "\u0000test"
+      val b = "test"
+      val e = 
+        intercept[TestFailedException] {
+          a should be (b)
+        }
+      e.analysis should be (Vector("\"[\\u0000]test\" -> \"[]test\""))
+    }
   }
 }
