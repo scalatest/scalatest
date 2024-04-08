@@ -468,14 +468,14 @@ private[scalatest] class ContainingStringMatchResult(
   private[scalatest] def analysis = atomicAnalysis.get                      
 
   override def failureMessage(implicit prettifier: Prettifier): String = {
-    val p = Prettifier.withEscapingDiffer
+    val p = Prettifier.withEscapingDiffer(prettifier)
     val prettyPair = p(failureMessageArgs(0), failureMessageArgs(1))
     atomicAnalysis.getAndSet(prettyPair.analysis)
     Resources.formatString(rawFailureMessage, Array(prettyPair.left, prettyPair.right))
   }
 
   override def midSentenceFailureMessage(implicit prettifier: Prettifier): String = {
-    val p = Prettifier.withEscapingDiffer
+    val p = Prettifier.withEscapingDiffer(prettifier)
     val prettyPair = p(midSentenceFailureMessageArgs(0), midSentenceFailureMessageArgs(1))
     atomicAnalysis.getAndSet(prettyPair.analysis)
     Resources.formatString(rawMidSentenceFailureMessage, Array(prettyPair.left, prettyPair.right))
@@ -498,14 +498,14 @@ private[scalatest] class NotContainingStringMatchResult(
   private[scalatest] def analysis = atomicAnalysis.get
 
   override def negatedFailureMessage(implicit prettifier: Prettifier): String = {
-    val p = Prettifier.withEscapingDiffer
+    val p = Prettifier.withEscapingDiffer(prettifier)
     val prettyPair = p(negatedFailureMessageArgs(0), negatedFailureMessageArgs(1))
     atomicAnalysis.getAndSet(prettyPair.analysis)
     Resources.formatString(rawNegatedFailureMessage, Array(prettyPair.left, prettyPair.right))
   }
 
   override def midSentenceNegatedFailureMessage(implicit prettifier: Prettifier): String = {
-    val p = Prettifier.withEscapingDiffer
+    val p = Prettifier.withEscapingDiffer(prettifier)
     val prettyPair = p(midSentenceNegatedFailureMessageArgs(0), midSentenceNegatedFailureMessageArgs(1))
     atomicAnalysis.getAndSet(prettyPair.analysis)
     Resources.formatString(rawMidSentenceNegatedFailureMessage, Array(prettyPair.left, prettyPair.right))
