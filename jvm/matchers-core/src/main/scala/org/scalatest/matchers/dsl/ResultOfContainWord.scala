@@ -441,8 +441,11 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   // SKIP-DOTTY-START 
   def value(expectedValue: Any)(implicit valueMapping: ValueMapping[L]): Assertion = {
   // SKIP-DOTTY-END  
-    if (valueMapping.containsValue(left, expectedValue) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainValue(prettifier, left, expectedValue) else FailureMessages.containedValue(prettifier, left, expectedValue), None, pos)
+    if (valueMapping.containsValue(left, expectedValue) != shouldBeTrue) {
+      val p = Prettifier.withEscapingDiffer(prettifier)
+      val prettyPair = p(left, expectedValue)
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainValue(prettifier, left, expectedValue) else FailureMessages.containedValue(prettifier, left, expectedValue), None, pos, prettyPair.analysis)
+    }
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedValue(prettifier, left, expectedValue), FailureMessages.didNotContainValue(prettifier, left, expectedValue))
   }
