@@ -321,15 +321,22 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.allOfDuplicate, pos)
-    if (aggregating.containsAllOf(left, right) != shouldBeTrue)
-      indicateFailure(
-        if (shouldBeTrue)
-          FailureMessages.didNotContainAllOfElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+    if (aggregating.containsAllOf(left, right) != shouldBeTrue) {
+      val (message: String, analysis: Option[String]) = 
+        if (shouldBeTrue) { 
+          val p = Prettifier.withEscapingDiffer(prettifier)
+          val prettyPair = p(left, right)
+          (FailureMessages.didNotContainAllOfElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), prettyPair.analysis)
+        }
         else
-          FailureMessages.containedAllOfElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+          (FailureMessages.containedAllOfElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), None)
+      indicateFailure(
+        message,
         None,
-        pos
+        pos, 
+        analysis
       )
+    }
     else
       indicateSuccess(
         shouldBeTrue,
