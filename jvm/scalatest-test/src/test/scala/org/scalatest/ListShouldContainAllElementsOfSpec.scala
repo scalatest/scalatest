@@ -87,7 +87,7 @@ class ListShouldContainAllElementsOfSpec extends AnyFunSpec {
       it("should allow RHS to contain duplicated value") {
         fumList should contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum")
       }
-      it("should throw NotAllowedException with analysis showing escaped string") {
+      it("should throw TestFailedException with analysis showing escaped string") {
         val e1 = intercept[exceptions.TestFailedException] {
           ecList should contain allElementsOf Seq("fee", "fie", "foe", "fam")
         }
