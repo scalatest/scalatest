@@ -92,7 +92,7 @@ class ListShouldContainAllOfSpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.allOfDuplicate))
       }
-      it("should throw NotAllowedException with analysis showing escaped string") {
+      it("should throw TestFailedException with analysis showing escaped string") {
         val e1 = intercept[exceptions.TestFailedException] {
           ecList should contain allOf ("fee", "fie", "foe", "fam")
         }
