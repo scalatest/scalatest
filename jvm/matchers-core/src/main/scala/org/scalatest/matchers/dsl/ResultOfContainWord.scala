@@ -358,8 +358,11 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
     val right = elements.toList
-    if (aggregating.containsAllOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAllElementsOf(prettifier, left, right) else FailureMessages.containedAllElementsOf(prettifier, left, right), None, pos)
+    if (aggregating.containsAllOf(left, right.distinct) != shouldBeTrue) {
+      val p = Prettifier.withEscapingDiffer(prettifier)
+      val prettyPair = p(left, right)
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAllElementsOf(prettifier, left, right) else FailureMessages.containedAllElementsOf(prettifier, left, right), None, pos, prettyPair.analysis)
+    }
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedAllElementsOf(prettifier, left, right), FailureMessages.didNotContainAllElementsOf(prettifier, left, right))
   }
