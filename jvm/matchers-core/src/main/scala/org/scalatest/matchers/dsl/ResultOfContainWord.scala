@@ -517,13 +517,16 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   // SKIP-DOTTY-END  
     val right = elements.toList
     if (aggregating.containsAtMostOneOf(left, right.distinct) != shouldBeTrue) {
+      val p = Prettifier.withEscapingDiffer(prettifier)
+      val prettyPair = p(left, right)
       indicateFailure(
         if (shouldBeTrue)
           FailureMessages.didNotContainAtMostOneElementOf(prettifier, left, right)
         else
           FailureMessages.containedAtMostOneElementOf(prettifier, left, right),
         None,
-        pos
+        pos, 
+        prettyPair.analysis
       )
     }
     else
