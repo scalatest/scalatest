@@ -160,15 +160,19 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.noneOfDuplicate, pos)
-    if (containing.containsNoneOf(left, right) != shouldBeTrue)
+    if (containing.containsNoneOf(left, right) != shouldBeTrue) {
+      val p = Prettifier.withEscapingDiffer(prettifier)
+      val prettyPair = p(left, right)
       indicateFailure(
         if (shouldBeTrue)
           FailureMessages.containedAtLeastOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
         else
           FailureMessages.didNotContainAtLeastOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
         None,
-        pos
+        pos, 
+        prettyPair.analysis
       )
+    }
     else
       indicateSuccess(
         shouldBeTrue,

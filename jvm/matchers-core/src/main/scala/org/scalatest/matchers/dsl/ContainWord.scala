@@ -368,10 +368,11 @@ final class ContainWord {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               containing.containsNoneOf(left, right),
               Resources.rawContainedAtLeastOneOf,
               Resources.rawDidNotContainAtLeastOneOf,
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), 
               Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
