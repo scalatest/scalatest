@@ -482,15 +482,19 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, pos)
-    if (aggregating.containsAtMostOneOf(left, right) != shouldBeTrue)
+    if (aggregating.containsAtMostOneOf(left, right) != shouldBeTrue) {
+      val p = Prettifier.withEscapingDiffer(prettifier)
+      val prettyPair = p(left, right)
       indicateFailure(
         if (shouldBeTrue)
           FailureMessages.didNotContainAtMostOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
         else
           FailureMessages.containedAtMostOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
         None,
-        pos
+        pos, 
+        prettyPair.analysis
       )
+    }
     else
       indicateSuccess(
         shouldBeTrue,
@@ -512,7 +516,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def atMostOneElementOf[R](elements: Iterable[R])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
     val right = elements.toList
-    if (aggregating.containsAtMostOneOf(left, right.distinct) != shouldBeTrue)
+    if (aggregating.containsAtMostOneOf(left, right.distinct) != shouldBeTrue) {
       indicateFailure(
         if (shouldBeTrue)
           FailureMessages.didNotContainAtMostOneElementOf(prettifier, left, right)
@@ -521,6 +525,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
         None,
         pos
       )
+    }
     else
       indicateSuccess(
         shouldBeTrue,
