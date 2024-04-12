@@ -318,10 +318,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsAtLeastOneOf(left, right),
               Resources.rawDidNotContainAtLeastOneOf,
               Resources.rawContainedAtLeastOneOf,
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), 
               Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
@@ -341,10 +342,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsAtLeastOneOf(left, right),
               Resources.rawDidNotContainAtLeastOneElementOf,
               Resources.rawContainedAtLeastOneElementOf,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
@@ -534,10 +536,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsAllOf(left, right.distinct),
               Resources.rawDidNotContainAllElementsOf,
               Resources.rawContainedAllElementsOf,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
@@ -559,10 +562,11 @@ final class ContainWord {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               sequencing.containsInOrder(left, right),
               Resources.rawDidNotContainAllOfElementsInOrder,
               Resources.rawContainedAllOfElementsInOrder,
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), 
               Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
@@ -582,10 +586,11 @@ final class ContainWord {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               sequencing.containsInOrder(left, right.distinct),
               Resources.rawDidNotContainAllElementsOfInOrder,
               Resources.rawContainedAllElementsOfInOrder,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
@@ -607,10 +612,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsAtMostOneOf(left, right),
               Resources.rawDidNotContainAtMostOneOf,
               Resources.rawContainedAtMostOneOf,
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), 
               Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
@@ -630,10 +636,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsAtMostOneOf(left, right.distinct),
               Resources.rawDidNotContainAtMostOneElementOf,
               Resources.rawContainedAtMostOneElementOf,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
