@@ -126,6 +126,12 @@ class ListShouldContainInOrderElementsOfSpec extends AnyFunSpec with Matchers {
       it("should do nothing when RHS contain duplicated value") {
         fumList should (contain inOrderElementsOf Seq("fum", "fum", "foe", "fie", "fum"))
       }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should (contain inOrderElementsOf Seq("fee", "fie", "foe", "fum"))
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fex\""))
+      }
     }
 
     describe("when used with not contain inOrderElementsOf Seq(..)") {

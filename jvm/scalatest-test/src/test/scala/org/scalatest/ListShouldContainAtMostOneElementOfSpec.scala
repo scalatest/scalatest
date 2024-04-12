@@ -129,6 +129,12 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
       it("should do nothing when RHS contain duplicated value") {
         fumList should (contain atMostOneElementOf Seq("fee", "fie", "foe", "fie", "fam"))
       }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should (contain atMostOneElementOf Seq("fee", "fie", "foe", "fum"))
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fix\""))
+      }
     }
 
     describe("when used with not contain atMostOneElementOf Seq(...) syntax") {
