@@ -194,8 +194,11 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
   // SKIP-DOTTY-END  
     val right = elements.toList
-    if (containing.containsNoneOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.containedAtLeastOneElementOf(prettifier, left, right) else FailureMessages.didNotContainAtLeastOneElementOf(prettifier, left, right), None, pos)
+    if (containing.containsNoneOf(left, right.distinct) != shouldBeTrue) {
+      val p = Prettifier.withEscapingDiffer(prettifier)
+      val prettyPair = p(left, right)
+      indicateFailure(if (shouldBeTrue) FailureMessages.containedAtLeastOneElementOf(prettifier, left, right) else FailureMessages.didNotContainAtLeastOneElementOf(prettifier, left, right), None, pos, prettyPair.analysis)
+    }
     else
       indicateSuccess(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(prettifier, left, right), FailureMessages.containedAtLeastOneElementOf(prettifier, left, right))
   }
