@@ -222,8 +222,11 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   // SKIP-DOTTY-START 
   def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[L]): Assertion = {
   // SKIP-DOTTY-END  
-    if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElements(prettifier, left, right) else FailureMessages.containedSameElements(prettifier, left, right), None, pos)
+    if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue) {
+      val p = Prettifier.withEscapingDiffer(prettifier)
+      val prettyPair = p(left, right)
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElements(prettifier, left, right) else FailureMessages.containedSameElements(prettifier, left, right), None, pos, prettyPair.analysis)
+    }
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedSameElements(prettifier, left, right), FailureMessages.didNotContainSameElements(prettifier, left, right))
   }
