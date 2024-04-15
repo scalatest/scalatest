@@ -53,6 +53,7 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
 
     val fumList: Every[String] = Every("fum", "foe", "fie", "fee")
     val toList: Every[String] = Every("happy", "birthday", "to", "you")
+    val ecList: Every[String] = Every("\u0000fum", "foe", "fie", "fee")
 
     describe("when used with contain theSameElementsInOrderAs (..)") {
 
@@ -81,6 +82,12 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
           fumList should contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ")
         }
         (fumList should contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE ")) (after being lowerCased and trimmed)
+      }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum")
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fum\""))
       }
     }
 
@@ -112,6 +119,12 @@ class EveryShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
           fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))
         }
         (fumList should (contain theSameElementsInOrderAs ListBuffer(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
+      }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fum\""))
       }
     }
 

@@ -440,10 +440,11 @@ final class ContainWord {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               sequencing.containsTheSameElementsInOrderAs(left, right),
               Resources.rawDidNotContainSameElementsInOrder,
               Resources.rawContainedSameElementsInOrder,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
