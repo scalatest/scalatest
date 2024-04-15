@@ -55,6 +55,7 @@ class ListShouldContainInOrderOnlySpec extends AnyFunSpec {
 
     val fumList: List[String] = List("fum", "fum", "foe", "fie", "fie", "fie", "fee", "fee")
     val toList: List[String] = List("happy", "happy", "happy", "birthday", "to", "you")
+    val ecList: List[String] = List("\u0000fum", "fum", "foe", "fie", "fie", "fie", "fee", "fee")
 
     describe("when used with contain inOrderOnly (..)") {
 
@@ -92,6 +93,12 @@ class ListShouldContainInOrderOnlySpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.inOrderOnlyDuplicate))
       }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should contain inOrderOnly ("fee", "fie", "foe", "fum")
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fum\""))
+      }
     }
 
     describe("when used with (contain inOrderOnly (..))") {
@@ -128,6 +135,12 @@ class ListShouldContainInOrderOnlySpec extends AnyFunSpec {
         e1.failedCodeFileName.get should be ("ListShouldContainInOrderOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.inOrderOnlyDuplicate))
+      }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should (contain inOrderOnly ("fee", "fie", "foe", "fum"))
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fum\""))
       }
     }
 
