@@ -316,15 +316,19 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, pos)
-    if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue)
+    if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue) {
+      val p = Prettifier.withEscapingDiffer(prettifier)
+      val prettyPair = p(left, right)
       indicateFailure(
         if (shouldBeTrue)
           FailureMessages.didNotContainInOrderOnlyElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
         else
           FailureMessages.containedInOrderOnlyElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
         None,
-        pos
+        pos, 
+        prettyPair.analysis
       )
+    }
     else
       indicateSuccess(
         shouldBeTrue,
