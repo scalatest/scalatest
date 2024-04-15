@@ -655,7 +655,6 @@ trait NativeBuild { this: BuildCommons =>
       organization := "org.scalactic",
       testOptions in Test ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
-      nativeLinkStubs in Test := true,
       sourceGenerators in Test += {
         Def.task {
           GenScalacticNative.genTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
