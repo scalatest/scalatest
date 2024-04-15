@@ -289,7 +289,7 @@ trait DottyBuild { this: BuildCommons =>
       initialCommands in console := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.1.0", 
+      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.3.0",
       libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion).withDottyCompat(dottyVersion), 
       packageManagedSources,
       sourceGenerators in Compile += Def.task {
@@ -365,7 +365,7 @@ trait DottyBuild { this: BuildCommons =>
       initialCommands in console := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.1.0", 
+      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.3.0",
       libraryDependencies += ("org.scala-native" %%% "test-interface" % nativeVersion),
       packageManagedSources,
       sourceGenerators in Compile += Def.task {
