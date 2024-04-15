@@ -53,6 +53,7 @@ class EveryShouldContainOnlySpec extends AnyFunSpec {
 
     val fumList: Every[String] = Every("fum", "foe", "fie", "fee")
     val toList: Every[String] = Every("you", "to", "birthday", "happy")
+    val ecList: Every[String] = Every("\u0000fum", "foe", "fie", "fee")
 
     describe("when used with contain only (..)") {
 
@@ -114,6 +115,12 @@ class EveryShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.didNotContainOnlyElementsWithFriendlyReminder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Many("happy", "birthday", "to", "you"))))
+      }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should contain only ("happy", "birthday", "to", "you")
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fum\""))
       }
     }
 
@@ -178,6 +185,12 @@ class EveryShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOnlySpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message.get should be (Resources.didNotContainOnlyElementsWithFriendlyReminder(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, Many("happy", "birthday", "to", "you"))))
+      }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should (contain only ("happy", "birthday", "to", "you"))
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fum\""))
       }
     }
 
