@@ -233,6 +233,10 @@ class ShouldContainValueSpec extends AnyFunSpec with ReturnsNormallyThrowsAssert
           Map(b -> a) should contain value (b)
         }
         e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
+        val e2 = intercept[TestFailedException] {
+          Map(b -> a) should (contain value (b))
+        }
+        e2.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
       }
     }
 
@@ -398,6 +402,10 @@ class ShouldContainValueSpec extends AnyFunSpec with ReturnsNormallyThrowsAssert
           mutable.Map(b -> a) should contain value (b)
         }
         e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
+        val e2 = intercept[TestFailedException] {
+          mutable.Map(b -> a) should (contain value (b))
+        }
+        e2.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
       }
     }
 
@@ -550,6 +558,10 @@ class ShouldContainValueSpec extends AnyFunSpec with ReturnsNormallyThrowsAssert
           scala.collection.Map(b -> a) should contain value (b)
         }
         e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
+        val e2 = intercept[TestFailedException] {
+          scala.collection.Map(b -> a) should (contain value (b))
+        }
+        e2.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
       }
     }
 
@@ -703,6 +715,10 @@ class ShouldContainValueSpec extends AnyFunSpec with ReturnsNormallyThrowsAssert
           HashMap(b -> a) should contain value (b)
         }
         e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
+        val e2 = intercept[TestFailedException] {
+          HashMap(b -> a) should (contain value (b))
+        }
+        e2.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
       }
     }
 
@@ -868,6 +884,10 @@ class ShouldContainValueSpec extends AnyFunSpec with ReturnsNormallyThrowsAssert
           mutable.HashMap(b -> a) should contain value (b)
         }
         e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
+        val e2 = intercept[TestFailedException] {
+          mutable.HashMap(b -> a) should (contain value (b))
+        }
+        e2.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
       }
     }
 
@@ -1035,6 +1055,12 @@ class ShouldContainValueSpec extends AnyFunSpec with ReturnsNormallyThrowsAssert
           jMap should contain value (b)
         }
         e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
+        val e2 = intercept[TestFailedException] {
+          val jMap: java.util.Map[String, String] = new java.util.HashMap
+          jMap.put(b, a)
+          jMap should (contain value (b))
+        }
+        e2.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
       }
     }
     // SKIP-SCALATESTJS,NATIVE-END
