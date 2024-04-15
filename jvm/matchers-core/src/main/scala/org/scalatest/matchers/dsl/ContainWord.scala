@@ -417,10 +417,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsTheSameElementsAs(left, right),
               Resources.rawDidNotContainSameElements,
               Resources.rawContainedSameElements,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
