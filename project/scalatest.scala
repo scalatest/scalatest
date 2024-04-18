@@ -158,7 +158,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
       case _ => // for scala 2.11, 2.12, 2.13 and 3.x
         Seq(
-          "org.scala-lang.modules" %%% "scala-parser-combinators" % "2.1.1"
+          "org.scala-lang.modules" %%% "scala-parser-combinators" % "2.4.0"
         )
     }
   }
