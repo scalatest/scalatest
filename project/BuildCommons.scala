@@ -4,7 +4,6 @@ import java.io.PrintWriter
 import scala.io.Source
 
 import scalanative.sbtplugin.ScalaNativePlugin
-import ScalaNativePlugin.autoImport.{nativeLinkStubs, nativeDump}
 
 trait BuildCommons {
 
@@ -15,7 +14,7 @@ trait BuildCommons {
 
   val runFlickerTests = Option(System.getenv("SCALATEST_RUN_FLICKER_TESTS")).getOrElse("FALSE").toUpperCase == "TRUE"
 
-  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.8.0")
+  val scalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.16.0")
   def scalatestJSLibraryDependencies =
     Seq(
       "org.scala-js" %% "scalajs-test-interface" % scalaJSVersion
@@ -249,7 +248,7 @@ trait BuildCommons {
       case Some((2, 10)) => Seq.empty
       case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
       case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.1.0"))
+        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.3.0"))
     }
   }    
 
@@ -259,8 +258,6 @@ trait BuildCommons {
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
       fork in test := false,
-      nativeLinkStubs in Test := true,
-      nativeDump in Test := false, 
       testOptions in Test := scalatestTestJSNativeOptions,
       publishArtifact := false,
       publish := {},
