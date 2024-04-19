@@ -133,7 +133,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       case Some((2, 10)) => Seq.empty
       case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
       case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.3.0"))
+        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.1.0"))
     }
 
   def scalaLibraries(theScalaVersion: String) =
@@ -156,9 +156,14 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       case Some((2, scalaMajor)) if scalaMajor == 10 =>
         Seq.empty
 
-      case _ => // for scala 2.11, 2.12, 2.13 and 3.x
+      case Some((3, _)) => // for scala 3.x
         Seq(
           "org.scala-lang.modules" %%% "scala-parser-combinators" % "2.4.0"
+        )
+
+      case _ => // for scala 2.11, 2.12, 2.13
+        Seq(
+          "org.scala-lang.modules" %%% "scala-parser-combinators" % "2.1.1"
         )
     }
   }
