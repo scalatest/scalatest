@@ -402,7 +402,12 @@ private[scalactic] class EscapingStringDiffer extends Differ {
         case (s1: scala.collection.Iterable[_], s2: scala.collection.Iterable[_]) => 
           differenceForIterable(s1, s2, prettifier)  
         case (s1: Array[_], s2: String) => 
-          differenceForIterable(s1, s2, prettifier)  
+          differenceForIterable(s1, s2, prettifier)
+        case (s1: Array[_], s2: Any) if s2.getClass.getName == "org.scalatest.UnquotedString" || 
+                                        s2.getClass.getName == "org.scalactic.UnquotedString" => 
+          differenceForIterable(s1, s2.toString, prettifier)  
+        case (s1: Array[_], s2: scala.collection.Iterable[_]) => 
+          differenceForIterable(s1, s2, prettifier)      
         case (s1: Every[_], s2: String) => 
           differenceForIterable(s1.toIterable, s2, prettifier)
         case (s1: Every[_], s2: Any) if s2.getClass.getName == "org.scalatest.UnquotedString" || 
