@@ -1949,5 +1949,21 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     transform(itr, 0, builder)
     builder.toString
   }
+
+  def escapedString(s: String): String = {
+    def escapedChar(c: Char): String = (c: @scala.annotation.switch) match {
+      case '\b' => raw"\b"
+      case '\t' => raw"\t"
+      case '\n' => raw"\n"
+      case '\f' => raw"\f"
+      case '\r' => raw"\r"
+      case '"'  => "\\\"" // raw"\"" Scala 2.11 compatible
+      case '\'' => raw"\'"
+      case '\\' => raw"\\"
+      case _    => if (c.isControl) "\\u%04X".format(c.toInt) else String.valueOf(c)
+    }
+    if (s.exists(c => c.isControl || c == '\\')) s.flatMap(escapedChar)
+    else s
+  }
 }
 

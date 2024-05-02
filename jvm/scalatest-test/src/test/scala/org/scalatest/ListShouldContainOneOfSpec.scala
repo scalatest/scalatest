@@ -28,7 +28,7 @@ import org.scalatest.matchers.should.Matchers
 class ListShouldContainOneOfSpec extends AnyFunSpec with Matchers {
 
   private val prettifier = Prettifier.default
-
+  
   val upperCaseEquality =
     new Equality[String] {
       def areEqual(a: String, b: Any): Boolean = a.toUpperCase == b
@@ -140,7 +140,7 @@ class ListShouldContainOneOfSpec extends AnyFunSpec with Matchers {
         val e1 = intercept[exceptions.TestFailedException] {
           ecList should (contain oneOf ("happy", "birthday", "to", "you"))
         }
-        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fum\""))
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000fum"))))
       }
     }
 
