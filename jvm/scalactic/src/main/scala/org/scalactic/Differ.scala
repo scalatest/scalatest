@@ -389,6 +389,26 @@ private[scalactic] class EscapingStringDiffer extends Differ {
       }
     }
   }
+  private def differenceForMap(map: scala.collection.GenMap[_, _], itr2: Iterable[_], prettifier: Prettifier): Option[String] = {
+    val limit = Differ.prettifierLimit(prettifier).getOrElse(map.size)
+    map.take(limit).find { case (k, v) => 
+      val kEscaped = escapeString(k)
+      val vEscaped = escapeString(v)
+      (k, v) != (kEscaped, vEscaped)
+    }.map { case (k, v) => 
+      Resources.lhsContainsAtLeastOneEntryWithCharactersThatMightCauseProblem(prettifier(escapeString(k)) + " -> " + prettifier(escapeString(v)))
+    } match {
+      case Some(analysis) => Some(analysis)
+      case None => 
+        val limit2 = Differ.prettifierLimit(prettifier).getOrElse(itr2.size)
+        itr2.take(limit2).find { e => 
+          val eEscaped = escapeString(e)
+          e != eEscaped
+        }.map { e => 
+          Resources.rhsContainsAtLeastOneStringWithCharactersThatMightCauseProblem(prettifier(escapeString(e)))
+        } 
+    }
+  }
   def difference(a: Any, b: Any, prettifier: Prettifier): PrettyPair = {
     val escapingAnalysis = 
       (a, b) match {
@@ -414,10 +434,13 @@ private[scalactic] class EscapingStringDiffer extends Differ {
                                                             s2.getClass.getName == "org.scalactic.UnquotedString" => 
           differenceForIterable(s1.toIterable, s2.toString, prettifier)
         case (s1: Every[_], s2: scala.collection.Iterable[_]) => 
-          differenceForIterable(s1.toIterable, s2, prettifier)    
+          differenceForIterable(s1.toIterable, s2, prettifier)     
         case (s1: java.util.Map[_, _], s2: String) => 
           import scala.collection.JavaConverters._
           differenceForMap(s1.asScala, s2, prettifier)
+        case (s1: java.util.Map[_, _], s2: scala.collection.Iterable[_]) => 
+          import scala.collection.JavaConverters._
+          differenceForMap(s1.asScala, s2, prettifier)  
         case _ => None
       }
     escapingAnalysis match {
