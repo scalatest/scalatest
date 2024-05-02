@@ -1054,13 +1054,13 @@ class ShouldContainValueSpec extends AnyFunSpec with ReturnsNormallyThrowsAssert
           jMap.put(b, a)
           jMap should contain value (b)
         }
-        e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
+        e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\"=\"\\u0000test\""))
         val e2 = intercept[TestFailedException] {
           val jMap: java.util.Map[String, String] = new java.util.HashMap
           jMap.put(b, a)
           jMap should (contain value (b))
         }
-        e2.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\" -> \"\\u0000test\""))
+        e2.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"test\"=\"\\u0000test\""))
       }
     }
     // SKIP-SCALATESTJS,NATIVE-END

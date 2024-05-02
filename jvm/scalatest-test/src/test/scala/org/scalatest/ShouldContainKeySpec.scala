@@ -1031,7 +1031,7 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
           jMap.put(a, b)
           jMap should contain key (b)
         }
-        e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"\\u0000test\" -> \"test\""))
+        e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"\\u0000test\"=\"test\""))
       }
     }
     // SKIP-SCALATESTJS,NATIVE-END

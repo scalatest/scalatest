@@ -547,9 +547,11 @@ class GenContainBase {
       "\\(\\\"howdy\\\", \\\"hello\\\", \\\"hi\\\"\\)" -> "(Entry(\"howdy\", \"howdy\"), Entry(\"hello\", \"hello\"), Entry(\"hi\", \"hi\"))",
       "\\(\\\"fum\\\", \\\"foe\\\"\\)" -> "(Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"))",
       "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "(Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"))",
-      "escapedString\\(\\\"\\\\u0000fum\\\"\\)" -> "Entry(\"\\\\u0000fum\", \"\\\\u0000fum\")",
       "\\(\\\"fum\\\"\\)" -> "(Entry(\"fum\", \"fum\"))",
       "\\(\\\"\\\\u0000fum\\\"\\)" -> "(Entry(\"\\\\u0000fum\", \"\\\\u0000fum\"))",
+      "\\(\\\"\\\\u0000fex\\\"\\)" -> "(Entry(\"\\\\u0000fex\", \"\\\\u0000fex\"))",
+      "escapedString\\(Entry\\(\"\\\\u0000fum\\\", \"\\\\u0000fum\\\"\\)\\)" -> "Entry(prettifier(escapedString(\"\\\\u0000fum\")), prettifier(escapedString(\"\\\\u0000fum\")))",
+      "escapedString\\(Entry\\(\"\\\\u0000fex\\\", \"\\\\u0000fex\\\"\\)\\)" -> "Entry(prettifier(escapedString(\"\\\\u0000fex\")), prettifier(escapedString(\"\\\\u0000fex\")))",
       "\\(\\\"hi\\\"\\)" -> "(Entry(\"hi\", \"hi\"))",
       "\\(\\\"hi\\\", \\\"he\\\"\\)" -> "(Entry(\"hi\", \"hi\"), Entry(\"he\", \"he\"))",
       "\\(\\\"ho\\\", \\\"he\\\"\\)" -> "(Entry(\"ho\", \"ho\"), Entry(\"he\", \"he\"))",
@@ -783,7 +785,8 @@ class GenContainBase {
       "List" -> "javaMap",
       "listsNil" -> "listsMap",
       "Nil" -> "javaMap()",
-      "LinkedjavaMap" -> "ListBuffer"
+      "LinkedjavaMap" -> "ListBuffer", 
+      "LHS contains at least one string with characters that might cause problem" -> "LHS contains at least one entry with characters that might cause problem",
     )
 
   val sortedJavaMapMapping =
