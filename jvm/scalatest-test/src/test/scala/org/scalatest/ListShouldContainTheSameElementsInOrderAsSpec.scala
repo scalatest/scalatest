@@ -89,7 +89,7 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         val e1 = intercept[exceptions.TestFailedException] {
           ecList should contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum")
         }
-        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fum\""))
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000fum"))))
       }
     }
 
@@ -126,7 +126,7 @@ class ListShouldContainTheSameElementsInOrderAsSpec extends AnyFunSpec {
         val e1 = intercept[exceptions.TestFailedException] {
           ecList should (contain theSameElementsInOrderAs ListBuffer("fee", "fie", "foe", "fum"))
         }
-        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fum\""))
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000fum"))))
       }
     }
 
