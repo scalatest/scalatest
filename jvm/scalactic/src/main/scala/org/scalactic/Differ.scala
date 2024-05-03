@@ -469,7 +469,14 @@ private[scalactic] class EscapingStringDiffer extends Differ {
                                                             s2.getClass.getName == "org.scalactic.UnquotedString" => 
           differenceForIterable(s1.toIterable, s2.toString, prettifier)
         case (s1: Every[_], s2: scala.collection.Iterable[_]) => 
-          differenceForIterable(s1.toIterable, s2, prettifier)     
+          differenceForIterable(s1.toIterable, s2, prettifier)
+        case (s1: java.util.Collection[_], s2: scala.collection.Iterable[_]) => 
+          import scala.collection.JavaConverters._
+          differenceForIterable(s1.asScala, s2, prettifier)
+        case (s1: java.util.Collection[_], s2: Any) if s2.getClass.getName == "org.scalatest.UnquotedString" || 
+                                                            s2.getClass.getName == "org.scalactic.UnquotedString" => 
+          import scala.collection.JavaConverters._
+          differenceForIterable(s1.asScala, s2.toString, prettifier)       
         case (s1: java.util.Map[_, _], s2: String) => 
           import scala.collection.JavaConverters._
           differenceForJavaMap(s1.asScala, s2, prettifier)
