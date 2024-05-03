@@ -449,6 +449,11 @@ private[scalactic] class EscapingStringDiffer extends Differ {
       (a, b) match {
         case (s1: scala.collection.GenMap[_, _], s2: String) => 
           differenceForMap(s1, s2, prettifier)
+        case (s1: scala.collection.GenMap[_, _], s2: scala.collection.Iterable[_]) => 
+          differenceForMap(s1, s2, prettifier)  
+        case (s1: scala.collection.GenMap[_, _], s2: Any) if s2.getClass.getName == "org.scalatest.UnquotedString" || 
+                                                            s2.getClass.getName == "org.scalactic.UnquotedString" => 
+          differenceForMap(s1, s2.toString, prettifier)  
         case (s1: scala.collection.Iterable[_], s2: String) => 
           differenceForIterable(s1, s2, prettifier)
         case (s1: scala.collection.Iterable[_], s2: Any) if s2.getClass.getName == "org.scalatest.UnquotedString" || 
@@ -469,7 +474,7 @@ private[scalactic] class EscapingStringDiffer extends Differ {
                                                             s2.getClass.getName == "org.scalactic.UnquotedString" => 
           differenceForIterable(s1.toIterable, s2.toString, prettifier)
         case (s1: Every[_], s2: scala.collection.Iterable[_]) => 
-          differenceForIterable(s1.toIterable, s2, prettifier)
+          differenceForIterable(s1.toIterable, s2, prettifier)  
         case (s1: java.util.Collection[_], s2: scala.collection.Iterable[_]) => 
           import scala.collection.JavaConverters._
           differenceForIterable(s1.asScala, s2, prettifier)
