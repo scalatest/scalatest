@@ -525,7 +525,7 @@ class GenContainBase {
       "\\(\\\"fee\\\", \\\"fie\\\", \\\"fum\\\", \\\"foe\\\"\\)" -> "(Entry(\"fee\", \"fee\"), Entry(\"fie\", \"fie\"), Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"))",
       "\\(\\\"fie\\\", \\\"fee\\\", \\\"fam\\\", \\\"foe\\\"\\)" -> "(Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"), Entry(\"fam\", \"fam\"), Entry(\"foe\", \"foe\"))",
       "\\(\\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fee\\\"\\)" -> "(Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"))",
-      "\\(\\\"\\\\u0000fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fee\\\"\\)" -> "(Entry(\"\\u0000fum\", \"\\u0000fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"))",
+      "\\(\\\"\\\\u0000fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fee\\\"\\)" -> "(Entry(\"\\\\u0000fum\", \"\\\\u0000fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"))",
       "\\(\\\"fex\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fee\\\"\\)" -> "(Entry(\"fex\", \"fex\"), Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"))",
       "\\(\\\"\\\\u0000fex\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fee\\\"\\)" -> "(Entry(\"\\u0000fex\", \"\\u0000fex\"), Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"))",
       "\\(\\\"fex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\"\\)" -> "(Entry(\"fex\", \"fex\"), Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"))",
