@@ -233,6 +233,7 @@ class GenContainBase {
       "\\(\\\"fex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "(\"fex\" -> \"fex\", \"fum\" -> \"fum\", \"fum\" -> \"fum\", \"foe\" -> \"foe\", \"fie\" -> \"fie\", \"fee\" -> \"fee\", \"fee\" -> \"fee\", \"fee\" -> \"fee\")",
       "\\(\\\"fex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "(\"fex\" -> \"fex\", \"fum\" -> \"fum\", \"fum\" -> \"fum\", \"foe\" -> \"foe\", \"fie\" -> \"fie\", \"fie\" -> \"fie\", \"fie\" -> \"fie\", \"fee\" -> \"fee\", \"fee\" -> \"fee\")",
       "\\(\\\"\\\\u0000fex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "(\"\\\\u0000fex\" -> \"\\\\u0000fex\", \"fum\" -> \"fum\", \"fum\" -> \"fum\", \"foe\" -> \"foe\", \"fie\" -> \"fie\", \"fie\" -> \"fie\", \"fie\" -> \"fie\", \"fee\" -> \"fee\", \"fee\" -> \"fee\")",
+      "\\(\\\"\\\\u0000feex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "(\"\\\\u0000feex\" -> \"\\\\u0000feex\", \"fum\" -> \"fum\", \"fum\" -> \"fum\", \"foe\" -> \"foe\", \"fie\" -> \"fie\", \"fie\" -> \"fie\", \"fie\" -> \"fie\", \"fee\" -> \"fee\", \"fee\" -> \"fee\")",
       "\\(\\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\"\\)" -> "(\"fum\" -> \"fum\", \"fum\" -> \"fum\", \"foe\" -> \"foe\", \"fie\" -> \"fie\", \"fie\" -> \"fie\", \"fee\" -> \"fee\")",
       "\\(\\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "(\"fum\" -> \"fum\", \"fum\" -> \"fum\", \"foe\" -> \"foe\", \"fie\" -> \"fie\", \"fee\" -> \"fee\", \"fee\" -> \"fee\", \"fee\" -> \"fee\")",
       "\\(\\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "(\"fum\" -> \"fum\", \"fum\" -> \"fum\", \"foe\" -> \"foe\", \"fie\" -> \"fie\", \"fie\" -> \"fie\", \"fie\" -> \"fie\", \"fee\" -> \"fee\", \"fee\" -> \"fee\")",
@@ -252,6 +253,7 @@ class GenContainBase {
       "prettifier\\(escapedString\\(\"\\\\u0000fum\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000fum\")) + \" -> \" + prettifier(escapedString(\"\\\\u0000fum\"))",
       "prettifier\\(escapedString\\(\"\\\\u0000fix\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000fix\")) + \" -> \" + prettifier(escapedString(\"fix\"))",
       "prettifier\\(escapedString\\(\"\\\\u0000fex\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000fex\")) + \" -> \" + prettifier(escapedString(\"\\\\u0000fex\"))",
+      "prettifier\\(escapedString\\(\"\\\\u0000feex\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000feex\")) + \" -> \" + prettifier(escapedString(\"\\\\u0000feex\"))",
       "\\(\\\"hi\\\"\\)" -> "(\"hi\" -> \"hi\")",
       "\\(\\\"hi\\\", \\\"he\\\"\\)" -> "(\"hi\" -> \"hi\", \"he\" -> \"he\")",
       "\\(\\\"hi\\\", \\\"ho\\\"\\)" -> "(\"hi\" -> \"hi\", \"ho\" -> \"ho\")",
@@ -536,6 +538,7 @@ class GenContainBase {
       "\\(\\\"fex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "(Entry(\"fex\", \"fex\"), Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"), Entry(\"fee\", \"fee\"), Entry(\"fee\", \"fee\"))",
       "\\(\\\"fex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "(Entry(\"fex\", \"fex\"), Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fie\", \"fie\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"), Entry(\"fee\", \"fee\"))",
       "\\(\\\"\\\\u0000fex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "(Entry(\"\\\\u0000fex\", \"\\\\u0000fex\"), Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fie\", \"fie\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"), Entry(\"fee\", \"fee\"))",
+      "\\(\\\"\\\\u0000feex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "(Entry(\"\\\\u0000feex\", \"\\\\u0000feex\"), Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fie\", \"fie\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"), Entry(\"fee\", \"fee\"))",
       "\\(\\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\"\\)" -> "(Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"))",
       "\\(\\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "(Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"), Entry(\"fee\", \"fee\"), Entry(\"fee\", \"fee\"))",
       "\\(\\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "(Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"), Entry(\"fie\", \"fie\"), Entry(\"fie\", \"fie\"), Entry(\"fie\", \"fie\"), Entry(\"fee\", \"fee\"), Entry(\"fee\", \"fee\"))",
@@ -554,9 +557,11 @@ class GenContainBase {
       "\\(\\\"fum\\\"\\)" -> "(Entry(\"fum\", \"fum\"))",
       "\\(\\\"\\\\u0000fum\\\"\\)" -> "(Entry(\"\\\\u0000fum\", \"\\\\u0000fum\"))",
       "\\(\\\"\\\\u0000fex\\\"\\)" -> "(Entry(\"\\\\u0000fex\", \"\\\\u0000fex\"))",
+      "\\(\\\"\\\\u0000feex\\\"\\)" -> "(Entry(\"\\\\u0000feex\", \"\\\\u0000feex\"))",
       "\\(\\\"\\\\u0000fix\\\"\\)" -> "(Entry(\"\\\\u0000fix\", \"\\\\u0000fix\"))",
       "escapedString\\(Entry\\(\"\\\\u0000fum\\\", \"\\\\u0000fum\\\"\\)\\)" -> "Entry(prettifier(escapedString(\"\\\\u0000fum\")), prettifier(escapedString(\"\\\\u0000fum\")))",
       "escapedString\\(Entry\\(\"\\\\u0000fex\\\", \"\\\\u0000fex\\\"\\)\\)" -> "Entry(prettifier(escapedString(\"\\\\u0000fex\")), prettifier(escapedString(\"\\\\u0000fex\")))",
+      "escapedString\\(Entry\\(\"\\\\u0000feex\\\", \"\\\\u0000feex\\\"\\)\\)" -> "Entry(prettifier(escapedString(\"\\\\u0000feex\")), prettifier(escapedString(\"\\\\u0000feex\")))",
       "escapedString\\(Entry\\(\"\\\\u0000fix\\\", \"\\\\u0000fix\\\"\\)\\)" -> "Entry(prettifier(escapedString(\"\\\\u0000fix\")), prettifier(escapedString(\"\\\\u0000fix\")))",
       "\\(\\\"hi\\\"\\)" -> "(Entry(\"hi\", \"hi\"))",
       "\\(\\\"hi\\\", \\\"he\\\"\\)" -> "(Entry(\"hi\", \"hi\"), Entry(\"he\", \"he\"))",
@@ -891,7 +896,7 @@ class GenContainBase {
       "List\\(\\\"fex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\"\\)" -> "\"xuupiie\"",
       "List\\(\\\"fex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "\"xuupieee\"",
       "List\\(\\\"fex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "\"xuupiiiee\"",
-      "List\\(\\\"\\\\u0000fex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "\"\\\\u0000xuupiiiee\"",
+      "List\\(\\\"\\\\u0000feex\\\", \\\"fum\\\", \\\"fum\\\", \\\"foe\\\", \\\"fie\\\", \\\"fie\\\", \\\"fie\\\", \\\"fee\\\", \\\"fee\\\"\\)" -> "\"\\\\u0000xuupiiiee\"",
       "List\\(\\\"you\\\", \\\"to\\\", \\\"birthday\\\", \\\"happy\\\"\\)" -> "\"yobh\"",
       "List\\(\\\"you\\\", \\\"to\\\", \\\"to\\\", \\\"birthday\\\", \\\"birthday\\\", \\\"happy\\\"\\)" -> "\"yoobbh\"",
       "List\\(\\\"you\\\", \\\"you\\\", \\\"to\\\", \\\"birthday\\\", \\\"happy\\\", \\\"happy\\\"\\)" -> "\"yyobhh\"",
@@ -929,6 +934,8 @@ class GenContainBase {
       "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "('u', 'u', 'u')",
       "\\(\\\"fum\\\", \\\"fum\\\"\\)" -> "('u', 'u')",
       "\\(\\\"fum\\\"\\)" -> "('u')",
+      "prettifier\\(escapedString\\(\"\\\\u0000fex\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000xupie\"))",
+      "prettifier\\(escapedString\\(\"\\\\u0000feex\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000xuupiiiee\"))",
       "\\(\\\"hi\\\"\\)" -> "('i')",
       "\\(\\\"hi\\\", \\\"he\\\"\\)" -> "('i', 'e')",
       "\\(\\\"hi\\\", \\\"HE\\\"\\)" -> "('i', 'E')",
@@ -1192,7 +1199,8 @@ class GenContainBase {
       "decorateToStringValue\\(prettifier, hiLists\\(0\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(prettifier, \\\"io\\\"\\)" -> "decorateToStringValue(prettifier, \"i[e]\") + \" was not equal to \" + decorateToStringValue(prettifier, \"i[o]\")",
       "decorateToStringValue\\(prettifier, list1s\\(0\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(prettifier, \\\"8234\\\"\\)" -> "decorateToStringValue(prettifier, \"[\" + list1s(0) + \"]\") + \" was not equal to \" + decorateToStringValue(prettifier, \"[8234]\")",
       "decorateToStringValue\\(prettifier, list1s\\(0\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(prettifier, \\\"23\\\"\\)" -> "decorateToStringValue(prettifier, \"[\" + list1s(0) + \"]\") + \" was not equal to \" + decorateToStringValue(prettifier, \"[23]\")",
-      "decorateToStringValue\\(prettifier, lists\\(2\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(prettifier, \\\"01233\\\"\\)" -> "decorateToStringValue(prettifier, \"[\" + lists(2) + \"]\") + \" was not equal to \" + decorateToStringValue(prettifier, \"[01233]\")"
+      "decorateToStringValue\\(prettifier, lists\\(2\\)\\) \\+ \\\" was not equal to \\\" \\+ decorateToStringValue\\(prettifier, \\\"01233\\\"\\)" -> "decorateToStringValue(prettifier, \"[\" + lists(2) + \"]\") + \" was not equal to \" + decorateToStringValue(prettifier, \"[01233]\")", 
+      "LHS contains at least one string with characters that might cause problem" -> "LHS contains characters that might cause problem"
     )
 
 }

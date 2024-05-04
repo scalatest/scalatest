@@ -56,19 +56,18 @@ private[scalactic] object Differ {
 }
 
 private[scalactic] trait StringDiffer extends Differ {
-
+  def escapedChar(c: Char): String = (c: @scala.annotation.switch) match {
+    case '\b' => raw"\b"
+    case '\t' => raw"\t"
+    case '\n' => raw"\n"
+    case '\f' => raw"\f"
+    case '\r' => raw"\r"
+    case '"'  => "\\\"" // raw"\"" Scala 2.11 compatible
+    case '\'' => raw"\'"
+    case '\\' => raw"\\"
+    case _    => if (c.isControl) "\\u%04X".format(c.toInt) else String.valueOf(c)
+  }
   private[scalactic] def escapedString(s: String): String = {
-    def escapedChar(c: Char): String = (c: @scala.annotation.switch) match {
-      case '\b' => raw"\b"
-      case '\t' => raw"\t"
-      case '\n' => raw"\n"
-      case '\f' => raw"\f"
-      case '\r' => raw"\r"
-      case '"'  => "\\\"" // raw"\"" Scala 2.11 compatible
-      case '\'' => raw"\'"
-      case '\\' => raw"\\"
-      case _    => if (c.isControl) "\\u%04X".format(c.toInt) else String.valueOf(c)
-    }
     if (s.exists(c => c.isControl || c == '\\')) s.flatMap(escapedChar)
     else s
   }
@@ -409,6 +408,20 @@ private[scalactic] class EscapingStringDiffer extends Differ {
         } 
     }
   }
+  private def differenceForString(s1: String, s2: Iterable[Char], prettifier: Prettifier): Option[String] = {
+    val s1Escaped = escapeString(s1)
+    if (s1 != s1Escaped)
+      Some(Resources.lhsContainsCharactersThatMightCauseProblem(prettifier(s1Escaped)))
+    else {
+      val limit = Differ.prettifierLimit(prettifier).getOrElse(s2.size)
+      s2.take(limit).find { c => 
+        val cEscaped = StringDiffer.escapedChar(c)
+        c.toString != cEscaped
+      }.map { c => 
+        Resources.rhsContainsAtLeastOneCharThatMightCauseProblem(prettifier(StringDiffer.escapedChar(c)))
+      }
+    }
+  }
   private def differenceForJavaMap(map: scala.collection.GenMap[_, _], s2: String, prettifier: Prettifier): Option[String] = {
     val s2Escaped = escapeString(s2)
     if (s2 != s2Escaped)
@@ -475,6 +488,11 @@ private[scalactic] class EscapingStringDiffer extends Differ {
           differenceForIterable(s1.toIterable, s2.toString, prettifier)
         case (s1: Every[_], s2: scala.collection.Iterable[_]) => 
           differenceForIterable(s1.toIterable, s2, prettifier)  
+        case (s1: String, s2: Iterable[Char]) =>
+          differenceForString(s1, s2, prettifier) 
+        case (s1: String, s2: Any)  if s2.getClass.getName == "org.scalatest.UnquotedString" || 
+                                       s2.getClass.getName == "org.scalactic.UnquotedString" => 
+          differenceForString(s1, s2.toString, prettifier)     
         case (s1: java.util.Collection[_], s2: scala.collection.Iterable[_]) => 
           import scala.collection.JavaConverters._
           differenceForIterable(s1.asScala, s2, prettifier)
