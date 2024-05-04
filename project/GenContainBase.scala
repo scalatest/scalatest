@@ -133,7 +133,8 @@ class GenContainBase {
       "List" -> "Option",
       "listsNil" -> "listsOption",
       "Nil" -> "scala.None", 
-      "\\\"\\\\u0000fex\\\", \\\"fum\\\"" -> "\"\\u0000fex\""
+      "\\\"\\\\u0000fex\\\", \\\"fum\\\"" -> "\"\\u0000fex\"", 
+      "\\\"\\\\u0000f\\\", \\\"fum\\\"" -> "\"\\u0000fu\""
     )
 
   val arrayMapping =
@@ -202,6 +203,7 @@ class GenContainBase {
       "List\\(\\\"fum\\\"\\)" -> "scala.collection.mutable.LinkedHashMap(\"fum\" -> \"fum\")",
       "List\\(\\\"\\\\u0000fum\\\"\\)" -> "scala.collection.mutable.LinkedHashMap(\"\\\\u0000fum\" -> \"\\\\u0000fum\")",
       "List\\(\\\"\\\\u0000f\\\"\\)" -> "scala.collection.mutable.LinkedHashMap(\"\\\\u0000f\" -> \"\\\\u0000f\")",
+      "List\\(\\\"\\\\u0000f\\\", \\\"fum\\\"\\)" -> "scala.collection.mutable.LinkedHashMap(\"\\\\u0000f\" -> \"\\\\u0000f\", \"fum\" -> \"fum\")",
       "List\\(\\\"to\\\"\\)" -> "scala.collection.mutable.LinkedHashMap(\"to\" -> \"to\")",
       "List\\(\\\"fum\\\", \\\"fu\\\"\\)" -> "scala.collection.mutable.LinkedHashMap(\"fum\" -> \"fum\", \"fu\" -> \"fu\")",
       "List\\(\\\"\\\\u0000fex\\\", \\\"fum\\\"\\)" -> "scala.collection.mutable.LinkedHashMap(\"\\\\u0000fex\" -> \"\\\\u0000fex\", \"fum\" -> \"fum\")",
@@ -512,6 +514,7 @@ class GenContainBase {
       "List\\(\\\"fum\\\"\\)" -> "javaMap(Entry(\"fum\", \"fum\"))",
       "List\\(\\\"\\\\u0000fum\\\"\\)" -> "javaMap(Entry(\"\\\\u0000fum\", \"\\\\u0000fum\"))",
       "List\\(\\\"\\\\u0000f\\\"\\)" -> "javaMap(Entry(\"\\\\u0000f\", \"\\\\u0000f\"))",
+      "List\\(\\\"\\\\u0000f\\\", \\\"fum\\\"\\)" -> "javaMap(Entry(\"\\\\u0000f\", \"\\\\u0000f\"), Entry(\"fum\", \"fum\"))",
       "List\\(\\\"fum\\\", \\\"fu\\\"\\)" -> "javaMap(Entry(\"fum\", \"fum\"), Entry(\"fu\", \"fu\"))",
       "List\\(\\\"\\\\u0000fex\\\", \\\"fum\\\"\\)" -> "javaMap(Entry(\"\\\\u0000fex\", \"\\\\u0000fex\"), Entry(\"fum\", \"fum\"))",
       "List\\(\\\"to\\\"\\)" -> "javaMap(Entry(\"to\", \"to\"))",
@@ -913,6 +916,7 @@ class GenContainBase {
       "List\\(\\\"happy\\\", \\\"happy\\\", \\\"happy\\\", \\\"birthday\\\", \\\"to\\\", \\\"you\\\"\\)" -> "\"hhhboy\"",
       "List\\(\\\"\\\\u0000fum\\\"\\)" -> "\"\\\\u0000u\"",
       "List\\(\\\"\\\\u0000f\\\"\\)" -> "\"\\\\u0000f\"",
+      "List\\(\\\"\\\\u0000f\\\", \\\"fum\\\"\\)" -> "\"\\\\u0000fu\"",
       "TempL" -> "ListBuffer",
       "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fum\\\"\\)" -> "('e', 'i', 'p', 'u')",
       "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fie\\\", \\\"fum\\\"\\)" -> "('e', 'i', 'p', 'i', 'u')",
@@ -944,6 +948,7 @@ class GenContainBase {
       "prettifier\\(escapedString\\(\"\\\\u0000fum\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000u\"))",
       "prettifier\\(escapedString\\(\"\\\\u0000fex\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000xupie\"))",
       "prettifier\\(escapedString\\(\"\\\\u0000feex\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000xuupiiiee\"))",
+      "prettifier\\(escapedString\\(\"\\\\u0000f\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000fu\"))",
       "\\(\\\"hi\\\"\\)" -> "('i')",
       "\\(\\\"hi\\\", \\\"he\\\"\\)" -> "('i', 'e')",
       "\\(\\\"hi\\\", \\\"HE\\\"\\)" -> "('i', 'E')",
