@@ -934,6 +934,7 @@ class GenContainBase {
       "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "('u', 'u', 'u')",
       "\\(\\\"fum\\\", \\\"fum\\\"\\)" -> "('u', 'u')",
       "\\(\\\"fum\\\"\\)" -> "('u')",
+      "prettifier\\(escapedString\\(\"\\\\u0000fum\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000u\"))",
       "prettifier\\(escapedString\\(\"\\\\u0000fex\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000xupie\"))",
       "prettifier\\(escapedString\\(\"\\\\u0000feex\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000xuupiiiee\"))",
       "\\(\\\"hi\\\"\\)" -> "('i')",
