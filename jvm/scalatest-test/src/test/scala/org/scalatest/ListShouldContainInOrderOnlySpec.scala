@@ -55,7 +55,7 @@ class ListShouldContainInOrderOnlySpec extends AnyFunSpec {
 
     val fumList: List[String] = List("fum", "fum", "foe", "fie", "fie", "fie", "fee", "fee")
     val toList: List[String] = List("happy", "happy", "happy", "birthday", "to", "you")
-    val ecList: List[String] = List("\u0000fum", "fum", "foe", "fie", "fie", "fie", "fee", "fee")
+    val ecList: List[String] = List("\u0000f", "fum", "foe", "fie", "fie", "fie", "fee", "fee")
 
     describe("when used with contain inOrderOnly (..)") {
 
@@ -97,7 +97,7 @@ class ListShouldContainInOrderOnlySpec extends AnyFunSpec {
         val e1 = intercept[exceptions.TestFailedException] {
           ecList should contain inOrderOnly ("fee", "fie", "foe", "fum")
         }
-        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000fum"))))
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000f"))))
       }
     }
 
@@ -140,7 +140,7 @@ class ListShouldContainInOrderOnlySpec extends AnyFunSpec {
         val e1 = intercept[exceptions.TestFailedException] {
           ecList should (contain inOrderOnly ("fee", "fie", "foe", "fum"))
         }
-        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000fum"))))
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000f"))))
       }
     }
 
