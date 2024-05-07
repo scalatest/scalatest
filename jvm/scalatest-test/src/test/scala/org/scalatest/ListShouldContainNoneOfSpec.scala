@@ -41,7 +41,7 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
 
     val fumList: List[String] = List("fum")
     val toList: List[String] = List("to")
-    val ecList: List[String] = List("\u0000f", "fum")
+    val ecList: List[String] = List("\u0000fum")
 
     describe("when used with contain noneOf (...) syntax") {
 
@@ -86,9 +86,9 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
       }
       it("should throw TestFailedException with analysis showing escaped string") {
         val e1 = intercept[exceptions.TestFailedException] {
-          ecList should contain noneOf ("fee", "fie", "foe", "fum")
+          ecList should contain noneOf ("\u0000fum", "foe")
         }
-        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000f"))))
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000fum"))))
       }
     }
 
@@ -131,9 +131,9 @@ class ListShouldContainNoneOfSpec extends AnyFunSpec {
       }
       it("should throw TestFailedException with analysis showing escaped string") {
         val e1 = intercept[exceptions.TestFailedException] {
-          ecList should (contain noneOf ("fee", "fie", "foe", "fum"))
+          ecList should (contain noneOf ("\u0000fum", "foe"))
         }
-        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000f"))))
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000fum"))))
       }
     }
 
