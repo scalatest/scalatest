@@ -133,8 +133,8 @@ class GenContainBase {
       "List" -> "Option",
       "listsNil" -> "listsOption",
       "Nil" -> "scala.None", 
-      "\\\"\\\\u0000fex\\\", \\\"fum\\\"" -> "\"\\u0000fex\"", 
-      "\\\"\\\\u0000f\\\", \\\"fum\\\"" -> "\"\\u0000fu\""
+      "\\\"\\\\u0000fex\\\", \\\"fum\\\"" -> "\"\\\\u0000fex\"", 
+      "\\\"\\\\u0000f\\\", \\\"fum\\\"" -> "\"\\\\u0000fu\"", 
     )
 
   val arrayMapping =
@@ -250,6 +250,7 @@ class GenContainBase {
       "\\(\\\"howdy\\\", \\\"hi\\\", \\\"he\\\"\\)" -> "(\"howdy\" -> \"howdy\", \"hi\" -> \"hi\", \"he\" -> \"he\")",
       "\\(\\\"howdy\\\", \\\"hello\\\", \\\"hi\\\"\\)" -> "(\"howdy\" -> \"howdy\", \"hello\" -> \"hello\", \"hi\" -> \"hi\")",
       "\\(\\\"fum\\\", \\\"foe\\\"\\)" -> "(\"fum\" -> \"fum\", \"foe\" -> \"foe\")",
+      "\\(\\\"\\\\u0000fum\\\", \\\"foe\\\"\\)" -> "(\"\\\\u0000fum\" -> \"\\\\u0000fum\", \"foe\" -> \"foe\")",
       "\\(\\\"\\\\u0000fix\\\", \\\"fum\\\", \\\"foe\\\"\\)" -> "(\"\\\\u0000fix\" -> \"fix\", \"fum\" -> \"fum\", \"foe\" -> \"foe\")",
       "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "(\"fum\" -> \"fum\", \"fum\" -> \"fum\", \"fum\" -> \"fum\")",
       "\\(\\\"fum\\\", \\\"fum\\\"\\)" -> "(\"fum\" -> \"fum\", \"fum\" -> \"fum\")",
@@ -562,6 +563,7 @@ class GenContainBase {
       "\\(\\\"fum\\\", \\\"foe\\\"\\)" -> "(Entry(\"fum\", \"fum\"), Entry(\"foe\", \"foe\"))",
       "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "(Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"), Entry(\"fum\", \"fum\"))",
       "\\(\\\"fum\\\"\\)" -> "(Entry(\"fum\", \"fum\"))",
+      "\\(\\\"\\\\u0000fum\\\", \\\"foe\\\"\\)" -> "(Entry(\"\\\\u0000fum\", \"\\\\u0000fum\"), Entry(\"foe\", \"foe\"))",
       "\\(\\\"\\\\u0000fum\\\"\\)" -> "(Entry(\"\\\\u0000fum\", \"\\\\u0000fum\"))",
       "\\(\\\"\\\\u0000f\\\"\\)" -> "(Entry(\"\\\\u0000f\", \"\\\\u0000f\"))",
       "\\(\\\"\\\\u0000fex\\\"\\)" -> "(Entry(\"\\\\u0000fex\", \"\\\\u0000fex\"))",
@@ -919,6 +921,7 @@ class GenContainBase {
       "List\\(\\\"\\\\u0000fum\\\"\\)" -> "\"\\\\u0000u\"",
       "List\\(\\\"\\\\u0000f\\\"\\)" -> "\"\\\\u0000f\"",
       "List\\(\\\"\\\\u0000f\\\", \\\"fum\\\"\\)" -> "\"\\\\u0000fu\"",
+      //"List\\(\\\"\\\\u0000fum\\\", \\\"foe\\\"\\)" -> "\"\\\\u0000uo\"",
       "TempL" -> "ListBuffer",
       "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fum\\\"\\)" -> "('e', 'i', 'p', 'u')",
       "\\(\\\"fee\\\", \\\"fie\\\", \\\"foe\\\", \\\"fie\\\", \\\"fum\\\"\\)" -> "('e', 'i', 'p', 'i', 'u')",
@@ -946,11 +949,13 @@ class GenContainBase {
       "\\(\\\"fum\\\", \\\"fum\\\", \\\"fum\\\"\\)" -> "('u', 'u', 'u')",
       "\\(\\\"fum\\\", \\\"fum\\\"\\)" -> "('u', 'u')",
       "\\(\\\"fum\\\"\\)" -> "('u')",
+      "\\(\\\"\\\\u0000fum\\\", \\\"foe\\\"\\)" -> "('\\\\u0000', 'u')",
       "prettifier\\(escapedString\\(\"\\\\u0000fix\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000up\"))",
       "prettifier\\(escapedString\\(\"\\\\u0000fum\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000u\"))",
       "prettifier\\(escapedString\\(\"\\\\u0000fex\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000xupie\"))",
       "prettifier\\(escapedString\\(\"\\\\u0000feex\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000xuupiiiee\"))",
       "prettifier\\(escapedString\\(\"\\\\u0000f\\\"\\)\\)" -> "prettifier(escapedString(\"\\\\u0000fu\"))",
+      //"prettifier\\(\"foe\\\"\\)" -> "prettifier(\"u\")",
       "\\(\\\"hi\\\"\\)" -> "('i')",
       "\\(\\\"hi\\\", \\\"he\\\"\\)" -> "('i', 'e')",
       "\\(\\\"hi\\\", \\\"HE\\\"\\)" -> "('i', 'E')",

@@ -62,7 +62,7 @@ private[scalactic] trait StringDiffer extends Differ {
     case '\n' => raw"\n"
     case '\f' => raw"\f"
     case '\r' => raw"\r"
-    case '"'  => "\\\"" // raw"\"" Scala 2.11 compatible
+    //case '"'  => "\\\"" // raw"\"" Scala 2.11 compatible
     case '\'' => raw"\'"
     case '\\' => raw"\\"
     case _    => if (c.isControl) "\\u%04X".format(c.toInt) else String.valueOf(c)
@@ -341,18 +341,19 @@ private[scalactic] class EscapingStringDiffer extends Differ {
     case _ => a
   }
   private def differenceForIterable(itr: Iterable[_], s2: String, prettifier: Prettifier): Option[String] = {
-    val s2Escaped = escapeString(s2)
-    if (s2 != s2Escaped)
-      Some(Resources.rhsContainsCharactersThatMightCauseProblem(prettifier(s2Escaped)))
-    else {
-      val limit = Differ.prettifierLimit(prettifier).getOrElse(itr.size)
+    val limit = Differ.prettifierLimit(prettifier).getOrElse(itr.size)
       itr.take(limit).find { e => 
         val eEscaped = escapeString(e)
         e != eEscaped
-      }.map { e => 
-        Resources.lhsContainsAtLeastOneStringWithCharactersThatMightCauseProblem(prettifier(escapeString(e)))
-      }
-    }  
+      } match {
+        case Some(e) => Some(Resources.lhsContainsAtLeastOneStringWithCharactersThatMightCauseProblem(prettifier(escapeString(e))))
+        case None => 
+          val s2Escaped = escapeString(s2)
+          if (s2 != s2Escaped)
+            Some(Resources.rhsContainsCharactersThatMightCauseProblem(prettifier(s2Escaped)))
+          else 
+            None
+      }  
   }
   private def differenceForIterable(itr1: Iterable[_], itr2: Iterable[_], prettifier: Prettifier): Option[String] = {
     val limit1 = Differ.prettifierLimit(prettifier).getOrElse(itr1.size)
@@ -374,19 +375,21 @@ private[scalactic] class EscapingStringDiffer extends Differ {
     }  
   }
   private def differenceForMap(map: scala.collection.GenMap[_, _], s2: String, prettifier: Prettifier): Option[String] = {
-    val s2Escaped = escapeString(s2)
-    if (s2 != s2Escaped)
-      Some(Resources.rhsContainsCharactersThatMightCauseProblem(prettifier(s2Escaped)))
-    else {
-      val limit = Differ.prettifierLimit(prettifier).getOrElse(map.size)
+    val limit = Differ.prettifierLimit(prettifier).getOrElse(map.size)
       map.take(limit).find { case (k, v) => 
         val kEscaped = escapeString(k)
         val vEscaped = escapeString(v)
         (k, v) != (kEscaped, vEscaped)
-      }.map { case (k, v) => 
-        Resources.lhsContainsAtLeastOneEntryWithCharactersThatMightCauseProblem(prettifier(escapeString(k)) + " -> " + prettifier(escapeString(v)))
+      } match {
+        case Some((k, v)) => 
+          Some(Resources.lhsContainsAtLeastOneEntryWithCharactersThatMightCauseProblem(prettifier(escapeString(k)) + " -> " + prettifier(escapeString(v))))
+        case _ => 
+          val s2Escaped = escapeString(s2)
+          if (s2 != s2Escaped)
+            Some(Resources.rhsContainsCharactersThatMightCauseProblem(prettifier(s2Escaped)))
+          else 
+            None
       }
-    }
   }
   private def differenceForMap(map: scala.collection.GenMap[_, _], itr2: Iterable[_], prettifier: Prettifier): Option[String] = {
     val limit = Differ.prettifierLimit(prettifier).getOrElse(map.size)
@@ -394,10 +397,8 @@ private[scalactic] class EscapingStringDiffer extends Differ {
       val kEscaped = escapeString(k)
       val vEscaped = escapeString(v)
       (k, v) != (kEscaped, vEscaped)
-    }.map { case (k, v) => 
-      Resources.lhsContainsAtLeastOneEntryWithCharactersThatMightCauseProblem(prettifier(escapeString(k)) + " -> " + prettifier(escapeString(v)))
     } match {
-      case Some(analysis) => Some(analysis)
+      case Some((k, v)) => Some(Resources.lhsContainsAtLeastOneEntryWithCharactersThatMightCauseProblem(prettifier(escapeString(k)) + " -> " + prettifier(escapeString(v))))
       case None => 
         val limit2 = Differ.prettifierLimit(prettifier).getOrElse(itr2.size)
         itr2.take(limit2).find { e => 
@@ -427,18 +428,19 @@ private[scalactic] class EscapingStringDiffer extends Differ {
     }
   }
   private def differenceForJavaMap(map: scala.collection.GenMap[_, _], s2: String, prettifier: Prettifier): Option[String] = {
-    val s2Escaped = escapeString(s2)
-    if (s2 != s2Escaped)
-      Some(Resources.rhsContainsCharactersThatMightCauseProblem(prettifier(s2Escaped)))
-    else {
-      val limit = Differ.prettifierLimit(prettifier).getOrElse(map.size)
-      map.take(limit).find { case (k, v) => 
-        val kEscaped = escapeString(k)
-        val vEscaped = escapeString(v)
-        (k, v) != (kEscaped, vEscaped)
-      }.map { case (k, v) => 
-        Resources.lhsContainsAtLeastOneEntryWithCharactersThatMightCauseProblem(prettifier(escapeString(k)) + "=" + prettifier(escapeString(v)))
-      }
+    val limit = Differ.prettifierLimit(prettifier).getOrElse(map.size)
+    map.take(limit).find { case (k, v) => 
+      val kEscaped = escapeString(k)
+      val vEscaped = escapeString(v)
+      (k, v) != (kEscaped, vEscaped)
+    } match {
+      case Some((k, v)) => Some(Resources.lhsContainsAtLeastOneEntryWithCharactersThatMightCauseProblem(prettifier(escapeString(k)) + "=" + prettifier(escapeString(v))))
+      case None => 
+        val s2Escaped = escapeString(s2)
+        if (s2 != s2Escaped)
+          Some(Resources.rhsContainsCharactersThatMightCauseProblem(prettifier(s2Escaped)))
+        else 
+          None 
     }
   }
   private def differenceForJavaMap(map: scala.collection.GenMap[_, _], itr2: Iterable[_], prettifier: Prettifier): Option[String] = {
@@ -447,10 +449,8 @@ private[scalactic] class EscapingStringDiffer extends Differ {
       val kEscaped = escapeString(k)
       val vEscaped = escapeString(v)
       (k, v) != (kEscaped, vEscaped)
-    }.map { case (k, v) => 
-      Resources.lhsContainsAtLeastOneEntryWithCharactersThatMightCauseProblem(prettifier(escapeString(k)) + "=" + prettifier(escapeString(v)))
     } match {
-      case Some(analysis) => Some(analysis)
+      case Some((k, v)) => Some(Resources.lhsContainsAtLeastOneEntryWithCharactersThatMightCauseProblem(prettifier(escapeString(k)) + "=" + prettifier(escapeString(v))))
       case None => 
         val limit2 = Differ.prettifierLimit(prettifier).getOrElse(itr2.size)
         itr2.take(limit2).find { e => 
@@ -477,7 +477,14 @@ private[scalactic] class EscapingStringDiffer extends Differ {
                                                             s2.getClass.getName == "org.scalactic.UnquotedString" => 
           differenceForIterable(s1, s2.toString, prettifier)  
         case (s1: scala.collection.Iterable[_], s2: scala.collection.Iterable[_]) => 
-          differenceForIterable(s1, s2, prettifier)  
+          differenceForIterable(s1, s2, prettifier)
+        case (s1: Option[_], s2: String) => 
+          differenceForIterable(s1, s2, prettifier)
+        case (s1: Option[_], s2: Any) if s2.getClass.getName == "org.scalatest.UnquotedString" || 
+                                                            s2.getClass.getName == "org.scalactic.UnquotedString" => 
+          differenceForIterable(s1, s2.toString, prettifier)  
+        case (s1: Option[_], s2: scala.collection.Iterable[_]) => 
+          differenceForIterable(s1, s2, prettifier)              
         case (s1: Array[_], s2: String) => 
           differenceForIterable(s1, s2, prettifier)
         case (s1: Array[_], s2: Any) if s2.getClass.getName == "org.scalatest.UnquotedString" || 
