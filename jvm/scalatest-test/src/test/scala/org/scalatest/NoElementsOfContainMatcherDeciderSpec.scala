@@ -20,7 +20,7 @@ import org.scalactic.Explicitly
 import org.scalactic.StringNormalizations._
 import org.scalactic.Uniformity
 import org.scalactic.Prettifier
-import collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import SharedHelpers._
 import matchers.should.Matchers._
 
@@ -246,13 +246,13 @@ class NoElementsOfContainMatcherDeciderSpec extends funspec.AnyFunSpec with Expl
 
   describe("noElementsOf ") {
 
-    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       e.message should be (Some(FailureMessages.containedAtLeastOneElementOf(prettifier, left, right)))
       e.failedCodeFileName should be (Some("NoElementsOfContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
 
-    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(FailureMessages.didNotContainAtLeastOneElementOf(prettifier, left, right)))
       e.failedCodeFileName should be (Some("NoElementsOfContainMatcherDeciderSpec.scala"))

@@ -15,7 +15,7 @@
  */
 package org.scalactic.anyvals
 
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ArrayBuffer
 
@@ -42,7 +42,7 @@ class NonEmptyArraySpec extends UnitSpec {
     threesie(1) shouldBe 2
     threesie(2) shouldBe 3
   }
-  it can "be constructed from a GenTraversable via the from method on NonEmptyArray singleton" in {
+  it can "be constructed from a Iterable via the from method on NonEmptyArray singleton" in {
     NonEmptyArray.from(Array.empty[String]) shouldBe None
     NonEmptyArray.from(Array("1")).get shouldBe NonEmptyArray("1")
     NonEmptyArray.from(Array(1, 2, 3)).get shouldBe NonEmptyArray(1, 2, 3)
@@ -168,10 +168,10 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(1, 2, 3) ++ Every(4) shouldEqual NonEmptyArray(1, 2, 3, 4)
     NonEmptyArray(1, 2, 3) ++ One(4) shouldEqual NonEmptyArray(1, 2, 3, 4)
   }
-  it should "have a ++ method that takes a GenTraversableOnce" in {
+  it should "have a ++ method that takes a IterableOnce" in {
     NonEmptyArray(1, 2, 3) ++ Array(4) shouldEqual NonEmptyArray(1, 2, 3, 4)
     NonEmptyArray(1, 2, 3) ++ Vector(4, 5, 6) shouldEqual NonEmptyArray(1, 2, 3, 4, 5, 6)
-    NonEmptyArray(1, 2, 3) ++ GenTraversable(4) shouldEqual NonEmptyArray(1, 2, 3, 4)
+    NonEmptyArray(1, 2, 3) ++ Iterable(4) shouldEqual NonEmptyArray(1, 2, 3, 4)
     NonEmptyArray(1, 2, 3) ++ Set(4, 5) shouldEqual NonEmptyArray(1, 2, 3, 4, 5)
     NonEmptyArray(1, 2, 3) ++ Set(4, 5).iterator shouldEqual NonEmptyArray(1, 2, 3, 4, 5)
   }
@@ -425,7 +425,7 @@ class NonEmptyArraySpec extends UnitSpec {
     NonEmptyArray(NonEmptyArray(1, 2, 3), NonEmptyArray(1, 2, 3)).flatten shouldBe NonEmptyArray(1, 2, 3, 1, 2, 3)
     NonEmptyArray(NonEmptyArray(1)).flatten shouldBe NonEmptyArray(1)
   }
-  it can "be flattened when in a GenTraversableOnce" in {
+  it can "be flattened when in a IterableOnce" in {
     Vector(NonEmptyArray(1, 2, 3), NonEmptyArray(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     Array(NonEmptyArray(1, 2, 3), NonEmptyArray(1, 2, 3)).flatten shouldBe Array(1, 2, 3, 1, 2, 3)
     Array(NonEmptyArray(1, 2, 3), NonEmptyArray(1, 2, 3)).toIterator.flatten.toStream shouldBe Array(1, 2, 3, 1, 2, 3).toIterator.toStream

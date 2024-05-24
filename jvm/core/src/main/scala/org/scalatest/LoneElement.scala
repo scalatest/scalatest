@@ -44,7 +44,7 @@ import org.scalatest.exceptions._
  * <p>
  * The <code>loneElement</code> syntax can be used with any collection type <code>C</code> for which an
  * implicit <a href="enablers/Collecting.html"><code>Collecting[C]</code></a> is available. ScalaTest provides
- * implicit <code>Collecting</code> instances for <code>scala.collection.GenTraversable</code>, <code>Array</code>,
+ * implicit <code>Collecting</code> instances for <code>org.scalactic.ColCompatHelper.Iterable</code>, <code>Array</code>,
  * and <code>java.util.Collection</code>. You can enable the <code>loneElement</code>
  * syntax on other collection types by defining an implicit <code>Collecting</code> instances for those types.
  * </p>
@@ -141,7 +141,7 @@ trait LoneElement {
 
   /**
     * Wrapper class that adds a <code>loneElement</code> method to Map for which
-    * an implicit <code>Collecting[(K, V), scala.collection.GenTraversable[(K, V)]]</code> is available.
+    * an implicit <code>Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]]</code> is available.
     *
     * <p>
     * Through the implicit conversion provided by trait <code>LoneElement</code>, this class allows you to make statements like:
@@ -156,7 +156,7 @@ trait LoneElement {
     * @tparam MAP the "Map type constructor" for the collection on which to add the <code>loneElement</code> method
     * @param collecting a typeclass that enables the <code>loneElement</code> syntax
     */
-  final class LoneElementMapWrapper[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](map: MAP[K, V], collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position) {
+  final class LoneElementMapWrapper[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](map: MAP[K, V], collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position) {
 
     def loneElement: (K, V) = {
       collecting.loneElementOf(map) match {
@@ -174,7 +174,7 @@ trait LoneElement {
   }
 
   // Needed for Map to work, any better solution?
-  implicit def convertMapToCollectionLoneElementWrapper[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](map: MAP[K, V])(implicit collecting: Collecting[(K, V), scala.collection.GenTraversable[(K, V)]], prettifier: Prettifier, pos: source.Position): LoneElementMapWrapper[K, V, MAP] = {
+  implicit def convertMapToCollectionLoneElementWrapper[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](map: MAP[K, V])(implicit collecting: Collecting[(K, V), org.scalactic.ColCompatHelper.Iterable[(K, V)]], prettifier: Prettifier, pos: source.Position): LoneElementMapWrapper[K, V, MAP] = {
     new LoneElementMapWrapper[K, V, MAP](map, collecting, prettifier, pos)
   }
 

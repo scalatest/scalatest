@@ -22,7 +22,7 @@ import org.scalatest.FailureMessages
 import MatchersHelper.andMatchersAndApply
 import MatchersHelper.orMatchersAndApply
 import org.scalatest.Resources
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import scala.reflect.ClassTag
 import scala.util.matching.Regex
 import TripleEqualsSupport.Spread
@@ -695,7 +695,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                      ^
      * </pre>
      **/
-    def theSameElementsAs(right: GenTraversable[_]): MatcherFactory1[T, Aggregating] = 
+    def theSameElementsAs(right: Iterable[_]): MatcherFactory1[T, Aggregating] = 
       outerInstance.and(MatcherWords.contain.theSameElementsAs(right))
     
     /**
@@ -706,7 +706,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                      ^
      * </pre>
      **/
-    def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory1[T, Sequencing] = 
+    def theSameElementsInOrderAs(right: Iterable[_]): MatcherFactory1[T, Sequencing] = 
       outerInstance.and(MatcherWords.contain.theSameElementsInOrderAs(right))
 
     /**
@@ -739,7 +739,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                      ^
      * </pre>
      **/
-    def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+    def allElementsOf(elements: Iterable[Any]): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.contain.allElementsOf(elements))
     
     /**
@@ -761,7 +761,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                      ^
      * </pre>
      **/
-    def inOrderElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Sequencing] =
+    def inOrderElementsOf(elements: Iterable[Any]): MatcherFactory1[T, Sequencing] =
       outerInstance.and(MatcherWords.contain.inOrderElementsOf(elements))
     
     /**
@@ -783,7 +783,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                      ^
      * </pre>
      **/
-    def oneElementOf(elements: GenTraversable[Any]): MatcherFactory1[T, Containing] =
+    def oneElementOf(elements: Iterable[Any]): MatcherFactory1[T, Containing] =
       outerInstance.and(MatcherWords.contain.oneElementOf(elements))
       
     /**
@@ -805,7 +805,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                      ^
      * </pre>
      **/
-    def atLeastOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+    def atLeastOneElementOf(elements: Iterable[Any]): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.contain.atLeastOneElementOf(elements))
     
     /**
@@ -838,7 +838,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                      ^
      * </pre>
      **/
-    def noElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Containing] =
+    def noElementsOf(elements: Iterable[Any]): MatcherFactory1[T, Containing] =
       outerInstance.and(MatcherWords.contain.noElementsOf(elements))
       
     /**
@@ -860,7 +860,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                      ^
      * </pre>
      **/
-    def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+    def atMostOneElementOf(elements: Iterable[Any]): MatcherFactory1[T, Aggregating] =
       outerInstance.and(MatcherWords.contain.atMostOneElementOf(elements))
   }
   
@@ -1977,7 +1977,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                     ^
      * </pre>
      **/
-    def theSameElementsAs(right: GenTraversable[_]): MatcherFactory1[T, Aggregating] = 
+    def theSameElementsAs(right: Iterable[_]): MatcherFactory1[T, Aggregating] = 
       outerInstance.or(MatcherWords.contain.theSameElementsAs(right))
     
     /**
@@ -1988,7 +1988,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                     ^
      * </pre>
      **/
-    def theSameElementsInOrderAs(right: GenTraversable[_]): MatcherFactory1[T, Sequencing] = 
+    def theSameElementsInOrderAs(right: Iterable[_]): MatcherFactory1[T, Sequencing] = 
       outerInstance.or(MatcherWords.contain.theSameElementsInOrderAs(right))
     
     /**
@@ -2010,7 +2010,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                     ^
      * </pre>
      **/
-    def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+    def allElementsOf(elements: Iterable[Any]): MatcherFactory1[T, Aggregating] =
       outerInstance.or(MatcherWords.contain.allElementsOf(elements))
     
     /**
@@ -2032,7 +2032,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                     ^
      * </pre>
      **/
-    def inOrderElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Sequencing] =
+    def inOrderElementsOf(elements: Iterable[Any]): MatcherFactory1[T, Sequencing] =
       outerInstance.or(MatcherWords.contain.inOrderElementsOf(elements))
     
     /**
@@ -2054,7 +2054,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                     ^
      * </pre>
      **/
-    def oneElementOf(elements: GenTraversable[Any]): MatcherFactory1[T, Containing] =
+    def oneElementOf(elements: Iterable[Any]): MatcherFactory1[T, Containing] =
       outerInstance.or(MatcherWords.contain.oneElementOf(elements))
       
     /**
@@ -2076,7 +2076,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                     ^
      * </pre>
      **/
-    def atLeastOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+    def atLeastOneElementOf(elements: Iterable[Any]): MatcherFactory1[T, Aggregating] =
       outerInstance.or(MatcherWords.contain.atLeastOneElementOf(elements))
     
     /**
@@ -2120,7 +2120,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                     ^
      * </pre>
      **/
-    def noElementsOf(elements: GenTraversable[Any]): MatcherFactory1[T, Containing] =
+    def noElementsOf(elements: Iterable[Any]): MatcherFactory1[T, Containing] =
       outerInstance.or(MatcherWords.contain.noElementsOf(elements))
       
     /**
@@ -2142,7 +2142,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      *                     ^
      * </pre>
      **/
-    def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[T, Aggregating] =
+    def atMostOneElementOf(elements: Iterable[Any]): MatcherFactory1[T, Aggregating] =
       outerInstance.or(MatcherWords.contain.atMostOneElementOf(elements))
   }
 

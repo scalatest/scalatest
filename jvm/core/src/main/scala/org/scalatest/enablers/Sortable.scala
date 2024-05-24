@@ -20,7 +20,6 @@ import Aggregating.tryEquality
 import org.scalactic.Equality
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
-import scala.collection.GenTraversable
 
 /**
  * Supertrait for typeclasses that enable the <code>be</code> <code>sorted</code> matcher syntax.

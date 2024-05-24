@@ -27,8 +27,7 @@ import org.scalatest.matchers.MatchersHelper.orMatchersAndApply
 import org.scalatest.matchers.MatchersHelper.transformOperatorChars
 import scala.collection.GenMap
 import scala.collection.GenSeq
-import scala.collection.GenTraversable
-import scala.collection.Traversable
+import org.scalactic.ColCompatHelper.Iterable
 import scala.reflect.Manifest
 import scala.util.matching.Regex
 import TripleEqualsSupport.Spread
@@ -802,7 +801,7 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
   
   def contain(only: ResultOfOnlyApplication)(implicit aggregating: Aggregating[T]): Assertion = {
     val right = only.right
-    val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
+    val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[Iterable[_]] || right(0).isInstanceOf[Every[_]])
     if (aggregating.containsOnly(left, right) != shouldBeTrue) {
       indicateFailure(
         if (shouldBeTrue)

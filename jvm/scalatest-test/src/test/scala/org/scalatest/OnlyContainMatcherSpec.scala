@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import SharedHelpers._
 import org.scalatest.exceptions.TestFailedException
 import org.scalactic.Prettifier
@@ -30,7 +30,7 @@ class OnlyContainMatcherSpec extends AnyFunSpec {
 
   describe("only ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " did not contain only (" + right.map(e => FailureMessages.decorateToStringValue(prettifier, e)).mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OnlyContainMatcherSpec.scala"))
@@ -150,7 +150,7 @@ class OnlyContainMatcherSpec extends AnyFunSpec {
   
   describe("not only ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " contained only (" + right.map(e => FailureMessages.decorateToStringValue(prettifier, e)).mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OnlyContainMatcherSpec.scala"))

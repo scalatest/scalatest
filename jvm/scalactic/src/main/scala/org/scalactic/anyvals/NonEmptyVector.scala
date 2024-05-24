@@ -16,9 +16,8 @@
 package org.scalactic.anyvals
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
-import scala.collection.GenIterable
 import scala.collection.GenSeq
-import scala.collection.GenTraversableOnce
+import org.scalactic.ColCompatHelper.{IterableOnce, Iterable, GenIterable}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
@@ -177,15 +176,15 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
   // TODO: Have I added these extra ++, etc. methods to Every that take a NonEmptyVector?
 
   /**
-    * Returns a new <code>NonEmptyVector</code> containing the elements of this <code>NonEmptyVector</code> followed by the elements of the passed <code>GenTraversableOnce</code>.
+    * Returns a new <code>NonEmptyVector</code> containing the elements of this <code>NonEmptyVector</code> followed by the elements of the passed <code>IterableOnce</code>.
     * The element type of the resulting <code>NonEmptyVector</code> is the most specific superclass encompassing the element types of this <code>NonEmptyVector</code>
-    * and the passed <code>GenTraversableOnce</code>.
+    * and the passed <code>IterableOnce</code>.
     *
     * @tparam U the element type of the returned <code>NonEmptyVector</code>
-    * @param other the <code>GenTraversableOnce</code> to append
+    * @param other the <code>IterableOnce</code> to append
     * @return a new <code>NonEmptyVector</code> that contains all the elements of this <code>NonEmptyVector</code> followed by all elements of <code>other</code>.
     */
-  def ++[U >: T](other: GenTraversableOnce[U]): NonEmptyVector[U] =
+  def ++[U >: T](other: IterableOnce[U]): NonEmptyVector[U] =
     if (other.isEmpty) this else new NonEmptyVector(toVector ++ other.toIterable)
 
   /**
@@ -457,8 +456,8 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
     * formed by the elements of the nested <code>NonEmptyVector</code>s.
     *
     * <p>
-    * Note: You cannot use this <code>flatten</code> method on a <code>NonEmptyVector</code> that contains a <code>GenTraversableOnce</code>s, because 
-    * if all the nested <code>GenTraversableOnce</code>s were empty, you'd end up with an empty <code>NonEmptyVector</code>.
+    * Note: You cannot use this <code>flatten</code> method on a <code>NonEmptyVector</code> that contains a <code>IterableOnce</code>s, because 
+    * if all the nested <code>IterableOnce</code>s were empty, you'd end up with an empty <code>NonEmptyVector</code>.
     * </p>
     *
     * @tparm B the type of the elements of each nested <code>NonEmptyVector</code>
@@ -580,7 +579,7 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
     */
   final def head: T = toVector.head
 
-  // Methods like headOption I can't get rid of because of the implicit conversion to GenTraversable.
+  // Methods like headOption I can't get rid of because of the implicit conversion to Iterable.
   // Users can call any of the methods I've left out on a NonEmptyVector, and get whatever Vector would return
   // for that method call. Eventually I'll probably implement them all to save the implicit conversion.
 
@@ -1375,7 +1374,7 @@ final class NonEmptyVector[+T] private (val toVector: Vector[T]) extends AnyVal 
     *
     * @return an <code>Iterable</code> containing all elements of this <code>NonEmptyVector</code>. 
     */
-  final def toIterable: Iterable[T] = toVector.toIterable
+  final def toIterable: scala.collection.Iterable[T] = toVector.toIterable
 
   /**
     * Returns an <code>Iterator</code> over the elements in this <code>NonEmptyVector</code>.

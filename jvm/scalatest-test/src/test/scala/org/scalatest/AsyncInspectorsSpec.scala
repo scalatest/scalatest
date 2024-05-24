@@ -24,7 +24,6 @@ import javax.xml.transform.TransformerFactoryConfigurationError
 import org.scalactic.Prettifier
 import org.scalatest.prop.TableDrivenPropertyChecks
 import scala.annotation.tailrec
-import scala.collection.GenTraversable
 import FailureMessages.decorateToStringValue
 import scala.concurrent.Future
 import org.scalatest.exceptions.TestFailedException

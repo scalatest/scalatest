@@ -309,7 +309,7 @@ class YeOldeFunSuiteSpec extends AnyFunSpec {
 
       val myFunSuite = new MyFunSuite
       val myReporter = new TestDurationReporter
-      myFunSuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      myFunSuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       assert(myReporter.testSucceededWasFiredAndHadADuration)
       assert(myReporter.testFailedWasFiredAndHadADuration)
     }
@@ -322,7 +322,7 @@ class YeOldeFunSuiteSpec extends AnyFunSpec {
 
       val myFunSuite = new MyFunSuite
       val myReporter = new SuiteDurationReporter
-      myFunSuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      myFunSuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       assert(myReporter.suiteCompletedWasFiredAndHadADuration)
     }
 
@@ -340,7 +340,7 @@ class YeOldeFunSuiteSpec extends AnyFunSpec {
 
       val myFunSuite = new MyFunSuite
       val myReporter = new SuiteDurationReporter
-      myFunSuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      myFunSuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       assert(myReporter.suiteAbortedWasFiredAndHadADuration)
     }
 
@@ -352,7 +352,7 @@ class YeOldeFunSuiteSpec extends AnyFunSpec {
 
       val mySuite = new MyFunSuite
       val myReporter = new PendingReporter
-      mySuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      mySuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       assert(myReporter.testPendingWasFired)
     }
   }

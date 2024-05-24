@@ -149,7 +149,7 @@ class ListShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           fumList should (contain only Vector("fee", "fie", "foe", "fam") or contain only Vector("happy", "birthday", "to", "you"))
         }
@@ -218,7 +218,7 @@ class ListShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) or contain only Vector("happy", "birthday", "to", "you"))
         }
@@ -287,7 +287,7 @@ class ListShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           fumList should (be (toList) or contain only Vector("fie", "fee", "fam", "foe"))
         }
@@ -356,7 +356,7 @@ class ListShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           fumList should (contain only Vector("fee", "fie", "foe", "fam") or be (toList))
         }
@@ -430,7 +430,7 @@ class ListShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           Vector(Vector("fee", "fie", "foe", "fum")) should (not contain only (Vector("fee", "fie", "foe", "fum")) or not contain only (Vector("fee", "fie", "foe", "fum")))
         }
@@ -490,7 +490,7 @@ class ListShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           Vector(Vector("fee", "fie", "foe", "fum")) should (not equal (Vector(Vector("fee", "fie", "foe", "fum"))) or not contain only (Vector("fee", "fie", "foe", "fum")))
         }
@@ -550,7 +550,7 @@ class ListShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           Vector(Vector("fee", "fie", "foe", "fum")) should (not be (Vector(Vector("fee", "fie", "foe", "fum"))) or not contain only (Vector("fee", "fie", "foe", "fum")))
         }
@@ -663,7 +663,7 @@ class ListShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector("hi", "hello")))) should (contain only Vector("HELLO", "HO") or contain only Vector("hello", "ho"))
         }
@@ -735,7 +735,7 @@ class ListShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (be (List(2, 3, 4)) or contain only Vector(2, 3, 4))
         }
@@ -812,7 +812,7 @@ class ListShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (not contain only (Vector(3, 2, 1)) or not contain only (Vector(3, 2, 1)))
         }
@@ -882,7 +882,7 @@ class ListShouldContainOnlyLogicalOrSpec extends AnyFunSpec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector(3, 2, 1)))) should (not be (Vector(Vector(3, 2, 1))) or not contain only (Vector(3, 2, 1)))
         }

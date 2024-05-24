@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import scala.collection.GenTraversable
+import scala.collection.Iterable
 import scala.scalajs.js.timers.SetTimeoutHandle
 
 private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
@@ -30,7 +30,7 @@ private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
 
   def isEmpty: Boolean = queue.isEmpty
 
-  def asScala: GenTraversable[T] = queue
+  def asScala: Iterable[T] = queue
 
   def poll: T = queue.remove(0)
 }

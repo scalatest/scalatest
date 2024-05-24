@@ -45,7 +45,6 @@ import org.scalatest.time.{Seconds, Span}
  * @param distributor an optional <code>Distributor</code>, into which to put nested <code>Suite</code>s to be executed
  *              by another entity, such as concurrently by a pool of threads. If <code>None</code>, nested <code>Suite</code>s will be executed sequentially.
  * @param tracker a <code>Tracker</code> tracking <code>Ordinal</code>s being fired by the current thread.
- * @param chosenStyles a (possibly empty) <code>Set</code> of <code>String</code>s specifying the run's <a href="tools/Runner$.html#specifyingChosenStyles"><em>chosen styles</em></a>
  * @param runTestInNewInstance a flag used to pass information between run methods
  *           in <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a> and <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a>.
  * @param distributedTestSorter an optional <a href="DistributedTestSorter.html"><code>DistributedTestSorter</code></a> used by <code>ParallelTestExecution</code> to sort the events
@@ -62,11 +61,10 @@ case class Args(
   configMap: ConfigMap = ConfigMap.empty,
   distributor: Option[Distributor] = None,
   tracker: Tracker = Tracker.default,
-  chosenStyles: Set[String] = Set.empty,
   runTestInNewInstance: Boolean = false,
   distributedTestSorter: Option[DistributedTestSorter] = None,
   distributedSuiteSorter: Option[DistributedSuiteSorter] = None
 ) {
     requireNonNull(reporter, stopper, filter, configMap, distributor, tracker,
-                   chosenStyles, distributedTestSorter, distributedSuiteSorter)
+                   distributedTestSorter, distributedSuiteSorter)
 }

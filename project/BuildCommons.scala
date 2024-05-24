@@ -24,12 +24,12 @@ trait BuildCommons {
       "org.scala-js" %%% "scala-js-macrotask-executor" % "1.1.1"
     )
   }    
-    
-  val releaseVersion = "3.3.0-SNAP4"
-  val previousReleaseVersion = "3.2.17"
 
-  val plusJUnitVersion = "3.2.14.0"
-  val plusTestNGVersion = "3.2.14.0"
+  val releaseVersion = "3.3.0-alpha.1"
+  val previousReleaseVersion = "3.2.18"
+
+  val plusJUnitVersion = "3.3.0.0-alpha.1"
+  val plusTestNGVersion = "3.3.0.0-alpha.1"
   val commonmarkVersion = "0.21.0"
 
   def rootProject: Project

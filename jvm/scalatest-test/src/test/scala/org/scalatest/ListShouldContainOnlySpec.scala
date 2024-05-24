@@ -108,7 +108,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.onlyDuplicate))
       }
-      it("should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TestFailedException with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[exceptions.TestFailedException] {
           fumList should contain only (Vector("happy", "birthday", "to", "you"))
         }
@@ -192,7 +192,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.onlyDuplicate))
       }
-      it("should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TestFailedException with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[exceptions.TestFailedException] {
           fumList should (contain only (Vector("happy", "birthday", "to", "you")))
         }
@@ -246,7 +246,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.onlyDuplicate))
       }
-      it("should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TestFailedException with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[exceptions.TestFailedException] {
           Vector(Vector("happy", "birthday", "to", "you")) should not contain only (Vector("happy", "birthday", "to", "you"))
         }
@@ -300,7 +300,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.onlyDuplicate))
       }
-      it("should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TestFailedException with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[exceptions.TestFailedException] {
           Vector(Vector("happy", "birthday", "to", "you")) should (not contain only (Vector("happy", "birthday", "to", "you")))
         }
@@ -364,7 +364,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TestFailedException with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           Vector(Vector("happy", "birthday", "to", "you")) shouldNot contain only (Vector("happy", "birthday", "to", "you"))
         }
@@ -427,7 +427,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.onlyDuplicate))
       }
-      it("should throw TestFailedException with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TestFailedException with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           Vector(Vector("happy", "birthday", "to", "you")) shouldNot (contain only (Vector("happy", "birthday", "to", "you")))
         }
@@ -523,7 +523,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.onlyDuplicate))
       }
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2))) should contain only Vector(1, 2, 3)
         }
@@ -612,7 +612,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.onlyDuplicate))
       }
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(3, 2, 1), Vector(3, 2, 1), Vector(4, 3, 2))) should (contain only Vector(1, 2, 3))
         }
@@ -670,7 +670,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.onlyDuplicate))
       }
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector("you", "to")))) should not contain only (Vector("you", "to"))
         }
@@ -728,7 +728,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.onlyDuplicate))
       }
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector("you", "to")))) should (not contain only (Vector("you", "to")))
         }
@@ -795,7 +795,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.onlyDuplicate))
       }
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector("to", "you")))) shouldNot contain only (Vector("to", "you"))
         }
@@ -862,7 +862,7 @@ class ListShouldContainOnlySpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.onlyDuplicate))
       }
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (Vector(Vector(Vector("to", "you")))) shouldNot (contain only Vector("to", "you"))
         }

@@ -44,7 +44,7 @@ class TestsBeforeNestedSuitesSpec extends AnyFunSpec {
       
       val suite = new TestSpec
       val myRep = new EventRecordingReporter
-      suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+      suite.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
       val testStarting = myRep.testStartingEventsReceived
       assert(testStarting.size == 2)
       assert(testStarting(0).testName == "this is a test")

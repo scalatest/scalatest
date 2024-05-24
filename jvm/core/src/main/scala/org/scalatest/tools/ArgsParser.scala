@@ -71,7 +71,6 @@ private[tools] object ArgsParser {
           s.startsWith("-m") ||
           s.startsWith("-w") ||
           s.startsWith("-b") ||
-          s.startsWith("-y") ||
           s.startsWith("-t") ||
           s.startsWith("-z") ||
           s.startsWith("-q") ||
@@ -200,7 +199,6 @@ private[tools] object ArgsParser {
     // SKIP-SCALATESTJS,NATIVE-END
     val suffixes = new ListBuffer[String]()
     // SKIP-SCALATESTJS,NATIVE-START
-    val chosenStyles = new ListBuffer[String]()
     val spanScaleFactor = new ListBuffer[String]()
     val testSortingReporterTimeout = new ListBuffer[String]()
     val slowpoke = new ListBuffer[String]()
@@ -400,14 +398,6 @@ private[tools] object ArgsParser {
         // SKIP-SCALATESTJS,NATIVE-END
         //SCALATESTJS,NATIVE-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
-      else if (s == "-y") {
-        // SKIP-SCALATESTJS,NATIVE-START
-        chosenStyles += s
-        if (it.hasNext)
-          chosenStyles += it.next()
-        // SKIP-SCALATESTJS,NATIVE-END
-        //SCALATESTJS,NATIVE-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
-      }
       else if (s == "-F") {
         // SKIP-SCALATESTJS,NATIVE-START
         spanScaleFactor += s
@@ -473,7 +463,6 @@ private[tools] object ArgsParser {
       // SKIP-SCALATESTJS,NATIVE-START
       testNGXMLFiles.toList,
       genSuffixesPattern(suffixes.toList),
-      chosenStyles.toList,
       spanScaleFactor.toList,
       testSortingReporterTimeout.toList,
       slowpoke.toList,
@@ -1211,22 +1200,6 @@ private[tools] object ArgsParser {
     else {
       throw new IllegalArgumentException("Compound arg must be either zero-length or have even number of args: " + args)
     }
-  }
-
-  def parseChosenStylesIntoChosenStyleSet(args: List[String], dashArg: String) = {
-    val it = args.iterator
-    val lb = new ListBuffer[String]()
-    while (it.hasNext) {
-      val dash = it.next
-      if (dash != dashArg)
-        throw new IllegalArgumentException("Every other element, starting with the first, must be " + dashArg)
-      if (it.hasNext) {
-        lb += it.next
-      }
-      else
-        throw new IllegalArgumentException("Last element must be a style name, not a " + dashArg + ".")
-    }
-    lb.toSet
   }
 
   def parseDoubleArgument(args: List[String], dashArg: String, defaultValue: Double): Double = {

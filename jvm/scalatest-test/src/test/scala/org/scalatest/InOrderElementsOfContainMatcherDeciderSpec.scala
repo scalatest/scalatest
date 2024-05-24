@@ -20,7 +20,7 @@ import org.scalactic.Explicitly
 import org.scalactic.StringNormalizations
 import org.scalactic.Uniformity
 import org.scalactic.Prettifier
-import collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import SharedHelpers._
 import StringNormalizations._
 import org.scalatest.funspec.AnyFunSpec
@@ -136,7 +136,7 @@ class InOrderElementsOfContainMatcherDeciderSpec extends AnyFunSpec with Explici
 
   describe("inOrderElementsOf ") {
 
-    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " did not contain all elements of " + rightText + " in order"))
@@ -144,7 +144,7 @@ class InOrderElementsOfContainMatcherDeciderSpec extends AnyFunSpec with Explici
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
 
-    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " contained all elements of " + rightText + " in order"))

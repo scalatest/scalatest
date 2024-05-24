@@ -17,7 +17,7 @@ package org.scalatest
 
 import collection.JavaConverters._
 import java.util.concurrent.atomic.AtomicReference
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 
 private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
 
@@ -31,7 +31,7 @@ private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
 
   def isEmpty: Boolean = queue.isEmpty
 
-  def asScala: GenTraversable[T] = queue
+  def asScala: Iterable[T] = queue
 
   def poll: T = queue.remove(0)
 }

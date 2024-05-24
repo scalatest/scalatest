@@ -922,42 +922,17 @@ trait CommonGenerators {
     // Take Int not PosInt, because Scala won't apply  multiple implicit
     // conversions, such as one for PosInt => Int, and another for Int => Generator[Int].
     // So just do a require.
-    /*
-        TODO:
-
-         org.scalactic.Requirements.require {
-           distribution forall { case (w, _) => w >= 1 }
-         }
-
-    [error] /Users/bv/nobkp/delus/st-algebra-and-laws-2/scalatest/src/main/scala/org/scalatest/prop/package.scala:154: exception during macro expansion:
-    [error] scala.reflect.macros.TypecheckException: not found: value requirementsHelper
-    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$typecheck$2$$anonfun$apply$1.apply(Typers.scala:34)
-    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$typecheck$2$$anonfun$apply$1.apply(Typers.scala:28)
-    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$3.apply(Typers.scala:24)
-    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$3.apply(Typers.scala:24)
-    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$withContext$1$1.apply(Typers.scala:25)
-    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$withContext$1$1.apply(Typers.scala:25)
-    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$1.apply(Typers.scala:23)
-    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$1.apply(Typers.scala:23)
-    [error] 	at scala.reflect.macros.contexts.Typers$class.withContext$1(Typers.scala:25)
-    [error] 	at scala.reflect.macros.contexts.Typers$$anonfun$typecheck$2.apply(Typers.scala:28)
-
-    */
-    // I think we actually need to say org.scalactic.Requirements.requirementsHelper in the thing not requirementsHelper
-    // Oh, maybe that won't work. Anyway, see what's up.
-    // TODO: We should try to remove this dotty skip when newer dotty is available.
-    // SKIP-DOTTY-START
+    
     import org.scalactic.Requirements._
     require {
       distribution forall { case (w, _) => w >= 1 }
     }
-    // SKIP-DOTTY-END
+
     new Generator[T] {
       private val totalWeight: Int = distribution.toMap.keys.sum
       // gens contains, for each distribution pair, weight generators.
       private val gens: Vector[Generator[T]] =
-      // TODO: Try dropping toVector. distribution is already a Vector
-        distribution.toVector flatMap { case (w, g) =>
+        distribution flatMap { case (w, g) =>
           Vector.fill(w)(g)
         }
       def nextImpl(szp: SizeParam, isValidFun: (T, SizeParam) => Boolean, rnd: Randomizer): (RoseTree[T], Randomizer) = {

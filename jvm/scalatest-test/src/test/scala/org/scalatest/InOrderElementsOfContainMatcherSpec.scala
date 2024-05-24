@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import collection.mutable.LinkedHashMap
 import SharedHelpers._
 import org.scalactic.Prettifier
@@ -28,7 +28,7 @@ class InOrderElementsOfContainMatcherSpec extends AnyFunSpec {
 
   describe("inOrderElementsOf ") {
 
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " did not contain all elements of " + rightText + " in order"))
@@ -250,7 +250,7 @@ class InOrderElementsOfContainMatcherSpec extends AnyFunSpec {
 
   describe("not inOrderElementsOf ") {
 
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Iterable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " contained all elements of " + rightText + " in order"))

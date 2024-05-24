@@ -4404,7 +4404,6 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       }
     }
 
-    import scala.collection.GenTraversable
     import org.scalactic.ColCompatHelper
     /**
       * A common test for how we do shrinking in the collection Generators.
@@ -4418,7 +4417,7 @@ class GeneratorSpec extends AnyFunSpec with Matchers {
       * @param generator the Generator for this collection type
       * @tparam F the collection type we are testing
       */
-    def shrinkByStrategery[F[Int] <: GenTraversable[Int]](factory: ColCompatHelper.Factory[Int, F[Int]])(implicit generator: Generator[F[Int]]): Unit = {  
+    def shrinkByStrategery[F[Int] <: ColCompatHelper.Iterable[Int]](factory: ColCompatHelper.Factory[Int, F[Int]])(implicit generator: Generator[F[Int]]): Unit = {  
       import GeneratorDrivenPropertyChecks._
       val intGenerator = Generator.intGenerator
       val intCanonicalsIt = intGenerator.canonicals

@@ -16,9 +16,8 @@
 package org.scalactic.anyvals
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
-import scala.collection.GenIterable
 import scala.collection.GenSeq
-import scala.collection.GenTraversableOnce
+import org.scalactic.ColCompatHelper.{IterableOnce, Iterable, GenIterable}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
@@ -173,12 +172,12 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
   // TODO: Have I added these extra ++, etc. methods to Every that take a NonEmptyString?
 
   /**
-    * Returns a new <code>NonEmptyString</code> containing this <code>NonEmptyString</code> followed by the characters of the passed <code>GenTraversableOnce</code>.
+    * Returns a new <code>NonEmptyString</code> containing this <code>NonEmptyString</code> followed by the characters of the passed <code>IterableOnce</code>.
     *
-    * @param other the <code>GenTraversableOnce</code> of <code>Char</code> to append
+    * @param other the <code>IterableOnce</code> of <code>Char</code> to append
     * @return a new <code>NonEmptyString</code> that contains this <code>NonEmptyString</code> followed by all characters of <code>other</code>.
     */
-  def ++(other: GenTraversableOnce[Char]): NonEmptyString =
+  def ++(other: IterableOnce[Char]): NonEmptyString =
     if (other.isEmpty) this else new NonEmptyString(theString ++ other.mkString)
 
   /**
@@ -555,7 +554,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     */
   final def head: Char = theString.head
 
-  // Methods like headOption I can't get rid of because of the implicit conversion to GenTraversable.
+  // Methods like headOption I can't get rid of because of the implicit conversion to Iterable.
   // Users can call any of the methods I've left out on a NonEmptyString, and get whatever String would return
   // for that method call. Eventually I'll probably implement them all to save the implicit conversion.
 
@@ -1347,7 +1346,7 @@ final class NonEmptyString private (val theString: String) extends AnyVal {
     *
     * @return an <code>Iterable</code> containing all characters of this <code>NonEmptyString</code>.
     */
-  final def toIterable: Iterable[Char] = theString.toIterable
+  final def toIterable: scala.collection.Iterable[Char] = theString.toIterable
 
   /**
     * Returns an <code>Iterator</code> over the elements in this <code>NonEmptyString</code>.
@@ -1581,7 +1580,7 @@ object NonEmptyString {
   import scala.language.implicitConversions
 
   /**
-    * Implicit conversion from <code>NonEmptyString</code> to <code>GenTraversableOnce[Char]</code>.
+    * Implicit conversion from <code>NonEmptyString</code> to <code>IterableOnce[Char]</code>.
     *
     * <p>
     * One use case for this implicit conversion is to enable <code>GenSeq[NonEmptyString]</code>s to be flattened.
@@ -1593,10 +1592,10 @@ object NonEmptyString {
     * res0: scala.collection.immutable.Vector[Char] = Vector('1', '2', '3', '3', '4', '5', '6', '7', '8')
     * </pre>
     *
-    * @param nonEmptyString the <code>NonEmptyString</code> to convert to a <code>GenTraversableOnce[Char]</code>
-    * @return a <code>GenTraversableOnce[Char]</code> containing the elements, in order, of this <code>NonEmptyString</code>
+    * @param nonEmptyString the <code>NonEmptyString</code> to convert to a <code>IterableOnce[Char]</code>
+    * @return a <code>IterableOnce[Char]</code> containing the elements, in order, of this <code>NonEmptyString</code>
     */
-  implicit def nonEmptyStringToGenTraversableOnceOfChar(nonEmptyString: NonEmptyString): GenTraversableOnce[Char] = nonEmptyString.theString
+  implicit def nonEmptyStringToIterableOnceOfChar(nonEmptyString: NonEmptyString): IterableOnce[Char] = nonEmptyString.theString
 
   implicit def nonEmptyStringToPartialFunction(nonEmptyString: NonEmptyString): PartialFunction[Int, Char] =
     new PartialFunction[Int, Char] {

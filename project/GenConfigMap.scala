@@ -51,7 +51,6 @@ object GenConfigMap {
           |import enablers.ValueMapping
           |import org.scalatest.exceptions.StackDepthException
           |
-          |import scala.collection.GenTraversable
           |
           |// TODO: Oops. Need to pass ConfigMap not Map[String, Any] in TestStarting.
           |/**
@@ -268,7 +267,6 @@ object GenConfigMap {
           |import enablers.ValueMapping
           |import org.scalatest.exceptions.StackDepthException
           |
-          |import scala.collection.GenTraversable
           |
           |// TODO: Oops. Need to pass ConfigMap not Map[String, Any] in TestStarting.
           |/**

@@ -65,8 +65,7 @@ private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner 
         val formatter = formatterForSuiteStarting(suite)
 
         report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
-        // TODO: I had to pass Set.empty for chosenStyles now. Fix this later.
-        suite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
+        suite.run(None, Args(report, stopper, filter, configMap, distributor, tracker))
 
         val rawString2 = Resources.suiteCompletedNormally
         val formatter2 = formatterForSuiteCompleted(suite)

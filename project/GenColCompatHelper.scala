@@ -49,7 +49,11 @@ object GenColCompatHelper {
           |
           |  type WithFilter[+A, +CC[_]] = scala.collection.WithFilter[A, CC]
           |
+          |  type Iterable[+A] = scala.collection.Iterable[A]
+          |
           |  type IterableOnce[+A] = scala.collection.IterableOnce[A]
+          |
+          |  type GenIterable[+A] = scala.collection.Iterable[A]
           |
           |  type Factory[-A, +C] = scala.collection.Factory[A, C]
           |
@@ -104,7 +108,11 @@ object GenColCompatHelper {
           |
           |  type WithFilter[+A, +Repr] = scala.collection.generic.FilterMonadic[A, Repr]
           |
+          |  type Iterable[+A] = scala.collection.GenTraversable[A]
+          |
           |  type IterableOnce[+A] = scala.collection.GenTraversableOnce[A]
+          |
+          |  type GenIterable[+A] = scala.collection.GenIterable[A]
           |
           |  type Factory[-A, +C] = scala.collection.generic.CanBuildFrom[Nothing, A, C] // Ideally, this would be an opaque type
           |
