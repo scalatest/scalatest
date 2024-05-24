@@ -53,9 +53,9 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
    * @return a tuple containing a lazy stream of shrunk trees and an optional error data, if
    *         a shrunken or simplified case was found during the search
    */
-  def shrinkSearch[E](fun: T => (Boolean, Option[E])): (LazyListOrStream[RoseTree[T]], Option[E]) = {
+  def shrinkSearch[E](fun: T => (Boolean, Option[E])): Option[(T, Option[E])] = {
     @tailrec
-    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], count: Int): (LazyListOrStream[RoseTree[T]], Option[E]) = {
+    def shrinkLoop(lastFailure: Option[(RoseTree[T], Option[E])], pending: LazyListOrStream[RoseTree[T]], count: Int): Option[(RoseTree[T], Option[E])] = {
       if (count < maximumIterationCount)
         pending match {
           case head #:: tail => 
@@ -63,20 +63,20 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
             if (!result) {
               // If the function fail, we got a new failure value, and we'll go one level deeper.
               val headChildrenRTs = head.shrinks
-              shrinkLoop(head, errDataOpt, headChildrenRTs, count + 1)
+              shrinkLoop(Some((head, errDataOpt)), headChildrenRTs, count + 1)
             }
             else {
               // The function call succeeded, let's continue to try the sibling.
-              shrinkLoop(lastFailure, lastFailureData, tail, count + 1)
+              shrinkLoop(lastFailure, tail, count + 1)
             }
 
           case _ => // No more further sibling to try, return the last failure
-            (LazyListOrStream(lastFailure), lastFailureData)
+            lastFailure
         }
       else 
-        (LazyListOrStream(lastFailure), lastFailureData)
+        lastFailure
     }
-    shrinkLoop(this, None, shrinks, 0)
+    shrinkLoop(None, shrinks, 0).map { case (roseTree, errDataOpt) => (roseTree.value, errDataOpt) }
   }
 
   // Do we need to return LazyListOrStream. Can we just return a (RoseTree[T], Option[E]) or could

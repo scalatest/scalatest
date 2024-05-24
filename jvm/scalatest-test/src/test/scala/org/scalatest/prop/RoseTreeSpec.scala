@@ -19,11 +19,12 @@ import org.scalactic.anyvals._
 import org.scalatest.exceptions.TestFailedException
 import scala.collection.immutable.SortedSet
 import scala.collection.immutable.SortedMap
+import org.scalatest.OptionValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalactic.ColCompatHelper._
 
-class RoseTreeSpec extends AnyFunSpec with Matchers {
+class RoseTreeSpec extends AnyFunSpec with Matchers with OptionValues {
   describe("A RoseTree") {
     it("should offer a toString that gives the value only") {
       val irt = new RoseTree[Int] {
@@ -50,9 +51,8 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val rt = intRoseTree(72)
       rt.value shouldBe 72
 
-      val (shrinks, _) = rt.shrinkSearch(i => (i < 12, None))
-      shrinks should have length 1
-      shrinks(0).value shouldBe 12
+      val shrink = rt.shrinkSearch(i => (i < 12, None)).value._1
+      shrink shouldBe 12
     }
 
     case class StatefulInt(value: Int) {
@@ -105,9 +105,8 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val (rtRes, _) = processFun(rt.value)
       rtRes shouldBe false
       
-      val (shrinks, _) = rt.shrinkSearch(processFun)
-      shrinks should have length 1
-      shrinks(0).value.value shouldBe 12
+      val shrink = rt.shrinkSearch(processFun).value._1
+      shrink.value shouldBe 12
 
       /*
          72 // This one fails, we'll shrink next level of depth first
