@@ -44,13 +44,13 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val rt2 = charRoseTree('e')
       rt.flatMap(n => rt2.map(c => (n.toString + "!", (c - 1).toChar))).value shouldBe (("10!", 'd'))
     }
-    it("should offer a depthFirstShrinks method") {
+    it("should offer a shrinkSearch method") {
       import RoseTreeSpec._
 
       val rt = intRoseTree(72)
       rt.value shouldBe 72
 
-      val (shrinks, _) = rt.depthFirstShrinks(i => (i < 12, None))
+      val (shrinks, _) = rt.shrinkSearch(i => (i < 12, None))
       shrinks should have length 1
       shrinks(0).value shouldBe 12
     }
@@ -92,7 +92,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       def shrinks: LazyListOrStream[RoseTree[StatefulBoolean]] = shrinksRoseTrees
     }
 
-    it("should offer a depthFirstShrinks method that follows the 'depth-first' algo") {
+    it("should offer a shrinkSearch method that follows the 'depth-first' algo") {
       
       val rt = new StatefulRoseTree(StatefulInt(72))
       rt.value.value shouldBe 72
@@ -105,7 +105,7 @@ class RoseTreeSpec extends AnyFunSpec with Matchers {
       val (rtRes, _) = processFun(rt.value)
       rtRes shouldBe false
       
-      val (shrinks, _) = rt.depthFirstShrinks(processFun)
+      val (shrinks, _) = rt.shrinkSearch(processFun)
       shrinks should have length 1
       shrinks(0).value.value shouldBe 12
 

@@ -30,7 +30,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
 
   private lazy val maximumIterationCount = 1000000
 
-  def depthFirstShrinks[E](fun: T => (Boolean, Option[E])): (LazyListOrStream[RoseTree[T]], Option[E]) = {
+  def shrinkSearch[E](fun: T => (Boolean, Option[E])): (LazyListOrStream[RoseTree[T]], Option[E]) = {
     @tailrec
     def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], count: Int): (LazyListOrStream[RoseTree[T]], Option[E]) = {
       if (count < maximumIterationCount)
@@ -56,7 +56,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
     shrinkLoop(this, None, shrinks, 0)
   }
 
-  def depthFirstShrinksForFuture[E](fun: T => Future[(Boolean, Option[E])])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
+  def shrinkSearchForFuture[E](fun: T => Future[(Boolean, Option[E])])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
     def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], count: Int): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
       if (count < maximumIterationCount) 
         pending match {

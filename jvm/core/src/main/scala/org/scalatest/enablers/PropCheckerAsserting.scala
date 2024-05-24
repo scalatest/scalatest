@@ -186,7 +186,7 @@ abstract class UnitPropCheckerAsserting {
           case Failure(ex) =>
             // Let's shrink the failing value
             val (shrunkRtOfA, errOpt1) =
-              roseTreeOfA.depthFirstShrinks(
+              roseTreeOfA.shrinkSearch(
                 value => {
                   val result: Try[T] = Try { fun(value) }
                   result match {
@@ -272,7 +272,7 @@ abstract class UnitPropCheckerAsserting {
             // Let's shrink the failing value
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
             val (shrunkRtOfAB, shrunkErrOpt) =
-              roseTreeOfAB.depthFirstShrinks {
+              roseTreeOfAB.shrinkSearch {
                 case (a, b) => 
                   Try { fun(a, b) } match {
                     case Success(_) => (true, None)
@@ -361,7 +361,7 @@ abstract class UnitPropCheckerAsserting {
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val (shrunkRtOfABC, shrunkErrOpt) =
-              roseTreeOfABC.depthFirstShrinks {
+              roseTreeOfABC.shrinkSearch {
                 case (a, b, c) => 
                   Try { fun(a, b, c) } match {
                     case Success(_) => (true, None)
@@ -456,7 +456,7 @@ abstract class UnitPropCheckerAsserting {
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val (shrunkRtOfABCD, shrunkErrOpt) =
-              roseTreeOfABCD.depthFirstShrinks { 
+              roseTreeOfABCD.shrinkSearch { 
                 case (a, b, c, d) => 
                   val result: Try[T] = Try { fun(a, b, c, d) }
                   result match {
@@ -558,7 +558,7 @@ abstract class UnitPropCheckerAsserting {
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
             val (shrunkRtOfABCDE, shrunkErrOpt) =
-              roseTreeOfABCDE.depthFirstShrinks { case (a, b, c, d, e) => 
+              roseTreeOfABCDE.shrinkSearch { case (a, b, c, d, e) => 
                 Try { fun(a, b, c, d, e) } match {
                   case Success(_) => (true, None)
                   case Failure(shrunkEx) => (false, Some(shrunkEx))
@@ -665,7 +665,7 @@ abstract class UnitPropCheckerAsserting {
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
             val roseTreeOfABCDEF = RoseTree.map2(roseTreeOfABCDE, roseTreeOfF) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
             val (shrunkRtOfABCDEF, shrunkErrOpt) =
-              roseTreeOfABCDEF.depthFirstShrinks { case (a, b, c, d, e, f) => 
+              roseTreeOfABCDEF.shrinkSearch { case (a, b, c, d, e, f) => 
                 Try { fun(a, b, c, d, e, f) } match {
                   case Success(_) => (true, None)
                   case Failure(shrunkEx) => (false, Some(shrunkEx))
@@ -886,7 +886,7 @@ trait FuturePropCheckerAsserting {
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 for {
-                  (shrunkRtOfA, errOpt1) <- roseTreeOfA.depthFirstShrinksForFuture(
+                  (shrunkRtOfA, errOpt1) <- roseTreeOfA.shrinkSearchForFuture(
                                                  value => {
                                                    val result: Future[T] = fun(value)
                                                    result.map { r =>
@@ -927,7 +927,7 @@ trait FuturePropCheckerAsserting {
 
           case ex: Throwable =>
             for {
-              (shrunkRtOfA, errOpt1) <- roseTreeOfA.depthFirstShrinksForFuture(
+              (shrunkRtOfA, errOpt1) <- roseTreeOfA.shrinkSearchForFuture(
                                              value => {
                                                val result: Future[T] = fun(value)
                                                result.map { r =>
@@ -1025,7 +1025,7 @@ trait FuturePropCheckerAsserting {
               case Some(f: PropertyCheckResult.Failure) => 
                 val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
                 for {
-                  (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfAB.depthFirstShrinksForFuture { case (a, b) => {
+                  (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfAB.shrinkSearchForFuture { case (a, b) => {
                                                               val result: Future[T] = fun(a, b)
                                                               result.map { _ => 
                                                                 (true, None)
@@ -1065,7 +1065,7 @@ trait FuturePropCheckerAsserting {
           case ex: Throwable =>
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
             for {
-              (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfAB.depthFirstShrinksForFuture { case (a, b) => {
+              (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfAB.shrinkSearchForFuture { case (a, b) => {
                                                           val result: Future[T] = fun(a, b)
                                                           result.map { _ => 
                                                             (true, None)
@@ -1165,7 +1165,7 @@ trait FuturePropCheckerAsserting {
                 val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
                 val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
                 for {
-                  (shrunkRtOfABC, shrunkErrOpt) <- roseTreeOfABC.depthFirstShrinksForFuture { case (a, b, c) => {
+                  (shrunkRtOfABC, shrunkErrOpt) <- roseTreeOfABC.shrinkSearchForFuture { case (a, b, c) => {
                                                               val result: Future[T] = fun(a, b, c)
                                                               result.map { _ => 
                                                                 (true, None)
@@ -1206,7 +1206,7 @@ trait FuturePropCheckerAsserting {
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             for {
-              (shrunkRtOfABC, shrunkErrOpt) <- roseTreeOfABC.depthFirstShrinksForFuture { case (a, b, c) => {
+              (shrunkRtOfABC, shrunkErrOpt) <- roseTreeOfABC.shrinkSearchForFuture { case (a, b, c) => {
                                                           val result: Future[T] = fun(a, b, c)
                                                           result.map { _ => 
                                                             (true, None)
@@ -1311,7 +1311,7 @@ trait FuturePropCheckerAsserting {
                 val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
                 val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
                 for {
-                  (shrunkRtOfABCD, shrunkErrOpt) <- roseTreeOfABCD.depthFirstShrinksForFuture { case (a, b, c, d) => {
+                  (shrunkRtOfABCD, shrunkErrOpt) <- roseTreeOfABCD.shrinkSearchForFuture { case (a, b, c, d) => {
                                                               val result: Future[T] = fun(a, b, c, d)
                                                               result.map { _ => 
                                                                 (true, None)
@@ -1354,7 +1354,7 @@ trait FuturePropCheckerAsserting {
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             for {
-              (shrunkRtOfABCD, shrunkErrOpt) <- roseTreeOfABCD.depthFirstShrinksForFuture { case (a, b, c, d) => {
+              (shrunkRtOfABCD, shrunkErrOpt) <- roseTreeOfABCD.shrinkSearchForFuture { case (a, b, c, d) => {
                                                           val result: Future[T] = fun(a, b, c, d)
                                                           result.map { _ => 
                                                             (true, None)
@@ -1465,7 +1465,7 @@ trait FuturePropCheckerAsserting {
                 val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
                 val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
                 for {
-                  (shrunkRtOfABCDE, shrunkErrOpt) <- roseTreeOfABCDE.depthFirstShrinksForFuture { case (a, b, c, d, e) => {
+                  (shrunkRtOfABCDE, shrunkErrOpt) <- roseTreeOfABCDE.shrinkSearchForFuture { case (a, b, c, d, e) => {
                                                               val result: Future[T] = fun(a, b, c, d, e)
                                                               result.map { _ => 
                                                                 (true, None)
@@ -1509,7 +1509,7 @@ trait FuturePropCheckerAsserting {
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
             for {
-              (shrunkRtOfABCDE, shrunkErrOpt) <- roseTreeOfABCDE.depthFirstShrinksForFuture { case (a, b, c, d, e) => {
+              (shrunkRtOfABCDE, shrunkErrOpt) <- roseTreeOfABCDE.shrinkSearchForFuture { case (a, b, c, d, e) => {
                                                           val result: Future[T] = fun(a, b, c, d, e)
                                                           result.map { _ => 
                                                             (true, None)
@@ -1626,7 +1626,7 @@ trait FuturePropCheckerAsserting {
                 val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
                 val roseTreeOfABCDEF = RoseTree.map2(roseTreeOfABCDE, roseTreeOfF) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
                 for {
-                  (shrunkRtOfABCDEF, shrunkErrOpt) <- roseTreeOfABCDEF.depthFirstShrinksForFuture { case (a, b, c, d, e, f) => {
+                  (shrunkRtOfABCDEF, shrunkErrOpt) <- roseTreeOfABCDEF.shrinkSearchForFuture { case (a, b, c, d, e, f) => {
                                                               val result: Future[T] = fun(a, b, c, d, e, f)
                                                               result.map { _ => 
                                                                 (true, None)
@@ -1671,7 +1671,7 @@ trait FuturePropCheckerAsserting {
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
             val roseTreeOfABCDEF = RoseTree.map2(roseTreeOfABCDE, roseTreeOfF) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
             for {
-              (shrunkRtOfABCDEF, shrunkErrOpt) <- roseTreeOfABCDEF.depthFirstShrinksForFuture { case (a, b, c, d, e, f) => {
+              (shrunkRtOfABCDEF, shrunkErrOpt) <- roseTreeOfABCDEF.shrinkSearchForFuture { case (a, b, c, d, e, f) => {
                                                           val result: Future[T] = fun(a, b, c, d, e, f)
                                                           result.map { _ => 
                                                             (true, None)
