@@ -817,7 +817,7 @@ trait FuturePropCheckerAsserting {
 
     private def checkForAll[A](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => Future[T]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedA: Option[RoseTree[A]])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, edges: List[A], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedA: Option[A])
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
@@ -857,7 +857,7 @@ trait FuturePropCheckerAsserting {
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)), Some(roseTreeOfA))
+                AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)), Some(roseTreeOfA.value))
 
             }
           } recover {
@@ -869,31 +869,31 @@ trait FuturePropCheckerAsserting {
                 AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             case ex: Throwable =>
-              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some(roseTreeOfA))
+              AccumulatedResult(succeededCount, discardedCount, edges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some(roseTreeOfA.value))
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
-                for {
-                  (shrunkRtOfA, errOpt1) <- roseTreeOfA.shrinkSearchForFuture(
-                                                 value => {
-                                                   val result: Future[T] = fun(value)
-                                                   result.map { r =>
-                                                     (true, None)
-                                                   }.recoverWith {
-                                                     case shrunkEx: Throwable =>
-                                                     Future.successful((false, Some(shrunkEx)))
-                                                   }
-                                                 }
-                                               )
-                } yield {
-                  val bestRtA = shrunkRtOfA.headOption.getOrElse(roseTreeOfA)
-                  val bestA = bestRtA.value
-                  val errOpt = List(f.ex, errOpt1).flatten.lastOption
-                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestA) else PropertyArgument(None, bestA))
+                roseTreeOfA.shrinkSearchForFuture(
+                  value => {
+                    val result: Future[T] = fun(value)
+                    result.map { r =>
+                      None
+                    }.recoverWith {
+                      case shrunkEx: Throwable =>
+                      Future.successful(Some(shrunkEx))
+                    }
+                  }
+                ).map { shrinkOpt =>
+                  val (bestA, errOpt) = 
+                    shrinkOpt match {
+                      case Some((shrunkOfA, errOpt1)) => (shrunkOfA, Some(errOpt1))
+                      case None => (roseTreeOfA.value, f.ex)
+                    }
+                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestA) else PropertyArgument(None, bestA))  
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, edges, nextNextRnd, initialSizes, Some(theRes), Some(bestRtA))
+                  AccumulatedResult(succeededCount, discardedCount, edges, nextNextRnd, initialSizes, Some(theRes), Some(bestA))
                 }
-                
+
               case Some(_) => Future.successful(result)
               case None => loop(result.succeededCount, result.discardedCount, result.edges, result.rnd, result.initialSizes, initSeed)
             }
@@ -914,25 +914,25 @@ trait FuturePropCheckerAsserting {
               loop(result.succeededCount, result.discardedCount, result.edges, result.rnd, result.initialSizes, initSeed)
 
           case ex: Throwable =>
-            for {
-              (shrunkRtOfA, errOpt1) <- roseTreeOfA.shrinkSearchForFuture(
-                                             value => {
-                                               val result: Future[T] = fun(value)
-                                               result.map { r =>
-                                                 (true, None)
-                                               }.recoverWith {
-                                                 case shrunkEx: Throwable =>
-                                                 Future.successful((false, Some(shrunkEx)))
-                                               }
-                                             }
-                                           ) 
-            } yield {
-              val bestRtA = shrunkRtOfA.headOption.getOrElse(roseTreeOfA)
-              val bestA = bestRtA.value
-              val errOpt = List(Some(ex), errOpt1).flatten.lastOption
-              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestA) else PropertyArgument(None, bestA))
+            roseTreeOfA.shrinkSearchForFuture(
+              value => {
+                val result: Future[T] = fun(value)
+                result.map { r =>
+                  None
+                }.recoverWith {
+                  case shrunkEx: Throwable =>
+                  Future.successful(Some(shrunkEx))
+                }
+              }
+            ).map { shrinkOpt =>
+              val (bestA, errOpt) = 
+                shrinkOpt match {
+                  case Some((shrunkOfA, errOpt1)) => (shrunkOfA, Some(errOpt1))
+                  case None => (roseTreeOfA.value, Some(ex))
+                }
+              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestA) else PropertyArgument(None, bestA))  
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, edges, nextNextRnd, initialSizes, Some(theRes), Some(bestRtA))
+              AccumulatedResult(succeededCount, discardedCount, edges, nextNextRnd, initialSizes, Some(theRes), Some(bestA))
             }
         }
       }
@@ -948,7 +948,7 @@ trait FuturePropCheckerAsserting {
 
     private def checkForAll[A, B](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B])(fun: (A, B) => Future[T]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedAB: Option[(A, B)])
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
@@ -978,9 +978,9 @@ trait FuturePropCheckerAsserting {
             if (discard(r)) {
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             }
             else {
@@ -988,47 +988,47 @@ trait FuturePropCheckerAsserting {
               if (success) {
                 val nextSucceededCount = succeededCount + 1
                 if (nextSucceededCount < config.minSuccessful)
-                  AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextNextRnd, nextInitialSizes, None)
+                  AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextNextRnd, nextInitialSizes, None, None)
                 else
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)), None)
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)), Some((a, b)))
 
             }
           } recover {
             case ex: DiscardedEvaluationException =>
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             case ex: Throwable =>
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some((a, b)))
           } flatMap { result =>
 
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
-                for {
-                  (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfAB.shrinkSearchForFuture { case (a, b) => {
-                                                              val result: Future[T] = fun(a, b)
-                                                              result.map { _ => 
-                                                                (true, None)
-                                                              } recover {
-                                                                case shrunkEx: Throwable => (false, Some(shrunkEx))
-                                                              }
-                                                            }
-                                                          }
-                } yield {
-                  val bestAB = shrunkRtOfAB.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value))
-                  val errOpt: Option[Throwable] = List(f.ex, shrunkErrOpt).flatten.lastOption
-
-                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestAB) else PropertyArgument(None, bestAB))
+                roseTreeOfAB.shrinkSearchForFuture { case (a, b) =>
+                  val result: Future[T] = fun(a, b)
+                  result.map { r =>
+                    None
+                  }.recoverWith {
+                    case shrunkEx: Throwable =>
+                    Future.successful(Some(shrunkEx))
+                  }
+                }.map { shrinkOpt =>
+                  val (bestAB, errOpt) = 
+                    shrinkOpt match {
+                      case Some((shrunkOfAB, errOpt1)) => (shrunkOfAB, Some(errOpt1))
+                      case None => (roseTreeOfAB.value, f.ex)
+                    }
+                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestAB) else PropertyArgument(None, bestAB))  
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, result.rnd, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, result.rnd, initialSizes, Some(theRes), Some(bestAB))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1041,9 +1041,9 @@ trait FuturePropCheckerAsserting {
             val nextDiscardedCount = discardedCount + 1
             val result =
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             if (result.result.isDefined)
               Future.successful(result)
@@ -1052,23 +1052,23 @@ trait FuturePropCheckerAsserting {
 
           case ex: Throwable =>
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
-            for {
-              (shrunkRtOfAB, shrunkErrOpt) <- roseTreeOfAB.shrinkSearchForFuture { case (a, b) => {
-                                                          val result: Future[T] = fun(a, b)
-                                                          result.map { _ => 
-                                                            (true, None)
-                                                          } recover {
-                                                            case shrunkEx: Throwable => (false, Some(shrunkEx))
-                                                          }
-                                                        }
-                                                      }
-            } yield {
-              val bestAB = shrunkRtOfAB.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value))
-              val errOpt: Option[Throwable] = List(Some(ex), shrunkErrOpt).flatten.lastOption
-
-              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestAB) else PropertyArgument(None, bestAB))
+            roseTreeOfAB.shrinkSearchForFuture { case (a, b) =>
+              val result: Future[_] = fun(a, b)
+              result.map { r =>
+                None
+              }.recoverWith {
+                case shrunkEx: Throwable =>
+                Future.successful(Some(shrunkEx))
+              }
+            }.map { shrinkOpt =>
+              val (bestAB, errOpt) = 
+                shrinkOpt match {
+                  case Some((shrunkOfAB, errOpt1)) => (shrunkOfAB, Some(errOpt1))
+                  case None => (roseTreeOfAB.value, Some(ex))
+                }
+              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestAB) else PropertyArgument(None, bestAB))  
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, rnd, initialSizes, Some(theRes))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, nextNextRnd, initialSizes, Some(theRes), Some(bestAB))
             }
         }
       }
@@ -1086,7 +1086,7 @@ trait FuturePropCheckerAsserting {
     private def checkForAll[A, B, C](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
                                      genC: org.scalatest.prop.Generator[C])(fun: (A, B, C) => Future[T]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABC: Option[(A, B, C)])
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
@@ -1118,9 +1118,9 @@ trait FuturePropCheckerAsserting {
             if (discard(r)) {
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             }
             else {
@@ -1128,47 +1128,47 @@ trait FuturePropCheckerAsserting {
               if (success) {
                 val nextSucceededCount = succeededCount + 1
                 if (nextSucceededCount < config.minSuccessful)
-                  AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextNextRnd, nextInitialSizes, None)
+                  AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextNextRnd, nextInitialSizes, None, None)
                 else
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)), None)
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)), Some(a, b, c))
 
             }
           } recover {
             case ex: DiscardedEvaluationException =>
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             case ex: Throwable =>
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some(a, b, c))
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
                 val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
-                for {
-                  (shrunkRtOfABC, shrunkErrOpt) <- roseTreeOfABC.shrinkSearchForFuture { case (a, b, c) => {
-                                                              val result: Future[T] = fun(a, b, c)
-                                                              result.map { _ => 
-                                                                (true, None)
-                                                              } recover {
-                                                                case shrunkEx: Throwable => (false, Some(shrunkEx))
-                                                              }
-                                                            }
-                                                          }
-                } yield {
-                  val bestABC = shrunkRtOfABC.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value))
-                  val errOpt: Option[Throwable] = List(f.ex, shrunkErrOpt).flatten.lastOption
-
-                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABC) else PropertyArgument(None, bestABC))
+                roseTreeOfABC.shrinkSearchForFuture { case (a, b, c) =>
+                  val result: Future[T] = fun(a, b, c)
+                  result.map { r =>
+                    None
+                  }.recoverWith {
+                    case shrunkEx: Throwable =>
+                    Future.successful(Some(shrunkEx))
+                  }
+                }.map { shrinkOpt =>
+                  val (bestABC, errOpt) = 
+                    shrinkOpt match {
+                      case Some((shrunkOfABC, errOpt1)) => (shrunkOfABC, Some(errOpt1))
+                      case None => (roseTreeOfABC.value, f.ex)
+                    }
+                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABC) else PropertyArgument(None, bestABC))  
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, result.rnd, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, result.rnd, initialSizes, Some(theRes), Some(bestABC))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1181,9 +1181,9 @@ trait FuturePropCheckerAsserting {
             val nextDiscardedCount = discardedCount + 1
             val result =
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             if (result.result.isDefined)
               Future.successful(result)
@@ -1193,23 +1193,23 @@ trait FuturePropCheckerAsserting {
           case ex: Throwable =>
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
-            for {
-              (shrunkRtOfABC, shrunkErrOpt) <- roseTreeOfABC.shrinkSearchForFuture { case (a, b, c) => {
-                                                          val result: Future[T] = fun(a, b, c)
-                                                          result.map { _ => 
-                                                            (true, None)
-                                                          } recover {
-                                                            case shrunkEx: Throwable => (false, Some(shrunkEx))
-                                                          }
-                                                        }
-                                                      }
-            } yield {
-              val bestABC = shrunkRtOfABC.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value))
-              val errOpt: Option[Throwable] = List(Some(ex), shrunkErrOpt).flatten.lastOption
-
-              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABC) else PropertyArgument(None, bestABC))
+            roseTreeOfABC.shrinkSearchForFuture { case (a, b, c) =>
+              val result: Future[_] = fun(a, b, c)
+              result.map { r =>
+                None
+              }.recoverWith {
+                case shrunkEx: Throwable =>
+                Future.successful(Some(shrunkEx))
+              }
+            }.map { shrinkOpt =>
+              val (bestABC, errOpt) = 
+                shrinkOpt match {
+                  case Some((shrunkOfABC, errOpt1)) => (shrunkOfABC, Some(errOpt1))
+                  case None => (roseTreeOfABC.value, Some(ex))
+                }
+              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABC) else PropertyArgument(None, bestABC))  
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, rnd, initialSizes, Some(theRes))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, nextNextRnd, initialSizes, Some(theRes), Some(bestABC))
             }
         }
       }
@@ -1228,7 +1228,7 @@ trait FuturePropCheckerAsserting {
     private def checkForAll[A, B, C, D](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
                                      genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D])(fun: (A, B, C, D) => Future[T]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABCD: Option[(A, B, C, D)])
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
@@ -1263,9 +1263,9 @@ trait FuturePropCheckerAsserting {
             if (discard(r)) {
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             }
             else {
@@ -1273,49 +1273,48 @@ trait FuturePropCheckerAsserting {
               if (success) {
                 val nextSucceededCount = succeededCount + 1
                 if (nextSucceededCount < config.minSuccessful)
-                  AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextNextRnd, nextInitialSizes, None)
+                  AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextNextRnd, nextInitialSizes, None, None)
                 else
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)), None)
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)), Some(a, b, c, d))
 
             }
           } recover {
             case ex: DiscardedEvaluationException =>
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             case ex: Throwable =>
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some(a, b, c, d))
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
                 val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
                 val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
                 val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
-                for {
-                  (shrunkRtOfABCD, shrunkErrOpt) <- roseTreeOfABCD.shrinkSearchForFuture { case (a, b, c, d) => {
-                                                              val result: Future[T] = fun(a, b, c, d)
-                                                              result.map { _ => 
-                                                                (true, None)
-                                                              } recover {
-                                                                case shrunkEx: Throwable => (false, Some(shrunkEx))
-                                                              }
-                                                            }
-                                                          }
-                } yield {
-                  val bestABCD = shrunkRtOfABCD.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value, 
-                                                                                   roseTreeOfD.value))
-                  val errOpt: Option[Throwable] = List(f.ex, shrunkErrOpt).flatten.lastOption
-
-                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))
+                roseTreeOfABCD.shrinkSearchForFuture { case (a, b, c, d) =>
+                  val result: Future[_] = fun(a, b, c, d)
+                  result.map { r =>
+                    None
+                  }.recoverWith {
+                    case shrunkEx: Throwable =>
+                    Future.successful(Some(shrunkEx))
+                  }
+                }.map { shrinkOpt =>
+                  val (bestABCD, errOpt) = 
+                    shrinkOpt match {
+                      case Some((shrunkOfABCD, errOpt1)) => (shrunkOfABCD, Some(errOpt1))
+                      case None => (roseTreeOfABCD.value, f.ex)
+                    }
+                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))  
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, result.rnd, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, result.rnd, initialSizes, Some(theRes), Some(bestABCD))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1328,9 +1327,9 @@ trait FuturePropCheckerAsserting {
             val nextDiscardedCount = discardedCount + 1
             val result =
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             if (result.result.isDefined)
               Future.successful(result)
@@ -1341,24 +1340,23 @@ trait FuturePropCheckerAsserting {
             val roseTreeOfAB = RoseTree.map2(roseTreeOfA, roseTreeOfB) { case (a: A, b: B) => (a, b) }
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
-            for {
-              (shrunkRtOfABCD, shrunkErrOpt) <- roseTreeOfABCD.shrinkSearchForFuture { case (a, b, c, d) => {
-                                                          val result: Future[T] = fun(a, b, c, d)
-                                                          result.map { _ => 
-                                                            (true, None)
-                                                          } recover {
-                                                            case shrunkEx: Throwable => (false, Some(shrunkEx))
-                                                          }
-                                                        }
-                                                      }
-            } yield {
-              val bestABCD = shrunkRtOfABCD.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value, 
-                                                                               roseTreeOfD.value))
-              val errOpt: Option[Throwable] = List(Some(ex), shrunkErrOpt).flatten.lastOption
-
-              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))
+            roseTreeOfABCD.shrinkSearchForFuture { case (a, b, c, d) =>
+              val result: Future[_] = fun(a, b, c, d)
+              result.map { r =>
+                None
+              }.recoverWith {
+                case shrunkEx: Throwable =>
+                Future.successful(Some(shrunkEx))
+              }
+            }.map { shrinkOpt =>
+              val (bestABCD, errOpt) = 
+                shrinkOpt match {
+                  case Some((shrunkOfABCD, errOpt1)) => (shrunkOfABCD, Some(errOpt1))
+                  case None => (roseTreeOfABCD.value, Some(ex))
+                }
+              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))  
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, rnd, initialSizes, Some(theRes))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, nextNextRnd, initialSizes, Some(theRes), Some(bestABCD))
             }
         }
       }
@@ -1378,7 +1376,7 @@ trait FuturePropCheckerAsserting {
     private def checkForAll[A, B, C, D, E](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A], genB: org.scalatest.prop.Generator[B],
                                         genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], genE: org.scalatest.prop.Generator[E])(fun: (A, B, C, D, E) => Future[T]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABCDE: Option[(A, B, C, D, E)])
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
@@ -1416,9 +1414,9 @@ trait FuturePropCheckerAsserting {
             if (discard(r)) {
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             }
             else {
@@ -1426,25 +1424,25 @@ trait FuturePropCheckerAsserting {
               if (success) {
                 val nextSucceededCount = succeededCount + 1
                 if (nextSucceededCount < config.minSuccessful)
-                  AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextNextRnd, nextInitialSizes, None)
+                  AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextNextRnd, nextInitialSizes, None, None)
                 else
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)), None)
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)), Some((a, b, c, d, e)))
 
             }
           } recover {
             case ex: DiscardedEvaluationException =>
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             case ex: Throwable =>
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some((a, b, c, d, e)))
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
@@ -1452,24 +1450,23 @@ trait FuturePropCheckerAsserting {
                 val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
                 val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
                 val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
-                for {
-                  (shrunkRtOfABCDE, shrunkErrOpt) <- roseTreeOfABCDE.shrinkSearchForFuture { case (a, b, c, d, e) => {
-                                                              val result: Future[T] = fun(a, b, c, d, e)
-                                                              result.map { _ => 
-                                                                (true, None)
-                                                              } recover {
-                                                                case shrunkEx: Throwable => (false, Some(shrunkEx))
-                                                              }
-                                                            }
-                                                          }
-                } yield {
-                  val bestABCDE = shrunkRtOfABCDE.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value, 
-                                                                                     roseTreeOfD.value, roseTreeOfE.value))
-                  val errOpt: Option[Throwable] = List(f.ex, shrunkErrOpt).flatten.lastOption
-
-                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDE) else PropertyArgument(None, bestABCDE))
+                roseTreeOfABCDE.shrinkSearchForFuture { case (a, b, c, d, e) =>
+                  val result: Future[_] = fun(a, b, c, d, e)
+                  result.map { r =>
+                    None
+                  }.recoverWith {
+                    case shrunkEx: Throwable =>
+                    Future.successful(Some(shrunkEx))
+                  }
+                }.map { shrinkOpt =>
+                  val (bestABCDE, errOpt) = 
+                    shrinkOpt match {
+                      case Some((shrunkOfABCDE, errOpt1)) => (shrunkOfABCDE, Some(errOpt1))
+                      case None => (roseTreeOfABCDE.value, f.ex)
+                    }
+                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDE) else PropertyArgument(None, bestABCDE))  
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, result.rnd, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, result.rnd, initialSizes, Some(theRes), Some(bestABCDE))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1482,9 +1479,9 @@ trait FuturePropCheckerAsserting {
             val nextDiscardedCount = discardedCount + 1
             val result =
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             if (result.result.isDefined)
               Future.successful(result)
@@ -1496,24 +1493,23 @@ trait FuturePropCheckerAsserting {
             val roseTreeOfABC = RoseTree.map2(roseTreeOfAB, roseTreeOfC) { case ((a, b), c) => (a, b, c) }
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
-            for {
-              (shrunkRtOfABCDE, shrunkErrOpt) <- roseTreeOfABCDE.shrinkSearchForFuture { case (a, b, c, d, e) => {
-                                                          val result: Future[T] = fun(a, b, c, d, e)
-                                                          result.map { _ => 
-                                                            (true, None)
-                                                          } recover {
-                                                            case shrunkEx: Throwable => (false, Some(shrunkEx))
-                                                          }
-                                                        }
-                                                      }
-            } yield {
-              val bestABCDE = shrunkRtOfABCDE.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value, 
-                                                                                  roseTreeOfD.value, roseTreeOfE.value))
-              val errOpt: Option[Throwable] = List(Some(ex), shrunkErrOpt).flatten.lastOption
-
-              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDE) else PropertyArgument(None, bestABCDE))
+            roseTreeOfABCDE.shrinkSearchForFuture { case (a, b, c, d, e) =>
+              val result: Future[_] = fun(a, b, c, d, e)
+              result.map { r =>
+                None
+              }.recoverWith {
+                case shrunkEx: Throwable =>
+                Future.successful(Some(shrunkEx))
+              }
+            }.map { shrinkOpt =>
+              val (bestABCDE, errOpt) = 
+                shrinkOpt match {
+                  case Some((shrunkOfABCDE, errOpt1)) => (shrunkOfABCDE, Some(errOpt1))
+                  case None => (roseTreeOfABCDE.value, Some(ex))
+                }
+              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDE) else PropertyArgument(None, bestABCDE))  
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, rnd, initialSizes, Some(theRes))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, nextNextRnd, initialSizes, Some(theRes), Some(bestABCDE))
             }
         }
       }
@@ -1535,7 +1531,7 @@ trait FuturePropCheckerAsserting {
                                            genC: org.scalatest.prop.Generator[C], genD: org.scalatest.prop.Generator[D], genE: org.scalatest.prop.Generator[E],
                                            genF: org.scalatest.prop.Generator[F])(fun: (A, B, C, D, E, F) => Future[T]): Future[PropertyCheckResult] = {
 
-      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult])
+      case class AccumulatedResult(succeededCount: Int, discardedCount: Int, aEdges: List[A], bEdges: List[B], cEdges: List[C], dEdges: List[D], eEdges: List[E], fEdges: List[F], rnd: Randomizer, initialSizes: List[PosZInt], result: Option[PropertyCheckResult], failedABCDEF: Option[(A, B, C, D, E, F)])
 
       val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val minSize = config.minSize
@@ -1576,9 +1572,9 @@ trait FuturePropCheckerAsserting {
             if (discard(r)) {
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             }
             else {
@@ -1586,25 +1582,25 @@ trait FuturePropCheckerAsserting {
               if (success) {
                 val nextSucceededCount = succeededCount + 1
                 if (nextSucceededCount < config.minSuccessful)
-                  AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, nextNextRnd, nextInitialSizes, None)
+                  AccumulatedResult(nextSucceededCount, discardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, nextNextRnd, nextInitialSizes, None, None)
                 else
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(PropertyCheckResult.Success(argsPassed, initSeed)), None)
 
               }
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, cause, names, argsPassed, initSeed)), Some((a, b, c, d, e, f)))
 
             }
           } recover {
             case ex: DiscardedEvaluationException =>
               val nextDiscardedCount = discardedCount + 1
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             case ex: Throwable =>
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Failure(succeededCount, Some(ex), names, argsPassed, initSeed)), Some((a, b, c, d, e, f)))
           } flatMap { result =>
             result.result match {
               case Some(f: PropertyCheckResult.Failure) => 
@@ -1613,24 +1609,23 @@ trait FuturePropCheckerAsserting {
                 val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
                 val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
                 val roseTreeOfABCDEF = RoseTree.map2(roseTreeOfABCDE, roseTreeOfF) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
-                for {
-                  (shrunkRtOfABCDEF, shrunkErrOpt) <- roseTreeOfABCDEF.shrinkSearchForFuture { case (a, b, c, d, e, f) => {
-                                                              val result: Future[T] = fun(a, b, c, d, e, f)
-                                                              result.map { _ => 
-                                                                (true, None)
-                                                              } recover {
-                                                                case shrunkEx: Throwable => (false, Some(shrunkEx))
-                                                              }
-                                                            }
-                                                          }
-                } yield {
-                  val bestABCDEF = shrunkRtOfABCDEF.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value, 
-                                                                                       roseTreeOfD.value, roseTreeOfE.value, roseTreeOfF.value))
-                  val errOpt: Option[Throwable] = List(f.ex, shrunkErrOpt).flatten.lastOption
-
-                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDEF) else PropertyArgument(None, bestABCDEF))
+                roseTreeOfABCDEF.shrinkSearchForFuture { case (a, b, c, d, e, f) =>
+                  val result: Future[_] = fun(a, b, c, d, e, f)
+                  result.map { r =>
+                    None
+                  }.recoverWith {
+                    case shrunkEx: Throwable =>
+                    Future.successful(Some(shrunkEx))
+                  }
+                }.map { shrinkOpt =>
+                  val (bestABCDEF, errOpt) = 
+                    shrinkOpt match {
+                      case Some((shrunkOfABCDEF, errOpt1)) => (shrunkOfABCDEF, Some(errOpt1))
+                      case None => (roseTreeOfABCDEF.value, f.ex)
+                    }
+                  val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDEF) else PropertyArgument(None, bestABCDEF))  
                   val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, result.rnd, initialSizes, Some(theRes))
+                  AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, result.rnd, initialSizes, Some(theRes), Some(bestABCDEF))
                 }
                 
               case Some(_) => Future.successful(result)
@@ -1643,9 +1638,9 @@ trait FuturePropCheckerAsserting {
             val nextDiscardedCount = discardedCount + 1
             val result =
               if (nextDiscardedCount < maxDiscarded)
-                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, nextNextRnd, nextInitialSizes, None)
+                AccumulatedResult(succeededCount, nextDiscardedCount, nextAEdges, nextBEdges, nextCEdges, nextDEdges, nextEEdges, nextFEdges, nextNextRnd, nextInitialSizes, None, None)
               else
-                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)))
+                AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(new PropertyCheckResult.Exhausted(succeededCount, nextDiscardedCount, names, argsPassed, initSeed)), None)
 
             if (result.result.isDefined)
               Future.successful(result)
@@ -1658,24 +1653,23 @@ trait FuturePropCheckerAsserting {
             val roseTreeOfABCD = RoseTree.map2(roseTreeOfABC, roseTreeOfD) { case ((a, b, c), d) => (a, b, c, d) }
             val roseTreeOfABCDE = RoseTree.map2(roseTreeOfABCD, roseTreeOfE) { case ((a, b, c, d), e) => (a, b, c, d, e)}
             val roseTreeOfABCDEF = RoseTree.map2(roseTreeOfABCDE, roseTreeOfF) { case ((a, b, c, d, e), f) => (a, b, c, d, e, f)}
-            for {
-              (shrunkRtOfABCDEF, shrunkErrOpt) <- roseTreeOfABCDEF.shrinkSearchForFuture { case (a, b, c, d, e, f) => {
-                                                          val result: Future[T] = fun(a, b, c, d, e, f)
-                                                          result.map { _ => 
-                                                            (true, None)
-                                                          } recover {
-                                                            case shrunkEx: Throwable => (false, Some(shrunkEx))
-                                                          }
-                                                        }
-                                                      }
-            } yield {
-              val bestABCDEF = shrunkRtOfABCDEF.headOption.map(_.value).getOrElse((roseTreeOfA.value, roseTreeOfB.value, roseTreeOfC.value, 
-                                                                                    roseTreeOfD.value, roseTreeOfE.value, roseTreeOfF.value))
-              val errOpt: Option[Throwable] = List(Some(ex), shrunkErrOpt).flatten.lastOption
-
-              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDEF) else PropertyArgument(None, bestABCDEF))
+            roseTreeOfABCDEF.shrinkSearchForFuture { case (a, b, c, d, e, f) =>
+              val result: Future[_] = fun(a, b, c, d, e, f)
+              result.map { r =>
+                None
+              }.recoverWith {
+                case shrunkEx: Throwable =>
+                Future.successful(Some(shrunkEx))
+              }
+            }.map { shrinkOpt =>
+              val (bestABCDEF, errOpt) = 
+                shrinkOpt match {
+                  case Some((shrunkOfABCDEF, errOpt1)) => (shrunkOfABCDEF, Some(errOpt1))
+                  case None => (roseTreeOfABCDEF.value, Some(ex))
+                }
+              val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDEF) else PropertyArgument(None, bestABCDEF))  
               val theRes = new PropertyCheckResult.Failure(succeededCount, errOpt, names, shrunkArgsPassed, initSeed)
-              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, rnd, initialSizes, Some(theRes))
+              AccumulatedResult(succeededCount, discardedCount, aEdges, bEdges, cEdges, dEdges, eEdges, fEdges, nextNextRnd, initialSizes, Some(theRes), Some(bestABCDEF))
             }
         }
       }

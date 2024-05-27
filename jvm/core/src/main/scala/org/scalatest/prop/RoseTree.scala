@@ -45,7 +45,7 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
   /**
    * Performs a search for a minimal (most shrunken or simplified) failing case.
    *
-   * @param fun a function that takes a value of type `T` and returns a `Option[E]`,
+   * @param fun a function that takes a value of type `T` and returns an `Option[E]`,
    *            where the option contains data (of type `E`) for the most recent failure.
    * @tparam E the type of additional data returned in case of failure
    * @return an optional error data, if a shrunken or simplified case was found during the search
@@ -80,41 +80,37 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
   /**
    * Performs a search for a minimal (most shrunken or simplified) failing case for a Future[T].
    *
-   * @param fun a function that takes a value of type `T` and returns a tuple `(Boolean, Option[E])`,
-   *            where the boolean indicates whether the function when applied to the current RoseTree
-   *            value succeeded (true) or failed (false),
-   *            and the option contains data (of type `E`) for the most recent failure.
+   * @param fun a function that takes a value of type `T` and returns an `Option[E]`,
+   *            where the option contains data (of type `E`) for the most recent failure.
    * @tparam E the type of additional data returned in case of failure
-   * @return a tuple containing a lazy stream of shrunk trees and an optional error data, if
-   *         a shrunken or simplified case was found during the search
+   * @return an optional error data, if a shrunken or simplified case was found during the search
    */
-  def shrinkSearchForFuture[E](fun: T => Future[(Boolean, Option[E])])(implicit execContext: ExecutionContext): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
-    def shrinkLoop(lastFailure: RoseTree[T], lastFailureData: Option[E], pending: LazyListOrStream[RoseTree[T]], count: Int): Future[(LazyListOrStream[RoseTree[T]], Option[E])] = {
+  def shrinkSearchForFuture[E](fun: T => Future[Option[E]])(implicit execContext: ExecutionContext): Future[Option[(T, E)]] = {
+    def shrinkLoop(lastFailure: Option[(RoseTree[T], E)], pending: LazyListOrStream[RoseTree[T]], count: Int): Future[Option[(RoseTree[T], E)]] = {
       if (count < maximumIterationCount) 
         pending match {
           case head #:: tail => 
             val future = fun(head.value)
-            future.flatMap { case (result, errDataOpt) =>
-              if (!result) {
+            future.flatMap {
+              case Some(errData) =>
                 // If the function fail, we got a new failure value, and we'll go one level deeper.
                 val headChildrenRTs = head.shrinks
-                shrinkLoop(head, errDataOpt, headChildrenRTs, count + 1)
-              }
-              else {
+                shrinkLoop(Some((head, errData)), headChildrenRTs, count + 1)
+              case None =>
                 // The function call succeeded, let's continue to try the sibling.
-                shrinkLoop(lastFailure, lastFailureData, tail, count + 1)
-              }
+                shrinkLoop(lastFailure, tail, count + 1)
             }
 
           case _ =>
-            Future.successful((LazyListOrStream(lastFailure), lastFailureData))
+            Future.successful(lastFailure)
         }
       else 
-        Future.successful((LazyListOrStream(lastFailure), lastFailureData))
+        Future.successful(lastFailure)
       
     }
-
-    shrinkLoop(this, None, shrinks, 0)
+    shrinkLoop(None, shrinks, 0).map { opt => 
+      opt.map { case (roseTree, errData) => (roseTree.value, errData) }
+    }
   }
 
   /**
