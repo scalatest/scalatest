@@ -51,8 +51,8 @@ class RoseTreeSpec extends AnyFunSpec with Matchers with OptionValues {
       val rt = intRoseTree(72)
       rt.value shouldBe 72
 
-      val shrink = rt.shrinkSearch(i => (i < 12, None)).value._1
-      shrink shouldBe 12
+      val shrink = rt.shrinkSearch(i => if (i < 12) None else Some("failed")).value
+      shrink shouldBe (12, "failed")
     }
 
     case class StatefulInt(value: Int) {
@@ -97,16 +97,16 @@ class RoseTreeSpec extends AnyFunSpec with Matchers with OptionValues {
       val rt = new StatefulRoseTree(StatefulInt(72))
       rt.value.value shouldBe 72
 
-      def processFun(i: StatefulInt): (Boolean, Option[String]) = {
+      def processFun(i: StatefulInt): Option[String] = {
         i.processed = true
-        (i.value < 12, None)
+        if (i.value < 12) None else Some("fail")
       }
 
-      val (rtRes, _) = processFun(rt.value)
-      rtRes shouldBe false
+      val rtRes = processFun(rt.value)
+      rtRes shouldBe defined
       
-      val shrink = rt.shrinkSearch(processFun).value._1
-      shrink.value shouldBe 12
+      val shrink = rt.shrinkSearch(processFun).value
+      shrink shouldBe (StatefulInt(12), "fail")
 
       /*
          72 // This one fails, we'll shrink next level of depth first
@@ -137,8 +137,8 @@ class RoseTreeSpec extends AnyFunSpec with Matchers with OptionValues {
 
       lvl2Node36.processed shouldBe true
       lvl2Node36.value.value shouldBe 36
-      val (lvl2Node36Res, _) = processFun(lvl2Node36.value)
-      lvl2Node36Res shouldBe false
+      val lvl2Node36Res = processFun(lvl2Node36.value)
+      lvl2Node36Res shouldBe defined
       lvl2Node71.processed shouldBe false
       lvl2Node71.value.value shouldBe 71
 
@@ -147,8 +147,8 @@ class RoseTreeSpec extends AnyFunSpec with Matchers with OptionValues {
 
       lvl3Node18.processed shouldBe true
       lvl3Node18.value.value shouldBe 18
-      val (lvl3Node18Res, _) = processFun(lvl3Node18.value)
-      lvl3Node18Res shouldBe false
+      val lvl3Node18Res = processFun(lvl3Node18.value)
+      lvl3Node18Res shouldBe defined
       lvl3Node35.processed shouldBe false
       lvl3Node35.value.value shouldBe 35
 
@@ -159,8 +159,8 @@ class RoseTreeSpec extends AnyFunSpec with Matchers with OptionValues {
       lvl4Node9.value.value shouldBe 9
       lvl4Node17.processed shouldBe true
       lvl4Node17.value.value shouldBe 17
-      val (lvl4Node17Res, _) = processFun(lvl4Node17.value)
-      lvl4Node17Res shouldBe false
+      val lvl4Node17Res = processFun(lvl4Node17.value)
+      lvl4Node17Res shouldBe defined
 
       val lvl5Node8 = lvl4Node17.shrinksRoseTrees(0)
       val lvl5Node16 = lvl4Node17.shrinksRoseTrees(1)
@@ -169,8 +169,8 @@ class RoseTreeSpec extends AnyFunSpec with Matchers with OptionValues {
       lvl5Node8.value.value shouldBe 8
       lvl5Node16.processed shouldBe true
       lvl5Node16.value.value shouldBe 16
-      val (lvl5Node16Res, _) = processFun(lvl5Node16.value)
-      lvl5Node16Res shouldBe false
+      val lvl5Node16Res = processFun(lvl5Node16.value)
+      lvl5Node16Res shouldBe defined
 
       val lvl6Node8 = lvl5Node16.shrinksRoseTrees(0)
       val lvl6Node15 = lvl5Node16.shrinksRoseTrees(1)
@@ -179,8 +179,8 @@ class RoseTreeSpec extends AnyFunSpec with Matchers with OptionValues {
       lvl6Node8.value.value shouldBe 8
       lvl6Node15.processed shouldBe true
       lvl6Node15.value.value shouldBe 15
-      val (lvl6Node15Res, _) = processFun(lvl6Node15.value)
-      lvl6Node15Res shouldBe false
+      val lvl6Node15Res = processFun(lvl6Node15.value)
+      lvl6Node15Res shouldBe defined
 
       val lvl7Node7 = lvl6Node15.shrinksRoseTrees(0)
       val lvl7Node14 = lvl6Node15.shrinksRoseTrees(1)
@@ -189,8 +189,8 @@ class RoseTreeSpec extends AnyFunSpec with Matchers with OptionValues {
       lvl7Node7.value.value shouldBe 7
       lvl7Node14.processed shouldBe true
       lvl7Node14.value.value shouldBe 14
-      val (lvl7Node14Res, _) = processFun(lvl7Node14.value)
-      lvl7Node14Res shouldBe false
+      val lvl7Node14Res = processFun(lvl7Node14.value)
+      lvl7Node14Res shouldBe defined
 
       val lvl8Node7 = lvl7Node14.shrinksRoseTrees(0)
       val lvl8Node13 = lvl7Node14.shrinksRoseTrees(1)
@@ -199,8 +199,8 @@ class RoseTreeSpec extends AnyFunSpec with Matchers with OptionValues {
       lvl8Node7.value.value shouldBe 7
       lvl8Node13.processed shouldBe true
       lvl8Node13.value.value shouldBe 13
-      val (lvl8Node13Res, _) = processFun(lvl8Node13.value)
-      lvl8Node13Res shouldBe false
+      val lvl8Node13Res = processFun(lvl8Node13.value)
+      lvl8Node13Res shouldBe defined
 
       val lvl9Node6 = lvl8Node13.shrinksRoseTrees(0)
       val lvl9Node12 = lvl8Node13.shrinksRoseTrees(1)
@@ -209,8 +209,8 @@ class RoseTreeSpec extends AnyFunSpec with Matchers with OptionValues {
       lvl9Node6.value.value shouldBe 6
       lvl9Node12.processed shouldBe true
       lvl9Node12.value.value shouldBe 12
-      val (lvl9Node12Res, _) = processFun(lvl9Node12.value)
-      lvl9Node12Res shouldBe false
+      val lvl9Node12Res = processFun(lvl9Node12.value)
+      lvl9Node12Res shouldBe defined
 
       val lvl10Node6 = lvl9Node12.shrinksRoseTrees(0)
       val lvl10Node11 = lvl9Node12.shrinksRoseTrees(1)
@@ -219,8 +219,8 @@ class RoseTreeSpec extends AnyFunSpec with Matchers with OptionValues {
       lvl10Node6.value.value shouldBe 6
       lvl10Node11.processed shouldBe true
       lvl10Node11.value.value shouldBe 11
-      val (lvl10Node11Res, _) = processFun(lvl10Node11.value)
-      lvl10Node11Res shouldBe true
+      val lvl10Node11Res = processFun(lvl10Node11.value)
+      lvl10Node11Res shouldBe empty
     }
   }
   describe("A Rose") {

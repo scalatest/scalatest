@@ -45,38 +45,33 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
   /**
    * Performs a search for a minimal (most shrunken or simplified) failing case.
    *
-   * @param fun a function that takes a value of type `T` and returns a tuple `(Boolean, Option[E])`,
-   *            where the boolean indicates whether the function when applied to the current RoseTree
-   *            value succeeded (true) or failed (false),
-   *            and the option contains data (of type `E`) for the most recent failure.
+   * @param fun a function that takes a value of type `T` and returns a `Option[E]`,
+   *            where the option contains data (of type `E`) for the most recent failure.
    * @tparam E the type of additional data returned in case of failure
-   * @return a tuple containing a lazy stream of shrunk trees and an optional error data, if
-   *         a shrunken or simplified case was found during the search
+   * @return an optional error data, if a shrunken or simplified case was found during the search
    */
-  def shrinkSearch[E](fun: T => (Boolean, Option[E])): Option[(T, Option[E])] = {
+  def shrinkSearch[E](fun: T => Option[E]): Option[(T, E)] = {
     @tailrec
-    def shrinkLoop(lastFailure: Option[(RoseTree[T], Option[E])], pending: LazyListOrStream[RoseTree[T]], count: Int): Option[(RoseTree[T], Option[E])] = {
+    def shrinkLoop(lastFailure: Option[(RoseTree[T], E)], pending: LazyListOrStream[RoseTree[T]], count: Int): Option[(RoseTree[T], E)] = {
       if (count < maximumIterationCount)
         pending match {
           case head #:: tail => 
-            val (result, errDataOpt) = fun(head.value)
-            if (!result) {
-              // If the function fail, we got a new failure value, and we'll go one level deeper.
-              val headChildrenRTs = head.shrinks
-              shrinkLoop(Some((head, errDataOpt)), headChildrenRTs, count + 1)
+            fun(head.value) match {
+              case Some(errData) =>
+                // If the function fail, we got a new failure value, and we'll go one level deeper.
+                val headChildrenRTs = head.shrinks
+                shrinkLoop(Some((head, errData)), headChildrenRTs, count + 1)
+              case None =>
+                // The function call succeeded, let's continue to try the sibling.
+                shrinkLoop(lastFailure, tail, count + 1)
             }
-            else {
-              // The function call succeeded, let's continue to try the sibling.
-              shrinkLoop(lastFailure, tail, count + 1)
-            }
-
           case _ => // No more further sibling to try, return the last failure
             lastFailure
         }
       else 
         lastFailure
     }
-    shrinkLoop(None, shrinks, 0).map { case (roseTree, errDataOpt) => (roseTree.value, errDataOpt) }
+    shrinkLoop(None, shrinks, 0).map { case (roseTree, errData) => (roseTree.value, errData) }
   }
 
   // Do we need to return LazyListOrStream. Can we just return a (RoseTree[T], Option[E]) or could
