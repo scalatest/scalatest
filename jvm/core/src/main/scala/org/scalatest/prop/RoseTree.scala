@@ -74,9 +74,6 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
     shrinkLoop(None, shrinks, 0).map { case (roseTree, errData) => (roseTree.value, errData) }
   }
 
-  // Do we need to return LazyListOrStream. Can we just return a (RoseTree[T], Option[E]) or could
-  // we return (T, Option[E])
-
   /**
    * Performs a search for a minimal (most shrunken or simplified) failing case for a Future[T].
    *
