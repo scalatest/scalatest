@@ -23,6 +23,10 @@ trait DottyBuild { this: BuildCommons =>
     scalaVersion := dottyVersion,
     scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
   )
+  lazy val nativeDottySettings = List(
+    scalaVersion := "3.3.3",
+    scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
+  )
 
   // https://github.com/sbt/sbt/issues/2205#issuecomment-144375501
   private lazy val packageManagedSources =
@@ -149,7 +153,7 @@ trait DottyBuild { this: BuildCommons =>
   lazy val scalacticDottyNative = project.in(file("dotty/scalactic.native"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(scalacticDocSettings: _*)
     .settings(
       projectTitle := "Scalactic",
@@ -359,7 +363,7 @@ trait DottyBuild { this: BuildCommons =>
   lazy val scalatestCoreDottyNative = project.in(file("dotty/core.native"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(
       projectTitle := "ScalaTest Core Dotty",
       organization := "org.scalatest",
@@ -367,8 +371,8 @@ trait DottyBuild { this: BuildCommons =>
       console / initialCommands := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.1.0", 
-      libraryDependencies += ("org.scala-native" %% "test-interface_native0.4" % nativeVersion), 
+      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.3.0",
+      libraryDependencies += ("org.scala-native" %%% "test-interface" % nativeVersion),
       packageManagedSources,
       Compile / sourceGenerators += Def.task {
         GenModulesDotty.genScalaTestCoreNative((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
@@ -423,27 +427,29 @@ trait DottyBuild { this: BuildCommons =>
 
   private implicit class DottyProjectEx(private val p: Project) {
     /** common settings for all scalatest modules */
-    def scalatestModule(name: String, title: String): Project = p
-      .enablePlugins(SbtOsgi)
-      .settings(sharedSettings: _*)
-      .settings(dottySettings: _*)
-      .settings(
-        projectTitle := title,
-        organization := "org.scalatest",
-        moduleName := name,
-        packageManagedSources,
-        osgiSettings,
-        OsgiKeys.additionalHeaders := Map(
-          "Bundle-Name" -> title,
-          "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-          "Bundle-DocURL" -> "http://www.scalatest.org/",
-          "Bundle-Vendor" -> "Artima, Inc."
-        ),
+    def scalatestModule(name: String, title: String, isNative: Boolean): Project =  {
+      val selectedDottySettings = if (isNative) nativeDottySettings else dottySettings
+      p.enablePlugins(SbtOsgi)
+       .settings(sharedSettings: _*)
+       .settings(selectedDottySettings: _*)
+       .settings(
+         projectTitle := title,
+         organization := "org.scalatest",
+         moduleName := name,
+         packageManagedSources,
+         osgiSettings,
+         OsgiKeys.additionalHeaders := Map(
+           "Bundle-Name" -> title,
+           "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+           "Bundle-DocURL" -> "http://www.scalatest.org/",
+           "Bundle-Vendor" -> "Artima, Inc."
+         ),
       )
+    }
 
     /** common settings for all scalatest sub modules (all modules, except the `scalatest` module) */
-    def scalatestSubModule(name: String, title: String, gen: GenModulesDotty.GenFn): Project =
-      scalatestModule(name, title).settings(
+    def scalatestSubModule(name: String, title: String, isNative: Boolean, gen: GenModulesDotty.GenFn): Project =
+      scalatestModule(name, title, isNative).settings(
         Compile / sourceGenerators += Def.task {
           gen((Compile / sourceManaged).value, version.value, scalaVersion.value)
         }.taskValue,
@@ -455,21 +461,21 @@ trait DottyBuild { this: BuildCommons =>
 
     /** common settings for all scalatest `style` modules such as `featurespec`, `funsuite`,.. */
     def scalatestStyleModule(style: String, title: String): Project =
-      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty(style))
+      scalatestSubModule(s"scalatest-$style", title, false, GenModulesDotty(style))
         .settings(
           OsgiKeys.exportPackage := Seq(s"org.scalatest.$style"),
         ).dependsOn(scalatestCoreDotty)
 
     /** common settings for all scalatest js `style` modules such as `featurespec`, `funsuite`,.. */
     def scalatestStyleModuleJS(style: String, title: String): Project =
-      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty.applyJS(style))
+      scalatestSubModule(s"scalatest-$style", title, false, GenModulesDotty.applyJS(style))
         .settings(
           OsgiKeys.exportPackage := Seq(s"org.scalatest.$style"),
         ).dependsOn(scalatestCoreDottyJS).enablePlugins(ScalaJSPlugin)
 
     /** common settings for all scalatest native `style` modules such as `featurespec`, `funsuite`,.. */
     def scalatestStyleModuleNative(style: String, title: String): Project =
-      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty.applyNative(style))
+      scalatestSubModule(s"scalatest-$style", title, true, GenModulesDotty.applyNative(style))
         .settings(
           OsgiKeys.exportPackage := Seq(s"org.scalatest.$style.*"),
         ).dependsOn(scalatestCoreDottyNative).enablePlugins(ScalaNativePlugin)    
@@ -555,6 +561,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-diagrams", 
       "ScalaTest Diagrams Dotty JS", 
+      false, 
       (targetDir, version, scalaVersion) =>
         GenScalaTestDotty.genDiagramsScalaJS(targetDir / "org" / "scalatest", version, scalaVersion)
     ).settings(
@@ -568,6 +575,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-diagrams", 
       "ScalaTest Diagrams Dotty Native", 
+      true, 
       (targetDir, version, scalaVersion) =>
         GenScalaTestDotty.genDiagramsScalaNative(targetDir / "org" / "scalatest", version, scalaVersion)
     ).settings(
@@ -578,7 +586,7 @@ trait DottyBuild { this: BuildCommons =>
     ).dependsOn(scalatestCoreDottyNative).enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestExpectationsDotty = project.in(file("dotty/expectations"))
-    .scalatestModule("scalatest-expectations", "ScalaTest Expectations Dotty")
+    .scalatestModule("scalatest-expectations", "ScalaTest Expectations Dotty", false)
     .dependsOn(
       scalatestCoreDotty
     )
@@ -587,6 +595,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-expectations", 
       "ScalaTest Expectations Dotty JS", 
+      false, 
       (targetDir, version, scalaVersion) =>
         GenScalaTestDotty.genExpectationsScalaJS(targetDir / "org" / "scalatest", version, scalaVersion)
     ).settings(
@@ -599,6 +608,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-expectations", 
       "ScalaTest Expectations Dotty Native", 
+      true, 
       (targetDir, version, scalaVersion) =>
         GenScalaTestDotty.genExpectationsScalaNative(targetDir / "org" / "scalatest", version, scalaVersion)
     ).settings(
@@ -611,6 +621,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-matchers-core",
       "ScalaTest Matchers Core Dotty",
+      false, 
       (targetDir, version, scalaVersion) => {
         GenModulesDotty.genScalaTestMatchersCore(targetDir, version, scalaVersion) ++
           GenFactoriesDotty.genMain(targetDir / "org" / "scalatest" / "matchers" / "dsl", version, scalaVersion)
@@ -626,6 +637,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-matchers-core",
       "ScalaTest Matchers Core Dotty JS",
+      false, 
       (targetDir, version, scalaVersion) => {
         GenModulesDotty.genScalaTestMatchersCoreJS(targetDir, version, scalaVersion) ++
         GenScalaTestDotty.genMatchersCoreScalaJS(targetDir, version, scalaVersion) ++
@@ -642,6 +654,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-matchers-core",
       "ScalaTest Matchers Core Dotty Native",
+      true, 
       (targetDir, version, scalaVersion) => {
         GenModulesDotty.genScalaTestMatchersCoreNative(targetDir, version, scalaVersion) ++
         GenScalaTestDotty.genMatchersCoreScalaNative(targetDir, version, scalaVersion) ++
@@ -658,6 +671,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-shouldmatchers",
       "ScalaTest Should Matchers Dotty",
+      false, 
       GenModulesDotty.genScalaTestShouldMatchers
     ).settings(
       OsgiKeys.exportPackage := Seq("org.scalatest.matchers.should"),
@@ -667,6 +681,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-shouldmatchers",
       "ScalaTest Should Matchers Dotty JS",
+      false, 
       (targetDir, version, scalaVersion) => {
         GenModulesDotty.genScalaTestShouldMatchersJS(targetDir, version, scalaVersion) ++ 
         GenScalaTestDotty.genShouldMatchersScalaJS(targetDir, version, scalaVersion)
@@ -679,6 +694,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-shouldmatchers",
       "ScalaTest Should Matchers Dotty Native",
+      true, 
       (targetDir, version, scalaVersion) => {
         GenModulesDotty.genScalaTestShouldMatchersNative(targetDir, version, scalaVersion) ++ 
         GenScalaTestDotty.genShouldMatchersScalaNative(targetDir, version, scalaVersion)
@@ -691,6 +707,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-mustmatchers",
       "ScalaTest Must Matchers Dotty",
+      false, 
       (targetDir, version, scalaVersion) =>
         GenMatchers.genMainForDotty(targetDir / "org" / "scalatest", version, scalaVersion)
     ).settings(
@@ -701,6 +718,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-mustmatchers",
       "ScalaTest Must Matchers Dotty JS ",
+      false, 
       (targetDir, version, scalaVersion) =>
         GenMatchers.genMainForDottyJS(targetDir / "org" / "scalatest", version, scalaVersion) ++ 
         GenScalaTestDotty.genMustMatchersScalaJS(targetDir, version, scalaVersion)
@@ -712,6 +730,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-mustmatchers",
       "ScalaTest Must Matchers Dotty Native ",
+      true, 
       (targetDir, version, scalaVersion) =>
         GenMatchers.genMainForDottyNative(targetDir / "org" / "scalatest", version, scalaVersion) ++ 
         GenScalaTestDotty.genMustMatchersScalaNative(targetDir, version, scalaVersion)
@@ -742,7 +761,7 @@ trait DottyBuild { this: BuildCommons =>
     )
 
   lazy val scalatestDotty = project.in(file("dotty/scalatest"))
-    .scalatestModule("scalatest", "ScalaTest Dotty")
+    .scalatestModule("scalatest", "ScalaTest Dotty", false)
     .settings(
       // Little trick to get rid of bnd error when publish.
       Compile / sourceGenerators += Def.task {
@@ -783,7 +802,7 @@ trait DottyBuild { this: BuildCommons =>
     )
 
   lazy val scalatestDottyJS = project.in(file("dotty/scalatest.js"))
-    .scalatestModule("scalatest", "ScalaTest Dotty JS")
+    .scalatestModule("scalatest", "ScalaTest Dotty JS", false)
     .settings(
       // Little trick to get rid of bnd error when publish.
       Compile / sourceGenerators += Def.task {
@@ -824,7 +843,7 @@ trait DottyBuild { this: BuildCommons =>
     ).enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestDottyNative = project.in(file("dotty/scalatest.native"))
-    .scalatestModule("scalatest", "ScalaTest Dotty Native")
+    .scalatestModule("scalatest", "ScalaTest Dotty Native", true)
     .settings(
       // Little trick to get rid of bnd error when publish.
       Compile / sourceGenerators += Def.task {
@@ -1152,14 +1171,14 @@ trait DottyBuild { this: BuildCommons =>
   lazy val scalatestAppDottyNative = project.in(file("dotty/scalatest-app.native"))
       .enablePlugins(SbtOsgi)
       .settings(sharedSettings)
-      .settings(dottySettings: _*)
+      .settings(nativeDottySettings: _*)
       .settings(
         projectTitle := "ScalaTest App",
         name := "scalatest-app",
         organization := "org.scalatest",
         moduleName := "scalatest-app",
         //libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
-        libraryDependencies += ("org.scala-native" %% "test-interface_native0.4" % nativeVersion), 
+        libraryDependencies += ("org.scala-native" %%% "test-interface" % nativeVersion),
         // include the scalacticDottyNative classes and resources in the jar
         mappings in (Compile, packageBin) ++= mappings.in(scalacticDottyNative, Compile, packageBin).value,
         // include the scalacticDottyNative sources in the source jar
@@ -1320,7 +1339,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val commonTestDottyNative = project.in(file("dotty/common-test.native"))
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
@@ -1377,7 +1396,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalacticTestDottyNative = project.in(file("dotty/scalactic-test.native"))
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "Scalactic Test Native",
@@ -1480,7 +1499,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestTestDottyNative = project.in(file("dotty/scalatest-test.native"))
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest Test",
@@ -1526,7 +1545,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestDiagramsTestDottyNative = project.in(file("dotty/diagrams-test.native"))
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest Diagrams Test",
@@ -1600,7 +1619,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestFeatureSpecTestDottyNative = project.in(file("dotty/featurespec-test.native"))
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest FeatureSpec Test",
@@ -1641,7 +1660,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestFlatSpecTestDottyNative = project.in(file("dotty/flatspec-test.native"))
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest FlatSpec Test",
@@ -1682,7 +1701,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestFreeSpecTestDottyNative = project.in(file("dotty/freespec-test.native"))
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest FreeSpec Test",
@@ -1723,7 +1742,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestFunSpecTestDottyNative = project.in(file("dotty/funspec-test.native"))
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest FunSpec Test",
@@ -1764,7 +1783,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestFunSuiteTestDottyNative = project.in(file("dotty/funsuite-test.native"))
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest FunSuite Test",
@@ -1805,7 +1824,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestPropSpecTestDottyNative = project.in(file("dotty/propspec-test.native"))
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest PropSpec Test",
@@ -1846,7 +1865,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestWordSpecTestDottyNative = project.in(file("dotty/wordspec-test.native"))
     .settings(sharedSettings: _*)
-    .settings(dottySettings: _*)
+    .settings(nativeDottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest WordSpec Test",
