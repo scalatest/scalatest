@@ -194,9 +194,7 @@ abstract class UnitPropCheckerAsserting {
                     case Failure(shrunkEx) => Some(shrunkEx)
                   }
                 }
-              ).map { case (shrunkOfA, shrunkErr) =>
-                (shrunkOfA, shrunkErr)
-              }.getOrElse((roseTreeOfA.value, ex))
+              ).getOrElse((roseTreeOfA.value, ex))
             val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestA) else PropertyArgument(None, bestA))
             val theRes = new PropertyCheckResult.Failure(succeededCount, Some(err), names, shrunkArgsPassed, initSeed)
             theRes
@@ -276,8 +274,6 @@ abstract class UnitPropCheckerAsserting {
                     case Success(_) => None
                     case Failure(shrunkEx) => Some(shrunkEx)
                   }
-              }.map { case (shrunkOfA, shrunkErr) =>
-                (shrunkOfA, shrunkErr)
               }.getOrElse((roseTreeOfA.value, ex))
             val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestAB) else PropertyArgument(None, bestAB))
             val theRes = new PropertyCheckResult.Failure(succeededCount, Some(err), names, shrunkArgsPassed, initSeed)
@@ -363,8 +359,6 @@ abstract class UnitPropCheckerAsserting {
                     case Success(_) => None
                     case Failure(shrunkEx) => Some(shrunkEx)
                   }
-              }.map { case (shrunkOfA, shrunkErr) =>
-                (shrunkOfA, shrunkErr)
               }.getOrElse((roseTreeOfA.value, ex))
             val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABC) else PropertyArgument(None, bestABC))
             val theRes = new PropertyCheckResult.Failure(succeededCount, Some(err), names, shrunkArgsPassed, initSeed)
@@ -457,8 +451,6 @@ abstract class UnitPropCheckerAsserting {
                     case Success(_) => None
                     case Failure(shrunkEx) => Some(shrunkEx)
                   }
-              }.map { case (shrunkOfA, shrunkErr) =>
-                (shrunkOfA, shrunkErr)
               }.getOrElse((roseTreeOfA.value, ex))
             val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCD) else PropertyArgument(None, bestABCD))
             val theRes = new PropertyCheckResult.Failure(succeededCount, Some(err), names, shrunkArgsPassed, initSeed)
@@ -555,8 +547,6 @@ abstract class UnitPropCheckerAsserting {
                   case Success(_) => None
                   case Failure(shrunkEx) => Some(shrunkEx)
                 }
-              }.map { case (shrunkOfA, shrunkErr) =>
-                (shrunkOfA, shrunkErr)
               }.getOrElse((roseTreeOfA.value, ex))
             val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDE) else PropertyArgument(None, bestABCDE))
             val theRes = new PropertyCheckResult.Failure(succeededCount, Some(err), names, shrunkArgsPassed, initSeed)
@@ -660,8 +650,6 @@ abstract class UnitPropCheckerAsserting {
                   case Success(_) => None
                   case Failure(shrunkEx) => Some(shrunkEx)
                 }
-              }.map { case (shrunkOfA, shrunkErr) =>
-                (shrunkOfA, shrunkErr)
               }.getOrElse((roseTreeOfA.value, ex))
             val shrunkArgsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), bestABCDEF) else PropertyArgument(None, bestABCDEF))
             val theRes = new PropertyCheckResult.Failure(succeededCount, Some(err), names, shrunkArgsPassed, initSeed)
