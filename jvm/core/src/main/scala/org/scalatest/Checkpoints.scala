@@ -163,7 +163,7 @@ trait Checkpoints {
    *
    *
    * <pre>
-   * checkpoint { cp =>
+   * withCheckpoint { cp =>
    *    cp { x should be < 0 }
    *    cp { y should be > 9 }
    * }
@@ -171,7 +171,7 @@ trait Checkpoints {
    *
    * @param f the block of code, likely containing one or more checkpointed assertions, to execute
    */
-  def checkpoint(f: Checkpoint => Unit)(implicit pos: source.Position): Unit = {
+  def withCheckpoint(f: Checkpoint => Unit)(implicit pos: source.Position): Unit = {
     val cp = new Checkpoint
     f(cp)
     cp.reportAll()

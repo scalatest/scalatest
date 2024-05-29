@@ -130,12 +130,12 @@ class CheckpointsSpec extends AnyFunSpec with AssertionsForJUnit {
     } 
   }
 
-  describe("The checkpoint construct") {
+  describe("The withCheckpoint method") {
     describe("with a failure condition") {
 
       it("should throw a TestFailedException when reportAll is called") {
         val caught = the [TestFailedException] thrownBy {
-            checkpoint { cp =>
+            withCheckpoint { cp =>
               cp { 1 should equal (2) }
             }
           }
@@ -157,7 +157,7 @@ class CheckpointsSpec extends AnyFunSpec with AssertionsForJUnit {
       it("should report all failures when reportAll is called") {
         val caught =
           the [TestFailedException] thrownBy {
-            checkpoint { cp =>
+            withCheckpoint { cp =>
               cp { 1 should equal (2) }
               cp { 3 should equal (2) }
             }
@@ -186,7 +186,7 @@ class CheckpointsSpec extends AnyFunSpec with AssertionsForJUnit {
 
       it("should not throw an exception") {
         noException should be thrownBy {
-          checkpoint { cp =>
+          withCheckpoint { cp =>
             cp { 1 should equal (1) }
           }
         }
