@@ -18,13 +18,9 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.1")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.3")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
-    scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
-  )
-  lazy val nativeDottySettings = List(
-    scalaVersion := "3.3.3",
     scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
   )
 
@@ -153,7 +149,7 @@ trait DottyBuild { this: BuildCommons =>
   lazy val scalacticDottyNative = project.in(file("dotty/scalactic.native"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(scalacticDocSettings: _*)
     .settings(
       projectTitle := "Scalactic",
@@ -363,7 +359,7 @@ trait DottyBuild { this: BuildCommons =>
   lazy val scalatestCoreDottyNative = project.in(file("dotty/core.native"))
     .enablePlugins(SbtOsgi)
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(
       projectTitle := "ScalaTest Core Dotty",
       organization := "org.scalatest",
@@ -428,7 +424,7 @@ trait DottyBuild { this: BuildCommons =>
   private implicit class DottyProjectEx(private val p: Project) {
     /** common settings for all scalatest modules */
     def scalatestModule(name: String, title: String, isNative: Boolean): Project =  {
-      val selectedDottySettings = if (isNative) nativeDottySettings else dottySettings
+      val selectedDottySettings = if (isNative) dottySettings else dottySettings
       p.enablePlugins(SbtOsgi)
        .settings(sharedSettings: _*)
        .settings(selectedDottySettings: _*)
@@ -1171,7 +1167,7 @@ trait DottyBuild { this: BuildCommons =>
   lazy val scalatestAppDottyNative = project.in(file("dotty/scalatest-app.native"))
       .enablePlugins(SbtOsgi)
       .settings(sharedSettings)
-      .settings(nativeDottySettings: _*)
+      .settings(dottySettings: _*)
       .settings(
         projectTitle := "ScalaTest App",
         name := "scalatest-app",
@@ -1339,7 +1335,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val commonTestDottyNative = project.in(file("dotty/common-test.native"))
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(
       projectTitle := "Common test classes used by scalactic and scalatest",
       libraryDependencies ++= crossBuildTestLibraryDependencies.value,
@@ -1396,7 +1392,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalacticTestDottyNative = project.in(file("dotty/scalactic-test.native"))
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "Scalactic Test Native",
@@ -1499,7 +1495,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestTestDottyNative = project.in(file("dotty/scalatest-test.native"))
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(sharedTestSettingsNative: _*)
     .settings(
       projectTitle := "ScalaTest Test",
@@ -1545,7 +1541,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestDiagramsTestDottyNative = project.in(file("dotty/diagrams-test.native"))
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest Diagrams Test",
@@ -1619,7 +1615,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestFeatureSpecTestDottyNative = project.in(file("dotty/featurespec-test.native"))
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest FeatureSpec Test",
@@ -1660,7 +1656,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestFlatSpecTestDottyNative = project.in(file("dotty/flatspec-test.native"))
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest FlatSpec Test",
@@ -1701,7 +1697,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestFreeSpecTestDottyNative = project.in(file("dotty/freespec-test.native"))
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest FreeSpec Test",
@@ -1742,7 +1738,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestFunSpecTestDottyNative = project.in(file("dotty/funspec-test.native"))
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest FunSpec Test",
@@ -1783,7 +1779,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestFunSuiteTestDottyNative = project.in(file("dotty/funsuite-test.native"))
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest FunSuite Test",
@@ -1824,7 +1820,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestPropSpecTestDottyNative = project.in(file("dotty/propspec-test.native"))
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest PropSpec Test",
@@ -1865,7 +1861,7 @@ trait DottyBuild { this: BuildCommons =>
 
   lazy val scalatestWordSpecTestDottyNative = project.in(file("dotty/wordspec-test.native"))
     .settings(sharedSettings: _*)
-    .settings(nativeDottySettings: _*)
+    .settings(dottySettings: _*)
     .settings(sharedTestSettingsNative)
     .settings(
       projectTitle := "ScalaTest WordSpec Test",
