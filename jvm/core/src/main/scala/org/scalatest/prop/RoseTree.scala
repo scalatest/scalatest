@@ -46,7 +46,8 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
    * Performs a search for a minimal (most shrunken or simplified) failing case.
    *
    * @param fun a function that takes a value of type `T` and returns an `Option[E]`,
-   *            where the option contains data (of type `E`) for the most recent failure.
+   *            where the option is a Some that contains data (of type `E`) if the given T caused a failure, else
+   *            the given T did not cause a failure and the returned option will be a None
    * @tparam E the type of additional data returned in case of failure
    * @return an optional error data, if a shrunken or simplified case was found during the search
    */
@@ -58,14 +59,15 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
           case head #:: tail => 
             fun(head.value) match {
               case Some(errData) =>
-                // If the function fail, we got a new failure value, and we'll go one level deeper.
+                // If the function failed, we replace the lastFailure with this new (more shrunken) failure value, and
+                // we'll search one level deeper.
                 val headChildrenRTs = head.shrinks
                 shrinkLoop(Some((head, errData)), headChildrenRTs, count + 1)
               case None =>
                 // The function call succeeded, let's continue to try the sibling.
                 shrinkLoop(lastFailure, tail, count + 1)
             }
-          case _ => // No more further sibling to try, return the last failure
+          case _ => // No more further siblings to try, return the last failure
             lastFailure
         }
       else 
@@ -77,10 +79,11 @@ trait RoseTree[+T] { thisRoseTreeOfT =>
   /**
    * Performs a search for a minimal (most shrunken or simplified) failing case for a Future[T].
    *
-   * @param fun a function that takes a value of type `T` and returns an `Option[E]`,
-   *            where the option contains data (of type `E`) for the most recent failure.
+   * @param fun a function that takes a value of type `T` and returns an `Future[Option[E]]`,
+   *            where the option is a Some that contains data (of type `E`) if the given T causes a failure, else
+   *            the given T does not cause a failure and the option will be a None
    * @tparam E the type of additional data returned in case of failure
-   * @return an optional error data, if a shrunken or simplified case was found during the search
+   * @return a future optional error data, if a shrunken or simplified case was found during the search
    */
   def shrinkSearchForFuture[E](fun: T => Future[Option[E]])(implicit execContext: ExecutionContext): Future[Option[(T, E)]] = {
     def shrinkLoop(lastFailure: Option[(RoseTree[T], E)], pending: LazyListOrStream[RoseTree[T]], count: Int): Future[Option[(RoseTree[T], E)]] = {
