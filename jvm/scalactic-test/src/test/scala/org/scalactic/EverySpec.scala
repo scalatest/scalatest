@@ -16,7 +16,7 @@
 package org.scalactic
 
 import org.scalatest._
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 // SKIP-SCALATESTJS,NATIVE-START
@@ -43,7 +43,7 @@ class EverySpec extends UnitSpec {
     threesie(1) shouldBe 2
     threesie(2) shouldBe 3
   }
-  it can "be constructed from a GenTraversable via the from method on Every singleton" in {
+  it can "be constructed from a Iterable via the from method on Every singleton" in {
     Every.from(List.empty[String]) shouldBe None
     Every.from(List("1")) shouldBe Some(One("1"))
     Every.from(List(1, 2, 3)) shouldBe Some(Many(1, 2, 3))
@@ -158,10 +158,10 @@ class EverySpec extends UnitSpec {
     Many(1, 2, 3) ++ Every(4) shouldEqual Many(1, 2, 3, 4)
     Many(1, 2, 3) ++ One(4) shouldEqual Many(1, 2, 3, 4)
   }
-  it should "have a ++ method that takes a GenTraversableOnce" in {
+  it should "have a ++ method that takes a IterableOnce" in {
     Every(1, 2, 3) ++ List(4) shouldEqual Every(1, 2, 3, 4)
     Every(1, 2, 3) ++ Vector(4, 5, 6) shouldEqual Every(1, 2, 3, 4, 5, 6)
-    Many(1, 2, 3) ++ GenTraversable(4) shouldEqual Every(1, 2, 3, 4)
+    Many(1, 2, 3) ++ Iterable(4) shouldEqual Every(1, 2, 3, 4)
     Many(1, 2, 3) ++ Set(4, 5) shouldEqual Many(1, 2, 3, 4, 5)
     Many(1, 2, 3) ++ Set(4, 5).iterator shouldEqual Many(1, 2, 3, 4, 5)
   }
@@ -396,7 +396,7 @@ class EverySpec extends UnitSpec {
     Every(Every(1, 2, 3), Every(1, 2, 3)).flatten shouldBe Every(1, 2, 3, 1, 2, 3)
     Every(Every(1)).flatten shouldBe Every(1)
   }
-  it can "be flattened when in a GenTraversableOnce" in {
+  it can "be flattened when in a IterableOnce" in {
   // need to keep this commented out until finish implementing all methods
     Vector(Every(1, 2, 3), Every(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     List(Every(1, 2, 3), Every(1, 2, 3)).flatten shouldBe List(1, 2, 3, 1, 2, 3)

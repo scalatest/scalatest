@@ -16,9 +16,8 @@
 package org.scalactic.anyvals
 
 import scala.annotation.unchecked.{ uncheckedVariance => uV }
-import scala.collection.GenIterable
 import scala.collection.GenSeq
-import scala.collection.GenTraversableOnce
+import org.scalactic.ColCompatHelper.{IterableOnce, Iterable, GenIterable}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Buffer
 import scala.reflect.ClassTag
@@ -130,12 +129,12 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
   // TODO: Have I added these extra ++, etc. methods to Every that take a NonEmptyMap?
 
   /**
-    * Returns a new <code>NonEmptyMap</code> containing the entries of this <code>NonEmptyMap</code> and the entries of the passed <code>GenTraversableOnce</code>.
+    * Returns a new <code>NonEmptyMap</code> containing the entries of this <code>NonEmptyMap</code> and the entries of the passed <code>IterableOnce</code>.
     * The entry type of the resulting <code>NonEmptyMap</code> is the most specific superclass encompassing the entry types of this <code>NonEmptyMap</code>
-    * and the passed <code>GenTraversableOnce</code>.
+    * and the passed <code>IterableOnce</code>.
     *
     * @tparam V1 the value type of the returned <code>NonEmptyMap</code>
-    * @param other the <code>GenTraversableOnce</code> to append
+    * @param other the <code>IterableOnce</code> to append
     * @return a new <code>NonEmptyMap</code> that contains all the elements of this <code>NonEmptyMap</code> followed by all elements of <code>other</code>.
     */
   def ++[V1 >: V](other: org.scalactic.ColCompatHelper.IterableOnce[(K, V1)]): NonEmptyMap[K, V1] =
@@ -178,12 +177,12 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
   def ++:[V1 >: V](other: Every[(K, V1)]): NonEmptyMap[K, V1] = new NonEmptyMap(toMap ++ other.toVector)
 
   /**
-    * Returns a new <code>NonEmptyMap</code> containing the entries of this <code>NonEmptyMap</code> and the entries of the passed <code>GenTraversableOnce</code>.
+    * Returns a new <code>NonEmptyMap</code> containing the entries of this <code>NonEmptyMap</code> and the entries of the passed <code>IterableOnce</code>.
     * The entry type of the resulting <code>NonEmptyMap</code> is the most specific superclass encompassing the entry types of this <code>NonEmptyMap</code>
-    * and the passed <code>GenTraversableOnce</code>.
+    * and the passed <code>IterableOnce</code>.
     *
     * @tparam V1 the value type of the returned <code>NonEmptyMap</code>
-    * @param other the <code>GenTraversableOnce</code> to append
+    * @param other the <code>IterableOnce</code> to append
     * @return a new <code>NonEmptyMap</code> that contains all the elements of this <code>NonEmptyMap</code> followed by all elements of <code>other</code>.
     */
   def ++:[V1 >: V](other: org.scalactic.ColCompatHelper.IterableOnce[(K, V1)]): NonEmptyMap[K, V1] =
@@ -458,7 +457,7 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     */
   final def head: (K, V) = toMap.head
 
-  // Methods like headOption I can't get rid of because of the implicit conversion to GenTraversable.
+  // Methods like headOption I can't get rid of because of the implicit conversion to Iterable.
   // Users can call any of the methods I've left out on a NonEmptyMap, and get whatever Map would return
   // for that method call. Eventually I'll probably implement them all to save the implicit conversion.
 
@@ -802,7 +801,7 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     *
     * @return an <code>Iterable</code> containing all entries of this <code>NonEmptyMap</code>.
     */
-  final def toIterable: Iterable[(K, V)] = toMap.toIterable
+  final def toIterable: scala.collection.Iterable[(K, V)] = toMap.toIterable
 
   /**
     * Returns an <code>Iterator</code> over the entries in this <code>NonEmptyMap</code>.
@@ -848,7 +847,7 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     * @param asPair an implicit conversion that asserts that the element type of this <code>NonEmptyMap</code> is a pair.
     * @return a pair of <code>NonEmptyMap</code>s, containing the first and second half, respectively, of each element pair of this <code>NonEmptyMap</code>. 
     */
-  final def unzip[L, R](implicit asPair: ((K, V)) => (L, R)): (scala.collection.immutable.Iterable[L], scala.collection.immutable.Iterable[R]) = toMap.unzip
+  final def unzip[L, R](implicit asPair: ((K, V)) => (L, R)): (Iterable[L], Iterable[R]) = toMap.unzip
 
   /**
     * Converts this <code>NonEmptyMap</code> of triples into three <code>NonEmptyMap</code>s of the first, second, and and third entry of each triple.
@@ -859,7 +858,7 @@ final class NonEmptyMap[K, +V] private (val toMap: Map[K, V]) extends AnyVal {
     * @param asTriple an implicit conversion that asserts that the entry type of this <code>NonEmptyMap</code> is a triple.
     * @return a triple of <code>NonEmptyMap</code>s, containing the first, second, and third member, respectively, of each entry triple of this <code>NonEmptyMap</code>.
     */
-  final def unzip3[L, M, R](implicit asTriple: ((K, V)) => (L, M, R)): (scala.collection.immutable.Iterable[L], scala.collection.immutable.Iterable[M], scala.collection.immutable.Iterable[R]) = toMap.unzip3
+  final def unzip3[L, M, R](implicit asTriple: ((K, V)) => (L, M, R)): (Iterable[L], Iterable[M], Iterable[R]) = toMap.unzip3
 
   /**
     * A copy of this <code>NonEmptyMap</code> with one single replaced entry.

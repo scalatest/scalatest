@@ -23,7 +23,7 @@ import scala.annotation.tailrec
 import FailureMessages.decorateToStringValue
 import collection.GenMap
 import collection.GenSeq
-import collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import collection.mutable.LinkedHashMap
 import matchers.BePropertyMatchResult
 import matchers.BePropertyMatcher
@@ -38,7 +38,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
   private val prettifier = Prettifier.default
 
   def examples =
-    Table[Set[Int] => GenTraversable[Int]](
+    Table[Set[Int] => Iterable[Int]](
       ("Fun"), 
       ((set: Set[Int]) => set), 
       ((set: Set[Int]) => set.toList), 
@@ -63,7 +63,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
     )
     
   def nullableExamples = 
-    Table[Set[String] => GenTraversable[String]](
+    Table[Set[String] => Iterable[String]](
       ("Fun"), 
       ((set: Set[String]) => set), 
       ((set: Set[String]) => set.toList), 
@@ -88,12 +88,12 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
     )
     
   def traversableExamples = 
-    Table[Set[Set[String]] => GenTraversable[GenTraversable[String]]](
+    Table[Set[Set[String]] => Iterable[Iterable[String]]](
       ("Fun"), 
       ((set: Set[Set[String]]) => set), 
       ((set: Set[Set[String]]) => set.toList), 
       ((set: Set[Set[String]]) => set.toSeq), 
-      ((set: Set[Set[String]]) => set.toArray[GenTraversable[String]]), 
+      ((set: Set[Set[String]]) => set.toArray[Iterable[String]]), 
       ((set: Set[Set[String]]) => set.toIndexedSeq), 
       ((set: Set[Set[String]]) => Vector(set.toSeq: _*)),
       // SKIP-SCALATESTJS,NATIVE-START
@@ -113,7 +113,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
     )
     
   def seqExamples = 
-    Table[Set[GenSeq[String]] => GenTraversable[GenSeq[String]]](
+    Table[Set[GenSeq[String]] => Iterable[GenSeq[String]]](
       ("Fun"), 
       ((set: Set[GenSeq[String]]) => set), 
       ((set: Set[GenSeq[String]]) => set.toList), 
@@ -138,7 +138,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
     )
     
   def mapExamples = 
-    Table[Set[GenMap[String, String]] => GenTraversable[GenMap[String, String]]](
+    Table[Set[GenMap[String, String]] => Iterable[GenMap[String, String]]](
       ("Fun"), 
       ((set: Set[GenMap[String, String]]) => set), 
       ((set: Set[GenMap[String, String]]) => set.toList), 
@@ -1551,7 +1551,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        val firstViolation = getFirstNot[GenTraversable[String]](col, (e: GenTraversable[String]) => e.isEmpty)
+        val firstViolation = getFirstNot[Iterable[String]](col, (e: Iterable[String]) => e.isEmpty)
         e2.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " was not empty (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -1574,7 +1574,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        val firstViolation = getFirst[GenTraversable[String]](col, _.isEmpty)
+        val firstViolation = getFirst[Iterable[String]](col, _.isEmpty)
         e2.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " was empty (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -1644,7 +1644,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        val firstViolation = getFirstNot[GenTraversable[String]](col, (e: GenTraversable[String]) => e.size == 0)
+        val firstViolation = getFirstNot[Iterable[String]](col, (e: Iterable[String]) => e.size == 0)
         e2.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, firstViolation, 1, 0) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -1667,7 +1667,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        val firstViolation = getFirst[GenTraversable[String]](col, _.size == 0)
+        val firstViolation = getFirst[Iterable[String]](col, _.size == 0)
         e2.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + firstViolation + " had size 0 (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -1690,7 +1690,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        val firstViolation = getFirstNot[GenTraversable[String]](col, (e: GenTraversable[String]) => e.exists(_ == "2"))
+        val firstViolation = getFirstNot[Iterable[String]](col, (e: Iterable[String]) => e.exists(_ == "2"))
         e2.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " did not contain element \"2\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -1713,7 +1713,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
         }
         e2.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
         e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-        val firstViolation = getFirst[GenTraversable[String]](col, _.exists(_ == "2"))
+        val firstViolation = getFirst[Iterable[String]](col, _.exists(_ == "2"))
         e2.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained element \"2\" (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -1838,7 +1838,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirstNot[GenTraversable[String]](col, (e: GenTraversable[String]) => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
+          val firstViolation = getFirstNot[Iterable[String]](col, (e: Iterable[String]) => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " did not contain the same elements as " + decorateToStringValue(prettifier, right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -1896,7 +1896,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirstNot[GenTraversable[String]](col, (e: GenTraversable[String]) => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
+          val firstViolation = getFirstNot[Iterable[String]](col, (e: Iterable[String]) => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " did not contain the same elements as " + decorateToStringValue(prettifier, right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -1958,7 +1958,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirst[GenTraversable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
+          val firstViolation = getFirst[Iterable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained the same elements as " + decorateToStringValue(prettifier, right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -2081,7 +2081,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirstNot[GenTraversable[String]](col, (e: GenTraversable[String]) => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
+          val firstViolation = getFirstNot[Iterable[String]](col, (e: Iterable[String]) => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " did not contain the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -2170,7 +2170,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirst[GenTraversable[String]](col, e => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
+          val firstViolation = getFirst[Iterable[String]](col, e => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained the same elements in the same (iterated) order as " + decorateToStringValue(prettifier, right) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -2262,7 +2262,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirstNot[GenTraversable[String]](col, (e: GenTraversable[String]) => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
+          val firstViolation = getFirstNot[Iterable[String]](col, (e: Iterable[String]) => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " did not contain all of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -2382,7 +2382,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirst[GenTraversable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
+          val firstViolation = getFirst[Iterable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained all of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -2505,7 +2505,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirstNot[GenTraversable[String]](col, (e: GenTraversable[String]) => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
+          val firstViolation = getFirstNot[Iterable[String]](col, (e: Iterable[String]) => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " did not contain all of " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -2594,7 +2594,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirst[GenTraversable[String]](col, e => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
+          val firstViolation = getFirst[Iterable[String]](col, e => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained all of " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -2686,7 +2686,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirstNot[GenTraversable[String]](col, (e: GenTraversable[String]) => e.exists(_ == "3") || e.exists(_ == "5") || e.exists(_ == "7") )
+          val firstViolation = getFirstNot[Iterable[String]](col, (e: Iterable[String]) => e.exists(_ == "3") || e.exists(_ == "5") || e.exists(_ == "7") )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " did not contain at least one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -2806,7 +2806,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirst[GenTraversable[String]](col, e => e.exists(_ == "6") || e.exists(_ == "7") || e.exists(_ == "8") )
+          val firstViolation = getFirst[Iterable[String]](col, e => e.exists(_ == "6") || e.exists(_ == "7") || e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained at least one of " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -2929,7 +2929,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirstNot[GenTraversable[String]](col, (e: GenTraversable[String]) => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
+          val firstViolation = getFirstNot[Iterable[String]](col, (e: Iterable[String]) => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " did not contain only " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -3049,7 +3049,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirst[GenTraversable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
+          val firstViolation = getFirst[Iterable[String]](col, e => e.size == 3 && e.exists(_ == "1") && e.exists(_ == "2") && e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained only " + right + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -3172,7 +3172,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirstNot[GenTraversable[String]](col, (e: GenTraversable[String]) => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
+          val firstViolation = getFirstNot[Iterable[String]](col, (e: Iterable[String]) => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " did not contain only " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -3261,7 +3261,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirst[GenTraversable[String]](col, e => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
+          val firstViolation = getFirst[Iterable[String]](col, e => e.size == 3 && e.toList(0) == "1" && e.toList(1) == "2" && e.toList(2) == "8" )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + decorateToStringValue(prettifier, firstViolation) + " contained only " + right + " in order (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -3353,7 +3353,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirst[GenTraversable[String]](col, e => e.exists(_ == "1") || e.exists(_ == "2") || e.exists(_ == "8") )
+          val firstViolation = getFirst[Iterable[String]](col, e => e.exists(_ == "1") || e.exists(_ == "2") || e.exists(_ == "8") )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + FailureMessages.containedAtLeastOneOf(prettifier, firstViolation, UnquotedString("\"1\", \"2\", \"8\"")) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))
@@ -3472,7 +3472,7 @@ class InspectorShorthandsSpec extends AnyFunSpec with TableDrivenPropertyChecks 
           }
           e.failedCodeFileName should be (Some("InspectorShorthandsSpec.scala"))
           e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
-          val firstViolation = getFirst[GenTraversable[String]](col, e => e.exists(_ != "6") && e.exists(_ != "7") && e.exists(_ != "9") )
+          val firstViolation = getFirst[Iterable[String]](col, e => e.exists(_ != "6") && e.exists(_ != "7") && e.exists(_ != "9") )
           e.message should be (Some("'all' inspection failed, because: \n" +
                                     "  at index " + getIndex(col, firstViolation) + ", " + FailureMessages.didNotContainAtLeastOneOf(prettifier, firstViolation, UnquotedString("\"6\", \"7\", \"9\"")) + " (InspectorShorthandsSpec.scala:" + (thisLineNumber - 6) + ") \n" +
                                     "in " + decorateToStringValue(prettifier, col)))

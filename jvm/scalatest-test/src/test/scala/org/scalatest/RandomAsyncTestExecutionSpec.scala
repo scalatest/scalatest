@@ -38,7 +38,7 @@ class RandomAsyncTestExecutionSpec extends AsyncFunSuite /* with RandomTestOrder
 
   test("Ensure that mixing RandomTestOrder into an AsyncSuite actually randomizes the test order") {
     val a = new ExampleSpec
-    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
+    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker))
     status.toFuture.map { _ =>
       val list = thisOuterSuite.synchronized { buf.toList }
       assert(list != list.sorted)

@@ -21,7 +21,7 @@ import org.scalatest.matchers._
 import org.scalatest._
 import org.scalactic.TripleEqualsSupport.Spread
 import org.scalactic.DefaultEquality.areEqualComparingArraysStructurally
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import TripleEqualsSupport.TripleEqualsInvocation
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatest.matchers.MatchersHelper.matchSymbolToPredicateMethod
@@ -1278,7 +1278,7 @@ final class NotWord {
         
             val right = only.right
 
-            val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
+            val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[Iterable[_]] || right(0).isInstanceOf[Every[_]])
 
             MatchResult(
               !aggregating.containsOnly(left, right),
@@ -1568,9 +1568,9 @@ final class NotWord {
    *                    ^
    * </pre>
    **/
-  private[scalatest] def contain[T](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[T]): Matcher[GenTraversable[T]] = {
-    new Matcher[GenTraversable[T]] {
-      def apply(left: GenTraversable[T]): MatchResult = {
+  private[scalatest] def contain[T](resultOfAWordApplication: ResultOfAWordToAMatcherApplication[T]): Matcher[Iterable[T]] = {
+    new Matcher[Iterable[T]] {
+      def apply(left: Iterable[T]): MatchResult = {
         val aMatcher = resultOfAWordApplication.aMatcher
         val matched = left.find(aMatcher(_).matches)
         MatchResult(
@@ -1593,9 +1593,9 @@ final class NotWord {
    *                    ^
    * </pre>
    **/
-  private[scalatest] def contain[T](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[T]): Matcher[GenTraversable[T]] = {
-    new Matcher[GenTraversable[T]] {
-      def apply(left: GenTraversable[T]): MatchResult = {
+  private[scalatest] def contain[T](resultOfAnWordApplication: ResultOfAnWordToAnMatcherApplication[T]): Matcher[Iterable[T]] = {
+    new Matcher[Iterable[T]] {
+      def apply(left: Iterable[T]): MatchResult = {
         val anMatcher = resultOfAnWordApplication.anMatcher
         val matched = left.find(anMatcher(_).matches)
         MatchResult(

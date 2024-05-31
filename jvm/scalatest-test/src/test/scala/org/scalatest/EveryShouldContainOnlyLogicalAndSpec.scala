@@ -153,7 +153,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           fumList should (contain only Many("happy", "birthday", "to", "you") and contain only ("fee", "fie", "foe", "fum"))
         }
@@ -232,7 +232,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (fumList) and contain only Many("happy", "birthday", "to", "you"))
         }
@@ -307,7 +307,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e2 = intercept[TestFailedException] {
           fumList should (be (fumList) and contain only Many("happy", "birthday", "to", "you"))
         }
@@ -382,7 +382,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           fumList should (contain only Many("happy", "birthday", "to", "you") and be (fumList))
         }
@@ -462,7 +462,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           One(Many("fee", "fie", "foe", "fum")) should (not contain only (Many("fee", "fie", "foe", "fum")) and not contain only ("happy", "birthday", "to", "you"))
         }
@@ -532,7 +532,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           One(Many("fee", "fie", "foe", "fum")) should (not equal (toList) and not contain only (Many("fee", "fie", "foe", "fum")))
         }
@@ -598,7 +598,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           One(Many("fee", "fie", "foe", "fum")) should (not be (toList) and not contain only (Many("fee", "fie", "foe", "fum")))
         }
@@ -720,7 +720,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (One(One(Many(3, 2, 1), Many(3, 2, 1), Many(4, 3, 2)))) should (contain only Many(1, 2, 3) and contain only (1, 3, 2))
         }
@@ -823,7 +823,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (One(One(Many(3, 2, 1)))) should (be (One(Many(3, 2, 1))) and contain only Many(2, 3, 8))
         }
@@ -931,7 +931,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
         e2.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (One(One(Many(3, 2, 1)))) should (not contain only (Many(3, 2, 1)) and not contain only (8, 3, 4))
         }
@@ -1030,7 +1030,7 @@ class EveryShouldContainOnlyLogicalAndSpec extends AnyFunSpec {
         e1.message should be (Some(Resources.onlyDuplicate))
       }
 
-      it("should throw TFE with friendly reminder when single GenTraversable argument is passed and failed") {
+      it("should throw TFE with friendly reminder when single Iterable argument is passed and failed") {
         val e1 = intercept[TestFailedException] {
           all (One(One(Many(3, 2, 1)))) should (not be (One(3)) and not contain only (Many(3, 2, 1)))
         }

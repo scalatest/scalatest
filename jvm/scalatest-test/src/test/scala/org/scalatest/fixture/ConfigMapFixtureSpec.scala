@@ -32,7 +32,7 @@ class ConfigMapFixtureSpec extends scalatest.funspec.AnyFunSpec {
         }
       }
       val spec = new MySpec
-      spec.run(None, Args(SilentReporter, Stopper.default, Filter(), myConfigMap, None, new Tracker, Set.empty))
+      spec.run(None, Args(SilentReporter, Stopper.default, Filter(), myConfigMap, None, new Tracker))
       assert(spec.configMapPassed)
     }
   }

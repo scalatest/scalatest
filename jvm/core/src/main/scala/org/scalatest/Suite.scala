@@ -71,8 +71,8 @@ import Suite.takesInformer
 import Suite.getSuiteClassName
 import org.scalatest.tools.Utils.wrapReporterIfNecessary
 import annotation.tailrec
-import collection.GenTraversable
 import collection.mutable.ListBuffer
+import org.scalactic.ColCompatHelper.Iterable
 
 // SKIP-SCALATESTJS,NATIVE-START
 import Suite.getTopOfClass
@@ -820,8 +820,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
           filter,
           configMap,
           None,
-          tracker,
-          Set.empty)
+          tracker)
         )
       status.waitUntilCompleted()
       val suiteCompletedFormatter = formatterForSuiteCompleted(thisSuite)
@@ -1173,9 +1172,9 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
         report(SuiteStarting(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName)), nestedSuite.rerunner))
 
-        try { // TODO: pass runArgs down and that will get the chosenStyles passed down
+        try {
           // Same thread, so OK to send same tracker
-          val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker, Set.empty))
+          val status = nestedSuite.run(None, Args(report, stopper, filter, configMap, distributor, tracker))
 
           val rawString = Resources.suiteCompletedNormally
           val formatter = formatterForSuiteCompleted(nestedSuite)
@@ -1323,15 +1322,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     // SKIP-SCALATESTJS,NATIVE-END
     //SCALATESTJS,NATIVE-ONLY Some(suiteClass.getName)
   }
-  
-  /**
-   * <strong>The <code>styleName</code> lifecycle method has been deprecated and will be removed in a future version of ScalaTest.</strong>
-   *
-   * <p>This method was used to support the chosen styles feature, which was deactivated in 3.1.0. The internal modularization of ScalaTest in 3.2.0
-   * will replace chosen styles as the tool to encourage consistency across a project. We do not plan a replacement for <code>styleName</code>.</p>
-   */
-  @deprecated("The styleName lifecycle method has been deprecated and will be removed in a future version of ScalaTest with no replacement.", "3.1.0")
-  val styleName: String = "org.scalatest.Suite"
 
   /**
    * Provides a <code>TestData</code> instance for the passed test name, given the passed config map.
@@ -1366,7 +1356,6 @@ private[scalatest] object Suite {
   val IgnoreTagName = "org.scalatest.Ignore"
 
   private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
-  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
 
   private[scalatest] val defaultTestSortingReporterTimeoutInSeconds = 2.0
 
@@ -1612,7 +1601,7 @@ used for test events like succeeded/failed, etc.
 
   def indentation(level: Int) = "  " * level
   
-  def indentLines(level: Int, lines: GenTraversable[String]) = 
+  def indentLines(level: Int, lines: Iterable[String]) = 
     lines.map(line => line.split("\n").map(indentation(level) + _).mkString("\n"))
     
   def substituteHtmlSpace(value: String) = value.replaceAll(" ", "&nbsp;")

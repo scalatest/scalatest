@@ -15,7 +15,7 @@
 */
 
 import java.io.{File, FileWriter, BufferedWriter}
-import collection.GenTraversable
+import collection.Iterable
 import scala.annotation.tailrec
 
 object GenInspectors {
@@ -122,7 +122,7 @@ object GenInspectors {
       "}\n"
   }
   
-  class NestedFailedTemplate(colText: GenTraversable[_], forType: String, forText: String, name: String, text: String, assertText: String, messageTemplate: Template) extends Template {
+  class NestedFailedTemplate(colText: Iterable[_], forType: String, forText: String, name: String, text: String, assertText: String, messageTemplate: Template) extends Template {
     override def toString = 
       "def `" + forType + " and " + name + " when nest should throw TestFailedException with correct stack depth and error message when failed` {\n" + 
       "  val xs = " + colText + "\n" +
@@ -3158,7 +3158,7 @@ object GenInspectors {
           importList = List("org.scalatest._",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
-            "collection.GenTraversable",
+            "org.scalactic.ColCompatHelper.Iterable",
             "Inspectors._",
             "java.lang.annotation.AnnotationFormatError",
             "java.nio.charset.CoderMalfunctionError",
@@ -3189,7 +3189,7 @@ object GenInspectors {
         importList = List("org.scalatest._",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
-          "collection.GenTraversable",
+          "org.scalactic.ColCompatHelper.Iterable",
           "Inspectors._",
           "java.lang.annotation.AnnotationFormatError",
           "java.nio.charset.CoderMalfunctionError",
@@ -3220,7 +3220,7 @@ object GenInspectors {
           importList = List("org.scalatest._",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
-            "collection.GenTraversable",
+            "org.scalactic.ColCompatHelper.Iterable",
             "Inspectors._",
             "java.lang.annotation.AnnotationFormatError",
             "java.nio.charset.CoderMalfunctionError",
@@ -3251,7 +3251,7 @@ object GenInspectors {
         importList = List("org.scalatest._",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
-          "collection.GenTraversable",
+          "org.scalactic.ColCompatHelper.Iterable",
           "Inspectors._",
           "java.lang.annotation.AnnotationFormatError",
           "java.nio.charset.CoderMalfunctionError",
@@ -3282,7 +3282,7 @@ object GenInspectors {
           importList = List("org.scalatest._",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
-            "collection.GenTraversable",
+            "org.scalactic.ColCompatHelper.Iterable",
             "Inspectors._",
             "java.lang.annotation.AnnotationFormatError",
             "java.nio.charset.CoderMalfunctionError",
@@ -3313,7 +3313,7 @@ object GenInspectors {
         importList = List("org.scalatest._",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
-          "collection.GenTraversable",
+          "org.scalactic.ColCompatHelper.Iterable",
           "Inspectors._",
           "java.lang.annotation.AnnotationFormatError",
           "java.nio.charset.CoderMalfunctionError",
@@ -3344,7 +3344,7 @@ object GenInspectors {
           importList = List("org.scalatest._",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
-            "collection.GenTraversable",
+            "org.scalactic.ColCompatHelper.Iterable",
             "Inspectors._",
             "java.lang.annotation.AnnotationFormatError",
             "java.nio.charset.CoderMalfunctionError",
@@ -3375,7 +3375,7 @@ object GenInspectors {
         importList = List("org.scalatest._",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
-          "collection.GenTraversable",
+          "org.scalactic.ColCompatHelper.Iterable",
           "Inspectors._",
           "java.lang.annotation.AnnotationFormatError",
           "java.nio.charset.CoderMalfunctionError",
@@ -3406,7 +3406,7 @@ object GenInspectors {
           importList = List("org.scalatest._",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
-            "collection.GenTraversable",
+            "org.scalactic.ColCompatHelper.Iterable",
             "Inspectors._",
             "java.lang.annotation.AnnotationFormatError",
             "java.nio.charset.CoderMalfunctionError",
@@ -3437,7 +3437,7 @@ object GenInspectors {
         importList = List("org.scalatest._",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
-          "collection.GenTraversable",
+          "org.scalactic.ColCompatHelper.Iterable",
           "Inspectors._",
           "java.lang.annotation.AnnotationFormatError",
           "java.nio.charset.CoderMalfunctionError",
@@ -3468,7 +3468,7 @@ object GenInspectors {
           importList = List("org.scalatest._",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
-            "collection.GenTraversable",
+            "org.scalactic.ColCompatHelper.Iterable",
             "Inspectors._",
             "java.lang.annotation.AnnotationFormatError",
             "java.nio.charset.CoderMalfunctionError",
@@ -3499,7 +3499,7 @@ object GenInspectors {
         importList = List("org.scalatest._",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
-          "collection.GenTraversable",
+          "org.scalactic.ColCompatHelper.Iterable",
           "Inspectors._",
           "java.lang.annotation.AnnotationFormatError",
           "java.nio.charset.CoderMalfunctionError",
@@ -3530,7 +3530,7 @@ object GenInspectors {
           importList = List("org.scalatest._",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
-            "collection.GenTraversable",
+            "org.scalactic.ColCompatHelper.Iterable",
             "Inspectors._",
             "java.lang.annotation.AnnotationFormatError",
             "java.nio.charset.CoderMalfunctionError",
@@ -3561,7 +3561,7 @@ object GenInspectors {
         importList = List("org.scalatest._",
           "SharedHelpers._",
           "FailureMessages.decorateToStringValue",
-          "collection.GenTraversable",
+          "org.scalactic.ColCompatHelper.Iterable",
           "Inspectors._",
           "java.lang.annotation.AnnotationFormatError",
           "java.nio.charset.CoderMalfunctionError",
@@ -3592,7 +3592,7 @@ object GenInspectors {
           importList = List("org.scalatest._",
             "SharedHelpers._",
             "FailureMessages.decorateToStringValue",
-            "collection.GenTraversable",
+            "org.scalactic.ColCompatHelper.Iterable",
             "org.scalatest.refspec.RefSpec"),
           classTemplate = new ClassTemplate {
             val name = "NestedInspectorsSpec"

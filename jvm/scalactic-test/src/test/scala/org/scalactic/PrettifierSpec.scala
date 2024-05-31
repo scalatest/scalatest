@@ -105,13 +105,13 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
     it("should just call toString on anything not specially treated") {
       Prettifier.basic(List("1", "2", "3")) should be ("List(1, 2, 3)")
     }
-    it("should pretty print GenTraversable") {
+    it("should pretty print Iterable") {
       Prettifier.basic(List(1, 2, 3)) should be ("List(1, 2, 3)")
     }
-    it("should pretty print string GenTraversable") {
+    it("should pretty print string Iterable") {
       Prettifier.basic(List("1", "2", "3")) should be ("List(1, 2, 3)")
     }
-    it("should pretty print nested string GenTraversable") {
+    it("should pretty print nested string Iterable") {
       Prettifier.basic(List(List("1", "2", "3"))) should be ("List(List(1, 2, 3))")
     }
     it("should pretty print Some(Int)") {
@@ -256,13 +256,13 @@ class PrettifierSpec extends funspec.AnyFunSpec with matchers.should.Matchers {
     it("should just call toString on anything not specially treated") {
       Prettifier.default(List("1", "2", "3")) should be ("List(\"1\", \"2\", \"3\")")
     }
-    it("should pretty print GenTraversable") {
+    it("should pretty print Iterable") {
       Prettifier.default(List(1, 2, 3)) should be ("List(1, 2, 3)")
     }
-    it("should pretty print string GenTraversable") {
+    it("should pretty print string Iterable") {
       Prettifier.default(List("1", "2", "3")) should be ("List(\"1\", \"2\", \"3\")")
     }
-    it("should pretty print nested string GenTraversable") {
+    it("should pretty print nested string Iterable") {
       Prettifier.default(List(List("1", "2", "3"))) should be ("List(List(\"1\", \"2\", \"3\"))")
     }
     it("should pretty print Some(Int)") {

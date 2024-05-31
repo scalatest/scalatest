@@ -23,7 +23,6 @@ import scala.reflect.Manifest
 import org.scalatest.matchers.MatchersHelper.transformOperatorChars
 import scala.collection.Traversable
 import org.scalactic.DefaultEquality.areEqualComparingArraysStructurally
-import scala.collection.GenTraversable
 import scala.collection.GenSeq
 import scala.collection.GenMap
 import org.scalactic.Tolerance

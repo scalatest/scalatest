@@ -66,18 +66,6 @@ private[scalatest] trait JSuite { thisSuite =>
    * The fully qualified name of the class that can be used to rerun this suite.
    */
   def getRerunner: Option[String] // Will return a nullable String
-  
-  /**
-   * This suite's style name.
-   *
-   * <p>
-   * This lifecycle method provides a string that is used to determine whether this suite object's
-   * style is one of the <a href="tools/Runner$.html#specifyingChosenStyles">chosen styles</a> for
-   * the project.
-   * </p>
-   */
-  def getStyleName(): String // Actually, not sure we need this over in the JSuite area Maybe this will just not exist over there.
-  // But it might make it simpler to be consistent.
 
   /**
    * A user-friendly suite name for this <code>Suite</code>.

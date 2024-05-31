@@ -51,7 +51,7 @@ class LocationSpec extends AnyFunSpec {
     it("should have LineInFile and SeeStackDepthException location with correct line number and source file name") {
       val testLocationSuite = new TestLocationFunSuite
       val testLocationReporter = new EventRecordingReporter
-      testLocationSuite.run(None, Args(testLocationReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      testLocationSuite.run(None, Args(testLocationReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       val testLocationEventList = testLocationReporter.eventsReceived
       testLocationEventList.foreach {event => 
         event match {
@@ -105,7 +105,7 @@ class LocationSpec extends AnyFunSpec {
     it("should have TopOfMethod and SeeStackDepthException location with correct line number and source file name") {
       val testLocationSuite = new TestLocationSpec
       val testLocationReporter = new EventRecordingReporter
-      testLocationSuite.run(None, Args(testLocationReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+      testLocationSuite.run(None, Args(testLocationReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
       val testLocationEventList = testLocationReporter.eventsReceived
       testLocationEventList.foreach {event => 
         event match {

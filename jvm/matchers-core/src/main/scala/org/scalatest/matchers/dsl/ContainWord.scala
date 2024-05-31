@@ -16,7 +16,7 @@
 package org.scalatest.matchers.dsl
 
 import org.scalatest.matchers._
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import org.scalactic._
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
@@ -194,12 +194,12 @@ final class ContainWord {
    *                                ^
    * </pre>
    **/
-  //DOTTY-ONLY infix private[scalatest] def a[T](aMatcher: AMatcher[T]): Matcher[GenTraversable[T]] =
+  //DOTTY-ONLY infix private[scalatest] def a[T](aMatcher: AMatcher[T]): Matcher[Iterable[T]] =
   // SKIP-DOTTY-START 
-  private[scalatest] def a[T](aMatcher: AMatcher[T]): Matcher[GenTraversable[T]] =
+  private[scalatest] def a[T](aMatcher: AMatcher[T]): Matcher[Iterable[T]] =
   // SKIP-DOTTY-END
-    new Matcher[GenTraversable[T]] {
-      def apply(left: GenTraversable[T]): MatchResult = {
+    new Matcher[Iterable[T]] {
+      def apply(left: Iterable[T]): MatchResult = {
         val matched = left.find(aMatcher(_).matches)
         MatchResult(
           matched.isDefined, 
@@ -220,12 +220,12 @@ final class ContainWord {
    *                                ^
    * </pre>
    **/
-  //DOTTY-ONLY infix private[scalatest] def an[T](anMatcher: AnMatcher[T]): Matcher[GenTraversable[T]] =
+  //DOTTY-ONLY infix private[scalatest] def an[T](anMatcher: AnMatcher[T]): Matcher[Iterable[T]] =
   // SKIP-DOTTY-START 
-  private[scalatest] def an[T](anMatcher: AnMatcher[T]): Matcher[GenTraversable[T]] =
+  private[scalatest] def an[T](anMatcher: AnMatcher[T]): Matcher[Iterable[T]] =
   // SKIP-DOTTY-END
-    new Matcher[GenTraversable[T]] {
-      def apply(left: GenTraversable[T]): MatchResult = {
+    new Matcher[Iterable[T]] {
+      def apply(left: Iterable[T]): MatchResult = {
         val matched = left.find(anMatcher(_).matches)
         MatchResult(
           matched.isDefined, 
@@ -263,9 +263,9 @@ final class ContainWord {
     }
   }
 
-  //DOTTY-ONLY infix def oneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Containing] = {
+  //DOTTY-ONLY infix def oneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Containing] = {
   // SKIP-DOTTY-START
-  def oneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Containing] = {
+  def oneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Containing] = {
   // SKIP-DOTTY-END  
     val right = elements.toList
     new MatcherFactory1[Any, Containing] {
@@ -311,9 +311,9 @@ final class ContainWord {
     }
   }
 
-  //DOTTY-ONLY infix def atLeastOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  //DOTTY-ONLY infix def atLeastOneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-START
-  def atLeastOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  def atLeastOneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-END  
     val right = elements.toList
     new MatcherFactory1[Any, Aggregating] {
@@ -359,9 +359,9 @@ final class ContainWord {
     }
   }
 
-  //DOTTY-ONLY infix def noElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Containing] = {
+  //DOTTY-ONLY infix def noElementsOf(elements: Iterable[Any]): MatcherFactory1[Any, Containing] = {
   // SKIP-DOTTY-START
-  def noElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Containing] = {
+  def noElementsOf(elements: Iterable[Any]): MatcherFactory1[Any, Containing] = {
   // SKIP-DOTTY-END  
     val right = elements.toList
     new MatcherFactory1[Any, Containing] {
@@ -382,9 +382,9 @@ final class ContainWord {
     }
   }
   
-  //DOTTY-ONLY infix def theSameElementsAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  //DOTTY-ONLY infix def theSameElementsAs(right: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-START
-  def theSameElementsAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  def theSameElementsAs(right: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-END  
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
@@ -404,9 +404,9 @@ final class ContainWord {
     }
   }
   
-  //DOTTY-ONLY infix def theSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
+  //DOTTY-ONLY infix def theSameElementsInOrderAs(right: Iterable[Any]): MatcherFactory1[Any, Sequencing] = {
   // SKIP-DOTTY-START
-  def theSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
+  def theSameElementsInOrderAs(right: Iterable[Any]): MatcherFactory1[Any, Sequencing] = {
   // SKIP-DOTTY-END  
     new MatcherFactory1[Any, Sequencing] {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
@@ -438,7 +438,7 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
+            val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[Iterable[_]] || right(0).isInstanceOf[Every[_]])
             MatchResult(
               aggregating.containsOnly(left, right),
               if (withFriendlyReminder) Resources.rawDidNotContainOnlyElementsWithFriendlyReminder else Resources.rawDidNotContainOnlyElements,
@@ -503,9 +503,9 @@ final class ContainWord {
     }
   }
 
-  //DOTTY-ONLY infix def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  //DOTTY-ONLY infix def allElementsOf(elements: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-START
-  def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  def allElementsOf(elements: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-END  
     val right = elements.toList
     new MatcherFactory1[Any, Aggregating] {
@@ -551,9 +551,9 @@ final class ContainWord {
     }
   }
 
-  //DOTTY-ONLY infix def inOrderElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
+  //DOTTY-ONLY infix def inOrderElementsOf(elements: Iterable[Any]): MatcherFactory1[Any, Sequencing] = {
   // SKIP-DOTTY-START
-  def inOrderElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
+  def inOrderElementsOf(elements: Iterable[Any]): MatcherFactory1[Any, Sequencing] = {
   // SKIP-DOTTY-END  
     val right = elements.toList
     new MatcherFactory1[Any, Sequencing] {
@@ -599,9 +599,9 @@ final class ContainWord {
     }
   }
 
-  //DOTTY-ONLY infix def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  //DOTTY-ONLY infix def atMostOneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-START
-  def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
+  def atMostOneElementOf(elements: Iterable[Any]): MatcherFactory1[Any, Aggregating] = {
   // SKIP-DOTTY-END  
     val right = elements.toList
     new MatcherFactory1[Any, Aggregating] {

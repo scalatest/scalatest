@@ -143,7 +143,7 @@ final class TaskRunner(task: TaskDef,
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
       reporter(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClassName), formatter, Some(TopOfClass(suiteClassName))))
 
-    val args = Args(reporter, Stopper.default, filter, ConfigMap.empty, None, tracker, Set.empty)
+    val args = Args(reporter, Stopper.default, filter, ConfigMap.empty, None, tracker)
 
     val future: Future[Unit] =
       try {

@@ -15,7 +15,7 @@
  */
 package org.scalactic.anyvals
 
-import scala.collection.GenTraversable
+import org.scalactic.ColCompatHelper.Iterable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
@@ -42,7 +42,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     threesie(1) shouldBe 2
     threesie(2) shouldBe 3
   }
-  it can "be constructed from a GenTraversable via the from method on NonEmptyVector singleton" in {
+  it can "be constructed from a Iterable via the from method on NonEmptyVector singleton" in {
     NonEmptyVector.from(Vector.empty[String]) shouldBe None
     NonEmptyVector.from(Vector("1")) shouldBe Some(NonEmptyVector("1"))
     NonEmptyVector.from(Vector(1, 2, 3)) shouldBe Some(NonEmptyVector(1, 2, 3))
@@ -163,10 +163,10 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector(1, 2, 3) ++ Every(4) shouldEqual NonEmptyVector(1, 2, 3, 4)
     NonEmptyVector(1, 2, 3) ++ One(4) shouldEqual NonEmptyVector(1, 2, 3, 4)
   }
-  it should "have a ++ method that takes a GenTraversableOnce" in {
+  it should "have a ++ method that takes a IterableOnce" in {
     NonEmptyVector(1, 2, 3) ++ Vector(4) shouldEqual NonEmptyVector(1, 2, 3, 4)
     NonEmptyVector(1, 2, 3) ++ Vector(4, 5, 6) shouldEqual NonEmptyVector(1, 2, 3, 4, 5, 6)
-    NonEmptyVector(1, 2, 3) ++ GenTraversable(4) shouldEqual NonEmptyVector(1, 2, 3, 4)
+    NonEmptyVector(1, 2, 3) ++ Iterable(4) shouldEqual NonEmptyVector(1, 2, 3, 4)
     NonEmptyVector(1, 2, 3) ++ Set(4, 5) shouldEqual NonEmptyVector(1, 2, 3, 4, 5)
     NonEmptyVector(1, 2, 3) ++ Set(4, 5).iterator shouldEqual NonEmptyVector(1, 2, 3, 4, 5)
   }
@@ -427,7 +427,7 @@ class NonEmptyVectorSpec extends UnitSpec {
     NonEmptyVector(NonEmptyVector(1, 2, 3), NonEmptyVector(1, 2, 3)).flatten shouldBe NonEmptyVector(1, 2, 3, 1, 2, 3)
     NonEmptyVector(NonEmptyVector(1)).flatten shouldBe NonEmptyVector(1)
   }
-  it can "be flattened when in a GenTraversableOnce" in {
+  it can "be flattened when in a IterableOnce" in {
     Vector(NonEmptyVector(1, 2, 3), NonEmptyVector(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     Vector(NonEmptyVector(1, 2, 3), NonEmptyVector(1, 2, 3)).flatten shouldBe Vector(1, 2, 3, 1, 2, 3)
     Vector(NonEmptyVector(1, 2, 3), NonEmptyVector(1, 2, 3)).toIterator.flatten.toStream shouldBe Vector(1, 2, 3, 1, 2, 3).toIterator.toStream

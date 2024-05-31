@@ -19,7 +19,6 @@ import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
 import scala.util.control.NonFatal
-import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
@@ -578,6 +577,7 @@ import scala.collection.mutable.Builder
  * <a href="https://github.com/vpatryshev/ScalaKittens">ScalaKittens</a>.</em>
  * </p>
  */
+//DOTTY-ONLY infix  
 sealed abstract class Or[+G,+B] extends Product with Serializable {
 
   /**

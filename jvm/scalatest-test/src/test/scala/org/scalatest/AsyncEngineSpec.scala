@@ -133,7 +133,7 @@ class AsyncEngineSpec extends flatspec.AnyFlatSpec with matchers.should.Matchers
     }
     val s = new MySpec
     val myReporter = new EventRecordingReporter
-    val status = s.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+    val status = s.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
     myReporter.suiteCompletedEventsReceived should have size 0
     eventually { status.unreportedException shouldBe defined }
   // SKIP-SCALATESTJS,NATIVE-END
@@ -159,7 +159,7 @@ class AsyncEngineSpec extends flatspec.AnyFlatSpec with matchers.should.Matchers
 
     val myFunSuite = new MyFunSuite
     val mySecondReporter = new SuiteDurationReporter
-    myFunSuite.run(None, Args(mySecondReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+    myFunSuite.run(None, Args(mySecondReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99))))
     eventually { assert(mySecondReporter.suiteAbortedWasFiredAndHadADuration) }
 */
   // SKIP-SCALATESTJS,NATIVE-START
