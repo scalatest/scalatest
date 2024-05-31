@@ -577,6 +577,7 @@ import scala.collection.mutable.Builder
  * <a href="https://github.com/vpatryshev/ScalaKittens">ScalaKittens</a>.</em>
  * </p>
  */
+//DOTTY-ONLY infix  
 sealed abstract class Or[+G,+B] extends Product with Serializable {
 
   /**

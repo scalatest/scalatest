@@ -5,7 +5,6 @@ import scala.io.Source
 
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.scalaJSVersion
 import scalanative.sbtplugin.ScalaNativePlugin
-import ScalaNativePlugin.autoImport.{nativeLinkStubs, nativeDump}
 
 import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
@@ -16,6 +15,8 @@ trait BuildCommons {
     scalaVersion := crossScalaVersions.value.head,
   )
 
+  val sjsPrefix = "_sjs1_"
+
   val runFlickerTests = Option(System.getenv("SCALATEST_RUN_FLICKER_TESTS")).getOrElse("FALSE").toUpperCase == "TRUE"
 
   def scalatestJSLibraryDependencies = Def.setting {
@@ -25,9 +26,8 @@ trait BuildCommons {
     )
   }    
     
-
   val releaseVersion = "3.3.0-alpha.1"
-  val previousReleaseVersion = "3.2.17"
+  val previousReleaseVersion = "3.2.18"
 
   val plusJUnitVersion = "3.3.0.0-alpha.1"
   val plusTestNGVersion = "3.3.0.0-alpha.1"
@@ -51,7 +51,7 @@ trait BuildCommons {
 
   def scalatestJSDocTaskSetting: Setting[_]
 
-  def crossBuildTestLibraryDependencies: sbt.Def.Initialize[Seq[sbt.ModuleID]]
+  def crossBuildTestLibraryDependencies: sbt.Def.Initialize[Seq[ModuleID]]
 
   lazy val projectTitle = settingKey[String]("Name of project to display in doc titles")
 
@@ -251,7 +251,7 @@ trait BuildCommons {
       case Some((2, 10)) => Seq.empty
       case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
       case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
-        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.1.0"))
+        Seq(("org.scala-lang.modules" %% "scala-xml" % "2.3.0"))
     }
   }    
 
@@ -260,10 +260,8 @@ trait BuildCommons {
       organization := "org.scalatest",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
-      Test / fork := false,
-      Test / nativeLinkStubs := true,
-      Test / nativeDump := false, 
-      Test / testOptions := scalatestTestJSNativeOptions,
+      fork in test := false,
+      testOptions in Test := scalatestTestJSNativeOptions,
       publishArtifact := false,
       publish := {},
       publishLocal := {}

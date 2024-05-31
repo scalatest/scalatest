@@ -116,6 +116,7 @@ trait CanVerb {
      * <code>"can"</code>, and right, and returns the result.
      * </p>
      */
+    //DOTTY-ONLY infix 
     def can(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
       svsi(leftSideString, "can", right, pos)
     }
@@ -139,6 +140,7 @@ trait CanVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
+    //DOTTY-ONLY infix 
     def can(right: BehaveWord)(implicit svbli: StringVerbBehaveLikeInvocation): BehaveWord = {
       svbli(leftSideString, pos)
     }
@@ -165,6 +167,7 @@ trait CanVerb {
      * no-arg function.
      * </p>
      */
+    //DOTTY-ONLY infix 
     def can(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
       fun(leftSideString, "can", pos, () => right)
     }
@@ -192,6 +195,7 @@ trait CanVerb {
      * <code>"can"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>can</code>.
      * </p>
      */
+    //DOTTY-ONLY infix 
     def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration): Unit = {
       swawr(leftSideString, "can", resultOfAfterWordApplication, pos)
     }

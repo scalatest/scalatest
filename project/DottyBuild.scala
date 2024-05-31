@@ -8,7 +8,7 @@ import com.typesafe.sbt.osgi.OsgiKeys
 import com.typesafe.sbt.osgi.SbtOsgi
 import com.typesafe.sbt.osgi.SbtOsgi.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPlugin
-import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLinkerConfig, jsEnv}
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLinkerConfig, jsEnv, scalaJSVersion}
 
 import scalanative.sbtplugin.ScalaNativePlugin
 
@@ -18,7 +18,7 @@ trait DottyBuild { this: BuildCommons =>
 
   // List of available night build at https://repo1.maven.org/maven2/ch/epfl/lamp/dotty-compiler_0.27/
   // lazy val dottyVersion = dottyLatestNightlyBuild.get
-  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.1")
+  lazy val dottyVersion = System.getProperty("scalatest.dottyVersion", "3.3.3")
   lazy val dottySettings = List(
     scalaVersion := dottyVersion,
     scalacOptions ++= List("-language:implicitConversions", "-noindent", "-Xprint-suspension")
@@ -367,8 +367,8 @@ trait DottyBuild { this: BuildCommons =>
       console / initialCommands := """|import org.scalatest._
                                        |import org.scalactic._
                                        |import Matchers._""".stripMargin,
-      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.1.0", 
-      libraryDependencies += ("org.scala-native" %% "test-interface_native0.4" % nativeVersion), 
+      libraryDependencies += "org.scala-lang.modules" %%% "scala-xml" % "2.3.0",
+      libraryDependencies += ("org.scala-native" %%% "test-interface" % nativeVersion),
       packageManagedSources,
       Compile / sourceGenerators += Def.task {
         GenModulesDotty.genScalaTestCoreNative((Compile / sourceManaged).value, version.value, scalaVersion.value) ++
@@ -423,27 +423,29 @@ trait DottyBuild { this: BuildCommons =>
 
   private implicit class DottyProjectEx(private val p: Project) {
     /** common settings for all scalatest modules */
-    def scalatestModule(name: String, title: String): Project = p
-      .enablePlugins(SbtOsgi)
-      .settings(sharedSettings: _*)
-      .settings(dottySettings: _*)
-      .settings(
-        projectTitle := title,
-        organization := "org.scalatest",
-        moduleName := name,
-        packageManagedSources,
-        osgiSettings,
-        OsgiKeys.additionalHeaders := Map(
-          "Bundle-Name" -> title,
-          "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
-          "Bundle-DocURL" -> "http://www.scalatest.org/",
-          "Bundle-Vendor" -> "Artima, Inc."
-        ),
+    def scalatestModule(name: String, title: String, isNative: Boolean): Project =  {
+      val selectedDottySettings = if (isNative) dottySettings else dottySettings
+      p.enablePlugins(SbtOsgi)
+       .settings(sharedSettings: _*)
+       .settings(selectedDottySettings: _*)
+       .settings(
+         projectTitle := title,
+         organization := "org.scalatest",
+         moduleName := name,
+         packageManagedSources,
+         osgiSettings,
+         OsgiKeys.additionalHeaders := Map(
+           "Bundle-Name" -> title,
+           "Bundle-Description" -> "ScalaTest is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+           "Bundle-DocURL" -> "http://www.scalatest.org/",
+           "Bundle-Vendor" -> "Artima, Inc."
+         ),
       )
+    }
 
     /** common settings for all scalatest sub modules (all modules, except the `scalatest` module) */
-    def scalatestSubModule(name: String, title: String, gen: GenModulesDotty.GenFn): Project =
-      scalatestModule(name, title).settings(
+    def scalatestSubModule(name: String, title: String, isNative: Boolean, gen: GenModulesDotty.GenFn): Project =
+      scalatestModule(name, title, isNative).settings(
         Compile / sourceGenerators += Def.task {
           gen((Compile / sourceManaged).value, version.value, scalaVersion.value)
         }.taskValue,
@@ -455,21 +457,21 @@ trait DottyBuild { this: BuildCommons =>
 
     /** common settings for all scalatest `style` modules such as `featurespec`, `funsuite`,.. */
     def scalatestStyleModule(style: String, title: String): Project =
-      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty(style))
+      scalatestSubModule(s"scalatest-$style", title, false, GenModulesDotty(style))
         .settings(
           OsgiKeys.exportPackage := Seq(s"org.scalatest.$style"),
         ).dependsOn(scalatestCoreDotty)
 
     /** common settings for all scalatest js `style` modules such as `featurespec`, `funsuite`,.. */
     def scalatestStyleModuleJS(style: String, title: String): Project =
-      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty.applyJS(style))
+      scalatestSubModule(s"scalatest-$style", title, false, GenModulesDotty.applyJS(style))
         .settings(
           OsgiKeys.exportPackage := Seq(s"org.scalatest.$style"),
         ).dependsOn(scalatestCoreDottyJS).enablePlugins(ScalaJSPlugin)
 
     /** common settings for all scalatest native `style` modules such as `featurespec`, `funsuite`,.. */
     def scalatestStyleModuleNative(style: String, title: String): Project =
-      scalatestSubModule(s"scalatest-$style", title, GenModulesDotty.applyNative(style))
+      scalatestSubModule(s"scalatest-$style", title, true, GenModulesDotty.applyNative(style))
         .settings(
           OsgiKeys.exportPackage := Seq(s"org.scalatest.$style.*"),
         ).dependsOn(scalatestCoreDottyNative).enablePlugins(ScalaNativePlugin)    
@@ -555,6 +557,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-diagrams", 
       "ScalaTest Diagrams Dotty JS", 
+      false, 
       (targetDir, version, scalaVersion) =>
         GenScalaTestDotty.genDiagramsScalaJS(targetDir / "org" / "scalatest", version, scalaVersion)
     ).settings(
@@ -568,6 +571,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-diagrams", 
       "ScalaTest Diagrams Dotty Native", 
+      true, 
       (targetDir, version, scalaVersion) =>
         GenScalaTestDotty.genDiagramsScalaNative(targetDir / "org" / "scalatest", version, scalaVersion)
     ).settings(
@@ -578,7 +582,7 @@ trait DottyBuild { this: BuildCommons =>
     ).dependsOn(scalatestCoreDottyNative).enablePlugins(ScalaNativePlugin)
 
   lazy val scalatestExpectationsDotty = project.in(file("dotty/expectations"))
-    .scalatestModule("scalatest-expectations", "ScalaTest Expectations Dotty")
+    .scalatestModule("scalatest-expectations", "ScalaTest Expectations Dotty", false)
     .dependsOn(
       scalatestCoreDotty
     )
@@ -587,6 +591,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-expectations", 
       "ScalaTest Expectations Dotty JS", 
+      false, 
       (targetDir, version, scalaVersion) =>
         GenScalaTestDotty.genExpectationsScalaJS(targetDir / "org" / "scalatest", version, scalaVersion)
     ).settings(
@@ -599,6 +604,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-expectations", 
       "ScalaTest Expectations Dotty Native", 
+      true, 
       (targetDir, version, scalaVersion) =>
         GenScalaTestDotty.genExpectationsScalaNative(targetDir / "org" / "scalatest", version, scalaVersion)
     ).settings(
@@ -611,6 +617,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-matchers-core",
       "ScalaTest Matchers Core Dotty",
+      false, 
       (targetDir, version, scalaVersion) => {
         GenModulesDotty.genScalaTestMatchersCore(targetDir, version, scalaVersion) ++
           GenFactoriesDotty.genMain(targetDir / "org" / "scalatest" / "matchers" / "dsl", version, scalaVersion)
@@ -626,6 +633,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-matchers-core",
       "ScalaTest Matchers Core Dotty JS",
+      false, 
       (targetDir, version, scalaVersion) => {
         GenModulesDotty.genScalaTestMatchersCoreJS(targetDir, version, scalaVersion) ++
         GenScalaTestDotty.genMatchersCoreScalaJS(targetDir, version, scalaVersion) ++
@@ -642,6 +650,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-matchers-core",
       "ScalaTest Matchers Core Dotty Native",
+      true, 
       (targetDir, version, scalaVersion) => {
         GenModulesDotty.genScalaTestMatchersCoreNative(targetDir, version, scalaVersion) ++
         GenScalaTestDotty.genMatchersCoreScalaNative(targetDir, version, scalaVersion) ++
@@ -658,6 +667,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-shouldmatchers",
       "ScalaTest Should Matchers Dotty",
+      false, 
       GenModulesDotty.genScalaTestShouldMatchers
     ).settings(
       OsgiKeys.exportPackage := Seq("org.scalatest.matchers.should"),
@@ -667,6 +677,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-shouldmatchers",
       "ScalaTest Should Matchers Dotty JS",
+      false, 
       (targetDir, version, scalaVersion) => {
         GenModulesDotty.genScalaTestShouldMatchersJS(targetDir, version, scalaVersion) ++ 
         GenScalaTestDotty.genShouldMatchersScalaJS(targetDir, version, scalaVersion)
@@ -679,6 +690,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-shouldmatchers",
       "ScalaTest Should Matchers Dotty Native",
+      true, 
       (targetDir, version, scalaVersion) => {
         GenModulesDotty.genScalaTestShouldMatchersNative(targetDir, version, scalaVersion) ++ 
         GenScalaTestDotty.genShouldMatchersScalaNative(targetDir, version, scalaVersion)
@@ -691,6 +703,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-mustmatchers",
       "ScalaTest Must Matchers Dotty",
+      false, 
       (targetDir, version, scalaVersion) =>
         GenMatchers.genMainForDotty(targetDir / "org" / "scalatest", version, scalaVersion)
     ).settings(
@@ -701,6 +714,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-mustmatchers",
       "ScalaTest Must Matchers Dotty JS ",
+      false, 
       (targetDir, version, scalaVersion) =>
         GenMatchers.genMainForDottyJS(targetDir / "org" / "scalatest", version, scalaVersion) ++ 
         GenScalaTestDotty.genMustMatchersScalaJS(targetDir, version, scalaVersion)
@@ -712,6 +726,7 @@ trait DottyBuild { this: BuildCommons =>
     .scalatestSubModule(
       "scalatest-mustmatchers",
       "ScalaTest Must Matchers Dotty Native ",
+      true, 
       (targetDir, version, scalaVersion) =>
         GenMatchers.genMainForDottyNative(targetDir / "org" / "scalatest", version, scalaVersion) ++ 
         GenScalaTestDotty.genMustMatchersScalaNative(targetDir, version, scalaVersion)
@@ -742,7 +757,7 @@ trait DottyBuild { this: BuildCommons =>
     )
 
   lazy val scalatestDotty = project.in(file("dotty/scalatest"))
-    .scalatestModule("scalatest", "ScalaTest Dotty")
+    .scalatestModule("scalatest", "ScalaTest Dotty", false)
     .settings(
       // Little trick to get rid of bnd error when publish.
       Compile / sourceGenerators += Def.task {
@@ -783,7 +798,7 @@ trait DottyBuild { this: BuildCommons =>
     )
 
   lazy val scalatestDottyJS = project.in(file("dotty/scalatest.js"))
-    .scalatestModule("scalatest", "ScalaTest Dotty JS")
+    .scalatestModule("scalatest", "ScalaTest Dotty JS", false)
     .settings(
       // Little trick to get rid of bnd error when publish.
       Compile / sourceGenerators += Def.task {
@@ -824,7 +839,7 @@ trait DottyBuild { this: BuildCommons =>
     ).enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestDottyNative = project.in(file("dotty/scalatest.native"))
-    .scalatestModule("scalatest", "ScalaTest Dotty Native")
+    .scalatestModule("scalatest", "ScalaTest Dotty Native", true)
     .settings(
       // Little trick to get rid of bnd error when publish.
       Compile / sourceGenerators += Def.task {
@@ -863,6 +878,428 @@ trait DottyBuild { this: BuildCommons =>
       scalatestShouldMatchersDottyNative, 
       scalatestMustMatchersDottyNative
     ).enablePlugins(ScalaNativePlugin)   
+
+  lazy val scalatestAppDotty = project.in(file("dotty/scalatest-app"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest App",
+      name := "scalatest-app",
+      organization := "org.scalatest",
+      libraryDependencies ++= scalatestLibraryDependencies,
+      // include the scalactic classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalacticDotty, Compile, packageBin).value,
+      // include the scalactic sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalacticDotty, Compile, packageSrc).value,
+      // include the scalatestCompatible classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestCompatible, Compile, packageBin).value,
+      // include the scalatestCompatible sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestCompatible, Compile, packageSrc).value,
+      // include the scalatest classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestCoreDotty, Compile, packageBin).value,
+      // include the scalatest sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestCoreDotty, Compile, packageSrc).value,
+      // include the scalatestFeatureSpecDotty classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestFeatureSpecDotty, Compile, packageBin).value,
+      // include the scalatestFeatureSpecDotty sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFeatureSpecDotty, Compile, packageSrc).value,
+      // include the scalatestFlatSpecDotty classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestFlatSpecDotty, Compile, packageBin).value,
+      // include the scalatestFlatSpecDotty sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFlatSpecDotty, Compile, packageSrc).value,
+      // include the scalatestFreeSpecDotty classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestFreeSpecDotty, Compile, packageBin).value,
+      // include the scalatestFreeSpecDotty sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFreeSpecDotty, Compile, packageSrc).value,
+      // include the scalatestFunSuiteDotty classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestFunSuiteDotty, Compile, packageBin).value,
+      // include the scalatestFunSuiteDotty sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFunSuiteDotty, Compile, packageSrc).value,
+      // include the scalatestFunSpecDotty classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestFunSpecDotty, Compile, packageBin).value,
+      // include the scalatestFunSpecDotty sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFunSpecDotty, Compile, packageSrc).value,
+      // include the scalatestPropSpecDotty classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestPropSpecDotty, Compile, packageBin).value,
+      // include the scalatestPropSpecDotty sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestPropSpecDotty, Compile, packageSrc).value,
+      // include the scalatestWordSpecDotty classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestWordSpecDotty, Compile, packageBin).value,
+      // include the scalatestWordSpecDotty sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestWordSpecDotty, Compile, packageSrc).value,
+      // include the scalatestDiagramsDotty classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestDiagramsDotty, Compile, packageBin).value,
+      // include the scalatestDiagramsDotty sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestDiagramsDotty, Compile, packageSrc).value,
+      // include the scalatestMatchersCoreDotty classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestMatchersCoreDotty, Compile, packageBin).value,
+      // include the scalatestMatchersCoreDotty sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestMatchersCoreDotty, Compile, packageSrc).value,
+      // include the scalatestShouldMatchersDotty classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestShouldMatchersDotty, Compile, packageBin).value,
+      // include the scalatestShouldMatchersDotty sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestShouldMatchersDotty, Compile, packageSrc).value,
+      // include the scalatestMustMatchersDotty classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestMustMatchersDotty, Compile, packageBin).value,
+      // include the scalatestMustMatchersDotty sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestMustMatchersDotty, Compile, packageSrc).value, 
+      sourceGenerators in Compile += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          (new File(crossTarget.value, "classes")).mkdirs()
+          Seq.empty[File]
+        }.taskValue
+      },
+      scalatestDocSettings,
+      unmanagedResourceDirectories in Compile += baseDirectory.value / "scalatest" / "src" / "main" / "resources",
+      mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "images",
+        "org.scalatest",
+        "org.scalatest.compatible",
+        "org.scalatest.concurrent",
+        "org.scalatest.diagrams",
+        "org.scalatest.enablers",
+        "org.scalatest.events",
+        "org.scalatest.exceptions",
+        "org.scalatest.expectations",
+        "org.scalatest.fixture",
+        "org.scalatest.funsuite",
+        "org.scalatest.featurespec",
+        "org.scalatest.funspec",
+        "org.scalatest.freespec",
+        "org.scalatest.flatspec",
+        "org.scalatest.matchers",
+        "org.scalatest.matchers.should",
+        "org.scalatest.matchers.must",
+        "org.scalatest.matchers.dsl",
+        "org.scalatest.verbs",
+        "org.scalatest.path",
+        "org.scalatest.prop",
+        "org.scalatest.propspec",
+        "org.scalatest.refspec",
+        "org.scalatest.tags",
+        "org.scalatest.tagobjects",
+        "org.scalatest.time",
+        "org.scalatest.tools",
+        "org.scalatest.verb",
+        "org.scalatest.words",
+        "org.scalatest.wordspec",
+        "org.scalactic",
+        "org.scalactic.anyvals",
+        "org.scalactic.exceptions",
+        "org.scalactic.source"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest",
+        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc.",
+        "Main-Class" -> "org.scalatest.tools.Runner"
+      )
+    ).dependsOn(
+        scalacticDotty % "compile-internal", 
+        scalatestCompatible % "compile-internal", 
+        scalatestCoreDotty % "compile-internal", 
+        scalatestFeatureSpecDotty % "compile-internal", 
+        scalatestFlatSpecDotty % "compile-internal", 
+        scalatestFreeSpecDotty % "compile-internal", 
+        scalatestFunSuiteDotty % "compile-internal", 
+        scalatestFunSpecDotty % "compile-internal", 
+        scalatestPropSpecDotty % "compile-internal", 
+        scalatestWordSpecDotty % "compile-internal", 
+        scalatestDiagramsDotty % "compile-internal", 
+        scalatestMatchersCoreDotty % "compile-internal", 
+        scalatestShouldMatchersDotty % "compile-internal", 
+        scalatestMustMatchersDotty % "compile-internal")
+
+  lazy val scalatestAppDottyJS = project.in(file("dotty/scalatest-app-js"))
+    .enablePlugins(SbtOsgi)
+    .settings(sharedSettings: _*)
+    .settings(dottySettings: _*)
+    .settings(
+      projectTitle := "ScalaTest App",
+      name := "scalatest-app",
+      organization := "org.scalatest",
+      moduleName := "scalatest-app",
+      //libraryDependencies ++= scalatestJSLibraryDependencies,
+      libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion), 
+      // include the scalactic classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalacticDottyJS, Compile, packageBin).value,
+      // include the scalactic sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalacticDottyJS, Compile, packageSrc).value,
+      // include the scalatest classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestCoreDottyJS, Compile, packageBin).value,
+      // include the scalatest sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestCoreDottyJS, Compile, packageSrc).value,
+      // include the scalatestFeatureSpecDottyJS classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestFeatureSpecDottyJS, Compile, packageBin).value,
+      // include the scalatestFeatureSpecDottyJS sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFeatureSpecDottyJS, Compile, packageSrc).value,
+      // include the scalatestFlatSpecDottyJS classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestFlatSpecDottyJS, Compile, packageBin).value,
+      // include the scalatestFlatSpecDottyJS sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFlatSpecDottyJS, Compile, packageSrc).value,
+      // include the scalatestFreeSpecDottyJS classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestFreeSpecDottyJS, Compile, packageBin).value,
+      // include the scalatestFreeSpecDottyJS sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFreeSpecDottyJS, Compile, packageSrc).value,
+      // include the scalatestFunSuiteDottyJS classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestFunSuiteDottyJS, Compile, packageBin).value,
+      // include the scalatestFunSuiteDottyJS sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFunSuiteDottyJS, Compile, packageSrc).value,
+      // include the scalatestFunSpecDottyJS classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestFunSpecDottyJS, Compile, packageBin).value,
+      // include the scalatestFunSpecDottyJS sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFunSpecDottyJS, Compile, packageSrc).value,
+      // include the scalatestPropSpecDottyJS classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestPropSpecDottyJS, Compile, packageBin).value,
+      // include the scalatestPropSpecDottyJS sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestPropSpecDottyJS, Compile, packageSrc).value,
+      // include the scalatestWordSpecDottyJS classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestWordSpecDottyJS, Compile, packageBin).value,
+      // include the scalatestWordSpecDottyJS sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestWordSpecDottyJS, Compile, packageSrc).value,
+      // include the scalatestDiagramsDottyJS classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestDiagramsDottyJS, Compile, packageBin).value,
+      // include the scalatestDiagramsDottyJS sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestDiagramsDottyJS, Compile, packageSrc).value,
+      // include the scalatestMatchersCoreDottyJS classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestMatchersCoreDottyJS, Compile, packageBin).value,
+      // include the scalatestMatchersCoreDottyJS sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestMatchersCoreDottyJS, Compile, packageSrc).value,
+      // include the scalatestShouldMatchersDottyJS classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestShouldMatchersDottyJS, Compile, packageBin).value,
+      // include the scalatestShouldMatchersDottyJS sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestShouldMatchersDottyJS, Compile, packageSrc).value,
+      // include the scalatestMustMatchersDottyJS classes and resources in the jar
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestMustMatchersDottyJS, Compile, packageBin).value,
+      // include the scalatestMustMatchersDottyJS sources in the source jar
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestMustMatchersDottyJS, Compile, packageSrc).value,
+      sourceGenerators in Compile += {
+        // Little trick to get rid of bnd error when publish.
+        Def.task{
+          (new File(crossTarget.value, "classes")).mkdirs()
+          Seq.empty[File]
+        }.taskValue
+      },
+      mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
+      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest",
+        "org.scalatest.compatible",
+        "org.scalatest.concurrent",
+        "org.scalatest.diagrams",
+        "org.scalatest.enablers",
+        "org.scalatest.events",
+        "org.scalatest.exceptions",
+        "org.scalatest.expectations",
+        "org.scalatest.fixture",
+        "org.scalatest.funsuite",
+        "org.scalatest.featurespec",
+        "org.scalatest.funspec",
+        "org.scalatest.freespec",
+        "org.scalatest.flatspec",
+        "org.scalatest.matchers",
+        "org.scalatest.matchers.should",
+        "org.scalatest.matchers.must",
+        "org.scalatest.matchers.dsl",
+        "org.scalatest.verbs",
+        "org.scalatest.path",
+        "org.scalatest.prop",
+        "org.scalatest.propspec",
+        "org.scalatest.tags",
+        "org.scalatest.tagobjects",
+        "org.scalatest.time",
+        "org.scalatest.tools",
+        "org.scalatest.verb",
+        "org.scalatest.words",
+        "org.scalatest.wordspec",
+        "org.scalactic",
+        "org.scalactic.anyvals",
+        "org.scalactic.exceptions",
+        "org.scalactic.source"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest",
+        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc.",
+        "Main-Class" -> "org.scalatest.tools.Runner"
+      )
+    ).dependsOn(
+      scalacticDottyJS % "compile-internal", 
+      scalatestCoreDottyJS % "compile-internal", 
+      scalatestFeatureSpecDottyJS % "compile-internal", 
+      scalatestFlatSpecDottyJS % "compile-internal", 
+      scalatestFreeSpecDottyJS % "compile-internal", 
+      scalatestFunSuiteDottyJS % "compile-internal", 
+      scalatestFunSpecDottyJS % "compile-internal", 
+      scalatestPropSpecDottyJS % "compile-internal", 
+      scalatestWordSpecDottyJS % "compile-internal", 
+      scalatestDiagramsDottyJS % "compile-internal", 
+      scalatestMatchersCoreDottyJS % "compile-internal", 
+      scalatestShouldMatchersDottyJS % "compile-internal", 
+      scalatestMustMatchersDottyJS % "compile-internal")
+     .enablePlugins(ScalaJSPlugin)
+
+  lazy val scalatestAppDottyNative = project.in(file("dotty/scalatest-app.native"))
+      .enablePlugins(SbtOsgi)
+      .settings(sharedSettings)
+      .settings(dottySettings: _*)
+      .settings(
+        projectTitle := "ScalaTest App",
+        name := "scalatest-app",
+        organization := "org.scalatest",
+        moduleName := "scalatest-app",
+        //libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
+        libraryDependencies += ("org.scala-native" %%% "test-interface" % nativeVersion),
+        // include the scalacticDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalacticDottyNative, Compile, packageBin).value,
+        // include the scalacticDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalacticDottyNative, Compile, packageSrc).value,
+        // include the scalacticDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestCoreDottyNative, Compile, packageBin).value,
+        // include the scalacticDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestCoreDottyNative, Compile, packageSrc).value,
+        // include the scalatestFeatureSpecDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestFeatureSpecDottyNative, Compile, packageBin).value,
+        // include the scalatestFeatureSpecDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestFeatureSpecDottyNative, Compile, packageSrc).value,
+        // include the scalatestFlatSpecDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestFlatSpecDottyNative, Compile, packageBin).value,
+        // include the scalatestFlatSpecDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestFlatSpecDottyNative, Compile, packageSrc).value,
+        // include the scalatestFreeSpecDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestFreeSpecDottyNative, Compile, packageBin).value,
+        // include the scalatestFreeSpecDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestFreeSpecDottyNative, Compile, packageSrc).value,
+        // include the scalatestFunSuiteDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestFunSuiteDottyNative, Compile, packageBin).value,
+        // include the scalatestFunSuiteDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestFunSuiteDottyNative, Compile, packageSrc).value,
+        // include the scalatestFunSpecDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestFunSpecDottyNative, Compile, packageBin).value,
+        // include the scalatestFunSpecDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestFunSpecDottyNative, Compile, packageSrc).value,
+        // include the scalatestPropSpecDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestPropSpecDottyNative, Compile, packageBin).value,
+        // include the scalatestPropSpecDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestPropSpecDottyNative, Compile, packageSrc).value,
+        // include the scalatestWordSpecDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestWordSpecDottyNative, Compile, packageBin).value,
+        // include the scalatestWordSpecDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestWordSpecDottyNative, Compile, packageSrc).value,
+        // include the scalatestDiagramsDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestDiagramsDottyNative, Compile, packageBin).value,
+        // include the scalatestDiagramsDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestDiagramsDottyNative, Compile, packageSrc).value,
+        // include the scalatestMatchersCoreDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestMatchersCoreDottyNative, Compile, packageBin).value,
+        // include the scalatestMatchersCoreDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestMatchersCoreDottyNative, Compile, packageSrc).value,
+        // include the scalatestShouldMatchersDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestShouldMatchersDottyNative, Compile, packageBin).value,
+        // include the scalatestShouldMatchersDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestShouldMatchersDottyNative, Compile, packageSrc).value,
+        // include the scalatestMustMatchersDottyNative classes and resources in the jar
+        mappings in (Compile, packageBin) ++= mappings.in(scalatestMustMatchersDottyNative, Compile, packageBin).value,
+        // include the scalatestMustMatchersDottyNative sources in the source jar
+        mappings in (Compile, packageSrc) ++= mappings.in(scalatestMustMatchersDottyNative, Compile, packageSrc).value,
+        sourceGenerators in Compile += {
+          // Little trick to get rid of bnd error when publish.
+          Def.task{
+            (new File(crossTarget.value, "classes")).mkdirs()
+            Seq.empty[File]
+          }.taskValue
+        }
+      ).settings(osgiSettings: _*).settings(
+        OsgiKeys.exportPackage := Seq(
+          "org.scalatest",
+          "org.scalatest.compatible",
+          "org.scalatest.concurrent",
+          "org.scalatest.diagrams",
+          "org.scalatest.enablers",
+          "org.scalatest.events",
+          "org.scalatest.exceptions",
+          "org.scalatest.expectations",
+          "org.scalatest.fixture",
+          "org.scalatest.funsuite",
+          "org.scalatest.featurespec",
+          "org.scalatest.funspec",
+          "org.scalatest.freespec",
+          "org.scalatest.flatspec",
+          "org.scalatest.matchers",
+          "org.scalatest.matchers.should",
+          "org.scalatest.matchers.must",
+          "org.scalatest.matchers.dsl",
+          "org.scalatest.verbs",
+          "org.scalatest.path",
+          "org.scalatest.prop",
+          "org.scalatest.propspec",
+          "org.scalatest.tags",
+          "org.scalatest.tagobjects",
+          "org.scalatest.time",
+          "org.scalatest.tools",
+          "org.scalatest.verb",
+          "org.scalatest.words",
+          "org.scalatest.wordspec",
+          "org.scalactic",
+          "org.scalactic.anyvals",
+          "org.scalactic.exceptions",
+          "org.scalactic.source"
+        ),
+        OsgiKeys.importPackage := Seq(
+          "org.scalatest.*",
+          "org.scalactic.*",
+          "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+          "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+          "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+          "*;resolution:=optional"
+        ),
+        OsgiKeys.additionalHeaders:= Map(
+          "Bundle-Name" -> "ScalaTest",
+          "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+          "Bundle-DocURL" -> "http://www.scalatest.org/",
+          "Bundle-Vendor" -> "Artima, Inc.",
+          "Main-Class" -> "org.scalatest.tools.Runner"
+        )
+      ).dependsOn(
+        scalacticDottyNative % "compile-internal",
+        scalatestCoreDottyNative % "compile-internal",
+        scalatestFeatureSpecDottyNative % "compile-internal",
+        scalatestFlatSpecDottyNative % "compile-internal",
+        scalatestFreeSpecDottyNative % "compile-internal",
+        scalatestFunSuiteDottyNative % "compile-internal",
+        scalatestFunSpecDottyNative % "compile-internal",
+        scalatestPropSpecDottyNative % "compile-internal",
+        scalatestWordSpecDottyNative % "compile-internal",
+        scalatestDiagramsDottyNative % "compile-internal",
+        scalatestMatchersCoreDottyNative % "compile-internal",
+        scalatestShouldMatchersDottyNative % "compile-internal",
+        scalatestMustMatchersDottyNative % "compile-internal")
+       .enablePlugins(ScalaNativePlugin)      
 
   private lazy val noPublishSettings = Seq(
     publishArtifact := false,

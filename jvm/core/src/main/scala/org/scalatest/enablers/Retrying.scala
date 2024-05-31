@@ -78,7 +78,7 @@ object Retrying {
       def retry(timeout: Span, interval: Span, pos: source.Position)(fun: => Future[T]): Future[T] = {
         val startNanos = System.nanoTime
 
-        val initialInterval = Span(interval.totalNanos * 0.1, Nanoseconds) // config.interval scaledBy 0.1
+        val initialInterval = Span(interval.totalNanos * 0.1, Nanoseconds)
 
         // Can't make this tail recursive. TODO: Document that fact.
         def tryTryAgain(attempt: Int): Future[T] = {
@@ -120,7 +120,7 @@ object Retrying {
                   promise.future
                 }
                 else { // Timed out so return a failed Future
-                  val durationSpan = Span(1, Nanosecond) scaledBy duration // Use scaledBy to get pretty units
+                  val durationSpan = Span(1, Nanosecond).scaledBy(duration) // Use scaledBy to get pretty units
                   Future.failed(
                     new TestFailedDueToTimeoutException(
                       (_: StackDepthException) =>
@@ -150,7 +150,7 @@ object Retrying {
                   Thread.sleep(interval.millisPart, interval.nanosPart)
               }
               else {
-                val durationSpan = Span(1, Nanosecond) scaledBy duration // Use scaledBy to get pretty units
+                val durationSpan = Span(1, Nanosecond).scaledBy(duration) // Use scaledBy to get pretty units
                 throw new TestFailedDueToTimeoutException(
                   (_: StackDepthException) =>
                     Some(
@@ -189,7 +189,7 @@ object Retrying {
           }
         }
 
-        val initialInterval = Span(interval.totalNanos * 0.1, Nanoseconds) // config.interval scaledBy 0.1
+        val initialInterval = Span(interval.totalNanos * 0.1, Nanoseconds)
 
         @tailrec
         def tryTryAgain(attempt: Int): T = {
@@ -204,7 +204,7 @@ object Retrying {
                   Thread.sleep(interval.millisPart, interval.nanosPart)
               }
               else {
-                val durationSpan = Span(1, Nanosecond) scaledBy duration // Use scaledBy to get pretty units
+                val durationSpan = Span(1, Nanosecond).scaledBy(duration) // Use scaledBy to get pretty units
                 throw new TestFailedDueToTimeoutException(
                   (_: StackDepthException) =>
                     Some(
