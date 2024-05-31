@@ -102,6 +102,30 @@ trait PrivateMethodTester {
      * The type parameter, <code>T</code>, is the return type of the private method.
      *
      * @param args zero to many arguments to pass to the private method when invoked
+     * @return an <code>Invocation</code> object that can be passed to <code>invokePrivate</code> to invoke
+     * the private method
+     */
+    def apply(args: Any*) = new Invocation[T](methodName, args: _*)
+  }
+
+  /**
+   * Represent a private method, whose apply method returns an <code>Invocation0</code> object that
+   * records the name of the private method to invoke.
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class PrivateMethod0[T] private (methodName: Symbol) {
+
+    requireNonNull(methodName)
+
+    /**
+     * Apply arguments to a private method. This method returns an <code>Invocation</code>
+     * object, ready to be passed to an <code>invokePrivate</code> method call.
+     * The type parameter, <code>T</code>, is the return type of the private method.
+     *
+     * @param args zero to many arguments to pass to the private method when invoked
      * @return an <code>Invocation0</code> object that can be passed to <code>invokePrivate</code> to invoke the private method
      */
     def apply() = new Invocation0[T](methodName)
@@ -1587,7 +1611,26 @@ trait PrivateMethodTester {
       new PrivateMethod21[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, T](methodName)
   }
 
-  trait Invocation {
+  /**
+   * Class whose instances represent an invocation of a private method. Instances of this
+   * class contain the name of the private method (<code>methodName</code>) and the arguments
+   * to pass to it during the invocation (<code>args</code>).
+   * The type parameter, <code>T</code>, is the return type of the private method.
+   *
+   * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
+   * @param args zero to many arguments to pass to the private method when invoked
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
+   */
+  final class Invocation[T](val methodName: Symbol, val args: Any*) {
+    requireNonNull(methodName)
+  }
+
+  /**
+  * A trait representing an invocation of a method with typed arguments.
+  * Instances implementing this trait contain information about the method being invoked
+  * and the type arguments and arguments value passed to it.
+  */
+  trait SafeInvocation {
     val methodName: Symbol
     val args: Array[Any]
   }
@@ -1600,7 +1643,7 @@ trait PrivateMethodTester {
    * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
-  final class Invocation0[T](val methodName: Symbol) extends Invocation {
+  final class Invocation0[T](val methodName: Symbol) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array.empty[Any]
   }
@@ -1615,7 +1658,7 @@ trait PrivateMethodTester {
    * @param arg1 argument 1 to pass to the private method when invoked
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
-  final class Invocation1[A1, T](val methodName: Symbol, val arg1: A1) extends Invocation {
+  final class Invocation1[A1, T](val methodName: Symbol, val arg1: A1) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array[Any](arg1)
   }
@@ -1631,7 +1674,7 @@ trait PrivateMethodTester {
    * @param arg2 argument 2 to pass to the private method when invoked
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
-  final class Invocation2[A1, A2, T](val methodName: Symbol, val arg1: A1, val arg2: A2) extends Invocation {
+  final class Invocation2[A1, A2, T](val methodName: Symbol, val arg1: A1, val arg2: A2) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2)
   }
@@ -1648,7 +1691,7 @@ trait PrivateMethodTester {
    * @param arg3 argument 3 to pass to the private method when invoked
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
-  final class Invocation3[A1, A2, A3, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3) extends Invocation {
+  final class Invocation3[A1, A2, A3, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3)
   }
@@ -1666,7 +1709,7 @@ trait PrivateMethodTester {
    * @param arg4 argument 4 to pass to the private method when invoked
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
-  final class Invocation4[A1, A2, A3, A4, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4) extends Invocation {
+  final class Invocation4[A1, A2, A3, A4, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4)
   }
@@ -1686,7 +1729,7 @@ trait PrivateMethodTester {
    * @param arg5 argument 5 to pass to the private method when invoked
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
-  final class Invocation5[A1, A2, A3, A4, A5, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5) extends Invocation {
+  final class Invocation5[A1, A2, A3, A4, A5, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5)
   }
@@ -1707,7 +1750,7 @@ trait PrivateMethodTester {
    * @param arg6 argument 6 to pass to the private method when invoked
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
-  final class Invocation6[A1, A2, A3, A4, A5, A6, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6) extends Invocation {
+  final class Invocation6[A1, A2, A3, A4, A5, A6, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6)
   }
@@ -1730,7 +1773,7 @@ trait PrivateMethodTester {
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
   final class Invocation7[A1, A2, A3, A4, A5, A6, A7, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
-                                                         val arg7: A7) extends Invocation {
+                                                         val arg7: A7) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
   }
@@ -1754,7 +1797,7 @@ trait PrivateMethodTester {
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
   final class Invocation8[A1, A2, A3, A4, A5, A6, A7, A8, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
-                                                         val arg7: A7, val arg8: A8) extends Invocation {
+                                                         val arg7: A7, val arg8: A8) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
   }
@@ -1779,7 +1822,7 @@ trait PrivateMethodTester {
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
   final class Invocation9[A1, A2, A3, A4, A5, A6, A7, A8, A9, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
-                                                         val arg7: A7, val arg8: A8, arg9: A9) extends Invocation {
+                                                         val arg7: A7, val arg8: A8, arg9: A9) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
   }
@@ -1805,7 +1848,7 @@ trait PrivateMethodTester {
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
   final class Invocation10[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
-                                                         val arg7: A7, val arg8: A8, arg9: A9, arg10: A10) extends Invocation {
+                                                         val arg7: A7, val arg8: A8, arg9: A9, arg10: A10) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
   }
@@ -1833,7 +1876,7 @@ trait PrivateMethodTester {
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
   final class Invocation11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
-                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11) extends Invocation {
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
   }
@@ -1862,7 +1905,7 @@ trait PrivateMethodTester {
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
   final class Invocation12[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
-                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12) extends Invocation {
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
   }
@@ -1892,7 +1935,7 @@ trait PrivateMethodTester {
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
   final class Invocation13[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
-                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13) extends Invocation {
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13)
   }
@@ -1923,7 +1966,7 @@ trait PrivateMethodTester {
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
   final class Invocation14[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
-                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14) extends Invocation {
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
   }
@@ -1955,7 +1998,7 @@ trait PrivateMethodTester {
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
   final class Invocation15[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
-                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15) extends Invocation {
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15)
   }
@@ -1988,7 +2031,7 @@ trait PrivateMethodTester {
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
   final class Invocation16[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
-                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16) extends Invocation {
+                                                         val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16)
   }
@@ -2024,7 +2067,7 @@ trait PrivateMethodTester {
    */
   final class Invocation17[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
                                                          val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16, 
-                                                         val arg17: A17) extends Invocation {
+                                                         val arg17: A17) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17)
   }
@@ -2061,7 +2104,7 @@ trait PrivateMethodTester {
    */
   final class Invocation18[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
                                                          val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16, 
-                                                         val arg17: A17, val arg18: A18) extends Invocation {
+                                                         val arg17: A17, val arg18: A18) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18)
   }
@@ -2099,7 +2142,7 @@ trait PrivateMethodTester {
    */
   final class Invocation19[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
                                                          val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16, 
-                                                         val arg17: A17, val arg18: A18, val arg19: A19) extends Invocation {
+                                                         val arg17: A17, val arg18: A18, val arg19: A19) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19)
   }
@@ -2138,7 +2181,7 @@ trait PrivateMethodTester {
    */
   final class Invocation20[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
                                                          val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16, 
-                                                         val arg17: A17, val arg18: A18, val arg19: A19, val arg20: A20) extends Invocation {
+                                                         val arg17: A17, val arg18: A18, val arg19: A19, val arg20: A20) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20)
   }
@@ -2178,7 +2221,7 @@ trait PrivateMethodTester {
    */
   final class Invocation21[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, T](val methodName: Symbol, val arg1: A1, val arg2: A2, val arg3: A3, val arg4: A4, val arg5: A5, val arg6: A6, 
                                                          val arg7: A7, val arg8: A8, val arg9: A9, val arg10: A10, val arg11: A11, val arg12: A12, val arg13: A13, val arg14: A14, val arg15: A15, val arg16: A16, 
-                                                         val arg17: A17, val arg18: A18, val arg19: A19, val arg20: A20, val arg21: A21) extends Invocation {
+                                                         val arg17: A17, val arg18: A18, val arg19: A19, val arg20: A20, val arg21: A21) extends SafeInvocation {
     requireNonNull(methodName)
     val args = Array(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21)
   }
@@ -2189,6 +2232,129 @@ trait PrivateMethodTester {
   final class Invoker(target: AnyRef) {
 
     requireNonNull(target)
+
+    /**
+     * Invoke a private method. This method will attempt to invoke via reflection a private method.
+     * The name of the method to invoke is contained in the <code>methodName</code> field of the passed <code>Invocation</code>.
+     * The arguments to pass are contained in the <code>args</code> field. The object on which to invoke the private
+     * method is the <code>target</code> object passed to this <code>Invoker</code>'s primary constructor.
+     * The type parameter, <code>T</code>, is the return type of the private method.
+     *
+     * @param invocation the <code>Invocation</code> object containing the method name symbol and args of the invocation.
+     * @return the value returned by the invoked private method
+     * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
+     * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
+     */
+    def invokePrivate[T](invocation: Invocation[T]): T = {
+      import invocation._
+
+      // If 'getMessage passed as methodName, methodNameToInvoke would be "getMessage"
+      val methodNameToInvoke = methodName.name
+
+      def isMethodToInvoke(m: Method) = {
+
+        val isInstanceMethod = !Modifier.isStatic(m.getModifiers())
+        val simpleName = m.getName
+        val paramTypes = m.getParameterTypes
+        val isPrivate = Modifier.isPrivate(m.getModifiers())
+
+        // The AnyVals must go in as Java wrapper types. But the type is still Any, so this needs to be converted
+        // to AnyRef for the compiler to be happy. Implicit conversions are ambiguous, and really all that's needed
+        // is a type cast, so I use isInstanceOf.
+        def argsHaveValidTypes: Boolean = {
+
+          // First, the arrays must have the same length:
+          if (args.length == paramTypes.length) {
+            val zipped = args.toList zip paramTypes.toList
+  
+            // If arg.asInstanceOf[AnyRef] has class java.lang.Integer, this needs to match the paramType Class instance for int
+
+            def argMatchesParamType(arg: Any, paramType: Class[_]) = {
+              // note that arg might be null, which is assignable to any reference type
+              Option(arg.asInstanceOf[AnyRef]).fold (true) { anyRefArg =>
+                paramType match {
+                  case java.lang.Long.TYPE => anyRefArg.getClass == classOf[java.lang.Long]
+                  case java.lang.Integer.TYPE => anyRefArg.getClass == classOf[java.lang.Integer]
+                  case java.lang.Short.TYPE => anyRefArg.getClass == classOf[java.lang.Short]
+                  case java.lang.Byte.TYPE => anyRefArg.getClass == classOf[java.lang.Byte]
+                  case java.lang.Character.TYPE => anyRefArg.getClass == classOf[java.lang.Character]
+                  case java.lang.Double.TYPE => anyRefArg.getClass == classOf[java.lang.Double]
+                  case java.lang.Float.TYPE => anyRefArg.getClass == classOf[java.lang.Float]
+                  case java.lang.Boolean.TYPE => anyRefArg.getClass == classOf[java.lang.Boolean]
+                  case _ => paramType.isAssignableFrom(anyRefArg.getClass)
+                }
+              }
+            }
+            
+            // The args classes need only be assignable to the parameter type. So therefore the parameter type
+            // must be assignable *from* the corresponding arg class type.
+            val invalidArgs =
+              for ((arg, paramType) <- zipped if !argMatchesParamType(arg, paramType)) yield arg
+            invalidArgs.length == 0
+          }
+          else false
+        }
+
+        /*
+        The rules may be that private mehods in standalone objects currently get name mangled and made public,
+        perhaps because there are two versions of each private method, one in the actual singleton and one int
+        the class that also has static methods, and one calls the other. So if this is true, then I may change this
+        to say if simpleName matches exactly and its private, or if ends with simpleName prepended by two dollar signs,
+        then let it be public, but look for whatever the Scala compiler puts in there to mark it as private at the Scala source level.
+
+        // org$scalatest$FailureMessages$$decorateToStringValue
+        // 0 org$scalatest$FailureMessages$$decorateToStringValue
+        [java] 1 true
+        [java] 2 false
+        [java] false
+        [java] false
+        [java] ^&^&^&^&^&^& invalidArgs.length is: 0
+        [java] 5 true
+
+        println("0 "+ simpleName)
+        println("1 "+ isInstanceMethod)
+        println("2 "+ isPrivate)
+        println("3 "+ simpleName == methodNameToInvoke)
+        println("4 "+ candidateResultType == resultType)
+        println("5 "+ argsHaveValidTypes)
+
+        This ugliness. I'll ignore the result type for now. Sheesh. Investigate that one. And I'll
+        have to ignore private too for now, because in the bytecodes it isn't even private. And I'll
+        also allow methods that end with $$<simpleName> if the simpleName doesn't match
+        */
+
+        isInstanceMethod && (simpleName == methodNameToInvoke || simpleName.endsWith("$$"+ methodNameToInvoke)) && argsHaveValidTypes
+      }
+  
+      // Store in an array, because may have both isEmpty and empty, in which case I
+      // will throw an exception.
+      val methodArray =
+        for (m <- target.getClass.getDeclaredMethods; if isMethodToInvoke(m))
+          yield m
+  
+      if (methodArray.length == 0)
+        throw new IllegalArgumentException("Can't find a private method named: " + methodNameToInvoke)
+      else if (methodArray.length > 1)
+        throw new IllegalArgumentException("Found two methods")
+      else {
+        val anyRefArgs = // Need to box these myself, because that's invoke is expecting an Array[Object], which maps to an Array[AnyRef]
+          for (arg <- args) yield arg match {
+            case anyRef: AnyRef => anyRef
+            case any: Any => any.asInstanceOf[AnyRef] // Can't use AnyVal in 2.8
+            case null => null
+          }
+        val privateMethodToInvoke = methodArray(0)
+        privateMethodToInvoke.setAccessible(true)
+        try {
+          privateMethodToInvoke.invoke(target, anyRefArgs.toArray: _*).asInstanceOf[T]
+        }
+        catch {
+          case e: InvocationTargetException =>
+            val cause = e.getCause
+            if (cause != null) throw cause else throw e
+        }
+      }
+    }
 
     /**
      * Invoke a private method with no argument. This method will attempt to invoke via reflection a private method.
@@ -2509,7 +2675,7 @@ trait PrivateMethodTester {
      * @throws IllegalArgumentException if the target object does not have a method of the name, with argument types
      * compatible with the objects in the passed args array, specified in the passed <code>Invocation</code> object.
      */
-    private def invokePrivateImpl[T](invocation: Invocation): T = {
+    private def invokePrivateImpl[T](invocation: SafeInvocation): T = {
       import invocation._
 
       // If 'getMessage passed as methodName, methodNameToInvoke would be "getMessage"
