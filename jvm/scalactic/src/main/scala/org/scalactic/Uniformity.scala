@@ -73,7 +73,7 @@ package org.scalactic
  * </p>
  * 
  * @tparam A the type whose uniformity is being defined
- */
+ */ 
 trait Uniformity[A] extends Normalization[A] { thisUniformity =>
 
   /**
@@ -214,6 +214,7 @@ trait Uniformity[A] extends Normalization[A] { thisUniformity =>
    * @param other a <code>Uniformity</code> to 'and' with this one
    * @return a <code>Uniformity</code> representing the composition of this and the passed <code>Uniformity</code>
    */
+  //DOTTY-ONLY infix  
   final def and(other: Uniformity[A]): Uniformity[A] =
     new Uniformity[A] {
       // Note in Scaladoc what order, and recommend people don't do side effects anyway.

@@ -182,7 +182,7 @@ trait ScaledTimeSpans {
    * @throws IllegalArgumentException if the value returned from <code>spanScaleFactor</code>
    *           is less than zero
    */
-  final def scaled(span: Span): Span = span scaledBy spanScaleFactor
+  final def scaled(span: Span): Span = span.scaledBy(spanScaleFactor)
 
   /**
    * The factor by which the <code>scaled</code> method will scale <code>Span</code>s.

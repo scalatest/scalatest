@@ -130,7 +130,6 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
 
   def scalaXmlDependency(theScalaVersion: String): Seq[ModuleID] =
     CrossVersion.partialVersion(theScalaVersion) match {
-      case Some((2, 10)) => Seq.empty
       case Some((2, 11)) => Seq(("org.scala-lang.modules" %% "scala-xml" % "1.3.0"))
       case Some((scalaEpoch, scalaMajor)) if (scalaEpoch == 2 && scalaMajor >= 12) || scalaEpoch == 3 =>
         Seq(("org.scala-lang.modules" %% "scala-xml" % "2.1.0"))
@@ -149,10 +148,11 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
       commonmark
     )
 
-  def crossBuildTestLibraryDependencies = Def.setting {
-    Seq(
-      "org.scala-lang.modules" %%% "scala-parser-combinators" % "2.1.1"
-    )
+  def crossBuildTestLibraryDependencies: sbt.Def.Initialize[Seq[ModuleID]] = Def.setting {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 11)) => Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "2.1.1")
+      case _ => Seq("org.scala-lang.modules" %%% "scala-parser-combinators" % "2.4.0")
+    }
   }
 
   val commonmark = "org.commonmark" % "commonmark" % commonmarkVersion % "optional"
