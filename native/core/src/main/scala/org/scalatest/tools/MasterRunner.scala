@@ -175,8 +175,6 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
 
     val tasks = (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
 
-    //runnerInstance().internalDiscoveredSuites.set(Some(discoveredSuites))
-
     tasks
   }
 
