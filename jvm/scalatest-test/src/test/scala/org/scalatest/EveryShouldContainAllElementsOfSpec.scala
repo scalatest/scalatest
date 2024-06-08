@@ -52,6 +52,7 @@ class EveryShouldContainAllElementsOfSpec extends AnyFunSpec {
 
     val fumList: Every[String] = Every("fex", "fum", "foe", "fie", "fee")
     val toList: Every[String] = Every("too", "you", "to", "birthday", "happy")
+    val ecList: Every[String] = Every("\u0000fex", "fum", "foe", "fie", "fee")
 
     describe("when used with contain allElementsOf Seq(..)") {
 
@@ -83,6 +84,12 @@ class EveryShouldContainAllElementsOfSpec extends AnyFunSpec {
       }
       it("should allow RHS to contain duplicated value") {
         fumList should contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum")
+      }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should contain allElementsOf Seq("fee", "fie", "foe", "fam")
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fex\""))
       }
     }
 
@@ -117,6 +124,12 @@ class EveryShouldContainAllElementsOfSpec extends AnyFunSpec {
       }
       it("should allow RHS to contain duplicated value") {
         fumList should (contain allElementsOf Seq("fee", "fie", "foe", "fie", "fum"))
+      }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should (contain allElementsOf Seq("fee", "fie", "foe", "fam"))
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fex\""))
       }
     }
 

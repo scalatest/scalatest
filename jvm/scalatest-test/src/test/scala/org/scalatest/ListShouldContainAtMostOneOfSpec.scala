@@ -54,6 +54,7 @@ class ListShouldContainAtMostOneOfSpec extends AnyFunSpec {
 
     val fumList: List[String] = List("fum", "foe")
     val toList: List[String] = List("to", "you")
+    val ecList: List[String] = List("\u0000fix", "fum", "foe")
 
     describe("when used with contain atMostOneOf (...) syntax") {
 
@@ -91,6 +92,12 @@ class ListShouldContainAtMostOneOfSpec extends AnyFunSpec {
         e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.atMostOneOfDuplicate))
+      }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should contain atMostOneOf ("fee", "fie", "foe", "fum")
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000fix"))))
       }
     }
 
@@ -130,6 +137,12 @@ class ListShouldContainAtMostOneOfSpec extends AnyFunSpec {
         e1.failedCodeFileName.get should be ("ListShouldContainAtMostOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.atMostOneOfDuplicate))
+      }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should (contain atMostOneOf ("fee", "fie", "foe", "fum"))
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: " + prettifier(escapedString("\u0000fix"))))
       }
     }
 

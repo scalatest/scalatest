@@ -226,6 +226,15 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         Map("one" -> 1, "two" -> 2).par should contain key ("two")
       }
       // SKIP-SCALATESTJS,NATIVE-END
+
+      it("should show escaped key string in analysis") {
+        val a = "\u0000test"
+        val b = "test"
+        val e = intercept[TestFailedException] {
+          Map(a -> b) should contain key (b)
+        }
+        e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"\\u0000test\" -> \"test\""))
+      }
     }
 
     describe("on scala.collection.mutable.Map") {
@@ -380,6 +389,15 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         mutable.Map("one" -> 1, "two" -> 2).par should contain key ("two")
       }
       // SKIP-SCALATESTJS,NATIVE-END
+
+      it("should show escaped key string in analysis") {
+        val a = "\u0000test"
+        val b = "test"
+        val e = intercept[TestFailedException] {
+          mutable.Map(a -> b) should contain key (b)
+        }
+        e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"\\u0000test\" -> \"test\""))
+      }
     }
 
     describe("on scala.collection.Map") {
@@ -523,6 +541,15 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         map.par should contain key ("two")
       }
       // SKIP-SCALATESTJS,NATIVE-END
+
+      it("should show escaped key string in analysis") {
+        val a = "\u0000test"
+        val b = "test"
+        val e = intercept[TestFailedException] {
+          scala.collection.Map(a -> b) should contain key (b)
+        }
+        e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"\\u0000test\" -> \"test\""))
+      }
     }
 
     describe("on scala.collection.immutable.HashMap") {
@@ -667,6 +694,15 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         HashMap("one" -> 1, "two" -> 2).par should contain key ("two")
       }
       // SKIP-SCALATESTJS,NATIVE-END
+
+      it("should show escaped key string in analysis") {
+        val a = "\u0000test"
+        val b = "test"
+        val e = intercept[TestFailedException] {
+          HashMap(a -> b) should contain key (b)
+        }
+        e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"\\u0000test\" -> \"test\""))
+      }
     }
 
     describe("on scala.collection.mutable.HashMap") {
@@ -821,6 +857,15 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         mutable.HashMap("one" -> 1, "two" -> 2).par should contain key ("two")
       }
       // SKIP-SCALATESTJS,NATIVE-END
+
+      it("should show escaped key string in analysis") {
+        val a = "\u0000test"
+        val b = "test"
+        val e = intercept[TestFailedException] {
+          mutable.HashMap(a -> b) should contain key (b)
+        }
+        e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"\\u0000test\" -> \"test\""))
+      }
     }
 
     // SKIP-SCALATESTJS,NATIVE-START
@@ -976,6 +1021,17 @@ class ShouldContainKeySpec extends AnyFunSpec with ReturnsNormallyThrowsAssertio
         }
         caught3.getMessage should (equal ("{\"one\"=1, \"two\"=2} contained key \"two\", and {\"one\"=1, \"two\"=2} contained key \"two\"") or
           equal ("{\"two\"=2, \"one\"=1} contained key \"two\", and {\"two\"=2, \"one\"=1} contained key \"two\""))
+      }
+
+      it("should show escaped key string in analysis") {
+        val a = "\u0000test"
+        val b = "test"
+        val e = intercept[TestFailedException] {
+          val jMap: java.util.Map[String, String] = new java.util.HashMap
+          jMap.put(a, b)
+          jMap should contain key (b)
+        }
+        e.analysis should be (Vector("LHS contains at least one entry with characters that might cause problem, the escaped string: \"\\u0000test\"=\"test\""))
       }
     }
     // SKIP-SCALATESTJS,NATIVE-END

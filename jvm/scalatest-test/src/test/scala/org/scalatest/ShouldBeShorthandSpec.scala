@@ -728,5 +728,15 @@ class ShouldBeShorthandSpec extends AnyFunSpec with EmptyMocks with BookProperty
       assert(caught21.failedCodeLineNumber === Some(thisLineNumber - 4))
     }
 
+    it("should show escaped string in analysis") {
+      val a = "\u0000test"
+      val b = "test"
+      val e = 
+        intercept[TestFailedException] {
+          a shouldBe (b)
+        }
+      e.analysis should be (Vector("\"[\\u0000]test\" -> \"[]test\""))
+    }
+
   }
 }

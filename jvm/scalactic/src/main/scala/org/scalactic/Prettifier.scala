@@ -372,6 +372,17 @@ object Prettifier {
    */
   implicit val default: Prettifier = new DefaultPrettifier()
 
+  def withEscapingDiffer(p: Prettifier): Prettifier = 
+    new Prettifier {
+      def apply(o: Any): String = p.apply(o)
+      override def apply(left: Any, right: Any): PrettyPair = {
+        val prettyPair = p.apply(left, right)
+        val escapingStringDiffer = new EscapingStringDiffer()
+        val escapingPrettyPair = escapingStringDiffer.difference(left, right, p)
+        prettyPair.copy(analysis = escapingPrettyPair.analysis)
+      }
+    }
+
   /**
    * Create a default prettifier instance with collection size limit.
    */

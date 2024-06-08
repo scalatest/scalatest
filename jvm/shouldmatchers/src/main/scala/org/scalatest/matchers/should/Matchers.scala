@@ -5568,12 +5568,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = rightMatcher(e)
         result match {
-          case equalMatchResult: EqualMatchResult =>
-            if (equalMatchResult.matches)
+          case resultWithAnalysis: MatchResultWithAnalysis =>
+            if (resultWithAnalysis.matches)
               indicateSuccess(result.negatedFailureMessage(prettifier))
             else {
-              val failureMessage = equalMatchResult.failureMessage(prettifier)
-              val analysis = equalMatchResult.analysis
+              val failureMessage = resultWithAnalysis.failureMessage(prettifier)
+              val analysis = resultWithAnalysis.analysis
               indicateFailure(failureMessage, None, pos, analysis)
             }
 
@@ -5600,6 +5600,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-END  
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!equality.areEqual(e, right)) {
+
           val prettyPair = prettifier(e, right)
           indicateFailure(Resources.formatString(Resources.rawDidNotEqual, Array(prettyPair.left, prettyPair.right)), None, pos, prettyPair.analysis)
         }
@@ -5796,12 +5797,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = rightMatcher(e)
         result match {
-          case equalMatchResult: EqualMatchResult =>
-            if (equalMatchResult.matches)
+          case resultWithAnalysis: MatchResultWithAnalysis =>
+            if (resultWithAnalysis.matches)
               indicateSuccess(result.negatedFailureMessage(prettifier))
             else {
-              val failureMessage = equalMatchResult.failureMessage(prettifier)
-              val analysis = equalMatchResult.analysis
+              val failureMessage = resultWithAnalysis.failureMessage(prettifier)
+              val analysis = resultWithAnalysis.analysis
               indicateFailure(failureMessage, None, pos, analysis)
             }
 
@@ -5830,12 +5831,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = rightMatcher(e)
         result match {
-          case equalMatchResult: EqualMatchResult =>
-            if (equalMatchResult.matches)
+          case resultWithAnalysis: MatchResultWithAnalysis =>
+            if (resultWithAnalysis.matches)
               indicateSuccess(result.negatedFailureMessage(prettifier))
             else {
-              val failureMessage = equalMatchResult.failureMessage(prettifier)
-              val analysis = equalMatchResult.analysis
+              val failureMessage = resultWithAnalysis.failureMessage(prettifier)
+              val analysis = resultWithAnalysis.analysis
               indicateFailure(failureMessage, None, pos, analysis)
             }
 
@@ -7290,12 +7291,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, pos: source.Position): Assertion = {
       val result = rightMatcher(left)
       result match {
-        case equalMatchResult: EqualMatchResult =>
-          if (equalMatchResult.matches)
+        case resultWithAnalysis: MatchResultWithAnalysis =>
+          if (resultWithAnalysis.matches)
             indicateSuccess(result.negatedFailureMessage(prettifier))
           else {
-            val failureMessage = equalMatchResult.failureMessage(prettifier)
-            val analysis = equalMatchResult.analysis
+            val failureMessage = resultWithAnalysis.failureMessage(prettifier)
+            val analysis = resultWithAnalysis.analysis
             indicateFailure(failureMessage, None, pos, analysis)
           }
 
@@ -7390,7 +7391,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-DOTTY-END
     //DOTTY-ONLY extension [T](leftSideValue: T)(using pos: source.Position, prettifier: Prettifier) infix def shouldEqual(right: Any)(implicit equality: Equality[T]): Assertion = {  
       if (!equality.areEqual(leftSideValue, right)) {
-        val prettyPair = prettifier(leftSideValue, right)
+        val localPrettifier = prettifier // Grabbing a local copy so we don't attempt to serialize AnyShouldWrapper (since first param to indicateFailure is a by-name)
+        val p = Prettifier.withEscapingDiffer(localPrettifier)
+        val prettyPair = p(leftSideValue, right)
         indicateFailure(Resources.formatString(Resources.rawDidNotEqual, Array(prettyPair.left, prettyPair.right)), None, pos, prettyPair.analysis)
       }
       else indicateSuccess(FailureMessages.equaled(prettifier, leftSideValue, right))
@@ -7536,7 +7539,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       if (!areEqualComparingArraysStructurally(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
         val localPrettifier = prettifier // Grabbing a local copy so we don't attempt to serialize AnyShouldWrapper (since first param to indicateFailure is a by-name)
-        indicateFailure(FailureMessages.wasNotEqualTo(localPrettifier, leftee, rightee), None, pos)
+        val p = Prettifier.withEscapingDiffer(localPrettifier)
+        val prettyPair = p(leftSideValue, right)
+        indicateFailure(FailureMessages.wasNotEqualTo(localPrettifier, leftee, rightee), None, pos, prettyPair.analysis)
       }
       else indicateSuccess(FailureMessages.wasEqualTo(prettifier, leftSideValue, right))
     }

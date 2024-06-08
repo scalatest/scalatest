@@ -40,6 +40,7 @@ class EveryShouldContainOneOfSpec extends AnyFunSpec {
     val fumList: Every[String] = Every("fum")
     val toList: Every[String] = Every("to")
     val fumfuList: Every[String] = Every("fum", "fu")
+    val ecList: Every[String] = Every("\u0000fum")
 
     describe("when used with contain oneOf (...) syntax") {
 
@@ -89,6 +90,12 @@ class EveryShouldContainOneOfSpec extends AnyFunSpec {
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.oneOfDuplicate))
       }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should contain oneOf ("happy", "birthday", "to", "you")
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fum\""))
+      }
     }
 
     describe("when used with (contain oneOf (...)) syntax") {
@@ -127,6 +134,12 @@ class EveryShouldContainOneOfSpec extends AnyFunSpec {
         e1.failedCodeFileName.get should be ("EveryShouldContainOneOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some(Resources.oneOfDuplicate))
+      }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should (contain oneOf ("happy", "birthday", "to", "you"))
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fum\""))
       }
     }
 
