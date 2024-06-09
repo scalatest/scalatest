@@ -21,10 +21,11 @@ import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => Sbt
 import ArgsParser._
 import org.scalatest.prop.Seed
 
+import scala.scalanative.reflect.Reflect
+
 import scala.compat.Platform
 
 class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClassLoader: ClassLoader, notifyServer: String => Unit) extends Runner {
-
   val sbtNoFormat = false   // System property not supported in scala-js
   val ParsedArgs(
     reporterArgs,
@@ -35,6 +36,8 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
     wildcardArgs, 
     seedArgs
   ) = parseArgs(args)
+
+  Runner.setMasterFun(notifyServer)
 
   val (
   presentAllDurations,
@@ -114,13 +117,11 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
 
   def done(): String = ""
 
-  def remoteArgs(): Array[String] = {
+  def remoteArgs(): Array[String] = 
     theRemoteArgs
-  }
 
-  def args: Array[String] = {
+  def args: Array[String] = 
     theArgs
-  }
 
   def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
 
@@ -132,11 +133,16 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
         paths.exists(path => td.fullyQualifiedName().startsWith(path) && td.fullyQualifiedName().substring(path.length).lastIndexOf('.') <= 0)
       }
 
+    val discoveredSuites = taskDefs.map(_.fullyQualifiedName()).toSet
+    Runner.setDiscoveredSuites(discoveredSuites)  
+
     def createTask(t: TaskDef): Task =
       new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
         presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(notifyServer))
 
-    (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
+    val tasks = (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
+
+    tasks
   }
 
   def receiveMessage(msg: String): Option[String] =

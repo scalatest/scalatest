@@ -695,7 +695,6 @@ trait NativeBuild { this: BuildCommons =>
       organization := "org.scalactic",
       Test / testOptions ++=
         Seq(Tests.Argument(TestFrameworks.ScalaTest, "-oDIF")),
-      Test / nativeLinkStubs := true,
       Test / sourceGenerators += {
         Def.task {
           GenScalacticNative.genTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value)
@@ -812,7 +811,7 @@ trait NativeBuild { this: BuildCommons =>
       Test / sourceGenerators += {
         Def.task {
           GenScalaTestNative.genFunSpecTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFunSpecTest((Compile / sourceManaged).value / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
+          GenSafeStyles.genFunSpecTest((Test / sourceManaged).value / "scala" / "org" / "scalatest" / "funspec", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)
@@ -825,7 +824,7 @@ trait NativeBuild { this: BuildCommons =>
       Test / sourceGenerators += {
         Def.task {
           GenScalaTestNative.genFunSuiteTest((Test / sourceManaged).value / "scala", version.value, scalaVersion.value) ++
-          GenSafeStyles.genFunSuiteTest((Test / sourceManaged).value / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
+          GenSafeStyles.genFunSuiteTest((Test / sourceManaged).value / "scala" / "org" / "scalatest" / "funsuite", version.value, scalaVersion.value, true)
         }.taskValue
       }
     ).dependsOn(commonTestNative % "test").enablePlugins(ScalaNativePlugin)

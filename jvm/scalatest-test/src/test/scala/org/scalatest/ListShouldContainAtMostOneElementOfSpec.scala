@@ -55,6 +55,7 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
 
     val fumList: List[String] = List("fum", "foe")
     val toList: List[String] = List("to", "you")
+    val ecList: List[String] = List("\u0000fix", "fum", "foe")
 
     describe("when used with contain atMostOneElementOf Seq(...) syntax") {
 
@@ -87,6 +88,12 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
       }
       it("should do nothing when RHS contain duplicated value") {
         fumList should contain atMostOneElementOf Seq("fee", "fie", "foe", "fie", "fam")
+      }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should contain atMostOneElementOf Seq("fee", "fie", "foe", "fum")
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fix\""))
       }
     }
 
@@ -121,6 +128,12 @@ class ListShouldContainAtMostOneElementOfSpec extends AnyFunSpec {
       }
       it("should do nothing when RHS contain duplicated value") {
         fumList should (contain atMostOneElementOf Seq("fee", "fie", "foe", "fie", "fam"))
+      }
+      it("should throw TestFailedException with analysis showing escaped string") {
+        val e1 = intercept[exceptions.TestFailedException] {
+          ecList should (contain atMostOneElementOf Seq("fee", "fie", "foe", "fum"))
+        }
+        e1.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000fix\""))
       }
     }
 

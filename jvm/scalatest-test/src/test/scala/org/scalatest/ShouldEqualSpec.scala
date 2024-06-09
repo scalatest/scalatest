@@ -283,5 +283,20 @@ class ShouldEqualSpec extends AnyFunSpec with PropertyChecks with ReturnsNormall
         a1 should equal (n1)
       }
     }
+
+    it("should show escaped string in analysis") {
+      val a = "\u0000test"
+      val b = "test"
+      val e = 
+        intercept[TestFailedException] {
+          a should equal (b)
+        }
+      e.analysis should be (Vector("\"[\\u0000]test\" -> \"[]test\""))
+      val e2 = 
+        intercept[TestFailedException] {
+          a shouldEqual (b)
+        }
+      e2.analysis should be (Vector("\"[\\u0000]test\" -> \"[]test\""))
+    }
   }
 }

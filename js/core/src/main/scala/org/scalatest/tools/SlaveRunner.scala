@@ -20,6 +20,8 @@ import org.scalatest.events.Summary
 import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => SbtStatus, _}
 import ArgsParser._
 
+import scala.scalajs.reflect.Reflect
+
 import scala.compat.Platform
 import org.scalatest.prop.Seed
 
@@ -122,6 +124,12 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
     theArgs
   }
 
+  private def runnerInstance() = {
+    val runnerCompanionClass = Reflect.lookupLoadableModuleClass("org.scalatest.tools.Runner$").getOrElse(throw new RuntimeException("Cannot load org.scalatest.tools.Runner$ class."))
+    val obj = runnerCompanionClass.loadModule()
+    obj.asInstanceOf[Runner.type]
+  }
+
   def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
 
     def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
@@ -136,7 +144,12 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
       new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
         presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(notifyServer))
 
-    (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
+    val tasks = (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
+
+    val discoveredSuites = tasks.map(_.taskDef.fullyQualifiedName).toSet
+    runnerInstance().internalDiscoveredSuites.set(Some(discoveredSuites))
+    
+    tasks
   }
 
   def receiveMessage(msg: String): Option[String] =

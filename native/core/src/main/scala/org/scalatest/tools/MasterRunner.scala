@@ -19,9 +19,13 @@ import org.scalatest.Tracker
 import org.scalatest.events.Summary
 import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => SbtStatus, _}
 
+import scala.scalanative.reflect.Reflect
+
 import scala.compat.Platform
 import ArgsParser._
 import org.scalatest.prop.Seed
+
+import java.io.PrintWriter
 
 class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClassLoader: ClassLoader) extends Runner {
 
@@ -147,13 +151,11 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
     fragments.map(_.toPossiblyColoredText(presentInColor)).mkString("\n")
   }
 
-  def remoteArgs(): Array[String] = {
+  def remoteArgs(): Array[String] = 
     theRemoteArgs
-  }
 
-  def args: Array[String] = {
+  def args: Array[String] = 
     theArgs
-  }
 
   def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
     def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
@@ -164,11 +166,16 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
         paths.exists(path => td.fullyQualifiedName().startsWith(path) && td.fullyQualifiedName().substring(path.length).lastIndexOf('.') <= 0)
       }
 
+    val discoveredSuites = taskDefs.map(_.fullyQualifiedName()).toSet
+    Runner.setDiscoveredSuites(discoveredSuites)  
+
     def createTask(t: TaskDef): Task =
       new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors() ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
         presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, presentJson, Some(send))
 
-    (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
+    val tasks = (if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct).map(createTask)
+
+    tasks
   }
 
   private def send(msg: String): Unit = {
@@ -194,13 +201,23 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
         summaryCounter.incrementSuitesAbortedCount()
       case "org.scalatest.events.ScopePending" =>
         summaryCounter.incrementScopesPendingCount()
+      case s"getDiscoveredSuites-$filePath" =>
+        val tempFile = new java.io.File(filePath)
+        val writer = new PrintWriter(filePath)
+        try {
+          writer.write(Runner.discoveredSuites.get.mkString(","))
+          writer.flush()
+        } finally {
+          writer.close()
+        }  
       case _ =>
     }
     None
   }
 
-  def serializeTask(task: Task, serializer: (TaskDef) => String): String =
+  def serializeTask(task: Task, serializer: (TaskDef) => String): String = {
     serializer(task.taskDef())
+  }
 
   def deserializeTask(task: String, deserializer: (String) => TaskDef): Task = {
     val taskDef = deserializer(task)

@@ -77,10 +77,11 @@ final class ContainWord {
         new Matcher[U] {
           def apply(left: U): MatchResult = {
             val containing = implicitly[Containing[U]]
-            MatchResult(
+            new ContainingStringMatchResult(
               containing.contains(left, expectedElement),
               Resources.rawDidNotContainExpectedElement,
               Resources.rawContainedExpectedElement,
+              Vector(left, expectedElement), 
               Vector(left, expectedElement)
             )
           }
@@ -88,6 +89,25 @@ final class ContainWord {
         }
       override def toString: String = "contain (" + Prettifier.default(expectedElement) + ")"
     }
+
+  def apply(expectedElement: String): MatcherFactory1[Any, Containing] =
+    new MatcherFactory1[Any, Containing] {
+      def matcher[U <: Any : Containing]: Matcher[U] = 
+        new Matcher[U] {
+          def apply(left: U): MatchResult = {
+            val containing = implicitly[Containing[U]]
+            new ContainingStringMatchResult(
+              containing.contains(left, expectedElement),
+              Resources.rawDidNotContainExpectedElement,
+              Resources.rawContainedExpectedElement,
+              Vector(left, expectedElement), 
+              Vector(left, expectedElement)
+            )
+          }
+          override def toString: String = "contain (" + Prettifier.default(expectedElement) + ")"
+        }
+      override def toString: String = "contain (" + Prettifier.default(expectedElement) + ")"
+    }  
   
   //
   // This key method is called when "contain" is used in a logical expression, such as:
@@ -125,10 +145,11 @@ final class ContainWord {
         new Matcher[U] {
           def apply(left: U): MatchResult = {
             val keyMapping = implicitly[KeyMapping[U]]
-            MatchResult(
+            new ContainingStringMatchResult(
               keyMapping.containsKey(left, expectedKey),
               Resources.rawDidNotContainKey,
               Resources.rawContainedKey,
+              Vector(left, expectedKey), 
               Vector(left, expectedKey)
             )
           }
@@ -174,10 +195,11 @@ final class ContainWord {
         new Matcher[U] {
           def apply(left: U): MatchResult = {
             val valueMapping = implicitly[ValueMapping[U]]
-            MatchResult(
+            new ContainingStringMatchResult(
               valueMapping.containsValue(left, expectedValue),
               Resources.rawDidNotContainValue,
               Resources.rawContainedValue,
+              Vector(left, expectedValue), 
               Vector(left, expectedValue)
             )
           }
@@ -249,10 +271,11 @@ final class ContainWord {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               containing.containsOneOf(left, right),
               Resources.rawDidNotContainOneOfElements,
               Resources.rawContainedOneOfElements,
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), 
               Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
@@ -272,10 +295,11 @@ final class ContainWord {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               containing.containsOneOf(left, right.distinct),
               Resources.rawDidNotContainOneElementOf,
               Resources.rawContainedOneElementOf,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
@@ -297,10 +321,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsAtLeastOneOf(left, right),
               Resources.rawDidNotContainAtLeastOneOf,
               Resources.rawContainedAtLeastOneOf,
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), 
               Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
@@ -320,10 +345,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsAtLeastOneOf(left, right),
               Resources.rawDidNotContainAtLeastOneElementOf,
               Resources.rawContainedAtLeastOneElementOf,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
@@ -345,10 +371,11 @@ final class ContainWord {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               containing.containsNoneOf(left, right),
               Resources.rawContainedAtLeastOneOf,
               Resources.rawDidNotContainAtLeastOneOf,
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), 
               Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
@@ -368,10 +395,11 @@ final class ContainWord {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               containing.containsNoneOf(left, right.distinct),
               Resources.rawContainedAtLeastOneElementOf,
               Resources.rawDidNotContainAtLeastOneElementOf,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
@@ -390,10 +418,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsTheSameElementsAs(left, right),
               Resources.rawDidNotContainSameElements,
               Resources.rawContainedSameElements,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
@@ -412,10 +441,11 @@ final class ContainWord {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               sequencing.containsTheSameElementsInOrderAs(left, right),
               Resources.rawDidNotContainSameElementsInOrder,
               Resources.rawContainedSameElementsInOrder,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
@@ -439,10 +469,11 @@ final class ContainWord {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
             val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[Iterable[_]] || right(0).isInstanceOf[Every[_]])
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsOnly(left, right),
               if (withFriendlyReminder) Resources.rawDidNotContainOnlyElementsWithFriendlyReminder else Resources.rawDidNotContainOnlyElements,
               if (withFriendlyReminder) Resources.rawContainedOnlyElementsWithFriendlyReminder else Resources.rawContainedOnlyElements,
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), 
               Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
@@ -464,10 +495,11 @@ final class ContainWord {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               sequencing.containsInOrderOnly(left, right),
               Resources.rawDidNotContainInOrderOnlyElements,
               Resources.rawContainedInOrderOnlyElements,
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), 
               Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
@@ -489,10 +521,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsAllOf(left, right),
               Resources.rawDidNotContainAllOfElements,
               Resources.rawContainedAllOfElements,
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), 
               Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
@@ -512,10 +545,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsAllOf(left, right.distinct),
               Resources.rawDidNotContainAllElementsOf,
               Resources.rawContainedAllElementsOf,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
@@ -537,10 +571,11 @@ final class ContainWord {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               sequencing.containsInOrder(left, right),
               Resources.rawDidNotContainAllOfElementsInOrder,
               Resources.rawContainedAllOfElementsInOrder,
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), 
               Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
@@ -560,10 +595,11 @@ final class ContainWord {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               sequencing.containsInOrder(left, right.distinct),
               Resources.rawDidNotContainAllElementsOfInOrder,
               Resources.rawContainedAllElementsOfInOrder,
+              Vector(left, right), 
               Vector(left, right)
             )
           }
@@ -585,10 +621,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsAtMostOneOf(left, right),
               Resources.rawDidNotContainAtMostOneOf,
               Resources.rawContainedAtMostOneOf,
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))), 
               Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
@@ -608,10 +645,11 @@ final class ContainWord {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
-            MatchResult(
+            new ContainingStringMatchResult(
               aggregating.containsAtMostOneOf(left, right.distinct),
               Resources.rawDidNotContainAtMostOneElementOf,
               Resources.rawContainedAtMostOneElementOf,
+              Vector(left, right), 
               Vector(left, right)
             )
           }

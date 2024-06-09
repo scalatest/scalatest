@@ -122,6 +122,14 @@ class ListShouldContainSpec extends AnyFunSpec {
         e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
+      it("should show escaped string in analysis") {
+        val a = "\u0000test"
+        val b = "test"
+        val e = intercept[TestFailedException] {
+          List(a) should contain (b)
+        }
+        e.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000test\""))
+      }
     }
 
     describe("when used with not contain value syntax") {
@@ -643,6 +651,14 @@ class ListShouldContainSpec extends AnyFunSpec {
         e.message should be (Some("'all' inspection failed, because: \n" +
           "  at index 0, " + decorateToStringValue(prettifier, hiLists(0)) + " did not contain null (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(prettifier, hiLists)))
+      }
+      it("should show escaped string in analysis") {
+        val a = "\u0000test"
+        val b = "test"
+        val e = intercept[TestFailedException] {
+          all(List(List(a))) should contain (b)
+        }
+        e.analysis should be (Vector("LHS contains at least one string with characters that might cause problem, the escaped string: \"\\u0000test\""))
       }
     }
     describe("when used with not contain value syntax") {
