@@ -98,7 +98,7 @@ class OrgScalaTestPropSpec extends AnyWordSpec with Matchers with GeneratorDrive
             (tpes, rnd)
           else {
             val (tpe, _, rnd2) = typeGen.next(SizeParam(1, 0, 1), List.empty, rnd)
-            chooseTypes(remaining - 1, tpe :: tpes, rnd2)
+            chooseTypes(remaining - 1, tpe.value :: tpes, rnd2)
           }
         }
         val (tpes, rnd2) = chooseTypes(nValues, List.empty, vRand)

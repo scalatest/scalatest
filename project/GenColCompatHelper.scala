@@ -71,6 +71,12 @@ object GenColCompatHelper {
           |  def newBuilder[A, C](f: Factory[A, C]): scala.collection.mutable.Builder[A, C] = f.newBuilder
           |
           |  type StringOps = scala.collection.StringOps
+          |  
+          |  type LazyListOrStream[+T] = LazyList[T]
+          |
+          |  val LazyListOrStream: LazyList.type = LazyList
+          |
+          |  def toLazyListOrStream[E](s: Iterable[E]): LazyListOrStream[E] = s.to(LazyList)
           |
           |  class InsertionOrderSet[A](elements: List[A]) extends scala.collection.immutable.Set[A] {
           |    private val underlying = scala.collection.mutable.LinkedHashSet(elements: _*)
@@ -150,6 +156,11 @@ object GenColCompatHelper {
           |
           |  type StringOps = scala.collection.immutable.StringOps
           |
+          |  type LazyListOrStream[+T] = Stream[T]
+          |
+          |  val LazyListOrStream: Stream.type = Stream
+          |
+          |  def toLazyListOrStream[E](s: Iterable[E]): LazyListOrStream[E] = s.to[Stream]
           |  class InsertionOrderSet[A](elements: List[A]) extends scala.collection.immutable.Set[A] {
           |    private val underlying = scala.collection.mutable.LinkedHashSet(elements: _*)
           |    def contains(elem: A): Boolean = underlying.contains(elem)

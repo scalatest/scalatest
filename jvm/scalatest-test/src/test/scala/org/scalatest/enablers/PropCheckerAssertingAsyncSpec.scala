@@ -19,7 +19,7 @@ import org.scalatest._
 import org.scalactic.Equality
 import scala.collection.immutable
 import prop.GeneratorDrivenPropertyChecks
-import org.scalactic.anyvals.PosZInt
+import org.scalactic.anyvals.{PosZInt, PosInt}
 import exceptions.TestFailedException
 import OptionValues._
 import scala.concurrent.Future
@@ -47,14 +47,11 @@ class PropCheckerAssertingAsyncSpec extends AsyncFunSpec with Matchers with Gene
     }
 
     it("forAll taking a Function1 that result in Future[Assertion] should attempt to shrink the values that cause a property to fail") {
-      implicit val stNonZeroIntGen =
-        for {
-         i <- ints
-         j = if (i == 0) 1 else i
-       } yield j
+      implicit val stNonZeroIntGen = posInts
        var xs: List[Int] = Nil
        val forAllFutureAssertion =
-         forAll { (i: Int) =>
+         forAll { (pi: PosInt) =>
+           val i = pi.value
            xs ::= i
            Future { assert(i / i == 1 && (i < 1000 && i != 3)) }
          }

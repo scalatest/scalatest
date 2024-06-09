@@ -464,7 +464,7 @@ package object prop {
     val rnd = Randomizer(seed)
     val maxSize = PosZInt(20)
     val (size, nextRnd) = rnd.choosePosZInt(1, maxSize) // size will be positive because between 1 and 20, inclusive
-    val (result, _, _) = genOfA.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
-    result
+    val (roseTreeOfA, _, _) = genOfA.next(SizeParam(PosZInt(0), maxSize, size), Nil, nextRnd)
+    roseTreeOfA.value
   }
 }

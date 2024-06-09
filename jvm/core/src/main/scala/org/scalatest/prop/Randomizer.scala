@@ -1000,8 +1000,8 @@ class Randomizer(val seed: Long) { thisRandomizer =>
     def loop(acc: List[T], count: Int, nextRnd: Randomizer): (List[T], Randomizer) = {
       if (count == length.value) (acc, nextRnd)
       else {
-        val (o, _, r) = genOfT.next(SizeParam(PosZInt(0), length, length), Nil, nextRnd) // Because starts at 0 and goes to a max value of type Int
-        loop(o :: acc, count + 1, r)
+        val (roseTreeOfT, _, r) = genOfT.next(SizeParam(PosZInt(0), length, length), Nil, nextRnd) // Because starts at 0 and goes to a max value of type Int
+        loop(roseTreeOfT.value :: acc, count + 1, r)
       }
     }
     loop(List.empty, 0, thisRandomizer)

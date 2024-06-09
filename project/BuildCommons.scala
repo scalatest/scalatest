@@ -25,7 +25,7 @@ trait BuildCommons {
       "org.scala-js" %%% "scala-js-macrotask-executor" % "1.1.1"
     )
   }    
-    
+  
   val releaseVersion = "3.3.0-alpha.1"
   val previousReleaseVersion = "3.2.18"
 
