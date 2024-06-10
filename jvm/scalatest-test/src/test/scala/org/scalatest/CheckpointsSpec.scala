@@ -20,16 +20,10 @@ import org.scalatest.OptionValues._
 
 // SKIP-SCALATESTJS,NATIVE-START
 import org.scalatestplus.junit.AssertionsForJUnit
-import org.scalatestplus.junit.JUnitTestFailedError
 // SKIP-SCALATESTJS,NATIVE-END
-import org.scalatest.SharedHelpers.thisLineNumber
-import org.scalatest.exceptions.TestFailedException
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalatest.exceptions.NotAllowedException
-import org.scalatest.exceptions.DuplicateTestNameException
-
 import org.scalactic.source
+import org.scalatest.SharedHelpers.thisLineNumber
+import org.scalatest.exceptions._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers._
 
@@ -96,8 +90,10 @@ class CheckpointsSpec extends AnyFunSpec with AssertionsForJUnit {
     describe("with a success condition") {
       it("should not throw an exception") {
         val cp = new Checkpoint
-        cp { 1 should equal (1) }
-        cp.reportAll()
+        noException should be thrownBy {
+          cp { 1 should equal (1) }
+          cp.reportAll()
+        }
       }
     } 
     describe("when a TestCanceledException is thrown") {
@@ -134,7 +130,71 @@ class CheckpointsSpec extends AnyFunSpec with AssertionsForJUnit {
     } 
   }
 
-  // SKIP-SCALATESTJS,NATIVE-START
+  describe("The withCheckpoint method") {
+    describe("with a failure condition") {
+
+      it("should throw a TestFailedException when reportAll is called") {
+        val caught = the [TestFailedException] thrownBy {
+            withCheckpoint { cp =>
+              cp { 1 should equal (2) }
+            }
+          }
+
+        val failConditionLineNumber = thisLineNumber - 4
+        // For Scala 3 the position is at the end of the application of the checkpoint function.
+        val reportAllLineNumber      = if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) failConditionLineNumber + 1 else failConditionLineNumber - 1
+
+        caught.failedCodeLineNumber.value should equal (reportAllLineNumber)
+        caught.failedCodeFileName.value should be ("CheckpointsSpec.scala")
+        caught.getMessage should include (Resources.atCheckpointAt +
+          " CheckpointsSpec.scala:" +
+          failConditionLineNumber)
+      }
+    }
+
+    describe("with multiple failure conditions") {
+
+      it("should report all failures when reportAll is called") {
+        val caught =
+          the [TestFailedException] thrownBy {
+            withCheckpoint { cp =>
+              cp { 1 should equal (2) }
+              cp { 3 should equal (2) }
+            }
+          }
+
+        val failCondition1LineNumber = thisLineNumber - 5
+        val failCondition2LineNumber = failCondition1LineNumber + 1
+        // For Scala 3 the position is at the end of the application of the checkpoint function.
+        val reportAllLineNumber      = if (ScalaTestVersions.BuiltForScalaVersion.startsWith("3.")) failCondition1LineNumber + 2 else failCondition1LineNumber - 1
+
+        caught.failedCodeLineNumber.value should equal (reportAllLineNumber)
+        caught.failedCodeFileName.value should be ("CheckpointsSpec.scala")
+
+        caught.getMessage should include (Resources.atCheckpointAt +
+          " CheckpointsSpec.scala:" +
+          failCondition1LineNumber)
+
+        caught.getMessage should include (Resources.atCheckpointAt +
+          " CheckpointsSpec.scala:" +
+          failCondition2LineNumber)
+      }
+    }
+
+
+    describe("with a success condition") {
+
+      it("should not throw an exception") {
+        noException should be thrownBy {
+          withCheckpoint { cp =>
+            cp { 1 should equal (1) }
+          }
+        }
+      }
+    }
+  }
+
+    // SKIP-SCALATESTJS,NATIVE-START
   describe("a Checkpoint using AssertionsForJUnit") {
     describe("with a failure condition") {
 

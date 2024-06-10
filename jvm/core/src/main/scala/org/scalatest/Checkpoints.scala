@@ -147,10 +147,6 @@ trait Checkpoints {
      * failed checkpoints.
      */
     def reportAll()(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS,NATIVE-START
-      val stackDepth = 1
-      // SKIP-SCALATESTJS,NATIVE-END
-      //SCALATESTJS,NATIVE-ONLY val stackDepth = 10
       if (!failures.isEmpty) {
         val failMessages =
           for (failure <- failures.asScala)
@@ -158,6 +154,27 @@ trait Checkpoints {
         throw new TestFailedException((sde: StackDepthException) => Some(failMessages.mkString("\n")), None, pos)
       }
     }
+  }
+
+
+  /**
+   * Run provided function with a new <code>Checkpoint</code> and report the <code>Checkpoint</code>.
+   * You can group your assertions, like this:
+   *
+   *
+   * <pre>
+   * withCheckpoint { cp =>
+   *    cp { x should be < 0 }
+   *    cp { y should be > 9 }
+   * }
+   * </pre>
+   *
+   * @param f the block of code, likely containing one or more checkpointed assertions, to execute
+   */
+  def withCheckpoint(f: Checkpoint => Unit)(implicit pos: source.Position): Unit = {
+    val cp = new Checkpoint
+    f(cp)
+    cp.reportAll()
   }
 }
 
