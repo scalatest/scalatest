@@ -416,7 +416,7 @@ import StringReporter.withPossibleLineNumber
     val builder = new StringBuilder
 
     protected def printPossiblyInColor(fragment: Fragment): Unit = {
-      builder.append(fragment.toPossiblyColoredText(presentInColor) + scala.compat.Platform.EOL)
+      builder.append(fragment.toPossiblyColoredText(presentInColor) + System.lineSeparator)
     }
 
     protected def printNoColor(text: String): Unit = {

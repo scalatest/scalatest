@@ -28,7 +28,7 @@ import java.util.Date
 
 class DirectExpectationsSpec extends AnyFunSpec {
 
-  val NEWLINE = scala.compat.Platform.EOL
+  val NEWLINE = System.lineSeparator
 
   class Stateful {
     var state = false

@@ -28,7 +28,7 @@ import org.scalatest.prop.{SizeParam}
 import scala.util.{Try, Success, Failure}
 import org.scalatest.exceptions.DiscardedEvaluationException
 import scala.concurrent.Future
-import scala.compat.Platform.EOL
+import System.{lineSeparator => EOL}
 import org.scalatest.prop.RoseTree
 import org.scalactic.ColCompatHelper._
 
