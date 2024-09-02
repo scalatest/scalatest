@@ -66,6 +66,7 @@ object ScalatestBuild extends BuildCommons with DottyBuild with NativeBuild with
   def commonSharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome(scalaBinaryVersion.value),
     version := releaseVersion,
+    scalacOptions ++= Seq("-deprecation"), 
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     publishTo := sonatypePublishToBundle.value, 
     publishMavenStyle := true,
