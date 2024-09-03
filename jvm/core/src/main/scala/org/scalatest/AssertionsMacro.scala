@@ -16,7 +16,7 @@
 package org.scalatest
 
 import org.scalactic._
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 /**
  * Macro implementation that provides rich error message for boolean expression assertion.

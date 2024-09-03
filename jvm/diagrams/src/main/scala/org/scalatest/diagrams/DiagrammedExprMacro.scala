@@ -17,7 +17,7 @@ package org.scalatest.diagrams
 
 import org.scalactic._
 import org.scalatest.Assertion
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 import scala.annotation.tailrec
 
 private[diagrams] class DiagrammedExprMacro[C <: Context](val context: C) {

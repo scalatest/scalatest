@@ -17,7 +17,7 @@ package org.scalatest
 package diagrams
 
 import org.scalactic._
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 private[scalatest] object DiagramsMacro {
 

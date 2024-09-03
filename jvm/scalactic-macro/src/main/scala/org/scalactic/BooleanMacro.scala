@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 private[org] class BooleanMacro[C <: Context](val context: C) {
 

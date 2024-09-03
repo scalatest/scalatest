@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 /**
  * Case class that stores the name and value of a variable or expression.
