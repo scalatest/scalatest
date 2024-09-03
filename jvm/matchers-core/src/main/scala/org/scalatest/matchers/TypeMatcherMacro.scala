@@ -16,7 +16,7 @@
 package org.scalatest.matchers
 
 import org.scalatest.matchers.dsl.{ResultOfAnTypeInvocation, MatcherWords, ResultOfATypeInvocation}
-import scala.reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 //import org.scalatest.matchers.dsl.{FactResultOfAnTypeInvocation, FactResultOfATypeInvocation}
 import org.scalactic.Prettifier

@@ -17,7 +17,7 @@ package org.scalactic.source
 
 import org.scalactic.{MacroOwnerRepair, Resources}
 
-import scala.reflect.macros.Context
+import scala.reflect.macros.whitebox.Context
 
 /**
   * Helper class for Position macro. (Will be removed from the public API if possible in a subsequent 3.0.0-RCx release.)

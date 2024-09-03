@@ -2875,7 +2875,7 @@ object MatcherFactory$arity$ {
   implicit def produceMatcher[SC, $typeConstructors$, T <: SC : $colonSeparatedTCNs$](matcherFactory: MatcherFactory$arity$[SC, $commaSeparatedTCNs$]): Matcher[T] =
     matcherFactory.matcher
 
-  import scala.reflect.macros.Context
+  import scala.reflect.macros.whitebox.Context
 
   /**
    * This method is called by macro that supports 'and not a [Type]' syntax.
@@ -2904,7 +2904,7 @@ object MatcherFactory$arity$ {
 
 private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
 
-  import scala.reflect.macros.Context
+  import scala.reflect.macros.whitebox.Context
 
   def andNotATypeMatcherFactory$arity$(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[MatcherFactory$arity$[SC with AnyRef, $commaSeparatedTCNs$]] = {
     import context.universe._
