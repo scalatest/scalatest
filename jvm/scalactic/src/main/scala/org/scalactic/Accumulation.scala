@@ -56,7 +56,7 @@ trait AccumulationLowPriorityImplicits {
             case (Bad(errA), Good(_)) => Bad(errA)
           }
         }
-        tempOr map (_.result)
+        tempOr map (_.result())
       }
     }
 
@@ -202,7 +202,7 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
               case (Bad(errA), Good(_)) => Bad(errA)
             }
           }
-        tempOr map (_.result)
+        tempOr map (_.result())
       }
     }
 
@@ -339,7 +339,7 @@ trait Accumulation extends AccumulationLowPriorityImplicits {
               case (Bad(errA), Good(ele)) => Bad(errA)
             }
           }
-        tempOr map (_.result)
+        tempOr map (_.result())
       }
     }
 
