@@ -135,7 +135,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        context.literal(select.name.decoded).tree,
+        q"${select.name.decoded}",
         Ident(TermName("$org_scalatest_assert_macro_right")),
         Apply(
           Select(
@@ -170,7 +170,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        context.literal(select.name.decoded).tree,
+        q"${select.name.decoded}",
         Ident(TermName("$org_scalatest_assert_macro_right")),
         Apply(
           Apply(
@@ -208,7 +208,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        context.literal(select.name.decoded).tree,
+        q"${select.name.decoded}",
         Ident(TermName("$org_scalatest_assert_macro_right")),
         Apply(
           TypeApply(
@@ -246,7 +246,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         expression,
-        context.literal(expressionText).tree,
+        q"${expressionText}",
         prettifier.duplicate
       )
     )
@@ -299,7 +299,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        context.literal(select.name.decoded).tree,
+        q"${select.name.decoded}",
         Select(
           Ident(TermName("$org_scalatest_assert_macro_left")),
           select.name
@@ -330,7 +330,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        context.literal(select.name.decoded).tree,
+        q"${select.name.decoded}",
         Apply(
           Select(
             Ident(TermName("$org_scalatest_assert_macro_left")),
@@ -364,8 +364,8 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        context.literal(select.name.decoded).tree,
-        context.literal(className).tree,
+        q"${select.name.decoded}",
+        q"${className}",
         TypeApply(
           Select(
             Ident(TermName("$org_scalatest_assert_macro_left")),
@@ -399,7 +399,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        context.literal(select.name.decoded).tree,
+        q"${select.name.decoded}",
         Select(
           Ident("$org_scalatest_assert_macro_left"),
           select.name
@@ -426,7 +426,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        context.literal(select.name.decoded).tree,
+        q"${select.name.decoded}",
         Apply(
           Select(
             Ident("$org_scalatest_assert_macro_left"),
@@ -500,7 +500,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
               TermName("value")
             ),
             evalBlock,
-            simpleMacroBool(context.literal(false).tree, "", prettifierTree)
+            simpleMacroBool(q"${false}", "", prettifierTree)
           )
         }
         else if (operator == "||") // || and |, generate if (left.value) true else {...}
@@ -509,7 +509,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
               Ident(TermName("$org_scalatest_assert_macro_left")),
               TermName("value")
             ),
-            simpleMacroBool(context.literal(true).tree, "", prettifierTree),
+            simpleMacroBool(q"${true}", "", prettifierTree),
             evalBlock
           )
         else
