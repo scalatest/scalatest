@@ -15,7 +15,7 @@
  */
 package org.scalactic.source
 
-import org.scalactic.MacroContext.Context
+import scala.reflect.macros.whitebox.Context
 import org.scalactic.Resources
 
 /**
