@@ -77,16 +77,16 @@ private[scalatest] object TypeMatcherMacro {
             Select(
               Select(
                 Select(
-                  Ident(newTermName("_root_")),
-                  newTermName("org")
+                  Ident(TermName("_root_")),
+                  TermName("org")
                 ),
-                newTermName("scalatest")
+                TermName("scalatest")
               ),
-              newTermName("matchers")
+              TermName("matchers")
             ),
-            newTermName("TypeMatcherHelper")
+            TermName("TypeMatcherHelper")
           ),
-          newTermName("aTypeMatcher")
+          TermName("aTypeMatcher")
         ),
         List(tree)
       )
@@ -116,16 +116,16 @@ private[scalatest] object TypeMatcherMacro {
             Select(
               Select(
                 Select(
-                  Ident(newTermName("_root_")),
-                  newTermName("org")
+                  Ident(TermName("_root_")),
+                  TermName("org")
                 ),
-                newTermName("scalatest")
+                TermName("scalatest")
               ),
-              newTermName("matchers")
+              TermName("matchers")
             ),
-            newTermName("TypeMatcherHelper")
+            TermName("TypeMatcherHelper")
           ),
-          newTermName("anTypeMatcher")
+          TermName("anTypeMatcher")
         ),
         List(tree)
       )
@@ -154,16 +154,16 @@ private[scalatest] object TypeMatcherMacro {
             Select(
               Select(
                 Select(
-                  Ident(newTermName("_root_")),
-                  newTermName("org")
+                  Ident(TermName("_root_")),
+                  TermName("org")
                 ),
-                newTermName("scalatest")
+                TermName("scalatest")
               ),
-              newTermName("matchers")
+              TermName("matchers")
             ),
-            newTermName("TypeMatcherHelper")
+            TermName("TypeMatcherHelper")
           ),
-          newTermName("notATypeMatcher")
+          TermName("notATypeMatcher")
         ),
         List(tree)
       )
@@ -191,16 +191,16 @@ private[scalatest] object TypeMatcherMacro {
             Select(
               Select(
                 Select(
-                  Ident(newTermName("_root_")),
-                  newTermName("org")
+                  Ident(TermName("_root_")),
+                  TermName("org")
                 ),
-                newTermName("scalatest")
+                TermName("scalatest")
               ),
-              newTermName("matchers")
+              TermName("matchers")
             ),
-            newTermName("TypeMatcherHelper")
+            TermName("TypeMatcherHelper")
           ),
-          newTermName("notAnTypeMatcher")
+          TermName("notAnTypeMatcher")
         ),
         List(tree)
       )
@@ -229,7 +229,7 @@ private[scalatest] object TypeMatcherMacro {
                 qualifier,
                 "owner"
               ),
-              newTermName("and")
+              TermName("and")
             ),
             List(rhs.tree)
           )
@@ -261,7 +261,7 @@ private[scalatest] object TypeMatcherMacro {
                 qualifier,
                 "owner"
               ),
-              newTermName("and")
+              TermName("and")
             ),
             List(rhs.tree)
           )
@@ -293,7 +293,7 @@ private[scalatest] object TypeMatcherMacro {
                 qualifier,
                 "owner"
               ),
-              newTermName("or")
+              TermName("or")
             ),
             List(rhs.tree)
           )
@@ -325,7 +325,7 @@ private[scalatest] object TypeMatcherMacro {
                 qualifier,
                 "owner"
               ),
-              newTermName("or")
+              TermName("or")
             ),
             List(rhs.tree)
           )
@@ -342,7 +342,7 @@ private[scalatest] object TypeMatcherMacro {
     def valDef(name: String, rhs: Tree): ValDef =
       ValDef(
         Modifiers(),
-        newTermName(name),
+        TermName(name),
         TypeTree(),
         rhs
       )
@@ -366,18 +366,18 @@ private[scalatest] object TypeMatcherMacro {
                   Select(
                     Select(
                       Select(
-                        Ident(newTermName("_root_")),
-                        newTermName("org")
+                        Ident(TermName("_root_")),
+                        TermName("org")
                       ),
-                      newTermName("scalatest")
+                      TermName("scalatest")
                     ),
-                    newTermName("matchers")
+                    TermName("matchers")
                   ),
-                  newTermName("TypeMatcherHelper")
+                  TermName("TypeMatcherHelper")
                 ),
-                newTermName(assertMethodName)
+                TermName(assertMethodName)
               ),
-              List(Select(Ident(newTermName("$org_scalatest_type_matcher_macro_left")), newTermName("leftSideValue")), tree, Select(Ident(newTermName("$org_scalatest_type_matcher_macro_left")), newTermName("prettifier")), Select(Ident(newTermName("$org_scalatest_type_matcher_macro_left")), newTermName("pos")))
+              List(Select(Ident(TermName("$org_scalatest_type_matcher_macro_left")), TermName("leftSideValue")), tree, Select(Ident(TermName("$org_scalatest_type_matcher_macro_left")), TermName("prettifier")), Select(Ident(TermName("$org_scalatest_type_matcher_macro_left")), TermName("pos")))
             )
           )
 
@@ -423,18 +423,18 @@ private[scalatest] object TypeMatcherMacro {
                 Select(
                   Select(
                     Select(
-                      Ident(newTermName("_root_")),
-                      newTermName("org")
+                      Ident(TermName("_root_")),
+                      TermName("org")
                     ),
-                    newTermName("scalatest")
+                    TermName("scalatest")
                   ),
-                  newTermName("matchers")
+                  TermName("matchers")
                 ),
-                newTermName("TypeMatcherHelper")
+                TermName("TypeMatcherHelper")
               ),
-              newTermName(assertMethodName)
+              TermName(assertMethodName)
             ),
-            List(Select(qualifier, newTermName("leftSideValue")), tree)
+            List(Select(qualifier, TermName("leftSideValue")), tree)
           )
 
         case _ => context.abort(context.macroApplication.pos, s"This macro should be used with $beMethodName [Type] syntax only.")
@@ -455,7 +455,7 @@ private[scalatest] object TypeMatcherMacro {
     def valDef(name: String, rhs: Tree): ValDef =
       ValDef(
         Modifiers(),
-        newTermName(name),
+        TermName(name),
         TypeTree(),
         rhs
       )
@@ -479,18 +479,18 @@ private[scalatest] object TypeMatcherMacro {
                   Select(
                     Select(
                       Select(
-                        Ident(newTermName("_root_")),
-                        newTermName("org")
+                        Ident(TermName("_root_")),
+                        TermName("org")
                       ),
-                      newTermName("scalatest")
+                      TermName("scalatest")
                     ),
-                    newTermName("matchers")
+                    TermName("matchers")
                   ),
-                  newTermName("TypeMatcherHelper")
+                  TermName("TypeMatcherHelper")
                 ),
-                newTermName(assertMethodName)
+                TermName(assertMethodName)
               ),
-              List(Select(qualifier, newTermName("left")), tree, Select(qualifier, newTermName("shouldBeTrue")), Select(Ident(newTermName("$org_scalatest_type_matcher_macro_left")), newTermName("prettifier")), Select(Ident(newTermName("$org_scalatest_type_matcher_macro_left")), newTermName("pos")))
+              List(Select(qualifier, TermName("left")), tree, Select(qualifier, TermName("shouldBeTrue")), Select(Ident(TermName("$org_scalatest_type_matcher_macro_left")), TermName("prettifier")), Select(Ident(TermName("$org_scalatest_type_matcher_macro_left")), TermName("pos")))
             )
           )
 
@@ -528,18 +528,18 @@ private[scalatest] object TypeMatcherMacro {
                 Select(
                   Select(
                     Select(
-                      Ident(newTermName("_root_")),
-                      newTermName("org")
+                      Ident(TermName("_root_")),
+                      TermName("org")
                     ),
-                    newTermName("scalatest")
+                    TermName("scalatest")
                   ),
-                  newTermName("matchers")
+                  TermName("matchers")
                 ),
-                newTermName("TypeMatcherHelper")
+                TermName("TypeMatcherHelper")
               ),
-              newTermName(expectMethodName)
+              TermName(expectMethodName)
             ),
-            List(Select(qualifier, newTermName("left")), tree, Select(qualifier, newTermName("shouldBeTrue")))
+            List(Select(qualifier, TermName("left")), tree, Select(qualifier, TermName("shouldBeTrue")))
           )
 
         case _ => context.abort(context.macroApplication.pos, s"This macro should be used with $beMethodName [Type] syntax only.")

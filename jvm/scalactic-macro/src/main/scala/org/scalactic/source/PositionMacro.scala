@@ -36,7 +36,7 @@ object PositionMacro {
 
     private val PositionModule = universe.rootMirror.staticModule("org.scalactic.source.Position")
     private val PositionClass = universe.rootMirror.staticClass("org.scalactic.source.Position")
-    private val Position_apply = PositionModule.typeSignature.declaration(universe.newTermName("apply"))
+    private val Position_apply = PositionModule.typeSignature.declaration(universe.TermName("apply"))
 
     def apply(context: Context): context.Tree = {
       import context.universe._

@@ -37,14 +37,14 @@ private[scalatest] object AssertionsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalatest")
+            TermName("scalatest")
           ),
-          newTermName("Assertions")
+          TermName("Assertions")
         ),
-        newTermName("assertionsHelper")
+        TermName("assertionsHelper")
       ),
       condition,
       "macroAssert",
@@ -68,14 +68,14 @@ private[scalatest] object AssertionsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalatest")
+            TermName("scalatest")
           ),
-          newTermName("Assertions")
+          TermName("Assertions")
         ),
-        newTermName("assertionsHelper")
+        TermName("assertionsHelper")
       ),
       condition,
       "macroAssert",
@@ -98,14 +98,14 @@ private[scalatest] object AssertionsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalatest")
+            TermName("scalatest")
           ),
-          newTermName("Assertions")
+          TermName("Assertions")
         ),
-        newTermName("assertionsHelper")
+        TermName("assertionsHelper")
       ),
       condition,
       "macroAssume",
@@ -129,14 +129,14 @@ private[scalatest] object AssertionsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalatest")
+            TermName("scalatest")
           ),
-          newTermName("Assertions")
+          TermName("Assertions")
         ),
-        newTermName("assertionsHelper")
+        TermName("assertionsHelper")
       ),
       condition,
       "macroAssume",

@@ -230,12 +230,12 @@ private[scalactic] object SnapshotsMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("org")),
-                newTermName("scalactic")
+                Ident(TermName("org")),
+                TermName("scalactic")
               ),
-              newTermName("Snapshot")
+              TermName("Snapshot")
             ),
-            newTermName("apply")
+            TermName("apply")
           ),
           List(context.literal(show(expr.tree)).tree, expr.tree.duplicate)
         )
@@ -246,12 +246,12 @@ private[scalactic] object SnapshotsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("org")),
-              newTermName("scalactic")
+              Ident(TermName("org")),
+              TermName("scalactic")
             ),
-            newTermName("SnapshotSeq")
+            TermName("SnapshotSeq")
           ),
-          newTermName("apply")
+          TermName("apply")
         ),
         List(snapshots: _*)
       )

@@ -70,14 +70,14 @@ private[scalatest] object MatchPatternMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("org")),
-                newTermName("scalatest")
+                Ident(TermName("org")),
+                TermName("scalatest")
               ),
-              newTermName("matchers")
+              TermName("matchers")
             ),
-            newTermName("MatchPatternHelper")
+            TermName("MatchPatternHelper")
           ),
-          newTermName("matchPatternMatcher")
+          TermName("matchPatternMatcher")
         ),
         List(tree)
       )
@@ -104,14 +104,14 @@ private[scalatest] object MatchPatternMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("org")),
-              newTermName("scalatest")
+              Ident(TermName("org")),
+              TermName("scalatest")
             ),
-            newTermName("matchers")
+            TermName("matchers")
           ),
-          newTermName("MatchPatternHelper")
+          TermName("MatchPatternHelper")
         ),
-        newTermName("notMatchPatternMatcher")
+        TermName("notMatchPatternMatcher")
       ),
       List(tree)
     )
@@ -144,7 +144,7 @@ private[scalatest] object MatchPatternMacro {
                 qualifier,
                 "owner"
               ),
-              newTermName("and")
+              TermName("and")
             ),
             List(notMatcher)
           )
@@ -176,7 +176,7 @@ private[scalatest] object MatchPatternMacro {
                 qualifier,
                 "owner"
               ),
-              newTermName("or")
+              TermName("or")
             ),
             List(notMatcher)
           )
@@ -212,14 +212,14 @@ private[scalatest] object MatchPatternMacro {
               Select(
                 Select(
                   Select(
-                    Ident(newTermName("org")),
-                    newTermName("scalatest")
+                    Ident(TermName("org")),
+                    TermName("scalatest")
                   ),
-                  newTermName("matchers")
+                  TermName("matchers")
                 ),
-                newTermName("MatchPatternHelper")
+                TermName("MatchPatternHelper")
               ),
-              newTermName("checkMatchPattern")
+              TermName("checkMatchPattern")
             ),
             List(qualifier, tree)
           )

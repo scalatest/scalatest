@@ -23,12 +23,12 @@ class PrettyAstSpec extends AnyFunSpec {
   describe("SharedHelpers.prettifyAst ") {
     it("should print pretty AST") {
       val original =
-        "Expr(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"a\")), newTermName(\"$eq$eq\")), " +
-          "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\"))))) " +
-          "Expr(Apply(Select(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"a\")), newTermName(\"$eq$eq\")), " +
-          "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\")))), newTermName(\"$amp$amp\")), " +
-          "List(Apply(Select(Select(This(newTypeName(\"TryIt\")), newTermName(\"b\")), newTermName(\"$eq$eq\")), " +
-          "List(Select(This(newTypeName(\"TryIt\")), newTermName(\"c\")))))))"
+        "Expr(Apply(Select(Select(This(newTypeName(\"TryIt\")), TermName(\"a\")), TermName(\"$eq$eq\")), " +
+          "List(Select(This(newTypeName(\"TryIt\")), TermName(\"b\"))))) " +
+          "Expr(Apply(Select(Apply(Select(Select(This(newTypeName(\"TryIt\")), TermName(\"a\")), TermName(\"$eq$eq\")), " +
+          "List(Select(This(newTypeName(\"TryIt\")), TermName(\"b\")))), TermName(\"$amp$amp\")), " +
+          "List(Apply(Select(Select(This(newTypeName(\"TryIt\")), TermName(\"b\")), TermName(\"$eq$eq\")), " +
+          "List(Select(This(newTypeName(\"TryIt\")), TermName(\"c\")))))))"
 
       SharedHelpers.prettifyAst(original) should be (
         "Expr(\n" +
@@ -38,16 +38,16 @@ class PrettyAstSpec extends AnyFunSpec {
           "        This(\n" +
           "          newTypeName(\"TryIt\")\n" +
           "        ),\n" +
-          "        newTermName(\"a\")\n" +
+          "        TermName(\"a\")\n" +
           "      ),\n" +
-          "      newTermName(\"$eq$eq\")\n" +
+          "      TermName(\"$eq$eq\")\n" +
           "    ),\n" +
           "    List(\n" +
           "      Select(\n" +
           "        This(\n" +
           "          newTypeName(\"TryIt\")\n" +
           "        ),\n" +
-          "        newTermName(\"b\")\n" +
+          "        TermName(\"b\")\n" +
           "      )\n" +
           "    )\n" +
           "  )\n" +
@@ -61,20 +61,20 @@ class PrettyAstSpec extends AnyFunSpec {
           "            This(\n" +
           "              newTypeName(\"TryIt\")\n" +
           "            ),\n" +
-          "            newTermName(\"a\")\n" +
+          "            TermName(\"a\")\n" +
           "          ),\n" +
-          "          newTermName(\"$eq$eq\")\n" +
+          "          TermName(\"$eq$eq\")\n" +
           "        ),\n" +
           "        List(\n" +
           "          Select(\n" +
           "            This(\n" +
           "              newTypeName(\"TryIt\")\n" +
           "            ),\n" +
-          "            newTermName(\"b\")\n" +
+          "            TermName(\"b\")\n" +
           "          )\n" +
           "        )\n" +
           "      ),\n" +
-          "      newTermName(\"$amp$amp\")\n" +
+          "      TermName(\"$amp$amp\")\n" +
           "    ),\n" +
           "    List(\n" +
           "      Apply(\n" +
@@ -83,16 +83,16 @@ class PrettyAstSpec extends AnyFunSpec {
           "            This(\n" +
           "              newTypeName(\"TryIt\")\n" +
           "            ),\n" +
-          "            newTermName(\"b\")\n" +
+          "            TermName(\"b\")\n" +
           "          ),\n" +
-          "          newTermName(\"$eq$eq\")\n" +
+          "          TermName(\"$eq$eq\")\n" +
           "        ),\n" +
           "        List(\n" +
           "          Select(\n" +
           "            This(\n" +
           "              newTypeName(\"TryIt\")\n" +
           "            ),\n" +
-          "            newTermName(\"c\")\n" +
+          "            TermName(\"c\")\n" +
           "          )\n" +
           "        )\n" +
           "      )\n" +
@@ -104,13 +104,13 @@ class PrettyAstSpec extends AnyFunSpec {
 
     it("should print pretty AST correctly also when '(' or ')' is in strings") {
       val original =
-        "Expr(Apply(Select(Ident(scala.Predef), newTermName(\"println\")), List(Literal(Constant(\"Hello (chua\")))))"
+        "Expr(Apply(Select(Ident(scala.Predef), TermName(\"println\")), List(Literal(Constant(\"Hello (chua\")))))"
       SharedHelpers.prettifyAst(original) should be (
         "Expr(\n" +
           "  Apply(\n" +
           "    Select(\n" +
           "      Ident(scala.Predef),\n" +
-          "      newTermName(\"println\")\n" +
+          "      TermName(\"println\")\n" +
           "    ),\n" +
           "    List(\n" +
           "      Literal(\n" +

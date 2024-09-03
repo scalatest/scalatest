@@ -180,16 +180,16 @@ object TypeMatcherMacro {
 //               Select(
 //                 Select(
 //                   Select(
-//                     Ident(newTermName("org")),
-//                     newTermName("scalatest")
+//                     Ident(TermName("org")),
+//                     TermName("scalatest")
 //                   ),
-//                   newTermName("matchers")
+//                   TermName("matchers")
 //                 ),
-//                 newTermName("TypeMatcherHelper")
+//                 TermName("TypeMatcherHelper")
 //               ),
-//               newTermName(assertMethodName)
+//               TermName(assertMethodName)
 //             ),
-//             List(Select(qualifier, newTermName("leftSideValue")), tree)
+//             List(Select(qualifier, TermName("leftSideValue")), tree)
 //           )
 
 //         case _ => context.abort(context.macroApplication.pos, s"This macro should be used with $beMethodName [Type] syntax only.")
@@ -241,16 +241,16 @@ object TypeMatcherMacro {
 //               Select(
 //                 Select(
 //                   Select(
-//                     Ident(newTermName("org")),
-//                     newTermName("scalatest")
+//                     Ident(TermName("org")),
+//                     TermName("scalatest")
 //                   ),
-//                   newTermName("matchers")
+//                   TermName("matchers")
 //                 ),
-//                 newTermName("TypeMatcherHelper")
+//                 TermName("TypeMatcherHelper")
 //               ),
-//               newTermName(expectMethodName)
+//               TermName(expectMethodName)
 //             ),
-//             List(Select(qualifier, newTermName("left")), tree, Select(qualifier, newTermName("shouldBeTrue")))
+//             List(Select(qualifier, TermName("left")), tree, Select(qualifier, TermName("shouldBeTrue")))
 //           )
 
 //         case _ => context.abort(context.macroApplication.pos, s"This macro should be used with $beMethodName [Type] syntax only.")

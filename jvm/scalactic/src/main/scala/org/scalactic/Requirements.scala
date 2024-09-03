@@ -233,14 +233,14 @@ private[scalactic] object RequirementsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Requirements")
+          TermName("Requirements")
         ),
-        newTermName("requirementsHelper")
+        TermName("requirementsHelper")
       ),
       condition,
       "macroRequire",
@@ -263,14 +263,14 @@ private[scalactic] object RequirementsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Requirements")
+          TermName("Requirements")
         ),
-        newTermName("requirementsHelper")
+        TermName("requirementsHelper")
       ),
       condition,
       "macroRequire",
@@ -292,14 +292,14 @@ private[scalactic] object RequirementsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Requirements")
+          TermName("Requirements")
         ),
-        newTermName("requirementsHelper")
+        TermName("requirementsHelper")
       ),
       condition,
       "macroRequireState",
@@ -322,14 +322,14 @@ private[scalactic] object RequirementsMacro {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Requirements")
+          TermName("Requirements")
         ),
-        newTermName("requirementsHelper")
+        TermName("requirementsHelper")
       ),
       condition,
       "macroRequireState",
@@ -361,7 +361,7 @@ private[scalactic] object RequirementsMacro {
       Apply(
         Select(
           Ident("Array"),
-          newTermName("apply")
+          TermName("apply")
         ),
         List(arguments.map(e => context.literal(show(e.tree)).tree): _*)
       )
@@ -379,7 +379,7 @@ private[scalactic] object RequirementsMacro {
       Apply(
         Select(
           Ident("Array"),
-          newTermName("apply")
+          TermName("apply")
         ),
         List(arguments.map(e => e.tree): _*)
       )
@@ -394,16 +394,16 @@ private[scalactic] object RequirementsMacro {
             Select(
               Select(
                 Select(
-                  Ident(newTermName("_root_")),
-                  newTermName("org")
+                  Ident(TermName("_root_")),
+                  TermName("org")
                 ),
-                newTermName("scalactic")
+                TermName("scalactic")
               ),
-              newTermName("Requirements")
+              TermName("Requirements")
             ),
-            newTermName("requirementsHelper")
+            TermName("requirementsHelper")
           ),
-          newTermName("macroRequireNonNull")
+          TermName("macroRequireNonNull")
         ),
         List(variablesNamesArray, argumentsArray, prettifier.tree, pos.tree)
       )

@@ -32,16 +32,16 @@ private[scalatest] object ExpectationsMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Ident(TermName("_root_")),
+                TermName("org")
               ),
-              newTermName("scalatest")
+              TermName("scalatest")
             ),
-            newTermName("expectations")
+            TermName("expectations")
           ),
-          newTermName("Expectations")
+          TermName("Expectations")
         ),
-        newTermName("expectationsHelper")
+        TermName("expectationsHelper")
       ),
       expression,
       "macroExpect",
@@ -58,16 +58,16 @@ private[scalatest] object ExpectationsMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Ident(TermName("_root_")),
+                TermName("org")
               ),
-              newTermName("scalatest")
+              TermName("scalatest")
             ),
-            newTermName("expectations")
+            TermName("expectations")
           ),
-          newTermName("Expectations")
+          TermName("Expectations")
         ),
-        newTermName("expectationsHelper")
+        TermName("expectationsHelper")
       ),
       expression,
       "macroExpect",

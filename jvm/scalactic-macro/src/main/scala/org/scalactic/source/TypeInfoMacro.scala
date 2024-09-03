@@ -41,16 +41,16 @@ object TypeInfoMacro {
               Select(
                 Select(
                   Select(
-                    Ident(newTermName("_root_")),
-                    newTermName("org")
+                    Ident(TermName("_root_")),
+                    TermName("org")
                   ),
-                  newTermName("scalactic")
+                  TermName("scalactic")
                 ),
-                newTermName("source")
+                TermName("source")
               ),
-              newTermName("TypeInfo")
+              TermName("TypeInfo")
             ),
-            newTermName("apply")
+            TermName("apply")
           ),
           List(typeTree.duplicate)
         ),

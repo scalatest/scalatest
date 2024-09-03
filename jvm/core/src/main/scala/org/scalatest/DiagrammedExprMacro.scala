@@ -29,7 +29,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
   def valDef(name: String, rhs: Tree): ValDef =
     ValDef(
       Modifiers(),
-      newTermName(name),
+      TermName(name),
       TypeTree(),
       rhs
     )
@@ -60,14 +60,14 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("scala")),
-              newTermName("collection")
+              Ident(TermName("scala")),
+              TermName("collection")
             ),
-            newTermName("immutable")
+            TermName("immutable")
           ),
-          newTermName("List")
+          TermName("List")
         ),
-        newTermName("apply")
+        TermName("apply")
       ),
       elements
     )
@@ -83,14 +83,14 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalatest")
+            TermName("scalatest")
           ),
-          newTermName("DiagrammedExpr")
+          TermName("DiagrammedExpr")
         ),
-        newTermName("simpleExpr")
+        TermName("simpleExpr")
       ),
       List(
         tree,
@@ -134,7 +134,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
 
     val valueExpr =
       Select(
-        Select(Ident(newTermName("$org_scalatest_macro_qualifier")), newTermName("value")),
+        Select(Ident(TermName("$org_scalatest_macro_qualifier")), TermName("value")),
         select.name
       )
 
@@ -144,17 +144,17 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Ident(TermName("_root_")),
+                TermName("org")
               ),
-              newTermName("scalatest")
+              TermName("scalatest")
             ),
-            newTermName("DiagrammedExpr")
+            TermName("DiagrammedExpr")
           ),
-          newTermName("selectExpr")
+          TermName("selectExpr")
         ),
         List(
-          Ident(newTermName("$org_scalatest_macro_qualifier")),
+          Ident(TermName("$org_scalatest_macro_qualifier")),
           valueExpr,
           Literal(Constant(getAnchor(select)))
         )
@@ -228,7 +228,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
               arg match {
                 case func: Function => func  // for functions, just use back the original
                 case byName if arg.tpe.typeSymbol.fullName == "scala.Nothing" => byName // for by-names, just use back the original
-                case other => Select(Ident(newTermName("$org_scalatest_macro_arg_" + (base + j))), newTermName("value"))
+                case other => Select(Ident(TermName("$org_scalatest_macro_arg_" + (base + j))), TermName("value"))
               }
             }
           case _ => currentApply.args
@@ -243,7 +243,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
         case typeApply: TypeApply =>
           TypeApply(
             Select(
-              Select(Ident(newTermName("$org_scalatest_macro_qualifier")), newTermName("value")),
+              Select(Ident(TermName("$org_scalatest_macro_qualifier")), TermName("value")),
               applyInfo.select.name
             ),
             applyInfo.applyList.head.args
@@ -251,7 +251,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
         case _ =>
           Apply(
             Select(
-              Select(Ident(newTermName("$org_scalatest_macro_qualifier")), newTermName("value")),
+              Select(Ident(TermName("$org_scalatest_macro_qualifier")), TermName("value")),
               applyInfo.select.name
             ),
             applyInfo.applyList.head.args
@@ -273,17 +273,17 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Ident(TermName("_root_")),
+                TermName("org")
               ),
-              newTermName("scalatest")
+              TermName("scalatest")
             ),
-            newTermName("DiagrammedExpr")
+            TermName("DiagrammedExpr")
           ),
-          newTermName("applyExpr")
+          TermName("applyExpr")
         ),
         List(
-          Ident(newTermName("$org_scalatest_macro_qualifier")),
+          Ident(TermName("$org_scalatest_macro_qualifier")),
           list(argIdents),
           valueExpr,
           Literal(Constant(getAnchor(apply)))
@@ -307,11 +307,11 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
         val ifCheck =
           If(
             Select(
-              Ident(newTermName("$org_scalatest_macro_qualifier")),
-              newTermName("value")
+              Ident(TermName("$org_scalatest_macro_qualifier")),
+              TermName("value")
             ),
             Block((argsValDefList ::: List(resultExpr)): _*),
-            Ident(newTermName("$org_scalatest_macro_qualifier"))
+            Ident(TermName("$org_scalatest_macro_qualifier"))
           )
         List(qualifierValDef, ifCheck)
       }
@@ -330,10 +330,10 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
         val ifCheck =
           If(
             Select(
-              Ident(newTermName("$org_scalatest_macro_qualifier")),
-              newTermName("value")
+              Ident(TermName("$org_scalatest_macro_qualifier")),
+              TermName("value")
             ),
-            Ident(newTermName("$org_scalatest_macro_qualifier")),
+            Ident(TermName("$org_scalatest_macro_qualifier")),
             Block((argsValDefList ::: List(resultExpr)): _*)
           )
         List(qualifierValDef, ifCheck)
@@ -389,9 +389,9 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
     Apply(
       Select(
         helper,
-        newTermName(methodName)
+        TermName(methodName)
       ),
-      List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree, Literal(Constant(sourceText)), pos)
+      List(Ident(TermName("$org_scalatest_assert_macro_expr")), clueTree, Literal(Constant(sourceText)), pos)
     )
 
   /**

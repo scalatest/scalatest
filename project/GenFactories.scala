@@ -2920,7 +2920,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
                 qualifier,
                 "owner"
               ),
-              newTermName("and")
+              TermName("and")
             ),
             List(rhs.tree)
           )
@@ -2943,7 +2943,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
                 qualifier,
                 "owner"
               ),
-              newTermName("or")
+              TermName("or")
             ),
             List(rhs.tree)
           )
@@ -2966,7 +2966,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
                 qualifier,
                 "owner"
               ),
-              newTermName("and")
+              TermName("and")
             ),
             List(rhs.tree)
           )
@@ -2989,7 +2989,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
                 qualifier,
                 "owner"
               ),
-              newTermName("or")
+              TermName("or")
             ),
             List(rhs.tree)
           )

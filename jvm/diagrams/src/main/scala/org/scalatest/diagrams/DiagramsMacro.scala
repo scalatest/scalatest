@@ -83,16 +83,16 @@ private[scalatest] object DiagramsMacro {
             Select(
               Select(
                 Select(
-                  Ident(newTermName("_root_")),
-                  newTermName("org")
+                  Ident(TermName("_root_")),
+                  TermName("org")
                 ),
-                newTermName("scalatest")
+                TermName("scalatest")
               ),
-              newTermName("diagrams")
+              TermName("diagrams")
             ),
-            newTermName("Diagrams")
+            TermName("Diagrams")
           ),
-          newTermName("diagrammedAssertionsHelper")
+          TermName("diagrammedAssertionsHelper")
         ),
         condition,
         methodName,
@@ -105,14 +105,14 @@ private[scalatest] object DiagramsMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Ident(TermName("_root_")),
+                TermName("org")
               ),
-              newTermName("scalatest")
+              TermName("scalatest")
             ),
-            newTermName("Assertions")
+            TermName("Assertions")
           ),
-          newTermName("assertionsHelper")
+          TermName("assertionsHelper")
         ),
         condition,
         methodName,

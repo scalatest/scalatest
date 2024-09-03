@@ -53,7 +53,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
   def valDef(name: String, rhs: Tree): ValDef =
     ValDef(
       Modifiers(),
-      newTermName(name),
+      TermName(name),
       TypeTree(),
       rhs
     )
@@ -124,25 +124,25 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Bool")
+          TermName("Bool")
         ),
-        newTermName("binaryMacroBool")
+        TermName("binaryMacroBool")
       ),
       List(
-        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        Ident(TermName("$org_scalatest_assert_macro_left")),
         context.literal(select.name.decoded).tree,
-        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Ident(TermName("$org_scalatest_assert_macro_right")),
         Apply(
           Select(
-            Ident(newTermName("$org_scalatest_assert_macro_left")),
+            Ident(TermName("$org_scalatest_assert_macro_left")),
             select.name
           ),
-          List(Ident(newTermName("$org_scalatest_assert_macro_right")))
+          List(Ident(TermName("$org_scalatest_assert_macro_right")))
         ),
         prettifier.duplicate
       )
@@ -159,19 +159,19 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Bool")
+          TermName("Bool")
         ),
-        newTermName("binaryMacroBool")
+        TermName("binaryMacroBool")
       ),
       List(
-        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        Ident(TermName("$org_scalatest_assert_macro_left")),
         context.literal(select.name.decoded).tree,
-        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Ident(TermName("$org_scalatest_assert_macro_right")),
         Apply(
           Apply(
             Select(
@@ -197,28 +197,28 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Bool")
+          TermName("Bool")
         ),
-        newTermName("binaryMacroBool")
+        TermName("binaryMacroBool")
       ),
       List(
-        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        Ident(TermName("$org_scalatest_assert_macro_left")),
         context.literal(select.name.decoded).tree,
-        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Ident(TermName("$org_scalatest_assert_macro_right")),
         Apply(
           TypeApply(
             Select(
-              Ident(newTermName("$org_scalatest_assert_macro_left")),
+              Ident(TermName("$org_scalatest_assert_macro_left")),
               select.name
             ),
             typeArgs
           ),
-          List(Ident(newTermName("$org_scalatest_assert_macro_right")))
+          List(Ident(TermName("$org_scalatest_assert_macro_right")))
         ),
         prettifier.duplicate
       )
@@ -235,14 +235,14 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Bool")
+          TermName("Bool")
         ),
-        newTermName("simpleMacroBool")
+        TermName("simpleMacroBool")
       ),
       List(
         expression,
@@ -262,14 +262,14 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Bool")
+          TermName("Bool")
         ),
-        newTermName("notBool")
+        TermName("notBool")
       ),
       List(
         target.duplicate,
@@ -288,20 +288,20 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Bool")
+          TermName("Bool")
         ),
-        newTermName("unaryMacroBool")
+        TermName("unaryMacroBool")
       ),
       List(
-        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        Ident(TermName("$org_scalatest_assert_macro_left")),
         context.literal(select.name.decoded).tree,
         Select(
-          Ident(newTermName("$org_scalatest_assert_macro_left")),
+          Ident(TermName("$org_scalatest_assert_macro_left")),
           select.name
         ),
         prettifier.duplicate
@@ -319,21 +319,21 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Bool")
+          TermName("Bool")
         ),
-        newTermName("unaryMacroBool")
+        TermName("unaryMacroBool")
       ),
       List(
-        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        Ident(TermName("$org_scalatest_assert_macro_left")),
         context.literal(select.name.decoded).tree,
         Apply(
           Select(
-            Ident(newTermName("$org_scalatest_assert_macro_left")),
+            Ident(TermName("$org_scalatest_assert_macro_left")),
             select.name
           ), 
           List.empty
@@ -353,22 +353,22 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Bool")
+          TermName("Bool")
         ),
-        newTermName("isInstanceOfMacroBool")
+        TermName("isInstanceOfMacroBool")
       ),
       List(
-        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        Ident(TermName("$org_scalatest_assert_macro_left")),
         context.literal(select.name.decoded).tree,
         context.literal(className).tree,
         TypeApply(
           Select(
-            Ident(newTermName("$org_scalatest_assert_macro_left")),
+            Ident(TermName("$org_scalatest_assert_macro_left")),
             select.name
           ),
           List(typeArg)
@@ -388,23 +388,23 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Bool")
+          TermName("Bool")
         ),
-        newTermName("lengthSizeMacroBool")
+        TermName("lengthSizeMacroBool")
       ),
       List(
-        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        Ident(TermName("$org_scalatest_assert_macro_left")),
         context.literal(select.name.decoded).tree,
         Select(
           Ident("$org_scalatest_assert_macro_left"),
           select.name
         ),
-        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Ident(TermName("$org_scalatest_assert_macro_right")),
         prettifier.duplicate
       )
     )
@@ -415,17 +415,17 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Bool")
+          TermName("Bool")
         ),
-        newTermName("lengthSizeMacroBool")
+        TermName("lengthSizeMacroBool")
       ),
       List(
-        Ident(newTermName("$org_scalatest_assert_macro_left")),
+        Ident(TermName("$org_scalatest_assert_macro_left")),
         context.literal(select.name.decoded).tree,
         Apply(
           Select(
@@ -434,7 +434,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
           ), 
           List.empty
         ),
-        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Ident(TermName("$org_scalatest_assert_macro_right")),
         prettifier.duplicate
       )
     )  
@@ -450,21 +450,21 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Ident(TermName("_root_")),
+              TermName("org")
             ),
-            newTermName("scalactic")
+            TermName("scalactic")
           ),
-          newTermName("Bool")
+          TermName("Bool")
         ),
-        newTermName("existsMacroBool")
+        TermName("existsMacroBool")
       ),
       List(
-        Ident(newTermName("$org_scalatest_assert_macro_left")),
-        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Ident(TermName("$org_scalatest_assert_macro_left")),
+        Ident(TermName("$org_scalatest_assert_macro_right")),
         Apply(
           Select(
-            Ident(newTermName("$org_scalatest_assert_macro_left")),
+            Ident(TermName("$org_scalatest_assert_macro_left")),
             select.name
           ),
           List(
@@ -496,8 +496,8 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         if (operator == "&&")  {// generate if (left.value) {...} else false
           If(
             Select(
-              Ident(newTermName("$org_scalatest_assert_macro_left")),
-              newTermName("value")
+              Ident(TermName("$org_scalatest_assert_macro_left")),
+              TermName("value")
             ),
             evalBlock,
             simpleMacroBool(context.literal(false).tree, "", prettifierTree)
@@ -506,8 +506,8 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         else if (operator == "||") // || and |, generate if (left.value) true else {...}
           If(
             Select(
-              Ident(newTermName("$org_scalatest_assert_macro_left")),
-              newTermName("value")
+              Ident(TermName("$org_scalatest_assert_macro_left")),
+              TermName("value")
             ),
             simpleMacroBool(context.literal(true).tree, "", prettifierTree),
             evalBlock
@@ -903,9 +903,9 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
     Apply(
       Select(
         helper,
-        newTermName(methodName)
+        TermName(methodName)
       ),
-      List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree, prettifierTree, posTree)
+      List(Ident(TermName("$org_scalatest_assert_macro_expr")), clueTree, prettifierTree, posTree)
     )
 
   /**
@@ -917,9 +917,9 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
     Apply(
       Select(
         helper,
-        newTermName(methodName)
+        TermName(methodName)
       ),
-      List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree)
+      List(Ident(TermName("$org_scalatest_assert_macro_expr")), clueTree)
     )
 
   /**
