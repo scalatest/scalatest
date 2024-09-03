@@ -652,7 +652,7 @@ object GenAnyVals {
     if (dotty)
       "import scala.quoted._"
     else
-      "import reflect.macros.Context"
+      "import scala.reflect.macros.whitebox.Context"
 
 
   def genMain(dir: File, version: String, scalaVersion: String, dotty: Boolean): Seq[File] = {
