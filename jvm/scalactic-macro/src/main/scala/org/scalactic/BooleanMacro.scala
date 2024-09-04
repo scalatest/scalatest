@@ -556,11 +556,11 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                          *   [code generated from lengthSizeMacroBool]
                          * }
                          */
-                        Block(
-                          valDef("$org_scalatest_assert_macro_left", leftApplySelect.qualifier.duplicate),
-                          valDef("$org_scalatest_assert_macro_right", rightTree),
-                          lengthSizeApplyMacroBool(leftApplySelect.duplicate, prettifierTree)
-                        )
+                        q"""
+                          ${valDef("$org_scalatest_assert_macro_left", leftApplySelect.qualifier.duplicate)}
+                          ${valDef("$org_scalatest_assert_macro_right", rightTree)}
+                          ${lengthSizeApplyMacroBool(leftApplySelect.duplicate, prettifierTree)}
+                        """
                       case _ =>
                         /**
                          * something else but still a binary macro bool, generate AST for the following code:
@@ -571,11 +571,11 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                          *   [code generated from binaryMacroBool]
                          * }
                          */
-                        Block(
-                          valDef("$org_scalatest_assert_macro_left", leftTree),
-                          valDef("$org_scalatest_assert_macro_right", rightTree),
-                          binaryMacroBool(select.duplicate, prettifierTree)
-                        )
+                        q"""
+                          ${valDef("$org_scalatest_assert_macro_left", leftTree)}
+                          ${valDef("$org_scalatest_assert_macro_right", rightTree)}
+                          ${binaryMacroBool(select.duplicate, prettifierTree)}
+                        """
                     }
 
                   case leftSelect: Select if isSupportedLengthSizeOperator(leftSelect.name.decoded) =>
@@ -590,11 +590,11 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                      *   [code generated from binaryMacroBool]
                      * }
                      */
-                    Block(
-                      valDef("$org_scalatest_assert_macro_left", leftSelect.qualifier.duplicate),
-                      valDef("$org_scalatest_assert_macro_right", rightTree),
-                      lengthSizeMacroBool(leftSelect.duplicate, prettifierTree)
-                    )
+                    q"""
+                      ${valDef("$org_scalatest_assert_macro_left", leftSelect.qualifier.duplicate)}
+                      ${valDef("$org_scalatest_assert_macro_right", rightTree)}
+                      ${lengthSizeMacroBool(leftSelect.duplicate, prettifierTree)}
+                    """
 
                   case _ =>
                     /**
@@ -606,11 +606,11 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                      *   [code generated from binaryMacroBool]
                      * }
                      */
-                    Block(
-                      valDef("$org_scalatest_assert_macro_left", leftTree),
-                      valDef("$org_scalatest_assert_macro_right", rightTree),
-                      binaryMacroBool(select.duplicate, prettifierTree)
-                    )
+                    q"""
+                      ${valDef("$org_scalatest_assert_macro_left", leftTree)}
+                      ${valDef("$org_scalatest_assert_macro_right", rightTree)}
+                      ${binaryMacroBool(select.duplicate, prettifierTree)}
+                    """
                 }
 
               case "exists" =>
@@ -634,11 +634,11 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                                * }
                                */
                               case Ident(name) if name.decoded == generatedValName =>
-                                Block(
-                                  valDef("$org_scalatest_assert_macro_left", leftTree),
-                                  valDef("$org_scalatest_assert_macro_right", boolExprApply.args(0).duplicate),
-                                  existsMacroBool(select.duplicate, func.duplicate, prettifierTree)
-                                )
+                                q"""
+                                  ${valDef("$org_scalatest_assert_macro_left", leftTree)}
+                                  ${valDef("$org_scalatest_assert_macro_right", boolExprApply.args(0).duplicate)}
+                                  ${existsMacroBool(select.duplicate, func.duplicate, prettifierTree)}
+                                """
 
                               case _ =>
                                 boolExprApply.args(0) match {
@@ -652,11 +652,11 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                                    * }
                                    */
                                   case Ident(name) if name.decoded == generatedValName =>
-                                    Block(
-                                      valDef("$org_scalatest_assert_macro_left", leftTree),
-                                      valDef("$org_scalatest_assert_macro_right", qualifier.duplicate),
-                                      existsMacroBool(select.duplicate, func.duplicate, prettifierTree)
-                                    )
+                                    q"""
+                                      ${valDef("$org_scalatest_assert_macro_left", leftTree)}
+                                      ${valDef("$org_scalatest_assert_macro_right", qualifier.duplicate)}
+                                      ${existsMacroBool(select.duplicate, func.duplicate, prettifierTree)}
+                                    """
 
                                   case _ =>
                                     simpleMacroBool(tree.duplicate, getText(tree), prettifierTree)
@@ -706,11 +706,11 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                     case other => other
                   }
 
-                Block(
-                  valDef("$org_scalatest_assert_macro_left", wrappedTree),
-                  valDef("$org_scalatest_assert_macro_right", rightTree),
-                  binaryMacroBool(select.duplicate, prettifierTree)
-                )
+                q"""
+                  ${valDef("$org_scalatest_assert_macro_left", wrappedTree)}
+                  ${valDef("$org_scalatest_assert_macro_right", rightTree)}
+                  ${binaryMacroBool(select.duplicate, prettifierTree)}
+                """
 
               case _ =>
                 /**
@@ -722,11 +722,11 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                  *   [code generated from binaryMacroBool]
                  * }
                  */
-                Block(
-                  valDef("$org_scalatest_assert_macro_left", leftTree),
-                  valDef("$org_scalatest_assert_macro_right", rightTree),
-                  binaryMacroBool(select.duplicate, prettifierTree)
-                )
+                q"""
+                  ${valDef("$org_scalatest_assert_macro_left", leftTree)}
+                  ${valDef("$org_scalatest_assert_macro_right", rightTree)}
+                  ${binaryMacroBool(select.duplicate, prettifierTree)}
+                """
             }
 
           case funApply: Apply if funApply.args.size == 1 =>
@@ -744,11 +744,11 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                  *   [code generated from binaryMacroBool]
                  * }
                  */
-                Block(
-                  valDef("$org_scalatest_assert_macro_left", leftTree),
-                  valDef("$org_scalatest_assert_macro_right", rightTree),
-                  binaryMacroBool(select.duplicate, apply.args(0).duplicate, prettifierTree) // TODO: should apply.args(0) be traversed also?
-                )
+                q"""
+                  ${valDef("$org_scalatest_assert_macro_left", leftTree)}
+                  ${valDef("$org_scalatest_assert_macro_right", rightTree)}
+                  ${binaryMacroBool(select.duplicate, apply.args(0).duplicate, prettifierTree)} // TODO: should apply.args(0) be traversed also?
+                """
               case typeApply: TypeApply =>
                 typeApply.fun match {
                   case select: Select if typeApply.args.size == 1 =>
@@ -766,11 +766,11 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                     val operator: String = select.name.decoded
                     if (operator == "===" || operator == "!==") {
                       val (leftTree, rightTree) = traverseSelect(select, funApply.args(0), prettifierTree)
-                      Block(
-                        valDef("$org_scalatest_assert_macro_left", leftTree),
-                        valDef("$org_scalatest_assert_macro_right", rightTree),
-                        binaryMacroBool(select.duplicate, apply.args(0).duplicate, prettifierTree) // TODO: should apply.args(0) be traversed also?
-                      )
+                      q"""
+                        ${valDef("$org_scalatest_assert_macro_left", leftTree)}
+                        ${valDef("$org_scalatest_assert_macro_right", rightTree)}
+                        ${binaryMacroBool(select.duplicate, apply.args(0).duplicate, prettifierTree)} // TODO: should apply.args(0) be traversed also?
+                      """
                     }
                     else
                       simpleMacroBool(tree.duplicate, getText(tree), prettifierTree) // something else, just call simpleMacroBool
@@ -794,11 +794,11 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
             funTypeApply.fun match {
               case select: Select if isSupportedBinaryOperator(select.name.decoded) =>
                 val (leftTree, rightTree) = traverseSelect(select, apply.args(0), prettifierTree)
-                Block(
-                  valDef("$org_scalatest_assert_macro_left", leftTree),
-                  valDef("$org_scalatest_assert_macro_right", rightTree),
-                  typedBinaryMacroBool(select.duplicate, funTypeApply.args, prettifierTree)
-                )
+                q"""
+                  ${valDef("$org_scalatest_assert_macro_left", leftTree)}
+                  ${valDef("$org_scalatest_assert_macro_right", rightTree)}
+                  ${typedBinaryMacroBool(select.duplicate, funTypeApply.args, prettifierTree)}
+                """
 
               case _ => simpleMacroBool(tree.duplicate, getText(tree), prettifierTree) // something else, just call simpleMacroBool
             }
@@ -818,10 +818,10 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
          */
         apply.fun match {
           case select: Select if isSupportedUnaryOperator(select.name.decoded) =>
-            Block(
-              valDef("$org_scalatest_assert_macro_left", select.qualifier.duplicate),
-              unaryApplyMacroBool(select.duplicate, prettifierTree)
-            )
+            q"""
+              ${valDef("$org_scalatest_assert_macro_left", select.qualifier.duplicate)}
+              ${unaryApplyMacroBool(select.duplicate, prettifierTree)}
+            """
           case _ => simpleMacroBool(tree.duplicate, getText(tree), prettifierTree)
         }
       case typeApply: TypeApply if typeApply.args.length == 1 =>
@@ -841,10 +841,10 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                */
               typeApply.args(0).tpe match {
                 case typeRef: TypeRef =>
-                  Block(
-                    valDef("$org_scalatest_assert_macro_left", select.qualifier.duplicate),
-                    isInstanceOfMacroBool(select.duplicate, typeRef.sym.fullName, typeApply.args(0).duplicate, prettifierTree)
-                  )
+                  q"""
+                    ${valDef("$org_scalatest_assert_macro_left", select.qualifier.duplicate)}
+                    ${isInstanceOfMacroBool(select.duplicate, typeRef.sym.fullName, typeApply.args(0).duplicate, prettifierTree)}
+                  """
                 case _ => simpleMacroBool(tree.duplicate, getText(tree), prettifierTree) // something else, just call simpleMacroBool
               }
             }
@@ -884,10 +884,10 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
              *   [code generated from unaryMacroBool]
              * }
              */
-            Block(
-              valDef("$org_scalatest_assert_macro_left", select.qualifier.duplicate),
-              unaryMacroBool(select.duplicate, prettifierTree)
-            )
+            q"""
+              ${valDef("$org_scalatest_assert_macro_left", select.qualifier.duplicate)}
+              ${unaryMacroBool(select.duplicate, prettifierTree)}
+            """
           }
       case _ =>
         simpleMacroBool(tree.duplicate, getText(tree), prettifierTree)// something else, just call simpleMacroBool
@@ -934,10 +934,10 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
     val ownerRepair = new MacroOwnerRepair[context.type](context)
     val expandedCode =
       context.Expr(
-        Block(
-          valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree, prettifierExpr.tree)),
-          callHelper(helper, methodName, clueExpr.tree, prettifierExpr.tree, posExpr.tree)
-        )
+        q"""
+          ${valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree, prettifierExpr.tree))}
+          ${callHelper(helper, methodName, clueExpr.tree, prettifierExpr.tree, posExpr.tree)}
+        """
       )
     ownerRepair.repairOwners(expandedCode)
   }
@@ -954,10 +954,10 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
     val ownerRepair = new MacroOwnerRepair[context.type](context)
     val expandedCode =
       context.Expr(
-        Block(
-          valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree, prettifierExpr.tree)),
-          callHelper(helper, methodName, clueExpr.tree)
-        )
+        q"""
+          ${valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree, prettifierExpr.tree))}
+          ${callHelper(helper, methodName, clueExpr.tree)}
+        """
       )
     ownerRepair.repairOwners(expandedCode)
   }
