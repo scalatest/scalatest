@@ -36,7 +36,7 @@ object PositionMacro {
 
     private val PositionModule = universe.rootMirror.staticModule("org.scalactic.source.Position")
     private val PositionClass = universe.rootMirror.staticClass("org.scalactic.source.Position")
-    private val Position_apply = PositionModule.typeSignature.declaration(universe.TermName("apply"))
+    private val Position_apply = PositionModule.typeSignature.decl(universe.TermName("apply"))
 
     def apply(context: Context): context.Tree = {
       import context.universe._
@@ -44,6 +44,7 @@ object PositionMacro {
       // On 2.10, this imports the empty object defined above
       // On 2.11+, this imports `Tree.setType` extension method
       import internal.decorators._ 
+      import internal.gen
 
       // Our types don't capture the fact that context.universe eq this.universe, so we have to cast.
       implicit def castSymbol(s: universe.Symbol): context.universe.Symbol = s.asInstanceOf[context.universe.Symbol]
@@ -66,7 +67,7 @@ object PositionMacro {
         intLit(context.enclosingPosition.line)
       )
 
-      Apply(mkAttributedSelect(mkAttributedIdent(PositionModule), Position_apply), args).setType(PositionClass.toTypeConstructor)
+      Apply(gen.mkAttributedSelect(gen.mkAttributedIdent(PositionModule), Position_apply), args).setType(PositionClass.toTypeConstructor)
     }
   }
 
