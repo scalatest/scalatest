@@ -135,7 +135,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        q"${select.name.decoded}",
+        q"${select.name.decodedName.toString}",
         Ident(TermName("$org_scalatest_assert_macro_right")),
         Apply(
           Select(
@@ -170,7 +170,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        q"${select.name.decoded}",
+        q"${select.name.decodedName.toString}",
         Ident(TermName("$org_scalatest_assert_macro_right")),
         Apply(
           Apply(
@@ -208,7 +208,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        q"${select.name.decoded}",
+        q"${select.name.decodedName.toString}",
         Ident(TermName("$org_scalatest_assert_macro_right")),
         Apply(
           TypeApply(
@@ -299,7 +299,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        q"${select.name.decoded}",
+        q"${select.name.decodedName.toString}",
         Select(
           Ident(TermName("$org_scalatest_assert_macro_left")),
           select.name
@@ -330,7 +330,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        q"${select.name.decoded}",
+        q"${select.name.decodedName.toString}",
         Apply(
           Select(
             Ident(TermName("$org_scalatest_assert_macro_left")),
@@ -364,7 +364,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        q"${select.name.decoded}",
+        q"${select.name.decodedName.toString}",
         q"${className}",
         TypeApply(
           Select(
@@ -399,7 +399,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        q"${select.name.decoded}",
+        q"${select.name.decodedName.toString}",
         Select(
           Ident("$org_scalatest_assert_macro_left"),
           select.name
@@ -426,7 +426,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       ),
       List(
         Ident(TermName("$org_scalatest_assert_macro_left")),
-        q"${select.name.decoded}",
+        q"${select.name.decodedName.toString}",
         Apply(
           Select(
             Ident("$org_scalatest_assert_macro_left"),
@@ -477,7 +477,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
 
   // traverse the given Select, both qualifier and the right expression.
   def traverseSelect(select: Select, rightExpr: Tree, prettifierTree: Tree): (Tree, Tree) = {
-    val operator = select.name.decoded
+    val operator = select.name.decodedName.toString
     if (logicOperators.contains(operator)) {
       val leftTree = // traverse the qualifier
         select.qualifier match {
@@ -536,15 +536,15 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
     tree match {
       case apply: Apply if apply.args.size == 1 =>
         apply.fun match {
-          case select: Select if isSupportedBinaryOperator(select.name.decoded) =>
-            val operator = select.name.decoded
+          case select: Select if isSupportedBinaryOperator(select.name.decodedName.toString) =>
+            val operator = select.name.decodedName.toString
             val (leftTree, rightTree) =  traverseSelect(select, apply.args(0), prettifierTree)
             operator match {
               case "==" =>
                 leftTree match {
                   case leftApply: Apply =>
                     leftApply.fun match {
-                      case leftApplySelect: Select if isSupportedLengthSizeOperator(leftApplySelect.name.decoded) && leftApply.args.isEmpty =>
+                      case leftApplySelect: Select if isSupportedLengthSizeOperator(leftApplySelect.name.decodedName.toString) && leftApply.args.isEmpty =>
                         /**
                          * support for a.length() == xxx, a.size() == xxxx
                          *
@@ -578,7 +578,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                         """
                     }
 
-                  case leftSelect: Select if isSupportedLengthSizeOperator(leftSelect.name.decoded) =>
+                  case leftSelect: Select if isSupportedLengthSizeOperator(leftSelect.name.decodedName.toString) =>
                     /**
                      * support for a.length == xxx, a.size == xxxx
                      *
@@ -620,8 +620,8 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                     boolExpr match {
                       case boolExprApply: Apply if boolExprApply.args.size == 1 =>
                         boolExprApply.fun match {
-                          case Select(qualifier, equalEqual) if equalEqual.decoded == "==" =>
-                            val generatedValName = func.children(0).asInstanceOf[ValDef].name.decoded  // safe cast because it already passed isPlaceHolder
+                          case Select(qualifier, equalEqual) if equalEqual.decodedName.toString == "==" =>
+                            val generatedValName = func.children(0).asInstanceOf[ValDef].name.decodedName.toString  // safe cast because it already passed isPlaceHolder
 
                             qualifier match {
                               /**
@@ -633,7 +633,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                                *   [code generated from existsMacroBool]
                                * }
                                */
-                              case Ident(name) if name.decoded == generatedValName =>
+                              case Ident(name) if name.decodedName.toString == generatedValName =>
                                 q"""
                                   ${valDef("$org_scalatest_assert_macro_left", leftTree)}
                                   ${valDef("$org_scalatest_assert_macro_right", boolExprApply.args(0).duplicate)}
@@ -651,7 +651,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                                    *   [code generated from existsMacroBool]
                                    * }
                                    */
-                                  case Ident(name) if name.decoded == generatedValName =>
+                                  case Ident(name) if name.decodedName.toString == generatedValName =>
                                     q"""
                                       ${valDef("$org_scalatest_assert_macro_left", leftTree)}
                                       ${valDef("$org_scalatest_assert_macro_right", qualifier.duplicate)}
@@ -731,7 +731,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
 
           case funApply: Apply if funApply.args.size == 1 =>
             funApply.fun match {
-              case select: Select if select.name.decoded == "===" || select.name.decoded == "!==" =>
+              case select: Select if select.name.decodedName.toString == "===" || select.name.decodedName.toString == "!==" =>
                 val (leftTree, rightTree) = traverseSelect(select, funApply.args(0), prettifierTree)
                 /**
                  * For === and !== that takes Equality, for example a === b
@@ -763,7 +763,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
                      *   [code generated from binaryMacroBool]
                      * }
                      */
-                    val operator: String = select.name.decoded
+                    val operator: String = select.name.decodedName.toString
                     if (operator == "===" || operator == "!==") {
                       val (leftTree, rightTree) = traverseSelect(select, funApply.args(0), prettifierTree)
                       q"""
@@ -792,7 +792,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
              * }
              */
             funTypeApply.fun match {
-              case select: Select if isSupportedBinaryOperator(select.name.decoded) =>
+              case select: Select if isSupportedBinaryOperator(select.name.decodedName.toString) =>
                 val (leftTree, rightTree) = traverseSelect(select, apply.args(0), prettifierTree)
                 q"""
                   ${valDef("$org_scalatest_assert_macro_left", leftTree)}
@@ -817,7 +817,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
          * }
          */
         apply.fun match {
-          case select: Select if isSupportedUnaryOperator(select.name.decoded) =>
+          case select: Select if isSupportedUnaryOperator(select.name.decodedName.toString) =>
             q"""
               ${valDef("$org_scalatest_assert_macro_left", select.qualifier.duplicate)}
               ${unaryApplyMacroBool(select.duplicate, prettifierTree)}
@@ -827,7 +827,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
       case typeApply: TypeApply if typeApply.args.length == 1 =>
         typeApply.fun match {
           case select: Select =>
-            val operator = select.name.decoded
+            val operator = select.name.decodedName.toString
             if (operator == "isInstanceOf") {
               /**
                * For isInstanceOf support, for example a.isInstanceOf[String]
@@ -852,8 +852,8 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
               simpleMacroBool(tree.duplicate, getText(tree), prettifierTree) // something else, just call simpleMacroBool
           case _ => simpleMacroBool(tree.duplicate, getText(tree), prettifierTree) // something else, just call simpleMacroBool
         }
-      case select: Select if supportedUnaryOperations.contains(select.name.decoded) => // for ! and unary operation that does not take any arguments
-          if (select.name.decoded == "unary_!") {
+      case select: Select if supportedUnaryOperations.contains(select.name.decodedName.toString) => // for ! and unary operation that does not take any arguments
+          if (select.name.decodedName.toString == "unary_!") {
             /**
              * For unary_! operation, for example !a
              *
