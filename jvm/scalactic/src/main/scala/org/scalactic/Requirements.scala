@@ -244,7 +244,7 @@ private[scalactic] object RequirementsMacro {
       ),
       condition,
       "macroRequire",
-      context.literal(""),
+      context.Expr[String](q"${""}"),
       prettifier)
   }
 
@@ -303,7 +303,7 @@ private[scalactic] object RequirementsMacro {
       ),
       condition,
       "macroRequireState",
-      context.literal(""),
+      context.Expr[String](q"${""}"),
       prettifier)
   }
 
@@ -360,10 +360,10 @@ private[scalactic] object RequirementsMacro {
     val variablesNamesArray =
       Apply(
         Select(
-          Ident("Array"),
+          Ident(TermName("Array")),
           TermName("apply")
         ),
-        List(arguments.map(e => context.literal(show(e.tree)).tree): _*)
+        List(arguments.map(e => q"${show(e.tree)}"): _*)
       )
 
     // generate AST that create array containing the argument values
@@ -378,7 +378,7 @@ private[scalactic] object RequirementsMacro {
     val argumentsArray =
       Apply(
         Select(
-          Ident("Array"),
+          Ident(TermName("Array")),
           TermName("apply")
         ),
         List(arguments.map(e => e.tree): _*)
