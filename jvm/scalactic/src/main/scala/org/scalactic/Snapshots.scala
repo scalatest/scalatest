@@ -237,7 +237,7 @@ private[scalactic] object SnapshotsMacro {
             ),
             TermName("apply")
           ),
-          List(context.literal(show(expr.tree)).tree, expr.tree.duplicate)
+          List(q"${show(expr.tree)}", expr.tree.duplicate)
         )
       }
 
