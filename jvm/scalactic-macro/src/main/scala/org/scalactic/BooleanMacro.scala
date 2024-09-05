@@ -175,10 +175,10 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Apply(
           Apply(
             Select(
-              Ident("$org_scalatest_assert_macro_left"),
+              Ident(TermName("$org_scalatest_assert_macro_left")),
               select.name
             ),
-            List(Ident("$org_scalatest_assert_macro_right"))
+            List(Ident(TermName("$org_scalatest_assert_macro_right")))
           ),
           List(secondArg)
         ),
@@ -401,7 +401,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         Ident(TermName("$org_scalatest_assert_macro_left")),
         q"${select.name.decodedName.toString}",
         Select(
-          Ident("$org_scalatest_assert_macro_left"),
+          Ident(TermName("$org_scalatest_assert_macro_left")),
           select.name
         ),
         Ident(TermName("$org_scalatest_assert_macro_right")),
@@ -429,7 +429,7 @@ private[org] class BooleanMacro[C <: Context](val context: C) {
         q"${select.name.decodedName.toString}",
         Apply(
           Select(
-            Ident("$org_scalatest_assert_macro_left"),
+            Ident(TermName("$org_scalatest_assert_macro_left")),
             select.name
           ), 
           List.empty
