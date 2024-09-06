@@ -36,12 +36,12 @@ private[scalatest] object TypeMatcherMacro {
                  _,
                  methodNameTermName
                ),
-               typeList: List[TypeTree]
+               typeList
              ),
              _
-           ) if methodNameTermName.decoded == methodName =>
+           ) if methodNameTermName.decodedName.toString == methodName =>
         // Got a type list, let's go through it
-        typeList.foreach { t =>
+        typeList.foreach { case t: TypeTree =>
           t.original match {
             case AppliedTypeTree(tpt, args) => // type is specified, let's give warning.
               context.warning(args(0).pos, "Type parameter should not be specified because it will be erased at runtime, please use _ instead.  Note that in future version of ScalaTest this will give a compiler error.")
@@ -227,7 +227,7 @@ private[scalatest] object TypeMatcherMacro {
             Select(
               Select(
                 qualifier,
-                "owner"
+                TermName("owner")
               ),
               TermName("and")
             ),
@@ -259,7 +259,7 @@ private[scalatest] object TypeMatcherMacro {
             Select(
               Select(
                 qualifier,
-                "owner"
+                TermName("owner")
               ),
               TermName("and")
             ),
@@ -291,7 +291,7 @@ private[scalatest] object TypeMatcherMacro {
             Select(
               Select(
                 qualifier,
-                "owner"
+                TermName("owner")
               ),
               TermName("or")
             ),
@@ -323,7 +323,7 @@ private[scalatest] object TypeMatcherMacro {
             Select(
               Select(
                 qualifier,
-                "owner"
+                TermName("owner")
               ),
               TermName("or")
             ),
@@ -358,9 +358,9 @@ private[scalatest] object TypeMatcherMacro {
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>
-          Block(
-            valDef("$org_scalatest_type_matcher_macro_left", qualifier.duplicate),
-            Apply(
+          q"""
+            ${valDef("$org_scalatest_type_matcher_macro_left", qualifier.duplicate)}
+            ${Apply(
               Select(
                 Select(
                   Select(
@@ -378,8 +378,8 @@ private[scalatest] object TypeMatcherMacro {
                 TermName(assertMethodName)
               ),
               List(Select(Ident(TermName("$org_scalatest_type_matcher_macro_left")), TermName("leftSideValue")), tree, Select(Ident(TermName("$org_scalatest_type_matcher_macro_left")), TermName("prettifier")), Select(Ident(TermName("$org_scalatest_type_matcher_macro_left")), TermName("pos")))
-            )
-          )
+            )}
+          """
 
         case _ => context.abort(context.macroApplication.pos, s"This macro should be used with $beMethodName [Type] syntax only.")
       }
@@ -471,9 +471,9 @@ private[scalatest] object TypeMatcherMacro {
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>
-          Block(
-            valDef("$org_scalatest_type_matcher_macro_left", qualifier.duplicate),
-            Apply(
+          q"""
+            ${valDef("$org_scalatest_type_matcher_macro_left", qualifier.duplicate)}
+            ${Apply(
               Select(
                 Select(
                   Select(
@@ -491,8 +491,8 @@ private[scalatest] object TypeMatcherMacro {
                 TermName(assertMethodName)
               ),
               List(Select(qualifier, TermName("left")), tree, Select(qualifier, TermName("shouldBeTrue")), Select(Ident(TermName("$org_scalatest_type_matcher_macro_left")), TermName("prettifier")), Select(Ident(TermName("$org_scalatest_type_matcher_macro_left")), TermName("pos")))
-            )
-          )
+            )}
+          """
 
         case _ => context.abort(context.macroApplication.pos, s"This macro should be used with $beMethodName [Type] syntax only.")
       }
