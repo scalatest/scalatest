@@ -3355,7 +3355,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * cases still compile, but silently wouldn't work.
      * </p>
      */
-    @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
+    @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.", "1.9.2")
     //DOTTY-ONLY infix def be(comparison: TripleEqualsInvocation[_]): Nothing = {
     // SKIP-DOTTY-START
     def be(comparison: TripleEqualsInvocation[_]): Nothing = {
