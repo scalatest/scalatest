@@ -3168,17 +3168,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
   // This is where InspectorShorthands started
 
-  protected sealed trait Collected extends Serializable {
-    val name: String
+  protected sealed abstract class Collected(name: String) extends Serializable {
     override def toString: String = name
   }
-  private object AllCollected extends Collected { val name: String = "AllCollected" }
-  private object EveryCollected extends Collected { val name: String = "EveryCollected" }
-  private case class BetweenCollected(from: Int, to: Int) extends Collected { val name: String = "BetweenCollected" }
-  private case class AtLeastCollected(num: Int) extends Collected { val name: String = "AtLeastCollected" }
-  private case class AtMostCollected(num: Int) extends Collected { val name: String = "AtMostCollected" }
-  private object NoCollected extends Collected { val name: String = "NoCollected" }
-  private case class ExactlyCollected(num: Int) extends Collected { val name: String = "ExactlyCollected" }
+  private object AllCollected extends Collected("AllCollected")
+  private object EveryCollected extends Collected("EveryCollected")
+  private case class BetweenCollected(from: Int, to: Int) extends Collected("BetweenCollected")
+  private case class AtLeastCollected(num: Int) extends Collected("AtLeastCollected")
+  private case class AtMostCollected(num: Int) extends Collected("AtMostCollected")
+  private object NoCollected extends Collected("NoCollected")
+  private case class ExactlyCollected(num: Int) extends Collected("ExactlyCollected")
 
   private[scalatest] def doCollected[T](collected: Collected, xs: Iterable[T], original: Any, prettifier: Prettifier, pos: source.Position)(fun: T => Assertion): Assertion = {
 
