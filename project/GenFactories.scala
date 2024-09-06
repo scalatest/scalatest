@@ -2866,7 +2866,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
             Select(
               Select(
                 qualifier,
-                "owner"
+                TermName("owner")
               ),
               TermName("and")
             ),
@@ -2889,7 +2889,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
             Select(
               Select(
                 qualifier,
-                "owner"
+                TermName("owner")
               ),
               TermName("or")
             ),
@@ -2912,7 +2912,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
             Select(
               Select(
                 qualifier,
-                "owner"
+                TermName("owner")
               ),
               TermName("and")
             ),
@@ -2935,7 +2935,7 @@ private[scalatest] class MatcherFactory$arity$Macro[-SC, $typeConstructors$] {
             Select(
               Select(
                 qualifier,
-                "owner"
+                TermName("owner")
               ),
               TermName("or")
             ),
