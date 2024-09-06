@@ -29,7 +29,6 @@ package org.scalatest.matchers.dsl
 import org.scalatest.enablers._
 import org.scalatest.matchers.MatchersHelper.andMatchersAndApply
 import org.scalatest.matchers.MatchersHelper.orMatchersAndApply
-import org.scalatest.matchers.dsl.MatcherWords
 import org.scalactic.ColCompatHelper.Iterable
 import scala.util.matching.Regex
 import org.scalactic._
