@@ -193,7 +193,7 @@ private[scalatest] object CompileMacro {
     try {
       val tree = c.parse("{ "+codeStr+" }")
       if (!containsAnyValNullStatement(c)(List(tree))) {
-        c.typeCheck(tree, c.universe.WildcardType)  // parse and type check code snippet
+        c.typecheck(tree)  // parse and type check code snippet
         // Both parse and type check succeeded, the code snippet compiles unexpectedly, let's generate code to throw TestFailedException
         val messageExpr = c.Expr[String](q"${Resources.expectedCompileErrorButGotNone(codeStr)}")
         reify {
@@ -232,7 +232,7 @@ private[scalatest] object CompileMacro {
     try {
       val tree = c.parse("{ "+codeStr+" }")
       if (!containsAnyValNullStatement(c)(List(tree))) {
-        c.typeCheck(tree, c.universe.WildcardType) // parse and type check code snippet
+        c.typecheck(tree) // parse and type check code snippet
         // Both parse and type check succeeded, the code snippet compiles unexpectedly, let's generate code to throw TestFailedException
         val messageExpr = c.Expr[String](q"${Resources.expectedCompileErrorButGotNone(codeStr)}")
         reify {
