@@ -147,7 +147,7 @@ println("&&&&&&&&&&&")
 
   private[scalatest] def getSnippets(text: String): Vector[Snippet] = {
 //println("text: " + text)
-    val lines = Vector.empty ++ text.linesIterator.toIterable
+    val lines = Vector.empty ++ text.lines.toIterable
 //println("lines: " + lines)
     val pairs = lines map { line =>
       val trimmed = line.trim
@@ -189,18 +189,18 @@ println("&&&&&&&&&&&")
 private[scalatest] object Doc {
 
   private[scalatest] def trimMarkup(text: String): String = {
-    val lines = text.linesIterator.toList
+    val lines = text.lines.toList
     val zipLines = lines.zipWithIndex
     val firstNonWhiteLine = zipLines.find { case (line, _) => !line.trim.isEmpty }
     val lastNonWhiteLine = zipLines.reverse.find { case (line, _) => !line.trim.isEmpty }
     (firstNonWhiteLine, lastNonWhiteLine) match {
-      case (None, None) => text.trim // Will be either (None, None) or (Some, Some)
       case (Some((_, frontIdx)), Some((_, backIdx))) => lines.take(backIdx + 1).drop(frontIdx).mkString("\n")
+      case _ => text.trim // Will be either (None, None) or (Some, Some)
     }
   }
 
   private[scalatest] def stripMargin(text: String): String = {
-    val lines = text.linesIterator.toList
+    val lines = text.lines.toList
     val firstNonWhiteLine = lines.find(!_.trim.isEmpty)
     firstNonWhiteLine match {
       case None => text.trim
