@@ -45,7 +45,7 @@ private[scalatest] object ExpectationsMacro {
       ),
       expression,
       "macroExpect",
-      context.literal(""),
+      context.Expr[String](q"${""}"),
       prettifier,
       pos)
   }
