@@ -121,14 +121,18 @@ private[scalatest] object DiagramsMacro {
         pos)
   }
 
-  def assert(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] =
-    macroImpl(context)("macroAssert", condition, context.literal(""), prettifier, pos)
+  def assert(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] = {
+    import context.universe._
+    macroImpl(context)("macroAssert", condition, context.Expr[String](q"${""}"), prettifier, pos)
+  }
 
   def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] =
     macroImpl(context)("macroAssert", condition, clue, prettifier, pos)
 
-  def assume(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] =
-    macroImpl(context)("macroAssume", condition, context.literal(""), prettifier, pos)
+  def assume(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] = {
+    import context.universe._
+    macroImpl(context)("macroAssume", condition, context.Expr[String](q"${""}"), prettifier, pos)
+  }
 
   def assumeWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] =
     macroImpl(context)("macroAssume", condition, clue, prettifier, pos)
