@@ -48,7 +48,7 @@ private[scalatest] object AssertionsMacro {
       ),
       condition,
       "macroAssert",
-      context.literal(""),
+      context.Expr[String](q"${""}"),
       prettifier,
       pos)
   }
@@ -109,7 +109,7 @@ private[scalatest] object AssertionsMacro {
       ),
       condition,
       "macroAssume",
-      context.literal(""),
+      context.Expr[String](q"${""}"),
       prettifier,
       pos)
   }
