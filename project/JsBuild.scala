@@ -15,7 +15,7 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 trait JsBuild { this: BuildCommons =>
 
   private lazy val jsSharedSettings = Seq(
-    crossScalaVersions := Seq("2.13.12", "2.12.18")
+    crossScalaVersions := Seq("2.13.14", "2.12.20")
   )
 
   lazy val deleteJsDependenciesTask = taskKey[Unit]("Delete JS_DEPENDENCIES")
