@@ -248,7 +248,7 @@ trait Configuration {
     * @param c a configuration object, describing how to run property evaluations
     * @return a fully-set-up [[Configuration.Parameter]] object, ready to evaluate properties with.
     */
-  def getParameter(configParams: Seq[Configuration#PropertyCheckConfigParam], config: PropertyCheckConfiguration): Configuration.Parameter = {
+  def getParameter(configParams: Seq[PropertyCheckConfigParam], config: PropertyCheckConfiguration): Configuration.Parameter = {
 
     var minSuccessful: Option[Int] = None
     var maxDiscardedFactor: Option[Double] = None
@@ -265,20 +265,20 @@ trait Configuration {
 
     for (configParam <- configParams) {
       configParam match {
-        case param: MinSuccessful =>
-          minSuccessful = Some(param.value)
-          minSuccessfulTotalFound += 1
-        case param: MaxDiscardedFactor =>
-          maxDiscardedFactor = Some(param.value)
+        case MinSuccessful(value) =>
+          minSuccessful = Some(value)
+          minSuccessfulTotalFound += 1 
+        case MaxDiscardedFactor(value) =>
+          maxDiscardedFactor = Some(value)
           maxDiscardedFactorTotalFound += 1
-        case param: MinSize =>
-          pminSize = Some(param.value)
+        case MinSize(value) =>
+          pminSize = Some(value)
           minSizeTotalFound += 1
-        case param: SizeRange =>
-          psizeRange = Some(param.value)
+        case SizeRange(value) =>
+          psizeRange = Some(value)
           sizeRangeTotalFound += 1
-        case param: Workers =>
-          pworkers = Some(param.value)
+        case Workers(value) =>
+          pworkers = Some(value)
           workersTotalFound += 1
       }
     }
