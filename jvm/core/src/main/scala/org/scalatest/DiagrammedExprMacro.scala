@@ -19,7 +19,7 @@ import org.scalactic._
 import scala.reflect.macros.whitebox.Context
 import scala.annotation.tailrec
 
-@deprecated("Please use org.scalatest.diagrams.DiagrammedExprMacro of diagrams module.")
+@deprecated("Please use org.scalatest.diagrams.DiagrammedExprMacro of diagrams module.", "3.1.0")
 private[org] class DiagrammedExprMacro[C <: Context](val context: C) {
 
   import context.universe._
