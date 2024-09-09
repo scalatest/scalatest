@@ -24,6 +24,7 @@ import scala.collection.GenSeq
 import scala.collection.SeqView
 import scala.collection.GenIterable
 import scala.collection.generic.CanBuildFrom
+import scala.collection.JavaConverters._
 import org.scalactic.ColCompatHelper
 //import scala.collection.parallel.ParSeq
 import scala.util.matching.Regex
@@ -1530,7 +1531,7 @@ final class NumericString private (val value: String) extends AnyVal {
    * returns a single string for `NumericString`.
    */
   def lines: Iterator[String] =
-    value.lines
+    value.linesIterator
 
   /** Return all lines in this `NumericString` in an iterator,
    *  including trailing line end characters.  Always returns a
