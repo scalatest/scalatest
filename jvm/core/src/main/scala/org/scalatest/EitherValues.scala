@@ -97,7 +97,7 @@ trait EitherValues extends Serializable {
    *
    * @param rightProj the <code>RightProjection</code> on which to add the <code>value</code> method
    */
-  @deprecated("The .right.value syntax on Either has been deprecated and will be removed in a future version of ScalaTest. Please use .value instead.")
+  @deprecated("The .right.value syntax on Either has been deprecated and will be removed in a future version of ScalaTest. Please use .value instead.", "3.2.3")
   implicit def convertRightProjectionToValuable[L, R](rightProj: Either.RightProjection[L, R])(implicit pos: source.Position): RightValuable[L, R] = new RightValuable(rightProj, pos)
 
   /**

@@ -23,7 +23,7 @@ package org.scalatest
  *
  * @author Bill Venners
  */
-@deprecated("We are considering removing Rerunner in ScalaTest 2.0 and would like to know if anyone is using it. If you are, please email scalatest-users@googlegroups.com or and describe your use case. Thanks!")
+@deprecated("We are considering removing Rerunner in ScalaTest 2.0 and would like to know if anyone is using it. If you are, please email scalatest-users@googlegroups.com or and describe your use case. Thanks!", "2.0")
 trait Rerunner /* extends ((Reporter, Stopper, Filter, ConfigMap, Option[Distributor], Tracker, ClassLoader) => Unit) */ {
 
   /**
