@@ -260,8 +260,8 @@ trait BuildCommons {
       organization := "org.scalatest",
       libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
       // libraryDependencies += "io.circe" %%% "circe-parser" % "0.7.1" % "test",
-      fork in test := false,
-      testOptions in Test := scalatestTestJSNativeOptions,
+      Test / fork := false,
+      Test / testOptions := scalatestTestJSNativeOptions,
       publishArtifact := false,
       publish := {},
       publishLocal := {}
