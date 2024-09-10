@@ -890,62 +890,62 @@ trait DottyBuild { this: BuildCommons =>
       organization := "org.scalatest",
       libraryDependencies ++= scalatestLibraryDependencies,
       // include the scalactic classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalacticDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalacticDotty / Compile / packageBin / mappings).value,
       // include the scalactic sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalacticDotty, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalacticDotty / Compile / packageSrc / mappings).value,
       // include the scalatestCompatible classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestCompatible, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestCompatible / Compile / packageBin / mappings).value,
       // include the scalatestCompatible sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestCompatible, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestCompatible / Compile / packageSrc / mappings).value,
       // include the scalatest classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestCoreDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestCoreDotty / Compile / packageBin / mappings).value,
       // include the scalatest sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestCoreDotty, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestCoreDotty / Compile / packageSrc / mappings).value,
       // include the scalatestFeatureSpecDotty classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestFeatureSpecDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestFeatureSpecDotty / Compile / packageBin / mappings).value,
       // include the scalatestFeatureSpecDotty sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFeatureSpecDotty, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestFeatureSpecDotty / Compile / packageSrc / mappings).value,
       // include the scalatestFlatSpecDotty classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestFlatSpecDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestFlatSpecDotty / Compile / packageBin / mappings).value,
       // include the scalatestFlatSpecDotty sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFlatSpecDotty, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestFlatSpecDotty / Compile / packageSrc / mappings).value,
       // include the scalatestFreeSpecDotty classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestFreeSpecDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestFreeSpecDotty / Compile / packageBin / mappings).value,
       // include the scalatestFreeSpecDotty sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFreeSpecDotty, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestFreeSpecDotty / Compile / packageSrc / mappings).value,
       // include the scalatestFunSuiteDotty classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestFunSuiteDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestFunSuiteDotty / Compile / packageBin / mappings).value,
       // include the scalatestFunSuiteDotty sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFunSuiteDotty, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestFunSuiteDotty / Compile / packageSrc / mappings).value,
       // include the scalatestFunSpecDotty classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestFunSpecDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestFunSpecDotty / Compile / packageBin / mappings).value,
       // include the scalatestFunSpecDotty sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFunSpecDotty, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestFunSpecDotty / Compile / packageSrc / mappings).value,
       // include the scalatestPropSpecDotty classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestPropSpecDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestPropSpecDotty / Compile / packageBin / mappings).value,
       // include the scalatestPropSpecDotty sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestPropSpecDotty, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestPropSpecDotty / Compile / packageSrc / mappings).value,
       // include the scalatestWordSpecDotty classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestWordSpecDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestWordSpecDotty / Compile / packageBin / mappings).value,
       // include the scalatestWordSpecDotty sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestWordSpecDotty, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestWordSpecDotty / Compile / packageSrc / mappings).value,
       // include the scalatestDiagramsDotty classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestDiagramsDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestDiagramsDotty / Compile / packageBin / mappings).value,
       // include the scalatestDiagramsDotty sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestDiagramsDotty, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestDiagramsDotty / Compile / packageSrc / mappings).value,
       // include the scalatestMatchersCoreDotty classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestMatchersCoreDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestMatchersCoreDotty / Compile / packageBin / mappings).value,
       // include the scalatestMatchersCoreDotty sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestMatchersCoreDotty, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestMatchersCoreDotty / Compile / packageSrc / mappings).value,
       // include the scalatestShouldMatchersDotty classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestShouldMatchersDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestShouldMatchersDotty / Compile / packageBin / mappings).value,
       // include the scalatestShouldMatchersDotty sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestShouldMatchersDotty, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestShouldMatchersDotty / Compile / packageSrc / mappings).value,
       // include the scalatestMustMatchersDotty classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestMustMatchersDotty, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestMustMatchersDotty / Compile / packageBin / mappings).value,
       // include the scalatestMustMatchersDotty sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestMustMatchersDotty, Compile, packageSrc).value, 
-      sourceGenerators in Compile += {
+      Compile / packageSrc / mappings ++= (scalatestMustMatchersDotty / Compile / packageSrc / mappings).value, 
+      Compile / sourceGenerators += {
         // Little trick to get rid of bnd error when publish.
         Def.task{
           (new File(crossTarget.value, "classes")).mkdirs()
@@ -953,9 +953,9 @@ trait DottyBuild { this: BuildCommons =>
         }.taskValue
       },
       scalatestDocSettings,
-      unmanagedResourceDirectories in Compile += baseDirectory.value / "scalatest" / "src" / "main" / "resources",
+      Compile / unmanagedResourceDirectories += baseDirectory.value / "scalatest" / "src" / "main" / "resources",
       mimaPreviousArtifacts := Set(organization.value %% name.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (name.value + "_" + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "images",
@@ -1037,58 +1037,58 @@ trait DottyBuild { this: BuildCommons =>
       //libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += ("org.scala-js" %% "scalajs-test-interface" % scalaJSVersion), 
       // include the scalactic classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalacticDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalacticDottyJS / Compile / packageBin / mappings).value,
       // include the scalactic sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalacticDottyJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalacticDottyJS / Compile / packageSrc / mappings).value,
       // include the scalatest classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestCoreDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestCoreDottyJS / Compile / packageBin / mappings).value,
       // include the scalatest sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestCoreDottyJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestCoreDottyJS / Compile / packageSrc / mappings).value,
       // include the scalatestFeatureSpecDottyJS classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestFeatureSpecDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestFeatureSpecDottyJS / Compile / packageBin / mappings).value,
       // include the scalatestFeatureSpecDottyJS sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFeatureSpecDottyJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestFeatureSpecDottyJS / Compile / packageSrc / mappings).value,
       // include the scalatestFlatSpecDottyJS classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestFlatSpecDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestFlatSpecDottyJS / Compile / packageBin / mappings).value,
       // include the scalatestFlatSpecDottyJS sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFlatSpecDottyJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestFlatSpecDottyJS / Compile / packageSrc / mappings).value,
       // include the scalatestFreeSpecDottyJS classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestFreeSpecDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestFreeSpecDottyJS / Compile / packageBin / mappings).value,
       // include the scalatestFreeSpecDottyJS sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFreeSpecDottyJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestFreeSpecDottyJS / Compile / packageSrc / mappings).value,
       // include the scalatestFunSuiteDottyJS classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestFunSuiteDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestFunSuiteDottyJS / Compile / packageBin / mappings).value,
       // include the scalatestFunSuiteDottyJS sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFunSuiteDottyJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestFunSuiteDottyJS / Compile / packageSrc / mappings).value,
       // include the scalatestFunSpecDottyJS classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestFunSpecDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestFunSpecDottyJS / Compile / packageBin / mappings).value,
       // include the scalatestFunSpecDottyJS sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestFunSpecDottyJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestFunSpecDottyJS / Compile / packageSrc / mappings).value,
       // include the scalatestPropSpecDottyJS classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestPropSpecDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestPropSpecDottyJS / Compile / packageBin / mappings).value,
       // include the scalatestPropSpecDottyJS sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestPropSpecDottyJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestPropSpecDottyJS / Compile / packageSrc / mappings).value,
       // include the scalatestWordSpecDottyJS classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestWordSpecDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestWordSpecDottyJS / Compile / packageBin / mappings).value,
       // include the scalatestWordSpecDottyJS sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestWordSpecDottyJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestWordSpecDottyJS / Compile / packageSrc / mappings).value,
       // include the scalatestDiagramsDottyJS classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestDiagramsDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestDiagramsDottyJS / Compile / packageBin / mappings).value,
       // include the scalatestDiagramsDottyJS sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestDiagramsDottyJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestDiagramsDottyJS / Compile / packageSrc / mappings).value,
       // include the scalatestMatchersCoreDottyJS classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestMatchersCoreDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestMatchersCoreDottyJS / Compile / packageBin / mappings).value,
       // include the scalatestMatchersCoreDottyJS sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestMatchersCoreDottyJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestMatchersCoreDottyJS / Compile / packageSrc / mappings).value,
       // include the scalatestShouldMatchersDottyJS classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestShouldMatchersDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestShouldMatchersDottyJS / Compile / packageBin / mappings).value,
       // include the scalatestShouldMatchersDottyJS sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestShouldMatchersDottyJS, Compile, packageSrc).value,
+      Compile / packageSrc / mappings ++= (scalatestShouldMatchersDottyJS / Compile / packageSrc / mappings).value,
       // include the scalatestMustMatchersDottyJS classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestMustMatchersDottyJS, Compile, packageBin).value,
+      Compile / packageBin / mappings ++= (scalatestMustMatchersDottyJS / Compile / packageBin / mappings).value,
       // include the scalatestMustMatchersDottyJS sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestMustMatchersDottyJS, Compile, packageSrc).value,
-      sourceGenerators in Compile += {
+      Compile / packageSrc / mappings ++= (scalatestMustMatchersDottyJS / Compile / packageSrc / mappings).value,
+      Compile / sourceGenerators += {
         // Little trick to get rid of bnd error when publish.
         Def.task{
           (new File(crossTarget.value, "classes")).mkdirs()
@@ -1096,7 +1096,7 @@ trait DottyBuild { this: BuildCommons =>
         }.taskValue
       },
       mimaPreviousArtifacts := Set(organization.value %%% moduleName.value % previousReleaseVersion),
-      mimaCurrentClassfiles := (classDirectory in Compile).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
+      mimaCurrentClassfiles := (Compile / classDirectory).value.getParentFile / (moduleName.value + sjsPrefix + scalaBinaryVersion.value + "-" + releaseVersion + ".jar")
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -1176,58 +1176,58 @@ trait DottyBuild { this: BuildCommons =>
         //libraryDependencies ++= nativeCrossBuildLibraryDependencies.value,
         libraryDependencies += ("org.scala-native" %%% "test-interface" % nativeVersion),
         // include the scalacticDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalacticDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalacticDottyNative / Compile / packageBin / mappings).value,
         // include the scalacticDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalacticDottyNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalacticDottyNative / Compile / packageSrc / mappings).value,
         // include the scalacticDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalatestCoreDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalatestCoreDottyNative / Compile / packageBin / mappings).value,
         // include the scalacticDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalatestCoreDottyNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalatestCoreDottyNative / Compile / packageSrc / mappings).value,
         // include the scalatestFeatureSpecDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalatestFeatureSpecDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalatestFeatureSpecDottyNative / Compile / packageBin / mappings).value,
         // include the scalatestFeatureSpecDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalatestFeatureSpecDottyNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalatestFeatureSpecDottyNative / Compile / packageSrc / mappings).value,
         // include the scalatestFlatSpecDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalatestFlatSpecDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalatestFlatSpecDottyNative / Compile / packageBin / mappings).value,
         // include the scalatestFlatSpecDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalatestFlatSpecDottyNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalatestFlatSpecDottyNative / Compile / packageSrc / mappings).value,
         // include the scalatestFreeSpecDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalatestFreeSpecDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalatestFreeSpecDottyNative / Compile / packageBin / mappings).value,
         // include the scalatestFreeSpecDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalatestFreeSpecDottyNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalatestFreeSpecDottyNative / Compile / packageSrc / mappings).value,
         // include the scalatestFunSuiteDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalatestFunSuiteDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalatestFunSuiteDottyNative / Compile / packageBin / mappings).value,
         // include the scalatestFunSuiteDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalatestFunSuiteDottyNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalatestFunSuiteDottyNative / Compile / packageSrc / mappings).value,
         // include the scalatestFunSpecDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalatestFunSpecDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalatestFunSpecDottyNative / Compile / packageBin / mappings).value,
         // include the scalatestFunSpecDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalatestFunSpecDottyNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalatestFunSpecDottyNative / Compile / packageSrc / mappings).value,
         // include the scalatestPropSpecDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalatestPropSpecDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalatestPropSpecDottyNative / Compile / packageBin / mappings).value,
         // include the scalatestPropSpecDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalatestPropSpecDottyNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalatestPropSpecDottyNative / Compile / packageSrc / mappings).value,
         // include the scalatestWordSpecDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalatestWordSpecDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalatestWordSpecDottyNative / Compile / packageBin / mappings).value,
         // include the scalatestWordSpecDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalatestWordSpecDottyNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalatestWordSpecDottyNative / Compile / packageSrc / mappings).value,
         // include the scalatestDiagramsDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalatestDiagramsDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalatestDiagramsDottyNative / Compile / packageBin / mappings).value,
         // include the scalatestDiagramsDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalatestDiagramsDottyNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalatestDiagramsDottyNative / Compile / packageSrc / mappings).value,
         // include the scalatestMatchersCoreDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalatestMatchersCoreDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalatestMatchersCoreDottyNative / Compile / packageBin / mappings).value,
         // include the scalatestMatchersCoreDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalatestMatchersCoreDottyNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalatestMatchersCoreDottyNative / Compile / packageSrc / mappings).value,
         // include the scalatestShouldMatchersDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalatestShouldMatchersDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalatestShouldMatchersDottyNative / Compile / packageBin / mappings).value,
         // include the scalatestShouldMatchersDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalatestShouldMatchersDottyNative, Compile, packageSrc).value,
+        Compile / packageSrc / mappings ++= (scalatestShouldMatchersDottyNative / Compile / packageSrc / mappings).value,
         // include the scalatestMustMatchersDottyNative classes and resources in the jar
-        mappings in (Compile, packageBin) ++= mappings.in(scalatestMustMatchersDottyNative, Compile, packageBin).value,
+        Compile / packageBin / mappings ++= (scalatestMustMatchersDottyNative / Compile / packageBin / mappings).value,
         // include the scalatestMustMatchersDottyNative sources in the source jar
-        mappings in (Compile, packageSrc) ++= mappings.in(scalatestMustMatchersDottyNative, Compile, packageSrc).value,
-        sourceGenerators in Compile += {
+        Compile / packageSrc / mappings ++= (scalatestMustMatchersDottyNative / Compile / packageSrc / mappings).value,
+        Compile / sourceGenerators += {
           // Little trick to get rid of bnd error when publish.
           Def.task{
             (new File(crossTarget.value, "classes")).mkdirs()
