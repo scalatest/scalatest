@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        java: [ '8', '21' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -18,14 +20,16 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: temurin
-        java-version: 8
+        java-version: ${{ matrix.java }}
         cache: 'sbt'
-    - name: Build and Test Scalactic and ScalaTest using Scala 2.13
+    - name: Build and Test Scalactic and ScalaTest using Scala 2.13 on JDK ${{ matrix.Java }}
       run: sbt test
   test-scala-2-11:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        java: [ '8', '21' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -33,14 +37,16 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: temurin
-        java-version: 8
+        java-version: ${{ matrix.java }}
         cache: 'sbt'
-    - name: Build and Test Scalactic and ScalaTest using Scala 2.11
+    - name: Build and Test Scalactic and ScalaTest using Scala 2.11 on JDK ${{ matrix.Java }}
       run: sbt ++2.11.12 test        
   test-scala-3:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        java: [ '8', '21' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -48,16 +54,18 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: temurin
-        java-version: 8
+        java-version: ${{ matrix.java }}
         cache: 'sbt'
-    - name: Build and Test ScalaTest using Scala 3
+    - name: Build and Test ScalaTest using Scala 3 on JDK ${{ matrix.Java }}
       run: sbt scalatestTestDotty/test
-    - name: Build and Test Scalactic using Scala 3
+    - name: Build and Test Scalactic using Scala 3 on JDK ${{ matrix.Java }}
       run: sbt scalacticTestDotty/test
   test-scala-js:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        java: [ '8', '21' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -65,16 +73,18 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: temurin
-        java-version: 8
+        java-version: ${{ matrix.java }}
         cache: 'sbt'
-    - name: Build and Test ScalaTest using Scala-js
+    - name: Build and Test ScalaTest using Scala-js on JDK ${{ matrix.Java }}
       run: sbt scalatestTestJS/test
-    - name: Build and Test Scalactic using Scala-js
+    - name: Build and Test Scalactic using Scala-js on JDK ${{ matrix.Java }}
       run: sbt scalacticTestJS/test
   test-scala-native:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        java: [ '8', '21' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -82,16 +92,18 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: temurin
-        java-version: 8
+        java-version: ${{ matrix.java }}
         cache: 'sbt'
-    - name: Build and Test ScalaTest using Scala-native
+    - name: Build and Test ScalaTest using Scala-native on JDK ${{ matrix.Java }}
       run: sbt scalatestTestDottyNative/test
-    - name: Build and Test Scalactic using Scala-native
+    - name: Build and Test Scalactic using Scala-native on JDK ${{ matrix.Java }}
       run: sbt scalacticTestDottyNative/test    
   gentests:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        java: [ '8', '21' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -99,7 +111,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: temurin
-        java-version: 8
+        java-version: ${{ matrix.java }}
         cache: 'sbt'
-    - name: Build and Run Generated Tests
+    - name: Build and Run Generated Tests on JDK ${{ matrix.Java }}
       run: sbt gentests/test
